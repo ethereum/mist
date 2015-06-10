@@ -9,7 +9,12 @@ To run install electron:
 
     $ npm install -g electron-prebuilt
 
-Start mist with:
+Start the meteor interface first:
+
+    $ cd mist/interface
+    $ meteor
+
+And then in another terminal window start mist with:
 
     $ cd mist
     $ electron ./

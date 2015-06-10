@@ -1,0 +1,12 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "meteor": true,
+    "shelljs": true
+  },
+  "rules": {
+    "quotes": [1, "single"],
+    "no-unused-vars": 1
+  }
+}

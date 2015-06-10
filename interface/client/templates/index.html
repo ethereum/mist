@@ -1,0 +1,26 @@
+<head>
+    <meta charset="utf-8">
+    <title>Mist</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
+</head>
+
+<body>
+    {{> layout_sidebar}}
+
+    {{> layout_browserBar}}
+
+    <main>
+
+        <!-- doogle -->
+        {{> views_doogle}}
+
+        {{#each tabs}}
+            {{> elements_tab}}
+        {{/each}}
+
+    </main>
+
+    <!-- Form Helper iFrame -->
+    <iframe id="dapp-form-helper-iframe" name="dapp-form-helper-iframe" src="javascript:false;"></iframe>
+</body>
+

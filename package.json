@@ -1,0 +1,8 @@
+{
+  "name": "mist",
+  "version": "0.1.0",
+  "main": "main.js",
+  "devDependencies": {
+    "httpsync": "0.0.8"
+  }
+}

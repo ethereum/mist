@@ -1,0 +1,30 @@
+<template name="layout_sidebar">
+    <aside class="sidebar">
+        <nav>
+            <ul>
+                <li>
+                    <button class="{{isVisible}}">
+                        Doogle
+                    </button>
+                    <ul>
+                        {{#each history}}
+                            <li>
+                                <button class="history">
+                                    {{url}}
+                                </button>
+                            </li>
+                        {{/each}}
+                    </ul>
+                </li>
+                <li class="separator"></li>
+                {{#each tabs}}
+                    <li>
+                        <button class="{{isVisible}}">
+                            {{name}}
+                        </button>
+                    </li>
+                {{/each}}
+            </ul>
+        </nav>
+    </aside>
+</template>

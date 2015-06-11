@@ -1,0 +1,101 @@
+// ==========================================================================
+// Base – Forms
+// ==========================================================================
+fieldset {
+  border: 0;
+  padding: 0;
+}
+legend {
+  border: 0;
+  padding: 0;
+  white-space: normal;
+  *margin-left: -7px;
+  &:extend(.font-normal);
+}
+label {
+  margin: 0;
+  cursor: pointer;
+}
+
+button, input, select, textarea {
+  font-size: 100%;
+  vertical-align: baseline;
+  *vertical-align: middle;
+}
+
+input[type=text], 
+input[type=password], 
+input[type=email], 
+input[type=search], 
+input[type=tel],
+textarea {
+  padding: 5px;
+  -webkit-appearance: none; // Remove Default Browser Behaviour for Safari
+  -moz-appearance: none; // Remove Default Browser Behaviour for Firefox
+  &:extend(.font-normal);
+  line-height: normal;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #111;
+}
+input[type=checkbox], 
+input[type=radio] {
+  cursor: pointer;
+  box-sizing: border-box;
+  line-height: normal;
+  margin: 0;
+  padding: 0;
+  *height: 13px;
+  *width: 13px;
+}
+
+.checkbox {
+  &:extend(.block);
+  margin: 0.2em 0;
+  input[type=checkbox], 
+  input[type=radio] {
+    margin-top: 0.05em;
+    &:extend(.left);
+  }
+  label {
+    padding-left: 5px;
+    overflow: hidden;
+    display: table;
+    *zoom: 1;
+  }
+}
+
+button, input { line-height: normal; }
+button, select { text-transform: none; }
+
+textarea {
+  overflow: auto;
+  vertical-align: top;
+  resize: none;
+}
+
+// Buttons
+button, 
+html input[type="button"], 
+input[type="reset"], 
+input[type="submit"] {
+  cursor: pointer;
+  -webkit-appearance: button;
+  *overflow: visible;
+}
+button[disabled], 
+html input[disabled] { cursor: default; }
+
+input[type="search"] {
+  -webkit-appearance: textfield;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button, 
+input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+button::-moz-focus-inner, 
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}

@@ -1,0 +1,53 @@
+// ==========================================================================
+// Base – CSS Helpers / Extras
+// ==========================================================================
+
+// Floats
+.left { float: left; }
+.right { float: right; }
+
+// Display
+.block { display: block; }
+.inline { display: inline; }
+.inline-block {
+  display: inline-block;
+  *zoom: 1;
+  *display: inline;
+}
+.none, 
+[hidden] {
+  display: none;
+}
+
+// Font Weights
+.font-ultra-bold { font-weight: 900; }
+.font-bold { font-weight: 700; }
+.font-normal { font-weight: 500; }
+.font-light { font-weight: 300; }
+.font-thin { font-weight: 100; }
+
+// Font Styles
+.font-normal { font-style: normal; }
+.capitalize { text-transform: capitalize; }
+.uppercase { text-transform: uppercase; }
+
+// Text Position
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+// Accessibility (offscreen text for screen readers)
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  left: -9999em;
+}
+
+// Image Spacing
+.image-left { margin-right: 20px; }
+.image-right { margin-left: 20px; }

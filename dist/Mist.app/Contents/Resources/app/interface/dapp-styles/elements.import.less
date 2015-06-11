@@ -1,0 +1,446 @@
+#dapp-form-helper-iframe {
+    display: none;
+}
+
+.dapp-progress {
+    position: relative;
+    width: 100%;
+    height: @gridHeight;
+    border-bottom: 1px solid @colorGreen;
+
+    > span {
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        line-height: @gridHeight;
+        text-align: center;
+        font-size: 0.7em;
+    }
+
+    .dapp-bar {
+        height: 100%;
+        .background-image(linear-gradient(to top, @colorGreen 0%, lighten(@colorGreen, 20%) 100%));
+
+        // ANIMATION
+        .transition(width @animationSpeed*26 linear);
+    }
+}
+
+.dapp-message {
+    position: relative;
+    max-width: @gridWidth * 16;
+    margin: @defaultMargin*3 0;
+    font-size: 1.5em;
+    font-weight: 100;
+    line-height: 27pt;
+
+    // input[type="text"] {
+    //     display: block;
+    //     width: @gridWidth * 10;
+    //     color: @colorLink;
+    //     margin-top: 1*@gridHeight;
+    //     background: lighten(@colorGrayLight, 4%);
+    //     border-bottom: solid 2px @colorGrayLight;
+    //     font-size: 1em;
+    // }
+}
+
+
+.dapp-count {
+    .display(flex);
+    .align-items(center);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0 @gridWidth/4;
+    color: @colorWhite;
+    font-weight: 100;
+    .opacity(0.7);
+
+    // ANIMATION
+    .transition(opacity @animationSpeed);
+    &.animate {
+        .opacity(0);
+    }
+}
+.active .dapp-count {
+    background-color: @colorGrayLight;
+    color: darken(@colorBackgroundAside, 20%);    
+}
+
+.dapp-url-bar {
+    display: block;
+    text-align: center;
+    width: 100%;
+    // .calc(width, ~'100% - 64px');    
+    .border-radius(8px);
+}
+
+
+// default elements
+
+a,
+a:visited,
+button {
+    text-decoration: none;
+    color: @colorLink;
+
+    outline: 0;
+
+    &:hover,
+    &:focus {
+        outline: 0;
+    }
+    &:focus {
+        border-bottom: 1px dotted @colorLink;
+    }
+    &:active {
+        .scale(0.95);
+        border-bottom: 0;
+    }
+}
+button {
+    .dapp-button-reset;
+    font-weight: inherit;
+}
+
+hr {
+    border: 0;
+    height: 0;
+    margin: @defaultMargin*2 0;
+    background-color: transparent;
+    border-bottom: 1px solid @colorGray; 
+}
+
+
+h1 {
+    margin: @defaultMargin 0;
+    margin-bottom: @defaultMargin*3;
+    font-weight: 100;
+    font-size: 2.2em;
+    color: @colorTextSecondary;
+
+    span {
+        font-weight: 500;
+    }
+
+    + h2 {
+        margin-top: 0;
+    }
+
+    strong {
+        font-weight: 400;
+    }
+}
+
+h2 {
+    display: inline-block;
+    padding: 0 @defaultPaddingHorizontal/4;
+    padding-bottom: 1px;
+    margin: @defaultMargin*3 0;
+    font-weight: 500;
+    font-size: 1em;
+    text-transform: uppercase;
+    background: @colorTextSecondary;
+    color: @colorWhite;
+
+    font-family: 'Montserrat';
+    font-weight: 400;
+
+    + table {
+        margin-top: 0;
+    }
+}
+
+h3 {
+    margin: @defaultMargin 0;
+    padding: 0;
+    color: fadeout(@colorTextSecondary, 30%);
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+h4 {
+    margin: @defaultMargin 0;
+    padding: 0;
+    color: fadeout(@colorTextSecondary, 30%);
+    font-weight: 500;
+    font-size: 1em;
+}
+
+
+table {
+    width: 100%;
+    margin: @defaultMargin 0;
+
+    &.dapp-zebra {
+        tbody {
+            tr {
+                &:nth-child(odd) {
+                    background-color: fadeout(@colorGray, 70%);
+                }
+            }
+        }
+        thead + tbody {
+            tr {
+                &:nth-child(even) {
+                    background-color: fadeout(@colorGray, 70%);
+                }
+            }
+        }
+    }
+
+    + h2,
+    + h3 {
+        margin-top: @defaultMargin*2;
+    }
+
+    td {
+        padding: @defaultPaddingVertical @defaultPaddingHorizontal/2;
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            color: @colorTextSecondary;
+            text-transform: none;
+            font-style: normal;
+        }
+        p {
+            padding-top: @defaultMargin/2;
+            margin: 0;
+            font-size: 0.9em;
+        }
+    }
+
+    thead {
+        background-color: @colorTextSecondary;
+        color: @colorWhite;
+        text-transform: uppercase;
+
+        // tr {
+        //     border-bottom: @gridHeight/2 solid transparent;
+        // }
+    }
+
+    tbody {
+        tr {
+            td {
+                span {
+                    .dapp-shorten-text;
+                }
+            }
+        }
+    }
+}
+
+
+// OVERWRITES for elements from the ethereum:elements package
+.dapp-input {
+    border: 0;
+    border-bottom: solid 2px @colorGray;
+    background-color: @colorGrayLight;
+    color: @colorLink;
+
+    .placeholder(@colorGray);
+
+    &:disabled {
+        color: @colorGrayDark;
+    }
+
+    &.dapp-large {
+        font-size: 1.5em;
+    }
+    &.dapp-error {
+        color: @colorError;
+        background: fadeout(@colorError, 90%);
+        border-color: fadeout(@colorError, 85%);
+    }
+}
+
+.dapp-address-input {
+    input {
+        .dapp-input;
+    }
+}
+
+// forms
+input,
+select,
+textarea {
+    .dapp-input;
+    display: inline-block;
+    width: 300px;
+    max-width: 100%;
+    margin-top: @gridHeight;
+    padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
+    padding-bottom: @defaultPaddingVertical/3;
+    .box-sizing(border-box);
+    .border-radius(0);
+    font-size: 1em;
+    font-weight: 300;
+
+    &:focus {
+        outline: 0;
+        border-color: @colorLink;
+    }
+}
+
+:disabled {
+    color: @colorGrayDark;
+    // background-color: @colorGrayLight;
+}
+input[type="checkbox"], input[type="radio"] {
+    display: inline-block;
+    position: relative;
+    margin: 0;
+    outline: none !important;
+    -webkit-appearance: none;
+    
+    width: auto;
+
+    width:  24px;
+    height: 24px;
+
+    // Radio
+    &::before {
+        content: '';
+        position: relative;
+        top:  0;
+        left: 0;
+        display: block;
+
+        background: @colorGrayLight;
+        border: 1px solid @colorGrayLight;
+        .box-shadow(inset 0 0 2px rgba(0,0,0,0.2));
+        // .dapp-shadow-medium;
+
+        width:  24px;
+        height: 24px;
+    }
+
+    &:active::before {
+        // .dapp-shadow-medium;
+    }
+
+    &:focus::before {
+        border-color: fadeout(@colorLink, 60%);
+        // .dapp-shadow-medium;
+    }
+    &:disabled::before {
+        cursor: not-allowed;
+        background-color: fadeout(@colorGrayLight, 20%);
+        border-color: @colorGrayLight;
+    }
+
+
+    // Radio Pip
+    &:after {
+        content: '';
+        display: inline-block;
+        position: absolute;
+        top: 6px;
+        left: 6px;
+
+        background: @colorLink;
+        .dapp-shadow-small;
+
+        width:  12px;
+        height: 12px;
+
+        .transition(transform @animationSpeed);
+        .scale(0);
+    }
+
+    &:checked:after {
+        .scale(1);
+    }
+
+    &:disabled:after {
+        background: fadeout(@colorLink, 60%);
+    }
+}
+input[type="radio"] {
+    .border-radius(50%);
+    
+    &:before {
+        .border-radius(50%);
+    }
+    &:after {
+        .border-radius(50%);
+    }
+}
+input[type="range"] {
+    -webkit-appearance: none;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+
+    &::-webkit-slider-runnable-track {
+        height: 5px;
+        background-color: @colorGray;
+        border: none;
+        .border-radius(3px);
+    }
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: @colorGrayDark;
+        margin-top: -6px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus::-webkit-slider-thumb {
+        background-color: @colorLink;
+    }
+
+    &::-moz-range-track {
+        // width: 300px;
+        height: 5px;
+        background-color: @colorGray;
+        border: none;
+        .border-radius(3px);
+    }
+
+    &::-moz-range-thumb {
+        -webkit-appearance: none;
+        border: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background-color: @colorGrayDark;
+        margin-top: -4px;
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+    &:focus::-moz-range-thumb {
+        background-color: @colorLink;
+    }
+}
+
+label {
+    font-weight: 300;
+}
+fieldset {
+    border: 0;
+    padding: 0;
+    margin: @defaultMargin;
+}
+select {
+    height: 45px;
+}

@@ -1,0 +1,118 @@
+// ==========================================================================
+// Base – Global Typography
+// ==========================================================================
+body {
+  font-family: @default-font-family;
+  .font-size(@default-font-size);
+  .line-height(@default-line-height);
+  color: @default-font-color;
+  background-color: #fff;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+// Clearfix
+.clear:before, .clear:after {
+  content: "";
+  display: table;
+}
+.clear:after { clear: both; }
+.clear { zoom: 1; } // IE7
+
+// Font Style
+b, strong, .strong { &:extend(.font-bold); }
+i, em, .em { font-style: italic; }
+
+// Links
+a { color: @default-link-color; }
+a:hover { text-decoration: none; }
+a:focus { outline: thin dotted; }
+a:active, a:hover { outline: 0; }
+
+// Paragraph and Small
+p { margin: 0 0 1.6em 0; }
+pre { margin: 1em 0; }
+ul + p, ul + pre, ol + p, ol + pre { margin-top: 0; }
+
+// Abbreviations
+abbr[title] { border-bottom: 1px dotted; }
+
+// Mark
+mark {
+  background: #ff0;
+  color: #111;
+}
+
+// Audio
+audio, canvas, video {
+  &:extend(.inline-block);
+}
+audio:not([controls]) {
+  &:extend(.none);
+  height: 0;
+}
+
+// Small, Sub and Sup
+small { font-size:80%; }
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+// Definition
+dfn { &:extend(.em); }
+
+// Images
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+svg:not(:root) { overflow: hidden; }
+figure { margin: 0; }
+
+// Horizontal Rule
+hr {
+  border: 0;
+  background: none;
+  outline: 0;
+  background-color: #ddd;
+  margin: 2em 0;
+  *margin: 1em 0;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 1px;
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  line-height: normal;
+  font-weight: normal;
+  margin: 0 0 0.33em 0;
+}
+h1, .h1 {
+  .font-size(@h1);
+}
+h2, .h2 {
+  .font-size(@h2);
+}
+h3, .h3 { 
+  .font-size(@h3);
+}
+h4, .h4 {
+  .font-size(@h4);
+}
+h5, .h5 {
+  .font-size(@h5);
+}
+h6, .h6 {
+  .font-size(@h6);
+}
+// Remove Heading Styling
+.no-style-heading {
+  &:extend(.no-margin);
+  font-size: 100%;
+}

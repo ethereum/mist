@@ -18,6 +18,16 @@ app.on('window-all-closed', function() {
         app.quit();
 });
 
+// Emitted when the application is activated while there is no opened windows.
+// It usually happens when a user has closed all of application's windows and then
+// click on the application's dock icon.
+app.on('activate-with-no-open-windows', function () {
+    if (mainWindow) {
+        mainWindow.show();
+    }
+    return false;
+});
+
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
@@ -46,11 +56,11 @@ app.on('ready', function() {
     });
 
     // and load the index.html of the app.
-    // if() 'file://' + __dirname + '/index.html'
+    // if() 'file://' + __dirname + '/interface/index.html
     mainWindow.loadUrl('http://localhost:3000');
 
     // Open the devtools.
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {

@@ -99,11 +99,7 @@ var menuTempl = function() {
             {
                 label: 'Close',
                 accelerator: 'Command+W',
-                click: function() {
-                    if(curWindow = BrowserWindow.getFocusedWindow())
-                        curWindow.hide();
-                }
-                // selector: 'performClose:'
+                selector: 'performClose:'
             },
             {
                 type: 'separator'

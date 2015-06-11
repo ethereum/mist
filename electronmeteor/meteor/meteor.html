@@ -1,0 +1,23 @@
+<head>
+  <title>app</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+
+  {{> hello}}
+</body>
+
+<template name="hello">
+  <button>Click Me</button>
+  <p>Number of fruits in DB: {{counter}}</p>
+  {{#each fruits}}
+    {{fruit}}
+  {{/each}}
+
+
+    <webview id="view" src="bzz://new.world/text.html" partition="persist:my-app" style="width:640px; height:480px"></webview>
+
+    <iframe id="ifarme" src="bzz://new.world/text.html" sandbox="allow-forms allow-popups allow-pointer-lock allow-same-origin allow-scripts" style="width:640px; height:480px"></iframe>
+
+</template>

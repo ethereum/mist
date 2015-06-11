@@ -56,8 +56,8 @@ app.on('ready', function() {
     });
 
     // and load the index.html of the app.
-    // if() 'file://' + __dirname + '/index.html'
-    mainWindow.loadUrl('file://' + __dirname + '/interface/index.html');
+    // if() 'file://' + __dirname + '/interface/index.html
+    mainWindow.loadUrl('http://localhost:3000');
 
     // Open the devtools.
     // mainWindow.openDevTools();

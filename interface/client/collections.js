@@ -18,5 +18,8 @@ new PersistentMinimongo(Tabs);
 
 
 // Contains the accounts
+DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
+new PersistentMinimongo(DoogleLastVisitedPages);
+
 DoogleHistory = new Mongo.Collection('doogle-history', {connection: null});
 new PersistentMinimongo(DoogleHistory);

@@ -42,8 +42,17 @@ webview {
     bottom: 0;
 
     &.hidden {
-        display: none;
+        visibility: hidden;
+        // display: none;
     }
+}
+
+.doogle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 
@@ -57,12 +66,10 @@ webview {
     input {
         width: 100%;
     }
-}
 
-.doogle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    button.add-tab {
+        position: absolute;
+        top: 24px;
+        right: 10px;
+    }
 }

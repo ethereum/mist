@@ -23,15 +23,11 @@ Template['views_doogle'].helpers({
     @method (url)
     */
     'url': function() {
-        var url = Session.get('browser-bar');
+        var url = Session.get('doogleQuery');
 
         if(!url)
             return 'about:blank';
 
-        // TODO make protocol handling intelligent
-        if(url.indexOf('http') === 0)
-            return url;
-        else
-            return 'http://'+ url;
+        return Helpers.formatUrl(url);
     }
 });

@@ -26,7 +26,7 @@ Template['layout_sidebar'].helpers({
     @method (history)
     */
     'history': function() {
-        return DoogleHistory.find({},{sort: {timestamp: -1}, limit: 10});
+        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 10});
     },
     /**
     Determines if the current tab is visible
@@ -50,7 +50,7 @@ Template['layout_sidebar'].events({
         if($button.hasClass('history')) {
 
             LocalStore.set('selectedTab', 'doogle');
-            Session.set('browser-bar', this.url);
+            Session.set('doogleQuery', this.url);
 
         } else {
             LocalStore.set('selectedTab', this._id || 'doogle');

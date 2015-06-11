@@ -15,3 +15,4 @@ frozeman:persistent-minimongo
 frozeman:reactive-timer
 frozeman:storage
 numeral:numeral
+reactive-var

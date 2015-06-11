@@ -11,7 +11,9 @@ To run install electron:
 
 Start the meteor interface first:
 
-    $ cd mist/interface
+    $ cd mist/interface/public
+    $ git clone https://github.com/ethereum/dapp-styles
+    $ cd ..
     $ meteor
 
 And then in another terminal window start mist with:

@@ -17,6 +17,14 @@ aside.sidebar {
             margin: 0 -1%;
             .box-sizing(border-box);
             padding: @defaultPaddingVertical @defaultPaddingHorizontal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            color: @colorLinkBlur;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 16px;
 
             &:hover {
                 color: @colorWhite;
@@ -27,17 +35,23 @@ aside.sidebar {
             }
 
             &.selected {
-                .box-shadow(inset 0 0.5px 3px rgba(0,0,0,0.3));
+                color: @colorLinkActive;
+                // .box-shadow(inset 0 0.5px 3px rgba(0,0,0,0.3));
                 // background-color: darken(@colorOSXBackgroundFocus, 2%);
                 // border-right: 2px solid @colorWhite;//darken(@colorOSXBackgroundFocus, 20%);
             }
 
 
-            &.history {
-                padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
-                font-size: 0.7em;
-                text-align: left;
-            }
+            // &.history {
+            //     padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
+            //     font-size: 0.7em;
+            //     text-align: left;
+            // }
+        }
+
+        li ul li button {
+            font-size: 12px;
+            text-transform: none;
         }
     }
 

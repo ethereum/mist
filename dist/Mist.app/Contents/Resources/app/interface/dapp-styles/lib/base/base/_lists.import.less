@@ -1,0 +1,38 @@
+// ==========================================================================
+// Base – Lists
+// ==========================================================================
+dl, menu, ol, ul { margin: 1em 0; }
+dd,
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+  margin: 0;
+}
+dt { &:extend(.font-normal); }
+dd {
+  margin-bottom: 1em;
+}
+menu, ol, ul { padding: 0 0 0 22px; }
+nav ul, nav ol {
+  list-style: none;
+  list-style-image: none;
+}
+// Remove Styling from List
+.list-unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  li {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+.list-inline {
+  &:extend(.list-unstyled);
+  &:extend(.inline-block);
+  li {
+    &:extend(.list-unstyled li);
+    &:extend(.inline-block);
+  }
+}

@@ -35,6 +35,17 @@ Template['layout_browserBar'].helpers({
     */
     'showAddButton': function(){
         return (LocalStore.get('selectedTab') === 'doogle');
+    },
+    /**
+    Current selected view
+
+    @method (currentWebView)
+    */
+    'currentWebView': function(){
+        if(LocalStore.get('selectedTab') === 'doogle')
+            return '.browse-view';
+        else
+            return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
     }
 });
 

@@ -8,22 +8,40 @@ Template Controllers
 /**
 The tab template
 
-@class [template] elements_tab
+@class [template] views_tab
 @constructor
 */
 
-Template['elements_tab'].onCreated(function(){
+Template['views_tab'].onCreated(function(){
     this._url;
 });
 
 
-Template['elements_tab'].onRendered(function(){
-    this.find('webview').addEventListener('did-stop-loading', webviewLoadStop);
+Template['views_tab'].onRendered(function(){
+    var template = this,
+        timeoutId;
+
+    this.find('webview').addEventListener('did-start-loading', function(e){
+        TemplateVar.set(template, 'loading', true);
+
+        // timeout spinner after 10s
+        // timeoutId = Meteor.setTimeout(function(){
+        //     TemplateVar.set(template, 'loading', false);
+        // }, 10 * 1000);
+    });
+    this.find('webview').addEventListener('did-stop-loading', function(e){
+        // Meteor.clearTimeout(timeoutId);
+        TemplateVar.set(template, 'loading', false);
+        webviewLoadStop.apply(this, e);
+    });
     this.find('webview').addEventListener('did-get-redirect-request', webviewLoadStart);
+    this.find('webview').addEventListener('new-window', function(e){
+        Tabs.update(template.data._id, {$set: {url: e.url}});
+    });
 });
 
 
-Template['elements_tab'].helpers({
+Template['views_tab'].helpers({
     /**
     Determines if the current tab is visible
 

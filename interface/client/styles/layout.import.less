@@ -48,18 +48,34 @@ webview {
     right: 0;
     bottom: 0;
 
+}
+.tab-view {
     &.hidden {
         visibility: hidden;
         // display: none;
     }
 }
-
-.doogle {
+.browse-view {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.spinner {
+    z-index: 10;
+    position: absolute;
+    top: 32px;
+    right: 60px;
+
+    // ANIMATION
+    .transition(opacity @animationSpeed/2);
+    .transform-origin(0% 0%);
+
+    &.animate {
+        .opacity(0);
+    }
 }
 
 

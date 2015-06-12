@@ -10,8 +10,9 @@ aside.sidebar {
 
         li {
             padding-left: @gridWidth/4;
-            border-top: 1px solid #ACACAC;
+            border-top: 1px solid rgba(0, 0, 0, 0.04);
             margin-top: 0;
+            transition: background 0.1s ease-in-out;
 
             &.selected {
                 color: @colorLinkActive;
@@ -26,6 +27,11 @@ aside.sidebar {
              &:first-child {
                 border-top: none;
                 margin-top: 1px;
+             }
+
+             &.selected ul {
+                display: block;
+                height: 90px; // should be auto
              }
         }
 
@@ -47,7 +53,12 @@ aside.sidebar {
                 border: 0;
             }
 
-
+            img {
+                vertical-align: middle;
+                margin-right: 4px;
+                width: 20px;
+                height: 20px;
+            }
 
 
             // &.history {
@@ -58,7 +69,11 @@ aside.sidebar {
         }
 
         li ul {
-            padding-left:@gridWidth/4; 
+            height: 0;
+            padding-left: 18px; 
+            overflow: hidden;
+            transition: height 0.25s ease-in-out;
+
             li button {
                 font-size: 12px;
                 font-weight: 400;

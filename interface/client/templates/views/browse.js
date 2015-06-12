@@ -14,9 +14,10 @@ The sidebar template
 
 Template['views_browse'].onRendered(function(){
     var template = this,
+        webview = this.find('webview'),
         timeoutId;
 
-    this.find('webview').addEventListener('did-start-loading', function(e){
+    webview.addEventListener('did-start-loading', function(e){
         console.log('start loading', this.getUrl());
         
         TemplateVar.set(template, 'loading', true);
@@ -26,14 +27,20 @@ Template['views_browse'].onRendered(function(){
         //     TemplateVar.set(template, 'loading', false);
         // }, 10 * 1000);
     });
-    this.find('webview').addEventListener('did-stop-loading', function(e){
+    webview.addEventListener('did-stop-loading', function(e){
         // Meteor.clearTimeout(timeoutId);
         TemplateVar.set(template, 'loading', false);
         webviewLoadStop.apply(this, e);
     });
-    this.find('webview').addEventListener('did-get-redirect-request', webviewLoadStart);
-    this.find('webview').addEventListener('new-window', function(e){
+    webview.addEventListener('did-get-redirect-request', webviewLoadStart);
+    webview.addEventListener('new-window', function(e){
         Session.set('browserQuery', e.url);
+    });
+
+    // IPC communication
+    webview.addEventListener('ipc-message', function(event) {
+      console.log('IPC:', event.args[0]);
+      // Prints "pong"
     });
 });
 

@@ -60,12 +60,14 @@ Template['layout_browserBar'].events({
             webview = $('#browser-view')[0];
 
         if(webview) {
-            Tabs.insert({
+            var id = Tabs.insert({
                 url: webview.getUrl(),
                 name: webview.getTitle(),
-                menu: [],
+                menu: {},
                 menuVisible: false
             });
+
+            LocalStore.set('selectedTab', id);
         }
     },
     /*

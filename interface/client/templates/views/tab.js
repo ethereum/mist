@@ -19,9 +19,10 @@ Template['views_tab'].onCreated(function(){
 
 Template['views_tab'].onRendered(function(){
     var template = this,
+        webview = this.find('webview'),
         timeoutId;
 
-    this.find('webview').addEventListener('did-start-loading', function(e){
+    webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
 
         // timeout spinner after 10s
@@ -29,14 +30,59 @@ Template['views_tab'].onRendered(function(){
         //     TemplateVar.set(template, 'loading', false);
         // }, 10 * 1000);
     });
-    this.find('webview').addEventListener('did-stop-loading', function(e){
+    webview.addEventListener('did-stop-loading', function(e){
         // Meteor.clearTimeout(timeoutId);
         TemplateVar.set(template, 'loading', false);
+
+        // update the title
+        Tabs.update(template.data._id, {$set: {name: webview.getTitle()}});
+
         webviewLoadStop.apply(this, e);
     });
-    this.find('webview').addEventListener('did-get-redirect-request', webviewLoadStart);
-    this.find('webview').addEventListener('new-window', function(e){
+    webview.addEventListener('did-get-redirect-request', webviewLoadStart);
+    webview.addEventListener('new-window', function(e){
         Tabs.update(template.data._id, {$set: {url: e.url}});
+    });
+
+
+    // MIST API
+    webview.addEventListener('ipc-message', function(event) {
+        var arg = event.args[0];
+
+        // if(event.channel === 'addMenu') {
+        //     var query = {'$set': {}};
+
+        //     query['$set']['menu.'+ arg.id] = {
+        //         id: arg.id,
+        //         name: arg.name,
+        //         badge: arg.badge
+        //     };
+
+        //     Tabs.update(template.data._id, query);
+        // }
+
+        if(event.channel === 'addMenu') {
+            var query = {'$set': {}};
+
+            if(arg.id)
+                query['$set']['menu.'+ arg.id +'.id'] = arg.id;
+            if(!_.isUndefined(arg.position))
+                query['$set']['menu.'+ arg.id +'.position'] = arg.position;
+            if(!_.isUndefined(arg.name))
+                query['$set']['menu.'+ arg.id +'.name'] = arg.name;
+            if(!_.isUndefined(arg.badge))
+                query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
+
+            Tabs.update(template.data._id, query);
+        }
+
+        if(event.channel === 'removeMenu') {
+            var query = {'$unset': {}};
+
+            query['$unset']['menu.'+ arg] = '';
+
+            Tabs.update(template.data._id, query);
+        }
     });
 });
 

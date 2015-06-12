@@ -5,6 +5,9 @@ var BrowserWindow = require('browser-window');  // Module to create native brows
 var menuItems = require('./menuItems');
 var appIcon = null;
 
+const processRef = global.process;
+process.nextTick(function() { global.process = processRef; });
+
 // Report crashes to our server.
 require('crash-reporter').start();
 

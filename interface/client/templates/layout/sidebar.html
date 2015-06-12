@@ -21,6 +21,15 @@
                         <button>
                             {{name}}
                         </button>
+                        <ul>
+                            {{#each subMenu}}
+                                <li>
+                                    <button class="sub-menu" data-tab-id="{{../_id}}">
+                                        {{name}} ({{badge}})
+                                    </button>
+                                </li>
+                            {{/each}}
+                        </ul>
 
 <!--                         <ul>
                             <li> 

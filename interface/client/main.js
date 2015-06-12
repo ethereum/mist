@@ -1,4 +1,4 @@
 
 // set browser as default tab
-if(!LocalStore.set('selectedTab'))
+if(!LocalStore.get('selectedTab'))
     LocalStore.set('selectedTab', 'browser');

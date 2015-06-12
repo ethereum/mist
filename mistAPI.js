@@ -16,7 +16,14 @@ var mist = {
 
     Example
 
-         mist.addMenu('tkrzU', {badge: 50})
+        mist.addMenu('tkrzU', {
+            name: 'My Meny Entry',
+            badge: 50,
+            position: 1,
+            selected: true
+        }, function(){
+            // Router.go('/chat/1245');
+        })
 
     @method addMenu
     @param {String} id          The id of the menu, has to be the same accross page reloads.
@@ -29,8 +36,9 @@ var mist = {
         var entry = {
             id: id,
             position: options.position,
+            selected: !!options.selected,
             name: options.name,
-            badge: options.badge
+            badge: options.badge,
         };
 
         ipc.sendToHost('addMenu', entry);

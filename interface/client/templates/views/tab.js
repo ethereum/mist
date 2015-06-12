@@ -66,6 +66,8 @@ Template['views_tab'].onRendered(function(){
 
             if(arg.id)
                 query['$set']['menu.'+ arg.id +'.id'] = arg.id;
+            if(arg.selected)
+                query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
             if(!_.isUndefined(arg.position))
                 query['$set']['menu.'+ arg.id +'.position'] = arg.position;
             if(!_.isUndefined(arg.name))

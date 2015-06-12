@@ -2,10 +2,11 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li class="{{isVisible}}">
+                <li class="{{isSelected}}">
                     <button>
                         Browse
                     </button>
+
                     <ul>
                         {{#each history}}
                             <li>
@@ -17,11 +18,15 @@
                     </ul>
                 </li>
                 {{#each tabs}}
-                    <li class="{{isVisible}}">
+                    <li class="{{isSelected}}">
                         <button>
                             <img src="icons/wallet-icon@2x.png">
                             {{name}}
                         </button>
+                        {{#if subMenu}}
+                            <button class="slide-out icon-arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
+                        {{/if}}
+
                         <ul>
                             {{#each subMenu}}
                                 <li>

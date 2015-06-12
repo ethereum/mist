@@ -9,77 +9,81 @@ aside.sidebar {
         padding-left: @gridWidth/4;
 
         li {
+            position: relative;
+            height: 45px;
             padding-left: @gridWidth/4;
             border-top: 1px solid rgba(0, 0, 0, 0.04);
             margin-top: 0;
-            transition: background 0.1s ease-in-out;
+            transition: background 0.05s ease-in-out, height 0.25s ease-in-out;
+            overflow: hidden;
+
+            ul {
+                padding-left: 18px; 
+
+                // sub-menu
+                li button:not(.slide-out) {
+                    font-size: 12px;
+                    font-weight: 400;
+                    text-transform: none;
+                }
+            }
 
             &.selected {
+                // max-height: 300px;
                 color: @colorLinkActive;
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: rgba(0, 0, 0, 0.25) -1px 0 2px;
                 border-top: none;
-             }
 
+                // ul {
+                //     display: block;
+                //     height: auto;
+                // }
+            }
 
-             &.selected + li,
-             &:first-child {
+            &.selected + li,
+            &:first-child {
                 border-top: none;
                 margin-top: 1px;
-             }
-
-             &.selected ul {
-                display: block;
-                height: 90px; // should be auto
-             }
-        }
-
-        button {
-            width: @gridWidth * 6;            
-            padding: @defaultPaddingVertical 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            color: @colorLinkBlur;
-            text-align: left;
-            text-transform: uppercase;
-            font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-
-            &:focus {
-                border: 0;
             }
 
-            img {
-                vertical-align: middle;
-                margin-right: 4px;
-                width: 20px;
-                height: 20px;
+            button:not(.slide-out) {
+                width: 85%;            
+                padding: @defaultPaddingVertical 0;
+                .dapp-shorten-text;
+
+                color: @colorLinkBlur;
+                text-align: left;
+                text-transform: uppercase;
+                font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+
+                &:focus {
+                    border: 0;
+                }
+
+                img {
+                    vertical-align: middle;
+                    margin-right: 4px;
+                    width: 20px;
+                    height: 20px;
+                }
+
+                // &.history {
+                //     padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
+                //     font-size: 0.7em;
+                //     text-align: left;
+                // }
             }
-
-
-            // &.history {
-            //     padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
-            //     font-size: 0.7em;
-            //     text-align: left;
-            // }
+            button.slide-out {
+                position: absolute;
+                right: @gridHeight/2;
+                top: @gridHeight/1.5;
+            }
         }
 
-        li ul {
-            height: 0;
-            padding-left: 18px; 
-            overflow: hidden;
-            transition: height 0.25s ease-in-out;
-
-            li button {
-                font-size: 12px;
-                font-weight: 400;
-                text-transform: none;
-            }
-        }
     }
 
 }

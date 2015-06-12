@@ -11,6 +11,31 @@ The sidebar template
 @constructor
 */
 
+/**
+Sets the height of the current selected sidebar <li> to its sub <ul> height.
+
+@method setHeight
+*/
+var setHeight = function(template){
+    if(!template.view.isRendered)
+        return;
+
+    template.$('nav > ul > li').css('height', '');
+
+    var size = template.$('li:not(.selected)').css('height').replace('px','');
+    Tracker.afterFlush(function(){
+        template.$('li.selected, li.slided-out').each(function(){
+            $(this).css('height', $(this).find('> ul').height() + Number(size));
+        });
+    });
+};
+
+
+Template['layout_sidebar'].onRendered(function(){
+    setHeight(this);
+});
+
+
 Template['layout_sidebar'].helpers({
     /**
     Return the tabs
@@ -26,6 +51,10 @@ Template['layout_sidebar'].helpers({
     @method (subMenu)
     */
     'subMenu': function(){
+        var template = Template.instance();
+
+        setHeight(template);
+
         if(this.menu) {
             var menu = _.toArray(this.menu);
 
@@ -50,10 +79,15 @@ Template['layout_sidebar'].helpers({
     /**
     Determines if the current tab is visible
 
-    @method (isVisible)
+    @method (isSelected)
     */
-    'isVisible': function(){
-        return (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
+    'isSelected': function(){
+        var selected = (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
+
+        if(this.menuVisible)
+            selected += ' slided-out';
+
+        return selected;
     }
 });
 
@@ -62,9 +96,9 @@ Template['layout_sidebar'].events({
     /**
     Select the current visible tab
 
-    @event click nav button
+    @event click nav button:not(.slide-out)
     */
-    'click nav button': function(e){
+    'click nav button:not(.slide-out)': function(e, template){
         var $button = $(e.currentTarget);
         if($button.hasClass('history')) {
 
@@ -79,8 +113,21 @@ Template['layout_sidebar'].events({
                 webview.send('callFunction', this.id);
 
         } else {
+
             LocalStore.set('selectedTab', this._id || 'browser');
+
+            setHeight(template);
         }
+    },
+    /**
+    Slide out
+
+    @event button.slide-out
+    */
+    'click button.slide-out': function(e, template){
+        Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
+
+        setHeight(template);
     }
 });
 

@@ -3,12 +3,14 @@
 body, html {
     height: 100%;
     overflow: hidden;
+    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
 
     &.blur {
-        aside {
-            // background-color: @colorOSBackgroundBlur;
-            .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
-        }
+        .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+        // aside {
+        //     // background-color: @colorOSBackgroundBlur;
+        //     .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+        // }
     }
 
     -webkit-touch-callout: none;
@@ -20,7 +22,7 @@ body, html {
 }
 
 aside {
-    z-index: 2;
+    z-index: 4;
     position: absolute;
     top: 0;
     left: 0;
@@ -30,7 +32,18 @@ aside {
 
     // .box-shadow(0 0 15px rgba(0,0,0,0.5));
     // background-color: @colorOSBackgroundActive;
-    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
+    // .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
+    &:before {
+        content: " ";
+        display: block;
+        position: absolute; 
+        z-index: 2;
+        top: 0;
+        left: 0.95 * @widthSideBar;
+        width: 10px;
+        bottom: 0;
+        .background-image(linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 100%));
+    }
 }
 
 main {
@@ -40,7 +53,9 @@ main {
     right: 0;
     width: ~"calc(100% - @{widthSideBar})";
     height:100%;
+    overflow: hidden;
     background-color: @colorOSBackgroundFocus;
+    border-top-left-radius: 3px;
 }
 
 webview {

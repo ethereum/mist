@@ -75,11 +75,10 @@ Template['layout_browserBar'].events({
 
 
             // update current tab url
-            RedirectTab.set({
-                id: foundTab._id,
-                url: url
-            });
-            Tabs.update(find._id, {$set: {url: url}});
+            Tabs.update(foundTab._id, {$set: {
+                url: url,
+                redirect: url
+            }});
             LocalStore.set('selectedTab', foundTab._id);
 
         // switch tab to doogle

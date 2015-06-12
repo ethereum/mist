@@ -2,14 +2,14 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li>
-                    <button class="{{isVisible}}">
-                        Doogle
+                <li class="{{isVisible}}">
+                    <button>
+                        Browse
                     </button>
                     <ul>
                         {{#each history}}
                             <li>
-                                <button class="history">
+                                <button>
                                     {{title}}
                                 </button>
                             </li>
@@ -17,16 +17,16 @@
                     </ul>
                 </li>
                 {{#each tabs}}
-                    <li>
-                        <button class="{{isVisible}}">
+                    <li class="{{isVisible}}">
+                        <button>
                             {{name}}
                         </button>
 
-                        <ul>
+<!--                         <ul>
                             <li> 
                                 <button> sub link </button>
                             </li>
-                        </ul>
+                        </ul> -->
                     </li>
                 {{/each}}
             </ul>

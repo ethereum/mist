@@ -49,11 +49,11 @@ Template['layout_sidebar'].events({
         var $button = $(e.currentTarget);
         if($button.hasClass('history')) {
 
-            LocalStore.set('selectedTab', 'doogle');
+            LocalStore.set('selectedTab', 'browse');
             Session.set('doogleQuery', this.url);
 
         } else {
-            LocalStore.set('selectedTab', this._id || 'doogle');
+            LocalStore.set('selectedTab', this._id || 'browse');
         }
     }
 });

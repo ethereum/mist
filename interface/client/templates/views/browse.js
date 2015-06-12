@@ -7,6 +7,7 @@ Template Controllers
 /**
 The sidebar template
 
+
 @class [template] views_browse
 @constructor
 */
@@ -32,7 +33,7 @@ Template['views_browse'].onRendered(function(){
     });
     this.find('webview').addEventListener('did-get-redirect-request', webviewLoadStart);
     this.find('webview').addEventListener('new-window', function(e){
-        Session.set('doogleQuery', e.url);
+        Session.set('browserQuery', e.url);
     });
 });
 
@@ -43,7 +44,7 @@ Template['views_browse'].helpers({
     @method (url)
     */
     'url': function() {
-        var url = Session.get('doogleQuery');
+        var url = Session.get('browserQuery');
 
         if(!url)
             return 'about:blank';

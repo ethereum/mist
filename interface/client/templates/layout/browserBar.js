@@ -26,7 +26,7 @@ Template['layout_browserBar'].helpers({
         var tabId = LocalStore.get('selectedTab'),
             tab = Tabs.findOne(tabId);
 
-        return (tabId === 'doogle' || !tab) ? Session.get('doogleQuery') : Tabs.findOne(tabId).url;
+        return (tabId === 'browser' || !tab) ? Session.get('browserQuery') : Tabs.findOne(tabId).url;
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -34,7 +34,7 @@ Template['layout_browserBar'].helpers({
     @method (showAddButton)
     */
     'showAddButton': function(){
-        return (LocalStore.get('selectedTab') === 'doogle');
+        return (LocalStore.get('selectedTab') === 'browser');
     },
     /**
     Current selected view
@@ -42,7 +42,7 @@ Template['layout_browserBar'].helpers({
     @method (currentWebView)
     */
     'currentWebView': function(){
-        if(LocalStore.get('selectedTab') === 'doogle')
+        if(LocalStore.get('selectedTab') === 'browser')
             return '.browse-view';
         else
             return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
@@ -56,8 +56,8 @@ Template['layout_browserBar'].events({
     @event click button.add-tab
     */
     'click button.add-tab': function(){
-        var url = Session.get('doogleQuery'),
-            webview = $('#doogle-view')[0];
+        var url = Session.get('browserQuery'),
+            webview = $('#browser-view')[0];
 
         if(webview) {
             Tabs.insert({
@@ -92,11 +92,11 @@ Template['layout_browserBar'].events({
             }});
             LocalStore.set('selectedTab', foundTab._id);
 
-        // switch tab to doogle
+        // switch tab to browser
         } else {
             
-            Session.set('doogleQuery', url);
-            LocalStore.set('selectedTab', 'doogle');
+            Session.set('browserQuery', url);
+            LocalStore.set('selectedTab', 'browser');
         }
     }
 });

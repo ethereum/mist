@@ -26,7 +26,7 @@ Template['layout_sidebar'].helpers({
     @method (history)
     */
     'history': function() {
-        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 10});
+        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 5});
     },
     /**
     Determines if the current tab is visible
@@ -34,7 +34,7 @@ Template['layout_sidebar'].helpers({
     @method (isVisible)
     */
     'isVisible': function(){
-        return (LocalStore.get('selectedTab') === (this._id || 'doogle')) ? 'selected' : '';
+        return (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
     }
 });
 
@@ -49,11 +49,13 @@ Template['layout_sidebar'].events({
         var $button = $(e.currentTarget);
         if($button.hasClass('history')) {
 
-            LocalStore.set('selectedTab', 'doogle');
-            Session.set('doogleQuery', this.url);
+            LocalStore.set('selectedTab', 'browser');
+            Session.set('browserQuery', this.url);
 
         } else {
-            LocalStore.set('selectedTab', this._id || 'doogle');
+            LocalStore.set('selectedTab', this._id || 'browser');
         }
     }
 });
+
+

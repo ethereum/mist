@@ -89,9 +89,9 @@ webviewLoadStart = function(e){
         // stop this action
         this.stop();
         
-        Session.set('doogleQuery', url);
+        Session.set('browserQuery', url);
 
         // switch tab to doogle
-        LocalStore.set('selectedTab', 'doogle');
+        LocalStore.set('selectedTab', 'browser');
     }
 };

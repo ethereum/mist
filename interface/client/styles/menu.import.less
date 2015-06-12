@@ -3,12 +3,15 @@ aside.sidebar {
     overflow: hidden;
 
     ul {
+        position: relative;
+        z-index: 10;
         .dapp-vertical-menu;
         padding-left: @gridWidth/4;
 
         li {
             padding-left: @gridWidth/4;
             border-top: 1px solid #ACACAC;
+            margin-top: 0;
 
             &.selected {
                 color: @colorLinkActive;
@@ -22,6 +25,7 @@ aside.sidebar {
              &.selected + li,
              &:first-child {
                 border-top: none;
+                margin-top: 1px;
              }
         }
 

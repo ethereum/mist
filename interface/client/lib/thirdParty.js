@@ -1,3 +1,8 @@
+
+// add underscore string as mixin
+_.mixin(s);
+
+// set spinner options
 Meteor.Spinner.options = {
     lines: 12, // The number of lines to draw
     length: 0, // The length of each line

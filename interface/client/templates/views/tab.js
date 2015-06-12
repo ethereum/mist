@@ -4,6 +4,19 @@ Template Controllers
 @module Templates
 */
 
+/**
+Filters a id the id to only contain a-z A-Z 0-9 _ -.
+
+@method filterId
+*/
+var filterId = function(str) {
+    var newStr = '';
+    for (var i = 0; i < str.length; i++) {
+        if(/[a-zA-Z0-9_-]/.test(str.charAt(i)))
+            newStr += str.charAt(i);
+    };
+    return newStr;
+};
 
 /**
 The tab template
@@ -49,6 +62,10 @@ Template['views_tab'].onRendered(function(){
     webview.addEventListener('ipc-message', function(event) {
         var arg = event.args[0];
 
+        // filter ID
+        if(arg && arg.id)
+            arg.id = filterId(arg.id);
+
         // if(event.channel === 'addMenu') {
         //     var query = {'$set': {}};
 
@@ -66,8 +83,8 @@ Template['views_tab'].onRendered(function(){
 
             if(arg.id)
                 query['$set']['menu.'+ arg.id +'.id'] = arg.id;
-            if(arg.selected)
-                query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
+            query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
+
             if(!_.isUndefined(arg.position))
                 query['$set']['menu.'+ arg.id +'.position'] = arg.position;
             if(!_.isUndefined(arg.name))
@@ -84,6 +101,10 @@ Template['views_tab'].onRendered(function(){
             query['$unset']['menu.'+ arg] = '';
 
             Tabs.update(template.data._id, query);
+        }
+
+        if(event.channel === 'clearMenu') {
+            Tabs.update(template.data._id, {$set: {menu: {}}});
         }
     });
 });

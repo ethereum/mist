@@ -4,6 +4,14 @@
             <input type="text" value="{{currentUrl}}">
         </form>
 
+        {{#Animate}}
+            {{#if TemplateVar.getFrom currentWebView "loading"}}
+                <div class="spinner animate">
+                    {{> spinner}}
+                </div>
+            {{/if}}
+        {{/Animate}}
+
         {{#if showAddButton}}
             <button class="add-tab icon-plus"></button>
         {{/if}}

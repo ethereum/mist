@@ -10,6 +10,13 @@ body, html {
             .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
         }
     }
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 aside {
@@ -19,11 +26,11 @@ aside {
     left: 0;
     width: @widthSideBar;
     height: 100%;
-    background: @colorOSBackgroundFocus;
+    // background: @colorOSBackgroundFocus;
 
     // .box-shadow(0 0 15px rgba(0,0,0,0.5));
     // background-color: @colorOSBackgroundActive;
-    // .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%,lighten(@colorOSBackgroundFocus, 5%) 100%));
+    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
 }
 
 main {
@@ -43,18 +50,34 @@ webview {
     right: 0;
     bottom: 0;
 
+}
+.tab-view {
     &.hidden {
         visibility: hidden;
         // display: none;
     }
 }
-
-.doogle {
+.browse-view {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+}
+
+.spinner {
+    z-index: 10;
+    position: absolute;
+    top: 32px;
+    right: 60px;
+
+    // ANIMATION
+    .transition(opacity @animationSpeed/2);
+    .transform-origin(0% 0%);
+
+    &.animate {
+        .opacity(0);
+    }
 }
 
 

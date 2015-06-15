@@ -2,18 +2,19 @@ const BrowserWindow = require('browser-window');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const config = require('./config');
+const ipc = require('ipc');
 
 
 // create menu
 // null -> null
-var createMenu = function() {
-    const menu = Menu.buildFromTemplate(menuTempl());
+var createMenu = function(mainWindow, webviews) {
+    const menu = Menu.buildFromTemplate(menuTempl(mainWindow, webviews));
     Menu.setApplicationMenu(menu);
 };
 
 // create a menu template
 // null -> obj
-var menuTempl = function() {
+var menuTempl = function(mainWindow, webviews) {
     const menu = []
     menu.push({
         label: config.name,
@@ -67,9 +68,27 @@ var menuTempl = function() {
             },
         ]
     })
+
+    var devtToolsMenu = [{
+        label: 'Toggle DevTools for the Mist UI',
+        accelerator: 'Alt+Command+I',
+        click: function() {
+            if(curWindow = BrowserWindow.getFocusedWindow())
+                curWindow.toggleDevTools();
+        }
+    }];
+    webviews.forEach(function(webview){
+        devtToolsMenu.push({
+            label: 'Toggle DevTools for '+ webview.name,
+            click: function() {
+                mainWindow.webContents.send('toogleWebviewDevTool', webview.id);
+            }
+        });
+    });
+
     menu.push({
         label: 'View',
-        submenu: [
+        submenu: devtToolsMenu //[
             // {
             //     label: 'Reload',
             //     accelerator: 'Command+R',
@@ -78,15 +97,23 @@ var menuTempl = function() {
             //             curWindow.reloadIgnoringCache();
             //         }
             // },
-            {
-                label: 'Toggle DevTools',
-                accelerator: 'Alt+Command+I',
-                click: function() {
-                    if(curWindow = BrowserWindow.getFocusedWindow())
-                        curWindow.toggleDevTools();
-                }
-            },
-        ]
+            // {
+            //     label: 'Toggle DevTools',
+            //     accelerator: 'Alt+Command+I',
+            //     click: function() {
+            //         if(curWindow = BrowserWindow.getFocusedWindow())
+            //             curWindow.toggleDevTools();
+            //     }
+            // },
+            // {
+            //     label: 'Toggle DevTools For ',
+            //     accelerator: 'Alt+Command+I',
+            //     click: function() {
+            //         if(curWindow = BrowserWindow.getFocusedWindow())
+            //             curWindow.toggleDevTools();
+            //     }
+            // },
+        //]
     })
     menu.push({
         label: 'Window',

@@ -1,12 +1,13 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-// var Menu = require('menu');
-// var Tray = require('tray');
-var menuItems = require('./menuItems');
+const app = require('app');  // Module to control application life.
+const BrowserWindow = require('browser-window');  // Module to create native browser window.
+const ipc = require('ipc');
+// const Menu = require('menu');
+// const Tray = require('tray');
+const menuItems = require('./menuItems');
 var appIcon = null;
 
-const processRef = global.process;
-process.nextTick(function() { global.process = processRef; });
+// const processRef = global.process;
+// process.nextTick(function() { global.process = processRef; });
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -53,7 +54,7 @@ app.on('ready', function() {
         'standard-window': false,
         icon: './icons/icon_128x128.png',
         'node-integration': false,
-        // preload: require.resolve("./preload")
+        preload: __dirname +'/preloader.js'
         // frame: false
         // 'use-content-size': true,
     });
@@ -75,6 +76,8 @@ app.on('ready', function() {
 
 
     // instantiate the application menu
-    menuItems();
+    ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+        menuItems(mainWindow, webviews || []);
+    });
 
 });

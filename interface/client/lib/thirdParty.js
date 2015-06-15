@@ -1,6 +1,4 @@
 
-// add underscore string as mixin
-_.mixin(s);
 
 // set spinner options
 Meteor.Spinner.options = {

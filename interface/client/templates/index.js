@@ -18,6 +18,12 @@ Template.body.helpers({
     @method (tabs)
     */
     'tabs': function() {
-        return Tabs.find();
+        var tabs = Tabs.find().fetch(); // fetch so that it reloads this function.
+
+        Tracker.afterFlush(function(){
+            updateApplicationMenuDevTools($('webview'));
+        });
+
+        return tabs;
     }
 });

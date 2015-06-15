@@ -29,8 +29,6 @@ Template['layout_sidebar'].helpers({
     'subMenu': function(){
         var template = Template.instance();
 
-        setHeight(template);
-
         if(this.menu) {
             var menu = _.toArray(this.menu);
 
@@ -94,8 +92,6 @@ Template['layout_sidebar'].events({
         } else {
 
             LocalStore.set('selectedTab', this._id || 'browser');
-
-            setHeight(template);
         }
     },
     /**
@@ -105,8 +101,6 @@ Template['layout_sidebar'].events({
     */
     'click button.slide-out': function(e, template){
         Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
-
-        setHeight(template);
     }
 });
 

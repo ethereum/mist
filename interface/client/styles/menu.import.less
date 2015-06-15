@@ -20,7 +20,8 @@ aside.sidebar {
                 // sub-menu
                 li {
                     height: 0;
-                    transition: background 0.05s ease-in-out, height 0.25s ease-in-out;
+                    opacity: 0;
+                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
 
                     button:not(.slide-out) {
                         font-size: 12px;
@@ -31,22 +32,18 @@ aside.sidebar {
             }
 
             &.selected {
-                // max-height: 300px;
                 color: @colorLinkActive;
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: -1px 0 3px rgba(0, 0, 0, 0.25);
                 border-top: none;
-
+            }
+            &.selected, &.slided-out {
                 li {
-                    height: 45px;            
+                    height: 45px;
+                    opacity: 1;
                     border-top: 1px solid rgba(0, 0, 0, 0.04);
                 }
-
-                // ul {
-                //     display: block;
-                //     height: auto;
-                // }
             }
 
             &.selected + li,

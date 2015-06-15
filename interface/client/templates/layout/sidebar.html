@@ -10,7 +10,7 @@
                     <ul>
                         {{#each history}}
                             <li>
-                                <button class="history">
+                                <button class="history sub-menu">
                                     {{title}}
                                 </button>
                             </li>
@@ -32,11 +32,11 @@
                             {{#each subMenu}}
                                 <li>
                                     <button class="sub-menu" data-tab-id="{{../_id}}">
-                                        {{#if selected}}
-                                            X
-                                        {{/if}}
                                         {{name}} ({{badge}})
                                     </button>
+                                     {{#if selected}}
+                                        <button class="close-button icon-close" data-icon="&#xe082;"></button>
+                                    {{/if}}
                                 </li>
                             {{/each}}
                         </ul>

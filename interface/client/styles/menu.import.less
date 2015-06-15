@@ -68,6 +68,10 @@ aside.sidebar {
                 font-size: 14px;
                 font-weight: 500;
 
+                &.sub-menu {
+                    color: @colorLinkActive;
+                }
+
                 &:focus {
                     border: 0;
                 }
@@ -112,6 +116,24 @@ aside.sidebar {
                 &.arrow-down {
                     transform: rotate(180deg) translateY(1px);
                 }
+            }
+
+            button.close-button {
+                  display: none;
+                  width: 30px;
+                  height: 30px;
+                  padding: 0;
+                  margin: 0;
+                  overflow: hidden;
+                  text-overflow: clip;
+                  position: absolute;
+                  right: 0;
+                  top: 6px;
+                  color: @colorLinkActive;
+            }
+
+            &:hover button.close-button {
+                display: block;
             }
         }
 

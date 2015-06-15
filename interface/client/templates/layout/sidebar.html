@@ -2,10 +2,11 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li>
-                    <button class="{{isVisible}}">
-                        Doogle
+                <li class="{{isSelected}}">
+                    <button>
+                        Browse
                     </button>
+
                     <ul>
                         {{#each history}}
                             <li>
@@ -16,12 +17,29 @@
                         {{/each}}
                     </ul>
                 </li>
-                <li class="separator"></li>
                 {{#each tabs}}
-                    <li>
-                        <button class="{{isVisible}}">
+                    <li class="{{isSelected}}">
+                        <button>
+                            <img src="icons/wallet-icon@2x.png">
                             {{name}}
+                            <span>{{badge}}</span>
                         </button>
+                        {{#if subMenu}}
+                            <button class="slide-out icon-arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
+                        {{/if}}
+
+                        <ul>
+                            {{#each subMenu}}
+                                <li>
+                                    <button class="sub-menu" data-tab-id="{{../_id}}">
+                                        {{#if selected}}
+                                            X
+                                        {{/if}}
+                                        {{name}} ({{badge}})
+                                    </button>
+                                </li>
+                            {{/each}}
+                        </ul>
                     </li>
                 {{/each}}
             </ul>

@@ -1,0 +1,327 @@
+body {
+    .display(flex);
+    .flex-direction(column);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    background-color: @colorWhite;
+    font: 100 16px 'Source Sans Pro', 'Helvetica Neue', arial, sans-serif;
+    color: @colorTextPrimary;
+
+    // lock scroll and blur content
+    &.disable-scroll {
+        overflow: hidden;
+    }
+    &.blur {
+        .dapp-flex-content,
+        .dapp-footer,
+        .dapp-header {
+            .blur(4px);
+        }
+    }
+
+}
+
+// Special cases on a full screen dapp in mist
+.ethereum-dapp-url-bar-style-transparent {
+    .dapp-header {
+        padding-top: 4 * @gridHeight;
+    }
+}
+
+
+// DEBUG GRID
+.dapp-grid {
+    z-index: 999;
+    background: #FFF url('dapp-styles/hex-grid-tile.png');
+    background-size: 64px 111px;
+    position: absolute;
+    min-height: 100%;
+    left: 0;
+    right: 0;
+    opacity: 0.05;
+    pointer-events: none;
+}
+// body:hover .dapp-grid {
+//     display: none;
+// }
+
+
+
+// CONTAINERS
+
+.dapp-container {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    max-width: @widthContainer;
+}
+
+// MAIN APP
+
+.dapp-header,
+.dapp-aside,
+.dapp-content,
+.dapp-footer {
+    position: relative;
+    padding: @defaultPaddingVertical @defaultPaddingHorizontal;
+    .box-sizing(border-box);
+}
+
+.dapp-header {
+    height: @heightHeader;
+    .box-sizing(content-box);
+    .background-image(linear-gradient(to bottom,  lighten(@colorBackgroundHeader, 15%) 0, @colorBackgroundHeader 90%));
+
+    nav {
+        position: absolute;
+        bottom: 0;
+
+
+        ul {
+            .dapp-horizontal-menu;
+
+            a {
+                display: inline-block;
+                padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal;
+                text-align: center;
+                border-bottom: 5px solid transparent;
+                color: darken(@colorLink, 10%);
+
+                &:focus {
+                    border-color: @colorWhite;
+                }
+                &.active {
+                    .transform-origin(50% 100%);
+                    color: darken(@colorBackgroundHeader, 20%);
+
+                    border-bottom: 5px solid @colorWhite;
+                }
+                &:active {
+                    border-bottom: transparent;
+                }
+
+                i {
+                    font-size: 1.5em;
+                }
+
+                span {
+                    display: block;
+                    text-transform: uppercase;
+                    font-weight: 400;
+                }
+
+            }
+        }
+    }
+}
+
+.dapp-footer {
+    height: @heightFooter;
+    background-color: @colorBlack;
+}
+
+// Makes the content with asides align in rows
+.dapp-flex-content {
+    .display(flex);
+    // .flex-direction(column);
+    .flex(1);
+    // max-height: 100vh;//85vh;
+}
+
+.dapp-content {
+    .flex(1);
+    background: @colorWhite;
+
+    &.dapp-has-header {
+        padding-top: 120px + 3 * @defaultPaddingVertical;
+    }
+
+
+    .dapp-content-header {
+        position: fixed;
+        top: 0;
+        width: 80%;
+        min-height: @gridHeight * 2;
+        padding: @defaultPaddingVertical @gridWidth / 2;
+        margin-left: -@defaultPaddingHorizontal;
+        background: fadeout(@colorGrayLight, 20%);
+        z-index: 10;
+        line-height: @gridHeight * 2;
+        .dapp-shadow-medium;
+        .box-sizing(border-box);
+    }
+}
+
+
+.dapp-aside {
+    .flex(0 0 @widthSidebar);
+    padding-right: 0;
+    .background-image(linear-gradient(to bottom,  lighten(@colorBackgroundAside, 15%) 0, @colorBackgroundAside 100px));
+
+
+
+    // ANIMATION
+    .transition(flex @animationSpeed);
+
+    nav {
+        ul {
+            .dapp-vertical-menu;
+            padding-top: @gridHeight*1;
+
+            li {
+
+                a, a:visited, button {
+                    // display: block;
+                    .display(flex);
+                    .align-items(center);
+                    position: relative;
+                    min-height: @gridHeight*4;
+                    max-height: @gridHeight*5;
+                    padding: @defaultPaddingVertical @defaultPaddingHorizontal;
+                    padding-left: @gridWidth / 3;
+                    overflow: hidden;
+                    border-top: darken(@colorBackgroundAside, 8%) solid 1px;
+                    .border-radius(3px 0 0 3px);
+                    .box-sizing(border-box); // align button and links properties
+                    color: @colorForegroundAside;
+
+
+                    // .dapp-shorten-text;
+                    font-weight: 300;
+                    line-height: 20px;
+
+                    &:active {
+                        .transform-origin(100% 50%);
+                        .scale(0.98);
+                    }
+
+                    > i {
+                        margin-right: 4px;
+                    }
+
+                    // elipsis span
+                    > span {
+                        max-width: 115px;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                }
+                .dapp-main-button {
+                    position: relative;
+                    width: 100%;
+                    margin-bottom: 4*@gridHeight;
+                    .border-radius(3px 0 0 3px);
+                    background: @colorBackgroundMainButton;
+                    color: @colorForegroundMainButton;
+                    border-top: none;
+
+                    
+                    i {
+                        position: absolute;
+                        right: @gridWidth / 4;
+                        top: @gridHeight * 1.5;
+                    }
+                }
+
+                &.active a {
+                    background: @colorWhite;
+                    border-top: none;        
+                    color: @colorBlack; 
+                    font-weight: 500;       
+                }
+
+                // remove the top border
+                &:first-child a,
+                &.active + li > a,
+                &.dapp-main-button + li  {
+                    border-top: 0;
+                }
+            }
+        }
+    }
+}
+
+.dapp-actionbar {
+    z-index: 20;
+    .flex(0 0 @widthToolbar);
+    // position: fixed;
+    // width: @widthToolbar;
+    // top: 0;
+    // right: 0;
+    // bottom: 0;
+    background: @colorWhite;
+
+    nav {
+        ul {
+        	.dapp-vertical-menu;
+            
+            li {
+                margin: @defaultMargin 0;// thats what I always use, so we can better control the the spacing, without comming back here. @gridHeight*2 2px 0;
+                color: @colorLink;
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+
+                // ANIMATION
+                .transition(height @animationSpeed);
+
+                // give every button the icon style
+                button,
+                a, a:visited {
+                    .dapp-icon-button;
+                    color: @colorBlue;
+                	font-size: 0.8em;
+                    font-weight: 400;
+
+                    i {
+                        font-size: 2em;
+                        display: block; // makes sure the text is below
+                    }
+                }
+        	}
+        }
+    }
+}
+
+
+.dapp-box {
+    display: inline-block;
+    float: left;
+    width: @gridWidth * 6;
+    height: @gridHeight * 12;
+    padding-top: @gridHeight;
+    padding-left: @gridWidth/2;
+    padding-bottom: @gridHeight/2;
+    padding-right: @gridWidth/2;
+
+    margin-bottom: @gridHeight/2;
+    margin-right: @gridWidth/2;
+    background-color: @colorWhite;
+    // border: 1px solid @colorGrayDark;
+    .dapp-shadow-medium;
+
+    h2 {
+        margin: 0;
+        padding: 0;
+        background-color: transparent;
+        color: @colorTextSecondary;
+        font-family: @fontFamily;
+        text-transform: none;
+        font-size: 1.5em;
+        font-weight: 100;
+    }
+}
+
+
+// MODAL the full styles are in the ethereum:elements package
+.dapp-modal-overlay {  
+    background: fadeout(@colorBackgroundOverlay, 50%);
+}
+.dapp-modal-container {
+    background: @colorWhite;
+}

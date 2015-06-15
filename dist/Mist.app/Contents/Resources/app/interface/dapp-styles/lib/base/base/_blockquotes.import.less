@@ -1,0 +1,29 @@
+// ==========================================================================
+// Base – Blockquotes
+// ==========================================================================
+blockquote {
+  .font-size(22);
+  .line-height(32);
+  color: #434343;
+  margin: 1em 0;
+  &:extend(.em);
+  p {
+    margin: 1em 0;
+  }
+}
+cite {
+  color: #434343;
+  font-style: normal;
+  &:extend(.font-normal);
+  .font-size(16);
+  line-height: normal;
+}
+
+q {
+  &:extend(.em);
+  quotes: none;
+}
+q:before, q:after {
+  content: '';
+  content: none;
+}

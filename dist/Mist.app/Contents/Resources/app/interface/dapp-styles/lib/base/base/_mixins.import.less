@@ -1,0 +1,26 @@
+// ==========================================================================
+// Base – Mixins
+// ==========================================================================
+
+// Font Sizes (REMs with PX fallback for older browsers)
+.font-size (@size) {
+  @remValue: @size / @default-font-size;
+  @pxValue: (@size);
+  font-size: ~"@{pxValue}px"; 
+  font-size: ~"@{remValue}rem";
+}
+
+// Line Height Sizes (REMs with PX fallback for older browsers)
+.line-height (@size) {
+  @remValue: @size / @default-font-size;
+  @pxValue: (@size);
+  line-height: ~"@{pxValue}px"; 
+  line-height: ~"@{remValue}rem";
+}
+
+// Rounded Corners
+.border-radius(@radius) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}

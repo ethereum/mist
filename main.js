@@ -1,9 +1,13 @@
-var app = require('app');  // Module to control application life.
-var BrowserWindow = require('browser-window');  // Module to create native browser window.
-// var Menu = require('menu');
-// var Tray = require('tray');
-var menuItems = require('./menuItems');
+const app = require('app');  // Module to control application life.
+const BrowserWindow = require('browser-window');  // Module to create native browser window.
+const ipc = require('ipc');
+// const Menu = require('menu');
+// const Tray = require('tray');
+const menuItems = require('./menuItems');
 var appIcon = null;
+
+// const processRef = global.process;
+// process.nextTick(function() { global.process = processRef; });
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -16,6 +20,16 @@ var mainWindow = null;
 app.on('window-all-closed', function() {
     if (process.platform != 'darwin')
         app.quit();
+});
+
+// Emitted when the application is activated while there is no opened windows.
+// It usually happens when a user has closed all of application's windows and then
+// click on the application's dock icon.
+app.on('activate-with-no-open-windows', function () {
+    if (mainWindow) {
+        mainWindow.show();
+    }
+    return false;
 });
 
 // This method will be called when Electron has done everything
@@ -40,17 +54,17 @@ app.on('ready', function() {
         'standard-window': false,
         icon: './icons/icon_128x128.png',
         'node-integration': false,
-        // preload: require.resolve("./preload")
+        preload: __dirname +'/preloader.js'
         // frame: false
         // 'use-content-size': true,
     });
 
     // and load the index.html of the app.
-    // if() 'file://' + __dirname + '/index.html'
+    // if() 'file://' + __dirname + '/interface/index.html
     mainWindow.loadUrl('http://localhost:3000');
 
     // Open the devtools.
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
@@ -62,6 +76,8 @@ app.on('ready', function() {
 
 
     // instantiate the application menu
-    menuItems();
+    ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+        menuItems(mainWindow, webviews || []);
+    });
 
 });

@@ -11,30 +11,6 @@ The sidebar template
 @constructor
 */
 
-/**
-Sets the height of the current selected sidebar <li> to its sub <ul> height.
-
-@method setHeight
-*/
-var setHeight = function(template){
-    if(!template.view.isRendered)
-        return;
-
-    template.$('nav > ul > li').css('height', '');
-
-    var size = template.$('li:not(.selected)').css('height').replace('px','');
-    Tracker.afterFlush(function(){
-        template.$('li.selected, li.slided-out').each(function(){
-            $(this).css('height', $(this).find('> ul').height() + Number(size));
-        });
-    });
-};
-
-
-Template['layout_sidebar'].onRendered(function(){
-    setHeight(this);
-});
-
 
 Template['layout_sidebar'].helpers({
     /**
@@ -52,8 +28,6 @@ Template['layout_sidebar'].helpers({
     */
     'subMenu': function(){
         var template = Template.instance();
-
-        setHeight(template);
 
         if(this.menu) {
             var menu = _.toArray(this.menu);
@@ -118,8 +92,6 @@ Template['layout_sidebar'].events({
         } else {
 
             LocalStore.set('selectedTab', this._id || 'browser');
-
-            setHeight(template);
         }
     },
     /**
@@ -129,8 +101,6 @@ Template['layout_sidebar'].events({
     */
     'click button.slide-out': function(e, template){
         Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
-
-        setHeight(template);
     }
 });
 

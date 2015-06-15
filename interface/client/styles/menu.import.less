@@ -10,36 +10,40 @@ aside.sidebar {
 
         li {
             position: relative;
-            height: 45px;
             padding-left: @gridWidth/4;
-            border-top: 1px solid rgba(0, 0, 0, 0.04);
             margin-top: 0;
-            transition: background 0.05s ease-in-out, height 0.25s ease-in-out;
             overflow: hidden;
 
             ul {
                 padding-left: 18px; 
-
+                border-top: none;
                 // sub-menu
-                li button:not(.slide-out) {
-                    font-size: 12px;
-                    font-weight: 400;
-                    text-transform: none;
+                li {
+                    height: 0;
+                    opacity: 0;
+                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
+
+                    button:not(.slide-out) {
+                        font-size: 12px;
+                        font-weight: 400;
+                        text-transform: none;
+                    }
                 }
             }
 
             &.selected {
-                // max-height: 300px;
                 color: @colorLinkActive;
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: -1px 0 3px rgba(0, 0, 0, 0.25);
                 border-top: none;
-
-                // ul {
-                //     display: block;
-                //     height: auto;
-                // }
+            }
+            &.selected, &.slided-out {
+                li {
+                    height: 45px;
+                    opacity: 1;
+                    border-top: 1px solid rgba(0, 0, 0, 0.04);
+                }
             }
 
             &.selected + li,

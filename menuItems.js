@@ -21,7 +21,7 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: 'About '+ config.name,
-                selector: 'hide:'
+                selector: 'orderFrontStandardAboutPanel:'
             },
             {
                 label: 'Quit '+ config.name,
@@ -76,7 +76,11 @@ var menuTempl = function(mainWindow, webviews) {
             if(curWindow = BrowserWindow.getFocusedWindow())
                 curWindow.toggleDevTools();
         }
+    },{
+        type: 'separator'
     }];
+
+    // add webviews
     webviews.forEach(function(webview){
         devtToolsMenu.push({
             label: 'Toggle DevTools for '+ webview.name,
@@ -141,6 +145,10 @@ var menuTempl = function(mainWindow, webviews) {
             },
         ]
     })
+    menu.push({
+        label: 'Help',
+        submenu: []
+    });
     return menu;
 };
 

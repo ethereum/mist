@@ -1,8 +1,12 @@
 const ipc = require('ipc');
+const remote = require('remote');
+const Menu = remote.require('menu');
+const MenuItem = remote.require('menu-item');
+
 
 // Wait for webview toogle
 ipc.on('toogleWebviewDevTool', function(id){
-    var webview = (id === 'browser') ? $('webview#browser-view')[0] : $('webview[data-id="'+ id +'"]')[0];
+    var webview = Helpers.getWebview(id);
 
     if(!webview)
         return;
@@ -18,7 +22,7 @@ ipc.on('toogleWebviewDevTool', function(id){
 Update the main appliction menu with a toogle for all webview devtools.
 
 */
-var updateApplicationMenuDevTools = function(webviews){
+window.updateApplicationMenuDevTools = function(webviews){
     var returnWebviews = [];
 
     if(webviews) {
@@ -34,4 +38,45 @@ var updateApplicationMenuDevTools = function(webviews){
     ipc.send('setupWebviewDevToolsMenu', returnWebviews);
 };
 
-window.updateApplicationMenuDevTools = updateApplicationMenuDevTools;
+
+
+
+// CONTEXT MENU
+
+var currentMousePosition = {x: 0, y: 0};
+var menu = new Menu();
+// menu.append(new MenuItem({ type: 'separator' }));
+menu.append(new MenuItem({ label: 'Reload', accelerator: 'Command+R', click: function() {
+    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if(webview)
+        webview.reloadIgnoringCache();
+}}));
+menu.append(new MenuItem({ label: 'Inspect Element', click: function() {
+    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if(webview)
+        webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
+}}));
+
+
+window.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+
+    // OPEN CONTEXT MENU over webviews
+    if($('webview:hover')[0]) {
+        currentMousePosition.x = e.layerX;
+        currentMousePosition.y = e.layerY;
+        menu.popup(remote.getCurrentWindow());
+    }
+}, false);
+
+
+document.addEventListener('keydown', function (e) {
+    // RELOAD current webview
+    if(e.metaKey && e.keyCode === 82) {
+        var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+        if(webview)
+            webview.reloadIgnoringCache();
+    }
+}, false);
+
+

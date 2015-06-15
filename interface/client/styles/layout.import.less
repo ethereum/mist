@@ -7,10 +7,14 @@ body, html {
 
     &.blur {
         .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
-        // aside {
-        //     // background-color: @colorOSBackgroundBlur;
-        //     .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
-        // }
+        
+        aside {
+            &:before {
+                box-shadow: 0 0 8px rgba(0,0,0,0.2);
+            }
+            // background-color: @colorOSBackgroundBlur;
+            // .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+        }
     }
 
     -webkit-touch-callout: none;
@@ -28,21 +32,17 @@ aside {
     left: 0;
     width: @widthSideBar;
     height: 100%;
-    // background: @colorOSBackgroundFocus;
 
-    // .box-shadow(0 0 15px rgba(0,0,0,0.5));
-    // background-color: @colorOSBackgroundActive;
-    // .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
     &:before {
         content: " ";
         display: block;
         position: absolute; 
         z-index: 2;
         top: 0;
-        left: 0.95 * @widthSideBar;
+        left: @widthSideBar;
         width: 10px;
         bottom: 0;
-        .background-image(linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.05) 100%));
+        box-shadow: 0 0 8px rgba(0,0,0,0.3);
     }
 }
 
@@ -80,20 +80,6 @@ webview {
     bottom: 0;
 }
 
-.spinner {
-    z-index: 10;
-    position: absolute;
-    top: 32px;
-    right: 60px;
-
-    // ANIMATION
-    .transition(opacity @animationSpeed/2);
-    .transform-origin(0% 0%);
-
-    &.animate {
-        .opacity(0);
-    }
-}
 
 
 .browser-bar {
@@ -103,13 +89,34 @@ webview {
     right: 20px;
     left: @widthSideBar + 20px;
 
+    &.browser {
+        .spinner {
+            right: 50px;
+        }
+    }
+
     input {
         width: 100%;
     }
 
     button.add-tab {
         position: absolute;
-        top: 24px;
+        top: 25px;
         right: 10px;
+    }
+
+    .spinner {
+        z-index: 10;
+        position: absolute;
+        top: 33px;
+        right: 18px;
+
+        // ANIMATION
+        .transition(opacity @animationSpeed/2);
+        .transform-origin(0% 0%);
+
+        &.animate {
+            .opacity(0);
+        }
     }
 }

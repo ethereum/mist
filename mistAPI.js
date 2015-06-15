@@ -22,6 +22,19 @@ var mist = {
     menu: {
         entries: {},
         /**
+        Sets the badge text for the apps menu button
+
+        Example
+
+            mist.menu.setBadge('Some Text')
+
+        @method setBadge
+        @param {String} text
+        */
+        setBadge: function(text){
+            ipc.sendToHost('setBadge', text);
+        },
+        /**
         Adds/Updates a menu entry
 
         Example

@@ -66,17 +66,11 @@ Template['views_tab'].onRendered(function(){
         if(arg && arg.id)
             arg.id = filterId(arg.id);
 
-        // if(event.channel === 'addMenu') {
-        //     var query = {'$set': {}};
-
-        //     query['$set']['menu.'+ arg.id] = {
-        //         id: arg.id,
-        //         name: arg.name,
-        //         badge: arg.badge
-        //     };
-
-        //     Tabs.update(template.data._id, query);
-        // }
+        if(event.channel === 'setBadge') {
+            Tabs.update(template.data._id, {$set:{
+                badge: arg
+            }});
+        }
 
         if(event.channel === 'addMenu') {
             var query = {'$set': {}};
@@ -126,7 +120,7 @@ Template['views_tab'].helpers({
     */
     'url': function(){
         var template = Template.instance();
-        var tab = Tabs.findOne(this._id, {fields: {url: 1}});
+        var tab = Tabs.findOne(this._id, {fields: {url: 1, redirect: 1}});
         
         if(tab) {
             // set url only once

@@ -31,9 +31,9 @@ Template['layout_browserBar'].helpers({
     /**
     Show the add button, when on a dapp and in doogle
 
-    @method (showAddButton)
+    @method (isBrowser)
     */
-    'showAddButton': function(){
+    'isBrowser': function(){
         return (LocalStore.get('selectedTab') === 'browser');
     },
     /**

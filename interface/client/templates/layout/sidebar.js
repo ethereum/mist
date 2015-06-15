@@ -107,10 +107,13 @@ Template['layout_sidebar'].events({
 
         // Dapp submenu is clicked
         } else if($button.hasClass('sub-menu')) {
-            var webview = $('webview[data-id="'+ $button.data('tab-id') +'"]')[0];
+            var tabId = $button.data('tab-id');
+            var webview = $('webview[data-id="'+ tabId +'"]')[0];
 
-            if(webview)
+            if(webview) {
                 webview.send('callFunction', this.id);
+                LocalStore.set('selectedTab', tabId);
+            }
 
         } else {
 

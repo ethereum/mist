@@ -11,30 +11,6 @@ The sidebar template
 @constructor
 */
 
-/**
-Sets the height of the current selected sidebar <li> to its sub <ul> height.
-
-@method setHeight
-*/
-var setHeight = function(template){
-    if(!template.view.isRendered)
-        return;
-
-    template.$('nav > ul > li').css('height', '');
-
-    var size = template.$('li:not(.selected)').css('height').replace('px','');
-    Tracker.afterFlush(function(){
-        template.$('li.selected, li.slided-out').each(function(){
-            $(this).css('height', $(this).find('> ul').height() + Number(size));
-        });
-    });
-};
-
-
-Template['layout_sidebar'].onRendered(function(){
-    setHeight(this);
-});
-
 
 Template['layout_sidebar'].helpers({
     /**

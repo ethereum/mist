@@ -37,6 +37,10 @@ aside.sidebar {
                 border-radius: 3px 0 0 3px;
                 box-shadow: -1px 0 3px rgba(0, 0, 0, 0.25);
                 border-top: none;
+
+                .slide-out {
+                    transform: rotate(180deg) translateY(1px);
+                }
             }
             &.selected, &.slided-out {
                 li {
@@ -95,8 +99,19 @@ aside.sidebar {
             }
             button.slide-out {
                 position: absolute;
-                right: @gridHeight/2;
+                right: @gridHeight/4;
                 top: @gridHeight/1.5;
+                width: 30px;
+                height: 20px;
+                background: url('icons/expand-icon.png') no-repeat center;
+                background-size: 15px 10px;
+                transition: transform 0.25s ease-out;
+                border: none;
+                transform: translateY(-1px);
+
+                &.arrow-down {
+                    transform: rotate(180deg) translateY(1px);
+                }
             }
         }
 

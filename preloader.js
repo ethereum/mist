@@ -3,6 +3,8 @@ const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
 
+window.dirname = __dirname;
+
 
 // Wait for webview toogle
 ipc.on('toogleWebviewDevTool', function(id){

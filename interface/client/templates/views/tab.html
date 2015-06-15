@@ -1,6 +1,6 @@
 <template name="views_tab">
     <div class="tab-view {{isVisible}}">
-        <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file:///Users/frozeman/Sites/mist/mistAPI.js" autosize="on"></webview> 
+        <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/mistAPI.js" autosize="on"></webview> 
         <!-- preload="./test.js" allowtransparency="on" -->
     </div>
 </template>

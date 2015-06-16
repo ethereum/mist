@@ -10,7 +10,7 @@
                     <ul>
                         {{#each history}}
                             <li>
-                                <button class="history">
+                                <button class="history sub-menu {{#if selected}}selected{{/if}}">
                                     {{title}}
                                 </button>
                             </li>
@@ -22,21 +22,20 @@
                         <button>
                             <img src="icons/wallet-icon@2x.png">
                             {{name}}
-                            <span>{{badge}}</span>
+
+                            {{#if badge}}<span>{{badge}}</span>{{/if}}
                         </button>
                         {{#if subMenu}}
-                            <button class="slide-out icon-arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
+                            <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                         {{/if}}
 
                         <ul>
                             {{#each subMenu}}
                                 <li>
-                                    <button class="sub-menu" data-tab-id="{{../_id}}">
-                                        {{#if selected}}
-                                            X
-                                        {{/if}}
-                                        {{name}} ({{badge}})
+                                    <button class="sub-menu {{#if selected}}selected{{/if}}" data-tab-id="{{../_id}}">
+                                        {{name}} 
                                     </button>
+                                    {{#if badge}}<div class="badge">{{badge}}</div>{{/if}}
                                 </li>
                             {{/each}}
                         </ul>

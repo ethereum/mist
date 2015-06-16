@@ -22,7 +22,7 @@
                         <button>
                             <img src="icons/wallet-icon@2x.png">
                             {{name}}
-                            <span>{{badge}}</span>
+                            {{#if badge}}<div class="badge"> {{badge}} </div>{{/if}}
                         </button>
                         {{#if subMenu}}
                             <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
@@ -33,9 +33,8 @@
                                 <li>
                                     <button class="sub-menu {{#if selected}}selected{{/if}}" data-tab-id="{{../_id}}">
                                         {{name}} 
-                                        <div class="badge"> {{badge}} </div>
-
                                     </button>
+                                    {{#if badge}}<div class="badge"> {{badge}} </div>{{/if}}
                                 </li>
                             {{/each}}
                         </ul>

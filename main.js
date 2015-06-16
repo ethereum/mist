@@ -32,6 +32,11 @@ app.on('activate-with-no-open-windows', function () {
     return false;
 });
 
+// SETUP custom protocols
+// app.commandLine.appendSwitch('register-standard-schemes', 'library,test,atom');
+// app.commandLine.appendSwitch('host-rules', 'MAP *.google.com meteor.com');
+
+
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {

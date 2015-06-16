@@ -1,13 +1,5 @@
-var remote = require('remote');
 var ipc = require('ipc');
-var web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
-var BigNumber = require('bignumber.js');
 var prefix = 'entry_';
-
-
-// set web3 providor
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-
 
 // filterId the id to only contain a-z A-Z 0-9
 var filterId = function(str) {
@@ -107,5 +99,3 @@ var mist = {
 };
 
 window.mist = mist;
-window.BigNumber = BigNumber;
-window.web3 = web3;

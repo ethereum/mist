@@ -3,7 +3,6 @@ const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
 
-// make variables globally accessable
 window.dirname = __dirname;
 
 

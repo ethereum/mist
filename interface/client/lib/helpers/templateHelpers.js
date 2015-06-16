@@ -20,6 +20,14 @@ Template.registerHelper('debug', function(object){
     console.log(object);
 });
 
+/**
+Return the current dirname.
+
+@method (dirname)
+**/
+Template.registerHelper('dirname', function(identity){
+    return window.dirname;
+});
 
 /**
 Get the current user agent

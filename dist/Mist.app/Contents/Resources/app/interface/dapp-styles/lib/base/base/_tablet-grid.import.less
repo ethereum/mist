@@ -1,0 +1,281 @@
+// ==========================================================================
+// Base – Tablet Grid
+// ==========================================================================
+@media only screen and (min-width: @tablet-breakpoint) and (max-width: (@desktop-breakpoint - 1px)) {
+
+.container, .tablet-container {
+  max-width: @desktop-container;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  &:first-child { margin-left: auto; }
+}
+.tablet-container-full {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  &:first-child { margin-left: auto; }
+}
+
+.tablet-no-gutter {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+// Tablet Grid
+.tablet-col-1 {
+  width: 8.33333%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 1');
+  width: -webkit-calc(~'100% / 12 * 1');
+  width: -moz-calc(~'100% / 12 * 1');
+}
+.tablet-col-2 {
+  width: 16.66667%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 2');
+  width: -webkit-calc(~'100% / 12 * 2');
+  width: -moz-calc(~'100% / 12 * 2');
+}
+.tablet-col-3 {
+  width: 25%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 3');
+  width: -webkit-calc(~'100% / 12 * 3');
+  width: -moz-calc(~'100% / 12 * 3');
+}
+.tablet-col-4 {
+  width: 33.33333%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 4');
+  width: -webkit-calc(~'100% / 12 * 4');
+  width: -moz-calc(~'100% / 12 * 4');
+}
+.tablet-col-5 {
+  width: 41.66665%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 5');
+  width: -webkit-calc(~'100% / 12 * 5');
+  width: -moz-calc(~'100% / 12 * 5');
+}
+.tablet-col-6 {
+  width: 50%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 6');
+  width: -webkit-calc(~'100% / 12 * 6');
+  width: -moz-calc(~'100% / 12 * 6');
+}
+.tablet-col-7 {
+  width: 58.33333%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 7');
+  width: -webkit-calc(~'100% / 12 * 7');
+  width: -moz-calc(~'100% / 12 * 7');
+}
+.tablet-col-8 {
+  width: 66.66666%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 8');
+  width: -webkit-calc(~'100% / 12 * 8');
+  width: -moz-calc(~'100% / 12 * 8');
+}
+.tablet-col-9 {
+  width: 75%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 9');
+  width: -webkit-calc(~'100% / 12 * 9');
+  width: -moz-calc(~'100% / 12 * 9');
+}
+.tablet-col-10 {
+  width: 83.33333%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 10');
+  width: -webkit-calc(~'100% / 12 * 10');
+  width: -moz-calc(~'100% / 12 * 10');
+}
+.tablet-col-11 {
+  width: 91.66666%; // Fallback if calc() is not supported
+  width: calc(~'100% / 12 * 11');
+  width: -webkit-calc(~'100% / 12 * 11');
+  width: -moz-calc(~'100% / 12 * 11');
+}
+.tablet-col-12 { width: 100%; }
+
+.tablet-col-1-2 { &:extend(.tablet-col-6); }
+.tablet-col-1-3 { &:extend(.tablet-col-4); }
+.tablet-col-1-4 { &:extend(.tablet-col-3); }
+.tablet-col-3-4 { &:extend(.tablet-col-9); }
+
+// Tablet Push/Pull
+.tablet-push-1 {
+  left: 8.33333%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 1');
+  left: -webkit-calc(~'100% / 12 * 1');
+  left: -moz-calc(~'100% / 12 * 1');
+}
+.tablet-pull-1 {
+  left: -8.33333%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 1');
+  left: -webkit-calc(~'-100% / 12 * 1');
+  left: -moz-calc(~'-100% / 12 * 1');
+}
+.tablet-push-2 {
+  left: 16.66667%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 2');
+  left: -webkit-calc(~'100% / 12 * 2');
+  left: -moz-calc(~'100% / 12 * 2');
+}
+.tablet-pull-2 {
+  left: -16.66667%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 2');
+  left: -webkit-calc(~'-100% / 12 * 2');
+  left: -moz-calc(~'-100% / 12 * 2');
+}
+.tablet-push-3 {
+  left: 25%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 3');
+  left: -webkit-calc(~'100% / 12 * 3');
+  left: -moz-calc(~'100% / 12 * 3');
+}
+.tablet-pull-3 {
+  left: -25%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 3');
+  left: -webkit-calc(~'-100% / 12 * 3');
+  left: -moz-calc(~'-100% / 12 * 3');
+}
+.tablet-push-4 {
+  left: 33.33333%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 4');
+  left: -webkit-calc(~'100% / 12 * 4');
+  left: -moz-calc(~'100% / 12 * 4');
+}
+.tablet-pull-4 {
+  left: -33.33333%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 4');
+  left: -webkit-calc(~'-100% / 12 * 4');
+  left: -moz-calc(~'-100% / 12 * 4');
+}
+.tablet-push-5 {
+  left: 41.66665%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 5');
+  left: -webkit-calc(~'100% / 12 * 5');
+  left: -moz-calc(~'100% / 12 * 5');
+}
+.tablet-pull-5 {
+  left: -41.66665%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 5');
+  left: -webkit-calc(~'-100% / 12 * 5');
+  left: -moz-calc(~'-100% / 12 * 5');
+}
+.tablet-push-6 {
+  left: 50%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 6');
+  left: -webkit-calc(~'100% / 12 * 6');
+  left: -moz-calc(~'100% / 12 * 6');
+}
+.tablet-pull-6 {
+  left: -50%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 6');
+  left: -webkit-calc(~'-100% / 12 * 6');
+  left: -moz-calc(~'-100% / 12 * 6');
+}
+.tablet-push-7 {
+  left: 58.33333%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 7');
+  left: -webkit-calc(~'100% / 12 * 7');
+  left: -moz-calc(~'100% / 12 * 7');
+}
+.tablet-pull-7 {
+  left: -58.33333%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 7');
+  left: -webkit-calc(~'-100% / 12 * 7');
+  left: -moz-calc(~'-100% / 12 * 7');
+}
+.tablet-push-8 {
+  left: 66.66666%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 8');
+  left: -webkit-calc(~'100% / 12 * 8');
+  left: -moz-calc(~'100% / 12 * 8');
+}
+.tablet-pull-8 {
+  left: -66.66666%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 8');
+  left: -webkit-calc(~'-100% / 12 * 8');
+  left: -moz-calc(~'-100% / 12 * 8');
+}
+.tablet-push-9 {
+  left: 75%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 9');
+  left: -webkit-calc(~'100% / 12 * 9');
+  left: -moz-calc(~'100% / 12 * 9');
+}
+.tablet-pull-9 {
+  left: -75%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 9');
+  left: -webkit-calc(~'-100% / 12 * 9');
+  left: -moz-calc(~'-100% / 12 * 9');
+}
+.tablet-push-10 {
+  left: 83.33333%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 10');
+  left: -webkit-calc(~'100% / 12 * 10');
+  left: -moz-calc(~'100% / 12 * 10');
+}
+.tablet-pull-10 {
+  left: -83.33333%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 10');
+  left: -webkit-calc(~'-100% / 12 * 10');
+  left: -moz-calc(~'-100% / 12 * 10');
+}
+.tablet-push-11 {
+  left: 91.66666%; // Fallback if calc() is not supported
+  left: calc(~'100% / 12 * 11');
+  left: -webkit-calc(~'100% / 12 * 11');
+  left: -moz-calc(~'100% / 12 * 11');
+}
+.tablet-pull-11 {
+  left: -91.66666%; // Fallback if calc() is not supported
+  left: calc(~'-100% / 12 * 11');
+  left: -webkit-calc(~'-100% / 12 * 11');
+  left: -moz-calc(~'-100% / 12 * 11');
+}
+
+.tablet-push-1-2 { &:extend(.tablet-push-6); }
+.tablet-pull-1-2 { &:extend(.tablet-pull-6); }
+.tablet-push-1-3 { &:extend(.tablet-push-4); }
+.tablet-pull-1-3 { &:extend(.tablet-pull-4); }
+.tablet-push-1-4 { &:extend(.tablet-push-3); }
+.tablet-pull-1-4 { &:extend(.tablet-pull-3); }
+.tablet-push-3-4 { &:extend(.tablet-push-9); }
+.tablet-pull-3-4 { &:extend(.tablet-pull-9); }
+
+.tablet-no-push, .tablet-no-pull { left: auto; }
+
+// Tablet Rows
+.tablet-row {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.tablet-full {
+  left: auto;
+  clear: both;
+  float: none;
+  width: 100%;
+  margin: 1em 0 0 0;
+  display: block;
+}
+.tablet-full:first-child { margin-top: 0; }
+
+.tablet-text-left { text-align: left; }
+.tablet-text-right { text-align: right; }
+.tablet-text-center { text-align: center; }
+
+.tablet-left { float: left; }
+.tablet-right { float: right; }
+.tablet-no-float { float: none; }
+
+// Remove Margin / Padding
+.tablet-no-margin { margin: 0; }
+.tablet-no-padding { padding: 0; }
+
+.no-tablet { display: none; }
+.show-tablet { display: block; }
+
+@import "../_tablet-styles.import.less"; // Import Custom Tablet Styles
+
+} // End Tablet Media Query

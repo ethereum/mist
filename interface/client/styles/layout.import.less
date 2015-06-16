@@ -3,25 +3,47 @@
 body, html {
     height: 100%;
     overflow: hidden;
+    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
 
     &.blur {
+        .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+        
         aside {
-            // background-color: @colorOSXBackgroundBlur;
-            .background-image(linear-gradient(to bottom, @colorOSXBackgroundBlur 0%,lighten(@colorOSXBackgroundBlur, 5%) 100%));
+            &:before {
+                box-shadow: 0 0 8px rgba(0,0,0,0.2);
+            }
+            // background-color: @colorOSBackgroundBlur;
+            // .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
         }
     }
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 aside {
-    z-index: 2;
+    z-index: 4;
     position: absolute;
     top: 0;
     left: 0;
     width: @widthSideBar;
     height: 100%;
-    .box-shadow(0 0 15px rgba(0,0,0,0.5));
-    // background-color: @colorOSXBackgroundActive;
-    .background-image(linear-gradient(to bottom, @colorOSXBackgroundFocus 0%,lighten(@colorOSXBackgroundFocus, 5%) 100%));
+
+    &:before {
+        content: " ";
+        display: block;
+        position: absolute; 
+        z-index: 2;
+        top: 0;
+        left: @widthSideBar;
+        width: 10px;
+        bottom: 0;
+        box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    }
 }
 
 main {
@@ -31,7 +53,9 @@ main {
     right: 0;
     width: ~"calc(100% - @{widthSideBar})";
     height:100%;
-    background-color: @colorOSXBackgroundFocus;
+    overflow: hidden;
+    background-color: @colorOSBackgroundFocus;
+    border-top-left-radius: 3px;
 }
 
 webview {
@@ -41,19 +65,21 @@ webview {
     right: 0;
     bottom: 0;
 
+}
+.tab-view {
     &.hidden {
         visibility: hidden;
         // display: none;
     }
 }
-
-.doogle {
+.browse-view {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
 }
+
 
 
 .browser-bar {
@@ -63,13 +89,34 @@ webview {
     right: 20px;
     left: @widthSideBar + 20px;
 
+    &.browser {
+        .spinner {
+            right: 50px;
+        }
+    }
+
     input {
         width: 100%;
     }
 
     button.add-tab {
         position: absolute;
-        top: 24px;
+        top: 25px;
         right: 10px;
+    }
+
+    .spinner {
+        z-index: 10;
+        position: absolute;
+        top: 33px;
+        right: 18px;
+
+        // ANIMATION
+        .transition(opacity @animationSpeed/2);
+        .transform-origin(0% 0%);
+
+        &.animate {
+            .opacity(0);
+        }
     }
 }

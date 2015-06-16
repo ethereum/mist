@@ -2,26 +2,42 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li>
-                    <button class="{{isVisible}}">
-                        Doogle
+                <li class="{{isSelected}}">
+                    <button>
+                        Browse
                     </button>
+
                     <ul>
                         {{#each history}}
                             <li>
-                                <button class="history">
+                                <button class="history sub-menu {{#if selected}}selected{{/if}}">
                                     {{title}}
                                 </button>
                             </li>
                         {{/each}}
                     </ul>
                 </li>
-                <li class="separator"></li>
                 {{#each tabs}}
-                    <li>
-                        <button class="{{isVisible}}">
+                    <li class="{{isSelected}}">
+                        <button>
+                            <img src="icons/wallet-icon@2x.png">
                             {{name}}
+                            {{#if badge}}<div class="badge"> {{badge}} </div>{{/if}}
                         </button>
+                        {{#if subMenu}}
+                            <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
+                        {{/if}}
+
+                        <ul>
+                            {{#each subMenu}}
+                                <li>
+                                    <button class="sub-menu {{#if selected}}selected{{/if}}" data-tab-id="{{../_id}}">
+                                        {{name}} 
+                                    </button>
+                                    {{#if badge}}<div class="badge"> {{badge}} </div>{{/if}}
+                                </li>
+                            {{/each}}
+                        </ul>
                     </li>
                 {{/each}}
             </ul>

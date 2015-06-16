@@ -28,8 +28,9 @@ body, html {
 aside {
     z-index: 4;
     position: absolute;
-    top: 0;
+    top: @gridHeight/2;
     left: 0;
+    padding-top: @gridHeight/2;
     width: @widthSideBar;
     height: 100%;
 
@@ -42,7 +43,7 @@ aside {
         left: @widthSideBar;
         width: 10px;
         bottom: 0;
-        box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        box-shadow: @shadowStandard;
     }
 }
 
@@ -54,17 +55,19 @@ main {
     width: ~"calc(100% - @{widthSideBar})";
     height:100%;
     overflow: hidden;
-    background-color: @colorOSBackgroundFocus;
     border-top-left-radius: 3px;
 }
 
 webview {
     position: absolute;
     top: 0;
+    top: @gridHeight/2;
     left: 0;
     right: 0;
     bottom: 0;
-
+    box-shadow: @shadowStandard;
+    border-radius: 4px;
+    overflow: hidden;
 }
 .tab-view {
     &.hidden {

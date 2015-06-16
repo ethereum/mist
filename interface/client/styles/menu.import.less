@@ -37,14 +37,10 @@ aside.sidebar {
                 border-radius: 3px 0 0 3px;
                 box-shadow: -1px 0 3px rgba(0, 0, 0, 0.25);
                 border-top: none;
-
-                .slide-out, .slide-out.arrow-down {
-                    transform: rotate(90deg) translateX(-1px) translateY(-10px);
-                }
             }
             &.selected, &.slided-out {
                 li {
-                    height: @gridHeight * 2;
+                    height: 45px;
                     opacity: 1;
                     border-top: 1px solid rgba(0, 0, 0, 0.04);
                 }
@@ -67,15 +63,6 @@ aside.sidebar {
                 font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
                 font-size: 14px;
                 font-weight: 500;
-
-                &.sub-menu {
-                    color: @colorLinkActive;
-                }                
-
-                &.selected.sub-menu {
-                    color: @colorLinkBlur;
-                    font-weight: 600;
-                }
 
                 &:focus {
                     border: 0;
@@ -108,49 +95,8 @@ aside.sidebar {
             }
             button.slide-out {
                 position: absolute;
-                right: @gridHeight/4;
+                right: @gridHeight/2;
                 top: @gridHeight/1.5;
-                width: 30px;
-                height: 20px;
-                background: url('icons/expand-icon.png') no-repeat center;
-                background-size: 15px 10px;
-                transition: transform 0.25s ease-in-out;
-                border: none;
-                transform: translateX(10px) translateY(-1px);
-
-                &.arrow-down {
-                    transform: rotate(180deg) translateX(-10px) translateY(1px);
-                }
-            }
-
-            button.close-button {
-                  display: none;
-                  width: 30px;
-                  height: 30px;
-                  padding: 0;
-                  margin: 0;
-                  overflow: hidden;
-                  text-overflow: clip;
-                  position: absolute;
-                  right: 0;
-                  top: 6px;
-                  color: @colorLinkActive;
-            }
-
-            &:hover button.close-button {
-                display: block;
-            }
-
-            .badge {
-              position: absolute;
-              right: 0;
-              top: 0;
-              bottom: 0;
-              padding: 0 @gridWidth/4;
-              background-color: rgba(0, 0, 0, 0.05);
-              text-align: center;
-              vertical-align: middle;
-              line-height: @gridHeight * 2;
             }
         }
 

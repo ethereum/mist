@@ -16,7 +16,7 @@ aside.sidebar {
             margin-top: 0;
             overflow: hidden;
             height: 100%;
-            transition: 0.25s;
+            transition: transform 0.25s, height 0.25s;
 
 
             &.ui-sortable-helper {
@@ -26,7 +26,7 @@ aside.sidebar {
             &.ui-sortable-placeholder {
                 visibility: visible !important;
                 height: 0 !important; //@gridHeight*3
-                border-bottom: 2px solid @colorLinkActive;
+                border-bottom: 2px dashed @colorLinkActive;
             }
 
             &.selected {

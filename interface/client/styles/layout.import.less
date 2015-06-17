@@ -97,19 +97,14 @@ webview {
     right: 20px;
     left: @widthSideBar + 20px;
 
-    &.browser {
-        .spinner {
-            right: 50px;
-        }
-    }
-
     input {
         margin-top: @gridHeight*0.8;
         border-radius: 3px;
         width: 100%;
     }
 
-    button.add-tab {
+    button.add-tab,
+    button.remove-tab {
         position: absolute;
         top: 21px;
         right: 10px;
@@ -119,7 +114,7 @@ webview {
         z-index: 10;
         position: absolute;
         top: 29px;
-        right: 18px;
+        right: 50px; //18
 
         // ANIMATION
         .transition(opacity @animationSpeed/2);

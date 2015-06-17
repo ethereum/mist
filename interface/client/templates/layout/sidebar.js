@@ -11,6 +11,15 @@ The sidebar template
 @constructor
 */
 
+Template['layout_sidebar'].onRendered(function(){
+    this.$('nav > ul').sortable({
+        handle: 'button.main',
+        start: function(e){
+            console.log(e);
+        }
+    });
+});
+
 
 Template['layout_sidebar'].helpers({
     /**
@@ -19,7 +28,14 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-        return Tabs.find();
+
+        // UPADATE MAIN APPLICATION MENU
+        Tracker.afterFlush(function(){
+            updateApplicationMenuDevTools($('webview'));
+        });
+
+
+        return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**
     Return the tabs sub menu as array

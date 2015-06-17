@@ -6,6 +6,9 @@
                     <button class="main">
                         Browse
                     </button>
+                    {{#if fullTabs}}
+                        <button class="slide-out arrow-down"></button>
+                    {{/if}}
 
                     <ul class="history sub-menu ">
                         {{#each history}}
@@ -41,7 +44,7 @@
                                     {{/if}}
                                 </li>
                             {{/each}}
-                                <li class="see-all"><button> See All</button></li>
+                            <li class="see-all"><button> See All</button></li>
                         </ul>
                     </li>
                 {{/each}}

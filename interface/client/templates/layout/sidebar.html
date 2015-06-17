@@ -1,5 +1,5 @@
 <template name="layout_sidebar">
-    <aside class="sidebar">
+    <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
                 <li class="{{isSelected}}">
@@ -41,6 +41,7 @@
                                     {{/if}}
                                 </li>
                             {{/each}}
+                                <li class="see-all"><button> See All</button></li>
                         </ul>
                     </li>
                 {{/each}}

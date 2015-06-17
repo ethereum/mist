@@ -14,10 +14,13 @@ aside.sidebar {
             padding-left: @gridWidth/4;
             margin-top: 0;
             overflow: hidden;
+            height: 100%;
+            transition: 0.25s;
 
             ul {
                 padding-left: 18px; 
                 border-top: none;
+                max-height: @gridHeight * 12;
                 // sub-menu
                 li {
                     height: 0;
@@ -41,6 +44,10 @@ aside.sidebar {
 
                 .slide-out, .slide-out.arrow-down {
                     transform: rotate(90deg) translateX(-1px) translateY(-10px);
+                }
+
+                ul.sub-menu .see-all {
+                    display: block;
                 }
 
                 button.selected {
@@ -73,6 +80,7 @@ aside.sidebar {
                 font-size: 14px;
                 font-weight: 500;
 
+
                 &:focus {
                     border: 0;
                 }
@@ -82,6 +90,7 @@ aside.sidebar {
                     margin-right: 4px;
                     width: 20px;
                     height: 20px;
+                    transition: opacity 0.5s;
                 }
 
                 &.has-badge span {
@@ -142,6 +151,8 @@ aside.sidebar {
                     &.selected {
                         color: @colorLinkBlur;
                     }
+
+                    
                 }
 
                 .badge {
@@ -164,9 +175,50 @@ aside.sidebar {
                         max-width: @gridWidth*4;
                     }
                 }
+
+                .see-all {
+                    display: none;
+                    position: absolute;
+                    top: @gridHeight * 10;
+                    width: 100%;
+                    background-color: #FFF;
+                    
+                    button {
+                        font-style: italic;
+                    }
+                }
             } 
         }
 
+    }
+
+    &.full-tabs {
+        nav > ul > li:not(.selected) {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            transform: translate3d(-100%,0,0)
+            // &> * {
+            // height: 0;
+            // padding:0;
+            // } 
+        }
+        nav > ul > li.selected {
+            img {
+                opacity: 0;
+            }
+            button.slide-out {
+                transform: rotate(-90deg) translateX(2px) translateY(-164px);
+            }
+            
+            ul {
+                max-height: none;
+            }
+
+            .see-all {
+                display: none;
+            }
+        }
     }
 
 }

@@ -64,11 +64,25 @@ Template['layout_browserBar'].events({
                 url: webview.getUrl(),
                 name: webview.getTitle(),
                 menu: {},
-                menuVisible: false
+                menuVisible: false,
+                position: Tabs.find().count() + 1
             });
 
             LocalStore.set('selectedTab', id);
         }
+    },
+    /*
+    Remove the current selected tab
+
+    // TODO show popup before to confirm
+
+    @event click button.remove-tab
+    */
+    'click button.remove-tab': function(){
+        var tabId = LocalStore.get('selectedTab');
+        
+        Tabs.remove(tabId);
+        LocalStore.set('selectedTab', 'browser');
     },
     /*
     Send the domain

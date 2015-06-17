@@ -2,9 +2,10 @@
     <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
-                <li class="{{isSelected}}">
+                <li class="browser {{isSelected}}">
                     <button class="main">
-                        Browse
+                        <img src="icons/browse-icon@2x.png">
+                        <span>Browse</span>
                     </button>
                     {{#if fullTabs}}
                         <button class="slide-out arrow-down"></button>
@@ -21,14 +22,14 @@
                     </ul>
                 </li>
                 {{#each tabs}}
-                    <li class="{{isSelected}}">
+                    <li class="{{isSelected}}" data-tab-id="{{_id}}">
                         <button class="main {{#if badge}}has-badge{{/if}}">
                             <img src="icons/wallet-icon@2x.png">
                             <span>{{name}}</span>
+                            {{#if badge}}
+                                <div class="badge">{{badge}}</div>
+                            {{/if}}
                         </button>
-                        {{#if badge}}
-                            <div class="badge">{{badge}}</div>
-                        {{/if}}
                         {{#if subMenu}}
                             <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                         {{/if}}
@@ -36,7 +37,7 @@
                         <ul class="sub-menu">
                             {{#each subMenu}}
                                 <li>
-                                    <button class="{{#if selected}}selected{{/if}}" data-tab-id="{{../_id}}">
+                                    <button class="{{#if selected}}selected{{/if}}">
                                         {{name}} 
                                     </button>
                                     {{#if badge}}

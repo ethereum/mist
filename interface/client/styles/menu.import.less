@@ -11,28 +11,22 @@ aside.sidebar {
 
         li {
             position: relative;
+            display: block;
             padding-left: @gridWidth/4;
             margin-top: 0;
             overflow: hidden;
             height: 100%;
             transition: 0.25s;
 
-            ul {
-                padding-left: 18px; 
-                border-top: none;
-                max-height: @gridHeight * 12;
-                // sub-menu
-                li {
-                    height: 0;
-                    opacity: 0;
-                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
 
-                    button:not(.slide-out) {
-                        font-size: 12px;
-                        font-weight: 400;
-                        text-transform: none;
-                    }
-                }
+            &.ui-sortable-helper {
+                height: @gridHeight*2 !important;
+                opacity: 0.5;
+            }
+            &.ui-sortable-placeholder {
+                visibility: visible !important;
+                height: 0 !important; //@gridHeight*3
+                border-bottom: 2px solid @colorLinkActive;
             }
 
             &.selected {
@@ -55,7 +49,7 @@ aside.sidebar {
                 }
             }
             &.selected, &.slided-out {
-                li {
+                ul.sub-menu li {
                     height: @gridHeight * 2;
                     opacity: 1;
                     border-top: 1px solid rgba(0, 0, 0, 0.04);
@@ -69,10 +63,10 @@ aside.sidebar {
             }
 
             button.main {
-                width: 85%;            
-                padding: @gridHeight/2 0;
-                .dapp-shorten-text;
-
+                position: relative;
+                padding: 0;
+                width: 85%;
+                height: @gridHeight*2;
                 color: @colorLinkBlur;
                 text-align: left;
                 text-transform: uppercase;
@@ -86,25 +80,30 @@ aside.sidebar {
                 }
 
                 img {
-                    vertical-align: middle;
-                    margin-right: 4px;
+                    position: absolute;
+                    top: 10px;
                     width: 20px;
                     height: 20px;
                     transition: opacity 0.5s;
                 }
 
-                &.has-badge span {
-                    position: relative;
-                    top: -5px;
+                span, .badge {
+                    .dapp-shorten-text;
+                    display: block;
+                    position: absolute;
+                    width: 86%;
+                    top: @gridHeight/2 + 2px;
+                    left: 15px + @defaultPaddingVertical;
+                    display: inline-block;
                 }
 
-                + .badge {
-                    .dapp-shorten-text;
-                    display: inline-block;
-                    position: absolute;
-                    width: 80%;
+                &.has-badge span {
+                    position: relative;
+                    top: -4px;
+                }
+
+                > .badge {
                     top: @gridHeight;
-                    left: 22px + @defaultPaddingVertical;
                     font-size: 12px;
                     font-weight: 200;
                     text-transform: none;
@@ -134,7 +133,22 @@ aside.sidebar {
             }
     
             // SUB MENU
-            .sub-menu {
+            ul.sub-menu {
+                padding-left: 18px; 
+                border-top: none;
+                max-height: @gridHeight*12;
+
+                li {
+                    height: 0;
+                    opacity: 0;
+                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
+
+                    button:not(.slide-out) {
+                        font-size: 12px;
+                        font-weight: 400;
+                        text-transform: none;
+                    }
+                }
 
                 button {
                     .dapp-shorten-text;
@@ -197,11 +211,11 @@ aside.sidebar {
             opacity: 0;
             visibility: hidden;
             height: 0;
-            transform: translate3d(-100%,0,0)
+            transform: translate3d(-100%,0,0);
             // &> * {
             // height: 0;
             // padding:0;
-            // } 
+            // }
         }
         nav > ul > li.selected {
             img {
@@ -219,10 +233,9 @@ aside.sidebar {
                 display: none;
             }
         }
-    }
 
-    &.full-tabs + .browser-bar + main .tab-view{
-        border-top-left-radius: 0;
+        + .browser-bar + main .tab-view{
+            border-top-left-radius: 0;
+        }
     }
-
 }

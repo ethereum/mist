@@ -97,6 +97,14 @@ Template['layout_sidebar'].helpers({
             selected += ' slided-out';
 
         return selected;
+    },
+    /**
+    Determines if the current tab is visible
+
+    @method (fullTabs)
+    */
+    'fullTabs': function(){
+        return (LocalStore.get('fullTabs')) ? 'full-tabs' : '';
     }
 });
 
@@ -139,7 +147,29 @@ Template['layout_sidebar'].events({
     @event button.slide-out
     */
     'click button.slide-out': function(e, template){
-        Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
+        var isSelected = (LocalStore.get('selectedTab') === (this._id || 'browser'));
+
+        if (isSelected && LocalStore.get('fullTabs')) {
+            LocalStore.set('fullTabs', false);
+        } else if (isSelected) {
+            LocalStore.set('fullTabs', true);
+        } else {
+            Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
+        }
+    },
+    /**
+    See all
+
+    @event .see-all button
+    */
+    'click li.see-all > button': function(e, template){
+        var isSelected = (LocalStore.get('selectedTab') === (this._id || 'browser'));
+
+        if (isSelected && LocalStore.get('fullTabs')) {
+            LocalStore.set('fullTabs', false);
+        } else if (isSelected) {
+            LocalStore.set('fullTabs', true);
+        } 
     }
 });
 

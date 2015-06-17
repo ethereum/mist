@@ -1,11 +1,15 @@
 <template name="layout_sidebar">
-    <aside class="sidebar">
+    <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
                 <li class="browser {{isSelected}}">
                     <button class="main">
-                        Browse
+                        <img src="icons/browse-icon@2x.png">
+                        <span>Browse</span>
                     </button>
+                    {{#if fullTabs}}
+                        <button class="slide-out arrow-down"></button>
+                    {{/if}}
 
                     <ul class="history sub-menu ">
                         {{#each history}}
@@ -41,6 +45,7 @@
                                     {{/if}}
                                 </li>
                             {{/each}}
+                            <li class="see-all"><button> See All</button></li>
                         </ul>
                     </li>
                 {{/each}}

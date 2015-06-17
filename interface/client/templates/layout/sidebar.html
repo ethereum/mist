@@ -22,10 +22,10 @@
                         <button class="main {{#if badge}}has-badge{{/if}}">
                             <img src="icons/wallet-icon@2x.png">
                             <span>{{name}}</span>
+                            {{#if badge}}
+                                <div class="badge">{{badge}}</div>
+                            {{/if}}
                         </button>
-                        {{#if badge}}
-                            <div class="badge">{{badge}}</div>
-                        {{/if}}
                         {{#if subMenu}}
                             <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                         {{/if}}

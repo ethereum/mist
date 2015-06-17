@@ -42,6 +42,10 @@ aside.sidebar {
                 .slide-out, .slide-out.arrow-down {
                     transform: rotate(90deg) translateX(-1px) translateY(-10px);
                 }
+
+                button.selected {
+                    font-weight: 600;                    
+                }
             }
             &.selected, &.slided-out {
                 li {
@@ -137,7 +141,6 @@ aside.sidebar {
 
                     &.selected {
                         color: @colorLinkBlur;
-                        font-weight: 600;
                     }
                 }
 

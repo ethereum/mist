@@ -71,8 +71,14 @@ main {
     box-shadow: @shadowStandard;
     background: #FFF;
     overflow: hidden;
+    opacity: 1;
+    transition: 0.25s ease-in-out;
+
     &.hidden {
-        visibility: hidden;
+        // transform: translate3d(0, 100%,  0);
+        transform: translate3d(-100%, 0,  0);
+        opacity: 0;
+        // visibility: hidden;
         // display: none;
     }
 }

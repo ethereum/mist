@@ -70,6 +70,8 @@ aside.sidebar {
                 font-weight: 500;
 
                 &.sub-menu {
+                    .dapp-shorten-text;
+                    width: @gridWidth*3.6;
                     color: @colorLinkActive;
                 }                
 
@@ -145,7 +147,7 @@ aside.sidebar {
             .badge {
                 .dapp-shorten-text;
                 position: absolute;
-                max-width: @gridWidth*2;
+                max-width: @gridWidth*1.5;
                 right: 0;
                 top: 0;
                 bottom: 0;
@@ -154,6 +156,13 @@ aside.sidebar {
                 text-align: center;
                 line-height: @gridHeight * 2;
                 font-size: 12px;
+
+                // ANIMATION
+                transition: max-width @animationSpeed;
+
+                &:hover {
+                    max-width: @gridWidth*4;
+                }
             }
         }
 

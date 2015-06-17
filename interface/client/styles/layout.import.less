@@ -55,6 +55,7 @@ main {
     right: 0;
     left: @widthSideBar;
     height:100%;
+    perspective: 1000px;
     // overflow: hidden;
 }
 
@@ -72,13 +73,16 @@ main {
     background: #FFF;
     overflow: hidden;
     opacity: 1;
-    transition: 0.25s ease-in-out;
+    transition:0.25s ease-out;
 
     &.hidden {
+        transform: translate3d(0, 30%,  0);
         // transform: translate3d(0, 100%,  0);
-        transform: translate3d(-100%, 0,  0);
+        // transform: translate3d(100%, 0,  0);
         opacity: 0;
-        // visibility: hidden;
+        transition: 0.5s ease-in;
+        transition-delay: 0.05s;
+        visibility: hidden;
         // display: none;
     }
 }

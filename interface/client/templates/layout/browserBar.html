@@ -1,5 +1,5 @@
 <template name="layout_browserBar">
-    <div class="browser-bar {{#if isBrowser}}browser{{/if}}">
+    <div class="browser-bar">
         <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
             <input type="text" value="{{currentUrl}}">
         </form>
@@ -15,5 +15,8 @@
         {{#if isBrowser}}
             <button class="add-tab icon-plus"></button>
         {{/if}}
+        {{#unless isBrowser}}
+            <button class="remove-tab icon-close"></button>
+        {{/unless}}
     </div>
 </template>

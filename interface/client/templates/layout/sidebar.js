@@ -11,6 +11,34 @@ The sidebar template
 @constructor
 */
 
+Template['layout_sidebar'].onRendered(function(){
+    var template = this,
+        $ul = template.$('nav > ul');
+
+    $ul.sortable({
+        containment: 'aside.sidebar',
+        axis: 'y',
+        // tolerance: 'pointer',
+        items: '> li:not(.browser)',
+        handle: 'button.main',
+        cancel: '',
+        cursor: 'move',
+        delay: 150,
+        revert: 200,
+        start: function(e){
+            $ul.sortable('refreshPositions');
+        },
+        update: function(e){
+            // iterate over the lis and reposition the items
+            $ul.find('> li').each(function(index, test){
+                var id = $(this).data('tab-id');
+                if(id)
+                    Tabs.update(id, {$set: {position: index}});
+            });
+        }
+    });
+});
+
 
 Template['layout_sidebar'].helpers({
     /**
@@ -19,7 +47,14 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-        return Tabs.find();
+
+        // UPADATE MAIN APPLICATION MENU
+        Tracker.afterFlush(function(){
+            updateApplicationMenuDevTools($('webview'));
+        });
+
+
+        return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**
     Return the tabs sub menu as array
@@ -85,12 +120,12 @@ Template['layout_sidebar'].events({
         Session.set('browserQuery', this.url);
     },
     /**
-    Select the current visible tab
+    Call the submenu dapp callback
 
     @event click ul.sub-menu button
     */
     'click nav ul.sub-menu button': function(e, template){
-        var tabId = $(e.currentTarget).data('tab-id');
+        var tabId = $(e.currentTarget).parent().parents('li').data('tab-id');
         var webview = $('webview[data-id="'+ tabId +'"]')[0];
 
         if(webview) {

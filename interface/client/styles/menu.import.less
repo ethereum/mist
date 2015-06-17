@@ -11,25 +11,19 @@ aside.sidebar {
 
         li {
             position: relative;
+            display: block;
             padding-left: @gridWidth/4;
             margin-top: 0;
             overflow: hidden;
 
-            ul {
-                padding-left: 18px; 
-                border-top: none;
-                // sub-menu
-                li {
-                    height: 0;
-                    opacity: 0;
-                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
-
-                    button:not(.slide-out) {
-                        font-size: 12px;
-                        font-weight: 400;
-                        text-transform: none;
-                    }
-                }
+            &.ui-sortable-helper {
+                height: @gridHeight*2 !important;
+                opacity: 0.5;
+            }
+            &.ui-sortable-placeholder {
+                visibility: visible !important;
+                height: 0 !important; //@gridHeight*3
+                border-bottom: 2px solid @colorLinkActive;
             }
 
             &.selected {
@@ -44,7 +38,7 @@ aside.sidebar {
                 }
             }
             &.selected, &.slided-out {
-                li {
+                ul.sub-menu li {
                     height: @gridHeight * 2;
                     opacity: 1;
                     border-top: 1px solid rgba(0, 0, 0, 0.04);
@@ -126,7 +120,21 @@ aside.sidebar {
             }
     
             // SUB MENU
-            .sub-menu {
+            ul.sub-menu {
+                padding-left: 18px; 
+                border-top: none;
+
+                li {
+                    height: 0;
+                    opacity: 0;
+                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
+
+                    button:not(.slide-out) {
+                        font-size: 12px;
+                        font-weight: 400;
+                        text-transform: none;
+                    }
+                }
 
                 button {
                     .dapp-shorten-text;

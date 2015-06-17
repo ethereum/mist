@@ -58,10 +58,10 @@ aside.sidebar {
             }
 
             button.main {
-                width: 85%;            
-                padding: @gridHeight/2 0;
-                .dapp-shorten-text;
-
+                position: relative;
+                padding: 0;
+                width: 85%;
+                height: @gridHeight*2;
                 color: @colorLinkBlur;
                 text-align: left;
                 text-transform: uppercase;
@@ -74,24 +74,29 @@ aside.sidebar {
                 }
 
                 img {
-                    vertical-align: middle;
-                    margin-right: 4px;
+                    position: absolute;
+                    top: 10px;
                     width: 20px;
                     height: 20px;
                 }
 
-                &.has-badge span {
-                    position: relative;
-                    top: -5px;
+                span, .badge {
+                    .dapp-shorten-text;
+                    display: block;
+                    position: absolute;
+                    width: 86%;
+                    top: @gridHeight/2 + 2px;
+                    left: 15px + @defaultPaddingVertical;
+                    display: inline-block;
                 }
 
-                + .badge {
-                    .dapp-shorten-text;
-                    display: inline-block;
-                    position: absolute;
-                    width: 80%;
+                &.has-badge span {
+                    position: relative;
+                    top: -4px;
+                }
+
+                > .badge {
                     top: @gridHeight;
-                    left: 22px + @defaultPaddingVertical;
                     font-size: 12px;
                     font-weight: 200;
                     text-transform: none;

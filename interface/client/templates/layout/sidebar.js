@@ -70,28 +70,32 @@ Template['layout_sidebar'].events({
     /**
     Select the current visible tab
 
-    @event click nav button:not(.slide-out)
+    @event click button.main
     */
-    'click nav button:not(.slide-out)': function(e, template){
-        var $button = $(e.currentTarget);
-        if($button.hasClass('history')) {
+    'click nav button.main': function(e, template){
+        LocalStore.set('selectedTab', this._id || 'browser');
+    },
+    /**
+    Select the current visible tab
 
-            LocalStore.set('selectedTab', 'browser');
-            Session.set('browserQuery', this.url);
+    @event click nav ul.history button
+    */
+    'click nav ul.history button': function(e, template){
+        LocalStore.set('selectedTab', 'browser');
+        Session.set('browserQuery', this.url);
+    },
+    /**
+    Select the current visible tab
 
-        // Dapp submenu is clicked
-        } else if($button.hasClass('sub-menu')) {
-            var tabId = $button.data('tab-id');
-            var webview = $('webview[data-id="'+ tabId +'"]')[0];
+    @event click ul.sub-menu button
+    */
+    'click nav ul.sub-menu button': function(e, template){
+        var tabId = $(e.currentTarget).data('tab-id');
+        var webview = $('webview[data-id="'+ tabId +'"]')[0];
 
-            if(webview) {
-                webview.send('callFunction', this.id);
-                LocalStore.set('selectedTab', tabId);
-            }
-
-        } else {
-
-            LocalStore.set('selectedTab', this._id || 'browser');
+        if(webview) {
+            webview.send('callFunction', this.id);
+            LocalStore.set('selectedTab', tabId);
         }
     },
     /**

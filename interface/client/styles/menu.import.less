@@ -57,7 +57,7 @@ aside.sidebar {
                 margin-top: 1px;
             }
 
-            button:not(.slide-out) {
+            button.main {
                 width: 85%;            
                 padding: @gridHeight/2 0;
                 .dapp-shorten-text;
@@ -68,17 +68,6 @@ aside.sidebar {
                 font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
                 font-size: 14px;
                 font-weight: 500;
-
-                &.sub-menu {
-                    .dapp-shorten-text;
-                    width: @gridWidth*3.6;
-                    color: @colorLinkActive;
-                }                
-
-                &.selected.sub-menu {
-                    color: @colorLinkBlur;
-                    font-weight: 600;
-                }
 
                 &:focus {
                     border: 0;
@@ -91,12 +80,17 @@ aside.sidebar {
                     height: 20px;
                 }
 
-                span {
+                &.has-badge span {
+                    position: relative;
+                    top: -5px;
+                }
+
+                + .badge {
                     .dapp-shorten-text;
                     display: inline-block;
                     position: absolute;
                     width: 80%;
-                    top: @gridHeight*1.5;
+                    top: @gridHeight;
                     left: 22px + @defaultPaddingVertical;
                     font-size: 12px;
                     font-weight: 200;
@@ -125,45 +119,49 @@ aside.sidebar {
                     transform: rotate(180deg) translateX(-10px) translateY(1px);
                 }
             }
+    
+            // SUB MENU
+            .sub-menu {
 
-            button.close-button {
-                display: none;
-                width: 30px;
-                height: 30px;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-                text-overflow: clip;
-                position: absolute;
-                right: 0;
-                top: 6px;
-                color: @colorLinkActive;
-            }
+                button {
+                    .dapp-shorten-text;
+                    padding: @gridHeight/2 0;
+                    width: @gridWidth*3.6;
+                    color: @colorLinkActive;
+                    text-align: left;
 
-            &:hover button.close-button {
-                display: block;
-            }
+                    &:focus {
+                        border: 0;
+                    }
+                    
 
-            .badge {
-                .dapp-shorten-text;
-                position: absolute;
-                max-width: @gridWidth*1.5;
-                right: 0;
-                top: 0;
-                bottom: 0;
-                padding: 0 @gridWidth/6;
-                background-color: rgba(0, 0, 0, 0.05);
-                text-align: center;
-                line-height: @gridHeight * 2;
-                font-size: 12px;
-
-                // ANIMATION
-                transition: max-width @animationSpeed;
-
-                &:hover {
-                    max-width: @gridWidth*4;
+                    &.selected {
+                        color: @colorLinkBlur;
+                        font-weight: 600;
+                    }
                 }
-            }
+
+                .badge {
+                    .dapp-shorten-text;
+                    position: absolute;
+                    max-width: @gridWidth*1.5;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    padding: 0 @gridWidth/6;
+                    background-color: rgba(0, 0, 0, 0.05);
+                    text-align: center;
+                    line-height: @gridHeight * 2;
+                    font-size: 12px;
+
+                    // ANIMATION
+                    transition: max-width @animationSpeed;
+
+                    &:hover {
+                        max-width: @gridWidth*4;
+                    }
+                }
+            } 
         }
 
     }

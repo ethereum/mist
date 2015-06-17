@@ -46,6 +46,14 @@ Template['views_browse'].onRendered(function(){
 
 Template['views_browse'].helpers({
     /**
+    Determines if the current tab is visible
+
+    @method (isVisible)
+    */
+    'isVisible': function(){
+        return (LocalStore.get('selectedTab') === "browser") ? '' : 'hidden';
+    },
+    /**
     Return the correct URL
 
     @method (url)

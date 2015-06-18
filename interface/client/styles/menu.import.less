@@ -22,11 +22,13 @@ aside.sidebar {
             &.ui-sortable-helper {
                 height: @gridHeight*2 !important;
                 opacity: 0.5;
+                transition: none;
             }
             &.ui-sortable-placeholder {
                 visibility: visible !important;
                 height: 0 !important; //@gridHeight*3
                 border-bottom: 2px solid @colorLinkActive;
+                margin: 5px 0;
             }
 
             &.selected {
@@ -150,6 +152,10 @@ aside.sidebar {
                     }
                 }
 
+                li:nth-child(6) { 
+                    visibility: hidden;
+                }
+
                 button {
                     .dapp-shorten-text;
                     padding: @gridHeight/2 0;
@@ -191,11 +197,11 @@ aside.sidebar {
                 }
 
                 .see-all {
-                    display: none;
+                    // display: none;
                     position: absolute;
                     top: @gridHeight * 10;
                     width: 100%;
-                    background-color: #FFF;
+                    // background-color: #FFF;
                     
                     button {
                         font-style: italic;
@@ -212,10 +218,7 @@ aside.sidebar {
             visibility: hidden;
             height: 0;
             transform: translate3d(-100%,0,0);
-            // &> * {
-            // height: 0;
-            // padding:0;
-            // }
+            transition-duration:1s;
         }
         nav > ul > li.selected {
             img {
@@ -227,6 +230,10 @@ aside.sidebar {
             
             ul {
                 max-height: none;
+            }
+
+            li:nth-child(6) { 
+                visibility: visible;
             }
 
             .see-all {

@@ -16,13 +16,10 @@ aside.sidebar {
             margin-top: 0;
             overflow: hidden;
             height: 100%;
-            transition: transform 0.25s, height 0.25s;
-
 
             &.ui-sortable-helper {
                 height: @gridHeight*2 !important;
                 opacity: 0.5;
-                transition: none;
             }
             &.ui-sortable-placeholder {
                 visibility: visible !important;
@@ -86,7 +83,6 @@ aside.sidebar {
                     top: 10px;
                     width: 20px;
                     height: 20px;
-                    transition: opacity 0.5s;
                 }
 
                 span, .badge {
@@ -125,7 +121,6 @@ aside.sidebar {
                 height: 20px;
                 background: url('icons/expand-icon.png') no-repeat center;
                 background-size: 15px 10px;
-                transition: transform 0.25s ease-in-out;
                 border: none;
                 transform: translateX(10px) translateY(-1px);
 
@@ -143,7 +138,6 @@ aside.sidebar {
                 li {
                     height: 0;
                     opacity: 0;
-                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
 
                     button:not(.slide-out) {
                         font-size: 12px;
@@ -188,9 +182,6 @@ aside.sidebar {
                     line-height: @gridHeight * 2;
                     font-size: 12px;
 
-                    // ANIMATION
-                    transition: max-width @animationSpeed;
-
                     &:hover {
                         max-width: @gridWidth*4;
                     }
@@ -214,11 +205,9 @@ aside.sidebar {
 
     &.full-tabs {
         nav > ul > li:not(.selected) {
-            opacity: 0;
             visibility: hidden;
             height: 0;
             transform: translate3d(-100%,0,0);
-            transition-duration:1s;
         }
         nav > ul > li.selected {
             img {
@@ -241,7 +230,7 @@ aside.sidebar {
             }
         }
 
-        + .browser-bar + main .tab-view{
+        & + .browser-bar + main .tab-view{
             border-top-left-radius: 0;
         }
     }

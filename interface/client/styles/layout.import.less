@@ -9,14 +9,6 @@ body, html {
 
     &.blur {
         .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
-        
-        // aside {
-        //     &:before {
-        //         box-shadow: 0 0 8px rgba(0,0,0,0.2);
-        //     }
-        //     // background-color: @colorOSBackgroundBlur;
-        //     // .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
-        // }
     }
 
     -webkit-touch-callout: none;
@@ -74,18 +66,11 @@ main {
     background: #FFF;
     overflow: hidden;
     opacity: 1;
-    transition:transform 0.2s ease-out, opacity 0.2s ease-out;
+    z-index:10;
 
     &.hidden {
-        transform: translate3d(0, 30%,  0);
-        // transform: translate3d(0, 100%,  0);
-        // transform: translate3d(100%, 0,  0);
-        opacity: 0;
-        transition: transform 0.4s ease-in, opacity 0.4s ease-in, visibility 0.4s;
-        transition-delay: 0.05s;
         visibility: hidden;
-        z: -1;
-        // display: none;
+        z-index: 1;
     }
 }
 
@@ -127,13 +112,5 @@ webview {
         position: absolute;
         top: 29px;
         right: 50px; //18
-
-        // ANIMATION
-        .transition(opacity @animationSpeed/2);
-        .transform-origin(0% 0%);
-
-        &.animate {
-            .opacity(0);
-        }
     }
 }

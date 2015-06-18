@@ -1,7 +1,7 @@
 // Layout
 
 .browse-view, .tab-view {
-    transition:transform 0.6s cubic-bezier(0.12, 1.1, 0.59, 1.005);
+    transition:transform 0.4s cubic-bezier(0.12, 1.1, 0.59, 1.005);
 
     &.hidden {
         transform: translate3d(0, 100%,  0);
@@ -30,7 +30,7 @@ aside.sidebar {
         }
 
         button.main img {
-                transition: opacity 0.5s;
+            transition: opacity 0.5s;
         }
         button.slide-out {
             transition: transform 0.25s ease-in-out;
@@ -39,7 +39,6 @@ aside.sidebar {
         ul.sub-menu {
             li {
                 transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
-
             }
             .badge {
                 // ANIMATION
@@ -56,5 +55,13 @@ aside.sidebar {
         nav > ul > li.selected button.slide-out {
                 transition-delay: 0.5s;
         }
+    }
+}
+
+
+// Browser bar 
+.browser-area {
+    .url-input {
+        transition: opacity 1s;
     }
 }

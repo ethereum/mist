@@ -1,0 +1,92 @@
+.browser-area {
+    position: absolute;
+    top: 10px;
+    left: @widthSideBar;
+    right: 0;
+    z-index: 100;
+    height: @gridHeight * 2;
+    display: flex;
+    
+    .icon {
+        padding: @gridHeight/4 @gridWidth/4;
+    }
+
+    .app-bar {
+        flex-grow: 1;
+        display: flex;
+        margin: @gridHeight/4 @gridWidth/4;
+        padding: @gridHeight/4 @gridWidth/4;
+        background: #F6F6F6;
+        border-radius: 3px;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+        
+        button {
+            font-size: 80%;
+        }
+
+        form {
+            flex-grow: 1;
+            flex: flex-grow;
+
+            .url-input {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                max-width: none;
+                background: transparent;
+                border: none;
+                text-align: center;
+                color: @colorLinkBlur;
+                opacity: 0.6;
+                font-size: 80%;
+
+
+                &:focus {
+                    color: @colorLinkActive;
+                    opacity: 1;
+                }
+            }
+
+        }
+
+        &.loading {
+            .url-input {
+                .color-pulse;
+            }
+        }
+    }
+
+}
+
+
+
+.color-pulse {
+    animation-name: color-pulse;
+    animation-duration: 0.5s;   
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;    
+    background: linear-gradient(to left, 
+        darken(@colorLinkActive, 30%) 0, 
+        saturate(@colorLinkActive, 100%),  
+        darken(@colorLinkActive, 30%));
+    background-size: 300px 50px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes color-pulse {
+    0% {
+        transform: scale(0.992);
+        opacity: 0.7;       
+        background-position-x:0px;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1; 
+    }     
+    100% {
+        transform: scale(0.992);
+        opacity: 0.7;       
+        background-position-x:-300px;
+    }           
+}

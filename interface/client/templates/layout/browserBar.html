@@ -1,22 +1,30 @@
 <template name="layout_browserBar">
-    <div class="browser-bar">
-        <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
-            <input type="text" value="{{currentUrl}}">
-        </form>
+    <div class="browser-area">
+        <button class="icon icon-arrow-left"></button>
+        <button class="icon icon-refresh"></button>
 
-        {{#Animate}}
-            {{#if TemplateVar.getFrom currentWebView "loading"}}
-                <div class="spinner animate">
-                    {{> spinner}}
-                </div>
-            {{/if}}
-        {{/Animate}}
+        <div class="app-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}}">
+            <button class="app-title">App Title</button>
+            <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
+                <input class="url-input" type="text" value="{{currentUrl}}">
+            </form>
+            <button class="keys">Keys Needed</button>
 
+            <div class="app-info">
+                
+            </div>
+        </div>
+        
         {{#if isBrowser}}
-            <button class="add-tab icon-plus"></button>
+            <button class="add-tab icon icon-plus"></button>
         {{/if}}
         {{#unless isBrowser}}
-            <button class="remove-tab icon-close"></button>
+            <button class="remove-tab icon icon-close"></button>
         {{/unless}}
+        
+        {{#Animate}}
+        {{/Animate}}
+
+
     </div>
 </template>

@@ -1,6 +1,6 @@
 
 aside.sidebar {
-    // overflow: hidden;
+    overflow: hidden;
 
     ul {
         z-index: 10;
@@ -15,7 +15,7 @@ aside.sidebar {
             padding-left: @gridWidth/4;
             margin-top: 0;
             overflow: hidden;
-            height: 100%;
+            height: @gridHeight * 2;
 
             &.ui-sortable-helper {
                 height: @gridHeight*2 !important;
@@ -34,9 +34,10 @@ aside.sidebar {
                 border-radius: 3px 0 0 3px;
                 box-shadow: @shadowStandard;
                 border-top: none;
+                height: 100%;
 
                 .slide-out, .slide-out.arrow-down {
-                    transform: rotate(90deg) translateX(-1px) translateY(-10px);
+                    transform: rotate(90deg) translate3d(-1px, -10px, 0);
                 }
 
                 ul.sub-menu .see-all {
@@ -122,18 +123,20 @@ aside.sidebar {
                 background: url('icons/expand-icon.png') no-repeat center;
                 background-size: 15px 10px;
                 border: none;
-                transform: translateX(10px) translateY(-1px);
+                transform: translate3d(10px, -1px, 0);
 
                 &.arrow-down {
-                    transform: rotate(180deg) translateX(-10px) translateY(1px);
+                    transform: rotate(180deg) translate3d(-10px, 1px, 0);
                 }
             }
     
             // SUB MENU
             ul.sub-menu {
+                top: -4px;
                 padding-left: 18px; 
                 border-top: none;
                 max-height: @gridHeight*12;
+
 
                 li {
                     height: 0;
@@ -214,7 +217,7 @@ aside.sidebar {
                 opacity: 0;
             }
             button.slide-out {
-                transform: rotate(-90deg) translateX(2px) translateY(-164px);
+                transform: rotate(-90deg) translate3d(2px, -164px ,0);
             }
             
             ul {

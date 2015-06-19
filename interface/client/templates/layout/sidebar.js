@@ -83,7 +83,7 @@ Template['layout_sidebar'].helpers({
     @method (history)
     */
     'history': function() {
-        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 5});
+        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
     },
     /**
     Determines if the current tab is visible

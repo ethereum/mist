@@ -6,10 +6,8 @@
                     <button title="Main" class="main">
                         <img src="icons/browse-icon@2x.png">
                         <span>Browse</span>
-                    </button>
-                    {{#if fullTabs}}
-                        <button title="Go Back" class="slide-out arrow-down"></button>
-                    {{/if}}
+                    </button>                    
+                    <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
 
                     <ul class="history sub-menu ">
                         {{#each history}}
@@ -19,6 +17,7 @@
                                 </button>
                             </li>
                         {{/each}}
+                            <li class="see-all"><button> See All</button></li>                        
                     </ul>
                 </li>
                 {{#each tabs}}

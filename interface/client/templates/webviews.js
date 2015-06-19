@@ -11,11 +11,13 @@ webviewLoadStop = function(e){
     if(!url || url === 'about:blank' || url === location.toString())
         return;
 
-    console.log('Stop loading ', url);
+    console.log('Stop loading '+ url);
 
 
-    // IS DOOGLE
+    // IS BROWSER
     if(_.isEmpty(tabId)) {
+
+        Session.set('browserQuery', url);
 
         // ADD to doogle last visited pages
         if((find = _.find(DoogleLastVisitedPages.find().fetch(), function(historyEntry){

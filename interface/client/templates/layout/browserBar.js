@@ -51,6 +51,28 @@ Template['layout_browserBar'].helpers({
 
 Template['layout_browserBar'].events({
     /*
+    Go back in the dapps browser history
+
+    @event click button.back
+    */
+    'click button.back': function(){
+        var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+
+        if(webview && webview.canGoBack())
+            webview.goBack();
+    },
+    /*
+    Reload the current webview
+
+    @event click button.reload
+    */
+    'click button.reload': function(){
+        var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+        
+        if(webview)
+            webview.reload();
+    },
+    /*
     Add the current selected URL as tab
 
     @event click button.add-tab

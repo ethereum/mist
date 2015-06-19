@@ -7,8 +7,13 @@
     height: @gridHeight * 2;
     display: flex;
     
-    .icon {
+    button.icon {
         padding: @gridHeight/4 @gridWidth/4;
+
+        &:focus {
+            border: 0;
+            color: @colorLinkBlur;
+        }
     }
 
     .app-bar {

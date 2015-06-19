@@ -3,12 +3,12 @@
         <nav>
             <ul>
                 <li class="browser {{isSelected}}">
-                    <button class="main">
+                    <button title="Main" class="main">
                         <img src="icons/browse-icon@2x.png">
                         <span>Browse</span>
                     </button>
                     {{#if fullTabs}}
-                        <button class="slide-out arrow-down"></button>
+                        <button title="Go Back" class="slide-out arrow-down"></button>
                     {{/if}}
 
                     <ul class="history sub-menu ">
@@ -31,7 +31,7 @@
                             {{/if}}
                         </button>
                         {{#if subMenu}}
-                            <button class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
+                            <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                         {{/if}}
 
                         <ul class="sub-menu">

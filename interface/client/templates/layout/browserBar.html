@@ -1,7 +1,7 @@
 <template name="layout_browserBar">
     <div class="browser-area">
-        <button class="back icon icon-arrow-left"></button>
-        <button class="reload icon icon-refresh"></button>
+        <button title="go back" class="back icon icon-arrow-left"></button>
+        <button title="refresh page" class="reload icon icon-refresh"></button>
 
         <div class="app-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}}">
             <button class="app-title">App Title</button>
@@ -52,9 +52,9 @@
         </div>
         
         {{#if isBrowser}}
-            <button class="add-tab icon icon-plus"></button>
+            <button title="Add as app" class="add-tab icon icon-plus"></button>
         {{else}}
-            <button class="remove-tab icon icon-close"></button>
+            <button title="Remove app" class="remove-tab icon icon-close"></button>
         {{/if}}
 
     </div>

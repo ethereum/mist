@@ -35,9 +35,7 @@ aside.sidebar {
 
                 ul.sub-menu li {
                     height: floor(@gridHeight * 2);
-                    line-height: floor(@gridHeight * 2);
                     opacity: 1;
-                    border-top: 1px solid rgba(0, 0, 0, 0.04);
                 }
             }
 
@@ -46,7 +44,7 @@ aside.sidebar {
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: @shadowStandard;
-                border-top: none;
+                border-top: 0;
 
                 .slide-out, .slide-out.arrow-down {
                     transform: rotate(90deg) translate3d(-1px, -10px, 0);
@@ -64,7 +62,7 @@ aside.sidebar {
 
             &.selected + li,
             &:first-child {
-                border-top: none;
+                border-top: 0;
                 margin-top: 1px;
             }
 
@@ -77,7 +75,7 @@ aside.sidebar {
                 text-align: left;
                 text-transform: uppercase;
                 font-family: @sourceSansPro;
-                font-size: 14px;
+                font-size: @fontSizeNormal;
                 font-weight: 500;
 
 
@@ -110,7 +108,7 @@ aside.sidebar {
 
                 > .badge {
                     top: @gridHeight;
-                    font-size: 12px;
+                    font-size: @fontSizeSmall;
                     font-weight: 200;
                     text-transform: none;
                 }
@@ -139,16 +137,20 @@ aside.sidebar {
     
             // SUB MENU
             ul.sub-menu {
-                padding-left: 18px; 
-                border-top: none;
+                padding-left: @gridWidth/2; 
+                border-top: 0;
                 max-height: @gridHeight*12;
 
                 li {
                     height: 0;
                     opacity: 0;
+                    line-height: floor(@gridHeight * 2) - 1px; // -1px fixes an issue, where fonts shift up by 1px
+
+                    border-top: 1px solid rgba(0, 0, 0, 0.04);
+
 
                     button:not(.slide-out) {
-                        font-size: 12px;
+                        font-size: @fontSizeSmall;
                         font-weight: 400;
                         text-transform: none;
                     }
@@ -160,10 +162,11 @@ aside.sidebar {
 
                 button {
                     .dapp-shorten-text;
-                    padding: @gridHeight/2 0;
+                    padding: floor(@gridHeight / 2) 0;
                     width: @gridWidth*3.6;
                     color: @colorLinkActive;
                     text-align: left;
+                    border: 0;
 
                     &:focus {
                         border: 0;
@@ -188,8 +191,8 @@ aside.sidebar {
                     padding: 0 @gridWidth/6;
                     background-color: rgba(0, 0, 0, 0.05);
                     text-align: center;
-                    line-height: @gridHeight * 2;
-                    font-size: 12px;
+                    line-height: floor(@gridHeight * 2);
+                    font-size: @fontSizeSmall;
 
                     &:hover {
                         max-width: @gridWidth*4;

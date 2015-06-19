@@ -1,6 +1,7 @@
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
+
 // const Menu = require('menu');
 // const Tray = require('tray');
 const menuItems = require('./menuItems');
@@ -40,6 +41,11 @@ app.on('activate-with-no-open-windows', function () {
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+
+    // instantiate custom protocols
+    // require('./customProtocols.js');
+
+
 
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([

@@ -1,0 +1,189 @@
+.browser-area {
+    position: absolute;
+    top: 10px;
+    left: @widthSideBar;
+    right: 0;
+    z-index: 100;
+    height: @gridHeight * 2;
+    display: flex;
+    
+    button.icon {
+        padding: @gridHeight/4 @gridWidth/4;
+
+        &:focus {
+            border: 0;
+            color: @colorLinkFocus;
+        }
+    }
+
+    .app-bar {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        margin: @gridHeight/4 @gridWidth/4;
+        padding: @gridHeight/4 @gridWidth/4;
+        background: #F6F6F6;
+        border-radius: 3px;
+        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+        height: @gridHeight * 1.5; 
+        overflow: hidden;
+
+        transition: height 0.25s, box-shadow 0.5s;
+        
+        button {
+            font-size: 80%;
+            height: @gridHeight;
+        }
+
+        form {
+            flex-grow: 1;
+            height: @gridHeight;
+
+            .url-input {
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                max-width: none;
+                background: transparent;
+                border: none;
+                text-align: center;
+                color: @colorLinkBlur;
+                opacity: 0.6;
+                font-size: 80%;
+
+
+                &:focus {
+                    color: @colorLinkActive;
+                    opacity: 1;
+                }
+            }
+
+        }
+
+        &.loading {
+            .url-input {
+                .color-pulse;
+            }
+        }
+
+        .app-info {
+            display: none;
+            position: absolute;
+            top: @gridHeight * 2;
+            left: 0;
+            right: 0;
+            height: @gridHeight * 14;
+            padding: @gridHeight/2 @gridWidth/2;
+
+            .message {
+                flex-grow: 1;
+            }
+
+            .key-list {
+                flex-grow: 2;
+                min-width: @gridWidth*12;
+                list-style-type: none;
+                overflow: auto;
+
+                li {
+                    padding: @gridHeight/4 @gridWidth * 1.5;
+                    position: relative;
+                    overflow: hidden;
+
+                    .dapp-identicon {
+                        position: absolute;
+                        top: 50%;
+                        left: 0;
+                        width: 32px;
+                        height: 32px;
+                        margin-top: -16px;
+                        background-size: 32px 32px;
+                        display: inline-block;
+                        border-radius: 16px;
+                    }
+
+                    h3 {
+                        padding: 0;
+                        margin: 0;
+                    }
+
+                    .account-id {
+                        font-size: 70%;
+                        opacity: 0.5;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        padding-top: 0;
+                    }
+
+
+                }
+            }
+
+            .bar-actions {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: @gridHeight * 2;
+
+                button {
+                    display: inline-block;
+                    float: right;
+                    font-size: 100%;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                    font-family: @sourceSansPro;
+                    padding: @gridHeight/4 @gridWidth/2;
+                }
+
+                button.cancel {
+                    font-weight: 300;
+                }
+            }
+        }
+
+        &:hover, &.show-bar {
+            height: @gridHeight * 16;
+            box-shadow: @shadowStandard;
+        }
+
+        &:hover .app-info , &.show-bar .app-info {
+            display: flex;
+        }
+    }
+
+}
+
+
+
+.color-pulse {
+    animation-name: color-pulse;
+    animation-duration: 0.5s;   
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;    
+    background: linear-gradient(to left, 
+        darken(@colorLinkActive, 30%) 0, 
+        saturate(@colorLinkActive, 100%),  
+        darken(@colorLinkActive, 30%));
+    background-size: 300px 50px;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes color-pulse {
+    0% {
+        transform: scale(0.992);
+        opacity: 0.7;       
+        background-position-x:0px;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 1; 
+    }     
+    100% {
+        transform: scale(0.992);
+        opacity: 0.7;       
+        background-position-x:-300px;
+    }           
+}

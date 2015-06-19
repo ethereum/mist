@@ -1,9 +1,26 @@
 @widthSideBar: @gridWidth * 6.5;
 
-@colorOSBackgroundFocus: #D2D2D2;
-@colorOSBackgroundBlur: #F6F6F6;
 
 @colorLinkActive: #4A90E2;
 @colorLinkBlur: #494949;
+@colorLinkFocus: lighten(@colorLinkBlur, 8%);
 
-@shadowStandard: -1px 0 1px rgba(0,0,0,0.2);
+@shadowStandard: -1px 0 4px rgba(0,0,0,0.2);
+
+// FONTS
+@sourceSansPro: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
+@fontSizeTiny: 8px;
+@fontSizeSmall: 12px;
+@fontSizeNormal: 14px;
+@fontSizeLarge: 18px;
+
+
+
+
+// Platform specifics
+// Mac OSX
+@colorOSBackgroundFocus: #D2D2D2;
+@colorOSBackgroundBlur: #F6F6F6;
+
+// Windows
+// @colorOSBackgroundFocus windows F0F0F0

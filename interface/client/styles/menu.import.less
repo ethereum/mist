@@ -1,6 +1,6 @@
 
 aside.sidebar {
-    // overflow: hidden;
+    overflow: hidden;
 
     ul {
         z-index: 10;
@@ -15,14 +15,11 @@ aside.sidebar {
             padding-left: @gridWidth/4;
             margin-top: 0;
             overflow: hidden;
-            height: 100%;
-            transition: transform 0.25s, height 0.25s;
-
+            height: @gridHeight * 2;
 
             &.ui-sortable-helper {
                 height: @gridHeight*2 !important;
                 opacity: 0.5;
-                transition: none;
             }
             &.ui-sortable-placeholder {
                 visibility: visible !important;
@@ -31,15 +28,26 @@ aside.sidebar {
                 margin: 5px 0;
             }
 
+            &.selected,
+            &.slided-out {
+                height: 100%;
+
+
+                ul.sub-menu li {
+                    height: floor(@gridHeight * 2);
+                    opacity: 1;
+                }
+            }
+
             &.selected {
                 color: @colorLinkActive;
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: @shadowStandard;
-                border-top: none;
+                border-top: 0;
 
                 .slide-out, .slide-out.arrow-down {
-                    transform: rotate(90deg) translateX(-1px) translateY(-10px);
+                    transform: rotate(90deg) translate3d(-1px, -10px, 0);
                 }
 
                 ul.sub-menu .see-all {
@@ -50,17 +58,11 @@ aside.sidebar {
                     font-weight: 600;                    
                 }
             }
-            &.selected, &.slided-out {
-                ul.sub-menu li {
-                    height: @gridHeight * 2;
-                    opacity: 1;
-                    border-top: 1px solid rgba(0, 0, 0, 0.04);
-                }
-            }
+
 
             &.selected + li,
             &:first-child {
-                border-top: none;
+                border-top: 0;
                 margin-top: 1px;
             }
 
@@ -72,13 +74,14 @@ aside.sidebar {
                 color: @colorLinkBlur;
                 text-align: left;
                 text-transform: uppercase;
-                font-family: 'Source Sans Pro', "Helvetica Neue", "Helvetica", Arial, Sans-serif;
-                font-size: 14px;
+                font-family: @sourceSansPro;
+                font-size: @fontSizeNormal;
                 font-weight: 500;
 
 
                 &:focus {
                     border: 0;
+                    color: @colorLinkFocus;
                 }
 
                 img {
@@ -86,7 +89,6 @@ aside.sidebar {
                     top: 10px;
                     width: 20px;
                     height: 20px;
-                    transition: opacity 0.5s;
                 }
 
                 span, .badge {
@@ -106,7 +108,7 @@ aside.sidebar {
 
                 > .badge {
                     top: @gridHeight;
-                    font-size: 12px;
+                    font-size: @fontSizeSmall;
                     font-weight: 200;
                     text-transform: none;
                 }
@@ -119,34 +121,36 @@ aside.sidebar {
             }
             button.slide-out {
                 position: absolute;
-                right: @gridHeight/4;
+                right: @gridHeight/2;
                 top: @gridHeight/1.5;
                 width: 30px;
                 height: 20px;
                 background: url('icons/expand-icon.png') no-repeat center;
                 background-size: 15px 10px;
-                transition: transform 0.25s ease-in-out;
                 border: none;
-                transform: translateX(10px) translateY(-1px);
+                transform: translate3d(10px, -1px, 0);
 
                 &.arrow-down {
-                    transform: rotate(180deg) translateX(-10px) translateY(1px);
+                    transform: rotate(180deg) translate3d(-10px, 1px, 0);
                 }
             }
     
             // SUB MENU
             ul.sub-menu {
-                padding-left: 18px; 
-                border-top: none;
+                padding-left: @gridWidth/2; 
+                border-top: 0;
                 max-height: @gridHeight*12;
 
                 li {
                     height: 0;
                     opacity: 0;
-                    transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
+                    line-height: floor(@gridHeight * 2) - 1px; // -1px fixes an issue, where fonts shift up by 1px
+
+                    border-top: 1px solid rgba(0, 0, 0, 0.04);
+
 
                     button:not(.slide-out) {
-                        font-size: 12px;
+                        font-size: @fontSizeSmall;
                         font-weight: 400;
                         text-transform: none;
                     }
@@ -158,13 +162,15 @@ aside.sidebar {
 
                 button {
                     .dapp-shorten-text;
-                    padding: @gridHeight/2 0;
+                    padding: floor(@gridHeight / 2) 0;
                     width: @gridWidth*3.6;
                     color: @colorLinkActive;
                     text-align: left;
+                    border: 0;
 
                     &:focus {
                         border: 0;
+                        color: @colorLinkFocus;
                     }
                     
 
@@ -185,11 +191,8 @@ aside.sidebar {
                     padding: 0 @gridWidth/6;
                     background-color: rgba(0, 0, 0, 0.05);
                     text-align: center;
-                    line-height: @gridHeight * 2;
-                    font-size: 12px;
-
-                    // ANIMATION
-                    transition: max-width @animationSpeed;
+                    line-height: floor(@gridHeight * 2);
+                    font-size: @fontSizeSmall;
 
                     &:hover {
                         max-width: @gridWidth*4;
@@ -214,18 +217,18 @@ aside.sidebar {
 
     &.full-tabs {
         nav > ul > li:not(.selected) {
-            opacity: 0;
             visibility: hidden;
             height: 0;
             transform: translate3d(-100%,0,0);
-            transition-duration:1s;
         }
         nav > ul > li.selected {
             img {
                 opacity: 0;
             }
             button.slide-out {
-                transform: rotate(-90deg) translateX(2px) translateY(-164px);
+                transform: rotate(-90deg);
+                left: 1px;
+                right: auto;
             }
             
             ul {
@@ -241,7 +244,7 @@ aside.sidebar {
             }
         }
 
-        + .browser-bar + main .tab-view{
+        & + .browser-bar + main .tab-view{
             border-top-left-radius: 0;
         }
     }

@@ -28,13 +28,24 @@ aside.sidebar {
                 margin: 5px 0;
             }
 
+            &.selected,
+            &.slided-out {
+                height: 100%;
+
+
+                ul.sub-menu li {
+                    height: @gridHeight * 2;
+                    opacity: 1;
+                    border-top: 1px solid rgba(0, 0, 0, 0.04);
+                }
+            }
+
             &.selected {
                 color: @colorLinkActive;
                 background: #FFF;
                 border-radius: 3px 0 0 3px;
                 box-shadow: @shadowStandard;
                 border-top: none;
-                height: 100%;
 
                 .slide-out, .slide-out.arrow-down {
                     transform: rotate(90deg) translate3d(-1px, -10px, 0);
@@ -48,13 +59,7 @@ aside.sidebar {
                     font-weight: 600;                    
                 }
             }
-            &.selected, &.slided-out {
-                ul.sub-menu li {
-                    height: @gridHeight * 2;
-                    opacity: 1;
-                    border-top: 1px solid rgba(0, 0, 0, 0.04);
-                }
-            }
+
 
             &.selected + li,
             &:first-child {
@@ -217,7 +222,9 @@ aside.sidebar {
                 opacity: 0;
             }
             button.slide-out {
-                transform: rotate(-90deg) translate3d(2px, -164px ,0);
+                transform: rotate(-90deg);
+                left: 1px;
+                right: auto;
             }
             
             ul {

@@ -29,6 +29,29 @@ Template['layout_browserBar'].helpers({
         return (tabId === 'browser' || !tab) ? Session.get('browserQuery') : Tabs.findOne(tabId).url;
     },
     /**
+    Break the URL in protocol, domain and folders
+
+    @method (breadcrumb)
+    */
+    'breadcrumb': function(){
+        var tabId = LocalStore.get('selectedTab'),
+            tab = Tabs.findOne(tabId);
+
+        var url = (tabId === 'browser' || !tab) ? Session.get('browserQuery') : Tabs.findOne(tabId).url;
+        var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
+        var search = url.match(pattern);
+        var urlObject = {
+            url: search[0],
+            protocol: search[1],
+            domain: search[2].split("."),
+            folders: search[3].split("/"),
+        }
+
+        var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
+
+        return breadcrumb;
+    },
+    /**
     Show the add button, when on a dapp and in doogle
 
     @method (isBrowser)

@@ -6,6 +6,7 @@
     z-index: 100;
     height: @gridHeight * 2;
     display: flex;
+    font-family: @sourceSansPro;
     
     button.icon {
         padding: @gridHeight/4 @gridWidth/4;
@@ -31,39 +32,77 @@
         transition: height 0.25s, box-shadow 0.5s;
         
         button {
-            font-size: 80%;
+            font-family: @sourceSansPro;
+            font-size: @fontSizeSmall;
+            font-weight: 500;
             height: @gridHeight;
+
+            .app-icon {
+                position: relative;
+                top: 2px;
+                width: 16px;
+                height: 16px;
+            }
+
+            .icon-key {
+              display: block;
+              float: right;
+              top: 3px;
+              margin-left: 4px;
+              position: relative;
+            }
+
         }
 
         form {
+            position: relative;
             flex-grow: 1;
             height: @gridHeight;
 
             .url-input {
-                width: 100%;
+                position: absolute;
+                top: 3px;
+                left: 0;
+                bottom: 0;
+                right: 0;
                 padding: 0;
                 margin: 0;
+                width: 100%;
                 max-width: none;
                 background: transparent;
                 border: none;
                 text-align: center;
                 color: @colorLinkBlur;
-                opacity: 0.6;
+                opacity: 0;
                 font-size: 80%;
-
+                font-family: @sourceSansPro;
+                font-weight: 400;
+                transition: opacity 0.1s;
 
                 &:focus {
                     color: @colorLinkActive;
                     opacity: 1;
                 }
+
+                &:focus + .url-breadcrumb {
+                    display: none;
+                }
             }
 
-        }
+            .url-breadcrumb {
+                color: lighten(@colorLinkBlur, 40%);
+                opacity: 0.8;
+                font-size: 80%;
+                text-align: center;
+                font-weight: 400;
+                padding-top: 3px;         
+                transition: opacity 0.1s, visibility 015s;
 
-        &.loading {
-            .url-input {
-                .color-pulse;
+                span {
+                    color: @colorLinkBlur;
+                }            
             }
+
         }
 
         .app-info {
@@ -72,18 +111,33 @@
             top: @gridHeight * 2;
             left: 0;
             right: 0;
-            height: @gridHeight * 14;
-            padding: @gridHeight/2 @gridWidth/2;
+            bottom: 0;
+            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 2;
+            margin: 0 @gridWidth/4  0;
+            border-top: solid 1px #BDB6B6;
 
             .message {
                 flex-grow: 1;
+                padding: @gridHeight/2 @gridWidth/2 0 0;
+
+                h3 {
+                    font-size: @fontSizeLarge;
+                    text-transform: none;
+                    color: #4A4A4A;
+                    font-weight: 400;
+
+                    em {
+                        font-weight: 700;
+                    }
+                }
             }
 
             .key-list {
-                flex-grow: 2;
-                min-width: @gridWidth*12;
+                // flex-grow: 2;
+                width: @gridWidth*24;
                 list-style-type: none;
                 overflow: auto;
+                padding-left: 0;
 
                 li {
                     padding: @gridHeight/4 @gridWidth * 1.5;
@@ -121,24 +175,25 @@
             }
 
             .bar-actions {
+                display: flex;
+                justify-content: flex-end;
                 position: absolute;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 height: @gridHeight * 2;
 
+                button.cancel {
+                    font-weight: 300;
+                }
+
                 button {
                     display: inline-block;
-                    float: right;
                     font-size: 100%;
                     font-weight: 600;
                     text-transform: uppercase;
                     font-family: @sourceSansPro;
                     padding: @gridHeight/4 @gridWidth/2;
-                }
-
-                button.cancel {
-                    font-weight: 300;
                 }
             }
         }
@@ -146,16 +201,46 @@
         &:hover, &.show-bar {
             height: @gridHeight * 16;
             box-shadow: @shadowStandard;
+            transition-delay: 0.4s; 
+            
+            .url-input {
+                opacity: 0.9;
+                transition-duration: 0.3s;
+                transition-delay: 0.1s;        
+            }
+
+            .url-breadcrumb {
+                opacity: 0;
+                visibility: hidden;
+                transition-duration: 0.3s;                
+                transition-delay: 0.1s; 
+            }
+            
+            .app-info {
+                display: flex;
+            }
         }
 
-        &:hover .app-info , &.show-bar .app-info {
-            display: flex;
-        }
     }
+
 
 }
 
 
+.loading {
+
+    .url-input {
+        .color-pulse;
+        opacity: 1 !important;
+
+    }
+    .url-breadcrumb {
+        display: none;
+    }
+    .reload {
+        .rotating;
+    }
+}
 
 .color-pulse {
     animation-name: color-pulse;
@@ -165,9 +250,9 @@
     background: linear-gradient(to left, 
         darken(@colorLinkActive, 30%) 0, 
         saturate(@colorLinkActive, 100%),  
-        darken(@colorLinkActive, 30%));
+        darken(@colorLinkActive, 30%)) !important;
     background-size: 300px 50px;
-    -webkit-background-clip: text;
+    -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
 }
 
@@ -185,5 +270,23 @@
         transform: scale(0.992);
         opacity: 0.7;       
         background-position-x:-300px;
+    }           
+}
+
+
+
+.rotating {
+    animation-name: rotating;
+    animation-duration: 0.5s;   
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;    
+}
+
+@keyframes rotating {
+    0% {
+        transform: rotate(0deg) translate3d(0, 0, 0);
+    }    
+    100% {
+        transform: rotate(-180deg) translate3d(0, 1px, 0);
     }           
 }

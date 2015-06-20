@@ -26,7 +26,7 @@ Template['layout_browserBar'].helpers({
         var tabId = LocalStore.get('selectedTab'),
             tab = Tabs.findOne(tabId);
 
-        return (tabId === 'browser' || !tab) ? Session.get('browserQuery') : Tabs.findOne(tabId).url;
+        return (tabId === 'browser' || !tab) ? LocalStore.get('browserQuery') : Tabs.findOne(tabId).url;
     },
     /**
     Break the URL in protocol, domain and folders
@@ -37,7 +37,11 @@ Template['layout_browserBar'].helpers({
         var tabId = LocalStore.get('selectedTab'),
             tab = Tabs.findOne(tabId);
 
-        var url = (tabId === 'browser' || !tab) ? Session.get('browserQuery') : Tabs.findOne(tabId).url;
+        var url = (tabId === 'browser' || !tab) ? LocalStore.get('browserQuery') : Tabs.findOne(tabId).url;
+
+        if(!url)
+            return;
+
         var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
         var search = url.match(pattern);
         var urlObject = {
@@ -49,7 +53,7 @@ Template['layout_browserBar'].helpers({
 
         var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
 
-        return breadcrumb;
+        return new Spacebars.SafeString(breadcrumb);
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -101,7 +105,7 @@ Template['layout_browserBar'].events({
     @event click button.add-tab
     */
     'click button.add-tab': function(){
-        var url = Session.get('browserQuery'),
+        var url = LocalStore.get('browserQuery'),
             webview = $('#browser-view')[0];
 
         if(webview) {
@@ -156,7 +160,7 @@ Template['layout_browserBar'].events({
         // switch tab to browser
         } else {
             
-            Session.set('browserQuery', url);
+            LocalStore.set('browserQuery', url);
             LocalStore.set('selectedTab', 'browser');
         }
     }

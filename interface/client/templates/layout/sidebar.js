@@ -125,7 +125,7 @@ Template['layout_sidebar'].events({
     */
     'click nav ul.history button': function(e, template){
         LocalStore.set('selectedTab', 'browser');
-        Session.set('browserQuery', this.url);
+        LocalStore.set('browserQuery', this.url);
     },
     /**
     Call the submenu dapp callback

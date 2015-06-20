@@ -34,7 +34,7 @@ Template['views_browse'].onRendered(function(){
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
     webview.addEventListener('new-window', function(e){
-        Session.set('browserQuery', e.url);
+        LocalStore.set('browserQuery', e.url);
     });
 
     // IPC communication
@@ -59,7 +59,7 @@ Template['views_browse'].helpers({
     @method (url)
     */
     'url': function() {
-        var url = Session.get('browserQuery');
+        var url = LocalStore.get('browserQuery');
 
         if(!url)
             return 'about:blank';

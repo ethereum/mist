@@ -17,7 +17,7 @@ webviewLoadStop = function(e){
     // IS BROWSER
     if(_.isEmpty(tabId)) {
 
-        Session.set('browserQuery', url);
+        LocalStore.set('browserQuery', url);
 
         // ADD to doogle last visited pages
         if((find = _.find(DoogleLastVisitedPages.find().fetch(), function(historyEntry){
@@ -91,7 +91,7 @@ webviewLoadStart = function(e){
         // stop this action
         this.stop();
         
-        Session.set('browserQuery', url);
+        LocalStore.set('browserQuery', url);
 
         // switch tab to doogle
         LocalStore.set('selectedTab', 'browser');

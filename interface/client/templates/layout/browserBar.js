@@ -23,16 +23,11 @@ Template['layout_browserBar'].helpers({
     @method (breadcrumb)
     */
     'breadcrumb': function(){
-        var tabId = LocalStore.get('selectedTab'),
-            tab = Tabs.findOne(tabId);
-
-        if(!tab)
+        if(!this || !this.url)
             return;
 
         var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
-        var search = tab.url.match(pattern);
-        if(!search)
-            return;
+        var search = this.url.match(pattern);
 
         var urlObject = {
             url: search[0],

@@ -1,0 +1,14 @@
+{
+    "mist": {
+        "sidebar": {
+            "buttons": {
+                "browser": "Browse"
+            }
+        },
+        "browserBar": {
+            "buttons": {
+                "keysNeeded": "Keys Needed"
+            }
+        }
+    }
+}

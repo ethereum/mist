@@ -4,12 +4,16 @@
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
         <div class="app-bar">
-            <button class="app-title">  <img class="app-icon" src="icons/wallet-icon@2x.png"> App Title </button>
+            {{#with dapp}}
+                <button class="app-title">  <img class="app-icon" src="icons/wallet-icon@2x.png"> {{name}}</button>
+            {{/with}}
+
+
             <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
-                <input class="url url-input" type="text" value="{{currentUrl}}">
+                <input class="url url-input" type="text" value="{{url}}">
                 <div class="url url-breadcrumb" >{{breadcrumb}}</div>
             </form>
-            <button class="keys"> <figure class="icon-key"></figure> Keys Needed</button>
+            <button class="keys"> <figure class="icon-key"></figure> {{i18n "mist.browserBar.buttons.keysNeeded"}}</button>
 
             <div class="app-info">
                 <div class="message">

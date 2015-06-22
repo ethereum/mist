@@ -1,6 +1,10 @@
 <template name="views_tab">
     <div class="tab-view {{isVisible}}">
-        <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/mistAPI.js" autosize="on"></webview> 
+        {{#if $eq _id "browser"}}
+            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" autosize="on"></webview> 
+        {{else}}
+            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/mistAPI.js" autosize="on"></webview> 
+        {{/if}}
         <!-- preload="./test.js" allowtransparency="on" -->
     </div>
 </template>

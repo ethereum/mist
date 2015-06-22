@@ -31,7 +31,7 @@ Get the webview from either and ID, or the string "browser"
 @param {String} id  The Id of a tab or the string "browser"
 */
 Helpers.getWebview = function(id){
-    return (id === 'browser') ? $('webview#browser-view')[0] : $('webview[data-id="'+ id +'"]')[0];
+    return $('webview[data-id="'+ id +'"]')[0];
 };
 
 /**

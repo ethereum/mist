@@ -18,32 +18,17 @@ Template['layout_browserBar'].rendered = function(){
 
 Template['layout_browserBar'].helpers({
     /**
-    Get the current value
-
-    @method (currentUrl)
-    */
-    'currentUrl': function(){
-        var tabId = LocalStore.get('selectedTab'),
-            tab = Tabs.findOne(tabId);
-
-        return (tabId === 'browser' || !tab) ? LocalStore.get('browserQuery') : Tabs.findOne(tabId).url;
-    },
-    /**
     Break the URL in protocol, domain and folders
 
     @method (breadcrumb)
     */
     'breadcrumb': function(){
-        var tabId = LocalStore.get('selectedTab'),
-            tab = Tabs.findOne(tabId);
-
-        var url = (tabId === 'browser' || !tab) ? LocalStore.get('browserQuery') : Tabs.findOne(tabId).url;
-
-        if(!url)
+        if(!this || !this.url)
             return;
 
         var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
-        var search = url.match(pattern);
+        var search = this.url.match(pattern);
+
         var urlObject = {
             url: search[0],
             protocol: search[1],
@@ -54,6 +39,14 @@ Template['layout_browserBar'].helpers({
         var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
 
         return new Spacebars.SafeString(breadcrumb);
+    },
+    /**
+    Returns the current dapp
+
+    @method (dapp)
+    */
+    'dapp': function(){
+        return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -69,10 +62,7 @@ Template['layout_browserBar'].helpers({
     @method (currentWebView)
     */
     'currentWebView': function(){
-        if(LocalStore.get('selectedTab') === 'browser')
-            return '.browse-view';
-        else
-            return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+        return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
     }
 });
 
@@ -105,8 +95,7 @@ Template['layout_browserBar'].events({
     @event click button.add-tab
     */
     'click button.add-tab': function(){
-        var url = LocalStore.get('browserQuery'),
-            webview = $('#browser-view')[0];
+        var webview = $('#browser-view')[0];
 
         if(webview) {
             var id = Tabs.insert({
@@ -143,25 +132,24 @@ Template['layout_browserBar'].events({
             url = Helpers.formatUrl(template.find('input').value);
 
 
-        // switch to tab
-        if(foundTab = _.find(tabs, function(tab){
+        // look in tabs
+        var foundTab = _.find(tabs, function(tab){
                 var tabOrigin = new URL(tab.url).origin;
                 return (url.indexOf(tabOrigin) !== -1);
-            })) {
-
-
-            // update current tab url
-            Tabs.update(foundTab._id, {$set: {
-                url: url,
-                redirect: url
-            }});
-            LocalStore.set('selectedTab', foundTab._id);
+            });
 
         // switch tab to browser
-        } else {
-            
-            LocalStore.set('browserQuery', url);
-            LocalStore.set('selectedTab', 'browser');
-        }
+        if(foundTab)
+            foundTab = foundTab._id;
+        else
+            foundTab = 'browser';
+
+
+        // update current tab url
+        Tabs.update(foundTab, {$set: {
+            url: url,
+            redirect: url
+        }});
+        LocalStore.set('selectedTab', foundTab);
     }
 });

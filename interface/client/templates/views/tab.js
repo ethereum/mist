@@ -54,53 +54,55 @@ Template['views_tab'].onRendered(function(){
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
     webview.addEventListener('new-window', function(e){
-        Tabs.update(template.data._id, {$set: {url: e.url}});
+        Tabs.update(template.data._id, {$set: {redirect: e.url}});
     });
 
 
-    // MIST API
-    webview.addEventListener('ipc-message', function(event) {
-        var arg = event.args[0];
+    // MIST API for installed tabs/dapps
+    if(this.data._id !== 'browser') {
+        webview.addEventListener('ipc-message', function(event) {
+            var arg = event.args[0];
 
-        // filter ID
-        if(arg && arg.id)
-            arg.id = filterId(arg.id);
+            // filter ID
+            if(arg && arg.id)
+                arg.id = filterId(arg.id);
 
-        if(event.channel === 'setBadge') {
-            Tabs.update(template.data._id, {$set:{
-                badge: arg
-            }});
-        }
+            if(event.channel === 'setBadge') {
+                Tabs.update(template.data._id, {$set:{
+                    badge: arg
+                }});
+            }
 
-        if(event.channel === 'addMenu') {
-            var query = {'$set': {}};
+            if(event.channel === 'addMenu') {
+                var query = {'$set': {}};
 
-            if(arg.id)
-                query['$set']['menu.'+ arg.id +'.id'] = arg.id;
-            query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
+                if(arg.id)
+                    query['$set']['menu.'+ arg.id +'.id'] = arg.id;
+                query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
 
-            if(!_.isUndefined(arg.position))
-                query['$set']['menu.'+ arg.id +'.position'] = arg.position;
-            if(!_.isUndefined(arg.name))
-                query['$set']['menu.'+ arg.id +'.name'] = arg.name;
-            if(!_.isUndefined(arg.badge))
-                query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
+                if(!_.isUndefined(arg.position))
+                    query['$set']['menu.'+ arg.id +'.position'] = arg.position;
+                if(!_.isUndefined(arg.name))
+                    query['$set']['menu.'+ arg.id +'.name'] = arg.name;
+                if(!_.isUndefined(arg.badge))
+                    query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
 
-            Tabs.update(template.data._id, query);
-        }
+                Tabs.update(template.data._id, query);
+            }
 
-        if(event.channel === 'removeMenu') {
-            var query = {'$unset': {}};
+            if(event.channel === 'removeMenu') {
+                var query = {'$unset': {}};
 
-            query['$unset']['menu.'+ arg] = '';
+                query['$unset']['menu.'+ arg] = '';
 
-            Tabs.update(template.data._id, query);
-        }
+                Tabs.update(template.data._id, query);
+            }
 
-        if(event.channel === 'clearMenu') {
-            Tabs.update(template.data._id, {$set: {menu: {}}});
-        }
-    });
+            if(event.channel === 'clearMenu') {
+                Tabs.update(template.data._id, {$set: {menu: {}}});
+            }
+        });
+    }
 });
 
 
@@ -126,11 +128,15 @@ Template['views_tab'].helpers({
             // set url only once
             if(tab.redirect) {
                 template.url = tab.redirect;
-                Tabs.update(this._id, {$unset: {redirect: ''}});
+                Tabs.update(this._id, {$unset: {
+                    redirect: ''
+                }, $set: {
+                    url: template.url
+                }});
             } else if(!template.url)
                 template.url = tab.url;
 
-            return template.url;
+            return Helpers.formatUrl(template.url);
         }
     }
 });

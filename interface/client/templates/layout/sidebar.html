@@ -2,28 +2,11 @@
     <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
-                <li class="browser {{isSelected}}">
-                    <button title="Main" class="main">
-                        <img src="icons/browse-icon@2x.png">
-                        <span>Browse</span>
-                    </button>                    
-                    <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
-
-                    <ul class="history sub-menu ">
-                        {{#each history}}
-                            <li>
-                                <button class="{{#if selected}}selected{{/if}}">
-                                    {{title}}
-                                </button>
-                            </li>
-                        {{/each}}
-                            <li class="see-all"><button> See All</button></li>                        
-                    </ul>
-                </li>
                 {{#each tabs}}
-                    <li class="{{isSelected}}" data-tab-id="{{_id}}">
+                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+
                         <button class="main {{#if badge}}has-badge{{/if}}">
-                            <img src="icons/wallet-icon@2x.png">
+                            <img src="icons/{{icon}}">
                             <span>{{name}}</span>
                             {{#if badge}}
                                 <div class="badge">{{badge}}</div>

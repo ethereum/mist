@@ -57,6 +57,22 @@ Template['layout_sidebar'].helpers({
         return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**
+    Return the correct name
+
+    @method (name)
+    */
+    'name': function() {
+        return (this._id === 'browser') ? TAPi18n.__('mist.sidebar.buttons.browser') : this.name;
+    },
+    /**
+    Return the correct dapp icon
+
+    @method (icon)
+    */
+    'icon': function() {
+        return (this._id === 'browser') ? 'browse-icon@2x.png' : 'wallet-icon@2x.png';
+    },
+    /**
     Return the tabs sub menu as array
 
     @method (subMenu)
@@ -64,7 +80,10 @@ Template['layout_sidebar'].helpers({
     'subMenu': function(){
         var template = Template.instance();
 
-        if(this.menu) {
+        if(this._id === 'browser') {
+            return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
+
+        } else if(this.menu) {
             var menu = _.toArray(this.menu);
 
             // sort by position
@@ -76,14 +95,6 @@ Template['layout_sidebar'].helpers({
 
             return menu;
         }
-    },
-    /**
-    Return the doogle history
-
-    @method (history)
-    */
-    'history': function() {
-        return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
     },
     /**
     Determines if the current tab is visible
@@ -119,15 +130,6 @@ Template['layout_sidebar'].events({
         LocalStore.set('selectedTab', this._id || 'browser');
     },
     /**
-    Select the current visible tab
-
-    @event click nav ul.history button
-    */
-    'click nav ul.history button': function(e, template){
-        LocalStore.set('selectedTab', 'browser');
-        LocalStore.set('browserQuery', this.url);
-    },
-    /**
     Call the submenu dapp callback
 
     @event click ul.sub-menu button
@@ -136,7 +138,15 @@ Template['layout_sidebar'].events({
         var tabId = $(e.currentTarget).parent().parents('li').data('tab-id');
         var webview = $('webview[data-id="'+ tabId +'"]')[0];
 
-        if(webview) {
+        // browser
+        if(tabId === 'browser') {
+            LocalStore.set('selectedTab', 'browser');
+            Tabs.update('browser', {$set: {
+                redirect: this.url
+            }});
+
+        // dapp tab
+        } else if(webview) {
             webview.send('callFunction', this.id);
             LocalStore.set('selectedTab', tabId);
         }

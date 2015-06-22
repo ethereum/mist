@@ -1,0 +1,30 @@
+{
+    "app": {
+        "loading": "Loading...",
+        "offline": "Can't connect are you offline?",
+        "logginIn": "Logging in..."
+    },
+    "error": {
+        "insufficientRights": "You don't have enough rights for this action."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Cancel",
+        "save": "Save",
+        "edit": "edit",
+        "send": "Send",
+        "sending": "Sending...",
+        "create": "Create",
+        "tryToReconnect": "Try to reconnect"
+    },
+    "commonWords": {
+        "you": "You",
+        "send": "Send",
+        "or": "or",
+        "of": "of",
+        "with": "with",
+        "and": "and",
+        "on": "on",
+        "per": "per"
+    }
+}

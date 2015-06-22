@@ -15,9 +15,7 @@ webviewLoadStop = function(e){
 
 
     // IS BROWSER
-    if(_.isEmpty(tabId)) {
-
-        LocalStore.set('browserQuery', url);
+    if(tabId === 'browser') {
 
         // ADD to doogle last visited pages
         if((find = _.find(DoogleLastVisitedPages.find().fetch(), function(historyEntry){
@@ -30,7 +28,7 @@ webviewLoadStop = function(e){
             }});
         else
             DoogleLastVisitedPages.insert({
-                title: title,
+                name: title,
                 url: url,
                 // icon: '',
                 timestamp: moment().unix()
@@ -41,18 +39,16 @@ webviewLoadStop = function(e){
             DoogleHistory.update(find._id, {$set: {timestamp: moment().unix()}});
         else
             DoogleHistory.insert({
-                title: title,
+                name: title,
                 url: url,
                 // icon: '',
                 timestamp: moment().unix()
             });
 
-    // IS TAB
-    } else {
-
-        // update current tab url
-        Tabs.update(tabId, {$set: {url: url}});
     }
+
+    // update current tab url
+    Tabs.update(tabId, {$set: {url: url}});
 };
 
 
@@ -72,28 +68,20 @@ webviewLoadStart = function(e){
 
 
     // make sure it switched to the correct existing tab, when the main url was changed
-    if(foundTab && foundTab._id !== tabId) {
-        console.log('Intercept request, switching to correct tab: '+ foundTab.name + ' -> '+ url);
+    if(foundTab)
+        foundTab = foundTab._id;
+    else
+        foundTab = 'browser';
 
-        // stop this action
-        this.stop();
+    console.log('Intercept request, switching to correct tab: '+ foundTab.name + ' -> '+ url);
 
-        Tabs.update(foundTab._id, {$set: {
-            url: url,
-            redirect: url
-        }});
-        LocalStore.set('selectedTab', foundTab._id);
+    // stop this action
+    this.stop();
 
-    // switch to doogle, when the url in the tab changed away from 
-    } else {// if(!_.isEmpty(tabId) && !foundTab) {
-        console.log('Intercept request, switching to doogle: '+ url);
+    Tabs.update(foundTab, {$set: {
+        url: url,
+        redirect: url
+    }});
+    LocalStore.set('selectedTab', foundTab);
 
-        // stop this action
-        this.stop();
-        
-        LocalStore.set('browserQuery', url);
-
-        // switch tab to doogle
-        LocalStore.set('selectedTab', 'browser');
-    }
 };

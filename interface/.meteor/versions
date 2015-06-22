@@ -22,7 +22,7 @@ frozeman:animation-helper@0.2.6
 frozeman:persistent-minimongo@0.1.3
 frozeman:reactive-timer@0.1.7
 frozeman:storage@0.1.8
-frozeman:template-var@1.1.3
+frozeman:template-var@1.1.6
 geojson-utils@1.0.3
 gwendall:session-json@0.1.7
 html-tools@1.0.4

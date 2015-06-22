@@ -1,0 +1,87 @@
+
+
+body, html {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 50%) 100%));
+
+    &.blur {
+        .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+    }
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+aside {
+    z-index: 4;
+    position: absolute;
+    top: @gridHeight/2;
+    left: 0;
+    bottom: 0;
+    // padding-top: @gridHeight/2;
+    width: @widthSideBar;
+
+    &:before {
+        content: " ";
+        display: block;
+        position: absolute; 
+        z-index: 2;
+        top: 0;
+        left: @widthSideBar;
+        width: 10px;
+        bottom: 0;
+        // box-shadow: @shadowStandard;
+    }
+}
+
+main {
+    z-index: 1;
+    position: absolute;
+    right: 0;
+    left: @widthSideBar;
+    top: 10px; 
+    bottom: 0;
+    height:100%;
+    // overflow: hidden;
+}
+
+.tab-view {
+    border-top-left-radius: 3px;
+ }
+
+.browse-view, .tab-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: @shadowStandard;
+    background: #FFF;
+    overflow: hidden;
+    opacity: 1;
+    z-index:10;
+
+    &.hidden {
+        visibility: hidden;
+        z-index: 1;
+    }
+}
+
+webview {
+    position: absolute;
+    top: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    margin-top: @gridHeight*2;
+    border-top: solid 1px rgba(0, 0, 0, 0.1)
+}

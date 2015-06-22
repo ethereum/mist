@@ -4,6 +4,7 @@
   "main": "main.js",
   "devDependencies": {
     "bignumber.js": "^2.0.7",
+    "electron-prebuilt": "^0.28.2",
     "httpsync": "0.0.8",
     "web3": "^0.6.0"
   }

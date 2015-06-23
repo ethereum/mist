@@ -7,7 +7,7 @@
 
                         <button class="main {{#if badge}}has-badge{{/if}}">
                             {{#if icon}}
-                                <img src="{{icon}}">
+                                {{> elements_img src=icon}}
                             {{/if}}
                             <span>{{name}}</span>
                             {{#if badge}}

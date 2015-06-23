@@ -11,10 +11,6 @@ The browserBar template
 @constructor
 */
 
-Template['layout_browserBar'].rendered = function(){
-
-};
-
 
 Template['layout_browserBar'].helpers({
     /**

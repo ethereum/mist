@@ -39,7 +39,7 @@ Template['layout_browserBar'].helpers({
             folders: search[3].split("/"),
         }
 
-        var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
+        var breadcrumb = "<span>" + urlObject.domain.join(".") + " </span> ▸ " + urlObject.folders.join(" ▸ ");
 
         return new Spacebars.SafeString(breadcrumb);
     },

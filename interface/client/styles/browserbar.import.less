@@ -36,12 +36,16 @@
             font-size: @fontSizeSmall;
             font-weight: 500;
             height: @gridHeight;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
 
             .app-icon {
                 position: relative;
                 top: 2px;
                 width: 16px;
                 height: 16px;
+                border-radius: 8px;
             }
 
             .icon-key {
@@ -112,7 +116,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 2;
+            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 3;
             margin: 0 @gridWidth/4  0;
             border-top: solid 1px #BDB6B6;
 
@@ -132,48 +136,6 @@
                 }
             }
 
-            .key-list {
-                // flex-grow: 2;
-                width: @gridWidth*24;
-                list-style-type: none;
-                overflow: auto;
-                padding-left: 0;
-
-                li {
-                    padding: @gridHeight/4 @gridWidth * 1.5;
-                    position: relative;
-                    overflow: hidden;
-
-                    .dapp-identicon {
-                        position: absolute;
-                        top: 50%;
-                        left: 0;
-                        width: 32px;
-                        height: 32px;
-                        margin-top: -16px;
-                        background-size: 32px 32px;
-                        display: inline-block;
-                        border-radius: 16px;
-                    }
-
-                    h3 {
-                        padding: 0;
-                        margin: 0;
-                    }
-
-                    .account-id {
-                        font-size: 70%;
-                        opacity: 0.5;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        padding-top: 0;
-                    }
-
-
-                }
-            }
-
             .bar-actions {
                 display: flex;
                 justify-content: flex-end;
@@ -181,7 +143,8 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: @gridHeight * 2;
+                height: @gridHeight * 3;
+                padding-top: @gridHeight;
 
                 button.cancel {
                     font-weight: 300;
@@ -190,7 +153,7 @@
                 button {
                     display: inline-block;
                     font-size: 100%;
-                    font-weight: 600;
+                    font-weight: 500;
                     text-transform: uppercase;
                     font-family: @sourceSansPro;
                     padding: @gridHeight/4 @gridWidth/2;
@@ -199,7 +162,7 @@
         }
 
         &:hover, &.show-bar {
-            height: @gridHeight * 16;
+            height: @gridHeight * 20;
             box-shadow: @shadowStandard;
             transition-delay: 0.4s; 
             
@@ -289,4 +252,20 @@
     100% {
         transform: rotate(-180deg) translate3d(0, 1px, 0);
     }           
+}
+
+@media screen and (max-width: 960px ) {
+    .keys {
+      width: 0;
+      text-overflow: clip;
+      padding-left: @gridWidth * 0.5;
+    }    
+}
+
+@media screen and (max-width: 800px ) {
+    .app-title {
+      width: 0;
+      text-overflow: clip;
+      padding-right: @gridWidth * 0.5;
+    }   
 }

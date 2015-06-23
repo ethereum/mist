@@ -22,19 +22,18 @@ if(!web3.currentProvidor)
 
 ## API
 
+
+- [mist.menu](#mistmenuupdateid-options-callback)
+- [mist.menu.setBadge](#mistmenusetbadgetext)(text)
+- [mist.menu.add](#mistmenuaddid-options-callback)(id, options, callback)
+- [mist.menu.update](#mistmenuupdateid--options--callback)(id [, options] [, callback])
+- [mist.menu.remove](#mistmenuremoveid)(id)
+- [mist.menu.clear](#mistmenuclear)()
+
+
 ### mist.menu
 
 Provides functionality to control the sub menu of your dapp, when its add to the sidebar.
-
-***
-
-### mist.menu.setBadge(text)
-
-Sets the main badge of your dapp, right below your dapps menu button.
-
-#### Parameters
-
-1. `String` the string used as the badge text
 
 ***
 
@@ -82,7 +81,7 @@ mist.menu.add('tkrzU', {
 
 ***
 
-### mist.menu.update(id, options, callback)
+### mist.menu.update(id, [, options] [, callback])
 
 Works like `mist.menu.add()`, but all but the `id` parameters are optional.
 
@@ -90,11 +89,11 @@ Works like `mist.menu.add()`, but all but the `id` parameters are optional.
 
 1. `String` and id string to identify your sub menu entry.
 2. `Object` The menu options:
-    - `name` (`String`): The name of the sub menu button.
-    - `badge` (`String|null`): The badge text for the sub menu button, e.g. `50`
-    - `position` (`Number`): The position of the submenu button, `1` is on the top.
-    - `selected` (`Boolean`): whether or not this sub menu entry is currently selected.
-3. `Function` The callback to be called when the sub menu entry is clicked
+    - `name` (`String`): (optional) The name of the sub menu button.
+    - `badge` (`String|null`): (optional) The badge text for the sub menu button, e.g. `50`
+    - `position` (`Number`): (optional) The position of the submenu button, `1` is on the top.
+    - `selected` (`Boolean`): (optional) whether or not this sub menu entry is currently selected.
+3. `Function` (optional) The callback to be called when the sub menu entry is clicked
 
 #### Example
 

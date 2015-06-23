@@ -27,7 +27,10 @@ Template['elements_img'].helpers({
             data = this,
             img = new Image();
 
+        TemplateVar.set('loading', true);
+
         img.onload = function () {
+            TemplateVar.set(template, 'loading', false);
             TemplateVar.set(template, 'src', data.src);
         };
         img.src = data.src;

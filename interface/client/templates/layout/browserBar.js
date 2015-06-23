@@ -95,7 +95,7 @@ Template['layout_browserBar'].events({
     @event click button.add-tab
     */
     'click button.add-tab': function(){
-        var webview = $('#browser-view')[0];
+        var webview = $('webview[data-id="browser"]')[0];
 
         if(webview) {
             var id = Tabs.insert({

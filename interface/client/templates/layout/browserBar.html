@@ -5,7 +5,12 @@
 
         {{#with dapp}}
             <div class="app-bar">
-                <button class="app-title">  <img class="app-icon" src="icons/wallet-icon@2x.png"> {{name}}</button>
+                <button class="app-title">
+                    {{#if icon}}
+                        <img class="app-icon" src="{{icon}}">
+                    {{/if}}
+                    {{name}}
+                </button>
 
                 <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
                     <input class="url url-input" type="text" value="{{url}}">

@@ -70,7 +70,7 @@ Template['layout_sidebar'].helpers({
     @method (icon)
     */
     'icon': function() {
-        return (this._id === 'browser') ? 'browse-icon@2x.png' : 'wallet-icon@2x.png';
+        return (this._id === 'browser') ? 'icons/browse-icon@2x.png' : this.icon;
     },
     /**
     Return the tabs sub menu as array

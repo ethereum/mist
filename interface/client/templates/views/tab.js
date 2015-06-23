@@ -59,50 +59,59 @@ Template['views_tab'].onRendered(function(){
 
 
     // MIST API for installed tabs/dapps
-    if(this.data._id !== 'browser') {
-        webview.addEventListener('ipc-message', function(event) {
-            var arg = event.args[0];
+    webview.addEventListener('ipc-message', function(event) {
+        var arg = event.args[0];
 
-            // filter ID
-            if(arg && arg.id)
-                arg.id = filterId(arg.id);
+        // SET FAVICON
+        if(event.channel === 'favicon') {
+            Tabs.update(template.data._id, {$set:{
+                icon: arg
+            }});
+        }
 
-            if(event.channel === 'setBadge') {
-                Tabs.update(template.data._id, {$set:{
-                    badge: arg
-                }});
-            }
+        // stop here, if browser
+        if(template.data._id === 'browser')
+            return;
 
-            if(event.channel === 'addMenu') {
-                var query = {'$set': {}};
+        // filter ID
+        if(arg && arg.id)
+            arg.id = filterId(arg.id);
 
-                if(arg.id)
-                    query['$set']['menu.'+ arg.id +'.id'] = arg.id;
-                query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
+        if(event.channel === 'setBadge') {
+            Tabs.update(template.data._id, {$set:{
+                badge: arg
+            }});
+        }
 
-                if(!_.isUndefined(arg.position))
-                    query['$set']['menu.'+ arg.id +'.position'] = arg.position;
-                if(!_.isUndefined(arg.name))
-                    query['$set']['menu.'+ arg.id +'.name'] = arg.name;
-                if(!_.isUndefined(arg.badge))
-                    query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
+        if(event.channel === 'addMenu') {
+            var query = {'$set': {}};
 
-                Tabs.update(template.data._id, query);
-            }
+            if(arg.id)
+                query['$set']['menu.'+ arg.id +'.id'] = arg.id;
+            query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
 
-            if(event.channel === 'removeMenu') {
-                var query = {'$unset': {}};
+            if(!_.isUndefined(arg.position))
+                query['$set']['menu.'+ arg.id +'.position'] = arg.position;
+            if(!_.isUndefined(arg.name))
+                query['$set']['menu.'+ arg.id +'.name'] = arg.name;
+            if(!_.isUndefined(arg.badge))
+                query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
 
-                query['$unset']['menu.'+ arg] = '';
+            Tabs.update(template.data._id, query);
+        }
 
-                Tabs.update(template.data._id, query);
-            }
+        if(event.channel === 'removeMenu') {
+            var query = {'$unset': {}};
 
-            if(event.channel === 'clearMenu') {
-                Tabs.update(template.data._id, {$set: {menu: {}}});
-            }
-        });
-    }
+            query['$unset']['menu.'+ arg] = '';
+
+            Tabs.update(template.data._id, query);
+        }
+
+        if(event.channel === 'clearMenu') {
+            Tabs.update(template.data._id, {$set: {menu: {}}});
+        }
+    });
 });
 
 

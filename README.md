@@ -4,6 +4,8 @@
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
+For the mist API see the [MISTAPI.md](MISTAPI.md).
+
 
 ## Development
 

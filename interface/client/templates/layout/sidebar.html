@@ -6,12 +6,15 @@
                     <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
 
                         <button class="main {{#if badge}}has-badge{{/if}}">
-                            <img src="icons/{{icon}}">
+                            {{#if icon}}
+                                <img src="{{icon}}">
+                            {{/if}}
                             <span>{{name}}</span>
                             {{#if badge}}
                                 <div class="badge">{{badge}}</div>
                             {{/if}}
                         </button>
+
                         {{#if subMenu}}
                             <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                         {{/if}}

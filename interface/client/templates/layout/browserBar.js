@@ -29,6 +29,9 @@ Template['layout_browserBar'].helpers({
         var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
         var search = this.url.match(pattern);
 
+        if(!search)
+            return;
+
         var urlObject = {
             url: search[0],
             protocol: search[1],

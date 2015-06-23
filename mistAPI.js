@@ -1,6 +1,7 @@
 var ipc = require('ipc');
 var web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
 var BigNumber = require('bignumber.js');
+require('./loadFavicon.js');
 var prefix = 'entry_';
 
 
@@ -23,21 +24,6 @@ ipc.on('callFunction', function(id) {
     if(mist.menu.entries[id] && mist.menu.entries[id].callback)
         mist.menu.entries[id].callback();
 });
-
-
-
-// GET ICON
-document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
-
-function DOMContentLoaded(event) {
-    var icon = document.querySelector('link[rel="apple-touch-icon"]') || document.querySelector('link[type="image/x-icon"]') || document.querySelector('link[rel="shortcut"]') || document.querySelector('link[rel="shortcut icon"]') || document.querySelector('link[rel="icon"]');
-    window.icon = icon || 'none';
-    if(icon) ipc.sendToHost('favicon', icon.href);
-
-    document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);
-}
-
-
 
 
 // MIST API

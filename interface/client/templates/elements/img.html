@@ -1,0 +1,4 @@
+<template name="elements_img">
+    {{preload}}
+    <img src="{{TemplateVar.get 'src'}}" class="{{class}} {{#unless TemplateVar.get 'src'}}loading{{/unless}}">
+</template>

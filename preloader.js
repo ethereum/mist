@@ -3,6 +3,25 @@ const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
 
+
+
+
+var web3 = require('web3');
+
+web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', remote.require('net')));
+
+window.web3 = web3;
+// window.process = {_tickCallback: function(){}};
+
+console.log(web3.eth.blockNumber);
+
+// web3.eth.getBlockNumber(function(e, res){
+//     console.log(res);
+// });
+
+
+
+
 // make variables globally accessable
 window.dirname = __dirname;
 

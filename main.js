@@ -58,6 +58,7 @@ app.on('ready', function() {
     // appIcon.setContextMenu(contextMenu);
 
 
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 800,

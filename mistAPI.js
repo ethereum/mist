@@ -5,7 +5,10 @@ var prefix = 'entry_';
 
 
 // set web3 providor
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+// web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+const remote = require('remote');
+web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', remote.require('net')));
+
 
 
 // filterId the id to only contain a-z A-Z 0-9

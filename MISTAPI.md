@@ -16,7 +16,7 @@ Additionally mist provides the `web3` object, to make sure you use the mist conn
 
 ```js
 // set providor
-if(!web3.currentProvidor)
+if(!web3.currentProvider)
     web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 ```
 

@@ -4,7 +4,7 @@
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
         {{#with dapp}}
-            <div class="app-bar">
+            <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
                 <button class="app-title">
                     {{#if icon}}
                         {{> elements_img src=icon class="app-icon" }}
@@ -12,13 +12,17 @@
                     {{name}}
                 </button>
 
-                <form action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
+                <form class="url-form" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
                     <input class="url url-input" type="text" value="{{url}}">
                     <div class="url url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
                 <button class="keys"> <figure class="icon-key"></figure> {{i18n "mist.browserBar.buttons.keysNeeded"}}</button>
-
+                
                 <div class="app-info">
+                    App information goes here
+                </div>
+
+                <div class="key-info">
                     <div class="message">
                         <h3> <em>Wallet</em> wants to know one or more of your public accounts</h3>
                         <p>Sharing a identity would allow this dapp have access to all your public information, including public balance, but <strong>will not allow </strong>  the dapp to publish anything, move funds or send transactions under your name.

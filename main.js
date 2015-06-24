@@ -1,6 +1,7 @@
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 
 // const Menu = require('menu');
 // const Tray = require('tray');
@@ -66,7 +67,7 @@ app.on('ready', function() {
         'standard-window': false,
         icon: './icons/icon_128x128.png',
         'node-integration': false,
-        preload: __dirname +'/preloader.js'
+        preload: __dirname +'/modules/preloader/mistUI.js'
         // frame: false
         // 'use-content-size': true,
     });
@@ -91,5 +92,9 @@ app.on('ready', function() {
     ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
         menuItems(mainWindow, webviews || []);
     });
+
+
+    // initialize the IPC provider on the main window
+    ipcProviderBackend(mainWindow);
 
 });

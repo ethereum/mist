@@ -1,14 +1,12 @@
-var ipc = require('ipc');
-var web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
-var BigNumber = require('bignumber.js');
+const ipc = require('ipc');
+const web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
+const BigNumber = require('bignumber.js');
+const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+
 var prefix = 'entry_';
 
-
 // set web3 providor
-// web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-const remote = require('remote');
-web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', remote.require('net')));
-
+web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', ipcProviderWrapper));
 
 
 // filterId the id to only contain a-z A-Z 0-9

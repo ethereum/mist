@@ -3,10 +3,10 @@ const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
 const web3 = require('web3');
+const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 
-
-// web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', remote.require('net')));
+// set web3 providor
+web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', ipcProviderWrapper));
 
 
 // make variables globally accessable

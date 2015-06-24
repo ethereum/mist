@@ -9,15 +9,14 @@ The Mist browser is the tool of choice to browse and use Ðapps.
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed
 
-Then install electron:
+Then install electron and initialize the git submodules:
 
     $ npm install -g electron-prebuilt
+    $ git submodule update --init
 
 Start the mist UI interface first using Meteor:
 
-    $ cd mist/interface/public
-    $ git clone https://github.com/ethereum/dapp-styles
-    $ cd ..
+    $ cd mist/interface
     $ npm install
     $ meteor
 

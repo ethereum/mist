@@ -11,13 +11,11 @@ To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteo
 
 Then install electron:
 
-    $ npm install -g electron-prebuilt
+    $ sudo npm install -g electron-prebuilt
 
 Start the mist UI interface first using Meteor:
 
-    $ cd mist/interface/public
-    $ git clone https://github.com/ethereum/dapp-styles
-    $ cd ..
+    $ cd mist/interface
     $ npm install
     $ meteor
 

@@ -19,7 +19,7 @@ var Socket = net.Socket,
     syncEvents = {},
     asyncSenders = {},
     mainWindow = null,
-    errorReturn = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "__id__"}';
+    errorReturn = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not found"}, "id": "__id__"}';
 
 
 /**
@@ -124,7 +124,7 @@ ipc.on('ipcProvider-write', function(event, payload){
         ipcSocket.write(payload);
         asyncSenders[id] = event.sender;
     } else {
-        event.sender.send('ipcProvider-data', errorReturn.replace('__id__', id));
+        event.sender.send('ipcProvider-data', errorReturn.replace('__id__', id).replace('__method__', jsonPayload.method));
     }
 });
 ipc.on('ipcProvider-writeSync', function(event, payload){
@@ -136,7 +136,7 @@ ipc.on('ipcProvider-writeSync', function(event, payload){
         ipcSocket.write(payload);
         syncEvents[id] = event;
     } else {
-        event.returnValue = errorReturn.replace('__id__', id);
+        event.returnValue = errorReturn.replace('__id__', id).replace('__method__', jsonPayload.method);
     }
 });
 

@@ -275,28 +275,65 @@
     animation-iteration-count: infinite;
     animation-timing-function: linear;    
     background: linear-gradient(to left, 
-        darken(@colorLinkActive, 30%) 0, 
+        darken(@colorLinkActive, 30%) 0,
         saturate(@colorLinkActive, 100%),  
         darken(@colorLinkActive, 30%)) !important;
-    background-size: 300px 50px;
+    background-size: 200px !important;
+    background-repeat: repeat-x;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
 }
 
 @keyframes color-pulse {
     0% {
-        transform: scale(0.992);
+        transform: scale(0.992) translateZ(0);
         opacity: 0.7;       
         background-position-x:0px;
     }
     50% {
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
         opacity: 1; 
     }     
     100% {
-        transform: scale(0.992);
+        transform: scale(0.992) translateZ(0);
         opacity: 0.7;       
-        background-position-x:-300px;
+        background-position-x:-200px;
+    }           
+}
+
+@colorBlockchain: #c3d825;
+
+.color-ping {
+    animation-name: color-ping;
+    animation-duration: 12s;   
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;    
+    background-image: linear-gradient(to top, 
+        saturate(@colorLinkActive, 100%),  
+        @colorGrayDark) !important;
+    background-size: 150px 150px;
+    background-position-y:0;
+    
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent;
+
+}
+
+@keyframes color-ping {
+    0% {       
+        transform: scale(1) translateZ(0);  
+        background-position-y:0;
+
+    }
+    5% {    
+        transform: scale(0.95) translateZ(0);   
+        background-position-y:30px;
+    }
+    100% {
+        background-color: @colorGrayDark;
+        transform: scale(1) translateZ(0); 
+        background-position-y:150px;
+
     }           
 }
 

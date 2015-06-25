@@ -1,3 +1,7 @@
+/**
+@module MistUI
+*/
+
 const ipc = require('ipc');
 const remote = require('remote');
 const Menu = remote.require('menu');

@@ -1,3 +1,14 @@
+/**
+@module MistBackend
+*/
+
+/**
+The IPC provider backend filter and tunnel all incoming request to the IPC geth bridge.
+
+@class ipcProviderBackend
+@constructor
+*/
+
 const ipc = require('ipc');
 const net = require('net');
 const _ = require('underscore');
@@ -7,7 +18,27 @@ var Socket = net.Socket,
     senderList = {},
     syncEvents = {},
     asyncSenders = {},
-    window = null;
+    mainWindow = null,
+    errorReturn = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method not found"}, "id": "__id__"}';
+
+
+/**
+Send Request filter
+
+@method filterRequest
+@param {Object} the payload
+@param {Object} the event.sender of the request
+@return {Boolean} TRUE when its a valid allowed request, otherWise FALSE
+*/
+var filterRequest = function(payload, sender) {
+    if(!_.isObject(payload) || !payload.method)
+        return false;
+
+    if(sender.getId() === mainWindow.webContents.getId())
+        return true;
+    else
+        return !(/^admin_/.test(payload.method));
+};
 
 
 // wait for data on the socket
@@ -86,27 +117,29 @@ ipc.on('ipcProvider-create', function(event, options){
 });
 ipc.on('ipcProvider-write', function(event, payload){
 
-    // TODO: filter requests, disallow admin_
-
-    ipcSocket.write(payload);
-
     var jsonPayload = JSON.parse(payload),
         id = jsonPayload.id || jsonPayload[0].id;
 
-    asyncSenders[id] = event.sender;
+    if(filterRequest(jsonPayload, event.sender)) {
+        ipcSocket.write(payload);
+        asyncSenders[id] = event.sender;
+    } else {
+        event.sender.send('ipcProvider-data', errorReturn.replace('__id__', id));
+    }
 });
 ipc.on('ipcProvider-writeSync', function(event, payload){
 
-    // TODO: filter requests, disallow admin_
-
-    ipcSocket.write(payload);
-
     var jsonPayload = JSON.parse(payload),
         id = jsonPayload.id || jsonPayload[0].id;
-    
-    syncEvents[id] = event;
+
+    if(filterRequest(jsonPayload, event.sender)) {
+        ipcSocket.write(payload);
+        syncEvents[id] = event;
+    } else {
+        event.returnValue = errorReturn.replace('__id__', id);
+    }
 });
 
 module.exports = function(givenWindow){
-    window = givenWindow;
+    mainWindow = givenWindow;
 };

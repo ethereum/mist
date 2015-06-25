@@ -1,3 +1,7 @@
+/**
+@module MistAPI
+*/
+
 var ipc = require('ipc');
 
 // GET ICON

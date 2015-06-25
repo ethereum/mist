@@ -1,3 +1,7 @@
+/**
+@module MistAPI
+*/
+
 const ipc = require('ipc');
 const web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
 const BigNumber = require('bignumber.js');

@@ -62,8 +62,8 @@ app.on('ready', function() {
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1024 + 208,
+        height: 700,
         'standard-window': false,
         icon: './icons/icon_128x128.png',
         'node-integration': false,

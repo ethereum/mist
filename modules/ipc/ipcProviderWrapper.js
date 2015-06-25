@@ -13,17 +13,17 @@ const ipc = require('ipc');
 
 
 /**
-Gets the new handle. Either null, or some dummy handle, to fake the real `net._handle`.
+Gets the writable property.
 
-@method on('ipcProvider-setHandle')
+@method on('ipcProvider-setWritable')
 */
-ipc.on('ipcProvider-setHandle', function(handle){
-    ipcProviderWrapper._handle = handle;
+ipc.on('ipcProvider-setWritable', function(writable){
+    ipcProviderWrapper.writable = writable;
 });
 
 
 ipcProviderWrapper = {
-    _handle: null,
+    writable: false,
 
     /**
     Connects the IPC on the backend to the geth node

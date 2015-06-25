@@ -19,7 +19,9 @@ var Socket = net.Socket,
     syncEvents = {},
     asyncSenders = {},
     mainWindow = null,
-    errorReturn = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not found"}, "id": "__id__"}';
+    errorMethod = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not found"}, "id": "__id__"}';
+    errorTimeout = '{"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out"}, "id": "__id__"}';
+
 
 
 /**
@@ -76,19 +78,36 @@ ipcSocket.on("data", function(data){
         delete asyncSenders[id];
     }
 });
-// ipcSocket.on("error", function(data){
+ipcSocket.on("error", function(data){
 
-//     _.each(senderList, function(sender) {
-//         sender.send('ipcProvider-error', data);
-//         sender.send('ipcProvider-setHandle', null);
-//     });
+    console.log('ERROR', data, data.toString());
 
-// });
-ipcSocket.on('end', function(){
     _.each(senderList, function(sender) {
-        sender.send('ipcProvider-setHandle', null);
+        sender.send('ipcProvider-error', data);
+        sender.send('ipcProvider-setWritable', null);
+    });
+
+});
+
+
+ipcSocket.on('end', function(data){
+    console.log('END CONNECTION', data);
+    _.each(senderList, function(sender) {
+        sender.send('ipcProvider-setWritable', null);
+    });
+
+    // cancel all requests
+    _.each(asyncSenders, function(sender, key){
+        sender.send('ipcProvider-data', errorTimeout.replace('__id__', key));
+        delete asyncSenders[key];
+    });
+    _.each(syncEvents, function(event, key){
+        event.returnValue = errorTimeout.replace('__id__', key);
+        delete syncEvents[key];
     });
 });
+
+
 
 // wait for incoming requests from dapps/ui
 ipc.on('ipcProvider-create', function(event, options){
@@ -96,25 +115,29 @@ ipc.on('ipcProvider-create', function(event, options){
 
     senderList['id_'+ event.sender.getId()] = event.sender;
 
-    if(!ipcSocket._handle) {
-        event.sender.send('ipcProvider-setHandle', null);
+    if(!ipcSocket.writable) {
+        event.sender.send('ipcProvider-setWritable', null);
 
-        ipcSocket.connect({path: options.path}, function(){
+        ipcSocket = ipcSocket.connect({path: options.path}, function(){
             // send fake handle
-            event.sender.send('ipcProvider-setHandle', dummyHandle);
+            event.sender.send('ipcProvider-setWritable', dummyHandle);
             // event.returnValue = dummyHandle;
         });
-            
+
+
 
         // timeout connection
         // setTimeout(function() {
-        //     event.returnValue = null;
+            // event.returnValue = dummyHandle;
         // }, 1000);
 
     } else {
-        event.sender.send('ipcProvider-setHandle', dummyHandle);
+        event.sender.send('ipcProvider-setWritable', dummyHandle);
     }
 });
+
+
+
 ipc.on('ipcProvider-write', function(event, payload){
 
     var jsonPayload = JSON.parse(payload),
@@ -124,9 +147,12 @@ ipc.on('ipcProvider-write', function(event, payload){
         ipcSocket.write(payload);
         asyncSenders[id] = event.sender;
     } else {
-        event.sender.send('ipcProvider-data', errorReturn.replace('__id__', id).replace('__method__', jsonPayload.method));
+        event.sender.send('ipcProvider-data', errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method));
     }
 });
+
+
+
 ipc.on('ipcProvider-writeSync', function(event, payload){
 
     var jsonPayload = JSON.parse(payload),
@@ -136,7 +162,7 @@ ipc.on('ipcProvider-writeSync', function(event, payload){
         ipcSocket.write(payload);
         syncEvents[id] = event;
     } else {
-        event.returnValue = errorReturn.replace('__id__', id).replace('__method__', jsonPayload.method);
+        event.returnValue = errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method);
     }
 });
 

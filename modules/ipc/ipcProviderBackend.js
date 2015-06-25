@@ -37,7 +37,7 @@ var filterRequest = function(payload, sender) {
     if(sender.getId() === mainWindow.webContents.getId())
         return true;
     else
-        return !(/^admin_/.test(payload.method));
+        return /^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method);
 };
 
 

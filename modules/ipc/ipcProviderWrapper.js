@@ -65,9 +65,9 @@ ipcProviderWrapper = {
 
     @method writeSync
     */
-    writeSync: function (payload) {
-        return ipc.sendSync('ipcProvider-writeSync', payload);
-    }
+    // writeSync: function (payload) {
+    //     return ipc.sendSync('ipcProvider-writeSync', payload);
+    // }
 
 };
 

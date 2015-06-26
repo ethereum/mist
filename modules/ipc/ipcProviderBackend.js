@@ -9,162 +9,252 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 @constructor
 */
 
+const _ = require('underscore');
 const ipc = require('ipc');
 const net = require('net');
-const _ = require('underscore');
+const Socket = net.Socket;
 
-var Socket = net.Socket,
-    ipcSocket = new Socket(),
-    senderList = {},
-    syncEvents = {},
-    asyncSenders = {},
-    mainWindow = null,
-    errorMethod = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not found"}, "id": "__id__"}';
+var mainWindow = null,
+    sockets = {};
+    errorMethod = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"}';
     errorTimeout = '{"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out"}, "id": "__id__"}';
 
 
+
+var testRequests = function(payload){
+    if(/^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method)){
+        return payload;
+    } else {
+        return false;
+    }
+};
+
+
+/**
+The IPC wrapper backend, handling one socket connection per view
+
+@class GethConnection
+@constructor
+*/
+var GethConnection = function(sender, path) {
+    this.ipcSocket = new Socket(),
+    this.sender = sender,
+    this.path = path,
+    this.syncEvents = {},
+    this.asyncSenders = {},
+
+
+    this.sender = sender;
+
+
+    // this.ipcSocket.setKeepAlive(true, 1000 * 5);
+    // this.ipcSocket.setTimeout(1000 * 10);
+    this.ipcSocket.setNoDelay(true);
+
+    // setup sockets
+    this.setupSocket();
+    this.connect();
+
+
+    return this;
+};
+
+GethConnection.prototype.connect = function(){
+    var _this = this;
+
+    if(!this.ipcSocket.writable) {
+
+        console.log('IPCSOCKET CONNECTING..');
+
+        this.ipcSocket = this.ipcSocket.connect({path: this.path}, function(){
+            // send writabel property
+            // event.returnValue = _this.ipcSocket.writable;
+            _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+        });
+
+    }
+
+    this.sender.send('ipcProvider-setWritable', this.ipcSocket.writable);
+};
 
 /**
 Send Request filter
 
 @method filterRequest
 @param {Object} the payload
-@param {Object} the event.sender of the request
 @return {Boolean} TRUE when its a valid allowed request, otherWise FALSE
 */
-var filterRequest = function(payload, sender) {
-    if(!_.isObject(payload) || !payload.method)
+GethConnection.prototype.filterRequest = function(payload) {
+    if(!_.isObject(payload))
         return false;
 
-    if(sender.getId() === mainWindow.webContents.getId())
+    if(this.sender.getId() === mainWindow.webContents.getId())
         return true;
-    else
-        return /^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method);
+
+    if(_.isArray(payload)) {
+        return _.filter(payload, function(load){
+            return testRequests(load);
+        });
+    } else {
+        return testRequests(payload);
+    }
+
 };
 
 
-// wait for data on the socket
-ipcSocket.on("data", function(data){
-    var result =  data.toString();
+/**
+Creates the socket and sets up the listeners.
 
-    try {
-        var result = JSON.parse(result);
+@method setupSocket
+*/
+GethConnection.prototype.setupSocket = function() {
+    var _this = this;
+    
 
-    } catch(e) {
-    }
+    // wait for data on the socket
+    this.ipcSocket.on("data", function(data){
+        var result =  data.toString();
 
-    var id;
+        try {
+            var result = JSON.parse(result);
 
-    // get the id which matches the returned id
-    if(typeof result === 'object' && result[0]) {
-        result.forEach(function(load){
-            if(syncEvents[load.id])
-                id = load.id;
-            if(asyncSenders[load.id])
-                id = load.id;
-        });
-    } else {
-        id = result.id;
-    }
+        } catch(e) {
+        }
 
-    // SEND SYNC back
-    if(syncEvents[id]) {
-        syncEvents[id].returnValue = data.toString();
-        delete syncEvents[id];
+        var id;
 
-    // SEND async back
-    } else if(asyncSenders[id]) {
-        asyncSenders[id].send('ipcProvider-data', data.toString());
-        delete asyncSenders[id];
-    }
-});
-ipcSocket.on("error", function(data){
+        // get the id which matches the returned id
+        if(typeof result === 'object' && result[0]) {
+            result.forEach(function(load){
+                if(_this.syncEvents[load.id])
+                    id = load.id;
+                if(_this.asyncSenders[load.id])
+                    id = load.id;
+            });
+        } else {
+            id = result.id;
+        }
 
-    console.log('ERROR', data, data.toString());
+        // SEND SYNC back
+        if(_this.syncEvents[id]) {
+            _this.syncEvents[id].returnValue = data.toString();
+            delete _this.syncEvents[id];
 
-    _.each(senderList, function(sender) {
-        sender.send('ipcProvider-error', data);
-        sender.send('ipcProvider-setWritable', null);
+        // SEND async back
+        } else if(_this.asyncSenders[id]) {
+            _this.asyncSenders[id].send('ipcProvider-data', data.toString());
+            delete _this.asyncSenders[id];
+        }
     });
 
-});
 
+    this.ipcSocket.on("error", function(data){
 
-ipcSocket.on('end', function(data){
-    console.log('END CONNECTION', data);
-    _.each(senderList, function(sender) {
-        sender.send('ipcProvider-setWritable', null);
+        console.log('IPCSOCKET ERROR', data, data.toString());
+
+        _this.sender.send('ipcProvider-error', data);
+
+        // _this.destroy();
+        _this.timeout();
+        _this.connect();
     });
+
+
+    this.ipcSocket.on('end', function(data){
+        console.log('IPCSOCKET CONNECTION ENDED');
+    });
+
+};
+
+GethConnection.prototype.timeout = function() {
+    var _this = this;
+    
+    this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
 
     // cancel all requests
-    _.each(asyncSenders, function(sender, key){
+    _.each(this.asyncSenders, function(sender, key){
         sender.send('ipcProvider-data', errorTimeout.replace('__id__', key));
-        delete asyncSenders[key];
+        delete _this.asyncSenders[key];
     });
-    _.each(syncEvents, function(event, key){
+    _.each(this.syncEvents, function(event, key){
         event.returnValue = errorTimeout.replace('__id__', key);
-        delete syncEvents[key];
+        delete _this.syncEvents[key];
     });
-});
+};
+
+GethConnection.prototype.destroy = function() {
+    this.ipcSocket.destroy();
+    this.timeout();
+};
+
 
 
 
 // wait for incoming requests from dapps/ui
 ipc.on('ipcProvider-create', function(event, options){
-    var dummyHandle = {fd: true};
+    var socket = sockets['id_'+ event.sender.getId()];
 
-    senderList['id_'+ event.sender.getId()] = event.sender;
-
-    if(!ipcSocket.writable) {
-        event.sender.send('ipcProvider-setWritable', null);
-
-        ipcSocket = ipcSocket.connect({path: options.path}, function(){
-            // send fake handle
-            event.sender.send('ipcProvider-setWritable', dummyHandle);
-            // event.returnValue = dummyHandle;
-        });
-
-
-
-        // timeout connection
-        // setTimeout(function() {
-            // event.returnValue = dummyHandle;
-        // }, 1000);
-
-    } else {
-        event.sender.send('ipcProvider-setWritable', dummyHandle);
+    if(socket)
+        socket.connect();
+    else {
+        sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender, options.path);
     }
 });
 
+ipc.on('ipcProvider-destroy', function(event, options){
+    var socket = sockets['id_'+ event.sender.getId()];
 
+    if(socket) {
+        socket.destroy();
+        delete sockets['id_'+ event.sender.getId()];
+    }
+});
 
 ipc.on('ipcProvider-write', function(event, payload){
+    var socket = sockets['id_'+ event.sender.getId()];
+
+    if(!socket) 
+        socket = sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender, options.path);
 
     var jsonPayload = JSON.parse(payload),
         id = jsonPayload.id || jsonPayload[0].id;
 
-    if(filterRequest(jsonPayload, event.sender)) {
-        ipcSocket.write(payload);
-        asyncSenders[id] = event.sender;
+
+    var filteredPayload = socket.filterRequest(jsonPayload);
+
+    // console.log('IPCSOCKET WRITE', jsonPayload);
+
+    if(!_.isEmpty(filteredPayload)) {
+        socket.ipcSocket.write(JSON.stringify(filteredPayload));
+        socket.asyncSenders[id] = event.sender;
     } else {
-        event.sender.send('ipcProvider-data', errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method));
+        event.sender.send('ipcProvider-data', errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method || jsonPayload[0].method));
     }
 });
-
-
 
 ipc.on('ipcProvider-writeSync', function(event, payload){
+    var socket = sockets['id_'+ event.sender.getId()];
+
+    if(!socket) 
+        socket = sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender, options.path);
 
     var jsonPayload = JSON.parse(payload),
         id = jsonPayload.id || jsonPayload[0].id;
 
-    if(filterRequest(jsonPayload, event.sender)) {
-        ipcSocket.write(payload);
-        syncEvents[id] = event;
+
+    var filteredPayload = socket.filterRequest(jsonPayload);
+
+    // console.log('IPCSOCKET WRITE SYNC', jsonPayload);
+
+    if(!_.isEmpty(filteredPayload)) {
+        socket.ipcSocket.write(JSON.stringify(filteredPayload));
+        socket.syncEvents[id] = event;
     } else {
-        event.returnValue = errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method);
+        event.returnValue = errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method || jsonPayload[0].method);
     }
 });
+
+
 
 module.exports = function(givenWindow){
     mainWindow = givenWindow;

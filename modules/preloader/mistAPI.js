@@ -10,6 +10,9 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var prefix = 'entry_';
 
 // set web3 providor
+// destroy the old socket
+ipc.send('ipcProvider-destroy');
+// create a new one
 web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', ipcProviderWrapper));
 
 

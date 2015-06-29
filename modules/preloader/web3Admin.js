@@ -10,7 +10,7 @@ module.exports = {
                     name: 'addPeer',
                     call: 'admin_addPeer',
                     params: 1,
-                    inputFormatter: [null],
+                    inputFormatter: [web3._extend.utils.fromDecimal],
                     outputFormatter: web3._extend.formatters.formatOutputBool
                 }),
                 new web3._extend.Method({
@@ -199,7 +199,7 @@ module.exports = {
             ]
         });
 
-        // NET
+        // NETWORK
         web3._extend({
             property: 'network',
             methods:

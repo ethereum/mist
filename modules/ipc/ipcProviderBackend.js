@@ -45,11 +45,14 @@ var GethConnection = function(sender, path) {
 
 
     this.sender = sender;
+    this.lastChunk = null;
+    this.lastChunkTimeout = null;
 
 
+    this.ipcSocket.setEncoding('utf8');
     // this.ipcSocket.setKeepAlive(true, 1000 * 5);
     // this.ipcSocket.setTimeout(1000 * 10);
-    // this.ipcSocket.setNoDelay(true);
+    // this.ipcSocket.setNoDelay(false);
 
     // setup socket
     this.connect();
@@ -89,7 +92,7 @@ GethConnection.prototype.filterRequest = function(payload) {
         return false;
 
     if(this.sender.getId() === mainWindow.webContents.getId())
-        return true;
+        return payload;
 
     if(_.isArray(payload)) {
         return _.filter(payload, function(load){
@@ -113,14 +116,47 @@ GethConnection.prototype.setupSocket = function() {
 
     // wait for data on the socket
     this.ipcSocket.on("data", function(data){
-        var result =  data.toString(),
+
+
+        // DE-CHUNKER
+        var dechunkedData = data.replace(/\}\{/g,'}|--|{').replace(/\}\[\{/g,'}|--|[{').replace(/\}\]\{/g,'}]|--|{').split('|--|');
+
+
+        for (var i = 0; i < dechunkedData.length; i++) {
+            data = dechunkedData[i];
+
+
+
+
+        // prepend the last chunk
+        if(_this.lastChunk)
+            data = _this.lastChunk + data;
+
+        var result = data;
             id = null;
+
 
         try {
             result = JSON.parse(result);
 
         } catch(e) {
+            _this.lastChunk = data;
+
+            console.log('IPCSOCKET '+ _this.sender.getId() +' PARSE ERROR', e, "'''"+ data +"'''");
+
+            // start timeout to cancel all requests
+            clearTimeout(_this.lastChunkTimeout);
+            _this.lastChunkTimeout = setTimeout(function(){
+                console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE ERROR', e, "'''"+ data +"'''");
+                _this.timeout();
+            }, 1000 * 15);
+
+            return;
         }
+
+        // cancel timeout and set chunk to null
+        clearTimeout(_this.lastChunkTimeout);
+        _this.lastChunk = null;
 
 
         // get the id which matches the returned id
@@ -144,32 +180,41 @@ GethConnection.prototype.setupSocket = function() {
 
         // TODO set buffer size
         console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
-        console.log(result.id, _this.asyncEvents, id);
+        // console.log(result.id, _this.asyncEvents, id);
+
 
         // SEND SYNC back
         if(_this.syncEvents[id]) {
-            _this.syncEvents[id].returnValue = data.toString();
+            _this.syncEvents[id].returnValue = data;
             delete _this.syncEvents[id];
 
         // SEND async back
         } else if(_this.asyncEvents[id]) {
-            _this.asyncEvents[id].sender.send('ipcProvider-data', data.toString());
+            _this.asyncEvents[id].sender.send('ipcProvider-data', data);
             delete _this.asyncEvents[id];
         }
+        };
     });
 
 
     this.ipcSocket.on("error", function(data){
 
-        console.log('IPCSOCKET '+ _this.sender.getId() +' ERROR', data, data.toString());
+        console.log('IPCSOCKET '+ _this.sender.getId() +' ERROR', data);
 
         _this.sender.send('ipcProvider-error', data);
 
-        // _this.destroy();
+
+        if(data.code === 'ECONNREFUSED') {
+            _this.destroy();
+        }
+
         _this.timeout();
         _this.connect();
     });
 
+    // this.ipcSocket.on('drain', function(data){
+    //     console.log('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
+    // });
 
     this.ipcSocket.on('end', function(data){
         console.log('IPCSOCKET '+ _this.sender.getId() +' CONNECTION ENDED');

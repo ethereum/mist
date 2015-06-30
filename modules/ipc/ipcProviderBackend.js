@@ -12,9 +12,11 @@ module.exports = function(mainWindow){
     const ipc = require('ipc');
     const net = require('net');
     const Socket = net.Socket;
+    const getIpcPath = require('./getIpcPath.js');
 
     var errorMethod = '{"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"}',
-        errorTimeout = '{"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'"}, "id": "__id__"}';
+        errorTimeout = '{"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'"}, "id": "__id__"}',
+        ipcPath = getIpcPath();
 
 
 
@@ -33,9 +35,9 @@ module.exports = function(mainWindow){
     @class GethConnection
     @constructor
     */
-    var GethConnection = function(event, path) {
+    var GethConnection = function(event) {
         this.ipcSocket = new Socket();
-        this.path = path;
+        this.path = ipcPath;
         this.syncEvents = {};
         this.asyncEvents = {};
 
@@ -65,12 +67,7 @@ module.exports = function(mainWindow){
 
             console.log('IPCSOCKET '+ this.sender.getId() +' CONNECTING..');
 
-            this.ipcSocket = this.ipcSocket.connect({path: this.path}, function(){
-                // send writabel property
-                // event.returnValue = _this.ipcSocket.writable;
-                _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
-            });
-
+            this.ipcSocket = this.ipcSocket.connect({path: this.path});
         }
 
         if(event)
@@ -112,6 +109,10 @@ module.exports = function(mainWindow){
     GethConnection.prototype.setupSocket = function() {
         var _this = this;
         
+
+        this.ipcSocket.on("connect", function(){
+            _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+        });
 
         // wait for data on the socket
         this.ipcSocket.on("data", function(data){
@@ -175,8 +176,7 @@ module.exports = function(mainWindow){
                 }
 
                 // TODO set buffer size
-                console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
-                // console.log(result.id, _this.asyncEvents, id);
+                // console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
 
 
                 // SEND SYNC back
@@ -201,9 +201,9 @@ module.exports = function(mainWindow){
             _this.sender.send('ipcProvider-error', data);
 
 
-            if(data.code === 'ECONNREFUSED') {
-                _this.destroy();
-            }
+            // if(data.code === 'ECONNREFUSED') {
+            //     _this.destroy();
+            // }
 
             _this.timeout();
         });
@@ -252,17 +252,17 @@ module.exports = function(mainWindow){
 
 
     // wait for incoming requests from dapps/ui
-    ipc.on('ipcProvider-create', function(event, options){
+    ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
 
         if(socket)
             socket.connect(event);
         else {
-            global.sockets['id_'+ event.sender.getId()] = new GethConnection(event, options.path);
+            global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         }
     });
 
-    ipc.on('ipcProvider-destroy', function(event, options){
+    ipc.on('ipcProvider-destroy', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
 
         if(socket) {
@@ -276,7 +276,7 @@ module.exports = function(mainWindow){
         var socket = global.sockets['id_'+ event.sender.getId()];
 
         if(!socket) 
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender, options.path);
+            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);
 
         // make sure we are connected
         socket.connect();
@@ -287,7 +287,7 @@ module.exports = function(mainWindow){
 
         var filteredPayload = socket.filterRequest(jsonPayload);
 
-        console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : ''), JSON.stringify(jsonPayload, null, 2));
+        // console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : ''), JSON.stringify(jsonPayload, null, 2));
 
         // SEND REQUEST
         if(!_.isEmpty(filteredPayload)) {

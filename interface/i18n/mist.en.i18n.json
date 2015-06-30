@@ -1,5 +1,10 @@
 {
     "mist": {
+        "rightClick": {
+            "reload": "Reload",
+            "openDevTools": "Open Developer Tools",
+            "inspectElements": "Inspect Element"
+        },
         "sidebar": {
             "buttons": {
                 "browser": "Browse"

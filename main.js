@@ -1,16 +1,27 @@
+const _ = require('underscore');
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const _ = require('underscore');
+const menuItems = require('./menuItems');
+
+
+// GLOBAL Variables
+global.path = {
+    HOME: app.getPath('home'),
+    APPDATA: app.getPath('appData')
+};
+global.language = 'en';
+
 
 // const Menu = require('menu');
 // const Tray = require('tray');
-const menuItems = require('./menuItems');
-var appIcon = null;
+// var appIcon = null;
 
 // const processRef = global.process;
 // process.nextTick(function() { global.process = processRef; });
+
+
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -99,6 +110,11 @@ app.on('ready', function() {
         menuItems(mainWindow, webviews || []);
     });
 
+    // instantiate the application menu
+    // ipc.on('setLanguage', function(e, lang){
+    //     global.language = lang;
+
+    // });
 
     // initialize the IPC provider on the main window
     ipcProviderBackend(mainWindow);

@@ -8,17 +8,22 @@ const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
 const web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+const i18n = require('../i18n.js');
 
 const web3Admin = require('./web3Admin');
 web3Admin.extend(web3);
 
 // set web3 providor
-web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', ipcProviderWrapper));
+web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 
 // make variables globally accessable
 window.dirname = __dirname;
 window.web3 = web3;
+
+
+// set the langauge for the electron interface
+// ipc.send('setLanguage', navigator.language.substr(0,2));
 
 
 // Wait for webview toogle
@@ -63,12 +68,17 @@ window.updateApplicationMenuDevTools = function(webviews){
 var currentMousePosition = {x: 0, y: 0};
 var menu = new Menu();
 // menu.append(new MenuItem({ type: 'separator' }));
-menu.append(new MenuItem({ label: 'Reload', accelerator: 'Command+R', click: function() {
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click: function() {
     var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
     if(webview)
         webview.reloadIgnoringCache();
 }}));
-menu.append(new MenuItem({ label: 'Inspect Element', click: function() {
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click: function() {
+    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if(webview)
+        webview.openDevTools();
+}}));
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click: function() {
     var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
     if(webview)
         webview.inspectElement(currentMousePosition.x, currentMousePosition.y);

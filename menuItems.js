@@ -70,7 +70,7 @@ var menuTempl = function(mainWindow, webviews) {
     })
 
     var devtToolsMenu = [{
-        label: 'Toggle DevTools for the Mist UI',
+        label: 'Toggle Developer Tools for the Mist UI',
         accelerator: 'Alt+Command+I',
         click: function() {
             if(curWindow = BrowserWindow.getFocusedWindow())
@@ -83,7 +83,7 @@ var menuTempl = function(mainWindow, webviews) {
     // add webviews
     webviews.forEach(function(webview){
         devtToolsMenu.push({
-            label: 'Toggle DevTools for '+ webview.name,
+            label: 'Toggle Developer Tools for '+ webview.name,
             click: function() {
                 mainWindow.webContents.send('toogleWebviewDevTool', webview.id);
             }
@@ -102,7 +102,7 @@ var menuTempl = function(mainWindow, webviews) {
             //         }
             // },
             // {
-            //     label: 'Toggle DevTools',
+            //     label: 'Toggle Developer Tools',
             //     accelerator: 'Alt+Command+I',
             //     click: function() {
             //         if(curWindow = BrowserWindow.getFocusedWindow())
@@ -110,7 +110,7 @@ var menuTempl = function(mainWindow, webviews) {
             //     }
             // },
             // {
-            //     label: 'Toggle DevTools For ',
+            //     label: 'Toggle Developer Tools For ',
             //     accelerator: 'Alt+Command+I',
             //     click: function() {
             //         if(curWindow = BrowserWindow.getFocusedWindow())

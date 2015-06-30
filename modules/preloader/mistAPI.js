@@ -12,9 +12,10 @@ var prefix = 'entry_';
 // set web3 providor
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
+
 // create a new one
 // web3.setProvider(new web3.providers.HtmlProvider('http://localhost:8545'));
-web3.setProvider(new web3.providers.IpcProvider('/tmp/geth.ipc', ipcProviderWrapper));
+web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 
 // filterId the id to only contain a-z A-Z 0-9

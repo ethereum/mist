@@ -2,6 +2,7 @@ const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const _ = require('underscore');
 
 // const Menu = require('menu');
 // const Tray = require('tray');
@@ -20,8 +21,17 @@ var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    if (process.platform != 'darwin')
-        app.quit();
+    // if (process.platform != 'darwin')
+    app.quit();
+});
+
+
+app.on('before-quit', function(){
+    // CLEAR open IPC sockets to geth
+    _.each(global.sockets, function(socket){
+        console.log('Closing Socket ', socket.sender.getId());
+        socket.destroy();
+    });
 });
 
 // Emitted when the application is activated while there is no opened windows.
@@ -33,10 +43,6 @@ app.on('activate-with-no-open-windows', function () {
     }
     return false;
 });
-
-// SETUP custom protocols
-// app.commandLine.appendSwitch('register-standard-schemes', 'library,test,atom');
-// app.commandLine.appendSwitch('host-rules', 'MAP *.google.com meteor.com');
 
 
 // This method will be called when Electron has done everything
@@ -64,10 +70,10 @@ app.on('ready', function() {
     mainWindow = new BrowserWindow({
         width: 1024 + 208,
         height: 700,
-        'standard-window': false,
         icon: './icons/icon_128x128.png',
-        'node-integration': false,
-        preload: __dirname +'/modules/preloader/mistUI.js'
+        'standard-window': false,
+        preload: __dirname +'/modules/preloader/mistUI.js',
+        'node-integration': false
         // frame: false
         // 'use-content-size': true,
     });
@@ -80,12 +86,12 @@ app.on('ready', function() {
     // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
+    // mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null;
-    });
+        // mainWindow = null;
+    // });
 
 
     // instantiate the application menu

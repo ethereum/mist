@@ -32,7 +32,7 @@ ipcProviderWrapper = {
     */
     connect: function(path) {
         
-        ipc.send('ipcProvider-create', path);
+        this.writable = ipc.sendSync('ipcProvider-create', path);
 
         return this;
     },
@@ -50,6 +50,10 @@ ipcProviderWrapper = {
 
         if(name === 'error'){
             ipc.on('ipcProvider-error', callback);
+        }
+
+        if(name === 'end'){
+            ipc.on('ipcProvider-end', callback);
         }
     },
     /**

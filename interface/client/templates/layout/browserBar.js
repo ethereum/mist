@@ -15,7 +15,6 @@ Template['layout_browserBar'].rendered = function(){
 
 };
 
-
 Template['layout_browserBar'].helpers({
     /**
     Break the URL in protocol, domain and folders
@@ -39,7 +38,7 @@ Template['layout_browserBar'].helpers({
             folders: search[3].split("/"),
         }
 
-        var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
+        var breadcrumb = "<span>" + urlObject.domain.join(".") + " </span> ▸ " + urlObject.folders.join(" ▸ ");
 
         return new Spacebars.SafeString(breadcrumb);
     },
@@ -124,6 +123,30 @@ Template['layout_browserBar'].events({
         
         Tabs.remove(tabId);
         LocalStore.set('selectedTab', 'browser');
+    },
+    /*
+    Hover show keys
+
+    @event mouseenter button.keys
+    */
+    'mouseenter button.keys': function(){
+        TemplateVar.set('browserBarTab', 'show-key-info');
+    },    
+    /*
+    Hover show app-title
+
+    @event mouseenter button.app-title
+    */
+    'mouseenter button.app-title': function(){
+        TemplateVar.set('browserBarTab', 'show-app-info');
+    },    
+    /*
+    Hover show network
+
+    @event mouseenter button.network
+    */
+    'mouseenter .url-form': function(){
+        TemplateVar.set('browserBarTab', 'show-network-info');
     },
     /*
     Send the domain

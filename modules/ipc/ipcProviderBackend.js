@@ -120,14 +120,16 @@ module.exports = function(mainWindow){
             // DE-CHUNKER
             var dechunkedData = data
                 .replace(/\}\{/g,'}|--|{') // }{
-                .replace(/\}\]\[\{/g,'}]|--|[{') // ][
-                .replace(/\}\[\{/g,'}|--|[{') // }[
-                .replace(/\}\]\{/g,'}]|--|{') // ]{
+                .replace(/\}\]\[\{/g,'}]|--|[{') // }][{
+                .replace(/\}\[\{/g,'}|--|[{') // }[{
+                .replace(/\}\]\{/g,'}]|--|{') // }]{
                 .split('|--|');
 
             for (var i = 0; i < dechunkedData.length; i++) {
                 data = dechunkedData[i];
-console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
+
+                console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
+
                 // prepend the last chunk
                 if(_this.lastChunk)
                     data = _this.lastChunk + data;
@@ -284,26 +286,29 @@ console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
         socket.connect();
 
         var jsonPayload = JSON.parse(payload),
-            id = jsonPayload.id || jsonPayload[0].id;
+            filteredPayload = socket.filterRequest(jsonPayload);
 
-
-        var filteredPayload = socket.filterRequest(jsonPayload);
-
-        console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (jsonPayload.method || jsonPayload[0].method));
 
         // SEND REQUEST
         if(!_.isEmpty(filteredPayload)) {
-            socket.ipcSocket.write(JSON.stringify(filteredPayload));
-            event.method = jsonPayload.method || jsonPayload[0].method;
+            var id = filteredPayload.id || filteredPayload[0].id;
+
+            console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method));
+
+            event.method = filteredPayload.method || filteredPayload[0].method;
             event.batchPayload = _.isArray(filteredPayload);
 
             if(sync)
                 socket.syncEvents[id] = event;
             else
                 socket.asyncEvents[id] = event;
+
+            socket.ipcSocket.write(JSON.stringify(filteredPayload));
         
         // ERROR
         } else {
+            var id = jsonPayload.id || jsonPayload[0].id;
+
             if(sync)
                 event.returnValue = errorMethod.replace('__id__', id).replace('__method__', jsonPayload.method || jsonPayload[0].method);
             else

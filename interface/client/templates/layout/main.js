@@ -18,6 +18,6 @@ Template['layout_main'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-        return Tabs.find({}, {field: {position: -1}});
+        return Tabs.find({}, {field: {position: 1}});
     }
 });

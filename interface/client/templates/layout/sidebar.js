@@ -33,7 +33,7 @@ Template['layout_sidebar'].onRendered(function(){
             $ul.find('> li').each(function(index, test){
                 var id = $(this).data('tab-id');
                 if(id)
-                    Tabs.update(id, {$set: {position: index}});
+                    Tabs.update(id, {$set: {position: index+1}});
             });
         }
     });

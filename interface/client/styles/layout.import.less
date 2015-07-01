@@ -49,7 +49,16 @@ main {
     top: 10px; 
     bottom: 0;
     height:100%;
-    // overflow: hidden;
+
+    &.open-bar {
+        overflow: hidden;
+        .tab-view:not(.hidden) {
+            -webkit-filter: blur(1.5px) brightness(1.08) saturate(1.01) opacity(0.5);
+            // filter: blur(1.5px) brightness(1.05) saturate(1.1) opacity(0.5);
+            transform: scale(1.005);
+
+        }
+    }
 }
 
 .tab-view {

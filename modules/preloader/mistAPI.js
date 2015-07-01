@@ -14,7 +14,7 @@ var prefix = 'entry_';
 ipc.send('ipcProvider-destroy');
 
 // create a new one
-// web3.setProvider(new web3.providers.HtmlProvider('http://localhost:8545'));
+// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 

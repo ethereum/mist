@@ -117,14 +117,17 @@ module.exports = function(mainWindow){
         // wait for data on the socket
         this.ipcSocket.on("data", function(data){
 
-console.log('IPCSOCKET '+ _this.sender.getId() +' RAW RESPONSE', data);
             // DE-CHUNKER
-            var dechunkedData = data.replace(/\}\{/g,'}|--|{').replace(/\}\[\{/g,'}|--|[{').replace(/\}\]\{/g,'}]|--|{').split('|--|');
-
+            var dechunkedData = data
+                .replace(/\}\{/g,'}|--|{') // }{
+                .replace(/\}\]\[\{/g,'}]|--|[{') // ][
+                .replace(/\}\[\{/g,'}|--|[{') // }[
+                .replace(/\}\]\{/g,'}]|--|{') // ]{
+                .split('|--|');
 
             for (var i = 0; i < dechunkedData.length; i++) {
                 data = dechunkedData[i];
-
+console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
                 // prepend the last chunk
                 if(_this.lastChunk)
                     data = _this.lastChunk + data;
@@ -144,7 +147,7 @@ console.log('IPCSOCKET '+ _this.sender.getId() +' RAW RESPONSE', data);
                     // start timeout to cancel all requests
                     clearTimeout(_this.lastChunkTimeout);
                     _this.lastChunkTimeout = setTimeout(function(){
-                        console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE ERROR', e, "'''"+ data +"'''");
+                        console.log('IPCSOCKET '+ _this.sender.getId() +' TIMEOUT ERROR', e, "'''"+ data +"'''");
                         _this.timeout();
                     }, 1000 * 15);
 
@@ -175,7 +178,6 @@ console.log('IPCSOCKET '+ _this.sender.getId() +' RAW RESPONSE', data);
                     id = result.id;
                 }
 
-                // TODO set buffer size
                 // console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
 
 
@@ -287,7 +289,7 @@ console.log('IPCSOCKET '+ _this.sender.getId() +' RAW RESPONSE', data);
 
         var filteredPayload = socket.filterRequest(jsonPayload);
 
-        console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : ''), JSON.stringify(jsonPayload, null, 2));
+        console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (jsonPayload.method || jsonPayload[0].method));
 
         // SEND REQUEST
         if(!_.isEmpty(filteredPayload)) {

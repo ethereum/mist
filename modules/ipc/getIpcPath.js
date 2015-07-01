@@ -3,7 +3,7 @@ module.exports = function() {
     var path = global.path.HOME;
 
     if(process.platform === 'darwin')
-        path += '/Library/Ethereum/geth.ipc';
+        path += '/Library/Ethereum/testChain/geth.ipc';
 
     if(process.platform === 'freebsd' ||
        process.platform === 'linux' ||

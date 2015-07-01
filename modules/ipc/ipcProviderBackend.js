@@ -117,7 +117,7 @@ module.exports = function(mainWindow){
         // wait for data on the socket
         this.ipcSocket.on("data", function(data){
 
-
+console.log('IPCSOCKET '+ _this.sender.getId() +' RAW RESPONSE', data);
             // DE-CHUNKER
             var dechunkedData = data.replace(/\}\{/g,'}|--|{').replace(/\}\[\{/g,'}|--|[{').replace(/\}\]\{/g,'}]|--|{').split('|--|');
 
@@ -287,7 +287,7 @@ module.exports = function(mainWindow){
 
         var filteredPayload = socket.filterRequest(jsonPayload);
 
-        // console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : ''), JSON.stringify(jsonPayload, null, 2));
+        console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : ''), JSON.stringify(jsonPayload, null, 2));
 
         // SEND REQUEST
         if(!_.isEmpty(filteredPayload)) {

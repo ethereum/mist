@@ -12,4 +12,4 @@ if(!Tabs.findOne('browser'))
 
 
 
-addAccounts();
+Accounts.init();

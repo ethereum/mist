@@ -35,8 +35,3 @@ new PersistentMinimongo(DoogleHistory);
 //     });
 
 // Blockchain = new Mongo.Collection('blockchain', {connection: null});
-
-
-// Accounts
-Accounts = new Mongo.Collection('accounts', {connection: null});
-new PersistentMinimongo(Accounts);

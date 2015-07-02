@@ -40,8 +40,10 @@ app.on('window-all-closed', function() {
 app.on('before-quit', function(){
     // CLEAR open IPC sockets to geth
     _.each(global.sockets, function(socket){
-        console.log('Closing Socket ', socket.sender.getId());
-        socket.destroy();
+        if(socket) {
+            console.log('Closing Socket ', socket.sender.getId());
+            socket.destroy();
+        }
     });
 });
 

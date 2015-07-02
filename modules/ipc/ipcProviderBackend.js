@@ -56,12 +56,18 @@ module.exports = function(mainWindow){
         this.connect(event);
         this.setupSocket();
 
-
         return this;
     };
 
+
+    /**
+    Connects to a socket
+
+
+    @param {Object} event     If the event param is present it assumes its a sync request and will return the writable property, using "event.returnValue"
+    @method connect
+    */
     GethConnection.prototype.connect = function(event){
-        var _this = this;
 
         if(!this.ipcSocket.writable) {
 
@@ -180,9 +186,6 @@ module.exports = function(mainWindow){
                     id = result.id;
                 }
 
-                // console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
-
-
                 // SEND SYNC back
                 if(_this.syncEvents[id]) {
                     _this.syncEvents[id].returnValue = data;
@@ -193,6 +196,8 @@ module.exports = function(mainWindow){
                     _this.asyncEvents[id].sender.send('ipcProvider-data', data);
                     delete _this.asyncEvents[id];
                 }
+
+                _this.destroy();
             };
         });
 
@@ -203,11 +208,6 @@ module.exports = function(mainWindow){
 
             _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
             _this.sender.send('ipcProvider-error', data);
-
-
-            // if(data.code === 'ECONNREFUSED') {
-            //     _this.destroy();
-            // }
 
             _this.timeout();
         });
@@ -247,12 +247,19 @@ module.exports = function(mainWindow){
         });
     };
 
+    /**
+    This will close the socket connection and prevent any further activity with it.
+
+    @method destroy
+    */
     GethConnection.prototype.destroy = function() {
+        this.ipcSocket.removeAllListeners();
         this.ipcSocket.destroy();
+
         this.timeout();
+
+        delete global.sockets['id_'+ this.sender.getId()];
     };
-
-
 
 
     // wait for incoming requests from dapps/ui
@@ -271,19 +278,19 @@ module.exports = function(mainWindow){
 
         if(socket) {
             socket.destroy();
-            delete global.sockets['id_'+ event.sender.getId()];
         }
     });
 
 
     var sendRequest = function(event, payload, sync) {
-        var socket = global.sockets['id_'+ event.sender.getId()];
+        // var socket = global.sockets['id_'+ event.sender.getId()];
 
-        if(!socket) 
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);
+        // if(!socket) 
+        //     socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);
 
         // make sure we are connected
-        socket.connect();
+        // socket.connect();
+        global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
 
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequest(jsonPayload);

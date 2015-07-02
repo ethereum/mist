@@ -17,7 +17,7 @@ dburles:mongo-collection-instances@0.3.3
 ddp@1.1.0
 deps@1.0.7
 ejson@1.0.6
-ethereum:accounts@0.1.2
+ethereum:accounts@0.1.4
 ethereum:elements@0.2.0
 ethereum:web3@0.7.1
 fastclick@1.0.3

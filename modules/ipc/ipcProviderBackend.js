@@ -196,8 +196,6 @@ module.exports = function(mainWindow){
                     _this.asyncEvents[id].sender.send('ipcProvider-data', data);
                     delete _this.asyncEvents[id];
                 }
-
-                _this.destroy();
             };
         });
 
@@ -262,6 +260,14 @@ module.exports = function(mainWindow){
     };
 
 
+
+    /**
+    The IPC listeners
+
+    @class ipcProvider Backend
+    @constructor
+    */
+
     // wait for incoming requests from dapps/ui
     ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
@@ -283,14 +289,15 @@ module.exports = function(mainWindow){
 
 
     var sendRequest = function(event, payload, sync) {
-        // var socket = global.sockets['id_'+ event.sender.getId()];
+        var socket = global.sockets['id_'+ event.sender.getId()];
 
-        // if(!socket) 
-        //     socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);
-
+        if(!socket)
+            // TODO: should we really try to reconnect, after the connection was destroyed?
+            // socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
+            return;
         // make sure we are connected
-        // socket.connect();
-        global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
+        else
+            socket.connect();
 
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequest(jsonPayload);

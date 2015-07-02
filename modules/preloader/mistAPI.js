@@ -4,21 +4,12 @@
 */
 
 const ipc = require('ipc');
-const web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
+const web3 = require('web3');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 require('../loadFavicon.js');
 
 var prefix = 'entry_';
-
-// set web3 providor
-// destroy the old socket
-ipc.send('ipcProvider-destroy');
-
-// create a new one
-// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
-web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
-
 
 // filterId the id to only contain a-z A-Z 0-9
 var filterId = function(str) {
@@ -29,6 +20,15 @@ var filterId = function(str) {
     };
     return newStr;
 };
+
+
+// SET WEB3 PROVIDOR
+// destroy the old socket
+ipc.send('ipcProvider-destroy');
+
+// create a new one
+// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 
 ipc.on('callFunction', function(id) {

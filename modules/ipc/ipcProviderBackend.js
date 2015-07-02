@@ -140,7 +140,7 @@ module.exports = function(mainWindow){
                 if(_this.lastChunk)
                     data = _this.lastChunk + data;
 
-                var result = data;
+                var result = data,
                     id = null;
 
 
@@ -307,7 +307,7 @@ module.exports = function(mainWindow){
         if(!_.isEmpty(filteredPayload)) {
             var id = filteredPayload.id || filteredPayload[0].id;
 
-            console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method));
+            console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
 
             event.method = filteredPayload.method || filteredPayload[0].method;
             event.batchPayload = _.isArray(filteredPayload);

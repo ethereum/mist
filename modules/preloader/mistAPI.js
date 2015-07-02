@@ -27,8 +27,12 @@ var filterId = function(str) {
 ipc.send('ipcProvider-destroy');
 
 // create a new one
-// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
+
+// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+
+// var remote = require('remote');
+// web3.setProvider(new web3.providers.IpcProvider('/Users/frozeman/Library/Ethereum/geth.ipc', remote.require('net')));
 
 
 ipc.on('callFunction', function(id) {

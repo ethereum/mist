@@ -38,6 +38,7 @@ module.exports = function(mainWindow){
     var GethConnection = function(event) {
         this.ipcSocket = new Socket();
         this.path = ipcPath;
+        this.destroyed = false;
         this.syncEvents = {};
         this.asyncEvents = {};
 
@@ -56,12 +57,10 @@ module.exports = function(mainWindow){
         this.connect(event);
         this.setupSocket();
 
-
         return this;
     };
 
     GethConnection.prototype.connect = function(event){
-        var _this = this;
 
         if(!this.ipcSocket.writable) {
 
@@ -180,9 +179,6 @@ module.exports = function(mainWindow){
                     id = result.id;
                 }
 
-                // console.log('IPCSOCKET '+ _this.sender.getId() +' RESPONSE', result);
-
-
                 // SEND SYNC back
                 if(_this.syncEvents[id]) {
                     _this.syncEvents[id].returnValue = data;
@@ -193,6 +189,8 @@ module.exports = function(mainWindow){
                     _this.asyncEvents[id].sender.send('ipcProvider-data', data);
                     delete _this.asyncEvents[id];
                 }
+
+                _this.destroy();
             };
         });
 
@@ -203,11 +201,6 @@ module.exports = function(mainWindow){
 
             _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
             _this.sender.send('ipcProvider-error', data);
-
-
-            // if(data.code === 'ECONNREFUSED') {
-            //     _this.destroy();
-            // }
 
             _this.timeout();
         });
@@ -247,9 +240,19 @@ module.exports = function(mainWindow){
         });
     };
 
+    /**
+    This will close the socket connection and prevent any further activity with it.
+
+    @method destroy
+    */
     GethConnection.prototype.destroy = function() {
+        this.ipcSocket.removeAllListeners();
         this.ipcSocket.destroy();
+
         this.timeout();
+        this.destroyed = true;
+
+        delete global.sockets['id_'+ this.sender.getId()];
     };
 
 
@@ -258,6 +261,7 @@ module.exports = function(mainWindow){
     // wait for incoming requests from dapps/ui
     ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(socket)
             socket.connect(event);
@@ -268,6 +272,7 @@ module.exports = function(mainWindow){
 
     ipc.on('ipcProvider-destroy', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(socket) {
             socket.destroy();
@@ -278,6 +283,7 @@ module.exports = function(mainWindow){
 
     var sendRequest = function(event, payload, sync) {
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(!socket) 
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);

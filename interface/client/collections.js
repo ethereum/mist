@@ -1,3 +1,27 @@
+/**
+
+@module Collections
+*/
+
+
+
+// BROWSER RELATED
+
+// Contains the accounts
+Tabs = new Mongo.Collection('tabs', {connection: null});
+new PersistentMinimongo(Tabs);
+
+
+// Contains the accounts
+DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
+new PersistentMinimongo(DoogleLastVisitedPages);
+
+DoogleHistory = new Mongo.Collection('doogle-history', {connection: null});
+new PersistentMinimongo(DoogleHistory);
+
+
+
+// ETHEREUM RELATED
 
 // contains blockchain meta data
 // LastBlock = new Mongo.Collection('lastblock', {connection: null});
@@ -12,14 +36,7 @@
 
 // Blockchain = new Mongo.Collection('blockchain', {connection: null});
 
-// Contains the accounts
-Tabs = new Mongo.Collection('tabs', {connection: null});
-new PersistentMinimongo(Tabs);
 
-
-// Contains the accounts
-DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
-new PersistentMinimongo(DoogleLastVisitedPages);
-
-DoogleHistory = new Mongo.Collection('doogle-history', {connection: null});
-new PersistentMinimongo(DoogleHistory);
+// Accounts
+Accounts = new Mongo.Collection('accounts', {connection: null});
+new PersistentMinimongo(Accounts);

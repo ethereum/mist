@@ -9,3 +9,7 @@ if(!Tabs.findOne('browser'))
         url: 'about:blank',
         position: 0
     });
+
+
+
+addAccounts();

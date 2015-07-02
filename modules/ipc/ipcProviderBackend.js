@@ -68,7 +68,6 @@ module.exports = function(mainWindow){
     @method connect
     */
     GethConnection.prototype.connect = function(event){
-
         if(!this.ipcSocket.writable) {
 
             console.log('IPCSOCKET '+ this.sender.getId() +' CONNECTING..');
@@ -76,9 +75,9 @@ module.exports = function(mainWindow){
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
         }
 
-        if(event)
+        if(event) {
             event.returnValue = this.ipcSocket.writable;
-        else
+        } else
             this.sender.send('ipcProvider-setWritable', this.ipcSocket.writable);
     };
 
@@ -296,7 +295,7 @@ module.exports = function(mainWindow){
             // socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
             return;
         // make sure we are connected
-        else
+        else if(!socket.ipcSocket.writable)
             socket.connect();
 
         var jsonPayload = JSON.parse(payload),

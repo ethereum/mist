@@ -38,7 +38,6 @@ module.exports = function(mainWindow){
     var GethConnection = function(event) {
         this.ipcSocket = new Socket();
         this.path = ipcPath;
-        this.destroyed = false;
         this.syncEvents = {};
         this.asyncEvents = {};
 
@@ -60,6 +59,14 @@ module.exports = function(mainWindow){
         return this;
     };
 
+
+    /**
+    Connects to a socket
+
+
+    @param {Object} event     If the event param is present it assumes its a sync request and will return the writable property, using "event.returnValue"
+    @method connect
+    */
     GethConnection.prototype.connect = function(event){
 
         if(!this.ipcSocket.writable) {
@@ -189,8 +196,6 @@ module.exports = function(mainWindow){
                     _this.asyncEvents[id].sender.send('ipcProvider-data', data);
                     delete _this.asyncEvents[id];
                 }
-
-                _this.destroy();
             };
         });
 
@@ -250,13 +255,18 @@ module.exports = function(mainWindow){
         this.ipcSocket.destroy();
 
         this.timeout();
-        this.destroyed = true;
 
         delete global.sockets['id_'+ this.sender.getId()];
     };
 
 
 
+    /**
+    The IPC listeners
+
+    @class ipcProvider Backend
+    @constructor
+    */
 
     // wait for incoming requests from dapps/ui
     ipc.on('ipcProvider-create', function(event){
@@ -276,7 +286,6 @@ module.exports = function(mainWindow){
 
         if(socket) {
             socket.destroy();
-            delete global.sockets['id_'+ event.sender.getId()];
         }
     });
 
@@ -285,11 +294,13 @@ module.exports = function(mainWindow){
         var socket = global.sockets['id_'+ event.sender.getId()];
         if(socket && socket.destroyed) return;
 
-        if(!socket) 
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event.sender);
-
+        if(!socket)
+            // TODO: should we really try to reconnect, after the connection was destroyed?
+            // socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
+            return;
         // make sure we are connected
-        socket.connect();
+        else
+            socket.connect();
 
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequest(jsonPayload);

@@ -14,6 +14,36 @@ global.path = {
 global.language = 'en';
 
 
+// var minimongo = require('minimongo-cache');
+ 
+// var cache = new minimongo();
+ 
+// cache.addCollection('users');
+// console.log(cache.users);
+
+// minimongo = require('minimongo');
+// var LocalDb = minimongo.MemoryDb;
+// db = new LocalDb();
+ // db.addCollection("animals");
+// console.log(db.animals.find().observe);
+
+// Mongo = require('meteor-minimongo');
+// console.log(Mongo());
+
+global._ = _;
+require('./node_modules/minimongo-standalone/minimongo.js');
+// require('minimongo-standalone');
+var test = new LocalCollection('test');
+test.find().observe({added: function(doc){
+    console.log(doc);
+}});
+
+test.insert({
+    dog: 'sheep'
+});
+
+console.log(Meteor);
+
 // const Menu = require('menu');
 // const Tray = require('tray');
 // var appIcon = null;

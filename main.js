@@ -38,11 +38,15 @@ test.find().observe({added: function(doc){
     console.log(doc);
 }});
 
+Tracker.autorun(function(){
+   console.log(test.findOne());
+});
+
 test.insert({
     dog: 'sheep'
 });
 
-console.log(Meteor);
+// console.log(Tracker);
 
 // const Menu = require('menu');
 // const Tray = require('tray');

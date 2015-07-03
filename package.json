@@ -6,9 +6,6 @@
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "i18next": "^1.10.2",
-    "meteor-minimongo": "^1.2.8",
-    "minimongo": "^3.2.13",
-    "minimongo-cache": "0.0.25",
     "minimongo-standalone": "0.0.9",
     "underscore": "^1.8.3",
     "web3": "^0.6.0"

@@ -133,7 +133,7 @@ module.exports = function(mainWindow){
             for (var i = 0; i < dechunkedData.length; i++) {
                 data = dechunkedData[i];
 
-                console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
+                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
 
                 // prepend the last chunk
                 if(_this.lastChunk)
@@ -306,7 +306,7 @@ module.exports = function(mainWindow){
         if(!_.isEmpty(filteredPayload)) {
             var id = filteredPayload.id || filteredPayload[0].id;
 
-            console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
+            // console.log('IPCSOCKET '+ socket.sender.getId() +' WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
 
             event.method = filteredPayload.method || filteredPayload[0].method;
             event.batchPayload = _.isArray(filteredPayload);

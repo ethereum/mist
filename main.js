@@ -6,12 +6,19 @@ const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 
 
+
 // GLOBAL Variables
+global._ = _;
 global.path = {
     HOME: app.getPath('home'),
     APPDATA: app.getPath('appData')
 };
 global.language = 'en';
+
+
+// make minimongo available
+require('./node_modules/minimongo-standalone/minimongo.js');
+
 
 
 // var minimongo = require('minimongo-cache');
@@ -30,8 +37,7 @@ global.language = 'en';
 // Mongo = require('meteor-minimongo');
 // console.log(Mongo());
 
-global._ = _;
-require('./node_modules/minimongo-standalone/minimongo.js');
+
 // require('minimongo-standalone');
 var test = new LocalCollection('test');
 test.find().observe({added: function(doc){
@@ -137,7 +143,7 @@ app.on('ready', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        // mainWindow = null;
+    //     mainWindow = null;
     // });
 
 

@@ -3,6 +3,7 @@
 */
 
 const ipc = require('ipc');
+const syncMinimongo = require('../syncMinimongo.js');
 const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
@@ -20,6 +21,7 @@ web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 // make variables globally accessable
 window.dirname = __dirname;
 window.web3 = web3;
+window.syncMinimongo = syncMinimongo;
 
 
 // set the langauge for the electron interface

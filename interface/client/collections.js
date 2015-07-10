@@ -15,7 +15,7 @@
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
 new PersistentMinimongo(Tabs);
-
+syncMinimongo(Tabs);
 
 // Contains the accounts
 DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});

@@ -1,23 +1,20 @@
-const _ = require('underscore');
+global._ = require('underscore');
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
-
+const Minimongo = require('./modules/minimongoDb.js');
+const syncMinimongo = require('./modules/syncMinimongo.js');
 
 
 // GLOBAL Variables
-global._ = _;
 global.path = {
     HOME: app.getPath('home'),
     APPDATA: app.getPath('appData')
 };
 global.language = 'en';
-
-
-// make minimongo available
-require('./node_modules/minimongo-standalone/minimongo.js');
+global.Tabs = Minimongo('tabs');
 
 
 
@@ -39,18 +36,19 @@ require('./node_modules/minimongo-standalone/minimongo.js');
 
 
 // require('minimongo-standalone');
-var test = new LocalCollection('test');
-test.find().observe({added: function(doc){
-    console.log(doc);
-}});
+// Tabs.find().observe({added: function(doc){
 
-Tracker.autorun(function(){
-   console.log(test.findOne());
-});
 
-test.insert({
-    dog: 'sheep'
-});
+//     console.log(JSON.stringify(doc, null, 2));
+// }});
+
+// Tracker.autorun(function(){
+//    console.log(Tabs.findOne());
+// });
+
+// Tabs.insert({
+//     dog: 'sheep'
+// });
 
 // console.log(Tracker);
 
@@ -130,6 +128,8 @@ app.on('ready', function() {
         // frame: false
         // 'use-content-size': true,
     });
+
+    syncMinimongo(Tabs, mainWindow.webContents);
 
     // and load the index.html of the app.
     // if() 'file://' + __dirname + '/interface/index.html

@@ -41,8 +41,23 @@ ipc.on('callFunction', function(id) {
 });
 
 
-// MIST API
+// work up queue every 500ms
+var queue = [];
+setInterval(function(){
+    ipc.sendToHost('menuChanges', queue);
+    queue = [];
+}, 500);
 
+
+
+/**
+Mist API
+
+TODO: queue up all changes and send them all together, to prevent multiple update calls in the mist ui db?
+
+@class mist
+@constructor
+*/
 var mist = {
     menu: {
         entries: {},
@@ -89,7 +104,10 @@ var mist = {
                 badge: options.badge,
             };
 
-            ipc.sendToHost('addMenu', entry);
+            queue.push({
+                action: 'addMenu',
+                entry: entry
+            });
 
             if(callback)
                 entry.callback = callback;
@@ -110,7 +128,10 @@ var mist = {
 
             delete this.entries[id];
 
-            ipc.sendToHost('removeMenu', id);
+            queue.push({
+                action: 'removeMenu',
+                id: id
+            });
         },
         /**
         Removes all menu entries.
@@ -118,7 +139,7 @@ var mist = {
         @method clear
         */
         'clear': function(){
-            ipc.sendToHost('clearMenu');
+            queue.push({action: 'clearMenu'});
         }
     },
 };

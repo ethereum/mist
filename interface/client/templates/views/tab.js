@@ -73,44 +73,50 @@ Template['views_tab'].onRendered(function(){
         if(template.data._id === 'browser')
             return;
 
-        // filter ID
-        if(arg && arg.id)
-            arg.id = filterId(arg.id);
-
         if(event.channel === 'setBadge') {
             Tabs.update(template.data._id, {$set:{
                 badge: arg
             }});
         }
 
-        if(event.channel === 'addMenu') {
-            var query = {'$set': {}};
+        if(event.channel === 'menuChanges' && arg instanceof Array) {
+            arg.forEach(function(arg){
 
-            if(arg.id)
-                query['$set']['menu.'+ arg.id +'.id'] = arg.id;
-            query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
+                if(arg.action === 'addMenu') {
+                    // filter ID
+                    if(arg.entry && arg.entry.id)
+                        arg.entry.id = filterId(arg.entry.id);
+                    
+                    var query = {'$set': {}};
 
-            if(!_.isUndefined(arg.position))
-                query['$set']['menu.'+ arg.id +'.position'] = arg.position;
-            if(!_.isUndefined(arg.name))
-                query['$set']['menu.'+ arg.id +'.name'] = arg.name;
-            if(!_.isUndefined(arg.badge))
-                query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
+                    if(arg.entry.id)
+                        query['$set']['menu.'+ arg.entry.id +'.id'] = arg.entry.id;
+                    query['$set']['menu.'+ arg.entry.id +'.selected'] = arg.entry.selected;
 
-            Tabs.update(template.data._id, query);
+                    if(!_.isUndefined(arg.entry.position))
+                        query['$set']['menu.'+ arg.entry.id +'.position'] = arg.entry.position;
+                    if(!_.isUndefined(arg.entry.name))
+                        query['$set']['menu.'+ arg.entry.id +'.name'] = arg.entry.name;
+                    if(!_.isUndefined(arg.entry.badge))
+                        query['$set']['menu.'+ arg.entry.id +'.badge'] = arg.entry.badge;
+
+                    Tabs.update(template.data._id, query);
+                }
+
+                if(arg.action === 'removeMenu') {
+                    var query = {'$unset': {}};
+
+                    query['$unset']['menu.'+ arg.id] = '';
+
+                    Tabs.update(template.data._id, query);
+                }
+
+                if(arg.action === 'clearMenu') {
+                    Tabs.update(template.data._id, {$set: {menu: {}}});
+                }
+            });
         }
 
-        if(event.channel === 'removeMenu') {
-            var query = {'$unset': {}};
-
-            query['$unset']['menu.'+ arg] = '';
-
-            Tabs.update(template.data._id, query);
-        }
-
-        if(event.channel === 'clearMenu') {
-            Tabs.update(template.data._id, {$set: {menu: {}}});
-        }
     });
 });
 

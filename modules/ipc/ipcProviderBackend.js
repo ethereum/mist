@@ -148,7 +148,7 @@ module.exports = function(mainWindow){
                 } catch(e) {
                     _this.lastChunk = data;
 
-                    console.log('IPCSOCKET '+ _this.sender.getId() +' PARSE ERROR', e, "'''"+ data +"'''");
+                    // console.log('IPCSOCKET '+ _this.sender.getId() +' PARSE ERROR', e, "'''"+ data +"'''");
 
                     // start timeout to cancel all requests
                     clearTimeout(_this.lastChunkTimeout);

@@ -130,8 +130,7 @@ module.exports = function(mainWindow){
                 .replace(/\}\]\{/g,'}]|--|{') // }]{
                 .split('|--|');
 
-            for (var i = 0; i < dechunkedData.length; i++) {
-                data = dechunkedData[i];
+            _.each(dechunkedData, function(data) {
 
                 // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
 
@@ -195,7 +194,7 @@ module.exports = function(mainWindow){
                     _this.asyncEvents[id].sender.send('ipcProvider-data', data);
                     delete _this.asyncEvents[id];
                 }
-            };
+            });
         });
 
 

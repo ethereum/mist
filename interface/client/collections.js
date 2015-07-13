@@ -13,12 +13,6 @@ new PersistentMinimongo(Tabs);
 syncMinimongo(Tabs);
 
 
-// Tabs.observeChanges({
-//     removed: function(id) {
-        
-//     }
-// });
-
 // Contains the accounts
 DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
 new PersistentMinimongo(DoogleLastVisitedPages);
@@ -29,6 +23,8 @@ new PersistentMinimongo(DoogleHistory);
 
 
 // ETHEREUM RELATED
+
+// Accounts collection is add by the ethereum:accounts package
 
 // contains blockchain meta data
 // LastBlock = new Mongo.Collection('lastblock', {connection: null});

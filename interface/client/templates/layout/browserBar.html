@@ -30,46 +30,23 @@
                         <p>You can select more than one account.</p>             
                     </div>
                     <ul class="dapp-account-list">
-                    
-                        <li class="selected">                
-                            {{> dapp_identicon identity='0x214243657890897654321' class="dapp-small"}}
-                            <h3>Create a random account for this app</h3>
-                        </li>
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654322' class="dapp-small"}}
-                            <h3>Coinbase</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654323' class="dapp-small"}}
-                            <h3>Cerulean Camel</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654324' class="dapp-small"}}
-                            <h3>Purple Teacup</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>  
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654325' class="dapp-small"}}
-                            <h3>Pink Dog</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>                        </li>
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654326' class="dapp-small"}}
-                            <h3>Yellow Canary</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>
-                        <li class="selected">                
-                            {{> dapp_identicon identity='0x214243657890897654327' class="dapp-small"}}
-                            <h3>Cerulean Camel</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>
-                        <li>                
-                            {{> dapp_identicon identity='0x214243657890897654328' class="dapp-small"}}
-                            <h3>Purple Teacup</h3>
-                            <span class="account-id">0x38cd6ac0e09c517ab75267c6bc76e5bb8baf14d0</span>
-                        </li>  
 
+                        <li>
+                            <button class="selected">
+                                {{> dapp_identicon identity='address23' class="dapp-small"}}
+                                <h3>Create a random account for this app</h3>
+                                <figure class="icon-check"></figure>
+                            </button>         
+                        </li>
+                        {{#each accounts}}
+                            <li>
+                                <button>
+                                    {{> dapp_identicon identity=address class="dapp-small"}}
+                                    <h3>{{name}}</h3>
+                                    <span>{{address}}</span>
+                                </button>        
+                            </li>
+                        {{/each}}
 
                     </ul>
 

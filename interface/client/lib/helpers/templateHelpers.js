@@ -44,7 +44,7 @@ Get all accounts
 @method (accounts)
 **/
 Template.registerHelper('accounts', function(identity){
-    return Accounts.find({}, {sort: {type: 1, balance: -1, name: 1}});
+    return Accounts.find({}, {sort: {name: 1}});
 });
 
 /**

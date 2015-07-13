@@ -1,14 +1,31 @@
+global._ = require('underscore');
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const menuItems = require('./menuItems');
+const Minimongo = require('./modules/minimongoDb.js');
+const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // const Menu = require('menu');
 // const Tray = require('tray');
-const menuItems = require('./menuItems');
-var appIcon = null;
+// var appIcon = null;
+
+// GLOBAL Variables
+global.path = {
+    HOME: app.getPath('home'),
+    APPDATA: app.getPath('appData')
+};
+global.language = 'en';
+global.Tabs = Minimongo('tabs');
+
+
+
 
 // const processRef = global.process;
 // process.nextTick(function() { global.process = processRef; });
+
+
 
 // Report crashes to our server.
 require('crash-reporter').start();
@@ -19,8 +36,19 @@ var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    if (process.platform != 'darwin')
-        app.quit();
+    // if (process.platform != 'darwin')
+    app.quit();
+});
+
+
+app.on('before-quit', function(){
+    // CLEAR open IPC sockets to geth
+    _.each(global.sockets, function(socket){
+        if(socket) {
+            console.log('Closing Socket ', socket.sender.getId());
+            socket.destroy();
+        }
+    });
 });
 
 // Emitted when the application is activated while there is no opened windows.
@@ -32,10 +60,6 @@ app.on('activate-with-no-open-windows', function () {
     }
     return false;
 });
-
-// SETUP custom protocols
-// app.commandLine.appendSwitch('register-standard-schemes', 'library,test,atom');
-// app.commandLine.appendSwitch('host-rules', 'MAP *.google.com meteor.com');
 
 
 // This method will be called when Electron has done everything
@@ -58,17 +82,20 @@ app.on('ready', function() {
     // appIcon.setContextMenu(contextMenu);
 
 
+
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        'standard-window': false,
+        width: 1024 + 208,
+        height: 700,
         icon: './icons/icon_128x128.png',
-        'node-integration': false,
-        preload: __dirname +'/preloader.js'
+        'standard-window': false,
+        preload: __dirname +'/modules/preloader/mistUI.js',
+        'node-integration': false
         // frame: false
         // 'use-content-size': true,
     });
+
+    syncMinimongo(Tabs, mainWindow.webContents);
 
     // and load the index.html of the app.
     // if() 'file://' + __dirname + '/interface/index.html
@@ -78,17 +105,28 @@ app.on('ready', function() {
     // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
+    // mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null;
-    });
+    //     mainWindow = null;
+    // });
 
 
     // instantiate the application menu
-    ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+    // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+    Tracker.autorun(function(){
+        var webviews = Tabs.find({},{fields: {name: 1, _id: 1}}).fetch();
         menuItems(mainWindow, webviews || []);
     });
+
+    // instantiate the application menu
+    // ipc.on('setLanguage', function(e, lang){
+    //     global.language = lang;
+
+    // });
+
+    // initialize the IPC provider on the main window
+    ipcProviderBackend(mainWindow);
 
 });

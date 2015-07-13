@@ -47,13 +47,6 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-
-        // UPADATE MAIN APPLICATION MENU
-        Tracker.afterFlush(function(){
-            updateApplicationMenuDevTools($('webview'));
-        });
-
-
         return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**

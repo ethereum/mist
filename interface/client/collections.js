@@ -17,6 +17,13 @@ Tabs = new Mongo.Collection('tabs', {connection: null});
 new PersistentMinimongo(Tabs);
 syncMinimongo(Tabs);
 
+
+// Tabs.observeChanges({
+//     removed: function(id) {
+        
+//     }
+// });
+
 // Contains the accounts
 DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
 new PersistentMinimongo(DoogleLastVisitedPages);

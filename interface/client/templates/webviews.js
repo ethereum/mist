@@ -11,7 +11,7 @@ webviewLoadStop = function(e){
     if(!url || url === 'about:blank' || url === location.toString())
         return;
 
-    console.log('Stop loading '+ url);
+    // console.log('Stop loading '+ url);
 
 
     // IS BROWSER

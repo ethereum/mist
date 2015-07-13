@@ -7,6 +7,9 @@ const menuItems = require('./menuItems');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 
+// const Menu = require('menu');
+// const Tray = require('tray');
+// var appIcon = null;
 
 // GLOBAL Variables
 global.path = {
@@ -18,43 +21,6 @@ global.Tabs = Minimongo('tabs');
 
 
 
-// var minimongo = require('minimongo-cache');
- 
-// var cache = new minimongo();
- 
-// cache.addCollection('users');
-// console.log(cache.users);
-
-// minimongo = require('minimongo');
-// var LocalDb = minimongo.MemoryDb;
-// db = new LocalDb();
- // db.addCollection("animals");
-// console.log(db.animals.find().observe);
-
-// Mongo = require('meteor-minimongo');
-// console.log(Mongo());
-
-
-// require('minimongo-standalone');
-// Tabs.find().observe({added: function(doc){
-
-
-//     console.log(JSON.stringify(doc, null, 2));
-// }});
-
-// Tracker.autorun(function(){
-//    console.log(Tabs.findOne());
-// });
-
-// Tabs.insert({
-//     dog: 'sheep'
-// });
-
-// console.log(Tracker);
-
-// const Menu = require('menu');
-// const Tray = require('tray');
-// var appIcon = null;
 
 // const processRef = global.process;
 // process.nextTick(function() { global.process = processRef; });
@@ -148,7 +114,9 @@ app.on('ready', function() {
 
 
     // instantiate the application menu
-    ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+    // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
+    Tracker.autorun(function(){
+        var webviews = Tabs.find({},{fields: {name: 1, _id: 1}}).fetch();
         menuItems(mainWindow, webviews || []);
     });
 

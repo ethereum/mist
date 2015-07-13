@@ -42,28 +42,6 @@ ipc.on('toogleWebviewDevTool', function(id){
 });
 
 
-/**
-Update the main appliction menu with a toogle for all webview devtools.
-
-*/
-window.updateApplicationMenuDevTools = function(webviews){
-    var returnWebviews = [];
-
-    if(webviews) {
-        webviews.each(function(){
-            $webview = $(this);
-
-            returnWebviews.push({
-                name: (!$webview.data('id')) ? 'the browser' : $webview.attr('src'),
-                id: $webview.data('id') || 'browser'
-            });
-        });
-    }
-    ipc.send('setupWebviewDevToolsMenu', returnWebviews);
-};
-
-
-
 
 // CONTEXT MENU
 

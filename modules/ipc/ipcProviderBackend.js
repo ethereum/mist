@@ -43,6 +43,7 @@ module.exports = function(mainWindow){
 
 
         this.sender = event.sender;
+        this.id = event.sender.getId();
         this.lastChunk = null;
         this.lastChunkTimeout = null;
 
@@ -70,7 +71,7 @@ module.exports = function(mainWindow){
     GethConnection.prototype.connect = function(event){
         if(!this.ipcSocket.writable) {
 
-            console.log('IPCSOCKET '+ this.sender.getId() +' CONNECTING..');
+            console.log('IPCSOCKET '+ this.id +' CONNECTING..');
 
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
         }
@@ -92,7 +93,7 @@ module.exports = function(mainWindow){
         if(!_.isObject(payload))
             return false;
 
-        if(this.sender.getId() === mainWindow.webContents.getId())
+        if(this.id === mainWindow.webContents.getId())
             return payload;
 
         if(_.isArray(payload)) {
@@ -153,7 +154,7 @@ module.exports = function(mainWindow){
                     // start timeout to cancel all requests
                     clearTimeout(_this.lastChunkTimeout);
                     _this.lastChunkTimeout = setTimeout(function(){
-                        console.log('IPCSOCKET '+ _this.sender.getId() +' TIMEOUT ERROR', e, "'''"+ data +"'''");
+                        console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', e, "'''"+ data +"'''");
                         _this.timeout();
                     }, 1000 * 15);
 
@@ -199,13 +200,18 @@ module.exports = function(mainWindow){
 
 
         this.ipcSocket.on("error", function(data){
+            try {
+                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
 
-            console.log('IPCSOCKET '+ _this.sender.getId() +' ERROR', data);
+                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-            _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
-            _this.sender.send('ipcProvider-error', data);
+                _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+                _this.sender.send('ipcProvider-error', data);
 
-            _this.timeout();
+                _this.timeout();
+            } catch(e) {
+                _this.destroy();
+            }
         });
 
         // this.ipcSocket.on('drain', function(data){
@@ -213,12 +219,18 @@ module.exports = function(mainWindow){
         // });
 
         this.ipcSocket.on('end', function(){
-            console.log('IPCSOCKET '+ _this.sender.getId() +' CONNECTION ENDED');
+            try {
+                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED');
 
-            _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
-            _this.sender.send('ipcProvider-end');
+                var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-            _this.timeout();
+                _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+                _this.sender.send('ipcProvider-end');
+
+                _this.timeout();
+            } catch(e) {
+                _this.destroy();
+            }
         });
 
     };
@@ -254,7 +266,9 @@ module.exports = function(mainWindow){
 
         this.timeout();
 
-        delete global.sockets['id_'+ this.sender.getId()];
+        delete global.sockets['id_'+ this.id];
+
+        console.log('SOCKET '+ this.id + ' DESTROYED!');
     };
 
 

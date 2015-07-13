@@ -85,7 +85,7 @@ var menuTempl = function(mainWindow, webviews) {
         devtToolsMenu.push({
             label: 'Toggle Developer Tools for '+ webview.name,
             click: function() {
-                mainWindow.webContents.send('toogleWebviewDevTool', webview.id);
+                mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
             }
         });
     });

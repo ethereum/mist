@@ -35,7 +35,7 @@ module.exports = function(db, webContents){
         args = (webContents) ? args : event;
 
         if(!db.findOne(args.id)) {
-            console.log('add', args.id);
+            // console.log('add', args.id);
             args.fields._id = args.id;
             db.insert(args.fields);
         }
@@ -43,7 +43,7 @@ module.exports = function(db, webContents){
     ipc.on('minimongo-changed', function(event, args) {
         args = (webContents) ? args : event;
 
-        console.log('updated', args.id, args.fields);
+        // console.log('updated', args.id, args.fields);
         db.update(args.id, {$set: args.fields});
     });
     ipc.on('minimongo-removed', function(event, id) {

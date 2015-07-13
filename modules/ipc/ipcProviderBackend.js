@@ -283,6 +283,7 @@ module.exports = function(mainWindow){
     // wait for incoming requests from dapps/ui
     ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(socket)
             socket.connect(event);
@@ -293,6 +294,7 @@ module.exports = function(mainWindow){
 
     ipc.on('ipcProvider-destroy', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(socket) {
             socket.destroy();
@@ -302,6 +304,7 @@ module.exports = function(mainWindow){
 
     var sendRequest = function(event, payload, sync) {
         var socket = global.sockets['id_'+ event.sender.getId()];
+        if(socket && socket.destroyed) return;
 
         if(!socket)
             // TODO: should we really try to reconnect, after the connection was destroyed?

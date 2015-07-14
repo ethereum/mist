@@ -16,12 +16,12 @@ The browserBar network template
 
 Template['layout_browserBar_network'].helpers({
     /**
-    Return the number current blockNumber
+    Return the number current block
 
-    @method blockNumber
+    @method block
     @return {String}
     */
-    'blockNumber': function(){
-        return Block
+    'block': function(){
+        return Blocks.latest;
     }
 });

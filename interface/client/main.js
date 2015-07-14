@@ -13,3 +13,4 @@ if(!Tabs.findOne('browser'))
 
 
 Accounts.init();
+Blocks.init();

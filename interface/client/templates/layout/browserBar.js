@@ -11,6 +11,19 @@ The browserBar template
 @constructor
 */
 
+Template['layout_browserBar'].onRendered(function(){
+    var template = this;
+
+
+    // TODO
+    $(document).on('click', function(e){
+        console.log(e.target, e);
+        if(!$(e.target).hasClass('.app-bar') &&
+           !$(e.target).parents('.app-bar')[0])
+            template.$('.app-bar').removeClass('show-bar');
+    });
+});
+
 
 Template['layout_browserBar'].helpers({
     /**

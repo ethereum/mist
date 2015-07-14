@@ -26,6 +26,8 @@ new PersistentMinimongo(DoogleHistory);
 
 // Accounts collection is add by the ethereum:accounts package
 
+// LastBlock collection is add by the ethereum:accounts package
+
 // contains blockchain meta data
 // LastBlock = new Mongo.Collection('lastblock', {connection: null});
 // new PersistentMinimongo(LastBlock);
@@ -33,6 +35,7 @@ new PersistentMinimongo(DoogleHistory);
 //     LastBlock.insert({
 //         _id: 'latest',
 //         blockNumber: 0,
+//         blockHash: 0,
 //         gasPrice: 0,
 //         checkpoint: 0
 //     });

@@ -11,9 +11,6 @@ The browserBar template
 @constructor
 */
 
-Template['layout_browserBar'].rendered = function(){
-
-};
 
 Template['layout_browserBar'].helpers({
     /**
@@ -125,29 +122,25 @@ Template['layout_browserBar'].events({
         LocalStore.set('selectedTab', 'browser');
     },
     /*
-    Hover show keys
+    Show the app bar
 
-    @event mouseenter button.keys
+    @event click app-bar > button, click .app-bar > form
     */
-    'mouseenter button.keys': function(){
-        TemplateVar.set('browserBarTab', 'show-key-info');
-    },    
-    /*
-    Hover show app-title
-
-    @event mouseenter button.app-title
-    */
-    'mouseenter button.app-title': function(){
-        TemplateVar.set('browserBarTab', 'show-app-info');
-    },    
-    /*
-    Hover show network
-
-    @event mouseenter button.network
-    */
-    'mouseenter .url-form': function(){
-        TemplateVar.set('browserBarTab', 'show-network-info');
+    'click .app-bar > button, click .app-bar > form': function(e, template){
+        template.$('.app-bar').toggleClass('show-bar');
     },
+    /*
+    Show the sections
+
+    @event click button.keys, click button.dapp-info, click form.url
+    */
+    'click button.keys, click button.dapp-info, click form.url': function(e, template){
+        var className = $(e.currentTarget).attr('class');
+
+        if(TemplateVar.get('browserBarTab') !== className)
+            template.$('.app-bar').addClass('show-bar');
+        TemplateVar.set('browserBarTab', className);
+    },    
     /*
     Send the domain
 

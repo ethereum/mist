@@ -9,21 +9,35 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Development
 
-To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed
+### Dependencies
 
-Then install electron:
+To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed. When this is done, install Electron:
 
     $ npm install -g electron-prebuilt
 
-Start the mist UI interface first using Meteor:
+### Installation
 
-    $ cd mist/interface/public
-    $ git clone https://github.com/ethereum/dapp-styles
-    $ cd ..
-    $ npm install
-    $ meteor
+Now you're ready to install Mist:
 
-And then in another terminal window start mist with:
-
+    $ git clone https://github.com/ethereum/mist.git
     $ cd mist
+    $ git submodule update --init 
+    $ npm install
+
+To update Mist in the future, run:
+
+    $ git pull
+    $ git submodule update
+    $ npm update
+
+### Run
+
+Developing is much easier when relying on Meteor's autoreload. In a separate window, start Meteor:
+
+    $ cd interface && meteor
+
+In the original window you can then start Mist with:
+
     $ electron ./
+
+

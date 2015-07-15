@@ -95,13 +95,13 @@ Template['layout_browserBar_keys'].events({
         // }
     },
     /**
-    Confirm the accounts available for this dapp and reload the dapp.
+    Confirm or cancel the accounts available for this dapp and reload the dapp.
 
-    @event click button.confirm
+    @event click button.confirm, click button.cancel
     */
-    'click button.confirm': function() {
+    'click button.confirm, click button.cancel': function(e) {
         var tabId = LocalStore.get('selectedTab')
-            accounts = TemplateVar.get('accounts'),
+            accounts = ($(e.currentTarget).hasClass('confirm')) ? TemplateVar.get('accounts') : [],
             tab = Tabs.findOne(tabId, {fields: {'permissions.accounts': 1}});
 
         // set new permissions
@@ -111,5 +111,8 @@ Template['layout_browserBar_keys'].events({
 
         // reload the webview
         Helpers.getWebview(tabId).reload();
+
+        // hide the sidebar
+        $('.app-bar').removeClass('show-bar');
     }
 });

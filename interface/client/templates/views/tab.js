@@ -35,7 +35,6 @@ Template['views_tab'].onRendered(function(){
         webview = this.find('webview'),
         timeoutId;
 
-
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
 
@@ -62,6 +61,12 @@ Template['views_tab'].onRendered(function(){
     // MIST API for installed tabs/dapps
     webview.addEventListener('ipc-message', function(event) {
         var arg = event.args[0];
+
+        if(event.channel === 'setWebviewId') {
+            Tabs.update(template.data._id, {$set:{
+                webviewId: webview.getId()
+            }});
+        }
 
         // SET FAVICON
         if(event.channel === 'favicon') {

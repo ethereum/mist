@@ -13,15 +13,6 @@ The browserBar template
 
 Template['layout_browserBar'].onRendered(function(){
     var template = this;
-
-
-    // TODO
-    $(document).on('click', function(e){
-        console.log(e.target, e);
-        if(!$(e.target).hasClass('.app-bar') &&
-           !$(e.target).parents('.app-bar')[0])
-            template.$('.app-bar').removeClass('show-bar');
-    });
 });
 
 
@@ -140,6 +131,10 @@ Template['layout_browserBar'].events({
     @event click app-bar > button, click .app-bar > form
     */
     'click .app-bar > button, click .app-bar > form': function(e, template){
+        // prevent the slide in, when the url is clicked
+        if($(e.target).hasClass('url-input'))
+            return;
+
         template.$('.app-bar').toggleClass('show-bar');
     },
     /*
@@ -172,7 +167,15 @@ Template['layout_browserBar'].events({
         if(TemplateVar.get('browserBarTab') !== className)
             template.$('.app-bar').addClass('show-bar');
         TemplateVar.set('browserBarTab', className);
-    },    
+    },
+    /*
+    Focus the input
+
+    @event click form.url
+    */
+    'click form.url': function(e, template){
+        template.$('.url-input').focus();
+    },
     /*
     Send the domain
 
@@ -202,5 +205,8 @@ Template['layout_browserBar'].events({
             redirect: url
         }});
         LocalStore.set('selectedTab', foundTab);
+
+        // hide the app-bar
+        template.$('.app-bar').removeClass('show-bar');
     }
 });

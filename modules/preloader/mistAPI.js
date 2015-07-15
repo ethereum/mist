@@ -22,6 +22,9 @@ var filterId = function(str) {
 };
 
 
+// notifiy the tab to store the webview id
+ipc.sendToHost('setWebviewId');
+
 // SET WEB3 PROVIDOR
 // destroy the old socket
 ipc.send('ipcProvider-destroy');

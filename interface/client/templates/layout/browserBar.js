@@ -143,6 +143,25 @@ Template['layout_browserBar'].events({
         template.$('.app-bar').toggleClass('show-bar');
     },
     /*
+    Hide the app bar
+
+    @event mouseleave .app-bar
+    */
+    'mouseleave .app-bar': function(e, template){
+        var timeoutId = setTimeout(function(){
+            template.$('.app-bar').removeClass('show-bar');
+        }, 1000);
+        TemplateVar.set('timeoutId', timeoutId);
+    },
+    /*
+    Stop hiding the app bar
+
+    @event mouseenter .app-bar
+    */
+    'mouseenter .app-bar': function(e, template){
+        clearTimeout(TemplateVar.get('timeoutId'));
+    },
+    /*
     Show the sections
 
     @event click button.keys, click button.dapp-info, click form.url

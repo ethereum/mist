@@ -54,12 +54,12 @@ Template['layout_browserBar_keys'].helpers({
     @return {Number}
     */
     'accountNumber': function(){
+        var accounts = _.pluck(Accounts.find().fetch(), 'address');
 
-        return TemplateVar.get('accounts').length;
+        return _.intersection(accounts, TemplateVar.get('accounts')).length;
 
         // var tab = Tabs.findOne(LocalStore.get('selectedTab'));
-
-        //  return (tab &&
+        // return (tab &&
         //     tab.permissions &&
         //     tab.permissions.accounts) ? tab.permissions.accounts.length : 0;
     }

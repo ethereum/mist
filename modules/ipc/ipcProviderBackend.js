@@ -118,7 +118,8 @@ module.exports = function(mainWindow){
             });
         }
 
-        return this.syncEvents[response.id] || this.asyncEvents[response.id];
+
+        return (response) ? this.syncEvents[response.id] || this.asyncEvents[response.id] : false;
     };
 
 
@@ -261,13 +262,10 @@ module.exports = function(mainWindow){
                 // FILTER RESPONSES
                 var event = _this.getResponseEvent(result);
 
-                console.log(result, event);
                 if(!event)
                     return;
 
                 result = _this.filterRequestResponse(result, event);
-
-                console.log('filteres', result);
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -404,7 +402,6 @@ module.exports = function(mainWindow){
             
             // console.log('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
 
-console.log(filteredPayload);
 
             // add the payload to the event, so we can time it out if necessary
             event.payload = filteredPayload;
@@ -420,7 +417,6 @@ console.log(filteredPayload);
         
         // ERROR
         } else {
-        console.log(jsonPayload, errorMethod, socket.syncEvents, socket.asyncEvents);
 
             if(sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));

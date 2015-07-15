@@ -16,7 +16,7 @@ module.exports = function(mainWindow){
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'"}, "id": "__id__"},
-        nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistent", "id": "__id__"},
+        nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistent", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
 
@@ -26,10 +26,10 @@ module.exports = function(mainWindow){
     @method makeError
     */
     var makeError = function(payload, error) {
-        error.method = payload.method;
         if(error.error)
-            error.error.message = error.error.message.replace('__method__', payload.method);
+            error.error.message = error.error.message.replace(/'[a-z_]*'/i, "'"+ payload.method +"'");
         error.id = payload.id;
+
         return error;
     };
 
@@ -165,7 +165,6 @@ module.exports = function(mainWindow){
             }
         }
 
-
         return payload;
     };
 
@@ -262,21 +261,23 @@ module.exports = function(mainWindow){
                 // FILTER RESPONSES
                 var event = _this.getResponseEvent(result);
 
+                console.log(result, event);
                 if(!event)
                     return;
 
                 result = _this.filterRequestResponse(result, event);
 
+                console.log('filteres', result);
 
                 // SEND SYNC back
                 if(event.sync) {
                     event.returnValue = JSON.stringify(result);
-                    delete _this.syncEvents[event._id];
+                    delete _this.syncEvents[event.eventId];
 
                 // SEND async back
                 } else {
                     event.sender.send('ipcProvider-data', JSON.stringify(result));
-                    delete _this.asyncEvents[event._id];
+                    delete _this.asyncEvents[event.eventId];
                 }
             });
         });
@@ -403,9 +404,11 @@ module.exports = function(mainWindow){
             
             // console.log('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
 
+console.log(filteredPayload);
+
             // add the payload to the event, so we can time it out if necessary
             event.payload = filteredPayload;
-            event._id = id;
+            event.eventId = id;
             event.sync = !!sync;
 
             if(sync)
@@ -417,6 +420,8 @@ module.exports = function(mainWindow){
         
         // ERROR
         } else {
+        console.log(jsonPayload, errorMethod, socket.syncEvents, socket.asyncEvents);
+
             if(sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
             else

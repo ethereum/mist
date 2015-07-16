@@ -69,6 +69,19 @@ var menuTempl = function(mainWindow, webviews) {
         ]
     })
 
+    menu.push({
+        label: 'View',
+        submenu: [
+            {
+                label: 'Enter Fullscreen',
+                accelerator: 'Command+F',
+                click: function(){
+                    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+                }
+            }
+        ]
+    })
+
     var devtToolsMenu = [{
         label: 'Toggle Developer Tools for the Mist UI',
         accelerator: 'Alt+Command+I',
@@ -91,33 +104,8 @@ var menuTempl = function(mainWindow, webviews) {
     });
 
     menu.push({
-        label: 'View',
-        submenu: devtToolsMenu //[
-            // {
-            //     label: 'Reload',
-            //     accelerator: 'Command+R',
-            //     click: function() {
-            //         f(curWindow = BrowserWindow.getFocusedWindow())
-            //             curWindow.reloadIgnoringCache();
-            //         }
-            // },
-            // {
-            //     label: 'Toggle Developer Tools',
-            //     accelerator: 'Alt+Command+I',
-            //     click: function() {
-            //         if(curWindow = BrowserWindow.getFocusedWindow())
-            //             curWindow.toggleDevTools();
-            //     }
-            // },
-            // {
-            //     label: 'Toggle Developer Tools For ',
-            //     accelerator: 'Alt+Command+I',
-            //     click: function() {
-            //         if(curWindow = BrowserWindow.getFocusedWindow())
-            //             curWindow.toggleDevTools();
-            //     }
-            // },
-        //]
+        label: 'Develop',
+        submenu: devtToolsMenu
     })
     menu.push({
         label: 'Window',

@@ -6,6 +6,15 @@ const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
+const i18n = require('./modules/i18n.js');
+
+// const getCurrentKeyboardLayout = require('keyboard-layout');
+// const etcKeyboard = require('etc-keyboard');
+// console.log(getCurrentKeyboardLayout());
+// etcKeyboard(function (err, layout) {
+//     console.log('KEYBOARD:', layout);
+// });
+
 
 // const Menu = require('menu');
 // const Tray = require('tray');
@@ -17,6 +26,7 @@ global.path = {
     APPDATA: app.getPath('appData')
 };
 global.language = 'en';
+global.i18n = i18n; // TODO: detect language switches somehow
 global.Tabs = Minimongo('tabs');
 
 

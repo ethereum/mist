@@ -17,29 +17,29 @@ var createMenu = function(mainWindow, webviews) {
 var menuTempl = function(mainWindow, webviews) {
     const menu = []
     menu.push({
-        label: config.name,
+        label: i18n.t('mist.applicationMenu.app.label', {app: config.name}),
         submenu: [
             {
-                label: 'About '+ config.name,
+                label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
                 selector: 'orderFrontStandardAboutPanel:'
             },
             {
-                label: 'Quit '+ config.name,
+                label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
                 accelerator: 'Command+Q',
                 selector: 'terminate:'
             }
         ]
     })
     menu.push({
-        label: 'Edit',
+        label: i18n.t('mist.applicationMenu.edit.label'),
         submenu: [
             {
-                label: 'Undo',
+                label: i18n.t('mist.applicationMenu.edit.undo'),
                 accelerator: 'Command+Z',
                 selector: 'undo:'
             },
             {
-                label: 'Redo',
+                label: i18n.t('mist.applicationMenu.edit.redo'),
                 accelerator: 'Shift+Command+Z',
                 selector: 'redo:'
             },
@@ -47,22 +47,22 @@ var menuTempl = function(mainWindow, webviews) {
                 type: 'separator'
             },
             {
-                label: 'Cut',
+                label: i18n.t('mist.applicationMenu.edit.cut'),
                 accelerator: 'Command+X',
                 selector: 'cut:'
             },
             {
-                label: 'Copy',
+                label: i18n.t('mist.applicationMenu.edit.copy'),
                 accelerator: 'Command+C',
                 selector: 'copy:'
             },
             {
-                label: 'Paste',
+                label: i18n.t('mist.applicationMenu.edit.paste'),
                 accelerator: 'Command+V',
                 selector: 'paste:'
             },
             {
-                label: 'Select All',
+                label: i18n.t('mist.applicationMenu.edit.selectAll'),
                 accelerator: 'Command+A',
                 selector: 'selectAll:'
             },
@@ -70,10 +70,10 @@ var menuTempl = function(mainWindow, webviews) {
     })
 
     menu.push({
-        label: 'View',
+        label: i18n.t('mist.applicationMenu.view.label'),
         submenu: [
             {
-                label: 'Enter Fullscreen',
+                label: i18n.t('mist.applicationMenu.view.fullscreen'),
                 accelerator: 'Command+F',
                 click: function(){
                     mainWindow.setFullScreen(!mainWindow.isFullScreen());
@@ -82,8 +82,9 @@ var menuTempl = function(mainWindow, webviews) {
         ]
     })
 
+    // DEVELOP MENU
     var devtToolsMenu = [{
-        label: 'Toggle Developer Tools for the Mist UI',
+        label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
         accelerator: 'Alt+Command+I',
         click: function() {
             if(curWindow = BrowserWindow.getFocusedWindow())
@@ -96,7 +97,7 @@ var menuTempl = function(mainWindow, webviews) {
     // add webviews
     webviews.forEach(function(webview){
         devtToolsMenu.push({
-            label: 'Toggle Developer Tools for '+ webview.name,
+            label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
             click: function() {
                 mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
             }
@@ -104,19 +105,26 @@ var menuTempl = function(mainWindow, webviews) {
     });
 
     menu.push({
-        label: 'Develop',
-        submenu: devtToolsMenu
+        label: i18n.t('mist.applicationMenu.develop.label'),
+        submenu: _.union(devtToolsMenu, [
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.develop.runTests')
+            }
+        ])
     })
     menu.push({
-        label: 'Window',
+        label: i18n.t('mist.applicationMenu.window.label'),
         submenu: [
             {
-                label: 'Minimize',
+                label: i18n.t('mist.applicationMenu.window.minimize'),
                 accelerator: 'Command+M',
                 selector: 'performMiniaturize:'
             },
             {
-                label: 'Close',
+                label: i18n.t('mist.applicationMenu.window.close'),
                 accelerator: 'Command+W',
                 click: function() {
                     if(curWindow = BrowserWindow.getFocusedWindow())
@@ -128,13 +136,13 @@ var menuTempl = function(mainWindow, webviews) {
                 type: 'separator'
             },
             {
-                label: 'Bring All to Front',
+                label: i18n.t('mist.applicationMenu.window.toFront'),
                 selector: 'arrangeInFront:'
             },
         ]
     })
     menu.push({
-        label: 'Help',
+        label: i18n.t('mist.applicationMenu.help.label'),
         submenu: []
     });
     return menu;

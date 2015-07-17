@@ -9,7 +9,8 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Development
 
-For development, Meteor server is run to assist with live reload and CSS injection. However, as the target is DApps, deployments should preprocess the assets with the `meteor-build-client` packcage.
+For development, a Meteor needs to be started to assist with live reload and CSS injection.
+Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 

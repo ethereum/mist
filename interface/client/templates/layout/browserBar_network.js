@@ -21,7 +21,7 @@ Template['layout_browserBar_network'].helpers({
     @method block
     @return {String}
     */
-    'block': function(){
-        return Blocks.latest;
-    }
+    // 'block': function(){
+    //     return EthAccounts.latest;
+    // }
 });

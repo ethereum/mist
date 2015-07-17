@@ -12,5 +12,5 @@ if(!Tabs.findOne('browser'))
 
 
 
-Accounts.init();
-Blocks.init();
+EthAccounts.init();
+EthBlocks.init();

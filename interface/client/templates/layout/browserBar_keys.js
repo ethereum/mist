@@ -54,7 +54,7 @@ Template['layout_browserBar_keys'].helpers({
     @return {Number}
     */
     'accountNumber': function(){
-        var accounts = _.pluck(Accounts.find().fetch(), 'address');
+        var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
 
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
 

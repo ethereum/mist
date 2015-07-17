@@ -9,6 +9,8 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Development
 
+For development, Meteor server is run to assist with live reload and CSS injection. However, as the target is DApps, deployments should preprocess the assets with the `meteor-build-client` packcage.
+
 ### Dependencies
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed. When this is done, install Electron:
@@ -40,4 +42,8 @@ In the original window you can then start Mist with:
 
     $ electron ./
 
+### Deployment
 
+    $ npm install -g meteor-build-client
+    $ cd mist/interface
+    $ meteor-build-client ../interface-build --path ""

@@ -16,6 +16,8 @@ var createMenu = function(mainWindow, webviews) {
 // null -> obj
 var menuTempl = function(mainWindow, webviews) {
     const menu = []
+
+    // APP
     menu.push({
         label: i18n.t('mist.applicationMenu.app.label', {app: config.name}),
         submenu: [
@@ -30,6 +32,8 @@ var menuTempl = function(mainWindow, webviews) {
             }
         ]
     })
+
+    // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
         submenu: [
@@ -69,6 +73,7 @@ var menuTempl = function(mainWindow, webviews) {
         ]
     })
 
+    // VIEW
     menu.push({
         label: i18n.t('mist.applicationMenu.view.label'),
         submenu: [
@@ -82,7 +87,7 @@ var menuTempl = function(mainWindow, webviews) {
         ]
     })
 
-    // DEVELOP MENU
+    // DEVELOP
     var devtToolsMenu = [{
         label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
         accelerator: 'Alt+Command+I',
@@ -111,10 +116,15 @@ var menuTempl = function(mainWindow, webviews) {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.develop.runTests')
+                label: i18n.t('mist.applicationMenu.develop.runTests'),
+                click: function(){
+                    // TODO send IPC message to initiate the test tab!
+                }
             }
         ])
     })
+
+    // WINDOW
     menu.push({
         label: i18n.t('mist.applicationMenu.window.label'),
         submenu: [
@@ -126,11 +136,11 @@ var menuTempl = function(mainWindow, webviews) {
             {
                 label: i18n.t('mist.applicationMenu.window.close'),
                 accelerator: 'Command+W',
-                click: function() {
-                    if(curWindow = BrowserWindow.getFocusedWindow())
-                        curWindow.hide();
-                }
-                // selector: 'performClose:'
+                // click: function() {
+                //     if(curWindow = BrowserWindow.getFocusedWindow())
+                //         curWindow.hide();
+                // }
+                selector: 'performClose:'
             },
             {
                 type: 'separator'
@@ -141,6 +151,8 @@ var menuTempl = function(mainWindow, webviews) {
             },
         ]
     })
+
+    // HELP
     menu.push({
         label: i18n.t('mist.applicationMenu.help.label'),
         submenu: []

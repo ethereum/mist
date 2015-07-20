@@ -55,7 +55,7 @@ app.on('before-quit', function(){
     // CLEAR open IPC sockets to geth
     _.each(global.sockets, function(socket){
         if(socket) {
-            console.log('Closing Socket ', socket.sender.getId());
+            console.log('Closing Socket ', socket.id);
             socket.destroy();
         }
     });

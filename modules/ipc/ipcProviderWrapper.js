@@ -28,11 +28,14 @@ ipcProviderWrapper = {
     /**
     Connects the IPC on the backend to the geth node
 
+    Note: web3.isConnected will always return true, as otherwise race conditions can occour,
+    letting it look like youre not connected via IPC.
+
     @method connect
     */
     connect: function(path) {
         
-        ipc.send('ipcProvider-create'); // path is set in the backend
+        this.writable = ipc.sendSync('ipcProvider-create'); // path is set in the backend
 
         return this;
     },

@@ -366,8 +366,13 @@ module.exports = function(mainWindow){
         if(socket)
             socket.connect(event);
         else {
-            global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
+            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         }
+
+        if(event.sender.returnValue)
+            event.sender.returnValue = socket.ipcSocket.writable;
+        else
+            event.sender.send('ipcProvider-setWritable', socket.ipcSocket.writable);
     });
 
     ipc.on('ipcProvider-destroy', function(event){

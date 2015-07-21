@@ -25,6 +25,7 @@ global.path = {
     HOME: app.getPath('home'),
     APPDATA: app.getPath('appData')
 };
+global.production = false;
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 global.Tabs = Minimongo('tabs');
@@ -100,7 +101,10 @@ app.on('ready', function() {
         icon: './icons/icon_128x128.png',
         'standard-window': false,
         preload: __dirname +'/modules/preloader/mistUI.js',
-        'node-integration': false
+        'node-integration': false,
+        'web-preferences': {
+            'overlay-fullscreen-video': true
+        }
         // frame: false
         // 'use-content-size': true,
     });
@@ -108,8 +112,11 @@ app.on('ready', function() {
     syncMinimongo(Tabs, mainWindow.webContents);
 
     // and load the index.html of the app.
-    // if() 'file://' + __dirname + '/interface/index.html
-    mainWindow.loadUrl('http://localhost:3000');
+    if(global.production)
+        mainWindow.loadUrl('file://' + __dirname + '/interface_build/index.html');
+    else
+        mainWindow.loadUrl('http://localhost:3000');
+        
 
     // Open the devtools.
     // mainWindow.openDevTools();
@@ -126,7 +133,7 @@ app.on('ready', function() {
     // instantiate the application menu
     // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
-        var webviews = Tabs.find({},{fields: {name: 1, _id: 1}}).fetch();
+        var webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
         menuItems(mainWindow, webviews || []);
     });
 

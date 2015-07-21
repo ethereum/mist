@@ -118,7 +118,20 @@ var menuTempl = function(mainWindow, webviews) {
             {
                 label: i18n.t('mist.applicationMenu.develop.runTests'),
                 click: function(){
-                    // TODO send IPC message to initiate the test tab!
+
+                    // var testWindow = new BrowserWindow({
+                    //     width: 800,
+                    //     height: 600,
+                    //     icon: './icons/icon_128x128.png',
+                    //     preload: __dirname +'/modules/preloader/mistAPI.js',
+                    //     'node-integration': true,
+                    //     'web-preferences': {
+                    //         // 'web-security': false
+                    //     }
+                    // });
+                    // testWindow.loadUrl('file://'+ __dirname + '/tests/mocha-in-browser/spec/runner.html');                    
+
+                    mainWindow.webContents.send('runTests', 'webview');
                 }
             }
         ])

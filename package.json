@@ -5,9 +5,9 @@
   "devDependencies": {},
   "dependencies": {
     "bignumber.js": "^2.0.7",
-    "i18next": "^1.10.2",
+    "i18next": "^1.10.3",
     "minimongo-standalone": "0.0.9",
     "underscore": "^1.8.3",
-    "web3": "^0.8.1"
+    "web3": "^0.9.1"
   }
 }

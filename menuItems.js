@@ -129,7 +129,7 @@ var menuTempl = function(mainWindow, webviews) {
                     //         // 'web-security': false
                     //     }
                     // });
-                    // testWindow.loadUrl('file://'+ __dirname + '/tests/mocha-in-browser/spec/runner.html');                    
+                    // testWindow.loadUrl('file://'+ __dirname + '/tests/mocha-in-browser/runner.html');                    
 
                     mainWindow.webContents.send('runTests', 'webview');
                 }

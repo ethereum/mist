@@ -52,7 +52,7 @@ ipc.on('runTests', function(type){
         Tabs.upsert('tests', {
             position: -1,
             name: 'Test',
-            url: 'file://'+ __dirname + '/../../tests/mocha-in-browser/spec/runner.html',
+            url: 'file://'+ __dirname + '/../../tests/mocha-in-browser/runner.html',
             permissions: {
                 accounts: accounts
             }

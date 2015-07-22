@@ -8,6 +8,7 @@ if(location.origin !== "file://") {
 require('./mistAPI.js');
 const ipc = require('ipc');
 
+window.ipcProvider = require('../ipc/ipcProviderWrapper.js');
 window.permissions = {};
 
 ipc.sendToHost('sendTestData');

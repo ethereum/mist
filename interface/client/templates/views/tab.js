@@ -35,6 +35,15 @@ Template['views_tab'].onRendered(function(){
         webview = this.find('webview'),
         timeoutId;
 
+    // Send updated TEST DATA
+    if(template.data._id === 'tests') {
+        this.autorun(function(c){
+            var tab = Tabs.findOne('tests');
+
+            if(!c.firstRun)
+                webview.send('sendData', tab);
+        });
+    }
 
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
@@ -62,6 +71,17 @@ Template['views_tab'].onRendered(function(){
     // MIST API for installed tabs/dapps
     webview.addEventListener('ipc-message', function(event) {
         var arg = event.args[0];
+
+        if(event.channel === 'setWebviewId') {
+            Tabs.update(template.data._id, {$set:{
+                webviewId: webview.getId()
+            }});
+        }
+
+        // Send TEST DATA
+        if(event.channel === 'sendTestData') {
+             webview.send('sendTestData', Tabs.findOne('tests'));
+        }
 
         // SET FAVICON
         if(event.channel === 'favicon') {

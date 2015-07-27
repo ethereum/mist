@@ -9,3 +9,8 @@ if(!Tabs.findOne('browser'))
         url: 'about:blank',
         position: 0
     });
+
+
+
+EthAccounts.init();
+EthBlocks.init();

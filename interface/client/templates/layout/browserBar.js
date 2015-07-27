@@ -11,9 +11,10 @@ The browserBar template
 @constructor
 */
 
-Template['layout_browserBar'].rendered = function(){
+Template['layout_browserBar'].onRendered(function(){
+    var template = this;
+});
 
-};
 
 Template['layout_browserBar'].helpers({
     /**
@@ -125,28 +126,55 @@ Template['layout_browserBar'].events({
         LocalStore.set('selectedTab', 'browser');
     },
     /*
-    Hover show keys
+    Show the app bar
 
-    @event mouseenter button.keys
+    @event click app-bar > button, click .app-bar > form
     */
-    'mouseenter button.keys': function(){
-        TemplateVar.set('browserBarTab', 'show-key-info');
-    },    
+    'click .app-bar > button, click .app-bar > form': function(e, template){
+        // prevent the slide in, when the url is clicked
+        if($(e.target).hasClass('url-input'))
+            return;
+
+        template.$('.app-bar').toggleClass('show-bar');
+    },
     /*
-    Hover show app-title
+    Hide the app bar
 
-    @event mouseenter button.app-title
+    @event mouseleave .app-bar
     */
-    'mouseenter button.app-title': function(){
-        TemplateVar.set('browserBarTab', 'show-app-info');
-    },    
+    'mouseleave .app-bar': function(e, template){
+        var timeoutId = setTimeout(function(){
+            template.$('.app-bar').removeClass('show-bar');
+        }, 1000);
+        TemplateVar.set('timeoutId', timeoutId);
+    },
     /*
-    Hover show network
+    Stop hiding the app bar
 
-    @event mouseenter button.network
+    @event mouseenter .app-bar
     */
-    'mouseenter .url-form': function(){
-        TemplateVar.set('browserBarTab', 'show-network-info');
+    'mouseenter .app-bar': function(e, template){
+        clearTimeout(TemplateVar.get('timeoutId'));
+    },
+    /*
+    Show the sections
+
+    @event click button.keys, click button.dapp-info, click form.url
+    */
+    'click button.keys, click button.dapp-info, click form.url': function(e, template){
+        var className = $(e.currentTarget).attr('class');
+
+        if(TemplateVar.get('browserBarTab') !== className)
+            template.$('.app-bar').addClass('show-bar');
+        TemplateVar.set('browserBarTab', className);
+    },
+    /*
+    Focus the input
+
+    @event click form.url
+    */
+    'click form.url': function(e, template){
+        template.$('.url-input').focus();
     },
     /*
     Send the domain
@@ -177,5 +205,8 @@ Template['layout_browserBar'].events({
             redirect: url
         }});
         LocalStore.set('selectedTab', foundTab);
+
+        // hide the app-bar
+        template.$('.app-bar').removeClass('show-bar');
     }
 });

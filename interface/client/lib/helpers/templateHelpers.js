@@ -21,11 +21,20 @@ Template.registerHelper('debug', function(object){
 });
 
 /**
+Returns the current block
+
+@method (CurrentBlock)
+**/
+Template.registerHelper('CurrentBlock', function(){
+    return EthBlocks.latest;
+});
+
+/**
 Return the current dirname.
 
 @method (dirname)
 **/
-Template.registerHelper('dirname', function(identity){
+Template.registerHelper('dirname', function(){
     return window.dirname;
 });
 
@@ -34,7 +43,7 @@ Get the current user agent
 
 @method (useragent)
 **/
-Template.registerHelper('useragent', function(identity){
+Template.registerHelper('useragent', function(){
     return navigator.userAgent;
 });
 
@@ -44,7 +53,7 @@ Get all accounts
 @method (accounts)
 **/
 Template.registerHelper('accounts', function(identity){
-    return Accounts.find({}, {sort: {type: 1, balance: -1, name: 1}});
+    return EthAccounts.find({}, {sort: {name: 1}});
 });
 
 /**
@@ -82,7 +91,7 @@ Get the account name or display the address
 @param {String} address
 */
 Template.registerHelper('accountNameOrAddress', function(address){
-    if(account = Accounts.findOne({address: address}))
+    if(account = EthAccounts.findOne({address: address}))
         return account.name;
     else
         return address;

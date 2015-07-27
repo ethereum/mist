@@ -1,5 +1,9 @@
 # Mist Browser
 
+**NOTE** Mist is under heavy development and not intended to be tested by the community yet,
+therefore it might not run out of the box as described the the README below.
+Stay tuned and check back later...
+
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
@@ -9,7 +13,8 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Development
 
-For development, Meteor server is run to assist with live reload and CSS injection. However, as the target is DApps, deployments should preprocess the assets with the `meteor-build-client` package.
+For development, a Meteor needs to be started to assist with live reload and CSS injection.
+Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 

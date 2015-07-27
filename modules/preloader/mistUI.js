@@ -41,6 +41,41 @@ ipc.on('toogleWebviewDevTool', function(id){
         webview.openDevTools();
 });
 
+// Run tests
+ipc.on('runTests', function(type){
+    if(type === 'webview') {
+        var accounts = _.pluck(EthAccounts.find({}, {fields:{address: 1}}).fetch(), 'address');
+
+        // remove one account
+        accounts.pop();
+
+        Tabs.upsert('tests', {
+            position: -1,
+            name: 'Test',
+            url: 'file://'+ __dirname + '/../../tests/mocha-in-browser/runner.html',
+            permissions: {
+                accounts: accounts
+            }
+        });
+
+        Tracker.afterFlush(function(){
+            LocalStore.set('selectedTab', 'tests');
+        });
+
+        // update the permissions, when accounts change
+        Tracker.autorun(function(){
+            var accounts = _.pluck(EthAccounts.find({}, {fields:{address: 1}}).fetch(), 'address');
+
+            // remove one account
+            accounts.pop();
+
+            Tabs.update('tests', {$set: {
+                'permissions.accounts': accounts
+            }});
+        });
+    }
+});
+
 
 
 // CONTEXT MENU
@@ -85,5 +120,4 @@ document.addEventListener('keydown', function (e) {
             webview.reloadIgnoringCache();
     }
 }, false);
-
 

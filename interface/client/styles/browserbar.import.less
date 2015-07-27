@@ -29,9 +29,82 @@
         height: @gridHeight * 1.5; 
         overflow: hidden;
 
+        // ANIMATION
         transition: height 0.25s, box-shadow 0.5s;
+
+        &.show-bar {
+            height: @gridHeight * 20;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+            
+            .url-input {
+                opacity: 0.9;
+                transition-duration: 0.3s;
+                transition-delay: 0.1s;        
+                transform: translateX(0) translateZ(0);
+            }
+
+            .url-breadcrumb {
+                opacity: 0;
+                visibility: hidden;
+                transition-duration: 0.3s;                
+                transition-delay: 0.1s; 
+                transform: translateX(20px) translateZ(0);
+                word-spacing: -5px;
+            }
+
+            &:after {
+                display: block;
+                position: absolute;
+                left: 5%;
+                top: 28px;
+                width: 20px;
+                height: 20px;
+                margin-left: -10px;
+                content: "◢◣";
+                color: @colorGrayDark;
+                font-size: 50%;
+                letter-spacing: -2px;
+                transition: left .5s ease-in-out;
+            }
+        }
+
+        &.dapp-info {
+            button.dapp-info {
+                color: @colorGrayDark;
+            }
+
+            div.dapp-info {
+                display: flex;
+            }
+        }
+
+        &.keys {
+            button.keys {
+                color: @colorGrayDark;
+            }
+            button.dapp-info {
+                color: @colorLink;
+            }
+
+            div.keys {
+                display: flex;
+            }
+
+            &:after {
+                left: 95%;
+            }
+        }
+
+        &.url {
+            &:after {
+                left: 50%;
+            }
+            div.url {
+                display: flex;
+            }
+        }
         
-        button {
+        > button {
             position: relative;
             padding-left: @gridWidth*0.75;
             font-family: @sourceSansPro;
@@ -61,11 +134,9 @@
               position: relative;
             }
 
-
-
         }
 
-        form {
+        > form {
             position: relative;
             flex-grow: 1;
             height: @gridHeight;
@@ -120,7 +191,9 @@
 
         }
 
-        .app-info, .key-info {
+        div.dapp-info,
+        div.keys,
+        div.url {
             display: none;
             position: absolute;
             top: @gridHeight * 2;
@@ -132,7 +205,7 @@
             border-top: solid 1px #BDB6B6;
         }
 
-        .key-info {
+        div.keys {
             .message {
                 flex-grow: 1;
                 padding: @gridHeight/2 @gridWidth/2 0 0;
@@ -172,79 +245,6 @@
                 button.cancel {
                     font-weight: 300;
                 }            
-            }
-        }
-        
-        
-        &:hover, &.show-bar {
-            height: @gridHeight * 20;
-            box-shadow: @shadowStandard;
-            transition-delay: 0.4s; 
-            
-            .url-input {
-                opacity: 0.9;
-                transition-duration: 0.3s;
-                transition-delay: 0.1s;        
-                transform: translateX(0) translateZ(0);
-            }
-
-            .url-breadcrumb {
-                opacity: 0;
-                visibility: hidden;
-                transition-duration: 0.3s;                
-                transition-delay: 0.1s; 
-                transform: translateX(20px) translateZ(0);
-                word-spacing: -5px;
-            }
-            
-            button.app-title {
-                color: @colorGrayDark;
-            }
-
-            .app-info {
-                display: flex;
-            }
-
-            &:after {
-                display: block;
-                position: absolute;
-                left: 5%;
-                top: 28px;
-                width: 20px;
-                height: 20px;
-                margin-left: -10px;
-                content: "◢◣";
-                color: @colorGrayDark;
-                font-size: 50%;
-                letter-spacing: -2px;
-                transition: left .5s ease-in-out;
-            }
-        }
-
-        &.show-key-info {
-            button.keys {
-                color: @colorGrayDark;
-            }
-
-            button.app-title {
-                color: @colorLink;
-            }
-
-            .key-info {
-                display: flex;
-            }
-
-            .app-info {
-                display: none;
-            }
-            &:after {
-                left: 95%;
-            }
-        }
-
-        &.show-network-info {
-            &:after {
-                left: 50%;
             }
         }
 
@@ -364,7 +364,7 @@
 }
 
 @media screen and (max-width: 800px ) {
-    .app-title {
+    div.dapp-info {
       width: 0;
       text-overflow: clip;
     }   

@@ -1,0 +1,10 @@
+{
+  "name": "Mocha_in_the_browser",
+  "version": "0.0.1",
+  "engines": {
+    "node": "0.6.6"
+  },
+  "dependencies":{
+    "mocha": "*"
+  }
+}

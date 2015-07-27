@@ -1,5 +1,45 @@
 {
     "mist": {
+        "applicationMenu": {
+            "app": {
+                "label": "__app__",
+                "about": "About __app__",
+                "quit": "Quit __app__"
+            },
+            "edit": {
+                "label": "Edit",
+                "undo": "Undo",
+                "redo": "Redo",
+                "cut": "Cut",
+                "copy": "Copy",
+                "paste": "Paste",
+                "selectAll": "Select all"
+            },
+            "view": {
+                "label": "View",
+                "fullscreen": "Enter Fullscreen"
+            },
+            "develop": {
+                "label": "Develop",
+                "devToolsMistUI": "Toggle Developer Tools for the Mist UI",
+                "devToolsWebview": "Toggle Developer Tools for __webview__",
+                "runTests": "Run tests"
+            },
+            "window": {
+                "label": "Window",
+                "minimize": "Minimize",
+                "close": "Close",
+                "toFront": "Bring All to Front"
+            },
+            "help": {
+                "label": "Help"
+            }
+        },
+        "rightClick": {
+            "reload": "Reload",
+            "openDevTools": "Open Developer Tools",
+            "inspectElements": "Inspect Element"
+        },
         "sidebar": {
             "buttons": {
                 "browser": "Browse"

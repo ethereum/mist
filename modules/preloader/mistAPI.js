@@ -1,13 +1,15 @@
-var remote = require('remote');
-var ipc = require('ipc');
-var web3 = require('web3'); //./node_modules/web3/dist/web3.min.js
-var BigNumber = require('bignumber.js');
+
+/**
+@module MistAPI
+*/
+
+const ipc = require('ipc');
+const web3 = require('web3');
+const BigNumber = require('bignumber.js');
+const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+require('../loadFavicon.js');
+
 var prefix = 'entry_';
-
-
-// set web3 providor
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
-
 
 // filterId the id to only contain a-z A-Z 0-9
 var filterId = function(str) {
@@ -20,12 +22,45 @@ var filterId = function(str) {
 };
 
 
+// notifiy the tab to store the webview id
+ipc.sendToHost('setWebviewId');
+
+// SET WEB3 PROVIDOR
+// destroy the old socket
+ipc.send('ipcProvider-destroy');
+
+// create a new one
+web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
+
+// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+
+// var remote = require('remote');
+// web3.setProvider(new web3.providers.IpcProvider('/Users/frozeman/Library/Ethereum/geth.ipc', remote.require('net')));
+
+
 ipc.on('callFunction', function(id) {
     if(mist.menu.entries[id] && mist.menu.entries[id].callback)
         mist.menu.entries[id].callback();
 });
 
 
+// work up queue every 500ms
+var queue = [];
+setInterval(function(){
+    ipc.sendToHost('menuChanges', queue);
+    queue = [];
+}, 500);
+
+
+
+/**
+Mist API
+
+TODO: queue up all changes and send them all together, to prevent multiple update calls in the mist ui db?
+
+@class mist
+@constructor
+*/
 var mist = {
     menu: {
         entries: {},
@@ -72,7 +107,10 @@ var mist = {
                 badge: options.badge,
             };
 
-            ipc.sendToHost('addMenu', entry);
+            queue.push({
+                action: 'addMenu',
+                entry: entry
+            });
 
             if(callback)
                 entry.callback = callback;
@@ -93,7 +131,10 @@ var mist = {
 
             delete this.entries[id];
 
-            ipc.sendToHost('removeMenu', id);
+            queue.push({
+                action: 'removeMenu',
+                id: id
+            });
         },
         /**
         Removes all menu entries.
@@ -101,7 +142,7 @@ var mist = {
         @method clear
         */
         'clear': function(){
-            ipc.sendToHost('clearMenu');
+            queue.push({action: 'clearMenu'});
         }
     },
 };

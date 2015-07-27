@@ -66,6 +66,15 @@ aside.sidebar {
                 margin-top: 1px;
             }
 
+
+            &.browser {
+                .sub-menu {
+                    li:first-child button {
+                        color: @colorLinkFocus;
+                    }
+                }
+            }
+
             button.main {
                 position: relative;
                 padding: 0;
@@ -89,6 +98,7 @@ aside.sidebar {
                     top: 10px;
                     width: 20px;
                     height: 20px;
+                    border-radius: 10px;
                 }
 
                 span, .badge {

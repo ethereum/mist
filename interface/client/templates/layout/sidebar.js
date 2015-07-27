@@ -33,7 +33,7 @@ Template['layout_sidebar'].onRendered(function(){
             $ul.find('> li').each(function(index, test){
                 var id = $(this).data('tab-id');
                 if(id)
-                    Tabs.update(id, {$set: {position: index}});
+                    Tabs.update(id, {$set: {position: index+1}});
             });
         }
     });
@@ -47,13 +47,6 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-
-        // UPADATE MAIN APPLICATION MENU
-        Tracker.afterFlush(function(){
-            updateApplicationMenuDevTools($('webview'));
-        });
-
-
         return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**
@@ -70,7 +63,7 @@ Template['layout_sidebar'].helpers({
     @method (icon)
     */
     'icon': function() {
-        return (this._id === 'browser') ? 'browse-icon@2x.png' : 'wallet-icon@2x.png';
+        return (this._id === 'browser') ? 'icons/browse-icon@2x.png' : this.icon;
     },
     /**
     Return the tabs sub menu as array

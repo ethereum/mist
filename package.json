@@ -2,9 +2,12 @@
   "name": "Mist",
   "version": "0.1.0",
   "main": "main.js",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "bignumber.js": "^2.0.7",
-    "electron-prebuilt": "^0.28.2",
-    "web3": "^0.6.0"
+    "i18next": "^1.10.3",
+    "minimongo-standalone": "0.0.9",
+    "underscore": "^1.8.3",
+    "web3": "^0.9.1"
   }
 }

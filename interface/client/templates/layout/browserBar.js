@@ -11,9 +11,9 @@ The browserBar template
 @constructor
 */
 
-Template['layout_browserBar'].rendered = function(){
-
-};
+Template['layout_browserBar'].onRendered(function(){
+    var template = this;
+});
 
 
 Template['layout_browserBar'].helpers({
@@ -29,6 +29,9 @@ Template['layout_browserBar'].helpers({
         var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
         var search = this.url.match(pattern);
 
+        if(!search)
+            return;
+
         var urlObject = {
             url: search[0],
             protocol: search[1],
@@ -36,7 +39,7 @@ Template['layout_browserBar'].helpers({
             folders: search[3].split("/"),
         }
 
-        var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
+        var breadcrumb = "<span>" + urlObject.domain.join(".") + " </span> ▸ " + urlObject.folders.join(" ▸ ");
 
         return new Spacebars.SafeString(breadcrumb);
     },
@@ -95,7 +98,7 @@ Template['layout_browserBar'].events({
     @event click button.add-tab
     */
     'click button.add-tab': function(){
-        var webview = $('#browser-view')[0];
+        var webview = $('webview[data-id="browser"]')[0];
 
         if(webview) {
             var id = Tabs.insert({
@@ -121,6 +124,57 @@ Template['layout_browserBar'].events({
         
         Tabs.remove(tabId);
         LocalStore.set('selectedTab', 'browser');
+    },
+    /*
+    Show the app bar
+
+    @event click app-bar > button, click .app-bar > form
+    */
+    'click .app-bar > button, click .app-bar > form': function(e, template){
+        // prevent the slide in, when the url is clicked
+        if($(e.target).hasClass('url-input'))
+            return;
+
+        template.$('.app-bar').toggleClass('show-bar');
+    },
+    /*
+    Hide the app bar
+
+    @event mouseleave .app-bar
+    */
+    'mouseleave .app-bar': function(e, template){
+        var timeoutId = setTimeout(function(){
+            template.$('.app-bar').removeClass('show-bar');
+        }, 1000);
+        TemplateVar.set('timeoutId', timeoutId);
+    },
+    /*
+    Stop hiding the app bar
+
+    @event mouseenter .app-bar
+    */
+    'mouseenter .app-bar': function(e, template){
+        clearTimeout(TemplateVar.get('timeoutId'));
+    },
+    /*
+    Show the sections
+
+    @event click button.keys, click button.dapp-info, click form.url
+    */
+    'click button.keys, click button.dapp-info, click form.url': function(e, template){
+        var className = $(e.currentTarget).attr('class');
+
+        if(TemplateVar.get('browserBarTab') !== className)
+            template.$('.app-bar').addClass('show-bar');
+        TemplateVar.set('browserBarTab', className);
+    },
+    /*
+    Focus the input
+
+    @event click form.url
+    */
+    'click form.url': function(e, template){
+        template.$('.url-input').focus();
     },
     /*
     Send the domain
@@ -151,5 +205,8 @@ Template['layout_browserBar'].events({
             redirect: url
         }});
         LocalStore.set('selectedTab', foundTab);
+
+        // hide the app-bar
+        template.$('.app-bar').removeClass('show-bar');
     }
 });

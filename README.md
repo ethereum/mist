@@ -1,5 +1,9 @@
 # Mist Browser
 
+**NOTE** Mist is under heavy development and not intended to be tested by the community yet,
+therefore it might not run out of the box as described the the README below.
+Stay tuned and check back later...
+
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The Mist browser is the tool of choice to browse and use Ðapps.

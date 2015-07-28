@@ -21,13 +21,16 @@ const i18n = require('./modules/i18n.js');
 // var appIcon = null;
 
 // GLOBAL Variables
+global.production = false;
+
 global.path = {
     HOME: app.getPath('home'),
     APPDATA: app.getPath('appData')
 };
-global.production = false;
+
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
+
 global.Tabs = Minimongo('tabs');
 
 
@@ -113,7 +116,7 @@ app.on('ready', function() {
 
     // and load the index.html of the app.
     if(global.production)
-        mainWindow.loadUrl('file://' + __dirname + '/interface_build/index.html');
+        mainWindow.loadUrl('file://' + __dirname + '/interface/index.html');
     else
         mainWindow.loadUrl('http://localhost:3000');
         

@@ -52,7 +52,24 @@ In the original window you can then start Mist with:
 
     $ npm install -g meteor-build-client
     $ cd mist/interface
-    $ meteor-build-client ../interface-build --path ""
+    $ meteor-build-client ../interface_build --path ""
     $ change the `global.production` variable to `true` in the main.js
 
-TODO: Add a gulp/npm script
+TODO: Add a gulp/npm script:
+
+    - build meteor-client (add also i18n folder!) (meteor-build-client ../interface_build -g "")
+    - get electron dist app
+    - copy all besides "dist" and "interface" into the "electron.app/Contents/Resources/app" folder
+    - delete "interface"
+    - rename "interface_build" to "interface"
+    - change variable name "global.production = false" to "global.production = true" in main.js
+
+    // mac
+    - change names of `CFBundleDisplayName`, `CFBundleIdentifier`, `CFBundleName` in "electron.app/Contents/Info.plist" to "Mist", also change icon file
+    - change names of `CFBundleDisplayName`, `CFBundleIdentifier`, `CFBundleName` in "electron.app/Contents/Frameworks/Electron Helper.app/Contents/Info.plist" to "Mist"
+
+
+
+
+
+

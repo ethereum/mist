@@ -1,4 +1,4 @@
 node_modules/
 packages/
-build_interface/
+interface_build/
 dist/

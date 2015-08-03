@@ -195,8 +195,10 @@ Template['layout_browserBar'].events({
 
         // look in tabs
         var foundTab = _.find(tabs, function(tab){
-                var tabOrigin = new URL(tab.url).origin;
-                return (url.indexOf(tabOrigin) !== -1);
+                if(tab.url.indexOf('about:blank') === -1) {
+                    var tabOrigin = new URL(tab.url).origin;
+                    return (url.indexOf(tabOrigin) !== -1);
+                }
             });
 
         // switch tab to browser

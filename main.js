@@ -22,6 +22,7 @@ const i18n = require('./modules/i18n.js');
 
 // GLOBAL Variables
 global.production = false;
+global.mode = 'wallet';
 
 global.path = {
     HOME: app.getPath('home'),
@@ -98,19 +99,40 @@ app.on('ready', function() {
 
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 1024 + 208,
-        height: 700,
-        icon: './icons/icon_128x128.png',
-        'standard-window': false,
-        preload: __dirname +'/modules/preloader/mistUI.js',
-        'node-integration': false,
-        'web-preferences': {
-            'overlay-fullscreen-video': true
-        }
-        // frame: false
-        // 'use-content-size': true,
-    });
+    if(global.mode === 'mist') {
+        mainWindow = new BrowserWindow({
+            width: 1024 + 208,
+            height: 700,
+            icon: './icons/icon_128x128.png',
+            'standard-window': false,
+            preload: __dirname +'/modules/preloader/mistUI.js',
+            'node-integration': false,
+            'web-preferences': {
+                'overlay-fullscreen-video': true
+            }
+            // frame: false
+            // 'use-content-size': true,
+        });
+        
+    } else {
+
+        mainWindow = new BrowserWindow({
+            width: 1024 + 208,
+            height: 700,
+            icon: './icons/icon_128x128.png',
+            'standard-window': false,
+            preload: __dirname +'/modules/preloader/mistUI.js',
+            'node-integration': false,
+            'web-preferences': {
+                'overlay-fullscreen-video': true
+            }
+            // frame: false
+            // 'use-content-size': true,
+        });
+    }
+
+
+
 
     syncMinimongo(Tabs, mainWindow.webContents);
 

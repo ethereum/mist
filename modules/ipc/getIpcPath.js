@@ -1,5 +1,6 @@
 
 module.exports = function() {
+    var p = require('path');
     var path = global.path.HOME;
 
     if(process.platform === 'darwin')
@@ -11,7 +12,7 @@ module.exports = function() {
         path += '/.ethereum/geth.ipc';
 
     if(process.platform === 'win32')
-        path = path.join('\\\\?\\pipe', process.cwd(), 'geth.ipc');//'\\.\pipe\geth.ipc'; //global.path.APPDATA + '/Ethereum/geth.ipc';
+        path = p.join('\\\\?\\pipe', process.cwd(), 'geth.ipc');//'\\.\pipe\geth.ipc'; //global.path.APPDATA + '/Ethereum/geth.ipc';
     
     console.log('CONNECT to IPC PATH: '+ path);
     return path;

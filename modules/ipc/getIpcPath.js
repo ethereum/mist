@@ -10,9 +10,9 @@ module.exports = function() {
        process.platform === 'sunos')
         path += '/.ethereum/geth.ipc';
 
-    // if(process.platform === 'win32')
-    //     path = global.path.APPDATA + '/Ethereum/geth.ipc';
+    if(process.platform === 'win32')
+        path = path.join('\\\\?\\pipe', process.cwd(), 'geth.ipc'));//'\\.\pipe\geth.ipc'; //global.path.APPDATA + '/Ethereum/geth.ipc';
     
     console.log('CONNECT to IPC PATH: '+ path);
-    return path;//'/tmp/geth.ipc';
+    return path;
 };

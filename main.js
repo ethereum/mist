@@ -1,24 +1,9 @@
 global._ = require('underscore');
 const app = require('app');  // Module to control application life.
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const ipc = require('ipc');
-const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const menuItems = require('./menuItems');
+const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
-const i18n = require('./modules/i18n.js');
 
-// const getCurrentKeyboardLayout = require('keyboard-layout');
-// const etcKeyboard = require('etc-keyboard');
-// console.log(getCurrentKeyboardLayout());
-// etcKeyboard(function (err, layout) {
-//     console.log('KEYBOARD:', layout);
-// });
-
-
-// const Menu = require('menu');
-// const Tray = require('tray');
-// var appIcon = null;
 
 // GLOBAL Variables
 global.production = false;
@@ -34,6 +19,24 @@ global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
 
+
+
+const BrowserWindow = require('browser-window');  // Module to create native browser window.
+const ipc = require('ipc');
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const menuItems = require('./menuItems');
+
+// const getCurrentKeyboardLayout = require('keyboard-layout');
+// const etcKeyboard = require('etc-keyboard');
+// console.log(getCurrentKeyboardLayout());
+// etcKeyboard(function (err, layout) {
+//     console.log('KEYBOARD:', layout);
+// });
+
+
+// const Menu = require('menu');
+// const Tray = require('tray');
+// var appIcon = null;
 
 
 
@@ -108,7 +111,10 @@ app.on('ready', function() {
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
             'web-preferences': {
-                'overlay-fullscreen-video': true
+                'overlay-fullscreen-video': true,
+                'webaudio': true,
+                'webgl': true,
+                'text-areas-are-resizable': true
             }
             // frame: false
             // 'use-content-size': true,
@@ -117,16 +123,20 @@ app.on('ready', function() {
     } else {
 
         mainWindow = new BrowserWindow({
-            width: 1024 + 208,
-            height: 700,
+            width: 1024,
+            height: 680,
             icon: './icons/icon_128x128.png',
             'standard-window': false,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
             'web-preferences': {
-                'overlay-fullscreen-video': true
-            }
-            // frame: false
+                'overlay-fullscreen-video': true,
+                'webaudio': true,
+                'webgl': true,
+                'text-areas-are-resizable': true,
+                // 'overlay-scrollbars': true
+            },
+            // frame: false,
             // 'use-content-size': true,
         });
     }

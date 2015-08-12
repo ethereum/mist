@@ -22,6 +22,7 @@
             "develop": {
                 "label": "Develop",
                 "devToolsMistUI": "Toggle Developer Tools for the Mist UI",
+                "devToolsWalletUI": "Toggle Developer Tools for the Wallet UI",
                 "devToolsWebview": "Toggle Developer Tools for __webview__",
                 "runTests": "Run tests"
             },

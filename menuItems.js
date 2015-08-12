@@ -88,30 +88,32 @@ var menuTempl = function(mainWindow, webviews) {
     })
 
     // DEVELOP
-    var devtToolsMenu = [{
-        label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
-        accelerator: 'Alt+Command+I',
-        click: function() {
-            if(curWindow = BrowserWindow.getFocusedWindow())
-                curWindow.toggleDevTools();
-        }
-    },{
-        type: 'separator'
-    }];
+    var devtToolsMenu = [];
 
-    // add webviews
-    webviews.forEach(function(webview){
-        devtToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
+    // change for wallet
+    if(global.mode === 'mist') {
+        devtToolsMenu = [{
+            label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
+            accelerator: 'Alt+Command+I',
             click: function() {
-                mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
+                if(curWindow = BrowserWindow.getFocusedWindow())
+                    curWindow.toggleDevTools();
             }
-        });
-    });
+        },{
+            type: 'separator'
+        }];
 
-    menu.push({
-        label: i18n.t('mist.applicationMenu.develop.label'),
-        submenu: _.union(devtToolsMenu, [
+        // add webviews
+        webviews.forEach(function(webview){
+            devtToolsMenu.push({
+                label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
+                click: function() {
+                    mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
+                }
+            });
+        });
+
+        devtToolsMenu = _.union(devtToolsMenu, [
             {
                 type: 'separator'
             },
@@ -135,6 +137,22 @@ var menuTempl = function(mainWindow, webviews) {
                 }
             }
         ])
+
+    // wallet
+    } else {
+        devtToolsMenu = [{
+            label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
+            accelerator: 'Alt+Command+I',
+            click: function() {
+                if(curWindow = BrowserWindow.getFocusedWindow())
+                    curWindow.toggleDevTools();
+            }
+        }];
+    }
+
+    menu.push({
+        label: i18n.t('mist.applicationMenu.develop.label'),
+        submenu: devtToolsMenu
     })
 
     // WINDOW

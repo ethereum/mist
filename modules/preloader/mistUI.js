@@ -24,6 +24,7 @@ window.web3 = web3;
 window.syncMinimongo = syncMinimongo;
 
 
+
 // set the langauge for the electron interface
 // ipc.send('setLanguage', navigator.language.substr(0,2));
 

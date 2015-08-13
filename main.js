@@ -59,7 +59,15 @@ app.on('window-all-closed', function() {
 });
 
 
-app.on('before-quit', function(){
+// app.on('will-quit', function(event){
+//     event.preventDefault()
+// });
+
+var killedSockets = false;
+app.on('before-quit', function(event){
+    if(!killedSockets)
+        event.preventDefault();
+
     // CLEAR open IPC sockets to geth
     _.each(global.sockets, function(socket){
         if(socket) {
@@ -67,17 +75,22 @@ app.on('before-quit', function(){
             socket.destroy();
         }
     });
+
+    // delay quit, so the sockets can close
+    setTimeout(function(){
+        killedSockets = true;
+        app.quit();
+    }, 500);
 });
 
 // Emitted when the application is activated while there is no opened windows.
 // It usually happens when a user has closed all of application's windows and then
 // click on the application's dock icon.
-app.on('activate-with-no-open-windows', function () {
-    if (mainWindow) {
-        mainWindow.show();
-    }
-    return false;
-});
+// app.on('activate-with-no-open-windows', function () {
+//     if (mainWindow) {
+//         mainWindow.show();
+//     }
+// });
 
 
 // This method will be called when Electron has done everything
@@ -100,8 +113,19 @@ app.on('ready', function() {
     // appIcon.setContextMenu(contextMenu);
 
 
+    // var appStartWindow = new BrowserWindow({
+    //         width: 400,
+    //         height: 200,
+    //         icon: './icons/icon_128x128.png',
+    //         'standard-window': false,
+    //         frame: false
+    //     });
+    //     appStartWindow.loadUrl('file://' + __dirname + '/appStart.html');
+
 
     // Create the browser window.
+
+    // MIST
     if(global.mode === 'mist') {
         mainWindow = new BrowserWindow({
             width: 1024 + 208,
@@ -119,15 +143,20 @@ app.on('ready', function() {
             // frame: false
             // 'use-content-size': true,
         });
-        
+
+        syncMinimongo(Tabs, mainWindow.webContents);
+
+
+    // WALLET
     } else {
 
         mainWindow = new BrowserWindow({
             width: 1024,
             height: 680,
+            show: false,
             icon: './icons/icon_128x128.png',
             'standard-window': false,
-            preload: __dirname +'/modules/preloader/mistUI.js',
+            preload: __dirname +'/modules/preloader/wallet.js',
             'node-integration': false,
             'web-preferences': {
                 'overlay-fullscreen-video': true,
@@ -142,27 +171,25 @@ app.on('ready', function() {
     }
 
 
-
-
-    syncMinimongo(Tabs, mainWindow.webContents);
-
     // and load the index.html of the app.
     if(global.production)
         mainWindow.loadUrl('file://' + __dirname + '/interface/index.html');
     else
         mainWindow.loadUrl('http://localhost:3000');
         
+    mainWindow.webContents.on('did-finish-load', function() {
+        mainWindow.show();
+        // appStartWindow.close();
+    });
 
-    // Open the devtools.
-    // mainWindow.openDevTools();
 
     // Emitted when the window is closed.
-    // mainWindow.on('closed', function() {
+    mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-    //     mainWindow = null;
-    // });
+        mainWindow = null;
+    });
 
 
     // instantiate the application menu

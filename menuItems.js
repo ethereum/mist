@@ -1,3 +1,4 @@
+const app = require('app');
 const BrowserWindow = require('browser-window');
 const MenuItem = require('menu-item');
 const Menu = require('menu');

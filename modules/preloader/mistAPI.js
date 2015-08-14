@@ -3,6 +3,7 @@
 @module MistAPI
 */
 
+const shell = require('shell');
 const ipc = require('ipc');
 const web3 = require('web3');
 const BigNumber = require('bignumber.js');
@@ -21,13 +22,13 @@ var filterId = function(str) {
     return newStr;
 };
 
-
 // notifiy the tab to store the webview id
 ipc.sendToHost('setWebviewId');
 
 // SET WEB3 PROVIDOR
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
+
 
 // create a new one
 web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
@@ -42,6 +43,15 @@ ipc.on('callFunction', function(id) {
     if(mist.menu.entries[id] && mist.menu.entries[id].callback)
         mist.menu.entries[id].callback();
 });
+
+
+// open a[target="_blank"] in external browser
+document.addEventListener('click', function(e) {
+    if(e.target.nodeName === 'A' && e.target.attributes.target && e.target.attributes.target.value === "_blank") {
+        e.preventDefault();
+        shell.openExternal(e.target.href);
+    }
+}, false);
 
 
 // work up queue every 500ms

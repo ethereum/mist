@@ -29,7 +29,6 @@ gulp.task('copy-files', ['clean:dist'], function() {
         './tests/**/*.*',
         './modules/**/*.*',
         './node_modules/**/*.*',
-        './icons/**/*.*',
         './*.*',
         '!./main.js'
         ], { base: './' })
@@ -55,6 +54,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
     }
 
     if(type === 'wallet') {
+        console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet "master" branch...');
         exec('git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../dist_'+ type +'/app/interface -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
             // console.log(stdout);
             console.log(stderr);

@@ -2,7 +2,13 @@
   "name": "Mist",
   "version": "0.1.0",
   "main": "main.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "asar": "^0.7.2",
+    "del": "^1.2.1",
+    "gulp": "^3.9.0",
+    "gulp-asar": "0.0.2",
+    "gulp-replace": "^0.5.4"
+  },
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "i18next": "^1.10.3",

@@ -90,6 +90,7 @@ module.exports = function(mainWindow){
     */
     GethConnection.prototype.connect = function(event){
         var _this = this,
+            timeoutId,
             successEventFunc,
             errorEventFunc;
 
@@ -101,29 +102,41 @@ module.exports = function(mainWindow){
 
             // make sure to set the right writeable
             successEventFunc = function(){
-                if(event) {
+                if(event && timeoutId) {
+                    clearTimeout(timeoutId);
                     event.returnValue = true;
-                } else
-                    _this.sender.send('ipcProvider-setWritable', true);
-
+                }
+                
                 _this.ipcSocket.removeListener('error', errorEventFunc);
             };
             this.ipcSocket.once('connect', successEventFunc);
-            errorEventFunc = function(){
-                if(event) {
-                    event.returnValue = false;
-                } else
-                    _this.sender.send('ipcProvider-setWritable', false);
 
-                 _this.ipcSocket.removeListener('connect', successEventFunc);
+            errorEventFunc = function(){
+                if(event && timeoutId) {
+                    clearTimeout(timeoutId);
+                    event.returnValue = false;
+                }
+             
+                _this.ipcSocket.removeListener('connect', successEventFunc);
             };
             this.ipcSocket.once('error', errorEventFunc);
+
+
+            // return if it takes to long
+            if(event) {
+                timeoutId = setTimeout(function(){
+                    event.returnValue = _this.ipcSocket.writable;
+                    timeoutId = null;
+                }, 500);
+            }
+        
+        } else if(event) {
+            event.returnValue = true;
+
+        } else {
+            this.sender.send('ipcProvider-setWritable', true);
         }
 
-        // if(event) {
-        //     event.returnValue = this.ipcSocket.writable;
-        // } else
-        //     this.sender.send('ipcProvider-setWritable', this.ipcSocket.writable);
     };
 
     /**
@@ -234,7 +247,7 @@ module.exports = function(mainWindow){
         
 
         this.ipcSocket.on("connect", function(){
-            _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+            _this.sender.send('ipcProvider-setWritable', true);
         });
 
         // wait for data on the socket
@@ -311,7 +324,6 @@ module.exports = function(mainWindow){
 
                  var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-                _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
                 _this.sender.send('ipcProvider-error', data);
 
                 _this.timeout();
@@ -330,7 +342,6 @@ module.exports = function(mainWindow){
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-                _this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
                 _this.sender.send('ipcProvider-end');
 
                 _this.timeout();
@@ -392,11 +403,6 @@ module.exports = function(mainWindow){
         else {
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         }
-
-        if(event.sender.returnValue)
-            event.sender.returnValue = socket.ipcSocket.writable;
-        else
-            event.sender.send('ipcProvider-setWritable', socket.ipcSocket.writable);
     });
 
     ipc.on('ipcProvider-destroy', function(event){

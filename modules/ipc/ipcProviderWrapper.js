@@ -21,10 +21,6 @@ ipc.on('ipcProvider-setWritable', function(writable){
     ipcProviderWrapper.writable = writable;
 });
 
-ipc.on('ipcProvider-error', function(){
-    ipcProviderWrapper.writable = false;
-});
-
 ipcProviderWrapper = {
     writable: false,
 
@@ -39,6 +35,7 @@ ipcProviderWrapper = {
     connect: function(path) {
         
         this.writable = ipc.sendSync('ipcProvider-create'); // path is set in the backend
+        // ipc.send('ipcProvider-create'); // path is set in the backend
 
         return this;
     },

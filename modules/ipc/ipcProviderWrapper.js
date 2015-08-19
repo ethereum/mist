@@ -21,6 +21,9 @@ ipc.on('ipcProvider-setWritable', function(writable){
     ipcProviderWrapper.writable = writable;
 });
 
+ipc.on('ipcProvider-error', function(){
+    ipcProviderWrapper.writable = false;
+});
 
 ipcProviderWrapper = {
     writable: false,

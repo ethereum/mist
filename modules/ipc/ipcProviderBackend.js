@@ -89,17 +89,41 @@ module.exports = function(mainWindow){
     @method connect
     */
     GethConnection.prototype.connect = function(event){
+        var _this = this,
+            successEventFunc,
+            errorEventFunc;
+
         if(!this.ipcSocket.writable) {
 
             console.log('IPCSOCKET '+ this.id +' CONNECTING..');
 
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
+
+            // make sure to set the right writeable
+            successEventFunc = function(){
+                if(event) {
+                    event.returnValue = true;
+                } else
+                    _this.sender.send('ipcProvider-setWritable', true);
+
+                _this.ipcSocket.removeListener('error', errorEventFunc);
+            };
+            this.ipcSocket.once('connect', successEventFunc);
+            errorEventFunc = function(){
+                if(event) {
+                    event.returnValue = false;
+                } else
+                    _this.sender.send('ipcProvider-setWritable', false);
+
+                 _this.ipcSocket.removeListener('connect', successEventFunc);
+            };
+            this.ipcSocket.once('error', errorEventFunc);
         }
 
-        if(event) {
-            event.returnValue = this.ipcSocket.writable;
-        } else
-            this.sender.send('ipcProvider-setWritable', this.ipcSocket.writable);
+        // if(event) {
+        //     event.returnValue = this.ipcSocket.writable;
+        // } else
+        //     this.sender.send('ipcProvider-setWritable', this.ipcSocket.writable);
     };
 
     /**

@@ -153,7 +153,7 @@ app.on('ready', function() {
         mainWindow = new BrowserWindow({
             width: 1024,
             height: 680,
-            show: false,
+            // show: false,
             icon: './icons/icon_128x128.png',
             'standard-window': false,
             preload: __dirname +'/modules/preloader/wallet.js',
@@ -178,7 +178,7 @@ app.on('ready', function() {
         mainWindow.loadUrl('http://localhost:3000');
         
     mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.show();
+        // mainWindow.show();
         // appStartWindow.close();
     });
 

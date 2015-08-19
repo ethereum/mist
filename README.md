@@ -50,26 +50,28 @@ In the original window you can then start Mist with:
 
 ### Deployment
 
+
+To create a binaries you need to install the following tools:
+    
+    // tools for the windows binaries
+    $ brew install Caskroom/cask/xquartz
+    $ brew install wine
+
+    // install meteor-build-client
     $ npm install -g meteor-build-client
-    $ cd mist/interface
-    $ meteor-build-client ../interface_build --path ""
-    $ change the `global.production` variable to `true` in the main.js
 
-TODO: Add a gulp/npm script:
+    // install gulp
+    $ npm install -g gulp
 
-    - build meteor-client (add also i18n folder!) (meteor-build-client ../interface_build -g "")
-    - get electron dist app
-    - copy all besides "dist" and "interface" into the "electron.app/Contents/Resources/app" folder
-    - delete "interface"
-    - rename "interface_build" to "interface"
-    - change variable name "global.production = false" to "global.production = true" in main.js
+To generate the binaries simply run:
 
-    // mac
-    - change names of `CFBundleDisplayName`, `CFBundleIdentifier`, `CFBundleName` in "electron.app/Contents/Info.plist" to "Mist", also change icon file
-    - change names of `CFBundleDisplayName`, `CFBundleIdentifier`, `CFBundleName` in "electron.app/Contents/Frameworks/Electron Helper.app/Contents/Info.plist" to "Mist"
+    $ cd mist
+    $ gulp mist
 
+    // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
+    $ gulp wallet
 
-
+This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
 
 
 

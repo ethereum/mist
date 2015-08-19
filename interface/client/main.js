@@ -1,7 +1,7 @@
 
 // DUMMY note, while mist doesnt start geth itself
-if(!web3.currentProvider.connection.writable){
-    alert('PLEASE START GETH FIRST AND RESTART MIST.');
+if(!web3.isConnected()){
+    alert('Please START GETH with default ipc path, and then RESTART MIST.');
     return;
 }
 

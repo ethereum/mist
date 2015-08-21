@@ -73,5 +73,16 @@ To generate the binaries simply run:
 
 This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
 
+Additional you can only build the wind, linux or mac binary by using the `platform` option:
+
+    $ gulp mist --platform darwin
+
+
+Options are:
+
+- `darwin` (Mac OSX)
+- `win32` (Windows)
+- `linux` (Linux)
+
 
 

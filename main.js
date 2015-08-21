@@ -7,7 +7,7 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'wallet';
+global.mode = 'mist';
 
 global.path = {
     HOME: app.getPath('home'),

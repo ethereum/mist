@@ -6,6 +6,7 @@
     "del": "^1.2.1",
     "electron-packager": "^5.0.1",
     "gulp": "^3.9.0",
+    "gulp-jszip": "^0.1.2",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "gulp-zip": "^3.0.2",

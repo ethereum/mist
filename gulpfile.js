@@ -5,7 +5,8 @@ var replace = require('gulp-replace');
 var packager = require('electron-packager')
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
-var zip = require('gulp-zip');
+// var zip = require('gulp-zip');
+var zip = require('gulp-jszip') 
 var minimist = require('minimist');
 var fs = require('fs');
 
@@ -246,10 +247,14 @@ gulp.task('zip', ['rename-folders'], function () {
 
             // TODO doesnt work!!!!!
         stream = gulp.src([
-            './dist_'+ type +'/'+ name + '/**/**/**/**/**/**/**/**/*'
+            './dist_'+ type +'/'+ name + '/**/*'
             ])
-            .pipe(zip(name +'.zip'))
-            .pipe(gulp.dest('./dist_'+ type +'/'));
+            .pipe(zip({
+                name: name + ".zip",
+                outpath: './dist_'+ type +'/'
+            }));
+            // .pipe(zip(name +'.zip'))
+            // .pipe(gulp.dest('./dist_'+ type +'/'));
 
         return stream;
     });

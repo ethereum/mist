@@ -23,5 +23,5 @@ document.addEventListener('click', function(e) {
 
 
 // make variables globally accessable
-window.dirname = __dirname;
+// window.dirname = __dirname;
 window.web3 = web3;

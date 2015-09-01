@@ -17,6 +17,7 @@ global.path = {
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
+global.geth = null;
 global.Tabs = Minimongo('tabs');
 
 
@@ -25,6 +26,10 @@ const BrowserWindow = require('browser-window');  // Module to create native bro
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
+
+var mainWindow = null;
+var icon = __dirname +'/icons/'+ global.mode +'/icon_128x128.png';
+
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');
 // const etcKeyboard = require('etc-keyboard');
@@ -48,9 +53,6 @@ const menuItems = require('./menuItems');
 // Report crashes to our server.
 require('crash-reporter').start();
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -75,6 +77,11 @@ app.on('before-quit', function(event){
             socket.destroy();
         }
     });
+
+
+    // kill running geth
+    if(global.geth)
+        global.geth.kill('SIGKILL');
 
     // delay quit, so the sockets can close
     setTimeout(function(){
@@ -113,24 +120,15 @@ app.on('ready', function() {
     // appIcon.setContextMenu(contextMenu);
 
 
-    // var appStartWindow = new BrowserWindow({
-    //         width: 400,
-    //         height: 200,
-    //         icon: './icons/icon_128x128.png',
-    //         'standard-window': false,
-    //         frame: false
-    //     });
-    //     appStartWindow.loadUrl('file://' + __dirname + '/appStart.html');
-
-
     // Create the browser window.
 
     // MIST
     if(global.mode === 'mist') {
         mainWindow = new BrowserWindow({
+            show: false,
             width: 1024 + 208,
             height: 700,
-            icon: './icons/icon_128x128.png',
+            icon: icon,
             'standard-window': false,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
@@ -151,10 +149,10 @@ app.on('ready', function() {
     } else {
 
         mainWindow = new BrowserWindow({
+            show: false,
             width: 1024,
             height: 680,
-            show: false,
-            icon: './icons/icon_128x128.png',
+            icon: icon,
             'standard-window': false,
             preload: __dirname +'/modules/preloader/wallet.js',
             'node-integration': false,
@@ -163,6 +161,7 @@ app.on('ready', function() {
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true,
+                'web-security': false
                 // 'overlay-scrollbars': true
             },
             // frame: false,
@@ -171,17 +170,126 @@ app.on('ready', function() {
     }
 
 
-    // and load the index.html of the app.
-    if(global.production)
-        mainWindow.loadUrl('file://' + __dirname + '/interface/index.html');
-    else
-        mainWindow.loadUrl('http://localhost:3000');
-        
-    mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.show();
-        // appStartWindow.close();
+    var appStartWindow = new BrowserWindow({
+            width: 400,
+            height: 200,
+            icon: icon,
+            'node-integration': true,
+            'standard-window': false,
+            frame: false
+        });
+    appStartWindow.loadUrl('file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
+
+    appStartWindow.webContents.on('did-finish-load', function() {
+
+        // START GETH
+        const spawn = require('child_process').spawn;
+        const getIpcPath = require('./modules/ipc/getIpcPath.js');
+        const net = require('net');
+        const socket = new net.Socket();
+        var ipcPath = getIpcPath();
+        var intervalId;
+        var count = 0;
+
+
+        socket.connect({path: ipcPath});
+
+
+        // try to connect
+        socket.on('error', function(e){
+            // console.log('Geth connection REFUSED');
+
+            // if no geth is running, try starting your own
+            if(count === 0) {
+                count++;
+
+                // START GETH
+                console.log('Starting Geth...');
+                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingGeth');
+
+                global.geth = spawn(__dirname + '/geth', [
+                    // '-v', 'builds/pdf/book.html',
+                    // '-o', 'builds/pdf/book.pdf'
+                ]);
+                // global.geth.stdout.on('data', function(chunk) {
+                //     console.log('stdout',String(chunk));
+                // });
+                // global.geth.stderr.on('data', function(chunk) {
+                //     console.log('stderr',String(chunk));
+                // });
+
+
+                // TRY TO CONNECT EVER 500MS
+                intervalId = setInterval(function(){
+                    socket.connect({path: ipcPath});
+                    count++;
+
+                    // timeout after 10 seconds
+                    if(count >= 40) {
+                        clearSocket(socket, intervalId, appStartWindow, ipcPath, true);
+                    }
+                }, 200);
+            }
+        });
+        socket.on('connect', function(e){
+            console.log('Geth connection FOUND');
+            if(count === 0)
+                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningGethFound');
+            else
+                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedGeth');
+
+            clearSocket(socket, intervalId, appStartWindow, ipcPath);
+            startMainWindow(mainWindow, appStartWindow);
+        });
     });
 
+});
+
+
+/**
+Clears the socket
+
+@method clearSocket
+*/
+var clearSocket = function(socket, intervalId, appStartWindow, ipcPath, timeout){
+    if(timeout) {
+        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.connectionTimeout', ipcPath);
+
+        // kill running geth
+        if(global.geth)
+            global.geth.kill('SIGKILL');
+
+        ipc.on('closeApp', function(event, arg) {
+            app.quit();
+        });
+    }
+
+    clearInterval(intervalId);
+    socket.removeAllListeners();
+    socket.destroy();
+    socket = null;
+}
+
+
+/**
+Start the main window and all its processes
+
+@method startMainWindow
+*/
+var startMainWindow = function(mainWindow, appStartWindow){
+
+    // and load the index.html of the app.
+    if(global.production)
+        mainWindow.loadUrl('file://' + __dirname + '/interface/main/index.html');
+    else
+        mainWindow.loadUrl('http://localhost:3000');
+
+
+    mainWindow.webContents.on('did-finish-load', function() {
+        mainWindow.show();
+        appStartWindow.close();
+        appStartWindow = null;
+    });
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function() {
@@ -190,6 +298,9 @@ app.on('ready', function() {
         // when you should delete the corresponding element.
         mainWindow = null;
     });
+
+
+    // STARTUP PROCESSES
 
 
     // instantiate the application menu
@@ -207,5 +318,4 @@ app.on('ready', function() {
 
     // initialize the IPC provider on the main window
     ipcProviderBackend(mainWindow);
-
-});
+};

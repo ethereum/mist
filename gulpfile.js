@@ -24,7 +24,7 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 
-var electronVersion = '0.30.4';
+var electronVersion = '0.31.1';
 var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
@@ -38,21 +38,21 @@ console.log('Electron version:', electronVersion);
 if(options.platform === 'all')
     osVersions =[
         'darwin-x64',
-        'linux-arm',
-        'linux-ia32',
+        // 'linux-arm',
+        // 'linux-ia32',
         'linux-x64',
-        'win32-ia32',
+        // 'win32-ia32',
         'win32-x64'
     ];
 if(options.platform === 'win32')
     osVersions = [
-        'win32-ia32',
+        // 'win32-ia32',
         'win32-x64'
     ];
 if(options.platform === 'linux')
     osVersions = [
-        'linux-arm',
-        'linux-ia32',
+        // 'linux-arm',
+        // 'linux-ia32',
         'linux-x64'
     ];
 if(options.platform === 'darwin')
@@ -108,7 +108,7 @@ gulp.task('switch-production', ['clean:dist'], function() {
 
 gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
     if(type === 'mist') {
-        exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
+        exec('cd interface/main && meteor-build-client ../../dist_'+ type +'/app/interface/main -p ""', function (err, stdout, stderr) {
             // console.log(stdout);
             console.log(stderr);
 
@@ -118,8 +118,8 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 
     if(type === 'wallet') {
         console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet "master" branch...');
-        exec('cd dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
-            // console.log(stdout);
+        exec('cd dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/main -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
+            console.log(stdout);
             console.log(stderr);
 
             cb(err);
@@ -130,7 +130,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 
 gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
     return gulp.src([
-        './interface/i18n/*.*'
+        './interface/main/i18n/*.*'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });

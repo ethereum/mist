@@ -50,6 +50,12 @@
             "buttons": {
                 "keysNeeded": "Keys Needed"
             }
+        },
+        "startScreen": {
+            "runningGethFound": "Found running Ethereum node!",
+            "startingGeth": "Starting Ethereum node...",
+            "startedGeth": "Ethereum node successfully started!",
+            "connectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to: <code>__path__</code></small>"
         }
     }
 }

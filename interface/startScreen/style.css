@@ -1,0 +1,30 @@
+body {
+    background-color: #111;
+    color: #fff;
+    text-align: center;
+    font-family: 'Helvetica Neue', 'Helvetica', verdana, arial;
+    overflow: hidden;
+
+
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a56a21+0,ffffff+83 */
+    background-size: cover;
+    background-image: url('bg-grid.png'); /* bg-grid.png */
+}
+body.clickable {
+    -webkit-app-region: drag;
+}
+img {
+    margin-top: 7px;
+    width: 128px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    border-radius: 50%;
+}
+img.small {
+    width: 64px;
+}
+h1 {
+    font-size: 18px;
+    font-weight: 200;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.6);
+    -webkit-user-select: none;
+}

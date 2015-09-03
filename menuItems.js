@@ -5,6 +5,13 @@ const Menu = require('menu');
 const config = require('./config');
 const ipc = require('ipc');
 
+// TODO change selector to role
+/*
++  * `click` Function - Will be called with `click(menuItem, browserWindow)` when
+-  * `selector` String - Call the selector of first responder when clicked (OS      +     the menu item is clicked
+-     X only)       +  * `role` String - Define the action of the menu item, when specified the
++     `click` property will be ignored
+*/
 
 // create menu
 // null -> null
@@ -159,6 +166,7 @@ var menuTempl = function(mainWindow, webviews) {
     // WINDOW
     menu.push({
         label: i18n.t('mist.applicationMenu.window.label'),
+        role: 'window',
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.window.minimize'),
@@ -179,7 +187,8 @@ var menuTempl = function(mainWindow, webviews) {
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                selector: 'arrangeInFront:'
+                selector: 'arrangeInFront:',
+                role: 'front'
             },
         ]
     })
@@ -187,6 +196,7 @@ var menuTempl = function(mainWindow, webviews) {
     // HELP
     menu.push({
         label: i18n.t('mist.applicationMenu.help.label'),
+        role: 'help',
         submenu: []
     });
     return menu;

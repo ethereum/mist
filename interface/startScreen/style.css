@@ -5,22 +5,22 @@ body {
     font-family: 'Helvetica Neue', 'Helvetica', verdana, arial;
     overflow: hidden;
 
-
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a56a21+0,ffffff+83 */
-    background-size: cover;
-    background-image: url('bg-grid.png'); /* bg-grid.png */
+    background-size: 100%;
+    background-position: 50% 50%;
 }
 body.clickable {
-    -webkit-app-region: drag;
+    -webkit-app-region: no-drag !important;
 }
 img {
     margin-top: 7px;
     width: 128px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.4);
-    border-radius: 50%;
 }
 img.small {
     width: 64px;
+}
+img.shadow {
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    border-radius: 50%;
 }
 h1 {
     font-size: 18px;

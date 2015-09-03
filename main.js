@@ -205,12 +205,27 @@ app.on('ready', function() {
 
                 // START GETH
                 console.log('Starting Geth...');
-                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingGeth');
+                if(appStartWindow && appStartWindow.webContents)
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
-                global.geth = spawn(__dirname + '/geth', [
+                var gethPath = __dirname + '/geth';
+
+                if(global.production)
+                    gethPath = gethPath.replace('app.asar/','');
+
+                if(process.platform === 'win32')
+                    gethPath += '.exe';
+
+                global.geth = spawn(gethPath, [
                     // '-v', 'builds/pdf/book.html',
                     // '-o', 'builds/pdf/book.pdf'
                 ]);
+                global.geth.on('error',function(){
+                    if(appStartWindow && appStartWindow.webContents)
+                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
+                });
+                // type yes to the inital warning window
+                global.geth.stdin.write("y\r\n");
                 // global.geth.stdout.on('data', function(chunk) {
                 //     console.log('stdout',String(chunk));
                 // });
@@ -233,10 +248,12 @@ app.on('ready', function() {
         });
         socket.on('connect', function(e){
             console.log('Geth connection FOUND');
-            if(count === 0)
-                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningGethFound');
-            else
-                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedGeth');
+            if(appStartWindow && appStartWindow.webContents) {
+                if(count === 0)
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
+                else
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+            }
 
             clearSocket(socket, intervalId, appStartWindow, ipcPath);
             startMainWindow(mainWindow, appStartWindow);
@@ -253,7 +270,8 @@ Clears the socket
 */
 var clearSocket = function(socket, intervalId, appStartWindow, ipcPath, timeout){
     if(timeout) {
-        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.connectionTimeout', ipcPath);
+        if(appStartWindow && appStartWindow.webContents)
+            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
         // kill running geth
         if(global.geth)
@@ -287,7 +305,9 @@ var startMainWindow = function(mainWindow, appStartWindow){
 
     mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.show();
-        appStartWindow.close();
+
+        if(appStartWindow)
+            appStartWindow.close();
         appStartWindow = null;
     });
 

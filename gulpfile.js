@@ -1,3 +1,4 @@
+var _ = require("underscore");
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
@@ -9,6 +10,7 @@ var rename = require("gulp-rename");
 var zip = require('gulp-jszip') 
 var minimist = require('minimist');
 var fs = require('fs');
+var rcedit = require('rcedit');
 
 var options = minimist(process.argv.slice(2), {
     string: 'platform',
@@ -16,6 +18,10 @@ var options = minimist(process.argv.slice(2), {
         platform: 'all'
     }
 });
+if(options.platform.indexOf(',') !== -1)
+    options.platform = options.platform.replace(/ +/g,'').split(',');
+else
+    options.platform = options.platform.split(' ');
 
 
 // CONFIG
@@ -24,7 +30,7 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 
-var electronVersion = '0.31.1';
+var electronVersion = '0.31.2';
 var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
@@ -34,32 +40,31 @@ console.log('You can select a platform like: --platform (all or darwin or win32 
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
+if(_.contains(options.platform, 'win32')) {
+    osVersions.push('win32-ia32');
+    osVersions.push('win32-x64');
+}
 
-if(options.platform === 'all')
-    osVersions =[
+if(_.contains(options.platform, 'linux')) {
+    osVersions.push('linux-ia32');
+    osVersions.push('linux-x64');
+}
+
+if(_.contains(options.platform, 'darwin')) {
+    osVersions.push('darwin-x64');
+}
+
+if(_.contains(options.platform, 'all')) {
+    osVersions = [
         'darwin-x64',
         // 'linux-arm',
-        // 'linux-ia32',
+        'linux-ia32',
         'linux-x64',
-        // 'win32-ia32',
+        'win32-ia32',
         'win32-x64'
     ];
-if(options.platform === 'win32')
-    osVersions = [
-        // 'win32-ia32',
-        'win32-x64'
-    ];
-if(options.platform === 'linux')
-    osVersions = [
-        // 'linux-arm',
-        // 'linux-ia32',
-        'linux-x64'
-    ];
-if(options.platform === 'darwin')
-    osVersions = [
-        'darwin-x64'
-    ];
-
+}
+console.log('Bundling platforms: ', osVersions);
 
 /// --------------------------------------------------------------
 
@@ -90,7 +95,11 @@ gulp.task('copy-files', ['clean:dist'], function() {
         './tests/**/*.*',
         './modules/**/*.*',
         './node_modules/**/*.*',
+        './icons/'+ type +'/*.*',
         './*.*',
+        './interface/**/*.*',
+        '!./interface/main/**/*.*',
+        '!./geth',
         '!./main.js',
         '!./Wallet-README.txt'
         ], { base: './' })
@@ -139,7 +148,7 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
     packager({
         dir: './dist_'+ type +'/app/',
         name: filenameUppercase,
-        platform: options.platform,
+        platform: options.platform.join(','),
         arch: 'all',
         version: electronVersion,
         out: './dist_'+ type +'/',
@@ -233,9 +242,31 @@ gulp.task('cleanup-files', ['rename-readme'], function (cb) {
 });
 
 
-gulp.task('rename-folders', ['cleanup-files'], function() {
+gulp.task('rename-folders', ['cleanup-files'], function(done) {
+    var count = 0;
     osVersions.forEach(function(os){
-        fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, './dist_'+ type +'/'+ filenameUppercase +'-'+ os + '-'+ version.replace(/\./g,'-'));
+        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os + '-'+ version.replace(/\./g,'-');
+        fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
+
+        // change icon on windows
+        if(os.indexOf('win32') !== -1) {
+            rcedit(path +'/'+ filenameUppercase +'.exe', {
+                'file-version': version,
+                'product-version': version,
+                'icon': './icons/'+ type +'/icon.ico'
+            }, function(){
+                if(osVersions.length === count) {
+                    done();
+                }
+            });
+        }
+
+        count++;
+
+        if(osVersions.length === count) {
+            done();
+            count++;
+        }
     });
 });
 

@@ -13,11 +13,14 @@ var fs = require('fs');
 var rcedit = require('rcedit');
 
 var options = minimist(process.argv.slice(2), {
-    string: 'platform',
+    string: ['platform','walletSource'],
     default: {
-        platform: 'all'
+        platform: 'all',
+        walletSource: 'master'
     }
 });
+
+
 if(options.platform.indexOf(',') !== -1)
     options.platform = options.platform.replace(/ +/g,'').split(',');
 else
@@ -126,13 +129,24 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
     }
 
     if(type === 'wallet') {
-        console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet "master" branch...');
-        exec('cd dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/main -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
-            console.log(stdout);
-            console.log(stderr);
+        if(options.walletSource !== 'local') {
+            console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/'+ options.walletSource +' "'+ options.walletSource +'" branch...');
+            exec('cd dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/main -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
+                console.log(stdout);
+                console.log(stderr);
 
-            cb(err);
-        });
+                cb(err);
+            });
+
+        } else {
+            console.log('Use local wallet at ../meteor-dapp-wallet/app');
+            exec('cd ../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_'+ type +'/app/interface/main -p ""', function (err, stdout, stderr) {
+                console.log(stdout);
+                console.log(stderr);
+
+                cb(err);
+            });
+        }
     }
 });
 

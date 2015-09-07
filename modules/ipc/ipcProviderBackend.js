@@ -4,8 +4,13 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 @module ipcProviderBackend
 */
 
-// make sockets globally available
+/**
+make sockets globally available
+
+@property global.sockets
+*/
 global.sockets = {};
+
 
 module.exports = function(mainWindow){
     const _ = require('underscore');
@@ -15,7 +20,7 @@ module.exports = function(mainWindow){
     const getIpcPath = require('./getIpcPath.js');
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
-        errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'"}, "id": "__id__"},
+        errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistent", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 

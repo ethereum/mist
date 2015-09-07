@@ -11,20 +11,89 @@ body {
 body.clickable {
     -webkit-app-region: no-drag !important;
 }
+* {
+    cursor: default;
+}
+
 img {
     margin-top: 7px;
     width: 128px;
 }
-img.small {
-    width: 64px;
+.small img {
+    width: 80px;
 }
 img.shadow {
     box-shadow: 0 0 15px rgba(0,0,0,0.4);
     border-radius: 50%;
 }
 h1 {
+    margin-top: 24px;
     font-size: 18px;
     font-weight: 200;
     text-shadow: 0 1px 5px rgba(0,0,0,0.6);
     -webkit-user-select: none;
 }
+small {
+    opacity: 0.6;
+    line-height: 1.5em;
+}
+
+/* PROGRESSBAR */
+progress {
+    display: none;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    -webkit-appearance: none;
+    appearance: none;
+    width: auto;
+    height: 20px;
+}
+progress.visible {
+    display: block;
+}
+progress[value]::-webkit-progress-bar {
+    background-color: rgba(255,255,255, 0.2);
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+@-webkit-keyframes animatestripes {
+    from { background-position: 0 0; }
+    to { background-position: -100% 0; }
+}
+
+@keyframes animatestripes {
+    from { background-position: 0 0; }
+    to { background-position: -100% 0; }
+}
+progress.wallet::-webkit-progress-value {
+    background-image:
+       -webkit-linear-gradient(-45deg, 
+                               transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                               rgba(0,0, 0, .1) 66%, transparent 66%),
+       -webkit-linear-gradient(top, 
+                               rgba(255, 255, 255, .25), 
+                               rgba(0, 0, 0, .25)),
+       -webkit-linear-gradient(left, #CC9C71, #C63A15);
+}
+progress.mist::-webkit-progress-value {
+    background-image:
+       -webkit-linear-gradient(-45deg, 
+                               transparent 33%, rgba(0, 0, 0, .1) 33%, 
+                               rgba(0,0, 0, .1) 66%, transparent 66%),
+       -webkit-linear-gradient(top, 
+                               rgba(255, 255, 255, .25), 
+                               rgba(0, 0, 0, .25)),
+       -webkit-linear-gradient(left, #CCBDC8, #455BAE);
+}
+progress::-webkit-progress-value {
+    opacity: 0.8;
+
+    border-radius: 2px; 
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+
+    -webkit-animation: animatestripes 5s linear infinite;
+    animation: animatestripes 5s linear infinite;
+}
+

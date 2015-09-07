@@ -31,12 +31,14 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
-                selector: 'orderFrontStandardAboutPanel:'
+                role: 'about'
             },
             {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
-                accelerator: 'Command+Q',
-                selector: 'terminate:'
+                accelerator: 'CommandOrControl+Q',
+                click: function(){
+                    app.quit();
+                }
             }
         ]
     })
@@ -47,36 +49,36 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.edit.undo'),
-                accelerator: 'Command+Z',
-                selector: 'undo:'
+                accelerator: 'CommandOrControl+Z',
+                role: 'undo'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.redo'),
-                accelerator: 'Shift+Command+Z',
-                selector: 'redo:'
+                accelerator: 'Shift+CommandOrControl+Z',
+                role: 'redo'
             },
             {
                 type: 'separator'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.cut'),
-                accelerator: 'Command+X',
-                selector: 'cut:'
+                accelerator: 'CommandOrControl+X',
+                role: 'cut'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.copy'),
-                accelerator: 'Command+C',
-                selector: 'copy:'
+                accelerator: 'CommandOrControl+C',
+                role: 'copy'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.paste'),
-                accelerator: 'Command+V',
-                selector: 'paste:'
+                accelerator: 'CommandOrControl+V',
+                role: 'paste'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.selectAll'),
-                accelerator: 'Command+A',
-                selector: 'selectAll:'
+                accelerator: 'CommandOrControl+A',
+                role: 'selectall'
             },
         ]
     })
@@ -87,7 +89,7 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
-                accelerator: 'Command+F',
+                accelerator: 'CommandOrControl+F',
                 click: function(){
                     mainWindow.setFullScreen(!mainWindow.isFullScreen());
                 }
@@ -102,7 +104,7 @@ var menuTempl = function(mainWindow, webviews) {
     if(global.mode === 'mist') {
         devtToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
-            accelerator: 'Alt+Command+I',
+            accelerator: 'Alt+CommandOrControl+I',
             click: function() {
                 if(curWindow = BrowserWindow.getFocusedWindow())
                     curWindow.toggleDevTools();
@@ -150,7 +152,7 @@ var menuTempl = function(mainWindow, webviews) {
     } else {
         devtToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
-            accelerator: 'Alt+Command+I',
+            accelerator: 'Alt+CommandOrControl+I',
             click: function() {
                 if(curWindow = BrowserWindow.getFocusedWindow())
                     curWindow.toggleDevTools();
@@ -170,35 +172,34 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.window.minimize'),
-                accelerator: 'Command+M',
-                selector: 'performMiniaturize:'
+                accelerator: 'CommandOrControl+M',
+                role: 'minimize'
             },
             {
                 label: i18n.t('mist.applicationMenu.window.close'),
-                accelerator: 'Command+W',
-                // click: function() {
-                //     if(curWindow = BrowserWindow.getFocusedWindow())
-                //         curWindow.hide();
-                // }
-                selector: 'performClose:'
+                accelerator: 'CommandOrControl+W',
+                role: 'close'
             },
             {
                 type: 'separator'
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                selector: 'arrangeInFront:',
+                role: 'arrangeInFront:',
                 role: 'front'
             },
         ]
     })
 
     // HELP
-    menu.push({
-        label: i18n.t('mist.applicationMenu.help.label'),
-        role: 'help',
-        submenu: []
-    });
+    if(process.platform === 'darwin') {
+        menu.push({
+            label: i18n.t('mist.applicationMenu.help.label'),
+            role: 'help',
+            submenu: []
+        });
+    }
+
     return menu;
 };
 

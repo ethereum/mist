@@ -73,6 +73,10 @@ To generate the binaries simply run:
 
 This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
 
+#### Options
+
+##### platform
+
 Additional you can only build the windows, linux or mac binary by using the `platform` option:
 
     $ gulp mist --platform darwin
@@ -86,6 +90,20 @@ Options are:
 - `darwin` (Mac OSX)
 - `win32` (Windows)
 - `linux` (Linux)
+
+
+##### walletSource
+
+With the `walletSource` you can specify the branch to use, default ist `master`:
+
+    $ gulp mist --walletSource develop
+
+
+Options are:
+
+- `master`
+- `develop`
+- `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
 
 
 

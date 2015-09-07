@@ -138,8 +138,6 @@ app.on('ready', function() {
                 'webgl': true,
                 'text-areas-are-resizable': true
             }
-            // frame: false
-            // 'use-content-size': true,
         });
 
         syncMinimongo(Tabs, mainWindow.webContents);
@@ -161,11 +159,9 @@ app.on('ready', function() {
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true,
-                'web-security': false
+                'web-security': false // necessary to make routing work on file:// protocol
                 // 'overlay-scrollbars': true
-            },
-            // frame: false,
-            // 'use-content-size': true,
+            }
         });
     }
 
@@ -174,15 +170,19 @@ app.on('ready', function() {
             width: 400,
             height: 200,
             icon: icon,
+            resizable: false,
             'node-integration': true,
             'standard-window': false,
             frame: false
         });
     appStartWindow.loadUrl('file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
 
+
+
     appStartWindow.webContents.on('did-finish-load', function() {
 
         // START GETH
+        const checkNodeSync = require('./modules/checkNodeSync.js');
         const spawn = require('child_process').spawn;
         const getIpcPath = require('./modules/ipc/getIpcPath.js');
         const net = require('net');
@@ -191,13 +191,14 @@ app.on('ready', function() {
         var intervalId;
         var count = 0;
 
-
-        socket.connect({path: ipcPath});
-
+        // TRY to CONNECT
+        setTimeout(function(){
+            socket.connect({path: ipcPath});
+        }, 1);
 
         // try to connect
         socket.on('error', function(e){
-            // console.log('Geth connection REFUSED');
+            // console.log('Geth connection REFUSED', count);
 
             // if no geth is running, try starting your own
             if(count === 0) {
@@ -221,11 +222,20 @@ app.on('ready', function() {
                     // '-o', 'builds/pdf/book.pdf'
                 ]);
                 global.geth.on('error',function(){
-                    if(appStartWindow && appStartWindow.webContents)
+                    if(appStartWindow && appStartWindow.webContents) {
                         appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
+                    }
+
+                    clearInterval(intervalId);
+
+                    clearSocket(socket, appStartWindow, ipcPath, true);
                 });
                 // type yes to the inital warning window
-                global.geth.stdin.write("y\r\n");
+                setTimeout(function(){
+                    if(global.geth.stdin.writable) {
+                        global.geth.stdin.write("y\r\n");
+                    }
+                }, 1);
                 // global.geth.stdout.on('data', function(chunk) {
                 //     console.log('stdout',String(chunk));
                 // });
@@ -241,12 +251,18 @@ app.on('ready', function() {
 
                     // timeout after 10 seconds
                     if(count >= 40) {
-                        clearSocket(socket, intervalId, appStartWindow, ipcPath, true);
+
+                        if(appStartWindow && appStartWindow.webContents)
+                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
+
+                        clearInterval(intervalId);
+
+                        clearSocket(socket, appStartWindow, ipcPath, true);
                     }
                 }, 200);
             }
         });
-        socket.on('connect', function(e){
+        socket.on('connect', function(data){
             console.log('Geth connection FOUND');
             if(appStartWindow && appStartWindow.webContents) {
                 if(count === 0)
@@ -255,8 +271,13 @@ app.on('ready', function() {
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
             }
 
-            clearSocket(socket, intervalId, appStartWindow, ipcPath);
-            startMainWindow(mainWindow, appStartWindow);
+            clearInterval(intervalId);
+
+            checkNodeSync(socket, appStartWindow, function(e){
+
+                clearSocket(socket, appStartWindow, ipcPath);
+                startMainWindow(mainWindow, appStartWindow);
+            });
         });
     });
 
@@ -268,11 +289,8 @@ Clears the socket
 
 @method clearSocket
 */
-var clearSocket = function(socket, intervalId, appStartWindow, ipcPath, timeout){
+var clearSocket = function(socket, appStartWindow, ipcPath, timeout){
     if(timeout) {
-        if(appStartWindow && appStartWindow.webContents)
-            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-
         // kill running geth
         if(global.geth)
             global.geth.kill('SIGKILL');
@@ -282,7 +300,6 @@ var clearSocket = function(socket, intervalId, appStartWindow, ipcPath, timeout)
         });
     }
 
-    clearInterval(intervalId);
     socket.removeAllListeners();
     socket.destroy();
     socket = null;

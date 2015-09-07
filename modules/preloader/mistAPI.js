@@ -72,6 +72,7 @@ TODO: queue up all changes and send them all together, to prevent multiple updat
 @constructor
 */
 var mist = {
+    platform: process.platform,
     menu: {
         entries: {},
         /**

@@ -25,3 +25,8 @@ document.addEventListener('click', function(e) {
 // make variables globally accessable
 // window.dirname = __dirname;
 window.web3 = web3;
+window.platform = process.platform;
+
+setTimeout(function(){
+    document.getElementsByTagName('html')[0].className =  window.platform;
+}, 100);

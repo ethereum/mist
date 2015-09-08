@@ -17,7 +17,7 @@
             },
             "view": {
                 "label": "View",
-                "fullscreen": "Toogle Fullscreen"
+                "fullscreen": "Toggle Fullscreen"
             },
             "develop": {
                 "label": "Develop",

@@ -118,7 +118,7 @@ var menuTempl = function(mainWindow, webviews) {
             devtToolsMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
+                    mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
                 }
             });
         });

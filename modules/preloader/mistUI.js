@@ -29,8 +29,8 @@ window.syncMinimongo = syncMinimongo;
 // ipc.send('setLanguage', navigator.language.substr(0,2));
 
 
-// Wait for webview toogle
-ipc.on('toogleWebviewDevTool', function(id){
+// Wait for webview toggle
+ipc.on('toggleWebviewDevTool', function(id){
     var webview = Helpers.getWebview(id);
 
     if(!webview)

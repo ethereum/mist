@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "main": "main.js",
   "devDependencies": {
     "del": "^1.2.1",

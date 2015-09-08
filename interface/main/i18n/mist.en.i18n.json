@@ -55,11 +55,12 @@
             "runningNodeFound": "Found running Ethereum node!",
             "startingNode": "Starting Ethereum node...",
             "startedNode": "Ethereum node successfully started!",
-            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to: <code>__path__</code></small>",
+            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to the default: <code>$ geth --ipcpath __path__</code></small>",
             "nodeBinaryNotFound": "No Ethereum node binary found! Please start <code>geth</code> manually.",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
-            "nodeSyncInfo": "__blocksAvailable__ to go.<br>Estimated time: __timeEstimate__.",
-            "nodeSyncConnecting": "Looking for peers..."
+            "nodeSyncInfo": "__blocksAvailable__ blocks left",
+            "nodeSyncConnecting": "Looking for peers...",
+            "privateChainTimeout": "Not mining on a private chain?<br>Start app right away."
         }
     }
 }

@@ -5,57 +5,96 @@ const i18n = require('../../modules/i18n.js');
 var lastData = {},
     highestBlocksAvailable = 0;
 
-ipc.on('startScreenText', function(text, data){
-
-    // show text
-    document.getElementById('text').innerHTML = i18n.t(text);
+// angular app
+var startScreenApp = angular.module('startScreenApp', ['ngSanitize']);
 
 
-    // make window closeable and image smaller on TIMEOUT
-    if(text.indexOf('nodeConnectionTimeout') !== -1 ||
-       text.indexOf('nodeBinaryNotFound') !== -1 ||
-       text.indexOf('nodeSyncing') !== -1) {
+angular.element(document).ready(function () {
+    // close app
+    document.getElementsByClassName('close')[0].addEventListener('click', function(){
+        ipc.send('closeApp');
+    }, false);
 
-        // make icon small
-        document.getElementsByTagName('body')[0].className = 'small';
-
-
-        // SHOW SYNC STATUS
-        if(text.indexOf('nodeSyncing') !== -1) {
-            var progress = ((lastData.lastBlockNumber - lastData.startBlockNumber) / highestBlocksAvailable) * 100;
-            lastData = _.extend(lastData, data);
-
-            if(lastData.blocksAvailable > highestBlocksAvailable)
-                highestBlocksAvailable = lastData.blocksAvailable;
-
-            // improve time format
-            lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
-
-            // startBlockNumber
-            if(!highestBlocksAvailable)
-                document.getElementById('text').innerHTML += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncConnecting') +'</small>';
-            else
-                document.getElementById('text').innerHTML += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
-            
-            // show progress bar
-            if(document.getElementsByTagName('progress')[0].className.indexOf('visible') === -1)
-                document.getElementsByTagName('progress')[0].className += ' visible';
-
-            // set progress value
-            if(_.isFinite(progress))
-                document.getElementsByTagName('progress')[0].value = progress;
-        
-        // on ERROR MAKE CLOSEABLE
-        } else {
-            
-            document.getElementsByTagName('body')[0].className += ' clickable';
-            document.getElementsByTagName('body')[0].addEventListener('click', function(){
-                ipc.send('closeApp');
-            }, false);
-
-            // show text with path
-            document.getElementById('text').innerHTML = i18n.t(text, {path: data});
-        }
-    }
-
+    // start app
+    document.getElementsByClassName('start-app')[0].addEventListener('click', function(){
+        ipc.send('startApp');
+    }, false);
 });
+
+
+
+startScreenApp.controller('mainCtrl', ['$scope', function ($scope) {
+
+    ipc.on('startScreenText', function(text, data){
+
+        // show text
+        if(text.indexOf('privateChainTimeout') === -1 &&
+           text.indexOf('privateChainTimeoutClear') === -1)
+            $scope.text = i18n.t(text);
+
+
+        // make window closeable and image smaller on TIMEOUT
+        if(text.indexOf('nodeConnectionTimeout') !== -1 ||
+           text.indexOf('nodeBinaryNotFound') !== -1 ||
+           text.indexOf('nodeSyncing') !== -1 ||
+           text.indexOf('privateChainTimeout') !== -1) {
+
+            // make icon small
+            $scope.smallLogo = true;
+
+
+            // SHOW SYNC STATUS
+            if(text.indexOf('nodeSyncing') !== -1) {
+                var progress = ((lastData.lastBlockNumber - lastData.startBlockNumber) / highestBlocksAvailable) * 100;
+                lastData = _.extend(lastData, data || {});
+
+                if(progress === 0)
+                    progress = 1;
+
+                if(lastData.blocksAvailable > highestBlocksAvailable)
+                    highestBlocksAvailable = lastData.blocksAvailable;
+
+                // improve time format
+                lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
+
+                // show node info text
+                if(!highestBlocksAvailable)
+                    $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncConnecting') +'</small>';
+                else
+                    $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
+                
+                // show progress bar
+                $scope.showProgressBar = true;
+
+                // set progress value
+                if(_.isFinite(progress))
+                    $scope.progress = progress;
+
+
+            // HIDE PRIVATE chain text
+            } else if(text.indexOf('privateChainTimeoutClear') !== -1) {
+                $scope.showStartAppButton = false;
+
+
+            // SHOW PRIVATE chain text
+            } else if(text.indexOf('privateChainTimeout') !== -1) {
+                
+                $scope.startAppButtonText = i18n.t(text);
+                $scope.showStartAppButton = true;
+
+
+            // on ERROR MAKE CLOSEABLE
+            } else {
+                // show text with path
+                $scope.text = i18n.t(text, {path: data});
+            }
+        }
+
+
+        if(!$scope.$$phase) {
+            $scope.$digest($scope);
+        }
+
+    });
+}]);
+

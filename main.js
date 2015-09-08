@@ -173,6 +173,7 @@ app.on('ready', function() {
             resizable: false,
             'node-integration': true,
             'standard-window': false,
+            'use-content-size': true,
             frame: false
         });
     appStartWindow.loadUrl('file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
@@ -190,6 +191,13 @@ app.on('ready', function() {
         var ipcPath = getIpcPath();
         var intervalId;
         var count = 0;
+
+
+        // close app when X button is clicked
+        ipc.on('closeApp', function() {
+            app.quit();
+        });
+
 
         // TRY to CONNECT
         setTimeout(function(){
@@ -250,7 +258,7 @@ app.on('ready', function() {
                     count++;
 
                     // timeout after 10 seconds
-                    if(count >= 40) {
+                    if(count >= 60) {
 
                         if(appStartWindow && appStartWindow.webContents)
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
@@ -294,10 +302,6 @@ var clearSocket = function(socket, appStartWindow, ipcPath, timeout){
         // kill running geth
         if(global.geth)
             global.geth.kill('SIGKILL');
-
-        ipc.on('closeApp', function(event, arg) {
-            app.quit();
-        });
     }
 
     socket.removeAllListeners();

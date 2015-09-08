@@ -4,6 +4,8 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 @module ipcProviderBackend
 */
 
+var dechunker = require('./dechunker.js');
+
 /**
 make sockets globally available
 
@@ -257,49 +259,15 @@ module.exports = function(mainWindow){
 
         // wait for data on the socket
         this.ipcSocket.on("data", function(data){
-
-            // DE-CHUNKER
-            var dechunkedData = data
-                .replace(/\}\{/g,'}|--|{') // }{
-                .replace(/\}\]\[\{/g,'}]|--|[{') // }][{
-                .replace(/\}\[\{/g,'}|--|[{') // }[{
-                .replace(/\}\]\{/g,'}]|--|{') // }]{
-                .split('|--|');
-
-            _.each(dechunkedData, function(data) {
+            dechunker(data, function(error, result){
 
                 // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
 
-                // prepend the last chunk
-                if(_this.lastChunk)
-                    data = _this.lastChunk + data;
-
-                var result = data,
-                    id = null;
-
-
-                try {
-                    result = JSON.parse(result);
-
-                } catch(e) {
-                    _this.lastChunk = data;
-
-                    // console.log('IPCSOCKET '+ _this.sender.getId() +' PARSE ERROR', e, "'''"+ data +"'''");
-
-                    // start timeout to cancel all requests
-                    clearTimeout(_this.lastChunkTimeout);
-                    _this.lastChunkTimeout = setTimeout(function(){
-                        console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', e, "'''"+ data +"'''");
-                        _this.timeout();
-                    }, 1000 * 15);
-
+                if(error) {
+                    console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                    _this.timeout();
                     return;
                 }
-
-                // cancel timeout and set chunk to null
-                clearTimeout(_this.lastChunkTimeout);
-                _this.lastChunk = null;
-
 
                 // FILTER RESPONSES
                 var event = _this.getResponseEvent(result);

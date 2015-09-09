@@ -18,6 +18,7 @@ Check if the nodes needs sync and start the app
 module.exports = function(socket, appStartWindow, callback){
     var idCount = 1,
         getLatestBlock = {
+            jsonrpc: '2.0',
             id: idCount,
             method: 'eth_getBlockByNumber',
             params: ['latest', false]
@@ -57,6 +58,7 @@ module.exports = function(socket, appStartWindow, callback){
 
                         // get the latest sync status
                         socket.write(JSON.stringify({
+                            jsonrpc: '2.0',
                             id: idCount,
                             method: 'admin_chainSyncStatus',
                             params: []
@@ -109,6 +111,7 @@ module.exports = function(socket, appStartWindow, callback){
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeoutClear');
 
                     socket.write(JSON.stringify({
+                        jsonrpc: '2.0',
                         id: ++idCount,
                         method: 'eth_blockNumber',
                         params: []

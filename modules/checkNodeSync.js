@@ -41,6 +41,10 @@ module.exports = function(socket, appStartWindow, callback){
                 return;
             }
 
+            // error occured, ignore
+            if(!result.result)
+                return;
+
             // FIRST BLOCK arrived
             if(result.id === 1) {
                 var now = Math.floor(new Date().getTime() / 1000);

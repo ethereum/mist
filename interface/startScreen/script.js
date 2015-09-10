@@ -1,9 +1,9 @@
 const _ = require('underscore');
 const ipc = require('ipc');
+const numeral = require('numeral');
 const i18n = require('../../modules/i18n.js');
 
-var lastData = {},
-    highestBlocksAvailable = 0;
+var lastData = {};
 
 // angular app
 var startScreenApp = angular.module('startScreenApp', ['ngSanitize']);
@@ -45,20 +45,20 @@ startScreenApp.controller('mainCtrl', ['$scope', function ($scope) {
 
             // SHOW SYNC STATUS
             if(text.indexOf('nodeSyncing') !== -1) {
-                var progress = ((lastData.lastBlockNumber - lastData.startBlockNumber) / highestBlocksAvailable) * 100;
                 lastData = _.extend(lastData, data || {});
+                var progress = ((lastData.currentBlock - lastData.startingBlock) / (lastData.highestBlock - lastData.startingBlock)) * 100;
+
+                lastData.currentBlock = numeral(lastData.currentBlock).format('0,0');
+                lastData.highestBlock = numeral(lastData.highestBlock).format('0,0');
 
                 if(progress === 0)
                     progress = 1;
 
-                if(lastData.blocksAvailable > highestBlocksAvailable)
-                    highestBlocksAvailable = lastData.blocksAvailable;
-
                 // improve time format
-                lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
+                // lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
 
                 // show node info text
-                if(!highestBlocksAvailable)
+                if(!lastData.highestBlock)
                     $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncConnecting') +'</small>';
                 else
                     $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncInfo', lastData) +'</small>';

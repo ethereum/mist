@@ -5,7 +5,7 @@ body {
     font-family: 'Helvetica Neue', 'Helvetica', verdana, arial;
     overflow: hidden;
 
-    background-size: 110%;
+    background-size: 105%;
     background-position: 50% 50%;
     -webkit-app-region: drag;
 }
@@ -28,8 +28,8 @@ button:active {
 
 /* Close button */
 button.close {
-    top: 5px;
-    right: 8px;
+    top: 0;
+    right: 3px;
     font-size: 20px;
     color: rgba(255,255,255, 0.3);
 }

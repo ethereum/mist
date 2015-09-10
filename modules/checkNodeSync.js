@@ -25,9 +25,7 @@ module.exports = function(socket, appStartWindow, callback){
         },
         intervalId,
         timeoutId,
-        cbCalled = false,
-        startBlockNumber = 0,
-        lastBlockNumber = 0;
+        cbCalled = false;
 
 
     console.log('Checking node sync status...');
@@ -42,8 +40,9 @@ module.exports = function(socket, appStartWindow, callback){
             }
 
             // error occured, ignore
-            if(!result.result)
+            if(result.error)
                 return;
+
 
             // FIRST BLOCK arrived
             if(result.id === 1) {
@@ -54,9 +53,6 @@ module.exports = function(socket, appStartWindow, callback){
                 // need sync if > 2 minutes
                 if(now - +result.result.timestamp > 60 * 2) {
 
-                    lastBlockNumber = +result.result.number;
-                    startBlockNumber = lastBlockNumber;
-
                     intervalId = setInterval(function(){
                         idCount++;
 
@@ -64,10 +60,10 @@ module.exports = function(socket, appStartWindow, callback){
                         socket.write(JSON.stringify({
                             jsonrpc: '2.0',
                             id: idCount,
-                            method: 'admin_chainSyncStatus',
+                            method: 'eth_syncing',
                             params: []
                         }));
-                    }, 200);
+                    }, 50);
 
 
                 // start app
@@ -77,13 +73,34 @@ module.exports = function(socket, appStartWindow, callback){
                     cbCalled = true;
                 }
 
+            // CHECK BLOCK (AGAIN)
+            } else if(_.isString(result.result.hash)) {
+                var now = Math.floor(new Date().getTime() / 1000);
+
+                // If ready!
+                if(now - +result.result.timestamp < 120 && !cbCalled) {
+                    console.log('Sync finished, starting app!');
+
+                    clearInterval(intervalId);
+                    callback();
+
+                    // prevent double call of the callback
+                    cbCalled = true;
+
+                // if still needs syncing
+                } else {
+                    if(appStartWindow && appStartWindow.webContents)
+                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', {
+                            currentBlock: +result.result.number
+                        });
+                }
+
 
             // CHECK SYNC STATUS
-            } else if(_.isFinite(result.result.blocksAvailable)) {
-
+            } else {
                 
-                // if blocks are less than 10, check latest block again
-                if(result.result.blocksAvailable < 1) {
+                // if not syncing anymore
+                if(!result.result) {
                     getLatestBlock.id = ++idCount;
                     socket.write(JSON.stringify(getLatestBlock));
 
@@ -111,52 +128,13 @@ module.exports = function(socket, appStartWindow, callback){
                     clearTimeout(timeoutId);
                     timeoutId = null;
                     
-                    // remove the pricvate chain button again
+                    // remove the private chain button again
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeoutClear');
 
-                    socket.write(JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: ++idCount,
-                        method: 'eth_blockNumber',
-                        params: []
-                    }));
-                }
-
-                if(appStartWindow && appStartWindow.webContents)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', {
-                        startBlockNumber: startBlockNumber,
-                        lastBlockNumber: lastBlockNumber,
-                        blocksAvailable: result.result.blocksAvailable,
-                        timeEstimate: result.result.estimate
-                    });
-
-
-            // CHECK BLOCK AGAIN
-            } else if(_.isString(result.result.hash)) {
-                var now = Math.floor(new Date().getTime() / 1000);
-
-                lastBlockNumber = +result.result.number;
-
-                // need sync if < 120s, start the app
-                if(now - +result.result.timestamp < 120 && !cbCalled) {
-                    console.log('Sync finished, starting app!');
-
-                    clearInterval(intervalId);
-                    callback();
-
-                    // prevent double call of the callback
-                    cbCalled = true;
-                } else {
                     if(appStartWindow && appStartWindow.webContents)
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', {
-                            startBlockNumber: startBlockNumber,
-                            lastBlockNumber: lastBlockNumber
-                        });
+                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', result.result);
                 }
 
-            // is BLOCK NUMBER
-            } else {
-                lastBlockNumber = +result.result;
             }
         });
     });

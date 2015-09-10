@@ -40,8 +40,19 @@ module.exports = function(socket, appStartWindow, callback){
             }
 
             // error occured, ignore
-            if(result.error)
+            if(result.error) {
+                // if sync method is not implemented, just start the app
+                if(result.error.code === -32601) {
+                    console.log('Syncing method not implemented, start app anyway.');
+
+                    clearInterval(intervalId);
+                    clearTimeout(timeoutId);
+                    callback();
+                    cbCalled = true;
+                }
+
                 return;
+            }
 
 
             // FIRST BLOCK arrived

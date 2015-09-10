@@ -231,9 +231,9 @@ app.on('ready', function() {
                     // '-v', 'builds/pdf/book.html',
                     // '-o', 'builds/pdf/book.pdf'
                 ]);
-                // global.geth.on('error',function(){
-                //     console.log('!!!!!ERROROROR');
-                // });
+                global.geth.on('error',function(){
+                    console.log('Coulnd\'nt start node binary');
+                });
                 // if we couldn't write to stdin, show binary error
                 global.geth.stdin.on('error', function(){
                     if(appStartWindow && appStartWindow.webContents) {

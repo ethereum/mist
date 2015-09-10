@@ -134,6 +134,7 @@ app.on('ready', function() {
             'node-integration': false,
             'web-preferences': {
                 'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true
@@ -152,15 +153,16 @@ app.on('ready', function() {
             height: 680,
             icon: icon,
             'standard-window': false,
+            'dark-theme': true,
             preload: __dirname +'/modules/preloader/wallet.js',
             'node-integration': false,
             'web-preferences': {
                 'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true,
                 'web-security': false // necessary to make routing work on file:// protocol
-                // 'overlay-scrollbars': true
             }
         });
     }
@@ -229,7 +231,11 @@ app.on('ready', function() {
                     // '-v', 'builds/pdf/book.html',
                     // '-o', 'builds/pdf/book.pdf'
                 ]);
-                global.geth.on('error',function(){
+                // global.geth.on('error',function(){
+                //     console.log('!!!!!ERROROROR');
+                // });
+                // if we couldn't write to stdin, show binary error
+                global.geth.stdin.on('error', function(){
                     if(appStartWindow && appStartWindow.webContents) {
                         appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                     }
@@ -240,10 +246,8 @@ app.on('ready', function() {
                 });
                 // type yes to the inital warning window
                 setTimeout(function(){
-                    if(global.geth.stdin.writable) {
-                        global.geth.stdin.write("y\r\n");
-                    }
-                }, 1);
+                    global.geth.stdin.write("y\r\n");
+                }, 10);
                 // global.geth.stdout.on('data', function(chunk) {
                 //     console.log('stdout',String(chunk));
                 // });
@@ -321,7 +325,7 @@ var startMainWindow = function(mainWindow, appStartWindow){
     if(global.production)
         mainWindow.loadUrl('file://' + __dirname + '/interface/main/index.html');
     else
-        mainWindow.loadUrl('http://localhost:3000');
+        mainWindow.loadUrl('http://localhost:3000'); //localhost //10.10.42.105
 
 
     mainWindow.webContents.on('did-finish-load', function() {

@@ -54,7 +54,7 @@
         "startScreen": {
             "runningNodeFound": "Found running Ethereum node!",
             "startingNode": "Starting Ethereum node...",
-            "startedNode": "Ethereum node successfully started!",
+            "startedNode": "Starting application...",
             "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to the default: <code>$ geth --ipcpath __path__</code></small>",
             "nodeBinaryNotFound": "No Ethereum node binary found! Please start <code>geth</code> manually.",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",

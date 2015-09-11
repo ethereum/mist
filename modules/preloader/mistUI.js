@@ -1,6 +1,7 @@
 /**
-@module MistUI
+@module preloader MistUI
 */
+
 
 const ipc = require('ipc');
 const syncMinimongo = require('../syncMinimongo.js');
@@ -11,7 +12,7 @@ const web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const i18n = require('../i18n.js');
 
-const web3Admin = require('./web3Admin');
+const web3Admin = require('../web3Admin.js');
 web3Admin.extend(web3);
 
 // set web3 providor

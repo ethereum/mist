@@ -135,7 +135,7 @@ var menuTempl = function(mainWindow, webviews) {
                     //     width: 800,
                     //     height: 600,
                     //     icon: './icons/icon_128x128.png',
-                    //     preload: __dirname +'/modules/preloader/mistAPI.js',
+                    //     preload: __dirname +'/modules/preloader/dapps.js',
                     //     'node-integration': true,
                     //     'web-preferences': {
                     //         // 'web-security': false

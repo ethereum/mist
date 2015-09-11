@@ -1,15 +1,12 @@
 <head>
     <meta charset="utf-8">
     <title>Mist</title>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 
 <body>
-    {{> layout_sidebar}}
 
-    {{> layout_browserBar}}
-
-    {{> layout_main}}
+    {{> Template.dynamic template=renderApp}}
 
     <!-- Form Helper iFrame -->
     <iframe id="dapp-form-helper-iframe" name="dapp-form-helper-iframe" src="javascript:false;"></iframe>

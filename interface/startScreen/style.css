@@ -61,7 +61,7 @@ img.shadow {
     border-radius: 50%;
 }
 h1 {
-    margin-top: 24px;
+    margin-top: 30px;
     font-size: 18px;
     font-weight: 200;
     text-shadow: 0 1px 5px rgba(0,0,0,0.6);
@@ -84,7 +84,7 @@ progress {
     -webkit-appearance: none;
     appearance: none;
     width: auto;
-    height: 20px;
+    height: 10px;
 }
 progress[value]::-webkit-progress-bar {
     background-color: rgba(255,255,255, 0.2);

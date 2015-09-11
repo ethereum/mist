@@ -1,15 +1,10 @@
-
 /**
 @module MistAPI
 */
 
-const shell = require('shell');
 const ipc = require('ipc');
-const web3 = require('web3');
-const BigNumber = require('bignumber.js');
-const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-require('../loadFavicon.js');
 
+var queue = [];
 var prefix = 'entry_';
 
 // filterId the id to only contain a-z A-Z 0-9
@@ -22,45 +17,19 @@ var filterId = function(str) {
     return newStr;
 };
 
-// notifiy the tab to store the webview id
-ipc.sendToHost('setWebviewId');
-
-// SET WEB3 PROVIDOR
-// destroy the old socket
-ipc.send('ipcProvider-destroy');
-
-
-// create a new one
-web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
-
-// web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
-
-// var remote = require('remote');
-// web3.setProvider(new web3.providers.IpcProvider('/Users/frozeman/Library/Ethereum/geth.ipc', remote.require('net')));
-
-
-ipc.on('callFunction', function(id) {
+ipc.on('mistAPI_callMenuFunction', function(id) {
     if(mist.menu.entries[id] && mist.menu.entries[id].callback)
         mist.menu.entries[id].callback();
 });
 
 
-// open a[target="_blank"] in external browser
-document.addEventListener('click', function(e) {
-    if(e.target.nodeName === 'A' && e.target.attributes.target && e.target.attributes.target.value === "_blank") {
-        e.preventDefault();
-        shell.openExternal(e.target.href);
-    }
-}, false);
-
-
 // work up queue every 500ms
-var queue = [];
 setInterval(function(){
-    ipc.sendToHost('menuChanges', queue);
-    queue = [];
-}, 500);
-
+    if(queue.length > 0) {
+        ipc.sendToHost('mistAPI_menuChanges', queue);
+        queue = [];
+    }
+}, 200);
 
 
 /**
@@ -73,6 +42,9 @@ TODO: queue up all changes and send them all together, to prevent multiple updat
 */
 var mist = {
     platform: process.platform,
+    requestAccount:  function(){
+        ipc.send('mistAPI_requestAccount');
+    },
     menu: {
         entries: {},
         /**
@@ -86,7 +58,7 @@ var mist = {
         @param {String} text
         */
         setBadge: function(text){
-            ipc.sendToHost('setBadge', text);
+            ipc.sendToHost('mistAPI_setBadge', text);
         },
         /**
         Adds/Updates a menu entry
@@ -158,6 +130,4 @@ var mist = {
     },
 };
 
-window.mist = mist;
-window.BigNumber = BigNumber;
-window.web3 = web3;
+module.exports = mist;

@@ -11,7 +11,7 @@ jeeeyul:moment-with-langs
 raix:handlebar-helpers
 frozeman:animation-helper
 frozeman:template-var
-frozeman:persistent-minimongo
+frozeman:persistent-minimongo2
 frozeman:reactive-timer
 frozeman:storage
 numeral:numeral

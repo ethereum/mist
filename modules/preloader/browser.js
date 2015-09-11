@@ -1,3 +1,7 @@
+/**
+@module preloader browser
+*/
+
 const ipc = require('ipc');
 require('../loadFavicon.js');
 

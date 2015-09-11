@@ -21,6 +21,10 @@ global.geth = null;
 global.Tabs = Minimongo('tabs');
 
 
+var interfaceAppUrl = (global.production)
+    ? 'file://' + __dirname + '/interface/main/index.html'
+    : 'http://localhost:3000';
+
 
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
@@ -322,11 +326,7 @@ Start the main window and all its processes
 var startMainWindow = function(mainWindow, appStartWindow){
 
     // and load the index.html of the app.
-    if(global.production)
-        mainWindow.loadUrl('file://' + __dirname + '/interface/main/index.html');
-    else
-        mainWindow.loadUrl('http://localhost:3000'); //localhost //10.10.42.105
-
+    mainWindow.loadUrl(interfaceAppUrl);
 
     mainWindow.webContents.on('did-finish-load', function() {
         mainWindow.show();
@@ -346,6 +346,23 @@ var startMainWindow = function(mainWindow, appStartWindow){
 
 
     // STARTUP PROCESSES
+
+    ipc.on('mistAPI_requestAccount', function(e){
+        var modalWindow = new BrowserWindow({
+                width: 600,
+                height: 400,
+                icon: icon,
+                show: false,
+                'node-integration': true,
+                'standard-window': false,
+                'use-content-size': true
+            });
+        modalWindow.loadUrl(interfaceAppUrl +'#requestAccountModal');
+        modalWindow.webContents.on('did-finish-load', function() {
+            modalWindow.show();
+        });
+
+    });
 
 
     // instantiate the application menu

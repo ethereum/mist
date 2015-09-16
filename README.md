@@ -38,15 +38,32 @@ To update Mist in the future, run:
     $ git submodule update
     $ npm update
 
-### Run
+
+### Run Mist
+
+Switch the `global.mode` to `mist` in the `main.js`.
 
 For development we start the interface with a Meteor server for autoreload. In a separate window, start Meteor:
 
-    $ cd interface && meteor
+    $ cd interface/main && meteor
 
 In the original window you can then start Mist with:
 
     $ electron ./
+
+
+### Run the Wallet
+
+Switch the `global.mode` to `wallet` in the `main.js`.
+
+Start the wallet app for development, in a separate window:
+
+    $ cd my/path/meteor-dapp-wallet/app && meteor
+
+In the original window you can then start Mist with:
+
+    $ electron ./
+
 
 ### Deployment
 

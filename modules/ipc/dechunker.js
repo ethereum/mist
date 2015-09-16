@@ -19,11 +19,12 @@ module.exports = function(data, callback){
 
     // DE-CHUNKER
     var dechunkedData = data
-        .replace(/\}\{/g,'}|--|{') // }{
-        .replace(/\}\]\[\{/g,'}]|--|[{') // }][{
-        .replace(/\}\[\{/g,'}|--|[{') // }[{
-        .replace(/\}\]\{/g,'}]|--|{') // }]{
+        .replace(/\}[\n]?\{/g,'}|--|{') // }{
+        .replace(/\}\][\n]?\[\{/g,'}]|--|[{') // }][{
+        .replace(/\}\[[\n]?\{/g,'}|--|[{') // }[{
+        .replace(/\}\][\n]?\{/g,'}]|--|{') // }]{
         .split('|--|');
+
 
     _.each(dechunkedData, function(data) {
 

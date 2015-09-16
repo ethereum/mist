@@ -32,7 +32,7 @@ const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 
 var mainWindow = null;
-var icon = __dirname +'/icons/'+ global.mode +'/icon_128x128.png';
+var icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');

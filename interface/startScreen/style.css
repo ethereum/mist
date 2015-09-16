@@ -5,12 +5,15 @@ body {
     font-family: 'Helvetica Neue', 'Helvetica', verdana, arial;
     overflow: hidden;
 
-    background-size: 105%;
+    background-size: 115%;
     background-position: 50% 50%;
     -webkit-app-region: drag;
 }
 h1, small {
     cursor: default;
+}
+body.wallet {
+    color: #142031;
 }
 
 button {
@@ -64,7 +67,7 @@ h1 {
     margin-top: 30px;
     font-size: 18px;
     font-weight: 200;
-    text-shadow: 0 1px 5px rgba(0,0,0,0.6);
+    /*text-shadow: 0 1px 5px rgba(0,0,0,0.6);*/
     -webkit-user-select: none;
 }
 small {
@@ -92,7 +95,7 @@ progress[value]::-webkit-progress-bar {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
 }
 progress.wallet::-webkit-progress-value {
-    background-image: -webkit-linear-gradient(left, #9D3F21, #CC9C71);
+    background-image: -webkit-linear-gradient(left, #1F3B75, #9FCBE3);
 }
 progress.mist::-webkit-progress-value {
     background-image: -webkit-linear-gradient(left, #3185CC, #ADA1E2);

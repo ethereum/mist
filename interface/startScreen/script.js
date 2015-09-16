@@ -58,7 +58,7 @@ startScreenApp.controller('mainCtrl', ['$scope', function ($scope) {
                 // lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
 
                 // show node info text
-                if(!lastData.highestBlock)
+                if(!lastData.startingBlock)
                     $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncConnecting') +'</small>';
                 else
                     $scope.text += '<br><small>'+ i18n.t('mist.startScreen.nodeSyncInfo', lastData) +'</small>';

@@ -134,7 +134,7 @@ var menuTempl = function(mainWindow, webviews) {
                     // var testWindow = new BrowserWindow({
                     //     width: 800,
                     //     height: 600,
-                    //     icon: './icons/icon_128x128.png',
+                    //     icon: './icons/icon.png',
                     //     preload: __dirname +'/modules/preloader/dapps.js',
                     //     'node-integration': true,
                     //     'web-preferences': {

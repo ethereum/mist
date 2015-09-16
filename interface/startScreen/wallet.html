@@ -6,12 +6,12 @@
         <script src="./bower_components/angular-sanitize/angular-sanitize.min.js"></script>
         <script src="./script.js"></script>
     </head>
-    <body ng-controller="mainCtrl" style="background-image: url('bg-frontier.jpg');" ng-class="smallLogo ? 'small' : ''">
+    <body ng-controller="mainCtrl" style="background-image: url('bg-mountain.png');" class="wallet" ng-class="smallLogo ? 'small' : ''">
         
         <button class="close">×</button>
         <button ng-show="showStartAppButton" ng-bind-html="startAppButtonText" class="start-app"></button>
 
-        <img id="image" src="../../icons/wallet/icon_256x256.png" class="shadow">
+        <img id="image" src="../../icons/wallet/icon.png">
         <h1 ng-bind-html="text"></h1>
 
         <progress class="wallet" ng-show="showProgressBar" ng-model="progress" max="100" value="{{progress}}"></progress>

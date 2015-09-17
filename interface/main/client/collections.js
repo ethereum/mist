@@ -3,8 +3,8 @@
 @module Collections
 */
 
-// make sure collections are not loaded in modal modes
-if(!_.isEmpty(location.hash))
+// STOP here if not MAIN WINDOW
+if(location.hash)
     return;
 
 

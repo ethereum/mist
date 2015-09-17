@@ -1,10 +1,8 @@
 
-// DUMMY note, while mist doesnt start geth itself
-if(!web3.isConnected()){
-    alert('Please START GETH with default ipc path, and then RESTART MIST.');
-    return;
-}
 
+// STOP here if not MAIN WINDOW
+if(location.hash)
+    return;
 
 // set browser as default tab
 if(!LocalStore.get('selectedTab'))

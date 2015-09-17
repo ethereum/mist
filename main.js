@@ -21,9 +21,25 @@ global.geth = null;
 global.Tabs = Minimongo('tabs');
 
 
-var interfaceAppUrl = (global.production)
-    ? 'file://' + __dirname + '/interface/main/index.html'
-    : 'http://localhost:3000';
+// INTERFACE PATHS
+var interfaceAppUrl, interfacePopupsUrl;
+
+// WALLET
+if(global.mode === 'wallet') {
+    interfaceAppUrl = (global.production)
+        ? 'file://' + __dirname + '/interface/wallet/index.html'
+        : 'http://localhost:3000';
+    interfacePopupsUrl = (global.production)
+        ? 'file://' + __dirname + '/interface/main/index.html'
+        : 'http://localhost:3050';
+
+// MIST
+} else {
+    interfaceAppUrl = interfacePopupsUrl = (global.production)
+        ? 'file://' + __dirname + '/interface/main/index.html'
+        : 'http://localhost:3000';
+}
+
 
 
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
@@ -177,12 +193,16 @@ app.on('ready', function() {
             height: 200,
             icon: icon,
             resizable: false,
-            'node-integration': true,
+            'node-integration': false,
+            preload: __dirname +'/modules/preloader/splashScreen.js',
             'standard-window': false,
             'use-content-size': true,
-            frame: false
+            frame: false,
+            'web-preferences': {
+                'web-security': false // necessary to make routing work on file:// protocol
+            }
         });
-    appStartWindow.loadUrl('file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
+    appStartWindow.loadUrl(interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
 
 
 
@@ -353,11 +373,16 @@ var startMainWindow = function(mainWindow, appStartWindow){
                 height: 400,
                 icon: icon,
                 show: false,
-                'node-integration': true,
                 'standard-window': false,
-                'use-content-size': true
+                preload: __dirname +'/modules/preloader/mistUI.js',
+                'use-content-size': true,
+                'node-integration': false,
+                'web-preferences': {
+                    'overlay-scrollbars': true,
+                    'text-areas-are-resizable': false
+                }
             });
-        modalWindow.loadUrl(interfaceAppUrl +'#requestAccountModal');
+        modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
         modalWindow.webContents.on('did-finish-load', function() {
             modalWindow.show();
         });

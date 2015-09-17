@@ -19,9 +19,12 @@ Template.body.helpers({
     */
     'renderApp': function(){
         if(_.isEmpty(location.hash)) {
-            return 'mistInterface';
+            return 'layout_main';
         }
-        if(location.hash === 'requestAccountModal') {
+        if(~location.hash.indexOf('#splashScreen')) {
+            return 'popupWindows_splashScreen';
+        }
+        if(location.hash === '#requestAccountModal') {
             return 'popupWindows_requestAccount';
         }
     }

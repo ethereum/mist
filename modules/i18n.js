@@ -7,9 +7,9 @@ const i18n = require('i18next');
 
 
 var i18nResources = {
-  dev: { translation: require('../interface/main/i18n/mist.en.i18n.json') },
-  en: { translation: require('../interface/main/i18n/mist.en.i18n.json') },            
-  'en-US': { translation: require('../interface/main/i18n/mist.en.i18n.json') }
+  dev: { translation: require('../interface/i18n/mist.en.i18n.json') },
+  en: { translation: require('../interface/i18n/mist.en.i18n.json') },            
+  'en-US': { translation: require('../interface/i18n/mist.en.i18n.json') }
 };
 
 i18n.init({

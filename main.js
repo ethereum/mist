@@ -30,13 +30,13 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/wallet/index.html'
         : 'http://localhost:3000';
     interfacePopupsUrl = (global.production)
-        ? 'file://' + __dirname + '/interface/main/index.html'
+        ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3050';
 
 // MIST
 } else {
     interfaceAppUrl = interfacePopupsUrl = (global.production)
-        ? 'file://' + __dirname + '/interface/main/index.html'
+        ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 }
 

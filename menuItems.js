@@ -5,6 +5,13 @@ const Menu = require('menu');
 const config = require('./config');
 const ipc = require('ipc');
 
+// TODO change selector to role
+/*
++  * `click` Function - Will be called with `click(menuItem, browserWindow)` when
+-  * `selector` String - Call the selector of first responder when clicked (OS      +     the menu item is clicked
+-     X only)       +  * `role` String - Define the action of the menu item, when specified the
++     `click` property will be ignored
+*/
 
 // create menu
 // null -> null
@@ -24,12 +31,14 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
-                selector: 'orderFrontStandardAboutPanel:'
+                role: 'about'
             },
             {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
-                accelerator: 'Command+Q',
-                selector: 'terminate:'
+                accelerator: 'CommandOrControl+Q',
+                click: function(){
+                    app.quit();
+                }
             }
         ]
     })
@@ -40,36 +49,36 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.edit.undo'),
-                accelerator: 'Command+Z',
-                selector: 'undo:'
+                accelerator: 'CommandOrControl+Z',
+                role: 'undo'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.redo'),
-                accelerator: 'Shift+Command+Z',
-                selector: 'redo:'
+                accelerator: 'Shift+CommandOrControl+Z',
+                role: 'redo'
             },
             {
                 type: 'separator'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.cut'),
-                accelerator: 'Command+X',
-                selector: 'cut:'
+                accelerator: 'CommandOrControl+X',
+                role: 'cut'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.copy'),
-                accelerator: 'Command+C',
-                selector: 'copy:'
+                accelerator: 'CommandOrControl+C',
+                role: 'copy'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.paste'),
-                accelerator: 'Command+V',
-                selector: 'paste:'
+                accelerator: 'CommandOrControl+V',
+                role: 'paste'
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.selectAll'),
-                accelerator: 'Command+A',
-                selector: 'selectAll:'
+                accelerator: 'CommandOrControl+A',
+                role: 'selectall'
             },
         ]
     })
@@ -80,7 +89,7 @@ var menuTempl = function(mainWindow, webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
-                accelerator: 'Command+F',
+                accelerator: 'CommandOrControl+F',
                 click: function(){
                     mainWindow.setFullScreen(!mainWindow.isFullScreen());
                 }
@@ -95,7 +104,7 @@ var menuTempl = function(mainWindow, webviews) {
     if(global.mode === 'mist') {
         devtToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
-            accelerator: 'Alt+Command+I',
+            accelerator: 'Alt+CommandOrControl+I',
             click: function() {
                 if(curWindow = BrowserWindow.getFocusedWindow())
                     curWindow.toggleDevTools();
@@ -109,7 +118,7 @@ var menuTempl = function(mainWindow, webviews) {
             devtToolsMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    mainWindow.webContents.send('toogleWebviewDevTool', webview._id);
+                    mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -125,8 +134,8 @@ var menuTempl = function(mainWindow, webviews) {
                     // var testWindow = new BrowserWindow({
                     //     width: 800,
                     //     height: 600,
-                    //     icon: './icons/icon_128x128.png',
-                    //     preload: __dirname +'/modules/preloader/mistAPI.js',
+                    //     icon: './icons/icon.png',
+                    //     preload: __dirname +'/modules/preloader/dapps.js',
                     //     'node-integration': true,
                     //     'web-preferences': {
                     //         // 'web-security': false
@@ -143,7 +152,7 @@ var menuTempl = function(mainWindow, webviews) {
     } else {
         devtToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
-            accelerator: 'Alt+Command+I',
+            accelerator: 'Alt+CommandOrControl+I',
             click: function() {
                 if(curWindow = BrowserWindow.getFocusedWindow())
                     curWindow.toggleDevTools();
@@ -159,36 +168,38 @@ var menuTempl = function(mainWindow, webviews) {
     // WINDOW
     menu.push({
         label: i18n.t('mist.applicationMenu.window.label'),
+        role: 'window',
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.window.minimize'),
-                accelerator: 'Command+M',
-                selector: 'performMiniaturize:'
+                accelerator: 'CommandOrControl+M',
+                role: 'minimize'
             },
             {
                 label: i18n.t('mist.applicationMenu.window.close'),
-                accelerator: 'Command+W',
-                // click: function() {
-                //     if(curWindow = BrowserWindow.getFocusedWindow())
-                //         curWindow.hide();
-                // }
-                selector: 'performClose:'
+                accelerator: 'CommandOrControl+W',
+                role: 'close'
             },
             {
                 type: 'separator'
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                selector: 'arrangeInFront:'
+                role: 'arrangeInFront:',
+                role: 'front'
             },
         ]
     })
 
     // HELP
-    menu.push({
-        label: i18n.t('mist.applicationMenu.help.label'),
-        submenu: []
-    });
+    if(process.platform === 'darwin') {
+        menu.push({
+            label: i18n.t('mist.applicationMenu.help.label'),
+            role: 'help',
+            submenu: []
+        });
+    }
+
     return menu;
 };
 

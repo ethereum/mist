@@ -12,7 +12,7 @@ module.exports = function() {
         path += '/.ethereum/geth.ipc';
 
     if(process.platform === 'win32')
-         path = '\\\\.\\pipe\\geth.ipc';
+        path = '\\\\.\\pipe\\geth.ipc';
     
     console.log('CONNECT to IPC PATH: '+ path);
     return path;

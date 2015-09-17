@@ -38,15 +38,36 @@ To update Mist in the future, run:
     $ git submodule update
     $ npm update
 
-### Run
 
-For development we start the interface with a Meteor server for autoreload. In a separate window, start Meteor:
+### Run Mist
+
+Switch the `global.mode` to `"mist"` in the `main.js`.
+
+For development we start the interface with a Meteor server for autoreload etc. Start the interface in a separate terminal window:
 
     $ cd interface && meteor
 
 In the original window you can then start Mist with:
 
     $ electron ./
+
+
+### Run the Wallet
+
+Switch the `global.mode` to `"wallet"` in the `main.js`.
+
+Start the wallet app for development, in a separate terminal window:
+
+    $ cd interface && meteor
+
+    // and in another terminal
+
+    $ cd my/path/meteor-dapp-wallet/app && meteor
+
+In the original window you can then start Mist with:
+
+    $ electron ./
+
 
 ### Deployment
 
@@ -72,6 +93,38 @@ To generate the binaries simply run:
     $ gulp wallet
 
 This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
+
+#### Options
+
+##### platform
+
+Additional you can only build the windows, linux or mac binary by using the `platform` option:
+
+    $ gulp mist --platform darwin
+    
+    // Or
+    $ gulp mist --platform "darwin win32"
+
+
+Options are:
+
+- `darwin` (Mac OSX)
+- `win32` (Windows)
+- `linux` (Linux)
+
+
+##### walletSource
+
+With the `walletSource` you can specify the branch to use, default ist `master`:
+
+    $ gulp mist --walletSource develop
+
+
+Options are:
+
+- `master`
+- `develop`
+- `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
 
 
 

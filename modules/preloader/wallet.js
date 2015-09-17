@@ -1,12 +1,13 @@
 /**
-@module WalletPreloader
+@module preloader wallet
 */
 
+const mist = require('../mistAPI.js');
 const shell = require('shell');
 const web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 
-const web3Admin = require('./web3Admin');
+const web3Admin = require('../web3Admin.js');
 web3Admin.extend(web3);
 
 // set web3 providor
@@ -23,5 +24,11 @@ document.addEventListener('click', function(e) {
 
 
 // make variables globally accessable
-window.dirname = __dirname;
+// window.dirname = __dirname;
+window.mist = mist;
 window.web3 = web3;
+window.platform = process.platform;
+
+setTimeout(function(){
+    document.getElementsByTagName('html')[0].className =  window.platform;
+}, 100);

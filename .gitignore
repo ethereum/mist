@@ -1,4 +1,5 @@
 node_modules/
 packages/
 interface_build/
-dist/
+dist_wallet/
+dist_mist/

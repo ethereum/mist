@@ -11,7 +11,7 @@ jeeeyul:moment-with-langs
 raix:handlebar-helpers
 frozeman:animation-helper
 frozeman:template-var
-frozeman:persistent-minimongo
+frozeman:persistent-minimongo2
 frozeman:reactive-timer
 frozeman:storage
 numeral:numeral
@@ -20,6 +20,7 @@ sacha:spin
 agnito:simptip
 msavin:mongol
 mrt:jquery-ui-sortable
+ethereum:web3
 ethereum:elements
 ethereum:accounts
 ethereum:blocks

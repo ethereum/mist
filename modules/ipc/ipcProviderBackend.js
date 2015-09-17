@@ -4,8 +4,15 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 @module ipcProviderBackend
 */
 
-// make sockets globally available
+var dechunker = require('./dechunker.js');
+
+/**
+make sockets globally available
+
+@property global.sockets
+*/
 global.sockets = {};
+
 
 module.exports = function(mainWindow){
     const _ = require('underscore');
@@ -15,7 +22,7 @@ module.exports = function(mainWindow){
     const getIpcPath = require('./getIpcPath.js');
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
-        errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'"}, "id": "__id__"},
+        errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistent", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
@@ -252,49 +259,15 @@ module.exports = function(mainWindow){
 
         // wait for data on the socket
         this.ipcSocket.on("data", function(data){
-
-            // DE-CHUNKER
-            var dechunkedData = data
-                .replace(/\}\{/g,'}|--|{') // }{
-                .replace(/\}\]\[\{/g,'}]|--|[{') // }][{
-                .replace(/\}\[\{/g,'}|--|[{') // }[{
-                .replace(/\}\]\{/g,'}]|--|{') // }]{
-                .split('|--|');
-
-            _.each(dechunkedData, function(data) {
+            dechunker(data, function(error, result){
 
                 // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
 
-                // prepend the last chunk
-                if(_this.lastChunk)
-                    data = _this.lastChunk + data;
-
-                var result = data,
-                    id = null;
-
-
-                try {
-                    result = JSON.parse(result);
-
-                } catch(e) {
-                    _this.lastChunk = data;
-
-                    // console.log('IPCSOCKET '+ _this.sender.getId() +' PARSE ERROR', e, "'''"+ data +"'''");
-
-                    // start timeout to cancel all requests
-                    clearTimeout(_this.lastChunkTimeout);
-                    _this.lastChunkTimeout = setTimeout(function(){
-                        console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', e, "'''"+ data +"'''");
-                        _this.timeout();
-                    }, 1000 * 15);
-
+                if(error) {
+                    console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                    _this.timeout();
                     return;
                 }
-
-                // cancel timeout and set chunk to null
-                clearTimeout(_this.lastChunkTimeout);
-                _this.lastChunk = null;
-
 
                 // FILTER RESPONSES
                 var event = _this.getResponseEvent(result);
@@ -403,6 +376,12 @@ module.exports = function(mainWindow){
         else {
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         }
+
+      
+        // if(event.sender.returnValue)       
+        //     event.sender.returnValue = socket.ipcSocket.writable;      
+        // else       
+        //     event.sender.send('ipcProvider-setWritable', socket.ipcSocket.writable);
     });
 
     ipc.on('ipcProvider-destroy', function(event){

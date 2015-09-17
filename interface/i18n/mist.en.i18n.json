@@ -17,7 +17,7 @@
             },
             "view": {
                 "label": "View",
-                "fullscreen": "Enter Fullscreen"
+                "fullscreen": "Toggle Fullscreen"
             },
             "develop": {
                 "label": "Develop",
@@ -50,6 +50,17 @@
             "buttons": {
                 "keysNeeded": "Keys Needed"
             }
+        },
+        "startScreen": {
+            "runningNodeFound": "Found running Ethereum node!",
+            "startingNode": "Starting Ethereum node...",
+            "startedNode": "Starting application...",
+            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to the default: <code>$ geth --ipcpath __path__</code></small>",
+            "nodeBinaryNotFound": "No Ethereum node binary found! Please start one manually.",
+            "nodeSyncing": "Ethereum node needs to sync, please wait...",
+            "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
+            "nodeSyncConnecting": "Looking for peers...",
+            "privateChainTimeout": "Not mining on a private chain?<br>Start app right away."
         }
     }
 }

@@ -3,22 +3,25 @@
 @module Collections
 */
 
+// STOP here if not MAIN WINDOW
+if(location.hash)
+    return;
 
 
 // BROWSER RELATED
 
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
-new PersistentMinimongo(Tabs);
+new PersistentMinimongo(Tabs, 'Mist');
 syncMinimongo(Tabs);
 
 
 // Contains the accounts
 DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
-new PersistentMinimongo(DoogleLastVisitedPages);
+new PersistentMinimongo(DoogleLastVisitedPages, 'Mist');
 
 DoogleHistory = new Mongo.Collection('doogle-history', {connection: null});
-new PersistentMinimongo(DoogleHistory);
+new PersistentMinimongo(DoogleHistory, 'Mist');
 
 
 
@@ -30,7 +33,7 @@ new PersistentMinimongo(DoogleHistory);
 
 // contains blockchain meta data
 // LastBlock = new Mongo.Collection('lastblock', {connection: null});
-// new PersistentMinimongo(LastBlock);
+// new PersistentMinimongo(LastBlock, 'Mist');
 // if(!LastBlock.findOne('latest'))
 //     LastBlock.insert({
 //         _id: 'latest',

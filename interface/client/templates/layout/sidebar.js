@@ -140,7 +140,7 @@ Template['layout_sidebar'].events({
 
         // dapp tab
         } else if(webview) {
-            webview.send('callFunction', this.id);
+            webview.send('mistAPI_callMenuFunction', this.id);
             LocalStore.set('selectedTab', tabId);
         }
     },

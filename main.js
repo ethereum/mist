@@ -203,7 +203,7 @@ app.on('ready', function() {
             }
         });
     appStartWindow.loadUrl(interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
-
+    // appStartWindow.openDevTools();
 
 
     appStartWindow.webContents.on('did-finish-load', function() {

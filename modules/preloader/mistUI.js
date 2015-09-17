@@ -23,6 +23,7 @@ web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 window.dirname = __dirname;
 window.web3 = web3;
 window.syncMinimongo = syncMinimongo;
+window.ipc = ipc;
 
 
 

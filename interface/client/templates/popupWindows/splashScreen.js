@@ -117,9 +117,9 @@ Template['popupWindows_splashScreen'].helpers({
 
 Template['popupWindows_splashScreen'].events({
    'click .close': function(){
-        ipc.send('closeApp');
+        ipc.send('uiAction_closeApp');
    },
    'click .start-app': function(){
-        ipc.send('startApp');
+        ipc.send('uiAction_startApp');
    } 
 });

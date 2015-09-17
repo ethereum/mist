@@ -7,7 +7,7 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.path = {
     HOME: app.getPath('home'),
@@ -48,6 +48,7 @@ const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 
 var mainWindow = null;
+var popupWindows = {};
 var icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 
@@ -109,6 +110,68 @@ app.on('before-quit', function(event){
         app.quit();
     }, 500);
 });
+
+
+
+// UI ACTIONS
+ipc.on('uiAction_closeApp', function() {
+    app.quit();
+});
+ipc.on('uiAction_closePopupWindow', function(e, windowName) {
+    var id = e.sender.getId();
+
+//  TODO creator and window have different IDs!!!!!!
+console.log(id, popupWindows);
+
+    if(!popupWindows[id] || !popupWindows[id].windows[windowName])
+        return
+    else {
+        popupWindows[id].windows[windowName].close();
+        delete popupWindows[id].windows[windowName];
+    }
+});
+
+
+// MIST API
+ipc.on('mistAPI_requestAccount', function(e){
+    var modalWindow = new BrowserWindow({
+        width: 400,
+        height: 220,
+        icon: icon,
+        show: false,
+        'standard-window': false,
+        preload: __dirname +'/modules/preloader/mistUI.js',
+        'use-content-size': true,
+        'node-integration': false,
+        'web-preferences': {
+            'overlay-scrollbars': true,
+            'text-areas-are-resizable': false
+        }
+    });
+
+    var id = e.sender.getId();
+
+    if(!popupWindows[id])
+        popupWindows[id] = {
+            windows: {}
+        };
+
+    if(popupWindows[id].windows['requestAccount'])
+        return;
+    else
+        popupWindows[id].windows['requestAccount'] = modalWindow;
+
+    modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
+    modalWindow.webContents.on('did-finish-load', function() {
+        modalWindow.show();
+    });
+    modalWindow.on('closed', function() {
+        delete popupWindows[id].windows['requestAccount'];
+    });
+
+});
+
+
 
 // Emitted when the application is activated while there is no opened windows.
 // It usually happens when a user has closed all of application's windows and then
@@ -217,12 +280,6 @@ app.on('ready', function() {
         var ipcPath = getIpcPath();
         var intervalId;
         var count = 0;
-
-
-        // close app when X button is clicked
-        ipc.on('closeApp', function() {
-            app.quit();
-        });
 
 
         // TRY to CONNECT
@@ -366,28 +423,6 @@ var startMainWindow = function(mainWindow, appStartWindow){
 
 
     // STARTUP PROCESSES
-
-    ipc.on('mistAPI_requestAccount', function(e){
-        var modalWindow = new BrowserWindow({
-                width: 600,
-                height: 400,
-                icon: icon,
-                show: false,
-                'standard-window': false,
-                preload: __dirname +'/modules/preloader/mistUI.js',
-                'use-content-size': true,
-                'node-integration': false,
-                'web-preferences': {
-                    'overlay-scrollbars': true,
-                    'text-areas-are-resizable': false
-                }
-            });
-        modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
-        modalWindow.webContents.on('did-finish-load', function() {
-            modalWindow.show();
-        });
-
-    });
 
 
     // instantiate the application menu

@@ -61,6 +61,11 @@
             "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
             "privateChainTimeout": "Not mining on a private chain?<br>Start app right away."
+        },
+        "popupWindows": {
+            "requestAccount": {
+                "title": "Create account"
+            }
         }
     }
 }

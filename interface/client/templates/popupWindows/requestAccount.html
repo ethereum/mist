@@ -1,6 +1,11 @@
 <template name="popupWindows_requestAccount">
-    <div class="dapp-modal">
-        <h1>Create an account</h1>
+    <div class="popup-windows">
+        <h1>{{i18n "mist.popupWindows.requestAccount.title"}}</h1>
         <input type="password">
+
+        <div class="dapp-modal-buttons">
+            <button class="cancel">{{i18n "buttons.cancel"}}</button>
+            <button class="ok dapp-primary-button">{{i18n "buttons.ok"}}</button>
+        </div>
     </div>
 </template>

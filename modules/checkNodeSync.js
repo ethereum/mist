@@ -121,7 +121,7 @@ module.exports = function(socket, appStartWindow, callback){
                             if(appStartWindow && appStartWindow.webContents) {
                                 appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeout');
 
-                                ipc.on('startApp', function() {
+                                ipc.on('uiAction_startApp', function() {
                                     clearInterval(intervalId);
                                     callback();
 

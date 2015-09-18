@@ -19,12 +19,14 @@ Template.body.helpers({
     */
     'renderApp': function(){
         if(_.isEmpty(location.hash)) {
+            $('title').text('Mist');
             return 'layout_main';
         }
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }
         if(location.hash === '#requestAccountModal') {
+            $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title'));
             return 'popupWindows_requestAccount';
         }
     }

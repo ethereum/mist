@@ -15,14 +15,14 @@ const ipc = require('ipc');
 
 // create menu
 // null -> null
-var createMenu = function(mainWindow, webviews) {
-    const menu = Menu.buildFromTemplate(menuTempl(mainWindow, webviews));
+var createMenu = function(webviews) {
+    const menu = Menu.buildFromTemplate(menuTempl(webviews));
     Menu.setApplicationMenu(menu);
 };
 
 // create a menu template
 // null -> obj
-var menuTempl = function(mainWindow, webviews) {
+var menuTempl = function(webviews) {
     const menu = []
 
     // APP
@@ -91,7 +91,7 @@ var menuTempl = function(mainWindow, webviews) {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
                 accelerator: 'CommandOrControl+F',
                 click: function(){
-                    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+                    global.mainWindow.setFullScreen(!global.mainWindow.isFullScreen());
                 }
             }
         ]
@@ -118,7 +118,7 @@ var menuTempl = function(mainWindow, webviews) {
             devtToolsMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
+                    global.mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -143,7 +143,7 @@ var menuTempl = function(mainWindow, webviews) {
                     // });
                     // testWindow.loadUrl('file://'+ __dirname + '/tests/mocha-in-browser/runner.html');                    
 
-                    mainWindow.webContents.send('runTests', 'webview');
+                    global.mainWindow.webContents.send('runTests', 'webview');
                 }
             }
         ])

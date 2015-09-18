@@ -14,6 +14,7 @@ frozeman:template-var
 frozeman:persistent-minimongo2
 frozeman:reactive-timer
 frozeman:storage
+frozeman:global-notifications
 numeral:numeral
 reactive-var
 sacha:spin

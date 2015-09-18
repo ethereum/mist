@@ -64,7 +64,12 @@
         },
         "popupWindows": {
             "requestAccount": {
-                "title": "Create account"
+                "title": "Create account",
+                "enterPassword": "Enter password",
+                "repeatPassword": "Repeat password",
+                "errors": {
+                    "passwordMismatch": "Your passwords don't match."
+                }
             }
         }
     }

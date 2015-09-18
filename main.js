@@ -8,6 +8,8 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 // GLOBAL Variables
 global.production = false;
 global.mode = 'wallet';
+global.mainWindow = null;
+global.popupWindows = [];
 
 global.path = {
     HOME: app.getPath('home'),
@@ -47,8 +49,6 @@ const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 
-var mainWindow = null;
-var popupWindows = {};
 var icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 
@@ -112,22 +112,31 @@ app.on('before-quit', function(event){
 });
 
 
+var dappOpenedWindows = {};
 
 // UI ACTIONS
 ipc.on('uiAction_closeApp', function() {
     app.quit();
 });
 ipc.on('uiAction_closePopupWindow', function(e, windowName) {
-    var id = e.sender.getId();
+    var windowId = e.sender.getId();
+    var winKey = '';
+    var dappOpenened = _.find(dappOpenedWindows, function(dappOpened) {
+        return _.find(dappOpened.windows, function(win, key){
+            if (win.webContents.getId() === windowId) {
+                winKey = key;
+                return true;
+            } else
+                return false;
+        });
+    });
 
-//  TODO creator and window have different IDs!!!!!!
-console.log(id, popupWindows);
 
-    if(!popupWindows[id] || !popupWindows[id].windows[windowName])
+    if(!dappOpenened)
         return
     else {
-        popupWindows[id].windows[windowName].close();
-        delete popupWindows[id].windows[windowName];
+        dappOpenened.windows[winKey].close();
+        delete dappOpenened.windows[winKey];
     }
 });
 
@@ -151,23 +160,29 @@ ipc.on('mistAPI_requestAccount', function(e){
 
     var id = e.sender.getId();
 
-    if(!popupWindows[id])
-        popupWindows[id] = {
+    if(!dappOpenedWindows[id])
+        dappOpenedWindows[id] = {
             windows: {}
         };
 
-    if(popupWindows[id].windows['requestAccount'])
+    if(dappOpenedWindows[id].windows['requestAccount'])
         return;
     else
-        popupWindows[id].windows['requestAccount'] = modalWindow;
+        dappOpenedWindows[id].windows['requestAccount'] = modalWindow;
 
     modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
+    var windowId = modalWindow.webContents.getId();
+    console.log('windowId', windowId);
     modalWindow.webContents.on('did-finish-load', function() {
         modalWindow.show();
     });
     modalWindow.on('closed', function() {
-        delete popupWindows[id].windows['requestAccount'];
+        delete dappOpenedWindows[id].windows['requestAccount'];
+        global.popupWindows = _.without(global.popupWindows, windowId);
     });
+
+    // add to popupWindows
+    global.popupWindows.push(windowId);
 
 });
 
@@ -177,8 +192,8 @@ ipc.on('mistAPI_requestAccount', function(e){
 // It usually happens when a user has closed all of application's windows and then
 // click on the application's dock icon.
 // app.on('activate-with-no-open-windows', function () {
-//     if (mainWindow) {
-//         mainWindow.show();
+//     if (global.mainWindow) {
+//         global.mainWindow.show();
 //     }
 // });
 
@@ -207,7 +222,7 @@ app.on('ready', function() {
 
     // MIST
     if(global.mode === 'mist') {
-        mainWindow = new BrowserWindow({
+        global.mainWindow = new BrowserWindow({
             show: false,
             width: 1024 + 208,
             height: 700,
@@ -224,13 +239,13 @@ app.on('ready', function() {
             }
         });
 
-        syncMinimongo(Tabs, mainWindow.webContents);
+        syncMinimongo(Tabs, global.mainWindow.webContents);
 
 
     // WALLET
     } else {
 
-        mainWindow = new BrowserWindow({
+        global.mainWindow = new BrowserWindow({
             show: false,
             width: 1024,
             height: 680,
@@ -369,7 +384,7 @@ app.on('ready', function() {
             checkNodeSync(socket, appStartWindow, function(e){
 
                 clearSocket(socket, appStartWindow, ipcPath);
-                startMainWindow(mainWindow, appStartWindow);
+                startMainWindow(appStartWindow);
             });
         });
     });
@@ -400,13 +415,13 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-var startMainWindow = function(mainWindow, appStartWindow){
+var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
-    mainWindow.loadUrl(interfaceAppUrl);
+    global.mainWindow.loadUrl(interfaceAppUrl);
 
-    mainWindow.webContents.on('did-finish-load', function() {
-        mainWindow.show();
+    global.mainWindow.webContents.on('did-finish-load', function() {
+        global.mainWindow.show();
 
         if(appStartWindow)
             appStartWindow.close();
@@ -414,11 +429,11 @@ var startMainWindow = function(mainWindow, appStartWindow){
     });
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function() {
+    global.mainWindow.on('closed', function() {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
-        mainWindow = null;
+        global.mainWindow = null;
     });
 
 
@@ -429,7 +444,7 @@ var startMainWindow = function(mainWindow, appStartWindow){
     // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
         var webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
-        menuItems(mainWindow, webviews || []);
+        menuItems(webviews || []);
     });
 
     // instantiate the application menu
@@ -439,5 +454,5 @@ var startMainWindow = function(mainWindow, appStartWindow){
     // });
 
     // initialize the IPC provider on the main window
-    ipcProviderBackend(mainWindow);
+    ipcProviderBackend();
 };

@@ -14,7 +14,7 @@ make sockets globally available
 global.sockets = {};
 
 
-module.exports = function(mainWindow){
+module.exports = function(){
     const _ = require('underscore');
     const ipc = require('ipc');
     const net = require('net');
@@ -227,8 +227,11 @@ module.exports = function(mainWindow){
         if(!_.isObject(payload))
             return false;
 
-        if(this.id === mainWindow.webContents.getId())
+        // main window or popupwindows are admin
+        if(this.id === global.mainWindow.webContents.getId() ||
+           _.contains(global.popupWindows, this.id)) {
             return payload;
+        }
 
         if(_.isArray(payload)) {
             return _.map(payload, function(load){

@@ -26,6 +26,7 @@ ethereum:tools@0.2.9
 ethereum:web3@0.12.2
 fastclick@1.0.3
 frozeman:animation-helper@0.2.6
+frozeman:global-notifications@0.1.4
 frozeman:persistent-minimongo@0.1.5
 frozeman:persistent-minimongo2@0.2.3
 frozeman:reactive-timer@0.1.7

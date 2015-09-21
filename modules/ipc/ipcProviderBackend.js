@@ -227,9 +227,10 @@ module.exports = function(){
         if(!_.isObject(payload))
             return false;
 
+
         // main window or popupwindows are admin
         if(this.id === global.mainWindow.webContents.getId() ||
-           _.contains(global.popupWindows, this.id)) {
+           (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
             return payload;
         }
 

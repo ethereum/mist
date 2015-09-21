@@ -7,9 +7,9 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'wallet';
+global.mode = 'mist';
 global.mainWindow = null;
-global.popupWindows = [];
+global.windows = {};
 
 global.path = {
     HOME: app.getPath('home'),
@@ -30,10 +30,10 @@ var interfaceAppUrl, interfacePopupsUrl;
 if(global.mode === 'wallet') {
     interfaceAppUrl = (global.production)
         ? 'file://' + __dirname + '/interface/wallet/index.html'
-        : 'http://localhost:3000';
+        : 'http://localhost:3050';
     interfacePopupsUrl = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
-        : 'http://localhost:3050';
+        : 'http://localhost:3000';
 
 // MIST
 } else {
@@ -112,31 +112,43 @@ app.on('before-quit', function(event){
 });
 
 
-var dappOpenedWindows = {};
+
+/*
+
+// windows including webviews
+windows = {
+    23: {
+        type: 'requestWindow',
+        window: obj,
+        owner: 12
+    },
+    12: {
+        type: 'webview'
+        window: obj
+        owner: null
+    }
+}
+
+*/
 
 // UI ACTIONS
 ipc.on('uiAction_closeApp', function() {
     app.quit();
 });
-ipc.on('uiAction_closePopupWindow', function(e, windowName) {
+ipc.on('uiAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId();
-    var winKey = '';
-    var dappOpenened = _.find(dappOpenedWindows, function(dappOpened) {
-        return _.find(dappOpened.windows, function(win, key){
-            if (win.webContents.getId() === windowId) {
-                winKey = key;
-                return true;
-            } else
-                return false;
-        });
-    });
 
+    if(global.windows[windowId]) {
+        global.windows[windowId].window.close();
+        delete global.windows[windowId];
+    }
+});
 
-    if(!dappOpenened)
-        return
-    else {
-        dappOpenened.windows[winKey].close();
-        delete dappOpenened.windows[winKey];
+ipc.on('uiAction_sendToOwner', function(e, error, value) {
+    var windowId = e.sender.getId();
+
+    if(global.windows[windowId]) {
+        global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
     }
 });
 
@@ -154,36 +166,35 @@ ipc.on('mistAPI_requestAccount', function(e){
         'node-integration': false,
         'web-preferences': {
             'overlay-scrollbars': true,
-            'text-areas-are-resizable': false
+            'text-areas-are-resizable': false,
+            'web-security': false
         }
     });
 
-    var id = e.sender.getId();
+    var ownerId = e.sender.getId();
 
-    if(!dappOpenedWindows[id])
-        dappOpenedWindows[id] = {
-            windows: {}
-        };
-
-    if(dappOpenedWindows[id].windows['requestAccount'])
+    if(_.find(global.windows, function(win){ return (win.type === 'requestAccount' && win.owner.getId() === ownerId); }))
         return;
-    else
-        dappOpenedWindows[id].windows['requestAccount'] = modalWindow;
 
+    // load URL
     modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
+
+    // get window if
     var windowId = modalWindow.webContents.getId();
-    console.log('windowId', windowId);
+
     modalWindow.webContents.on('did-finish-load', function() {
         modalWindow.show();
     });
     modalWindow.on('closed', function() {
-        delete dappOpenedWindows[id].windows['requestAccount'];
-        global.popupWindows = _.without(global.popupWindows, windowId);
+        delete global.windows[windowId];
     });
 
-    // add to popupWindows
-    global.popupWindows.push(windowId);
-
+    // add to windows
+    global.windows[windowId] = {
+        type: 'requestAccount',
+        window: modalWindow,
+        owner: e.sender
+    };
 });
 
 

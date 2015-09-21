@@ -22,6 +22,15 @@ ipc.on('mistAPI_callMenuFunction', function(id) {
         mist.menu.entries[id].callback();
 });
 
+ipc.on('windowMessage', function(type, error, value) {
+    if(mist.callbacks[type]) {
+        mist.callbacks[type].forEach(function(cb){
+            cb(error, value);
+        });
+        delete mist.callbacks[type];
+    }
+});
+
 
 // work up queue every 500ms
 setInterval(function(){
@@ -41,8 +50,15 @@ TODO: queue up all changes and send them all together, to prevent multiple updat
 @constructor
 */
 var mist = {
+    callbacks: {},
     platform: process.platform,
-    requestAccount:  function(){
+    requestAccount:  function(callback){
+        if(callback) {
+            if(!this.callbacks['requestAccount'])
+                this.callbacks['requestAccount'] = [];
+            this.callbacks['requestAccount'].push(callback);
+        }
+
         ipc.send('mistAPI_requestAccount');
     },
     menu: {

@@ -62,7 +62,7 @@ Start the wallet app for development, in a separate terminal window:
 
     // and in another terminal
 
-    $ cd my/path/meteor-dapp-wallet/app && meteor
+    $ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
 
 In the original window you can then start Mist with:
 

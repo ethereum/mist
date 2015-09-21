@@ -32,6 +32,7 @@ Template['views_tab'].onRendered(function(){
         });
     }
 
+
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
 

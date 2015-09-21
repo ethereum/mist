@@ -3,10 +3,6 @@
 @module Collections
 */
 
-// STOP here if not MAIN WINDOW
-if(location.hash)
-    return;
-
 
 // BROWSER RELATED
 
@@ -14,6 +10,11 @@ if(location.hash)
 Tabs = new Mongo.Collection('tabs', {connection: null});
 new PersistentMinimongo(Tabs, 'Mist');
 syncMinimongo(Tabs);
+
+
+// Contains the address book
+AddressBook = new Mongo.Collection('address-book', {connection: null});
+new PersistentMinimongo(AddressBook, 'Mist');
 
 
 // Contains the accounts

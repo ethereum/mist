@@ -1,4 +1,3 @@
-3stack:bignumber@2.0.7
 agnito:simptip@0.0.1
 aldeed:simple-schema@1.3.3
 aldeed:template-extension@3.4.3
@@ -14,16 +13,14 @@ callback-hook@1.0.3
 cfs:http-methods@0.0.30
 check@1.0.5
 coffeescript@1.0.6
-cosmos:browserify@0.4.0
 dburles:mongo-collection-instances@0.3.4
 ddp@1.1.0
 deps@1.0.7
 ejson@1.0.6
 ethereum:accounts@0.2.9
 ethereum:blocks@0.1.9
-ethereum:elements@0.4.6
-ethereum:tools@0.2.9
-ethereum:web3@0.12.2
+ethereum:elements@0.2.0
+ethereum:web3@0.13.0
 fastclick@1.0.3
 frozeman:animation-helper@0.2.6
 frozeman:global-notifications@0.1.4

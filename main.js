@@ -156,10 +156,16 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
     var modalWindow = new BrowserWindow({
+        type: 'desktop',
+        title: '',
+        'always-on-top': true,
+        resizable: false,
+        center: true,
+        // show: false,
         width: 400,
-        height: 220,
+        // height: 220,
+        height: 0,
         icon: icon,
-        show: false,
         'standard-window': false,
         preload: __dirname +'/modules/preloader/mistUI.js',
         'use-content-size': true,
@@ -183,7 +189,8 @@ ipc.on('mistAPI_requestAccount', function(e){
     var windowId = modalWindow.webContents.getId();
 
     modalWindow.webContents.on('did-finish-load', function() {
-        modalWindow.show();
+        // modalWindow.show();
+        modalWindow.setSize(400, 220);
     });
     modalWindow.on('closed', function() {
         delete global.windows[windowId];
@@ -234,6 +241,7 @@ app.on('ready', function() {
     // MIST
     if(global.mode === 'mist') {
         global.mainWindow = new BrowserWindow({
+            type: 'desktop',
             show: false,
             width: 1024 + 208,
             height: 700,
@@ -257,6 +265,7 @@ app.on('ready', function() {
     } else {
 
         global.mainWindow = new BrowserWindow({
+            type: 'desktop',
             show: false,
             width: 1024,
             height: 680,
@@ -278,6 +287,7 @@ app.on('ready', function() {
 
 
     var appStartWindow = new BrowserWindow({
+            type: 'splash',
             width: 400,
             height: 200,
             icon: icon,

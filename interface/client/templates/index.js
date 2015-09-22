@@ -26,7 +26,7 @@ Template.body.helpers({
             return 'popupWindows_splashScreen';
         }
         if(location.hash === '#requestAccountModal') {
-            $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title'));
+            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_requestAccount';
         }
     }

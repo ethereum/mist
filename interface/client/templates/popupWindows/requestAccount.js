@@ -45,12 +45,14 @@ Template['popupWindows_requestAccount'].events({
 
         // check passwords
         } else if(pw === pwOld) {
+            TemplateVar.set('creating', true);
             web3.personal.newAccount(pw, function(e, res){
                 if(!e)
                     ipc.send('uiAction_sendToOwner', null, res);
                 else
                     ipc.send('uiAction_sendToOwner', e);
 
+                TemplateVar.set(template, 'creating', false);
                 ipc.send('uiAction_closePopupWindow');
             });
         

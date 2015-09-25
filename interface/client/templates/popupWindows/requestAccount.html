@@ -2,12 +2,17 @@
     <div class="popup-windows">
         <form action="#">
             <h1>{{i18n "mist.popupWindows.requestAccount.title"}}</h1>
-            <input type="password" placeholder="{{#unless TemplateVar.get 'password'}}{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}{{else}}{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}{{/unless}}">
+            
+            {{#if TemplateVar.get "creating"}}
+                <h2>{{i18n "mist.popupWindows.requestAccount.creating"}}</h2>
+            {{else}}
+                <input type="password" placeholder="{{#unless TemplateVar.get 'password'}}{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}{{else}}{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}{{/unless}}">
 
-            <div class="dapp-modal-buttons">
-                <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
-                <button class="ok dapp-primary-button" type="submit">{{i18n "buttons.ok"}}</button>
-            </div>
+                <div class="dapp-modal-buttons">
+                    <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
+                    <button class="ok dapp-primary-button" type="submit">{{i18n "buttons.ok"}}</button>
+                </div>
+            {{/if}}
         </form>
     </div>
 </template>

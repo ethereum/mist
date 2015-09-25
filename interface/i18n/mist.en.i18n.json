@@ -67,6 +67,7 @@
                 "title": "Create account",
                 "enterPassword": "Enter password",
                 "repeatPassword": "Repeat password",
+                "creating": "Create account...",
                 "errors": {
                     "passwordMismatch": "Your passwords don't match."
                 }

@@ -157,7 +157,6 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
     var modalWindow = new BrowserWindow({
-        type: 'desktop',
         title: '',
         'always-on-top': true,
         resizable: false,
@@ -242,7 +241,6 @@ app.on('ready', function() {
     // MIST
     if(global.mode === 'mist') {
         global.mainWindow = new BrowserWindow({
-            type: 'desktop',
             show: false,
             width: 1024 + 208,
             height: 700,
@@ -266,7 +264,6 @@ app.on('ready', function() {
     } else {
 
         global.mainWindow = new BrowserWindow({
-            type: 'desktop',
             show: false,
             width: 1024,
             height: 680,
@@ -440,6 +437,7 @@ Start the main window and all its processes
 var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
+    console.log('Loading Interface at '+ interfaceAppUrl);
     global.mainWindow.loadUrl(interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {

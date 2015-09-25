@@ -31,6 +31,17 @@ window.ipc = ipc;
 // ipc.send('setLanguage', navigator.language.substr(0,2));
 
 
+// A message will be send to a webview/window
+ipc.on('mistUI_windowMessage', function(type, id, error, value) {
+
+    if(type === 'requestAccount' && !error) {
+        Tabs.update({webviewId: id}, {$addToSet: {
+            'permissions.accounts': value
+        }})
+    }
+});
+
+
 // Wait for webview toggle
 ipc.on('toggleWebviewDevTool', function(id){
     var webview = Helpers.getWebview(id);

@@ -9,7 +9,9 @@
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
 new PersistentMinimongo(Tabs, 'Mist');
-syncMinimongo(Tabs);
+
+if(typeof syncMinimongo !== 'undefined')
+    syncMinimongo(Tabs);
 
 
 // Contains the address book

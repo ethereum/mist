@@ -7,7 +7,7 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 global.mainWindow = null;
 global.windows = {};
 
@@ -149,6 +149,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
     if(global.windows[windowId]) {
         global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
+        mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
     }
 });
 
@@ -167,7 +168,7 @@ ipc.on('mistAPI_requestAccount', function(e){
         height: 0,
         icon: icon,
         'standard-window': false,
-        preload: __dirname +'/modules/preloader/mistUI.js',
+        preload: __dirname +'/modules/preloader/popupWindows.js',
         'use-content-size': true,
         'node-integration': false,
         'web-preferences': {

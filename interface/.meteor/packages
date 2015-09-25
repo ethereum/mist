@@ -4,7 +4,6 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-platform
 less
 tap:i18n
 tap:i18n-bundler
@@ -26,3 +25,18 @@ ethereum:web3
 ethereum:elements
 ethereum:accounts
 ethereum:blocks
+ethereum:dapp-styles
+standard-minifiers
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+jquery
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check

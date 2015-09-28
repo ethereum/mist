@@ -20,10 +20,12 @@ module.exports = function(){
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');
+    const createPopupWindow = require('../createPopupWindow.js');
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
-        nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistent", "params": [],"id": "__id__"},
+        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Couldn't unlock account"}, "id": "__id__"},
+        nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
 
@@ -147,6 +149,87 @@ module.exports = function(){
     };
 
     /**
+    Creates the socket and sets up the listeners.
+
+    @method setupSocket
+    */
+    GethConnection.prototype.setupSocket = function() {
+        var _this = this;
+        
+
+        this.ipcSocket.on("connect", function(){
+            _this.sender.send('ipcProvider-setWritable', true);
+        });
+
+        // wait for data on the socket
+        this.ipcSocket.on("data", function(data){
+            dechunker(data, function(error, result){
+
+                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
+
+                if(error) {
+                    console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                    _this.timeout();
+                    return;
+                }
+
+                // FILTER RESPONSES
+                var event = _this.getResponseEvent(result);
+
+                if(!event)
+                    return;
+
+                result = _this.filterRequestResponse(result, event);
+
+                // SEND SYNC back
+                if(event.sync) {
+                    event.returnValue = JSON.stringify(result);
+                    delete _this.syncEvents[event.eventId];
+
+                // SEND async back
+                } else {
+                    event.sender.send('ipcProvider-data', JSON.stringify(result));
+                    delete _this.asyncEvents[event.eventId];
+                }
+            });
+        });
+
+
+        this.ipcSocket.on("error", function(data){
+            try {
+                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
+
+                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
+
+                _this.sender.send('ipcProvider-error', data);
+
+                _this.timeout();
+            } catch(e) {
+                _this.destroy();
+            }
+        });
+
+        // this.ipcSocket.on('drain', function(data){
+        //     console.log('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
+        // });
+
+        this.ipcSocket.on('end', function(){
+            try {
+                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED');
+
+                var id = _this.sender.getId(); // will throw an error, if webview is already closed
+
+                _this.sender.send('ipcProvider-end');
+
+                _this.timeout();
+            } catch(e) {
+                _this.destroy();
+            }
+        });
+
+    };
+
+    /**
     Filter requests and responses.
 
     @method getResponseEvent
@@ -249,86 +332,54 @@ module.exports = function(){
 
 
     /**
-    Creates the socket and sets up the listeners.
+    Checks whether the payload is a send transaction and if asks for password or confirmation
 
-    @method setupSocket
+    @method checkForSendTransaction
+    @param {Object} filteredPayload
+    @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
     */
-    GethConnection.prototype.setupSocket = function() {
-        var _this = this;
-        
+    GethConnection.prototype.checkForSendTransaction = function(filteredPayload, callback){
 
-        this.ipcSocket.on("connect", function(){
-            _this.sender.send('ipcProvider-setWritable', true);
-        });
+        // batch request can't unlock for now (they might be deprecated soon) 
+        if(_.isArray(filteredPayload)) {
+            return callback(null, filteredPayload);
+        }
 
-        // wait for data on the socket
-        this.ipcSocket.on("data", function(data){
-            dechunker(data, function(error, result){
 
-                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
+        if(filteredPayload.method === 'eth_sendTransaction') {
 
-                if(error) {
-                    console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
-                    _this.timeout();
-                    return;
-                }
+            var height = filteredPayload.params[0].data ? 700 : 565;
 
-                // FILTER RESPONSES
-                var event = _this.getResponseEvent(result);
+            var modalWindow = createPopupWindow('sendTransactionConfirmation', 525, height, filteredPayload.params[0]);
+            modalWindow.on('closed', function() {
+                callback('Couln\'t be unlocked');
+            });
 
-                if(!event)
-                    return;
-
-                result = _this.filterRequestResponse(result, event);
-
-                // SEND SYNC back
-                if(event.sync) {
-                    event.returnValue = JSON.stringify(result);
-                    delete _this.syncEvents[event.eventId];
-
-                // SEND async back
-                } else {
-                    event.sender.send('ipcProvider-data', JSON.stringify(result));
-                    delete _this.asyncEvents[event.eventId];
+            ipc.once('uiAction_unlockedAccount', function(ev, err, result){
+                if(ev.sender.getId() === modalWindow.webContents.getId()) {
+                    if(err || !result) {
+                        console.log('Confirmation error:', err);
+                        callback(err);
+                    } else {
+                        // set the changed provided gas
+                        filteredPayload.params[0].gas = result;
+                        console.log('Confirmed transaction:', filteredPayload.params[0]);
+                        callback(null, filteredPayload);
+                    }
                 }
             });
-        });
 
-
-        this.ipcSocket.on("error", function(data){
-            try {
-                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
-
-                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
-
-                _this.sender.send('ipcProvider-error', data);
-
-                _this.timeout();
-            } catch(e) {
-                _this.destroy();
-            }
-        });
-
-        // this.ipcSocket.on('drain', function(data){
-        //     console.log('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
-        // });
-
-        this.ipcSocket.on('end', function(){
-            try {
-                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED');
-
-                var id = _this.sender.getId(); // will throw an error, if webview is already closed
-
-                _this.sender.send('ipcProvider-end');
-
-                _this.timeout();
-            } catch(e) {
-                _this.destroy();
-            }
-        });
+        } else {
+            return callback(null, filteredPayload);
+        }
 
     };
 
+    /**
+    Sends a timeout error for all still waiting responses
+
+    @method timeout
+    */
     GethConnection.prototype.timeout = function() {
         var _this = this;
         
@@ -414,33 +465,47 @@ module.exports = function(){
             filteredPayload = socket.filterRequestResponse(jsonPayload);
 
 
-        // SEND REQUEST
-        if(!_.isEmpty(filteredPayload)) {
-            var id = filteredPayload.id || filteredPayload[0].id;
-            
-            // console.log('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (filteredPayload.method || filteredPayload[0].method) + ' Params: '+ (filteredPayload.params || filteredPayload[0].params));
-
-
-            // add the payload to the event, so we can time it out if necessary
-            event.payload = filteredPayload;
-            event.eventId = id;
-            event.sync = !!sync;
-
-            if(sync)
-                socket.syncEvents[id] = event;
-            else
-                socket.asyncEvents[id] = event;
-
-            socket.ipcSocket.write(JSON.stringify(filteredPayload));
-        
-        // ERROR
-        } else {
+        // return error, if permission not passed
+        if(_.isEmpty(filteredPayload)) {
 
             if(sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
             else
                 event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorMethod)));
+
+            return;
         }
+
+
+        socket.checkForSendTransaction(filteredPayload, function(e, result){
+            if(!e && !_.isEmpty(result)) {
+
+                // SEND REQUEST
+                var id = result.id || result[0].id;
+                
+                // console.log('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (result.method || result[0].method) + ' Params: '+ (result.params || result[0].params));
+
+                // add the payload to the event, so we can time it out if necessary
+                event.payload = result;
+                event.eventId = id;
+                event.sync = !!sync;
+
+                if(sync)
+                    socket.syncEvents[id] = event;
+                else
+                    socket.asyncEvents[id] = event;
+
+                socket.ipcSocket.write(JSON.stringify(result));
+         
+
+            // SEND couldn't unlock error
+            } else {
+                if(sync)
+                    event.returnValue = JSON.stringify(returnError(jsonPayload, errorUnlock));
+                else
+                    event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorUnlock)));
+            }
+        });
     }
 
     ipc.on('ipcProvider-write', sendRequest);

@@ -1,3 +1,7 @@
+/**
+@module syncMinimongo
+*/
+
 var ipc = require('ipc');
 
 

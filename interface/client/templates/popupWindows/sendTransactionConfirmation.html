@@ -1,0 +1,58 @@
+<template name="popupWindows_sendTransactionConfirmation">
+    <div class="popup-windows tx-info">
+        <form action="#">
+            <h1>{{i18n "mist.popupWindows.sendTransactionConfirmation.title"}}</h1>
+            
+            {{#with $.Session.get "data"}}
+                <h3>
+                    {{dapp_formatBalance value "0,0.00[000000] UNIT" "ether"}}
+                </h3>
+                <p>
+                    {{> dapp_identicon identity=from class="dapp-small"}} {{from}}
+                </p>
+                <i class="icon-arrow-down"></i>
+                <p>
+                    {{#if to}}
+                        {{> dapp_identicon identity=to class="dapp-small"}} {{to}}
+                    {{else}}
+                        <i class="icon-docs"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.createContract"}}
+                    {{/if}}
+                </p>
+
+                <hr>
+
+                <p class="tx-info">
+                    <small>+ {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}}</small> {{estimatedFee}}
+                    <br>
+                    <small class="gas-price">
+                        {{i18n "mist.popupWindows.sendTransactionConfirmation.gasPrice"}} {{dapp_formatBalance gasPrice "0,0.0[000000000000000000] unit" "ether"}}
+                        <br>
+                        {{i18n "mist.popupWindows.sendTransactionConfirmation.providedGas"}} <input class="provided-gas dapp-small" value="{{dapp_formatNumber gas '0'}}">
+                    </small>
+                </p>
+
+                {{#if data}}
+                    <hr>
+
+                    <p>
+                        <small>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}</small>
+                        <pre>{{data}}</pre>
+                    </p>
+                {{/if}}
+            {{/with}}
+
+            <hr>
+
+            {{#if TemplateVar.get "unlocking"}}
+                <h2>{{i18n "mist.popupWindows.sendTransactionConfirmation.unlocking"}}</h2>
+            {{else}}
+                <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
+
+                <div class="dapp-modal-buttons">
+                    <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
+                    <button class="ok dapp-primary-button" type="submit">{{i18n "buttons.ok"}}</button>
+                </div>
+            {{/if}}
+        </form>
+    </div>
+</template>

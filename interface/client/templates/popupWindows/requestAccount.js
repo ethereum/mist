@@ -21,9 +21,9 @@ Template['popupWindows_requestAccount'].helpers({
 
     @method iconPath
     */
-    'iconPath': function(){
-        return 'file://'+ dirname +'icons/'+ mode +'/icon2x.png';
-    }
+    // 'iconPath': function(){
+    //     return 'file://'+ dirname +'icons/'+ mode +'/icon2x.png';
+    // }
 });
 
 Template['popupWindows_requestAccount'].events({

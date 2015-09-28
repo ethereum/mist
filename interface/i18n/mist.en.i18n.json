@@ -71,6 +71,19 @@
                 "errors": {
                     "passwordMismatch": "Your passwords don't match."
                 }
+            },
+            "sendTransactionConfirmation": {
+                "title": "Confirm transaction",
+                "enterPassword": "Enter password to unlock account",
+                "unlocking": "Unlocking...",
+                "createContract": "Create contract",
+                "estimatedFee": "Estimated fee",
+                "gasPrice": "Gas price",
+                "providedGas": "Provided gas",
+                "data": "Data",
+                "errors": {
+                    "wrongPassword": "Wrong password"
+                }
             }
         }
     }

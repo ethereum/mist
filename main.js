@@ -8,8 +8,11 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 // GLOBAL Variables
 global.production = false;
 global.mode = 'wallet';
+
 global.mainWindow = null;
 global.windows = {};
+
+global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.path = {
     HOME: app.getPath('home'),
@@ -24,20 +27,21 @@ global.Tabs = Minimongo('tabs');
 
 
 // INTERFACE PATHS
-var interfaceAppUrl, interfacePopupsUrl;
+global.interfaceAppUrl;
+global.interfacePopupsUrl;
 
 // WALLET
 if(global.mode === 'wallet') {
-    interfaceAppUrl = (global.production)
+    global.interfaceAppUrl = (global.production)
         ? 'file://' + __dirname + '/interface/wallet/index.html'
         : 'http://localhost:3050';
-    interfacePopupsUrl = (global.production)
+    global.interfacePopupsUrl = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
 // MIST
 } else {
-    interfaceAppUrl = interfacePopupsUrl = (global.production)
+    global.interfaceAppUrl = global.interfacePopupsUrl = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 }
@@ -48,8 +52,8 @@ const BrowserWindow = require('browser-window');  // Module to create native bro
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
+const createPopupWindow = require('./modules/createPopupWindow.js');
 
-var icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');
@@ -156,52 +160,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    var modalWindow = new BrowserWindow({
-        title: '',
-        'always-on-top': true,
-        resizable: false,
-        center: true,
-        // show: false,
-        width: 400,
-        // height: 220,
-        height: 0,
-        icon: icon,
-        'standard-window': false,
-        preload: __dirname +'/modules/preloader/popupWindows.js',
-        'use-content-size': true,
-        'node-integration': false,
-        'web-preferences': {
-            'overlay-scrollbars': true,
-            'text-areas-are-resizable': false,
-            'web-security': false
-        }
-    });
-
-    var ownerId = e.sender.getId();
-
-    if(_.find(global.windows, function(win){ return (win.type === 'requestAccount' && win.owner.getId() === ownerId); }))
-        return;
-
-    // load URL
-    modalWindow.loadUrl(interfacePopupsUrl +'#requestAccountModal');
-
-    // get window if
-    var windowId = modalWindow.webContents.getId();
-
-    modalWindow.webContents.on('did-finish-load', function() {
-        // modalWindow.show();
-        modalWindow.setSize(400, 220);
-    });
-    modalWindow.on('closed', function() {
-        delete global.windows[windowId];
-    });
-
-    // add to windows
-    global.windows[windowId] = {
-        type: 'requestAccount',
-        window: modalWindow,
-        owner: e.sender
-    };
+    createPopupWindow('requestAccount', 400, 200, null, e);
 });
 
 
@@ -244,7 +203,7 @@ app.on('ready', function() {
             show: false,
             width: 1024 + 208,
             height: 700,
-            icon: icon,
+            icon: global.icon,
             'standard-window': false,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
@@ -267,7 +226,7 @@ app.on('ready', function() {
             show: false,
             width: 1024,
             height: 680,
-            icon: icon,
+            icon: global.icon,
             'standard-window': false,
             'dark-theme': true,
             preload: __dirname +'/modules/preloader/wallet.js',
@@ -288,7 +247,7 @@ app.on('ready', function() {
             type: 'splash',
             width: 400,
             height: 200,
-            icon: icon,
+            icon: global.icon,
             resizable: false,
             'node-integration': false,
             preload: __dirname +'/modules/preloader/splashScreen.js',
@@ -299,7 +258,7 @@ app.on('ready', function() {
                 'web-security': false // necessary to make routing work on file:// protocol
             }
         });
-    appStartWindow.loadUrl(interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
+    appStartWindow.loadUrl(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
     // appStartWindow.openDevTools();
 
 
@@ -437,8 +396,8 @@ Start the main window and all its processes
 var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
-    console.log('Loading Interface at '+ interfaceAppUrl);
-    global.mainWindow.loadUrl(interfaceAppUrl);
+    console.log('Loading Interface at '+ global.interfaceAppUrl);
+    global.mainWindow.loadUrl(global.interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();

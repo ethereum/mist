@@ -25,9 +25,13 @@ Template.body.helpers({
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }
-        if(location.hash === '#requestAccountModal') {
+        if(location.hash === '#requestAccount') {
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_requestAccount';
+        }
+        if(location.hash === '#sendTransactionConfirmation') {
+            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
+            return 'popupWindows_sendTransactionConfirmation';
         }
     }
 });

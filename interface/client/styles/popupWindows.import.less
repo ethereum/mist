@@ -1,0 +1,29 @@
+.popup-windows {
+    text-align: center;
+    
+    h1 {
+        margin-bottom: @defaultMargin;
+    }
+
+    &.tx-info {
+        .dapp-identicon {
+            // position: relative;
+            // top: 10px;
+            // left: -5px;
+            position: absolute;
+            margin-top: -6px;
+            margin-left: -40px;
+        }
+
+        input.provided-gas {
+            width: 75px;
+            text-align: center;
+        }
+
+        pre {
+            margin: 0 @defaultMargin * 2;
+            overflow: auto;
+            height: 50px;
+        }
+    }
+}

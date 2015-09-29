@@ -34,7 +34,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
             // check if to is a contract
             web3.eth.getCode(data.to, function(e, res){
-                if(!e && res.length > 2) {
+                if(!e && res.length > 2 && data.data.length > 2) {
                     TemplateVar.set(template, 'isContract', true);
                 }
             });

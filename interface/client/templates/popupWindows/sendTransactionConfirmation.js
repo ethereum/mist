@@ -93,7 +93,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             return;
 
         TemplateVar.set('unlocking', true);
-        web3.personal.unlockAccount(Session.get('data').from, pw, 2, function(e, res){
+        web3.personal.unlockAccount(Session.get('data').from, pw || '', 2, function(e, res){
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 

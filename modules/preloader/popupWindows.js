@@ -21,6 +21,6 @@ ipc.on('data', function(data) {
 window.dirname = __dirname;
 window.web3 = web3;
 window.ipc = ipc;
-
+window.platform = process.platform;
 
 

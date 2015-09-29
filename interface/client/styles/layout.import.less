@@ -1,14 +1,55 @@
 
+// Platform specifics
+// Mac OSX
+@colorOSBackgroundFocus: #D2D2D2;
+@colorOSBackgroundBlur: #F6F6F6;
+
+@colorWinBackgroundFocus: #F0F0F0;
+@colorWinBackgroundBlur: #F0F0F0;
+
+@colorLinuxBackgroundFocus: #403F3A;
+@colorLinuxBackgroundBlur: #3C3B36;
+
+
+// WINDOWS
+.win32 {
+
+}
+// LINUX
+.linux {
+    body {
+        background: @colorLinuxBackgroundFocus;
+
+        &.app-blur {
+            background: @colorLinuxBackgroundBlur;
+        }
+    }
+
+    aside.sidebar ul li:not(.selected) button.main {
+        color: @colorWhite;
+    }
+}
+// MAC
+.darwin {
+    body {
+        background: @colorOSBackgroundFocus;
+
+        &.app-blur {
+            background: @colorOSBackgroundBlur;
+        }
+    }
+}
+
 
 body, html {
     height: 100%;
     padding: 0;
     margin: 0;
     overflow: hidden;
-    .background-image(linear-gradient(to bottom, @colorOSBackgroundFocus 0%, lighten(@colorOSBackgroundFocus, 5%) 100%));
+    background: @colorWinBackgroundFocus;
 
-    &.blur {
-        .background-image(linear-gradient(to bottom, @colorOSBackgroundBlur 0%,lighten(@colorOSBackgroundBlur, 5%) 100%));
+    &.app-blur {
+        background: @colorWinBackgroundBlur;
     }
 
     -webkit-touch-callout: none;

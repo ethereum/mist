@@ -14,7 +14,7 @@ The sendTransaction confirmation popup window template
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
-    this.autorun(function(c){
+    this.autorun(function(){
 
         var data = Session.get('data');
 
@@ -33,11 +33,13 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             }
 
             // check if to is a contract
-            web3.eth.getCode(data.to, function(e, res){
-                if(!e && res.length > 2 && data.data.length > 2) {
-                    TemplateVar.set(template, 'isContract', true);
-                }
-            });
+            if(data.to) {
+                web3.eth.getCode(data.to, function(e, res){
+                    if(!e && res && res.length > 2 && data.data && data.data.length > 2) {
+                        TemplateVar.set(template, 'isContract', true);
+                    }
+                });
+            }
 
             // esitmate gas usage
             web3.eth.estimateGas(data, function(e, res){

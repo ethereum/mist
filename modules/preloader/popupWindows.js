@@ -14,7 +14,7 @@ web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 // receive data in the popupWindiw
 ipc.on('data', function(data) {
-    Session.setDefault('data', data);
+    Session.set('data', data);
 })
 
 // make variables globally accessable

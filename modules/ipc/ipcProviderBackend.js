@@ -348,9 +348,9 @@ module.exports = function(){
 
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var height = filteredPayload.params[0].data ? 730 : 565;
+            var height = filteredPayload.params[0].data ? 780 : 565;
 
-            var modalWindow = createPopupWindow('sendTransactionConfirmation', 525, height, filteredPayload.params[0]);
+            var modalWindow = createPopupWindow('sendTransactionConfirmation', 545, height, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
                 callback('Couln\'t be unlocked');
             });

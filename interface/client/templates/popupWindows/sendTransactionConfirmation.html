@@ -1,13 +1,12 @@
 <template name="popupWindows_sendTransactionConfirmation">
     <div class="popup-windows tx-info">
         <form action="#">
-            <h1>
-                {{#if TemplateVar.get "isContract"}}
-                    {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecution"}}
-                {{else}}
-                    {{i18n "mist.popupWindows.sendTransactionConfirmation.title"}}
-                {{/if}}
-            </h1>
+            {{#if TemplateVar.get "isContract"}}
+                <h1>{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecution"}}</h1>
+                <p class="info"><i class="icon-info"></i> {{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}}</p>
+            {{else}}
+                <h1>{{i18n "mist.popupWindows.sendTransactionConfirmation.title"}}</h1>
+            {{/if}}
             
             {{#with $.Session.get "data"}}
                 <p>

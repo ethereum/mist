@@ -77,6 +77,7 @@
                 "contractExecution": "Confirm contract execution",
                 "contract": "Contract",
                 "contractSigner": "Signee",
+                "contractExecutionInfo": "The action on the contract is encoded in the <em>data field</em>.<br>This can involve moving of value. Be careful when executing such a transaction!",
                 "enterPassword": "Enter password to unlock account",
                 "unlocking": "Unlocking...",
                 "createContract": "Create contract",

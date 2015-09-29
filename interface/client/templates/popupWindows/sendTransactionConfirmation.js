@@ -11,8 +11,10 @@ The sendTransaction confirmation popup window template
 @constructor
 */
 
-Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
-    this.autorun(function(){
+Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
+    var template = this;
+
+    this.autorun(function(c){
 
         var data = Session.get('data');
 
@@ -29,6 +31,20 @@ Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
                     }
                 });
             }
+
+            // check if to is a contract
+            web3.eth.getCode(data.to, function(e, res){
+                if(!e && res.length > 2) {
+                    TemplateVar.set(template, 'isContract', true);
+                }
+            });
+
+            // esitmate gas usage
+            web3.eth.estimateGas(data, function(e, res){
+                if(!e && res) {
+                    TemplateVar.set(template, 'estimatedGas', res);
+                }
+            });
         }
     });
 });
@@ -44,21 +60,13 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (estimatedFee)
     */
     'estimatedFee': function() {
-        var gas =  TemplateVar.get('gas');
+        var gas =  TemplateVar.get('estimatedGas');
         if(gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether');
     }
 });
 
 Template['popupWindows_sendTransactionConfirmation'].events({
-    /**
-    change the 
-
-    @event change input.provided-gas, input input.provided-gas
-    */
-    'change input.provided-gas, input input.provided-gas': function(e, template){
-        TemplateVar.set('gas', template.find('input.provided-gas').value);
-    },
     /**
     Cancel the transaction confirmation and close the popup
 
@@ -81,7 +89,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         console.log('Choosen Gas: ', gas);
 
-        if(!pw || !gas || !_.isFinite(gas))
+        if(!gas || !_.isFinite(gas))
             return;
 
         TemplateVar.set('unlocking', true);

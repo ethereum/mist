@@ -1,28 +1,46 @@
 <template name="popupWindows_sendTransactionConfirmation">
     <div class="popup-windows tx-info">
         <form action="#">
-            <h1>{{i18n "mist.popupWindows.sendTransactionConfirmation.title"}}</h1>
+            <h1>
+                {{#if TemplateVar.get "isContract"}}
+                    {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecution"}}
+                {{else}}
+                    {{i18n "mist.popupWindows.sendTransactionConfirmation.title"}}
+                {{/if}}
+            </h1>
             
             {{#with $.Session.get "data"}}
-                <h3>
-                    {{dapp_formatBalance value "0,0.00[000000] UNIT" "ether"}}
-                </h3>
                 <p>
-                    {{> dapp_identicon identity=from class="dapp-small"}} {{from}}
+                    {{#if TemplateVar.get "isContract"}}
+                        <i class="icon-key"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.contractSigner"}}<br>
+                        {{> dapp_identicon identity=from class="dapp-small"}} {{from}}
+                    {{else}}
+                        {{> dapp_identicon identity=from class="dapp-small"}} {{from}}
+                    {{/if}}
                 </p>
                 <i class="icon-arrow-down"></i>
                 <p>
-                    {{#if to}}
+                    {{#if TemplateVar.get "isContract"}}
+                        <i class="icon-docs"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.contract"}}<br>
                         {{> dapp_identicon identity=to class="dapp-small"}} {{to}}
                     {{else}}
-                        <i class="icon-docs"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.createContract"}}
+                        {{#if to}}
+                            {{> dapp_identicon identity=to class="dapp-small"}} {{to}}
+                        {{else}}
+                            <i class="icon-docs"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.createContract"}}
+                        {{/if}}
                     {{/if}}
                 </p>
 
                 <hr>
 
+                <h3>
+                    {{dapp_formatBalance value "0,0.00[000000] UNIT" "ether"}}
+                </h3>
+
+
                 <p class="tx-info">
-                    <small>+ {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}}</small> {{estimatedFee}}
+                    <small>+ {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}}</small> {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
                     <br>
                     <small class="gas-price">
                         {{i18n "mist.popupWindows.sendTransactionConfirmation.gasPrice"}} {{dapp_formatBalance gasPrice "0,0.0[000000000000000000] unit" "ether"}}

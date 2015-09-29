@@ -67,13 +67,16 @@
                 "title": "Create account",
                 "enterPassword": "Enter password",
                 "repeatPassword": "Repeat password",
-                "creating": "Create account...",
+                "creating": "Generating account...",
                 "errors": {
                     "passwordMismatch": "Your passwords don't match."
                 }
             },
             "sendTransactionConfirmation": {
                 "title": "Confirm transaction",
+                "contractExecution": "Confirm contract execution",
+                "contract": "Contract",
+                "contractSigner": "Signee",
                 "enterPassword": "Enter password to unlock account",
                 "unlocking": "Unlocking...",
                 "createContract": "Create contract",

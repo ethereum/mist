@@ -348,7 +348,7 @@ module.exports = function(){
 
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var height = filteredPayload.params[0].data ? 700 : 565;
+            var height = filteredPayload.params[0].data ? 730 : 565;
 
             var modalWindow = createPopupWindow('sendTransactionConfirmation', 525, height, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
@@ -356,7 +356,7 @@ module.exports = function(){
             });
 
             ipc.once('uiAction_unlockedAccount', function(ev, err, result){
-                if(ev.sender.getId() === modalWindow.webContents.getId()) {
+                if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
                     if(err || !result) {
                         console.log('Confirmation error:', err);
                         callback(err);

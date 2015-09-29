@@ -41,6 +41,7 @@ module.exports = function(windowType, width, height, data, e){
 
     modalWindow.webContents.on('did-finish-load', function() {
         modalWindow.setSize(width, height);
+        modalWindow.center();
 
         // send data, if available
         if(data)

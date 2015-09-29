@@ -401,6 +401,7 @@ var startMainWindow = function(appStartWindow){
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();
+        global.mainWindow.center();
 
         if(appStartWindow)
             appStartWindow.close();

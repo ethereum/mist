@@ -4,6 +4,12 @@ Template Controllers
 @module Templates
 */
 
+var setWindowSize = function(template){
+    Tracker.afterFlush(function(){
+        ipc.send('uiAction_setWindowSize', 580, template.$('.popup-windows').height() + 60);
+    });
+}
+
 /**
 The sendTransaction confirmation popup window template
 
@@ -19,6 +25,10 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         var data = Session.get('data');
 
         if(data) {
+
+            // set window size
+            setWindowSize(template);
+
             // set provided gas to templateVar
             TemplateVar.set('providedGas', data.gas || 0);
 
@@ -37,6 +47,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 web3.eth.getCode(data.to, function(e, res){
                     if(!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
+                        setWindowSize(template);
                     }
                 });
             }
@@ -69,10 +80,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
 Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
     this.$('input[type="password"]').focus();
-
-    setTimeout(function(){
-        ipc.send('uiAction_setWindowSize', 580, this.$('.popup-windows').height() + 60);
-    }, 500);
 });
 
 Template['popupWindows_sendTransactionConfirmation'].helpers({

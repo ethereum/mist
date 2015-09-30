@@ -47,13 +47,11 @@ if(global.mode === 'wallet') {
 }
 
 
-
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 const createPopupWindow = require('./modules/createPopupWindow.js');
-
 
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');
@@ -145,6 +143,13 @@ ipc.on('uiAction_closePopupWindow', function(e) {
     if(global.windows[windowId]) {
         global.windows[windowId].window.close();
         delete global.windows[windowId];
+    }
+});
+ipc.on('uiAction_setWindowSize', function(e, width, height) {
+    var windowId = e.sender.getId();
+
+    if(global.windows[windowId]) {
+        global.windows[windowId].window.setSize(width, height);
     }
 });
 

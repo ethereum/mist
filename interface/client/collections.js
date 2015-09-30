@@ -8,7 +8,7 @@
 
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
-new PersistentMinimongo(Tabs, 'Mist');
+pers = new PersistentMinimongo(Tabs, 'Mist');
 
 if(typeof syncMinimongo !== 'undefined')
     syncMinimongo(Tabs);

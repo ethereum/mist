@@ -334,11 +334,11 @@ module.exports = function(){
     /**
     Checks whether the payload is a send transaction and if asks for password or confirmation
 
-    @method checkForSendTransaction
+    @method checkRequests
     @param {Object} filteredPayload
     @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
     */
-    GethConnection.prototype.checkForSendTransaction = function(filteredPayload, callback){
+    GethConnection.prototype.checkRequests = function(filteredPayload, event, callback){
 
         // batch request can't unlock for now (they might be deprecated soon) 
         if(_.isArray(filteredPayload)) {
@@ -346,6 +346,7 @@ module.exports = function(){
         }
 
 
+        // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
 
             var height = filteredPayload.params[0].data ? 780 : 565;
@@ -359,6 +360,14 @@ module.exports = function(){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
                     if(err || !result) {
                         console.log('Confirmation error:', err);
+
+                        // SEND couldn't unlock error
+                        if(event.sync)
+                            event.returnValue = JSON.stringify(returnError(jsonPayload, errorUnlock));
+                        else
+                            event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorUnlock)));
+
+                        // return error, to stop sending the request
                         callback(err);
                     } else {
                         // set the changed provided gas
@@ -368,6 +377,23 @@ module.exports = function(){
                     }
                 }
             });
+
+        // COMPILE SOLIDITY
+        } else if(filteredPayload.method === 'eth_compileSolidity') {
+            var solc = require('solc');
+
+            var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
+            var response = {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
+            
+            if(event.sync)
+                event.returnValue = JSON.stringify(response);
+            else
+                event.sender.send('ipcProvider-data', JSON.stringify(response));
+
+            // return error, to stop sending the request
+            callback('Compiled in electron');
+
+            solc = null;
 
         } else {
             return callback(null, filteredPayload);
@@ -464,11 +490,13 @@ module.exports = function(){
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequestResponse(jsonPayload);
 
+        event.sync = !!sync;
+
 
         // return error, if permission not passed
         if(_.isEmpty(filteredPayload)) {
 
-            if(sync)
+            if(event.sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
             else
                 event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorMethod)));
@@ -477,7 +505,8 @@ module.exports = function(){
         }
 
 
-        socket.checkForSendTransaction(filteredPayload, function(e, result){
+
+        socket.checkRequests(filteredPayload, event, function(e, result){
             if(!e && !_.isEmpty(result)) {
 
                 // SEND REQUEST
@@ -488,22 +517,14 @@ module.exports = function(){
                 // add the payload to the event, so we can time it out if necessary
                 event.payload = result;
                 event.eventId = id;
-                event.sync = !!sync;
 
-                if(sync)
+                if(event.sync)
                     socket.syncEvents[id] = event;
                 else
                     socket.asyncEvents[id] = event;
 
                 socket.ipcSocket.write(JSON.stringify(result));
          
-
-            // SEND couldn't unlock error
-            } else {
-                if(sync)
-                    event.returnValue = JSON.stringify(returnError(jsonPayload, errorUnlock));
-                else
-                    event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorUnlock)));
             }
         });
     }

@@ -23,4 +23,3 @@ window.web3 = web3;
 window.ipc = ipc;
 window.platform = process.platform;
 
-

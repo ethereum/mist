@@ -166,7 +166,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow('requestAccount', 400, 200, null, e);
+    createPopupWindow('requestAccount', 400, 250, null, e);
 });
 
 

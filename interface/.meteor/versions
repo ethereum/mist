@@ -29,7 +29,7 @@ ecmascript-collections@0.1.6
 ejson@1.0.7
 ethereum:accounts@0.3.3
 ethereum:blocks@0.1.9
-ethereum:dapp-styles@0.2.2
+ethereum:dapp-styles@0.2.4
 ethereum:elements@0.5.2
 ethereum:tools@0.2.9
 ethereum:web3@0.13.0

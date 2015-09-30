@@ -7,7 +7,7 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -150,6 +150,7 @@ ipc.on('uiAction_setWindowSize', function(e, width, height) {
 
     if(global.windows[windowId]) {
         global.windows[windowId].window.setSize(width, height);
+        global.windows[windowId].window.center(); // ?
     }
 });
 

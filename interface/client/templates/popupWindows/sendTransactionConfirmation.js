@@ -20,7 +20,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
         if(data) {
             // set provided gas to templateVar
-            TemplateVar.set('gas', data.gas || 0);
+            TemplateVar.set('providedGas', data.gas || 0);
 
             // add gasPrice if not set
             if(!data.gasPrice) {
@@ -35,16 +35,32 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             // check if to is a contract
             if(data.to) {
                 web3.eth.getCode(data.to, function(e, res){
-                    if(!e && res && res.length > 2 && data.data && data.data.length > 2) {
-                        TemplateVar.set(template, 'isContract', true);
+                    if(!e && res && res.length > 2) {
+                        TemplateVar.set(template, 'toIsContract', true);
+                    }
+                });
+            }
+            if(data.from) {
+                web3.eth.getCode(data.from, function(e, res){
+                    if(!e && res && res.length > 2) {
+                        TemplateVar.set(template, 'fromIsContract', true);
                     }
                 });
             }
 
+
             // esitmate gas usage
             web3.eth.estimateGas(data, function(e, res){
                 if(!e && res) {
-                    TemplateVar.set(template, 'estimatedGas', res);
+                    Tracker.nonreactive(function(){
+
+                        TemplateVar.set(template, 'estimatedGas', res);
+
+                        // set the gas to the estimation, if not provided
+                        var gas = TemplateVar.get(template, 'providedGas');
+                        if(gas == 0)
+                            TemplateVar.set(template, 'providedGas', res + 10000);
+                    });
                 }
             });
         }
@@ -53,6 +69,10 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
 Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
     this.$('input[type="password"]').focus();
+
+    setTimeout(function(){
+        ipc.send('uiAction_setWindowSize', 580, this.$('.popup-windows').height() + 60);
+    }, 500);
 });
 
 Template['popupWindows_sendTransactionConfirmation'].helpers({
@@ -65,10 +85,64 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         var gas =  TemplateVar.get('estimatedGas');
         if(gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether');
+    },
+    /**
+    Calculates the provided gas amount in ether
+
+    @method (providedGas)
+    */
+    'providedGas': function() {
+        var gas =  TemplateVar.get('providedGas');
+        if(gas && this.gasPrice)
+            return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
+    },
+    /**
+    Shortens the address to 0xffff...ffff
+
+    @method (shortenAddress)
+    */
+    'shortenAddress': function(address){
+        if(_.isString(address)) {
+            return address.substr(0,6) +'...'+ address.substr(-4);
+        }
+    },
+    /**
+    Checks if its a contract execution and returns the execution function
+
+    @method (executionFunction)
+    */
+    'executionFunction': function(){
+        if(TemplateVar.get('toIsContract') && this.data && this.data.length > 8) {
+            return (this.data.substr(0,2) === '0x')
+                ? this.data.substr(0, 10)
+                : '0x'+ this.data.substr(0, 8);
+        }
+    },
+    /**
+    Formats the data so that all zeros are wrapped in span.zero
+
+    @method (formattedData)
+    */
+    'formattedData': function(){
+        return (TemplateVar.get('toIsContract'))
+            ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
+            : this.data;
     }
 });
 
 Template['popupWindows_sendTransactionConfirmation'].events({
+    /**
+    Gets the new provided gas in ether amount and calculates the resulting providedGas
+
+    @event change .provided-gas, input .provided-gas
+    */
+    'change .provided-gas, input .provided-gas': function(e, template){
+        var gasInEther =  template.find('.provided-gas').value;//template.$('.provided-gas').text();
+        var inWei = web3.toWei(new BigNumber(gasInEther, 10), 'ether').toNumber();
+        var data = Session.get('data');
+
+        TemplateVar.set('providedGas', Math.floor(inWei / +data.gasPrice));
+    },
     /**
     Cancel the transaction confirmation and close the popup
 
@@ -87,7 +161,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         e.preventDefault();
         
         var pw = template.find('input[type="password"]').value,
-            gas = web3.fromDecimal(TemplateVar.get('gas'));
+            gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
         console.log('Choosen Gas: ', gas);
 

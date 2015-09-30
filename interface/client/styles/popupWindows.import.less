@@ -1,45 +1,145 @@
 .popup-windows {
     text-align: center;
-    
-    h1 {
-        margin-bottom: @defaultMargin;
-    }
 
 
     &.tx-info {
 
-        h2 {
-            margin-top: @defaultMargin;
+        .transaction-parties {
+            display : flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            > div {
+                // flex: 1 1 auto;
+                color: @colorTextSecondary;
+            }
+
+            // addresses
+            > div:nth-child(odd) {
+                position: relative;
+                padding: 0 @defaultMargin*3;
+                font-weight: 400;
+            }
+            > div:nth-child(1) {
+                .overlap-icon {
+                    right: 32px;
+                }
+            }
+            > div:nth-child(3) {
+                .overlap-icon {
+                    left: 32px;
+                }
+            }
+            // amount
+            > div.amount {
+                position: relative;
+                margin-top: -30px;
+                height: 40px;
+                font-size: 1.5em;
+                color: darken(@colorTextSecondary, 8%);
+                border-bottom: 1px solid @colorTextSecondary;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    right: 0;
+                    border: 5px solid @colorTextSecondary;
+                    border-color: transparent @colorTextSecondary @colorTextSecondary transparent;
+                    .rotate(-45deg);
+                }
+
+                .unit {
+                    font-size: 0.6em;
+                    font-weight: 400;
+                }
+                .execute-function {
+                    display: block;
+                    position: absolute;
+                    bottom: -30px;
+                    left: 0;
+                    right: 0;
+                    font-size: 0.6em;
+                    text-align: center;
+                    font-weight: 600;
+                }
+            }
         }
 
+        table,
+        .data,
         .info {
-            color: @colorGrayDark;
-            background-color: fadeout(@colorGrayLight, 50%);
-            padding: @defaultMargin/2;
+            width: 420px;
+            margin: @defaultMargin*2 auto;
+        }
+        table {
+
+            td:nth-child(1) {
+                text-align: left;
+            }
+            td:nth-child(2) {
+                text-align: right;
+                font-weight: 400;
+            }
         }
 
-        .dapp-identicon {
-            // position: relative;
-            // top: 10px;
-            // left: -5px;
+        .overlap-icon {
             position: absolute;
-            margin-top: -6px;
-            margin-left: -40px;
+            top: 20px;
+            font-size: 20px;
+        }
+        .circle-icon {
+            display: inline-block;
+            background-color: @colorGrayLight;
+            .border-radius(50%);
+            font-size: 33px;
+            padding: @defaultMargin;
+
+            // + span {
+            //     display: inline-block;
+            // }
         }
 
         input.provided-gas {
-            width: 75px;
-            text-align: center;
+            display: inline;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            color: @colorLink;
+            background-color: transparent;
+            border: 0;
+            text-align: right;
+            font-size: 0.9em;
         }
 
         input[type="password"] {
-            margin-top: 0;
+            width: 360px;
         }
 
-        pre {
-            margin: 0 @defaultMargin * 2;
-            overflow: auto;
-            height: 50px;
+        .data,
+        .info {
+            text-align: left;
+            padding: 0 @defaultMargin/2;
         }
+        .data {
+            font-size: 0.9em;
+            
+            pre {
+                margin: 0 -@defaultMargin;
+                overflow: auto;
+                height: 90px;
+                background-color: @colorGrayLight;//lighten(@colorGray, 10%);
+                color: @colorTextPrimary;
+
+                span.zero {
+                    color: fadeout(@colorTextSecondary, 30%);
+                }
+                span.function {
+                    font-weight: 600;
+                }
+            }
+        }
+
     }
 }

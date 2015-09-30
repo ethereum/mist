@@ -73,18 +73,23 @@
                 }
             },
             "sendTransactionConfirmation": {
-                "title": "Confirm transaction",
-                "contractExecution": "Confirm contract execution",
-                "contract": "Contract",
-                "contractSigner": "Signee",
-                "contractExecutionInfo": "The action on the contract is encoded in the <em>data field</em>.<br>This can involve moving of value. Be careful when executing such a transaction!",
-                "enterPassword": "Enter password to unlock account",
-                "unlocking": "Unlocking...",
+                "title": {
+                    "sendTransaction": "Send transaction",
+                    "contractExecution": "Execute contract",
+                    "createContract": "Create contract"  
+                },
+                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
+                "contractCreationInfo": "You are about to create a contract from the provided data.",
+                "enterPassword": "Enter password to confirm the transaction",
+                "unlocking": "Confirming...",
                 "createContract": "Create contract",
-                "estimatedFee": "Estimated fee",
+                "estimatedFee": "Estimated fee consumption",
                 "gasPrice": "Gas price",
-                "providedGas": "Provided gas",
+                "providedGas": "Provided maximum fee",
                 "data": "Data",
+                "buttons": {
+                    "sendTransaction": "Send transaction"
+                },
                 "errors": {
                     "wrongPassword": "Wrong password"
                 }

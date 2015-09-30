@@ -336,6 +336,7 @@ module.exports = function(){
 
     @method checkRequests
     @param {Object} filteredPayload
+    @param {Object} event   the ipc sender event
     @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
     */
     GethConnection.prototype.checkRequests = function(filteredPayload, event, callback){
@@ -349,11 +350,9 @@ module.exports = function(){
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var height = filteredPayload.params[0].data ? 780 : 565;
-
-            var modalWindow = createPopupWindow('sendTransactionConfirmation', 545, height, filteredPayload.params[0]);
+            var modalWindow = createPopupWindow('sendTransactionConfirmation', 580, 550, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
-                callback('Couln\'t be unlocked');
+                callback(errorUnlock);
             });
 
             ipc.once('uiAction_unlockedAccount', function(ev, err, result){
@@ -361,17 +360,13 @@ module.exports = function(){
                     if(err || !result) {
                         console.log('Confirmation error:', err);
 
-                        // SEND couldn't unlock error
-                        if(event.sync)
-                            event.returnValue = JSON.stringify(returnError(jsonPayload, errorUnlock));
-                        else
-                            event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorUnlock)));
-
                         // return error, to stop sending the request
-                        callback(err);
+                        callback(errorUnlock);
+
                     } else {
                         // set the changed provided gas
                         filteredPayload.params[0].gas = result;
+
                         console.log('Confirmed transaction:', filteredPayload.params[0]);
                         callback(null, filteredPayload);
                     }
@@ -391,8 +386,7 @@ module.exports = function(){
                 event.sender.send('ipcProvider-data', JSON.stringify(response));
 
             // return error, to stop sending the request
-            callback('Compiled in electron');
-
+            callback(true);
             solc = null;
 
         } else {
@@ -525,6 +519,13 @@ module.exports = function(){
 
                 socket.ipcSocket.write(JSON.stringify(result));
          
+            // SEND error
+            } else if(e && e !== true){
+
+                if(event.sync)
+                    event.returnValue = JSON.stringify(returnError(jsonPayload, e));
+                else
+                    event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, e)));
             }
         });
     }

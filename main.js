@@ -166,7 +166,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow('requestAccount', 400, 250, null, e);
+    createPopupWindow.show('requestAccount', 400, 250, null, e);
 });
 
 
@@ -184,6 +184,9 @@ ipc.on('mistAPI_requestAccount', function(e){
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+
+    // init prepared popup window
+    createPopupWindow.initLoadingWindow();
 
     // instantiate custom protocols
     // require('./customProtocols.js');

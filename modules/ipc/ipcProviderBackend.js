@@ -22,6 +22,7 @@ module.exports = function(){
     const getIpcPath = require('./getIpcPath.js');
     const createPopupWindow = require('../createPopupWindow.js');
 
+
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
         errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Couldn't unlock account"}, "id": "__id__"},
@@ -350,7 +351,7 @@ module.exports = function(){
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var modalWindow = createPopupWindow('sendTransactionConfirmation', 580, 550, filteredPayload.params[0]);
+            var modalWindow = createPopupWindow.show('sendTransactionConfirmation', 580, 550, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
                 callback(errorUnlock);
             });

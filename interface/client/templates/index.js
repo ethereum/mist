@@ -25,6 +25,9 @@ Template.body.helpers({
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }
+        if(~location.hash.indexOf('#loadingWindow')) {
+            return 'popupWindows_loadingWindow';
+        }
         if(location.hash === '#requestAccount') {
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_requestAccount';

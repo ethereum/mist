@@ -70,7 +70,7 @@
                                 {{i18n "mist.popupWindows.sendTransactionConfirmation.providedGas"}}
                             </td>
                             <td>
-                                <input type="text" class="dapp-small provided-gas" value="{{providedGas}}"> ether ({{dapp_formatNumber (TemplateVar.get "providedGas") '0,0'}} gas)
+                                {{providedGas}} ether (<span class="provided-gas" contenteditable="true">{{dapp_formatNumber (TemplateVar.get 'initialProvidedGas') '0'}}</span> gas)
                             </td>
                         </tr>
                         <tr>

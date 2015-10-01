@@ -31,6 +31,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
             // set provided gas to templateVar
             TemplateVar.set('providedGas', data.gas || 0);
+            TemplateVar.set('initialProvidedGas', data.gas || 0);
 
             // add gasPrice if not set
             if(!data.gasPrice) {
@@ -69,8 +70,10 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
                         // set the gas to the estimation, if not provided
                         var gas = TemplateVar.get(template, 'providedGas');
-                        if(gas == 0)
+                        if(gas == 0) {
                             TemplateVar.set(template, 'providedGas', res + 10000);
+                            TemplateVar.set(template, 'initialProvidedGas', res + 10000);
+                        }
                     });
                 }
             });
@@ -144,11 +147,9 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event change .provided-gas, input .provided-gas
     */
     'change .provided-gas, input .provided-gas': function(e, template){
-        var gasInEther =  template.find('.provided-gas').value;//template.$('.provided-gas').text();
-        var inWei = web3.toWei(new BigNumber(gasInEther, 10), 'ether').toNumber();
-        var data = Session.get('data');
+        var gas =  template.$('.provided-gas').text().replace(/[, ]+/g,'');//template.$('.provided-gas').text();
 
-        TemplateVar.set('providedGas', Math.floor(inWei / +data.gasPrice));
+        TemplateVar.set('providedGas', gas);
     },
     /**
     Cancel the transaction confirmation and close the popup
@@ -170,7 +171,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         var pw = template.find('input[type="password"]').value,
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
-        console.log('Choosen Gas: ', gas);
+        console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
         if(!gas || !_.isFinite(gas))
             return;

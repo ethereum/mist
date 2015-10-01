@@ -101,7 +101,7 @@
             // }
         }
 
-        input.provided-gas {
+        .provided-gas {
             display: inline;
             width: 70px;
             padding: 0;
@@ -110,7 +110,10 @@
             background-color: transparent;
             border: 0;
             text-align: right;
-            font-size: 0.9em;
+
+            &:focus {
+                outline: 0;
+            }
         }
 
         input[type="password"] {

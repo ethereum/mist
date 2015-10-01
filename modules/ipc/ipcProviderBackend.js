@@ -485,7 +485,9 @@ module.exports = function(){
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequestResponse(jsonPayload);
 
-        event.sync = !!sync;
+
+        if(sync === true)
+            event.sync = sync;
 
 
         // return error, if permission not passed

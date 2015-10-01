@@ -136,7 +136,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     'formattedData': function(){
         return (TemplateVar.get('toIsContract'))
             ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
-            : this.data;
+            : this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>');
     }
 });
 

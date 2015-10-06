@@ -60,7 +60,7 @@
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
-            "privateChainTimeout": "Not mining on a private chain?<br>Start app right away."
+            "privateChainTimeout": "Start without peers"
         },
         "popupWindows": {
             "requestAccount": {
@@ -85,6 +85,7 @@
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
                 "gasPrice": "Gas price",
+                "perMillionGas": "ether per million gas",
                 "providedGas": "Provided maximum fee",
                 "data": "Data",
                 "buttons": {

@@ -1,6 +1,13 @@
 .popup-windows {
     text-align: center;
 
+    a, button {
+        color: @colorLinkActive;
+    }
+
+    a:focus {
+        color: @colorLinkFocus;
+    }
 
     &.tx-info {
 
@@ -117,7 +124,7 @@
         }
 
         input[type="password"] {
-            width: 360px;
+            width: @gridWidth * 12;
         }
 
         .data,

@@ -17,13 +17,13 @@ Template['popupWindows_requestAccount'].onRendered(function(){
 
 Template['popupWindows_requestAccount'].helpers({
     /**
-    Returns the icon path
+    Returns the the password state
 
-    @method iconPath
+    @method passwordRepeat
     */
-    // 'iconPath': function(){
-    //     return 'file://'+ dirname +'icons/'+ mode +'/icon2x.png';
-    // }
+    'passwordRepeat': function(){
+        return (TemplateVar.get('password-repeat')||false);
+    }
 });
 
 Template['popupWindows_requestAccount'].events({
@@ -32,15 +32,17 @@ Template['popupWindows_requestAccount'].events({
    },
    'submit form': function(e, template){
         e.preventDefault();
-        var pw = template.find('input[type="password"]').value;
-        var pwOld = TemplateVar.get('password');
+        var pwOld = template.find('input[type="password"]').value;
+        var pw =  template.find('.password-repeat').value;
         
+        // TemplateVar.set('password-repeat', !TemplateVar.get('password-repeat'));
+
 
         // ask for password repeat
-        if(!pwOld) {
-            TemplateVar.set('password', template.find('input[type="password"]').value);
-            template.find('input[type="password"]').value = '';
-            template.$('input[type="password"]').focus();
+        if(!pw) {
+            TemplateVar.set('password-repeat', true);
+            // template.find('input[type="password"]').value = '';
+            template.$('.password-repeat').focus();
             return;
 
         // check passwords
@@ -57,7 +59,10 @@ Template['popupWindows_requestAccount'].events({
             });
         
         } else {
-            template.find('input[type="password"]').value = '';
+            template.find('.password').value = '';
+            template.find('.password-repeat').value = '';
+            template.$('.password').focus();
+            TemplateVar.set('password-repeat', false);
 
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),

@@ -62,6 +62,34 @@ aside.sidebar {
 // Browser bar 
 .browser-area {
     .url-input {
-        transition: opacity 1s;
+        transition: opacity 0.1s;
+    }
+}
+
+.popup-windows {
+    position: relative;
+    perspective: 800px;
+
+    .field-container{
+        transform-style: preserve-3d;
+        transition: transform 0.5s;
+        transition-timing-function:  ease-out;
+        transition-timing-function:  cubic-bezier(0.000, 1.125, 0.335, 1.650);
+        height: @gridHeight*1.5;
+        
+        &>* {
+            position: absolute;
+            left: @gridWidth*2;
+            top: -1*@gridHeight;
+            backface-visibility: hidden;
+        }
+
+        .password-repeat {
+            transform: rotateX( 180deg );  
+        }
+    
+        &.repeat-field {
+            transform: rotateX( 180deg );            
+        }
     }
 }

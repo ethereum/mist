@@ -19,10 +19,10 @@ module.exports = function(data, callback){
 
     // DE-CHUNKER
     var dechunkedData = data
-        .replace(/\}[\n]?\{/g,'}|--|{') // }{
-        .replace(/\}\][\n]?\[\{/g,'}]|--|[{') // }][{
-        .replace(/\}\[[\n]?\{/g,'}|--|[{') // }[{
-        .replace(/\}\][\n]?\{/g,'}]|--|{') // }]{
+        .replace(/\}[\n\r]?\{/g,'}|--|{') // }{
+        .replace(/\}\][\n\r]?\[\{/g,'}]|--|[{') // }][{
+        .replace(/\}[\n\r]?\[\{/g,'}|--|[{') // }[{
+        .replace(/\}\][\n\r]?\{/g,'}]|--|{') // }]{
         .split('|--|');
 
 
@@ -43,7 +43,7 @@ module.exports = function(data, callback){
             // start timeout to cancel all requests
             clearTimeout(lastChunkTimeout);
             lastChunkTimeout = setTimeout(function(){
-                callback('Couldn\'t decode data'+ data);
+                callback('Couldn\'t decode data: '+ data);
             }, 1000 * 15);
 
             return;

@@ -183,9 +183,12 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
             console.warn(e);
 
-            if(!e) {
+            if(!e && res) {
                 ipc.send('uiAction_unlockedAccount', null, gas);
-                ipc.send('uiAction_closePopupWindow');
+                // make sure we first confirm, before we close the window
+                setTimeout(function(){
+                    ipc.send('uiAction_closePopupWindow');
+                }, 200);
 
             } else {
                 Tracker.afterFlush(function(){

@@ -341,6 +341,7 @@ module.exports = function(){
     @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
     */
     GethConnection.prototype.checkRequests = function(filteredPayload, event, callback){
+        var called = false;
 
         // batch request can't unlock for now (they might be deprecated soon) 
         if(_.isArray(filteredPayload)) {
@@ -353,7 +354,10 @@ module.exports = function(){
 
             var modalWindow = createPopupWindow.show('sendTransactionConfirmation', 580, 550, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
-                callback(errorUnlock);
+                if(!called) {
+                    callback(errorUnlock);
+                    called = true;
+                }
             });
 
             ipc.once('uiAction_unlockedAccount', function(ev, err, result){
@@ -362,14 +366,20 @@ module.exports = function(){
                         console.log('Confirmation error:', err);
 
                         // return error, to stop sending the request
-                        callback(errorUnlock);
+                        if(!called) {
+                            callback(errorUnlock);
+                            called = true;
+                        }
 
                     } else {
                         // set the changed provided gas
                         filteredPayload.params[0].gas = result;
 
                         console.log('Confirmed transaction:', filteredPayload.params[0]);
-                        callback(null, filteredPayload);
+                        if(!called) {
+                            callback(null, filteredPayload);
+                            called = true;
+                        }
                     }
                 }
             });

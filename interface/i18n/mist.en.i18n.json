@@ -60,7 +60,7 @@
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
-            "privateChainTimeout": "Start without peers"
+            "privateChainTimeout": "Skip peer search"
         },
         "popupWindows": {
             "requestAccount": {

@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('fonts/SourceSansPro.otf');
+  font-weight: 500;
+  font-style: normal;
+}
+
 .splash-screen {
     position: absolute;
     top: 0;
@@ -6,7 +13,7 @@
     bottom: 0;
     color: #fff;
     text-align: center;
-    font-family: 'Helvetica Neue', 'Helvetica', verdana, arial;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
     overflow: hidden;
 
     background-size: 115%;
@@ -60,16 +67,20 @@
     }
     /* start app button */
     button.start-app {
-        top: 10px;
-        left: 10px;
-        max-width: 120px;
-        background-color: rgba(255,255,255, 0.3);
-        opacity: 0.8;
-        border-radius: 2px;
-        text-align: left;  
+        bottom: 20px;
+        right: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: #4A90E2;;
+        text-transform: uppercase;
+        font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
+        font-size: 1em;
     }
     button.start-app:hover {
-        background-color: rgba(255,255,255, 0.5);
+        color: #2A6ED0;
     }
 
     img {

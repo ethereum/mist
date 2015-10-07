@@ -25,7 +25,6 @@
     "numeral": "^1.5.3",
     "solc": "^0.1.3-2",
     "underscore": "^1.8.3",
-    "web3": "^0.13.0",
-    "webworker-threads": "^0.6.0"
+    "web3": "^0.13.0"
   }
 }

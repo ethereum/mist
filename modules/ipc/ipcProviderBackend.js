@@ -166,8 +166,6 @@ module.exports = function(){
         this.ipcSocket.on("data", function(data){
             dechunker(data, function(error, result){
 
-                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', data);
-
                 if(error) {
                     console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
                     _this.timeout();
@@ -181,6 +179,8 @@ module.exports = function(){
                     return;
 
                 result = _this.filterRequestResponse(result, event);
+
+                console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {

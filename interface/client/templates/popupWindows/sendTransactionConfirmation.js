@@ -181,8 +181,6 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 
-            console.warn(e);
-
             if(!e && res) {
                 ipc.send('uiAction_unlockedAccount', null, gas);
                 // make sure we first confirm, before we close the window

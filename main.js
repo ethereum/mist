@@ -159,7 +159,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
     if(global.windows[windowId]) {
         global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
-        mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
+        global.mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
     }
 });
 
@@ -410,19 +410,18 @@ var startMainWindow = function(appStartWindow){
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();
-        global.mainWindow.center();
+        // global.mainWindow.center();
 
         if(appStartWindow)
             appStartWindow.close();
         appStartWindow = null;
     });
 
-    // Emitted when the window is closed.
+    // close app, when the main window is closed
     global.mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
         global.mainWindow = null;
+
+        app.quit();
     });
 
 

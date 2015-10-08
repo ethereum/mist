@@ -4,14 +4,9 @@
 
 const mist = require('../mistAPI.js');
 const shell = require('shell');
-const web3 = require('web3');
+const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-
 const web3Admin = require('../web3Admin.js');
-web3Admin.extend(web3);
-
-// set web3 providor
-web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 
 // open a[target="_blank"] in external browser
@@ -25,8 +20,10 @@ document.addEventListener('click', function(e) {
 
 // make variables globally accessable
 // window.dirname = __dirname;
+window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+web3Admin.extend(window.web3);
+
 window.mist = mist;
-window.web3 = web3;
 window.platform = process.platform;
 
 setTimeout(function(){

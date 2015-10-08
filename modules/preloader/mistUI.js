@@ -8,20 +8,17 @@ const syncMinimongo = require('../syncMinimongo.js');
 const remote = require('remote');
 const Menu = remote.require('menu');
 const MenuItem = remote.require('menu-item');
-const web3 = require('web3');
+const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const i18n = require('../i18n.js');
-
 const web3Admin = require('../web3Admin.js');
-web3Admin.extend(web3);
-
-// set web3 providor
-web3.setProvider(new web3.providers.IpcProvider('', ipcProviderWrapper));
 
 
 // make variables globally accessable
+window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+web3Admin.extend(window.web3);
+
 window.dirname = __dirname;
-window.web3 = web3;
 window.syncMinimongo = syncMinimongo;
 window.ipc = ipc;
 window.platform = process.platform;

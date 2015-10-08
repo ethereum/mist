@@ -310,6 +310,9 @@ app.on('ready', function() {
                 if(process.platform === 'win32')
                     gethPath += '.exe';
 
+                if(process.platform === 'linux')
+                    gethPath = 'geth'; // simply try to run a global binary
+
                 global.geth = spawn(gethPath, [
                     // '-v', 'builds/pdf/book.html',
                     // '-o', 'builds/pdf/book.pdf'

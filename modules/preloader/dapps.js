@@ -8,7 +8,7 @@ const shell = require('shell');
 const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-require('../loadFavicon.js');
+require('../getFavicon.js');
 
 
 // notifiy the tab to store the webview id

@@ -4,6 +4,7 @@ const MenuItem = require('menu-item');
 const Menu = require('menu');
 const config = require('./config');
 const ipc = require('ipc');
+const ethereumNodes = require('./modules/ethereumNodes.js');
 
 // TODO change selector to role
 /*
@@ -146,17 +147,41 @@ var menuTempl = function(webviews) {
         },{
             type: 'separator'
         },{
-            label: i18n.t('mist.applicationMenu.develop.ethereumCore'),
+            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 2.2',
-                checked: true,
-                type: 'checkbox'
+                label: 'Geth 1.2.2 (Go)',
+                checked: !!global.nodes.geth,
+                enabled: !global.nodes.geth,
+                type: 'checkbox',
+                click: function(){
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startGeth();
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+                    }, 10);
+                }
               },
               {
-                label: 'Eth 0.1',
+                label: 'Eth 1.0.0 (C++)',
                 type: 'checkbox',
-                enabled: false
+                checked: !!global.nodes.eth,
+                enabled: !global.nodes.eth,
+                click: function(){
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startEth();
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+                    }, 10);
+                }
               }
         ]},{
             label: i18n.t('mist.applicationMenu.develop.network'),
@@ -164,12 +189,51 @@ var menuTempl = function(webviews) {
               {
                 label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
                 type: 'checkbox',
-                checked: true
+                checked: (global.network === 'main'),
+                enabled: !(global.network === 'main'),
+                click: function(){
+                    var geth = !!global.geth;
+
+                    ethereumNodes.stopNodes();
+
+                    global.network = 'main';
+                    setTimeout(function(){
+                        if(geth)
+                            ethereumNodes.startGeth();
+                        else
+                            ethereumNodes.startEth();
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+
+                    }, 10);
+                }
               },
               {
                 label: 'Testnet (Morden)',
-                type: 'checkbox',
-                enabled: false
+                checked: (global.network === 'test'),
+                enabled: !(global.network === 'test'),
+                click: function(){
+                    var geth = !!global.geth;
+
+                    ethereumNodes.stopNodes();
+
+                    global.network = 'test';
+                    setTimeout(function(){
+                        if(geth)
+                            ethereumNodes.startGeth(true);
+                        else
+                            ethereumNodes.startEth(true);
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+
+                    }, 10);
+                }
               }
         ]}];
 

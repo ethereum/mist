@@ -63,7 +63,13 @@
                             <td>
                                 {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}} 
                             </td>
-                            <td>{{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)</td>
+                            <td>
+                                {{#if $eq (TemplateVar.get "estimatedGas") "invalid"}}
+                                    <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}</span>
+                                {{else}}
+                                    {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
+                                {{/if}}
+                            </td>
                         </tr>
                         <tr>
                             <td>

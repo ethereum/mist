@@ -26,7 +26,7 @@
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
-                "ethereumCore": "Ethereum Implementation",
+                "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network"
             },
@@ -88,6 +88,7 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
+                "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "providedGas": "Provided maximum fee",

@@ -10,6 +10,9 @@ var setWindowSize = function(template){
     });
 }
 
+
+var defaultEstimateGas  = 50000000;
+
 /**
 The sendTransaction confirmation popup window template
 
@@ -62,11 +65,17 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
 
             // esitmate gas usage
-            web3.eth.estimateGas(data, function(e, res){
+            var estimateData = _.clone(data);
+            estimateData.gas = defaultEstimateGas;
+            web3.eth.estimateGas(estimateData, function(e, res){
                 if(!e && res) {
                     Tracker.nonreactive(function(){
+                        console.log('Estimated gas: ', res);
 
-                        TemplateVar.set(template, 'estimatedGas', res);
+                        if(defaultEstimateGas === res)
+                            TemplateVar.set(template, 'estimatedGas', 'invalid');
+                        else
+                            TemplateVar.set(template, 'estimatedGas', res);
 
                         // set the gas to the estimation, if not provided
                         var gas = TemplateVar.get(template, 'providedGas');

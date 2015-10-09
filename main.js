@@ -12,6 +12,13 @@ global.mode = 'wallet';
 global.mainWindow = null;
 global.windows = {};
 
+global.nodes = {
+    geth: null,
+    eth: null
+};
+global.network = 'main'; // or 'test'
+
+
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.path = {
@@ -22,7 +29,6 @@ global.path = {
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
-global.geth = null;
 global.Tabs = Minimongo('tabs');
 
 
@@ -52,6 +58,7 @@ const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./menuItems');
 const createPopupWindow = require('./modules/createPopupWindow.js');
+const ethereumNodes = require('./modules/ethereumNodes.js');
 
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');
@@ -102,9 +109,7 @@ app.on('before-quit', function(event){
     });
 
 
-    // kill running geth
-    if(global.geth)
-        global.geth.kill('SIGKILL');
+    ethereumNodes.stopNodes();
 
     // delay quit, so the sockets can close
     setTimeout(function(){
@@ -275,7 +280,6 @@ app.on('ready', function() {
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const spawn = require('child_process').spawn;
         const getIpcPath = require('./modules/ipc/getIpcPath.js');
         const net = require('net');
         const socket = new net.Socket();
@@ -297,31 +301,14 @@ app.on('ready', function() {
             if(count === 0) {
                 count++;
 
-                // START GETH
-                console.log('Starting Geth...');
+                // STARTING NODE
                 if(appStartWindow && appStartWindow.webContents)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
-                var gethPath = __dirname + '/geth';
-
-                if(global.production)
-                    gethPath = gethPath.replace('app.asar/','');
-
-                if(process.platform === 'win32')
-                    gethPath += '.exe';
-
-                if(process.platform === 'linux')
-                    gethPath = 'geth'; // simply try to run a global binary
-
-                global.geth = spawn(gethPath, [
-                    // '-v', 'builds/pdf/book.html',
-                    // '-o', 'builds/pdf/book.pdf'
-                ]);
-                global.geth.on('error',function(){
-                    console.log('Coulnd\'nt start node binary');
-                });
+                var node = ethereumNodes.startGeth();
+                
                 // if we couldn't write to stdin, show binary error
-                global.geth.stdin.on('error', function(){
+                node.stdin.on('error', function(e){
                     if(appStartWindow && appStartWindow.webContents) {
                         appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                     }
@@ -330,16 +317,7 @@ app.on('ready', function() {
 
                     clearSocket(socket, appStartWindow, ipcPath, true);
                 });
-                // type yes to the inital warning window
-                setTimeout(function(){
-                    global.geth.stdin.write("y\r\n");
-                }, 10);
-                // global.geth.stdout.on('data', function(chunk) {
-                //     console.log('stdout',String(chunk));
-                // });
-                // global.geth.stderr.on('data', function(chunk) {
-                //     console.log('stderr',String(chunk));
-                // });
+                
 
 
                 // TRY TO CONNECT EVER 500MS
@@ -389,9 +367,7 @@ Clears the socket
 */
 var clearSocket = function(socket, appStartWindow, ipcPath, timeout){
     if(timeout) {
-        // kill running geth
-        if(global.geth)
-            global.geth.kill('SIGKILL');
+        ethereumNodes.stopNodes();
     }
 
     socket.removeAllListeners();

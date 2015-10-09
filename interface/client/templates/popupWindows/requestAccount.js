@@ -12,19 +12,9 @@ The request account popup window template
 */
 
 Template['popupWindows_requestAccount'].onRendered(function(){
-    this.$('input[type="password"]').focus();
+    this.$('input.password').focus();
 });
 
-Template['popupWindows_requestAccount'].helpers({
-    /**
-    Returns the the password state
-
-    @method passwordRepeat
-    */
-    'passwordRepeat': function(){
-        return (TemplateVar.get('password-repeat')||false);
-    }
-});
 
 Template['popupWindows_requestAccount'].events({
    'click .cancel': function(){
@@ -32,23 +22,22 @@ Template['popupWindows_requestAccount'].events({
    },
    'submit form': function(e, template){
         e.preventDefault();
-        var pwOld = template.find('input[type="password"]').value;
-        var pw =  template.find('.password-repeat').value;
-        
-        // TemplateVar.set('password-repeat', !TemplateVar.get('password-repeat'));
-
+        var pw = template.find('input.password').value;
+        var pwRepeat =  template.find('input.password-repeat').value;
 
         // ask for password repeat
-        if(!pw) {
+        if(!pwRepeat) {
             TemplateVar.set('password-repeat', true);
-            // template.find('input[type="password"]').value = '';
-            template.$('.password-repeat').focus();
+            template.$('input.password-repeat').focus();
+
+            // stop here so we dont set the password repeat to false
             return;
 
         // check passwords
-        } else if(pw === pwOld) {
+        } else if(pwRepeat === pw) {
+
             TemplateVar.set('creating', true);
-            web3.personal.newAccount(pw, function(e, res){
+            web3.personal.newAccount(pwRepeat, function(e, res){
                 if(!e)
                     ipc.send('uiAction_sendToOwner', null, res);
                 else
@@ -59,10 +48,7 @@ Template['popupWindows_requestAccount'].events({
             });
         
         } else {
-            template.find('.password').value = '';
-            template.find('.password-repeat').value = '';
             template.$('.password').focus();
-            TemplateVar.set('password-repeat', false);
 
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
@@ -70,7 +56,9 @@ Template['popupWindows_requestAccount'].events({
             });
         }
 
-        TemplateVar.set('password', null);
-        pwOld = pw = null;
+        TemplateVar.set('password-repeat', false);
+        template.find('input.password-repeat').value = '';
+        template.find('input.password').value = '';
+        pw = pwRepeat = null;
    } 
 });

@@ -3,7 +3,7 @@
 */
 
 const ipc = require('ipc');
-require('../loadFavicon.js');
+require('../getFavicon.js');
 
 // notifiy the tab to store the webview id
 ipc.sendToHost('setWebviewId');

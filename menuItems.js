@@ -4,6 +4,7 @@ const MenuItem = require('menu-item');
 const Menu = require('menu');
 const config = require('./config');
 const ipc = require('ipc');
+const ethereumNodes = require('./modules/ethereumNodes.js');
 
 // TODO change selector to role
 /*
@@ -146,17 +147,37 @@ var menuTempl = function(webviews) {
         },{
             type: 'separator'
         },{
-            label: i18n.t('mist.applicationMenu.develop.ethereumCore'),
+            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 2.2',
-                checked: true,
-                type: 'checkbox'
+                label: 'Geth 1.2.2 (Go)',
+                checked: !!global.nodes.geth,
+                enabled: !global.nodes.geth,
+                type: 'checkbox',
+                click: function(){
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startGeth();
+                        global.mainWindow.reload();
+
+                        createMenu(webviews);
+                    }, 10);
+                }
               },
               {
-                label: 'Eth 0.1',
+                label: 'Eth 1.0.0 (C++)',
                 type: 'checkbox',
-                enabled: false
+                checked: !!global.nodes.eth,
+                enabled: !global.nodes.eth,
+                click: function(){
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startEth();
+                        global.mainWindow.reload();
+
+                        createMenu(webviews);
+                    }, 10);
+                }
               }
         ]},{
             label: i18n.t('mist.applicationMenu.develop.network'),

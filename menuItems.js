@@ -98,7 +98,7 @@ var menuTempl = function(webviews) {
     })
 
     // DEVELOP
-    var devtToolsMenu = [];
+    var devToolsMenu = [];
 
     // change for wallet
     if(global.mode === 'mist') {
@@ -135,7 +135,7 @@ var menuTempl = function(webviews) {
         }];
     }
 
-    devtToolsMenu = [{
+    devToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devTools'),
             submenu: devtToolsSubMenu
         },{
@@ -175,7 +175,7 @@ var menuTempl = function(webviews) {
 
     menu.push({
         label: i18n.t('mist.applicationMenu.develop.label'),
-        submenu: devtToolsMenu
+        submenu: devToolsMenu
     })
 
     // WINDOW

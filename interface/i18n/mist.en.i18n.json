@@ -21,10 +21,14 @@
             },
             "develop": {
                 "label": "Develop",
-                "devToolsMistUI": "Toggle Developer Tools for the Mist UI",
-                "devToolsWalletUI": "Toggle Developer Tools for the Wallet UI",
-                "devToolsWebview": "Toggle Developer Tools for __webview__",
-                "runTests": "Run tests"
+                "devTools": "Toggle Developer Tools",
+                "devToolsMistUI": "Mist UI",
+                "devToolsWalletUI": "Wallet UI",
+                "devToolsWebview": "__webview__",
+                "runTests": "Run tests",
+                "ethereumCore": "Ethereum Implementation",
+                "network": "Network",
+                "mainNetwork": "Main Network"
             },
             "window": {
                 "label": "Window",

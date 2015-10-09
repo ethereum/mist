@@ -102,7 +102,7 @@ var menuTempl = function(webviews) {
 
     // change for wallet
     if(global.mode === 'mist') {
-        devtToolsMenu = [{
+        devtToolsSubMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click: function() {
@@ -115,7 +115,7 @@ var menuTempl = function(webviews) {
 
         // add webviews
         webviews.forEach(function(webview){
-            devtToolsMenu.push({
+            devtToolsSubMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
                     global.mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
@@ -123,34 +123,9 @@ var menuTempl = function(webviews) {
             });
         });
 
-        devtToolsMenu = _.union(devtToolsMenu, [
-            {
-                type: 'separator'
-            },
-            {
-                label: i18n.t('mist.applicationMenu.develop.runTests'),
-                click: function(){
-
-                    // var testWindow = new BrowserWindow({
-                    //     width: 800,
-                    //     height: 600,
-                    //     icon: './icons/icon.png',
-                    //     preload: __dirname +'/modules/preloader/dapps.js',
-                    //     'node-integration': true,
-                    //     'web-preferences': {
-                    //         // 'web-security': false
-                    //     }
-                    // });
-                    // testWindow.loadUrl('file://'+ __dirname + '/tests/mocha-in-browser/runner.html');                    
-
-                    global.mainWindow.webContents.send('runTests', 'webview');
-                }
-            }
-        ])
-
     // wallet
     } else {
-        devtToolsMenu = [{
+        devtToolsSubMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click: function() {
@@ -159,6 +134,44 @@ var menuTempl = function(webviews) {
             }
         }];
     }
+
+    devtToolsMenu = [{
+            label: i18n.t('mist.applicationMenu.develop.devTools'),
+            submenu: devtToolsSubMenu
+        },{
+            label: i18n.t('mist.applicationMenu.develop.runTests'),
+            click: function(){
+                global.mainWindow.webContents.send('runTests', 'webview');
+            }
+        },{
+            type: 'separator'
+        },{
+            label: i18n.t('mist.applicationMenu.develop.ethereumCore'),
+            submenu: [
+              {
+                label: 'Geth 2.2',
+                checked: true,
+                type: 'checkbox'
+              },
+              {
+                label: 'Eth 0.1',
+                type: 'checkbox',
+                enabled: false
+              }
+        ]},{
+            label: i18n.t('mist.applicationMenu.develop.network'),
+            submenu: [
+              {
+                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+                type: 'checkbox',
+                checked: true
+              },
+              {
+                label: 'Testnet (Morden)',
+                type: 'checkbox',
+                enabled: false
+              }
+        ]}];
 
     menu.push({
         label: i18n.t('mist.applicationMenu.develop.label'),

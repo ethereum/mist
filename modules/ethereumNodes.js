@@ -46,7 +46,7 @@ module.exports = {
         // start testnet
         if(testnet) {
             global.nodes.geth = spawn(gethPath, [
-                '--networkid', '"2"',
+                '--testnet', '',
             ]);
 
         // start mainnet

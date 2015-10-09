@@ -12,6 +12,13 @@ global.mode = 'wallet';
 global.mainWindow = null;
 global.windows = {};
 
+global.nodes = {
+    geth: null,
+    eth: null
+};
+global.network = 'main'; // or 'test'
+
+
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.path = {
@@ -22,10 +29,6 @@ global.path = {
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
-global.nodes = {
-    geth: null,
-    eth: null
-};
 global.Tabs = Minimongo('tabs');
 
 

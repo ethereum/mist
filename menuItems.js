@@ -158,9 +158,11 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startGeth();
-                        global.mainWindow.reload();
-
                         createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
                     }, 10);
                 }
               },
@@ -173,9 +175,11 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startEth();
-                        global.mainWindow.reload();
-
                         createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
                     }, 10);
                 }
               }
@@ -185,12 +189,51 @@ var menuTempl = function(webviews) {
               {
                 label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
                 type: 'checkbox',
-                checked: true
+                checked: (global.network === 'main'),
+                enabled: !(global.network === 'main'),
+                click: function(){
+                    var geth = !!global.geth;
+
+                    ethereumNodes.stopNodes();
+
+                    global.network = 'main';
+                    setTimeout(function(){
+                        if(geth)
+                            ethereumNodes.startGeth();
+                        else
+                            ethereumNodes.startEth();
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+
+                    }, 10);
+                }
               },
               {
                 label: 'Testnet (Morden)',
-                type: 'checkbox',
-                enabled: false
+                checked: (global.network === 'test'),
+                enabled: !(global.network === 'test'),
+                click: function(){
+                    var geth = !!global.geth;
+
+                    ethereumNodes.stopNodes();
+
+                    global.network = 'test';
+                    setTimeout(function(){
+                        if(geth)
+                            ethereumNodes.startGeth(true);
+                        else
+                            ethereumNodes.startEth(true);
+                        createMenu(webviews);
+
+                        setTimeout(function(){
+                            global.mainWindow.reload();
+                        }, 200);
+
+                    }, 10);
+                }
               }
         ]}];
 

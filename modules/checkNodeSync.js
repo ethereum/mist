@@ -129,7 +129,7 @@ module.exports = function(socket, appStartWindow, callback){
                                     cbCalled = true;
                                 });
                             }
-                        }, 1000 * 10);
+                        }, 1000 * 12);
                     }
                 
                 // update progress bar

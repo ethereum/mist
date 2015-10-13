@@ -33,7 +33,7 @@ module.exports = {
         // load URL
         this.loadingwindow.loadUrl(global.interfacePopupsUrl +'#loadingWindow');
     },
-    show: function(windowType, width, height, data, e){
+    show: function(windowType, width, height, data, e, noWeb3){
         var _this = this;
 
         this.loadingwindow.center();
@@ -49,7 +49,7 @@ module.exports = {
             show: false,
             icon: global.icon,
             'standard-window': false,
-            preload: __dirname +'/preloader/popupWindows.js',
+            preload: noWeb3 ? __dirname +'/preloader/popupWindowsNoWeb3.js' : __dirname +'/preloader/popupWindows.js',
             'use-content-size': true,
             'node-integration': false,
             'web-preferences': {

@@ -76,6 +76,10 @@
                     "passwordMismatch": "Your passwords don't match."
                 }
             },
+            "unlockMasterPassword": {
+                "title": "Unlock master password",
+                "enterPassword": "Enter master password"
+            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Send transaction",

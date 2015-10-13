@@ -2,8 +2,13 @@
 @module ethereumNodes
 */
 
+const _ = require('underscore');
+const app = require('app');
 const path = require('path');
 const spawn = require('child_process').spawn;
+const ipc = require('ipc');
+const createPopupWindow = require('./createPopupWindow.js');
+
 const binaryPath = path.resolve(__dirname + '/../nodes');
 
 module.exports = {
@@ -17,103 +22,132 @@ module.exports = {
 
         // kill running geth
         if(global.nodes.geth) {
+            global.nodes.geth.stderr.removeAllListeners('data');
+            global.nodes.geth.stdout.removeAllListeners('data');
+            global.nodes.geth.stdin.removeAllListeners('error');
             global.nodes.geth.kill('SIGKILL');
             global.nodes.geth = null;
         }
 
         // kill running eth
         if(global.nodes.eth) {
+            global.nodes.eth.stderr.removeAllListeners('data');
+            global.nodes.eth.stdout.removeAllListeners('data');
+            global.nodes.eth.stdin.removeAllListeners('error');
             global.nodes.eth.kill('SIGKILL');
             global.nodes.eth = null;
         }
     },
     /**
-    Start the geth node.
+    Starts a node of type
 
-    @method startGeth
+    @method startNode
+    @param {String} type the node e.g. "geth" or "eth"
+    @param {Boolean} testnet
+    @param {Function} callback will be called after successfull start
     */
-    startGeth: function(testnet){
-        console.log('Starting Geth...');
+    startNode: function(type, testnet, callback){
+        var _this = this,
+            called = false;
 
-        var gethPath = binaryPath + '/geth/geth';
+        var binPath = binaryPath + '/'+ type +'/'+ type +'';
 
         if(global.production)
-            gethPath = gethPath.replace('app.asar/','');
+            binPath = binPath.replace('app.asar/','');
+
 
         if(process.platform === 'win32')
-            gethPath += '.exe';
+            binPath += '.exe';
 
         if(process.platform === 'linux')
-            gethPath = 'geth'; // simply try to run a global binary
+            binPath = type; // simply try to run a global binary
 
-        // start testnet
-        if(testnet) {
-            global.nodes.geth = spawn(gethPath, [
-                '--testnet',
-            ]);
 
-        // start mainnet
+        if(type === 'eth') {
+
+            var modalWindow = createPopupWindow.show('unlockMasterPassword', 400, 220, null, null, true);
+            modalWindow.on('closed', function() {
+                if(!called)
+                    app.quit();
+            });
+
+            ipc.once('uiAction_unlockedMasterPassword', function(ev, err, result){
+                if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
+                    if(!err) {
+                        _this._startProcess(type, testnet, binPath, result, callback);
+
+                    } else {
+                        app.quit();
+                    }
+
+                    result = null;
+                    called = true;
+                    modalWindow.close();
+                    modalWindow = null;
+                }
+            });
         } else {
-            global.nodes.geth = spawn(gethPath, []);
+            _this._startProcess(type, testnet, binPath, null, callback);
         }
 
-        global.nodes.geth.on('error',function(){
-            console.log('Couldn\'t start geth node!');
-        });
-
-        // type yes to the inital warning window
-        setTimeout(function(){
-            global.nodes.geth.stdin.write("y\r\n");
-        }, 10);
-        // global.nodes.geth.stdout.on('data', function(chunk) {
-        //     console.log('stdout',String(chunk));
-        // });
-        // global.nodes.geth.stderr.on('data', function(chunk) {
-        //     console.log('stderr',String(chunk));
-        // });
-
-        return global.nodes.geth;
+        return global.nodes[type];
     },
     /**
-    Start the eth++ node.
 
-    @method startEth
+    @method _startProcess
     */
-    startEth: function(testnet){
-        console.log('Starting Eth...');
+    _startProcess: function(type, testnet, binPath, pw, callback){
+        var cbCalled = false,
+            error = false;
 
-        var ethPath = binaryPath + '/eth/eth';
+        console.log('Starting '+ type +' node...');
 
-        if(global.production)
-            ethPath = ethPath.replace('app.asar/','');
 
-        if(process.platform === 'win32')
-            ethPath += '.exe';
-
-        if(process.platform === 'linux')
-            ethPath = 'eth'; // simply try to run a global binary
-
-        // start testnet
+        // START TESTNET
         if(testnet) {
-            global.nodes.eth = spawn(ethPath, [
-                '--morden'
-            ]);
+            args = (type === 'geth') ? ['--testnet'] : ['--morden'];
 
-        // start mainnet
+        // START MAINNET
         } else {
-            global.nodes.eth = spawn(ethPath, [
-                '--master', ''
-            ]);
+            args = (type === 'geth') ? [] : ['--master', pw];
         }
 
-        // global.nodes.eth.stdout.on("data", function(data){console.log(data.toString())});
-        // global.nodes.eth.stdout.on("error", function(data){console.log(data.toString())});
+        global.nodes[type] = spawn(binPath, args);
 
-        global.nodes.eth.on('error',function(){
-            console.log('Couldn\'t start eth node!');
+        global.nodes[type].on('error',function(e){
+            console.log('Couldn\'t start '+ type +' node!', e);
+
+            error = true;
+
+            if(!cbCalled && _.isFunction(callback)){
+                callback('Couldn\'t start '+ type +' node!');
+                cbCalled = true;
+            }
         });
 
+        // we need to read the buff to prevent geth/eth from stop working
+        global.nodes[type].stdout.on('data', function() {
+            if(!cbCalled && _.isFunction(callback)){
+                callback(null);
+                cbCalled = true;
+            }
 
-        return global.nodes.eth;
+            // console.log('stdout',String(chunk));
+        });
+        global.nodes[type].stderr.on('data', function() {
+            if(!cbCalled && _.isFunction(callback)) {
+                callback(null);
+                cbCalled = true;
+            }
+            // console.log('stderr',String(chunk));
+        });
+
+        // confirm to the disclaimer
+        if(type === 'geth') {
+            setTimeout(function(){
+                if(!error)
+                    global.nodes[type].stdin.write("y\r\n");
+            }, 10);
+        }
     }
 };

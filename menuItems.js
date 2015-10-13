@@ -165,12 +165,13 @@ var menuTempl = function(webviews) {
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startGeth();
+                        ethereumNodes.startNode('geth', function(){
+                            setTimeout(function(){
+                                global.mainWindow.reload();
+                            }, 200);
+                        });
                         createMenu(webviews);
 
-                        setTimeout(function(){
-                            global.mainWindow.reload();
-                        }, 200);
                     }, 10);
                 }
               },
@@ -182,12 +183,13 @@ var menuTempl = function(webviews) {
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startEth();
+                        ethereumNodes.startNode('eth', function(){
+                            setTimeout(function(){
+                                global.mainWindow.reload();
+                            }, 200);
+                        });
                         createMenu(webviews);
 
-                        setTimeout(function(){
-                            global.mainWindow.reload();
-                        }, 200);
                     }, 10);
                 }
               }
@@ -208,10 +210,7 @@ var menuTempl = function(webviews) {
 
         //             global.network = 'main';
         //             setTimeout(function(){
-        //                 if(geth)
-        //                     ethereumNodes.startGeth();
-        //                 else
-        //                     ethereumNodes.startEth();
+        //                 ethereumNodes.startNode(geth ? 'geth' : 'eth', false);
         //                 createMenu(webviews);
 
         //                 setTimeout(function(){
@@ -232,10 +231,7 @@ var menuTempl = function(webviews) {
 
         //             global.network = 'test';
         //             setTimeout(function(){
-        //                 if(geth)
-        //                     ethereumNodes.startGeth(true);
-        //                 else
-        //                     ethereumNodes.startEth(true);
+        //                 ethereumNodes.startNode(geth ? 'geth' : 'eth', true);
         //                 createMenu(webviews);
 
         //                 setTimeout(function(){

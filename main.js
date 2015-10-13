@@ -109,11 +109,10 @@ app.on('before-quit', function(event){
     });
 
 
-    ethereumNodes.stopNodes();
-
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
+        ethereumNodes.stopNodes();
         app.quit();
     }, 500);
 });
@@ -305,37 +304,38 @@ app.on('ready', function() {
                 if(appStartWindow && appStartWindow.webContents)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
-                var node = ethereumNodes.startGeth();
-                
-                // if we couldn't write to stdin, show binary error
-                node.stdin.on('error', function(e){
-                    if(appStartWindow && appStartWindow.webContents) {
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
-                    }
+                var node = ethereumNodes.startNode('geth', false, function(e){
+                    // TRY TO CONNECT EVER 500MS
+                    if(!e) {
+                        intervalId = setInterval(function(){
+                            socket.connect({path: ipcPath});
+                            count++;
 
-                    clearInterval(intervalId);
+                            // timeout after 10 seconds
+                            if(count >= 60) {
 
-                    clearSocket(socket, appStartWindow, ipcPath, true);
-                });
-                
+                                if(appStartWindow && appStartWindow.webContents)
+                                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
+
+                                clearInterval(intervalId);
+
+                                clearSocket(socket, appStartWindow, ipcPath, true);
+                            }
+                        }, 200);
 
 
-                // TRY TO CONNECT EVER 500MS
-                intervalId = setInterval(function(){
-                    socket.connect({path: ipcPath});
-                    count++;
+                    // NO Binary
+                    } else {
 
-                    // timeout after 10 seconds
-                    if(count >= 60) {
-
-                        if(appStartWindow && appStartWindow.webContents)
-                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
+                        if(appStartWindow && appStartWindow.webContents) {
+                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
+                        }
 
                         clearInterval(intervalId);
 
                         clearSocket(socket, appStartWindow, ipcPath, true);
                     }
-                }, 200);
+                });
             }
         });
         socket.on('connect', function(data){

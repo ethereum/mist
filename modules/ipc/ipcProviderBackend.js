@@ -368,7 +368,6 @@ module.exports = function(){
                         // return error, to stop sending the request
                         if(!called) {
                             callback(errorUnlock);
-                            called = true;
                         }
 
                     } else {
@@ -378,9 +377,12 @@ module.exports = function(){
                         console.log('Confirmed transaction:', filteredPayload.params[0]);
                         if(!called) {
                             callback(null, filteredPayload);
-                            called = true;
                         }
                     }
+
+                    called = true;
+                    modalWindow.close();
+                    modalWindow = null;
                 }
             });
 

@@ -32,6 +32,10 @@ Template.body.helpers({
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_requestAccount';
         }
+        if(location.hash === '#unlockMasterPassword') {
+            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
+            return 'popupWindows_unlockMasterPassword';
+        }
         if(location.hash === '#sendTransactionConfirmation') {
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_sendTransactionConfirmation';

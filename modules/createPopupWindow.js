@@ -22,6 +22,7 @@ module.exports = {
             'use-content-size': true,
             'node-integration': false,
             'web-preferences': {
+                'webgl': true,
                 'overlay-scrollbars': true,
                 'web-security': false
             }

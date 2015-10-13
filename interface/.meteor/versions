@@ -1,6 +1,7 @@
 3stack:bignumber@2.0.7
 agnito:simptip@0.0.1
 aldeed:simple-schema@1.3.3
+alexvandesande:identicon@1.0.1
 amplify@1.0.0
 autoupdate@1.2.3
 babel-compiler@5.8.24_1

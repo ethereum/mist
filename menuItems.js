@@ -141,6 +141,7 @@ var menuTempl = function(webviews) {
             submenu: devtToolsSubMenu
         },{
             label: i18n.t('mist.applicationMenu.develop.runTests'),
+            enabled: (global.mode === 'mist'),
             click: function(){
                 global.mainWindow.webContents.send('runTests', 'webview');
             }

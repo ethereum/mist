@@ -102,9 +102,12 @@ module.exports = {
         // start mainnet
         } else {
             global.nodes.eth = spawn(ethPath, [
-                '--master'
+                '--master', ''
             ]);
         }
+
+        // global.nodes.eth.stdout.on("data", function(data){console.log(data.toString())});
+        // global.nodes.eth.stdout.on("error", function(data){console.log(data.toString())});
 
         global.nodes.eth.on('error',function(){
             console.log('Couldn\'t start eth node!');

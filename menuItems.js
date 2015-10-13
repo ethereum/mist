@@ -144,9 +144,16 @@ var menuTempl = function(webviews) {
             click: function(){
                 global.mainWindow.webContents.send('runTests', 'webview');
             }
-        },{
+        }
+    ];
+
+    // add node switching menu
+    if(global.nodes.geth || global.nodes.eth) {
+        devToolsMenu.push({
             type: 'separator'
-        },{
+        });
+        // add node switch
+        devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
@@ -183,59 +190,63 @@ var menuTempl = function(webviews) {
                     }, 10);
                 }
               }
-        ]},{
-            label: i18n.t('mist.applicationMenu.develop.network'),
-            submenu: [
-              {
-                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-                type: 'checkbox',
-                checked: (global.network === 'main'),
-                enabled: !(global.network === 'main'),
-                click: function(){
-                    var geth = !!global.geth;
+        ]});
+        // add network switch
+        // devToolsMenu.push({
+        //     label: i18n.t('mist.applicationMenu.develop.network'),
+        //     submenu: [
+        //       {
+        //         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+        //         type: 'checkbox',
+        //         checked: (global.network === 'main'),
+        //         enabled: !(global.network === 'main'),
+        //         click: function(){
+        //             var geth = !!global.nodes.geth;
 
-                    ethereumNodes.stopNodes();
+        //             ethereumNodes.stopNodes();
 
-                    global.network = 'main';
-                    setTimeout(function(){
-                        if(geth)
-                            ethereumNodes.startGeth();
-                        else
-                            ethereumNodes.startEth();
-                        createMenu(webviews);
+        //             global.network = 'main';
+        //             setTimeout(function(){
+        //                 if(geth)
+        //                     ethereumNodes.startGeth();
+        //                 else
+        //                     ethereumNodes.startEth();
+        //                 createMenu(webviews);
 
-                        setTimeout(function(){
-                            global.mainWindow.reload();
-                        }, 200);
+        //                 setTimeout(function(){
+        //                     global.mainWindow.reload();
+        //                 }, 200);
 
-                    }, 10);
-                }
-              },
-              {
-                label: 'Testnet (Morden)',
-                checked: (global.network === 'test'),
-                enabled: !(global.network === 'test'),
-                click: function(){
-                    var geth = !!global.geth;
+        //             }, 10);
+        //         }
+        //       },
+        //       {
+        //         label: 'Testnet (Morden)',
+        //         checked: (global.network === 'test'),
+        //         enabled: !(global.network === 'test'),
+        //         click: function(){
+        //             var geth = !!global.nodes.geth;
 
-                    ethereumNodes.stopNodes();
+        //             ethereumNodes.stopNodes();
 
-                    global.network = 'test';
-                    setTimeout(function(){
-                        if(geth)
-                            ethereumNodes.startGeth(true);
-                        else
-                            ethereumNodes.startEth(true);
-                        createMenu(webviews);
+        //             global.network = 'test';
+        //             setTimeout(function(){
+        //                 if(geth)
+        //                     ethereumNodes.startGeth(true);
+        //                 else
+        //                     ethereumNodes.startEth(true);
+        //                 createMenu(webviews);
 
-                        setTimeout(function(){
-                            global.mainWindow.reload();
-                        }, 200);
+        //                 setTimeout(function(){
+        //                     global.mainWindow.reload();
+        //                 }, 200);
 
-                    }, 10);
-                }
-              }
-        ]}];
+        //             }, 10);
+        //         }
+        //       }
+        // ]});
+    }
+
 
     menu.push({
         label: i18n.t('mist.applicationMenu.develop.label'),

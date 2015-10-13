@@ -2,8 +2,9 @@
 @module ethereumNodes
 */
 
+const path = require('path');
 const spawn = require('child_process').spawn;
-const path = __dirname + '/../nodes';
+const binaryPath = path.resolve(__dirname + '/../nodes');
 
 module.exports = {
     /**
@@ -12,6 +13,8 @@ module.exports = {
     @method stopNodes
     */
     stopNodes: function() {
+        console.log('Stopping nodes...');
+
         // kill running geth
         if(global.nodes.geth) {
             global.nodes.geth.kill('SIGKILL');
@@ -32,7 +35,7 @@ module.exports = {
     startGeth: function(testnet){
         console.log('Starting Geth...');
 
-        var gethPath = path + '/geth/geth';
+        var gethPath = binaryPath + '/geth/geth';
 
         if(global.production)
             gethPath = gethPath.replace('app.asar/','');
@@ -46,7 +49,7 @@ module.exports = {
         // start testnet
         if(testnet) {
             global.nodes.geth = spawn(gethPath, [
-                '--testnet', '',
+                '--testnet',
             ]);
 
         // start mainnet
@@ -79,7 +82,7 @@ module.exports = {
     startEth: function(testnet){
         console.log('Starting Eth...');
 
-        var ethPath = path + '/eth/eth';
+        var ethPath = binaryPath + '/eth/eth';
 
         if(global.production)
             ethPath = ethPath.replace('app.asar/','');
@@ -93,13 +96,13 @@ module.exports = {
         // start testnet
         if(testnet) {
             global.nodes.eth = spawn(ethPath, [
-                '--morden', ''
+                '--morden'
             ]);
 
         // start mainnet
         } else {
             global.nodes.eth = spawn(ethPath, [
-                '--master', '""'
+                '--master'
             ]);
         }
 

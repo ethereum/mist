@@ -68,12 +68,14 @@ module.exports = function(socket, appStartWindow, callback){
                         idCount++;
 
                         // get the latest sync status
-                        socket.write(JSON.stringify({
-                            jsonrpc: '2.0',
-                            id: idCount,
-                            method: 'eth_syncing',
-                            params: []
-                        }));
+                        if(socket.writable) {
+                            socket.write(JSON.stringify({
+                                jsonrpc: '2.0',
+                                id: idCount,
+                                method: 'eth_syncing',
+                                params: []
+                            }));
+                        }
                     }, 50);
 
 

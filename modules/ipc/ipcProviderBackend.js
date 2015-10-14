@@ -180,7 +180,8 @@ module.exports = function(){
 
                 result = _this.filterRequestResponse(result, event);
 
-                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
+                if(result && !_.isArray(result))
+                    console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -204,7 +205,6 @@ module.exports = function(){
 
                 _this.sender.send('ipcProvider-error', data);
 
-                _this.timeout();
             } catch(e) {
                 _this.destroy();
             }
@@ -222,7 +222,6 @@ module.exports = function(){
 
                 _this.sender.send('ipcProvider-end');
 
-                _this.timeout();
             } catch(e) {
                 _this.destroy();
             }
@@ -435,10 +434,10 @@ module.exports = function(){
     @method destroy
     */
     GethConnection.prototype.destroy = function() {
+        this.timeout();
+
         this.ipcSocket.removeAllListeners();
         this.ipcSocket.destroy();
-
-        this.timeout();
 
         delete global.sockets['id_'+ this.id];
 

@@ -53,11 +53,13 @@ module.exports = {
         var binPath = binaryPath + '/'+ type +'/'+ type +'';
 
         if(global.production)
-            binPath = binPath.replace('app.asar/','');
+            binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
 
 
-        if(process.platform === 'win32')
+        if(process.platform === 'win32') {
+            binPath = binPath.replace(/\/+/,'\\');
             binPath += '.exe';
+        }
 
         if(process.platform === 'linux')
             binPath = type; // simply try to run a global binary

@@ -257,7 +257,6 @@ app.on('ready', function() {
 
 
     var appStartWindow = new BrowserWindow({
-            type: 'splash',
             width: 400,
             height: 200,
             icon: global.icon,

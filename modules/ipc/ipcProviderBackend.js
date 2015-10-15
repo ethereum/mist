@@ -180,8 +180,8 @@ module.exports = function(){
 
                 result = _this.filterRequestResponse(result, event);
 
-                if(result && !_.isArray(result))
-                    console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
+                // if(result && !_.isArray(result))
+                //     console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {

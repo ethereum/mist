@@ -50,7 +50,7 @@ module.exports = {
         var _this = this,
             called = false;
 
-        var binPath = binaryPath + '/'+ type +'/'+ type +'';
+        var binPath = binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type;
 
         if(global.production)
             binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
@@ -61,8 +61,8 @@ module.exports = {
             binPath += '.exe';
         }
 
-        if(process.platform === 'linux')
-            binPath = type; // simply try to run a global binary
+        // if(process.platform === 'linux')
+        //     binPath = type; // simply try to run a global binary
 
 
         if(type === 'eth') {

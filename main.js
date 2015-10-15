@@ -79,10 +79,11 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 // process.nextTick(function() { global.process = processRef; });
 
 
-
-// Report crashes to our server.
-require('crash-reporter').start();
-
+// prevent crashed and close gracefully
+process.on('uncaughtException', function(error){
+    console.log('UNCAUGHT EXCEPTION', error);
+    app.quit();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -385,7 +386,7 @@ var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadUrl('file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html');//global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
+    global.mainWindow.loadUrl(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();

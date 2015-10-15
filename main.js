@@ -218,14 +218,15 @@ app.on('ready', function() {
             height: 700,
             icon: global.icon,
             'standard-window': false,
+            'dark-theme': true,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
             'web-preferences': {
-                'overlay-fullscreen-video': true,
                 'overlay-scrollbars': true,
                 'webaudio': true,
                 'webgl': true,
-                'text-areas-are-resizable': true
+                'text-areas-are-resizable': true,
+                'web-security': false // necessary to make routing work on file:// protocol
             }
         });
 
@@ -384,7 +385,7 @@ var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadUrl(global.interfaceAppUrl);
+    global.mainWindow.loadUrl('file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html');//global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();

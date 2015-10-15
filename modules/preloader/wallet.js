@@ -23,6 +23,7 @@ document.addEventListener('click', function(e) {
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 web3Admin.extend(window.web3);
 
+
 window.mist = mist;
 window.platform = process.platform;
 

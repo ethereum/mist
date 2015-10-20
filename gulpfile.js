@@ -199,56 +199,42 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
 });
 
 
-gulp.task('change-files', ['create-binaries'], function (cb) {
-    var streams = osVersions.map(function(os){
+gulp.task('change-files', ['create-binaries'], function() {
+    var streams = [];
+
+    osVersions.map(function(os){
         var stream,
             path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
 
-        stream = gulp.src([
+        // change version file
+        streams.push(gulp.src([
             path +'/version'
             ])
             .pipe(replace(electronVersion, version))
-            .pipe(gulp.dest(path +'/'));
+            .pipe(gulp.dest(path +'/')));
 
-        return stream;
-    });
+        // copy license file
+        streams.push(gulp.src([
+            './LICENSE'
+            ])
+            .pipe(gulp.dest(path +'/')));
 
 
-    return merge.apply(null, streams);
-});
+        // copy authors file
+        streams.push(gulp.src([
+            './AUTHORS'
+            ])
+            .pipe(gulp.dest(path +'/')));
 
-
-gulp.task('add-readme', ['change-files'], function() {
-    var streams = osVersions.map(function(os){
-        var stream,
-            path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
-
-        stream = gulp.src([
+        // copy readme
+        streams.push(gulp.src([
             './Wallet-README.txt'
             ], { base: './' })
-            .pipe(gulp.dest(path + '/'));
-
-        return stream;
-    });
-
-
-    return merge.apply(null, streams);
-});
-
-gulp.task('rename-readme', ['add-readme'], function() {
-    var streams = osVersions.map(function(os){
-        var stream,
-            path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
-
-        stream = gulp.src([
-            path + '/Wallet-README.txt'
-            ])
             .pipe(rename(function (path) {
                 path.basename = "README";
             }))
-            .pipe(gulp.dest(path + '/'));
+            .pipe(gulp.dest(path + '/')));
 
-        return stream;
     });
 
 
@@ -256,7 +242,7 @@ gulp.task('rename-readme', ['add-readme'], function() {
 });
 
 
-gulp.task('cleanup-files', ['rename-readme'], function (cb) {
+gulp.task('cleanup-files', ['change-files'], function (cb) {
   return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
 });
 
@@ -323,8 +309,6 @@ gulp.task('taskQueue', [
     'bundling-interface',
     'create-binaries',
     'change-files',
-    'add-readme',
-    'rename-readme',
     'cleanup-files',
     'rename-folders',
     // 'zip'

@@ -1,4 +1,5 @@
 global._ = require('underscore');
+const fs = require('fs');
 const app = require('app');  // Module to control application life.
 const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
@@ -23,7 +24,8 @@ global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.path = {
     HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData')
+    APPDATA: app.getPath('appData'),
+    USERDATA: app.getPath('userData')
 };
 
 global.language = 'en';
@@ -305,7 +307,17 @@ app.on('ready', function() {
                 if(appStartWindow && appStartWindow.webContents)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
-                var node = ethereumNodes.startNode('geth', false, function(e){
+                // read which node is used on this machine
+                var nodeType;
+                var defaultNode = 'geth';
+                try {
+                    nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
+                    console.log('Node type: ', nodeType);
+                } catch(e){
+                    console.log('No node type set yet, using "'+ defaultNode +'".');
+                }
+
+                var node = ethereumNodes.startNode(nodeType || defaultNode, false, function(e){
                     // TRY TO CONNECT EVER 500MS
                     if(!e) {
                         intervalId = setInterval(function(){

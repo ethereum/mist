@@ -3,6 +3,7 @@
 */
 
 const _ = require('underscore');
+const fs = require('fs');
 const app = require('app');
 const path = require('path');
 const spawn = require('child_process').spawn;
@@ -25,6 +26,8 @@ module.exports = {
             global.nodes.geth.stderr.removeAllListeners('data');
             global.nodes.geth.stdout.removeAllListeners('data');
             global.nodes.geth.stdin.removeAllListeners('error');
+            global.nodes.geth.removeAllListeners('error');
+            global.nodes.geth.removeAllListeners('exit');
             global.nodes.geth.kill('SIGKILL');
             global.nodes.geth = null;
         }
@@ -34,6 +37,8 @@ module.exports = {
             global.nodes.eth.stderr.removeAllListeners('data');
             global.nodes.eth.stdout.removeAllListeners('data');
             global.nodes.eth.stdin.removeAllListeners('error');
+            global.nodes.eth.removeAllListeners('error');
+            global.nodes.eth.removeAllListeners('exit');
             global.nodes.eth.kill('SIGKILL');
             global.nodes.eth = null;
         }
@@ -50,7 +55,9 @@ module.exports = {
         var _this = this,
             called = false;
 
-        var binPath = binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type;
+        var binPath = (!global.production)
+            ? binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type
+            : binaryPath.replace('nodes','node') + '/'+ type;
 
         if(global.production)
             binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
@@ -65,6 +72,8 @@ module.exports = {
         //     binPath = type; // simply try to run a global binary
 
 
+        console.log('Start node from '+ binPath);
+
         if(type === 'eth') {
 
             var modalWindow = createPopupWindow.show('unlockMasterPassword', 400, 220, null, null, true);
@@ -73,19 +82,29 @@ module.exports = {
                     app.quit();
             });
 
-            ipc.once('uiAction_unlockedMasterPassword', function(ev, err, result){
+            var popupCallback = function(e){
+                if(!e) {
+                    called = true;
+                    modalWindow.close();
+                    modalWindow = null;
+                    ipc.removeAllListeners('uiAction_unlockedMasterPassword');
+
+                } else if(modalWindow) {
+                    modalWindow.webContents.send('data', {masterPasswordWrong: true});
+                }
+            };
+
+            ipc.on('uiAction_unlockedMasterPassword', function(ev, err, result){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
+
                     if(!err) {
-                        _this._startProcess(type, testnet, binPath, result, callback);
+                        _this._startProcess(type, testnet, binPath, result, callback, popupCallback);
 
                     } else {
                         app.quit();
                     }
 
                     result = null;
-                    called = true;
-                    modalWindow.close();
-                    modalWindow = null;
                 }
             });
         } else {
@@ -98,11 +117,32 @@ module.exports = {
 
     @method _startProcess
     */
-    _startProcess: function(type, testnet, binPath, pw, callback){
-        var cbCalled = false,
+    _startProcess: function(type, testnet, binPath, pw, callback, popupCallback){
+        var _this = this,
+            cbCalled = false,
             error = false;
 
         console.log('Starting '+ type +' node...');
+
+        // wrap the starting callback
+        var callCb = function(err, res){
+
+            // set standard node
+            fs.writeFile(global.path.USERDATA + '/node', type, function(err) {
+                if(!err) {
+                    console.log('Saved standard node "'+ type +'" to file: '+ global.path.USERDATA + '/node');
+                } else {
+                    console.log(err);
+                }
+
+            });
+
+            cbCalled = true;
+            if(err)
+                error = true;
+            callback(err, res);
+        };
+
 
 
         // START TESTNET
@@ -112,39 +152,61 @@ module.exports = {
         // START MAINNET
         } else {
             args = (type === 'geth') ? [] : ['--master', pw];
+            pw = null;
         }
 
         global.nodes[type] = spawn(binPath, args);
 
-        global.nodes[type].on('error',function(e){
+
+        global.nodes[type].once('error',function(e){
             console.log('Couldn\'t start '+ type +' node!', e);
 
             error = true;
 
             if(!cbCalled && _.isFunction(callback)){
-                callback('Couldn\'t start '+ type +' node!');
-                cbCalled = true;
+                callCb('Couldn\'t start '+ type +' node!');
+            }
+        });
+
+        global.nodes[type].once('exit',function(e){
+
+            // If is eth then the password was typed wrong
+            if(!cbCalled && type === 'eth') {
+                _this.stopNodes();
+                popupCallback('Masterpassword wrong');
+
+                console.log('Password wrong '+ type +' node!', e);
             }
         });
 
         // we need to read the buff to prevent geth/eth from stop working
-        global.nodes[type].stdout.on('data', function() {
+        global.nodes[type].stdout.on('data', function(data) {
+
+            // console.log('stdout ', data.toString());
             if(!cbCalled && _.isFunction(callback)){
-                callback(null);
-                cbCalled = true;
-            }
 
-            // console.log('stdout',String(chunk));
+                // prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
+                if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
+                    return;
+                else
+                    popupCallback(null);
+
+                callCb(null);
+            }
         });
-        global.nodes[type].stderr.on('data', function() {
+        global.nodes[type].stderr.on('data', function(data) {
+            // dont react on stderr when eth++
+            if(type === 'eth')
+                return;
+
+            // console.log('stderr ', data.toString());
             if(!cbCalled && _.isFunction(callback)) {
-                callback(null);
-                cbCalled = true;
+                callCb(null);
             }
-            // console.log('stderr',String(chunk));
         });
 
-        // confirm to the disclaimer
+
+        // confirm to the disclaimer in geth
         if(type === 'geth') {
             setTimeout(function(){
                 if(!error)

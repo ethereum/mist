@@ -165,9 +165,9 @@ var menuTempl = function(webviews) {
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startNode('geth', function(){
+                        ethereumNodes.startNode('geth', false, function(){
                             setTimeout(function(){
-                                global.mainWindow.reload();
+                                global.mainWindow.loadUrl(global.interfaceAppUrl);
                             }, 200);
                         });
                         createMenu(webviews);
@@ -183,9 +183,9 @@ var menuTempl = function(webviews) {
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startNode('eth', function(){
+                        ethereumNodes.startNode('eth', false, function(){
                             setTimeout(function(){
-                                global.mainWindow.reload();
+                                global.mainWindow.loadUrl(global.interfaceAppUrl);
                             }, 200);
                         });
                         createMenu(webviews);

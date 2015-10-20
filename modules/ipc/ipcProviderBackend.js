@@ -106,7 +106,7 @@ module.exports = function(){
 
         if(!this.ipcSocket.writable) {
 
-            console.log('IPCSOCKET '+ this.id +' CONNECTING..');
+            // console.log('IPCSOCKET '+ this.id +' CONNECTING..');
 
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
 
@@ -199,9 +199,9 @@ module.exports = function(){
 
         this.ipcSocket.on("error", function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
+                // console.log('IPCSOCKET '+ _this.id +' ERROR', data);
 
-                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
+                var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
                 _this.sender.send('ipcProvider-error', data);
 

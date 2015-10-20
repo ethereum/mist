@@ -57,7 +57,7 @@ module.exports = {
 
         var binPath = (!global.production)
             ? binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type
-            : binaryPath.replace('nodes','node') + '/'+ type;
+            : binaryPath.replace('nodes','node') + '/'+ type +'/'+ type;
 
         if(global.production)
             binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
@@ -185,8 +185,11 @@ module.exports = {
             // console.log('stdout ', data.toString());
             if(!cbCalled && _.isFunction(callback)){
 
-                // prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
+                // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                 if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
+                    return;
+                // (geth) prevent starying until IPC service is started
+                else if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
                     return;
                 else
                     popupCallback(null);

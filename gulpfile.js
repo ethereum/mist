@@ -226,7 +226,7 @@ gulp.task('change-files', ['create-binaries'], function() {
             ])
             .pipe(gulp.dest(path +'/')));
 
-        // copy readme
+        // copy and rename readme
         streams.push(gulp.src([
             './Wallet-README.txt'
             ], { base: './' })
@@ -235,6 +235,24 @@ gulp.task('change-files', ['create-binaries'], function() {
             }))
             .pipe(gulp.dest(path + '/')));
 
+        var destPath = (os === 'darwin-x64')
+            ? path +'/'+ filenameUppercase +'.app/Contents/Resources/node'
+            : path +'/resources/node';
+
+
+
+        // copy eth node binaries
+        streams.push(gulp.src([
+            './nodes/eth/'+ os + '/*'
+            ])
+            .pipe(gulp.dest(destPath +'/eth')));
+
+        // copy geth node binaries
+        streams.push(gulp.src([
+            './nodes/geth/'+ os + '/*'
+            ])
+            .pipe(gulp.dest(destPath +'/geth')));
+
     });
 
 
@@ -242,12 +260,12 @@ gulp.task('change-files', ['create-binaries'], function() {
 });
 
 
-gulp.task('cleanup-files', ['change-files'], function (cb) {
-  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
-});
+//gulp.task('cleanup-files', ['change-files'], function (cb) {
+//  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
+//});
 
 
-gulp.task('rename-folders', ['cleanup-files'], function(done) {
+gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
     osVersions.forEach(function(os){
         var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os + '-'+ version.replace(/\./g,'-');
@@ -309,7 +327,7 @@ gulp.task('taskQueue', [
     'bundling-interface',
     'create-binaries',
     'change-files',
-    'cleanup-files',
+    //'cleanup-files',
     'rename-folders',
     // 'zip'
 ]);

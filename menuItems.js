@@ -166,12 +166,9 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode('geth', false, function(){
-                            setTimeout(function(){
-                                global.mainWindow.loadUrl(global.interfaceAppUrl);
-                            }, 200);
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
                         });
-                        createMenu(webviews);
-
                     }, 10);
                 }
               },
@@ -184,12 +181,9 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode('eth', false, function(){
-                            setTimeout(function(){
-                                global.mainWindow.loadUrl(global.interfaceAppUrl);
-                            }, 200);
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
                         });
-                        createMenu(webviews);
-
                     }, 10);
                 }
               }

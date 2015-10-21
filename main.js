@@ -262,7 +262,7 @@ app.on('ready', function() {
 
     var appStartWindow = new BrowserWindow({
             width: 400,
-            height: 200,
+            height: 230,
             icon: global.icon,
             resizable: false,
             'node-integration': false,

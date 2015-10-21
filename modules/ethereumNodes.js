@@ -158,8 +158,7 @@ module.exports = {
         global.nodes[type] = spawn(binPath, args);
 
 
-        global.nodes[type].once('error',function(e){
-            console.log('Couldn\'t start '+ type +' node!', e);
+        global.nodes[type].once('error',function(){
 
             error = true;
 
@@ -168,14 +167,14 @@ module.exports = {
             }
         });
 
-        global.nodes[type].once('exit',function(e){
+        global.nodes[type].once('exit',function(){
 
             // If is eth then the password was typed wrong
             if(!cbCalled && type === 'eth') {
                 _this.stopNodes();
                 popupCallback('Masterpassword wrong');
 
-                console.log('Password wrong '+ type +' node!', e);
+                console.log('Password wrong '+ type +' node!');
             }
         });
 

@@ -5,8 +5,8 @@
 const ipc = require('ipc');
 const mist = require('../mistAPI.js');
 const shell = require('shell');
-const Web3 = require('web3');
 const BigNumber = require('bignumber.js');
+const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 require('../getFavicon.js');
 

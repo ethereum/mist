@@ -20,7 +20,6 @@ reactive-var
 sacha:spin
 agnito:simptip
 mrt:jquery-ui-sortable
-ethereum:web3
 ethereum:elements
 ethereum:accounts
 ethereum:blocks

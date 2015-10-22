@@ -332,7 +332,7 @@ app.on('ready', function() {
 
                                 clearInterval(intervalId);
 
-                                clearSocket(socket, appStartWindow, ipcPath, true);
+                                clearSocket(socket, true);
                             }
                         }, 200);
 
@@ -346,7 +346,7 @@ app.on('ready', function() {
 
                         clearInterval(intervalId);
 
-                        clearSocket(socket, appStartWindow, ipcPath, true);
+                        clearSocket(socket, true);
                     }
                 });
             }
@@ -364,7 +364,8 @@ app.on('ready', function() {
 
             checkNodeSync(socket, appStartWindow, function(e){
 
-                clearSocket(socket, appStartWindow, ipcPath);
+                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+                clearSocket(socket);
                 startMainWindow(appStartWindow);
             });
         });
@@ -378,7 +379,7 @@ Clears the socket
 
 @method clearSocket
 */
-var clearSocket = function(socket, appStartWindow, ipcPath, timeout){
+var clearSocket = function(socket, timeout){
     if(timeout) {
         ethereumNodes.stopNodes();
     }

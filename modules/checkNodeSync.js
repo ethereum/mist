@@ -95,6 +95,7 @@ module.exports = function(socket, appStartWindow, callback){
                     console.log('Sync finished, starting app!');
 
                     clearInterval(intervalId);
+                    clearTimeout(timeoutId);
                     callback();
 
                     // prevent double call of the callback

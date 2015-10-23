@@ -114,6 +114,21 @@ module.exports = {
         return global.nodes[type];
     },
     /**
+    Writes the node type, which will be started on next start to a file.
+
+    @method _writeNodeToFile
+    */
+    _writeNodeToFile: function(writeType){
+        // set standard node
+        fs.writeFile(global.path.USERDATA + '/node', writeType, function(err) {
+            if(!err) {
+                console.log('Saved standard node "'+ writeType +'" to file: '+ global.path.USERDATA + '/node');
+            } else {
+                console.log(err);
+            }
+        });
+    },
+    /**
 
     @method _startProcess
     */
@@ -123,20 +138,13 @@ module.exports = {
             error = false;
 
         console.log('Starting '+ type +' node...');
+        this.stopNodes();
 
         // wrap the starting callback
         var callCb = function(err, res){
 
-            // set standard node
-            fs.writeFile(global.path.USERDATA + '/node', type, function(err) {
-                if(!err) {
-                    console.log('Saved standard node "'+ type +'" to file: '+ global.path.USERDATA + '/node');
-                } else {
-                    console.log(err);
-                }
-
-            });
-
+            _this._writeNodeToFile(type);
+            
             cbCalled = true;
             if(err)
                 error = true;
@@ -158,8 +166,8 @@ module.exports = {
         global.nodes[type] = spawn(binPath, args);
 
 
-        global.nodes[type].once('error',function(){
-
+        // node has a problem starting
+        global.nodes[type].once('error',function(e){
             error = true;
 
             if(!cbCalled && _.isFunction(callback)){
@@ -167,12 +175,17 @@ module.exports = {
             }
         });
 
-        global.nodes[type].once('exit',function(){
+        // node quit, e.g. master pw wrong
+        global.nodes[type].once('exit',function(e){
+            console.log('EXIT?', e);
 
             // If is eth then the password was typed wrong
             if(!cbCalled && type === 'eth') {
                 _this.stopNodes();
                 popupCallback('Masterpassword wrong');
+
+                // set default to geth, to prevent beeing unable to start the wallet
+                _this._writeNodeToFile('geth');
 
                 console.log('Password wrong '+ type +' node!');
             }
@@ -181,7 +194,7 @@ module.exports = {
         // we need to read the buff to prevent geth/eth from stop working
         global.nodes[type].stdout.on('data', function(data) {
 
-            // console.log('stdout ', data.toString());
+            console.log('stdout ', data.toString());
             if(!cbCalled && _.isFunction(callback)){
 
                 // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
@@ -201,7 +214,7 @@ module.exports = {
             if(type === 'eth')
                 return;
 
-            // console.log('stderr ', data.toString());
+            console.log('stderr ', data.toString());
             if(!cbCalled && _.isFunction(callback)) {
                 callCb(null);
             }

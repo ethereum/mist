@@ -158,7 +158,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.2.2 (Go)',
+                label: 'Geth 1.2.3 (Go)',
                 checked: !!global.nodes.geth,
                 enabled: !global.nodes.geth,
                 type: 'checkbox',
@@ -173,7 +173,7 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.0.0 (C++)',
+                label: 'Eth 1.1.0 develop (C++)',
                 type: 'checkbox',
                 checked: !!global.nodes.eth,
                 enabled: !global.nodes.eth,

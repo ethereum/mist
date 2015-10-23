@@ -176,8 +176,7 @@ module.exports = {
         });
 
         // node quit, e.g. master pw wrong
-        global.nodes[type].once('exit',function(e){
-            console.log('EXIT?', e);
+        global.nodes[type].once('exit',function(){
 
             // If is eth then the password was typed wrong
             if(!cbCalled && type === 'eth') {
@@ -194,7 +193,7 @@ module.exports = {
         // we need to read the buff to prevent geth/eth from stop working
         global.nodes[type].stdout.on('data', function(data) {
 
-            console.log('stdout ', data.toString());
+            // console.log('stdout ', data.toString());
             if(!cbCalled && _.isFunction(callback)){
 
                 // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
@@ -214,10 +213,10 @@ module.exports = {
             if(type === 'eth')
                 return;
 
-            console.log('stderr ', data.toString());
-            if(!cbCalled && _.isFunction(callback)) {
-                callCb(null);
-            }
+            // console.log('stderr ', data.toString());
+            // if(!cbCalled && _.isFunction(callback)) {
+            //     callCb(null);
+            // }
         });
 
 

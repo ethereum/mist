@@ -436,8 +436,8 @@ module.exports = function(){
     GethConnection.prototype.destroy = function() {
         this.timeout();
 
-        this.ipcSocket.removeAllListeners();
         this.ipcSocket.destroy();
+        this.ipcSocket.removeAllListeners();
 
         delete global.sockets['id_'+ this.id];
 

@@ -155,11 +155,11 @@ module.exports = {
 
         // START TESTNET
         if(testnet) {
-            args = (type === 'geth') ? ['--testnet'] : ['--morden'];
+            args = (type === 'geth') ? ['--testnet'] : ['--morden', '--unsafe-transactions'];
 
         // START MAINNET
         } else {
-            args = (type === 'geth') ? [] : ['--master', pw];
+            args = (type === 'geth') ? [] : ['--unsafe-transactions', '--master', pw];
             pw = null;
         }
 

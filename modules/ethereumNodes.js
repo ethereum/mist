@@ -137,8 +137,9 @@ module.exports = {
             cbCalled = false,
             error = false;
 
-        console.log('Starting '+ type +' node...');
         this.stopNodes();
+
+        console.log('Starting '+ type +' node...');
 
         // wrap the starting callback
         var callCb = function(err, res){
@@ -199,9 +200,6 @@ module.exports = {
                 // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                 if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
                     return;
-                // (geth) prevent starying until IPC service is started
-                else if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
-                    return;
                 else
                     popupCallback(null);
 
@@ -214,9 +212,14 @@ module.exports = {
                 return;
 
             // console.log('stderr ', data.toString());
-            // if(!cbCalled && _.isFunction(callback)) {
-            //     callCb(null);
-            // }
+            if(!cbCalled && _.isFunction(callback)) {
+
+                // (geth) prevent starying until IPC service is started
+                if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
+                    return;
+
+                callCb(null);
+            }
         });
 
 

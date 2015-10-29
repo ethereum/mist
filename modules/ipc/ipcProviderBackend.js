@@ -390,8 +390,11 @@ module.exports = function(){
             var solc = require('solc');
 
             var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
-            var response = {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
-            
+
+            var response = (!output || output.errors)
+                ? {"jsonrpc": "2.0", "error": {code: -32700, message: (output ? output.errors : 'Compile error')}, "id": filteredPayload.id}
+                : {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
+
             if(event.sync)
                 event.returnValue = JSON.stringify(response);
             else

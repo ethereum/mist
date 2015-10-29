@@ -98,6 +98,7 @@ gulp.task('copy-files', ['clean:dist'], function() {
         './tests/**/*.*',
         './modules/**/*.*',
         './node_modules/**/*.*',
+        './sounds/*.*',
         './icons/'+ type +'/*.*',
         './*.*',
         '!./interface/**/*.*',

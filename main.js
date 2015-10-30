@@ -8,7 +8,7 @@ const syncMinimongo = require('./modules/syncMinimongo.js');
 
 // GLOBAL Variables
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};

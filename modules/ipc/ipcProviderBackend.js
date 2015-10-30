@@ -25,7 +25,7 @@ module.exports = function(){
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
-        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Couldn't unlock account"}, "id": "__id__"},
+        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 

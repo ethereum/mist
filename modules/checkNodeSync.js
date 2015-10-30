@@ -68,12 +68,14 @@ module.exports = function(socket, appStartWindow, callback){
                         idCount++;
 
                         // get the latest sync status
-                        socket.write(JSON.stringify({
-                            jsonrpc: '2.0',
-                            id: idCount,
-                            method: 'eth_syncing',
-                            params: []
-                        }));
+                        if(socket.writable) {
+                            socket.write(JSON.stringify({
+                                jsonrpc: '2.0',
+                                id: idCount,
+                                method: 'eth_syncing',
+                                params: []
+                            }));
+                        }
                     }, 50);
 
 
@@ -93,6 +95,7 @@ module.exports = function(socket, appStartWindow, callback){
                     console.log('Sync finished, starting app!');
 
                     clearInterval(intervalId);
+                    clearTimeout(timeoutId);
                     callback();
 
                     // prevent double call of the callback

@@ -2,15 +2,8 @@ Ethereum Wallet
 
 The ethereum wallet, which allows you to create simple and multisig wallets to manage your ether.
 
-
-Currently you need an instance of `geth` running when you want to use the wallet.
-
-
-## NOTES
-
-- The wallet is currently in an alpha testing phase and its not recommended to use it to store real ether!
-- You can use it on the mainnet, but make sure you try with only small amounts
-
+The wallet contains its own node, but can also use an already running one, if the IPC path of that node is the standard path.
+(See below)
 
 ## Running on a testnet
 
@@ -33,6 +26,20 @@ as not the full code has to be deployed for every wallet.
 
 You need to make sure that the account displayed for the original wallet creation is unlocked and has at least 1 ether.
 
+
+## Paths
+
+The paths which store your wallets database and node are different:
+
+The wallet (Mist) stores its data at:
+- Mac: ~/Library/Application Support/Mist
+- Win: C:\users\app data\roaming\Mist
+- Linux: ~/.mist (?)
+
+The nodes data is stored at:
+- Mac: ~/Library/Ethereum
+- Win: C:\users\app data\roaming\Ethereum
+- Linux: ~/.ethereum
 
 
 ## Issues

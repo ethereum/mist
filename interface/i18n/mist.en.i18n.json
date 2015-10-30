@@ -77,8 +77,12 @@
                 }
             },
             "unlockMasterPassword": {
-                "title": "Unlock master password",
-                "enterPassword": "Enter master password"
+                "title": "Enter master password",
+                "enterPassword": "Enter master password",
+                "unlocking": "Unlocking...",
+                "errors": {
+                    "wrongPassword": "Password wrong, try again."
+                }
             },
             "sendTransactionConfirmation": {
                 "title": {

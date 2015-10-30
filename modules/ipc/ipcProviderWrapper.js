@@ -33,6 +33,7 @@ ipcProviderWrapper = {
     @method connect
     */
     connect: function(path) {
+        // console.log('CONNECT SYNC');
         this.writable = ipc.sendSync('ipcProvider-create'); // path is set in the backend
         // ipc.send('ipcProvider-create'); // path is set in the backend
 
@@ -72,6 +73,7 @@ ipcProviderWrapper = {
     @method writeSync
     */
     writeSync: function (payload) {
+        // console.log('SEND SYNC', payload);
         return ipc.sendSync('ipcProvider-writeSync', payload);
     }
 

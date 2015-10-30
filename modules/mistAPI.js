@@ -40,6 +40,16 @@ setInterval(function(){
     }
 }, 200);
 
+// preparing sounds
+var sound = {
+    bip: document.createElement('audio'),
+    bloop: document.createElement('audio'),
+    invite: document.createElement('audio'),
+};
+sound.bip.src = 'file://'+ __dirname + '/../sounds/bip.mp3';
+sound.bloop.src = 'file://'+ __dirname + '/../sounds/bloop.mp3';
+sound.invite.src = 'file://'+ __dirname + '/../sounds/invite.mp3';
+
 
 /**
 Mist API
@@ -60,6 +70,11 @@ var mist = {
         }
 
         ipc.send('mistAPI_requestAccount');
+    },
+    sounds: {
+        bip: function(){
+            sound.bip.play();
+        }
     },
     menu: {
         entries: {},

@@ -25,7 +25,7 @@ module.exports = function(){
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
-        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Couldn't unlock account"}, "id": "__id__"},
+        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
@@ -106,7 +106,7 @@ module.exports = function(){
 
         if(!this.ipcSocket.writable) {
 
-            console.log('IPCSOCKET '+ this.id +' CONNECTING..');
+            // console.log('IPCSOCKET '+ this.id +' CONNECTING..');
 
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
 
@@ -180,7 +180,8 @@ module.exports = function(){
 
                 result = _this.filterRequestResponse(result, event);
 
-                // console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
+                if(result && !_.isArray(result))
+                    console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -198,13 +199,12 @@ module.exports = function(){
 
         this.ipcSocket.on("error", function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
+                // console.log('IPCSOCKET '+ _this.id +' ERROR', data);
 
-                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
+                var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
                 _this.sender.send('ipcProvider-error', data);
 
-                _this.timeout();
             } catch(e) {
                 _this.destroy();
             }
@@ -222,7 +222,6 @@ module.exports = function(){
 
                 _this.sender.send('ipcProvider-end');
 
-                _this.timeout();
             } catch(e) {
                 _this.destroy();
             }
@@ -391,8 +390,11 @@ module.exports = function(){
             var solc = require('solc');
 
             var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
-            var response = {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
-            
+
+            var response = (!output || output.errors)
+                ? {"jsonrpc": "2.0", "error": {code: -32700, message: (output ? output.errors : 'Compile error')}, "id": filteredPayload.id}
+                : {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
+
             if(event.sync)
                 event.returnValue = JSON.stringify(response);
             else
@@ -435,10 +437,10 @@ module.exports = function(){
     @method destroy
     */
     GethConnection.prototype.destroy = function() {
-        this.ipcSocket.removeAllListeners();
-        this.ipcSocket.destroy();
-
         this.timeout();
+
+        this.ipcSocket.destroy();
+        this.ipcSocket.removeAllListeners();
 
         delete global.sockets['id_'+ this.id];
 

@@ -158,38 +158,32 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.2.2 (Go)',
+                label: 'Geth 1.2.3 (Go)',
                 checked: !!global.nodes.geth,
                 enabled: !global.nodes.geth,
                 type: 'checkbox',
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startNode('geth', function(){
-                            setTimeout(function(){
-                                global.mainWindow.reload();
-                            }, 200);
+                        ethereumNodes.startNode('geth', false, function(){
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
                         });
-                        createMenu(webviews);
-
                     }, 10);
                 }
               },
               {
-                label: 'Eth 1.0.0 (C++)',
+                label: 'Eth 1.1.0 develop (C++)',
                 type: 'checkbox',
                 checked: !!global.nodes.eth,
                 enabled: !global.nodes.eth,
                 click: function(){
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
-                        ethereumNodes.startNode('eth', function(){
-                            setTimeout(function(){
-                                global.mainWindow.reload();
-                            }, 200);
+                        ethereumNodes.startNode('eth', false, function(){
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
                         });
-                        createMenu(webviews);
-
                     }, 10);
                 }
               }

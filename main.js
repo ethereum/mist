@@ -1,4 +1,5 @@
 global._ = require('underscore');
+const fs = require('fs');
 const app = require('app');  // Module to control application life.
 const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
@@ -23,7 +24,8 @@ global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.path = {
     HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData')
+    APPDATA: app.getPath('appData'),
+    USERDATA: app.getPath('userData')
 };
 
 global.language = 'en';
@@ -79,10 +81,11 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 // process.nextTick(function() { global.process = processRef; });
 
 
-
-// Report crashes to our server.
-require('crash-reporter').start();
-
+// prevent crashed and close gracefully
+process.on('uncaughtException', function(error){
+    console.log('UNCAUGHT EXCEPTION', error);
+    app.quit();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -218,14 +221,15 @@ app.on('ready', function() {
             height: 700,
             icon: global.icon,
             'standard-window': false,
+            'dark-theme': true,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
             'web-preferences': {
-                'overlay-fullscreen-video': true,
                 'overlay-scrollbars': true,
                 'webaudio': true,
                 'webgl': true,
-                'text-areas-are-resizable': true
+                'text-areas-are-resizable': true,
+                'web-security': false // necessary to make routing work on file:// protocol
             }
         });
 
@@ -257,9 +261,8 @@ app.on('ready', function() {
 
 
     var appStartWindow = new BrowserWindow({
-            type: 'splash',
             width: 400,
-            height: 200,
+            height: 230,
             icon: global.icon,
             resizable: false,
             'node-integration': false,
@@ -304,7 +307,17 @@ app.on('ready', function() {
                 if(appStartWindow && appStartWindow.webContents)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
-                var node = ethereumNodes.startNode('geth', false, function(e){
+                // read which node is used on this machine
+                var nodeType;
+                var defaultNode = 'geth';
+                try {
+                    nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
+                    console.log('Node type: ', nodeType);
+                } catch(e){
+                    console.log('No node type set yet, using "'+ defaultNode +'".');
+                }
+
+                var node = ethereumNodes.startNode(nodeType || defaultNode, false, function(e){
                     // TRY TO CONNECT EVER 500MS
                     if(!e) {
                         intervalId = setInterval(function(){
@@ -319,7 +332,7 @@ app.on('ready', function() {
 
                                 clearInterval(intervalId);
 
-                                clearSocket(socket, appStartWindow, ipcPath, true);
+                                clearSocket(socket, true);
                             }
                         }, 200);
 
@@ -333,7 +346,7 @@ app.on('ready', function() {
 
                         clearInterval(intervalId);
 
-                        clearSocket(socket, appStartWindow, ipcPath, true);
+                        clearSocket(socket, true);
                     }
                 });
             }
@@ -351,7 +364,8 @@ app.on('ready', function() {
 
             checkNodeSync(socket, appStartWindow, function(e){
 
-                clearSocket(socket, appStartWindow, ipcPath);
+                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+                clearSocket(socket);
                 startMainWindow(appStartWindow);
             });
         });
@@ -365,7 +379,7 @@ Clears the socket
 
 @method clearSocket
 */
-var clearSocket = function(socket, appStartWindow, ipcPath, timeout){
+var clearSocket = function(socket, timeout){
     if(timeout) {
         ethereumNodes.stopNodes();
     }
@@ -385,7 +399,7 @@ var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadUrl(global.interfaceAppUrl);
+    global.mainWindow.loadUrl(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();

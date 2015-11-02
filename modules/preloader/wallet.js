@@ -1,7 +1,6 @@
 /**
 @module preloader wallet
 */
-
 const mist = require('../mistAPI.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');
@@ -26,7 +25,7 @@ window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 web3Admin.extend(window.web3);
 
 
-window.mist = mist;
+window.mist = mist(true);
 window.platform = process.platform;
 
 setTimeout(function(){

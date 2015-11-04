@@ -222,6 +222,7 @@ app.on('ready', function() {
             icon: global.icon,
             'standard-window': false,
             'dark-theme': true,
+            'accept-first-mouse': true,
             preload: __dirname +'/modules/preloader/mistUI.js',
             'node-integration': false,
             'web-preferences': {
@@ -246,6 +247,7 @@ app.on('ready', function() {
             icon: global.icon,
             'standard-window': false,
             'dark-theme': true,
+            'accept-first-mouse': true,
             preload: __dirname +'/modules/preloader/wallet.js',
             'node-integration': false,
             'web-preferences': {

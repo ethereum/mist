@@ -27,7 +27,7 @@ Meteor.startup(function(){
                 }
             });
         }
-    }, 500);
+    }, 1500);
 
     EthAccounts.init();
     EthBlocks.init();

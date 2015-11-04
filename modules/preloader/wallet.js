@@ -8,6 +8,9 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
+// disable pinch zoom
+require('web-frame').setZoomLevelLimits(1, 1);
+
 
 // open a[target="_blank"] in external browser
 document.addEventListener('click', function(e) {

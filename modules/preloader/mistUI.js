@@ -14,6 +14,8 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const i18n = require('../i18n.js');
 const web3Admin = require('../web3Admin.js');
 
+// disable pinch zoom
+require('web-frame').setZoomLevelLimits(1, 1);
 
 // make variables globally accessable
 window.BigNumber = BigNumber;

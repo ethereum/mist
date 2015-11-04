@@ -17,7 +17,7 @@ global.nodes = {
     geth: null,
     eth: null
 };
-global.network = 'main'; // or 'test'
+global.network = 'main'; // or 'test', will be set by the file later
 
 
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
@@ -58,7 +58,7 @@ if(global.mode === 'wallet') {
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const ipc = require('ipc');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const menuItems = require('./menuItems');
+const menuItems = require('./modules/menuItems');
 const createPopupWindow = require('./modules/createPopupWindow.js');
 const ethereumNodes = require('./modules/ethereumNodes.js');
 
@@ -310,16 +310,20 @@ app.on('ready', function() {
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
                 // read which node is used on this machine
-                var nodeType;
-                var defaultNode = 'geth';
+                var nodeType = 'geth';
+
                 try {
                     nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
-                    console.log('Node type: ', nodeType);
                 } catch(e){
-                    console.log('No node type set yet, using "'+ defaultNode +'".');
                 }
+                try {
+                    global.network = fs.readFileSync(global.path.USERDATA + '/network', {encoding: 'utf8'});
+                } catch(e){
+                }
+                console.log('Node type: ', nodeType);
+                console.log('Network: ', global.network);
 
-                var node = ethereumNodes.startNode(nodeType || defaultNode, false, function(e){
+                var node = ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
                     // TRY TO CONNECT EVER 500MS
                     if(!e) {
                         intervalId = setInterval(function(){

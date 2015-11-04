@@ -118,11 +118,23 @@ module.exports = {
 
     @method _writeNodeToFile
     */
-    _writeNodeToFile: function(writeType){
+    _writeNodeToFile: function(writeType, testnet){
         // set standard node
         fs.writeFile(global.path.USERDATA + '/node', writeType, function(err) {
             if(!err) {
                 console.log('Saved standard node "'+ writeType +'" to file: '+ global.path.USERDATA + '/node');
+            } else {
+                console.log(err);
+            }
+        });
+
+        // set the global varibale to testnet
+        global.network = testnet ? 'test' : 'main';
+
+        // write network type
+        fs.writeFile(global.path.USERDATA + '/network', global.network , function(err) {
+            if(!err) {
+                console.log('Saved network type "'+ global.network +'" to file: '+ global.path.USERDATA + '/network');
             } else {
                 console.log(err);
             }
@@ -144,7 +156,7 @@ module.exports = {
         // wrap the starting callback
         var callCb = function(err, res){
 
-            _this._writeNodeToFile(type);
+            _this._writeNodeToFile(type, testnet);
             
             cbCalled = true;
             if(err)
@@ -185,7 +197,7 @@ module.exports = {
                 popupCallback('Masterpassword wrong');
 
                 // set default to geth, to prevent beeing unable to start the wallet
-                _this._writeNodeToFile('geth');
+                _this._writeNodeToFile('geth', testnet);
 
                 console.log('Password wrong '+ type +' node!');
             }

@@ -2,9 +2,9 @@ const app = require('app');
 const BrowserWindow = require('browser-window');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
-const config = require('./config');
+const config = require('../config');
 const ipc = require('ipc');
-const ethereumNodes = require('./modules/ethereumNodes.js');
+const ethereumNodes = require('./ethereumNodes.js');
 
 // TODO change selector to role
 /*
@@ -189,53 +189,43 @@ var menuTempl = function(webviews) {
               }
         ]});
         // add network switch
-        // devToolsMenu.push({
-        //     label: i18n.t('mist.applicationMenu.develop.network'),
-        //     submenu: [
-        //       {
-        //         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-        //         type: 'checkbox',
-        //         checked: (global.network === 'main'),
-        //         enabled: !(global.network === 'main'),
-        //         click: function(){
-        //             var geth = !!global.nodes.geth;
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.network'),
+            submenu: [
+              {
+                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+                type: 'checkbox',
+                checked: (global.network === 'main'),
+                enabled: !(global.network === 'main'),
+                click: function(){
+                    var geth = !!global.nodes.geth;
 
-        //             ethereumNodes.stopNodes();
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startNode(geth ? 'geth' : 'eth', false, function(){
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
+                        });
+                    }, 10);
+                }
+              },
+              {
+                label: 'Testnet (Morden)',
+                checked: (global.network === 'test'),
+                enabled: !(global.network === 'test'),
+                click: function(){
+                    var geth = !!global.nodes.geth;
 
-        //             global.network = 'main';
-        //             setTimeout(function(){
-        //                 ethereumNodes.startNode(geth ? 'geth' : 'eth', false);
-        //                 createMenu(webviews);
-
-        //                 setTimeout(function(){
-        //                     global.mainWindow.reload();
-        //                 }, 200);
-
-        //             }, 10);
-        //         }
-        //       },
-        //       {
-        //         label: 'Testnet (Morden)',
-        //         checked: (global.network === 'test'),
-        //         enabled: !(global.network === 'test'),
-        //         click: function(){
-        //             var geth = !!global.nodes.geth;
-
-        //             ethereumNodes.stopNodes();
-
-        //             global.network = 'test';
-        //             setTimeout(function(){
-        //                 ethereumNodes.startNode(geth ? 'geth' : 'eth', true);
-        //                 createMenu(webviews);
-
-        //                 setTimeout(function(){
-        //                     global.mainWindow.reload();
-        //                 }, 200);
-
-        //             }, 10);
-        //         }
-        //       }
-        // ]});
+                    ethereumNodes.stopNodes();
+                    setTimeout(function(){
+                        ethereumNodes.startNode(geth ? 'geth' : 'eth', true, function(){
+                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            createMenu(webviews);
+                        });
+                    }, 10);
+                }
+              }
+        ]});
     }
 
 

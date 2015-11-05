@@ -9,8 +9,13 @@ if(location.hash)
 if(!LocalStore.get('selectedTab'))
     LocalStore.set('selectedTab', 'browser');
 
+/**
+The init function of Mist
 
-Meteor.startup(function(){
+@method mistInit
+*/
+mistInit = function(){
+
     Meteor.setTimeout(function() {
         if(!Tabs.findOne('browser')) {
             Tabs.insert({
@@ -31,5 +36,14 @@ Meteor.startup(function(){
 
     EthAccounts.init();
     EthBlocks.init();
+};
+
+
+Meteor.startup(function(){
+    // check that it is nopt syncing before
+    web3.eth.getSyncing(function(e, sync) {
+        if(e || !sync)
+            mistInit();
+    });
 });
 

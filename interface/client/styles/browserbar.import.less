@@ -1,11 +1,11 @@
-.browser-area {
+.browser-bar {
+    .display(flex);
     position: absolute;
-    top: 10px;
+    top: @gridHeight * 1.5;
     left: @widthSideBar;
     right: 0;
     z-index: 100;
     height: @gridHeight * 2;
-    display: flex;
     font-family: @sourceSansPro;
     
     button.icon {
@@ -19,14 +19,14 @@
 
     .app-bar {
         position: relative;
+        .display(flex);
         flex-grow: 1;
-        display: flex;
         margin: @gridHeight/4 @gridWidth/4;
         padding: @gridHeight/4 @gridWidth/4;
         background: #fff;//#F6F6F6;
         // border-radius: 3px;
         // box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
-        height: @gridHeight * 1.5; 
+        height: @gridHeight*1.7; 
         overflow: hidden;
 
         // ANIMATION
@@ -78,15 +78,15 @@
             }
         }
 
-        &.keys {
-            button.keys {
+        &.accounts {
+            button.accounts {
                 color: @colorGrayDark;
             }
             button.dapp-info {
                 color: @colorLink;
             }
 
-            div.keys {
+            div.accounts {
                 display: flex;
             }
 
@@ -113,10 +113,21 @@
             height: @gridHeight;
             line-height: @gridHeight;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            margin-top: 1px;
             max-width: 33%;
 
+            &:focus {
+                border-bottom: 0;
+            }
+
+            &.dapp-info {
+                .dapp-shorten-text;
+            }
+
+            .dapp-identicon {
+                margin-top: -2px;
+            }
+    
             .app-icon {
                 position: absolute;
                 top: 1px;
@@ -192,7 +203,7 @@
         }
 
         div.dapp-info,
-        div.keys,
+        div.accounts,
         div.url {
             display: none;
             position: absolute;
@@ -205,7 +216,7 @@
             border-top: solid 1px #BDB6B6;
         }
 
-        div.keys {
+        div.accounts {
             .message {
                 flex-grow: 1;
                 padding: @gridHeight/2 @gridWidth/2 0 0;
@@ -360,7 +371,7 @@
 }
 
 @media screen and (max-width: 960px ) {
-    .keys {
+    .browser-bar .accounts {
       width: 0;
       text-overflow: clip;
       padding-left: @gridWidth * 0.5;
@@ -368,7 +379,7 @@
 }
 
 @media screen and (max-width: 800px ) {
-    div.dapp-info {
+    .browser-bar div.dapp-info {
       width: 0;
       text-overflow: clip;
     }   

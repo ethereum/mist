@@ -78,7 +78,7 @@ pre {
 aside {
     z-index: 4;
     position: absolute;
-    top: @gridHeight/2;
+    top: @gridHeight * 1.5;
     left: 0;
     bottom: 0;
     // padding-top: @gridHeight/2;
@@ -102,9 +102,8 @@ main {
     position: absolute;
     right: 0;
     left: @widthSideBar;
-    top: 10px; 
+    top: @gridHeight * 1.5; 
     bottom: 0;
-    height:100%;
 
     &.open-bar {
         overflow: hidden;

@@ -8,7 +8,7 @@ Template Controllers
 /**
 The browserBar keyinfo template
 
-@class [template] layout_browserBar_keys
+@class [template] layout_browserBar_accounts
 @constructor
 */
 
@@ -25,7 +25,7 @@ var hasPermission = function(tab, address) {
 };
 
 
-Template['layout_browserBar_keys'].onCreated(function(){
+Template['layout_browserBar_accounts'].onCreated(function(){
     this.autorun(function(){
         // make reeactive to the tab change
         var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}}),
@@ -36,7 +36,7 @@ Template['layout_browserBar_keys'].onCreated(function(){
 });
 
 
-Template['layout_browserBar_keys'].helpers({
+Template['layout_browserBar_accounts'].helpers({
     /**
     Return "selected" if the current account is allowed in that dapp.
 
@@ -66,7 +66,7 @@ Template['layout_browserBar_keys'].helpers({
 });
 
 
-Template['layout_browserBar_keys'].events({
+Template['layout_browserBar_accounts'].events({
     /**
     Select the accounts available for this dapp.
 
@@ -100,7 +100,7 @@ Template['layout_browserBar_keys'].events({
     @event click button.confirm, click button.cancel
     */
     'click button.confirm, click button.cancel': function(e) {
-        var tabId = LocalStore.get('selectedTab')
+        var tabId = LocalStore.get('selectedTab'),
             accounts = ($(e.currentTarget).hasClass('confirm')) ? TemplateVar.get('accounts') : [],
             tab = Tabs.findOne(tabId, {fields: {'permissions.accounts': 1}});
 

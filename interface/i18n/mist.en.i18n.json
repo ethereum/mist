@@ -45,6 +45,12 @@
             "openDevTools": "Open Developer Tools",
             "inspectElements": "Inspect Element"
         },
+        "nodeInfo": {
+            "nodeSyncing": "__blockDiff__ blocks left",
+            "blockReceived": "New Block Received",
+            "timeSinceBlock": "since last block",
+            "peers": "peers"
+        },
         "sidebar": {
             "buttons": {
                 "browser": "Browse"
@@ -52,7 +58,7 @@
         },
         "browserBar": {
             "buttons": {
-                "keysNeeded": "Keys Needed"
+                "noAccounts": "No accounts set"
             }
         },
         "startScreen": {

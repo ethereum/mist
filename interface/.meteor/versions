@@ -30,7 +30,7 @@ ecmascript-runtime@0.2.6
 ejson@1.0.7
 ethereum:accounts@0.3.7
 ethereum:blocks@0.3.0
-ethereum:dapp-styles@0.4.3
+ethereum:dapp-styles@0.3.5
 ethereum:elements@0.6.1
 ethereum:tools@0.2.94
 ethereum:web3@0.14.1

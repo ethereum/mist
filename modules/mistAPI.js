@@ -4,6 +4,8 @@
 module.exports = function(isWallet) {
 
     const ipc = require('ipc');
+    const ipcProviderWrapper = require('./ipc/ipcProviderWrapper.js');
+    const Web3 = require('web3');
 
     var queue = [];
     var prefix = 'entry_';
@@ -66,6 +68,7 @@ module.exports = function(isWallet) {
     var mist = {
         callbacks: {},
         platform: process.platform,
+        web3Provider: new Web3.providers.IpcProvider('', ipcProviderWrapper),
         requestAccount:  function(callback){
             if(callback) {
                 if(!this.callbacks['requestAccount'])

@@ -68,6 +68,30 @@ Template['layout_browserBar_accounts'].helpers({
 
 Template['layout_browserBar_accounts'].events({
     /**
+    Create account
+
+    @event click button.create-account
+    */
+    'click button.create-account': function(e, template){
+        mist.requestAccount(function(e, address){
+            var tabId = LocalStore.get('selectedTab'),
+            accounts = TemplateVar.get(template, 'accounts');
+
+            accounts.push(address);
+
+            // set new permissions
+            Tabs.update(tabId, {$set: {
+                'permissions.accounts': accounts
+            }});
+
+            // reload the webview
+            Helpers.getWebview(tabId).reload();
+
+            // hide the sidebar
+            $('.app-bar').removeClass('show-bar');
+        });
+    },
+    /**
     Select the accounts available for this dapp.
 
     @event click .dapp-account-list button

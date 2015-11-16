@@ -12,12 +12,21 @@ if(typeof mist !== 'undefined') {
 }
 ```
 
-Additionally mist provides the `web3` object, to make sure you use the mist connection, check the providor before you set your own:
+You have three different possibilities to use `web3`:
 
 ```js
-// set providor
-if(!web3.currentProvider)
-    web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+// 1. Simply use web3 from mist
+web3
+
+// 2. Use web3 from Mist, OR load your own if you're outside of Mist
+if(typeof web3 === 'undefined')
+  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+// 3. Use your own web3 version, but the provider from mist ("Web3" won't be supplied by Mist, so it should come from your packages)
+if(typeof mist !== 'undefined')
+  web3 = new Web3(mist.web3Provider);
+else
+  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 ```
 
 ## API
@@ -42,6 +51,35 @@ Returns the current platform, mist is running on:
 
 ***
 
+### mist.web3Provider
+
+Returns the current mist provider, which should be used when using a different `Web3` version
+
+#### Example
+
+```js
+web3 = new Web3(mist.web3Provider);
+```
+
+***
+
+### mist.requestAccount(callback)
+
+Asks the user to provide, or create a new account.
+
+#### Parameters
+
+1. `Function` The callback to be called with the new address as the second param
+
+#### Example
+
+```js
+mist.requestAccount(function(e, address){
+    console.log('Added new account', address);
+});
+```
+
+***
 
 ### mist.menu
 

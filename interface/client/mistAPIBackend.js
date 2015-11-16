@@ -56,15 +56,15 @@ mistAPIBackend = function(event) {
         }});
     }
 
+    if(event.channel === 'mistAPI_sound') {
+        sound[arg].play();
+    }
+
     // STOP HERE, IF BROWSER
     if(template.data._id === 'browser')
         return;
 
     // Actions: --------
-
-    if(event.channel === 'mistAPI_sound') {
-        sound[arg].play();
-    }
 
     if(event.channel === 'mistAPI_setBadge') {
         Tabs.update(template.data._id, {$set:{

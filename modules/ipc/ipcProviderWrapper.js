@@ -55,9 +55,10 @@ ipcProviderWrapper = {
             ipc.on('ipcProvider-error', callback);
         }
 
-        if(name === 'end'){
-            ipc.on('ipcProvider-end', callback);
-        }
+        // dont send the end connection error
+        // if(name === 'end'){
+        //     ipc.on('ipcProvider-end', callback);
+        // }
     },
     /**
     Write to the IPC connection through the backend

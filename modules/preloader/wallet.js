@@ -1,13 +1,15 @@
 /**
 @module preloader wallet
 */
-
 const mist = require('../mistAPI.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
+
+// disable pinch zoom
+require('web-frame').setZoomLevelLimits(1, 1);
 
 
 // open a[target="_blank"] in external browser
@@ -26,7 +28,7 @@ window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 web3Admin.extend(window.web3);
 
 
-window.mist = mist;
+window.mist = mist(true);
 window.platform = process.platform;
 
 setTimeout(function(){

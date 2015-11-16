@@ -1,13 +1,12 @@
 /**
 @module preloader dapps
 */
-
 const ipc = require('ipc');
 const mist = require('../mistAPI.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');
-const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+var Web3 = require('web3');
 require('../getFavicon.js');
 
 
@@ -28,6 +27,10 @@ document.addEventListener('click', function(e) {
 
 
 
-window.mist = mist;
+window.mist = mist();
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+
+// prevent overwriting the Dapps Web3
+delete global.Web3;
+delete window.Web3;

@@ -1,5 +1,5 @@
 <template name="layout_browserBar">
-    <div class="browser-area  {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}}">
+    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}}">
         <button title="go back" class="back icon icon-arrow-left"></button>
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
@@ -17,9 +17,15 @@
                     <div class="url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
 
-                <button class="keys">
-                    <figure class="icon-key"></figure>
-                    {{i18n "mist.browserBar.buttons.keysNeeded"}}
+                <button class="accounts">
+                    {{#each dappAccounts}}
+                        <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
+                            {{> dapp_identicon identity=address class="dapp-tiny"}}
+                        </span>
+                    {{else}}
+                        {{i18n "mist.browserBar.buttons.noAccounts"}}
+                    {{/each}}
+                    <i class="icon-key"></i>
                 </button>
                 
                 <!-- sections -->
@@ -32,8 +38,8 @@
                     {{> layout_browserBar_network}}
                 </div>
 
-                <div class="keys">
-                    {{> layout_browserBar_keys}}
+                <div class="accounts">
+                    {{> layout_browserBar_accounts}}
                 </div>
             </div>
         {{/with}}

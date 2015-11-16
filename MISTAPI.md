@@ -139,3 +139,20 @@ None
 
 ***
 
+
+### mist.sounds
+
+Provides a list of sounds
+
+***
+
+### mist.sounds.bip()
+
+Makes a bip counds
+
+#### Parameters
+
+None
+
+***
+

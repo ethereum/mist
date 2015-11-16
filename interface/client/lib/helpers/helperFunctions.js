@@ -21,7 +21,8 @@ Reruns functions reactively, based on an interval. Use it like so:
 @method rerun
 **/
 Helpers.rerun = {
-    '10s': new ReactiveTimer(10)
+    '10s': new ReactiveTimer(10),
+    '1s': new ReactiveTimer(1)
 };
 
 /**

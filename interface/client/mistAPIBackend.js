@@ -17,6 +17,16 @@ var filterId = function(str) {
 };
 
 
+var sound = {
+    bip: document.createElement('audio'),
+    bloop: document.createElement('audio'),
+    invite: document.createElement('audio'),
+};
+sound.bip.src = 'file://'+ dirname + '/../../sounds/bip.mp3';
+sound.bloop.src = 'file://'+ dirname + '/../../sounds/bloop.mp3';
+sound.invite.src = 'file://'+ dirname + '/../../sounds/invite.mp3';
+
+
 /**
 The backend side of the mist API.
 
@@ -52,8 +62,8 @@ mistAPIBackend = function(event) {
 
     // Actions: --------
 
-    if(event.channel === 'mistAPI_createAccount') {
-        console.log('Create Account');
+    if(event.channel === 'mistAPI_sound') {
+        sound[arg].play();
     }
 
     if(event.channel === 'mistAPI_setBadge') {

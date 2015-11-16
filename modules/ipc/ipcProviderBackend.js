@@ -496,6 +496,8 @@ module.exports = function(){
         else if(!socket.ipcSocket.writable)
             socket.connect();
 
+        // console.log('SEND REQ', event.sender.getId());
+
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequestResponse(jsonPayload);
 

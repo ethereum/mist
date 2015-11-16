@@ -52,6 +52,15 @@ Template['layout_browserBar'].helpers({
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
+    Returns dapps current accounts
+
+    @method (dappAccounts)
+    */
+    'dappAccounts': function(){
+        if(this.permissions)
+            return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
+    },
+    /**
     Show the add button, when on a dapp and in doogle
 
     @method (isBrowser)
@@ -166,13 +175,14 @@ Template['layout_browserBar'].events({
     /*
     Show the sections
 
-    @event click button.keys, click button.dapp-info, click form.url
+    @event click button.accounts, click button.dapp-info, click form.url
     */
-    'click button.keys, click button.dapp-info, click form.url': function(e, template){
+    'click button.accounts, click button.dapp-info, click form.url': function(e, template){
         var className = $(e.currentTarget).attr('class');
 
         if(TemplateVar.get('browserBarTab') !== className)
             template.$('.app-bar').addClass('show-bar');
+
         TemplateVar.set('browserBarTab', className);
     },
     /*

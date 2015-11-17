@@ -16,7 +16,7 @@ global.sockets = {};
 
 module.exports = function(){
     const _ = require('underscore');
-    const ipc = require('ipc');
+    const ipc = require('electron').ipcMain;
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');

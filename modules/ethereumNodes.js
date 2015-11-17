@@ -7,7 +7,7 @@ const fs = require('fs');
 const app = require('app');
 const path = require('path');
 const spawn = require('child_process').spawn;
-const ipc = require('ipc');
+const ipc = require('electron').ipcMain;
 const createPopupWindow = require('./createPopupWindow.js');
 
 const binaryPath = path.resolve(__dirname + '/../nodes');

@@ -1,6 +1,7 @@
 global._ = require('underscore');
 const fs = require('fs');
 const app = require('app');  // Module to control application life.
+const electron = require('electron');
 const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
@@ -56,7 +57,7 @@ if(global.mode === 'wallet') {
 
 
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const ipc = require('ipc');
+const ipc = electron.ipcMain;
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const menuItems = require('./modules/menuItems');
 const createPopupWindow = require('./modules/createPopupWindow.js');
@@ -276,7 +277,7 @@ app.on('ready', function() {
                 'web-security': false // necessary to make routing work on file:// protocol
             }
         });
-    appStartWindow.loadUrl(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
+    appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
     // appStartWindow.openDevTools();
 
 
@@ -405,7 +406,7 @@ var startMainWindow = function(appStartWindow){
 
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadUrl(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
+    global.mainWindow.loadURL(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         global.mainWindow.show();

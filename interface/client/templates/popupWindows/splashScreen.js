@@ -22,7 +22,7 @@ var lastData = {};
 Template['popupWindows_splashScreen'].onCreated(function(){
     var template = this;
 
-    ipc.on('startScreenText', function(text, data){
+    ipc.on('startScreenText', function(e, text, data){
         var translatedText = '';
 
         // show text

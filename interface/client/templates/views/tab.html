@@ -1,6 +1,7 @@
 <template name="views_tab">
     <div class="tab-view {{isVisible}}">
         {{#if $eq _id "browser"}}
+            {{debug url}}
             <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/browser.js" autosize="on"></webview> 
         {{/if}}
         {{#if $eq _id "tests"}}

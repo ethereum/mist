@@ -9,7 +9,7 @@ The IPC provider wrapper to communicate to the backend
 @constructor
 */
 
-const ipc = require('ipc');
+const ipc = require('electron').ipcRenderer;
 
 
 /**
@@ -17,7 +17,7 @@ Gets the writable property.
 
 @method on('ipcProvider-setWritable')
 */
-ipc.on('ipcProvider-setWritable', function(writable){
+ipc.on('ipcProvider-setWritable', function(e, writable){
     ipcProviderWrapper.writable = writable;
 });
 
@@ -46,18 +46,24 @@ ipcProviderWrapper = {
     */
     on: function(name, callback) {
         if(name === 'data'){
-            ipc.on('ipcProvider-data', callback);
+            ipc.on('ipcProvider-data', function(e, result){
+                callback(result);
+            });
 
             // rely to all webviews
         }
 
         if(name === 'error'){
-            ipc.on('ipcProvider-error', callback);
+            ipc.on('ipcProvider-error', function(e, result){
+                callback(result);
+            });
         }
 
         // dont send the end connection error
         // if(name === 'end'){
-        //     ipc.on('ipcProvider-end', callback);
+        //     ipc.on('ipcProvider-end', function(e, result){
+        //         callback(result);
+        //     });
         // }
     },
     /**

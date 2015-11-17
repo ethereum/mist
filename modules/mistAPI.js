@@ -3,7 +3,7 @@
 */
 module.exports = function(isWallet) {
 
-    const ipc = require('ipc');
+    const ipc = require('electron').ipcRenderer;
     const ipcProviderWrapper = require('./ipc/ipcProviderWrapper.js');
     const Web3 = require('web3');
 
@@ -20,12 +20,12 @@ module.exports = function(isWallet) {
         return newStr;
     };
 
-    ipc.on('mistAPI_callMenuFunction', function(id) {
+    ipc.on('mistAPI_callMenuFunction', function(e, id) {
         if(mist.menu.entries[id] && mist.menu.entries[id].callback)
             mist.menu.entries[id].callback();
     });
 
-    ipc.on('windowMessage', function(type, error, value) {
+    ipc.on('windowMessage', function(e, type, error, value) {
         if(mist.callbacks[type]) {
             mist.callbacks[type].forEach(function(cb){
                 cb(error, value);

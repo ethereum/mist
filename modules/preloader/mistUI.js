@@ -3,7 +3,7 @@
 */
 
 
-const ipc = require('ipc');
+const ipc = require('electron').ipcRenderer;
 const syncMinimongo = require('../syncMinimongo.js');
 const remote = require('remote');
 const Menu = remote.require('menu');
@@ -36,7 +36,7 @@ window.platform = process.platform;
 
 
 // A message will be send to a webview/window
-ipc.on('mistUI_windowMessage', function(type, id, error, value) {
+ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
 
     if(type === 'requestAccount' && !error) {
         Tabs.update({webviewId: id}, {$addToSet: {
@@ -47,7 +47,7 @@ ipc.on('mistUI_windowMessage', function(type, id, error, value) {
 
 
 // Wait for webview toggle
-ipc.on('toggleWebviewDevTool', function(id){
+ipc.on('toggleWebviewDevTool', function(e, id){
     var webview = Helpers.getWebview(id);
 
     if(!webview)
@@ -60,7 +60,7 @@ ipc.on('toggleWebviewDevTool', function(id){
 });
 
 // Run tests
-ipc.on('runTests', function(type){
+ipc.on('runTests', function(e, type){
     if(type === 'webview') {
         web3.eth.getAccounts(function(error, accounts){
             if(error)

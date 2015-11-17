@@ -16,7 +16,7 @@ global.sockets = {};
 
 module.exports = function(){
     const _ = require('underscore');
-    const ipc = require('ipc');
+    const ipc = require('electron').ipcMain;
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');
@@ -180,8 +180,8 @@ module.exports = function(){
 
                 result = _this.filterRequestResponse(result, event);
 
-                if(result && !_.isArray(result))
-                    console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
+                // if(result && !_.isArray(result))
+                //     console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {

@@ -3,7 +3,7 @@ const BrowserWindow = require('browser-window');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const config = require('../config');
-const ipc = require('ipc');
+const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 
 // TODO change selector to role
@@ -166,7 +166,7 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode('geth', false, function(){
-                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
                     }, 10);
@@ -181,7 +181,7 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode('eth', false, function(){
-                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
                     }, 10);
@@ -203,7 +203,7 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', false, function(){
-                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
                     }, 10);
@@ -219,7 +219,7 @@ var menuTempl = function(webviews) {
                     ethereumNodes.stopNodes();
                     setTimeout(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', true, function(){
-                            global.mainWindow.loadUrl(global.interfaceAppUrl);
+                            global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
                     }, 10);

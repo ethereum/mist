@@ -1,7 +1,7 @@
 /**
 @module preloader browser
 */
-const ipc = require('ipc');
+const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');

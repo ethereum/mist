@@ -173,10 +173,12 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
         version: electronVersion,
         out: './dist_'+ type +'/',
         icon: './icons/'+ type +'/icon.icns',
+        //'app-bundle-id': 'com.github.electron',
+        //'helper-bundle-id': 'com.github.electron.helper',
         'app-bundle-id': 'com.ethereum.'+ type,
+        'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
         'app-version': version,
         // cache: './dist_'+ type +'/', // directory of cached electron downloads. Defaults to '$HOME/.electron'
-        'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
         ignore: '', //do not copy files into App whose filenames regex .match this string
         prune: true,
         overwrite: true,

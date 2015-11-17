@@ -194,7 +194,9 @@ module.exports = {
             // If is eth then the password was typed wrong
             if(!cbCalled && type === 'eth') {
                 _this.stopNodes();
-                popupCallback('Masterpassword wrong');
+
+                if(popupCallback)
+                    popupCallback('Masterpassword wrong');
 
                 // set default to geth, to prevent beeing unable to start the wallet
                 _this._writeNodeToFile('geth', testnet);
@@ -212,7 +214,7 @@ module.exports = {
                 // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                 if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
                     return;
-                else
+                else if(popupCallback)
                     popupCallback(null);
 
                 callCb(null);

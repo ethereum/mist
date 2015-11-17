@@ -3,7 +3,7 @@
 // fired by "did-stop-loading"
 webviewLoadStop = function(e){
     var webview = this;
-        url = webview.getUrl(),
+        url = webview.getURL(),
         title = webview.getTitle(),
         tabId = $(webview).data('id');
         // tabs = Tabs.find().fetch();

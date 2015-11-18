@@ -168,11 +168,11 @@ module.exports = {
 
         // START TESTNET
         if(testnet) {
-            args = (type === 'geth') ? ['--testnet'] : ['--morden', '--unsafe-transactions'];
+            args = (type === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
 
         // START MAINNET
         } else {
-            args = (type === 'geth') ? [] : ['--unsafe-transactions', '--master', pw];
+            args = (type === 'geth') ? ['--fast'] : ['--unsafe-transactions', '--master', pw];
             pw = null;
         }
 

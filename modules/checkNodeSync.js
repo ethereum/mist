@@ -6,7 +6,7 @@ checks the current node whether its synching or not and how much it kept up alre
 */
 
 const _ = require('underscore');
-const ipc = require('ipc');
+const ipc = require('electron').ipcMain;
 
 var dechunker = require('./ipc/dechunker.js');
 

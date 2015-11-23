@@ -68,6 +68,12 @@ In the original window you can then start Mist with:
 
     $ electron ./
 
+### Using Mist with a testnet
+
+To run a testnet you need to have `geth` installed separately and run it with the `ipcpath` flag:
+
+    $ geth --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+
 
 ### Deployment
 

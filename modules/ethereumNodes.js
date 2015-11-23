@@ -7,7 +7,7 @@ const fs = require('fs');
 const app = require('app');
 const path = require('path');
 const spawn = require('child_process').spawn;
-const ipc = require('ipc');
+const ipc = require('electron').ipcMain;
 const createPopupWindow = require('./createPopupWindow.js');
 
 const binaryPath = path.resolve(__dirname + '/../nodes');
@@ -168,11 +168,11 @@ module.exports = {
 
         // START TESTNET
         if(testnet) {
-            args = (type === 'geth') ? ['--testnet'] : ['--morden', '--unsafe-transactions'];
+            args = (type === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
 
         // START MAINNET
         } else {
-            args = (type === 'geth') ? [] : ['--unsafe-transactions', '--master', pw];
+            args = (type === 'geth') ? ['--fast'] : ['--unsafe-transactions', '--master', pw];
             pw = null;
         }
 
@@ -194,7 +194,9 @@ module.exports = {
             // If is eth then the password was typed wrong
             if(!cbCalled && type === 'eth') {
                 _this.stopNodes();
-                popupCallback('Masterpassword wrong');
+
+                if(popupCallback)
+                    popupCallback('Masterpassword wrong');
 
                 // set default to geth, to prevent beeing unable to start the wallet
                 _this._writeNodeToFile('geth', testnet);
@@ -212,7 +214,7 @@ module.exports = {
                 // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                 if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
                     return;
-                else
+                else if(popupCallback)
                     popupCallback(null);
 
                 callCb(null);

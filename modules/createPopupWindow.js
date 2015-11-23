@@ -31,7 +31,7 @@ module.exports = {
             _this.loadingwindow = null;
         });
         // load URL
-        this.loadingwindow.loadUrl(global.interfacePopupsUrl +'#loadingWindow');
+        this.loadingwindow.loadURL(global.interfacePopupsUrl +'#loadingWindow');
     },
     show: function(windowType, width, height, data, e, noWeb3){
         var _this = this;
@@ -70,7 +70,7 @@ module.exports = {
         }
 
         // load URL
-        modalWindow.loadUrl(global.interfacePopupsUrl +'#'+ windowType);
+        modalWindow.loadURL(global.interfacePopupsUrl +'#'+ windowType);
 
         // get window id
         var windowId = modalWindow.webContents.getId();

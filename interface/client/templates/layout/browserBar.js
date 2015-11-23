@@ -111,7 +111,7 @@ Template['layout_browserBar'].events({
 
         if(webview) {
             var id = Tabs.insert({
-                url: webview.getUrl(),
+                url: webview.getURL(),
                 name: webview.getTitle(),
                 menu: {},
                 menuVisible: false,
@@ -207,7 +207,7 @@ Template['layout_browserBar'].events({
         var foundTab = _.find(tabs, function(tab){
                 if(tab.url.indexOf('about:blank') === -1) {
                     var tabOrigin = new URL(tab.url).origin;
-                    return (url.indexOf(tabOrigin) !== -1);
+                    return (tabOrigin && url.indexOf(tabOrigin) !== -1);
                 }
             });
 

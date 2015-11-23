@@ -68,18 +68,18 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             var estimateData = _.clone(data);
             estimateData.gas = defaultEstimateGas;
             web3.eth.estimateGas(estimateData, function(e, res){
+                console.log('Estimated gas: ', res, e);
                 if(!e && res) {
                     Tracker.nonreactive(function(){
-                        console.log('Estimated gas: ', res);
 
                         if(defaultEstimateGas === res)
-                            TemplateVar.set(template, 'estimatedGas', 'invalid');
+                            return TemplateVar.set(template, 'estimatedGas', 'invalid');
                         else
                             TemplateVar.set(template, 'estimatedGas', res);
 
-                        // set the gas to the estimation, if not provided
+                        // set the gas to the estimation, if not provided or lower
                         var gas = TemplateVar.get(template, 'providedGas');
-                        if(gas == 0) {
+                        if(gas < res) {
                             TemplateVar.set(template, 'providedGas', res + 10000);
                             TemplateVar.set(template, 'initialProvidedGas', res + 10000);
                         }

@@ -189,6 +189,7 @@ ipc.on('mistAPI_requestAccount', function(e){
 // });
 
 
+
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
@@ -199,7 +200,8 @@ app.on('ready', function() {
     // instantiate custom protocols
     // require('./customProtocols.js');
 
-
+    // add menu already her, so we have copy and past functionality
+    menuItems([]);
 
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([

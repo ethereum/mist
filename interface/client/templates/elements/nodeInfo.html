@@ -11,7 +11,7 @@
 
         {{#with TemplateVar.get "syncing"}}
             <span class="text">
-                <i class="icon-feed"></i> {{$.Session.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
+                <i class="icon-feed"></i> {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <i class="icon-layers"></i> {{{i18n "mist.nodeInfo.nodeSyncing" blockDiff=blockDiff}}}
                 &nbsp;&nbsp;|&nbsp;&nbsp;

@@ -36,7 +36,7 @@ module.exports = function(data, callback){
 
         try {
             result = JSON.parse(result);
-
+    
         } catch(e) {
             lastChunk = data;
 

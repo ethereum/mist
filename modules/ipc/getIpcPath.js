@@ -4,8 +4,8 @@ module.exports = function() {
     var path = global.path.HOME;
 
     if(process.platform === 'darwin')
-        path += '/Library/Ethereum/shared/ethereum.sock';
-        // path += '/Library/Ethereum/geth.ipc';
+        // path += '/Library/Ethereum/shared/ethereum.sock';
+        path += '/Library/Ethereum/geth.ipc';
 
     if(process.platform === 'freebsd' ||
        process.platform === 'linux' ||

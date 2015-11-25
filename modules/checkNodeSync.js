@@ -33,8 +33,8 @@ module.exports = function(socket, appStartWindow, callback){
     socket.on("data", function(data){
         dechunker(data, function(error, result){
         
-            if(error || !result.result) {
-                console.error('Error: couldn\'t decode node response!', error, result);
+            if(error) {
+                console.error('Error: couldn\'t decode node response!', error);
                 callback(error);
                 return;
             }

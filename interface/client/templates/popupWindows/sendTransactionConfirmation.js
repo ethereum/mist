@@ -80,8 +80,8 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                         // set the gas to the estimation, if not provided
                         var gas = TemplateVar.get(template, 'providedGas');
                         if(gas == 0) {
-                            TemplateVar.set(template, 'providedGas', res + 10000);
-                            TemplateVar.set(template, 'initialProvidedGas', res + 10000);
+                            TemplateVar.set(template, 'providedGas', res + 100000);
+                            TemplateVar.set(template, 'initialProvidedGas', res + 100000);
                         }
                     });
                 }

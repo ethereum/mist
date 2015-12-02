@@ -6,6 +6,7 @@ const config = require('../config');
 const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 
+
 // TODO change selector to role
 /*
 +  * `click` Function - Will be called with `click(menuItem, browserWindow)` when
@@ -17,6 +18,12 @@ const ethereumNodes = require('./ethereumNodes.js');
 // create menu
 // null -> null
 var createMenu = function(webviews) {
+    // re create connection
+    if(global.nodeConnector.socket.writable) {
+        global.nodeConnector.destroy();
+    }
+    global.nodeConnector.connect();
+
     const menu = Menu.buildFromTemplate(menuTempl(webviews));
     Menu.setApplicationMenu(menu);
 };
@@ -154,40 +161,42 @@ var menuTempl = function(webviews) {
             type: 'separator'
         });
         // add node switch
-        devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: [
-              {
-                label: 'Geth 1.3.1 (Go)',
-                checked: !!global.nodes.geth,
-                enabled: !global.nodes.geth,
-                type: 'checkbox',
-                click: function(){
-                    ethereumNodes.stopNodes();
-                    setTimeout(function(){
-                        ethereumNodes.startNode('geth', false, function(){
-                            global.mainWindow.loadURL(global.interfaceAppUrl);
-                            createMenu(webviews);
-                        });
-                    }, 10);
-                }
-              },
-              {
-                label: 'Eth 1.1.0 develop (C++)',
-                type: 'checkbox',
-                checked: !!global.nodes.eth,
-                enabled: !global.nodes.eth,
-                click: function(){
-                    ethereumNodes.stopNodes();
-                    setTimeout(function(){
-                        ethereumNodes.startNode('eth', false, function(){
-                            global.mainWindow.loadURL(global.interfaceAppUrl);
-                            createMenu(webviews);
-                        });
-                    }, 10);
-                }
-              }
-        ]});
+        if(process.platform === 'darwin' || process.platform === 'win32') {
+            devToolsMenu.push({
+                label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
+                submenu: [
+                  {
+                    label: 'Geth 1.3.2 (Go)',
+                    checked: !!global.nodes.geth,
+                    enabled: !global.nodes.geth,
+                    type: 'checkbox',
+                    click: function(){
+                        ethereumNodes.stopNodes();
+                        setTimeout(function(){
+                            ethereumNodes.startNode('geth', false, function(){
+                                global.mainWindow.loadURL(global.interfaceAppUrl);
+                                createMenu(webviews);
+                            });
+                        }, 10);
+                    }
+                  },
+                  {
+                    label: 'Eth 1.1.0 develop (C++)',
+                    type: 'checkbox',
+                    checked: !!global.nodes.eth,
+                    enabled: !global.nodes.eth,
+                    click: function(){
+                        ethereumNodes.stopNodes();
+                        setTimeout(function(){
+                            ethereumNodes.startNode('eth', false, function(){
+                                global.mainWindow.loadURL(global.interfaceAppUrl);
+                                createMenu(webviews);
+                            });
+                        }, 10);
+                    }
+                  }
+            ]});
+        }
         // add network switch
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.network'),
@@ -226,11 +235,35 @@ var menuTempl = function(webviews) {
                 }
               }
         ]});
+
+        devToolsMenu.push({
+            label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
+            enabled: (global.network === 'test'),
+            click: function(){
+                if(!global.mining) {
+                    global.nodeConnector.send('miner_start', [1], function(e, result){
+                        console.log('miner_start', result);
+                        if(result === true) {
+                            global.mining = !global.mining;
+                            createMenu(webviews);
+                        }
+                    });
+                } else {
+                    global.nodeConnector.send('miner_stop', [], function(e, result){
+                        console.log('miner_stop', result);
+                        if(result === true) {
+                            global.mining = !global.mining;
+                            createMenu(webviews);
+                        }
+                    });
+                }
+            }
+        });
     }
 
 
     menu.push({
-        label: i18n.t('mist.applicationMenu.develop.label'),
+        label: ((global.mining) ? '⛏ ' : '') + i18n.t('mist.applicationMenu.develop.label'),
         submenu: devToolsMenu
     })
 

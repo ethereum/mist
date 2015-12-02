@@ -48,6 +48,8 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 lastData = _.extend(lastData, data || {});
                 var progress = ((lastData.currentBlock - lastData.startingBlock) / (lastData.highestBlock - lastData.startingBlock)) * 100;
 
+                lastData._currentBlock = lastData.currentBlock;
+                lastData._highestBlock = lastData.highestBlock;
                 lastData.currentBlock = numeral(lastData.currentBlock).format('0,0');
                 lastData.highestBlock = numeral(lastData.highestBlock).format('0,0');
 
@@ -63,7 +65,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 } else {
                     // show progress bar
                     TemplateVar.set(template, 'showProgressBar', true);
-                    translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
+                    if(lastData._highestBlock - lastData._currentBlock < 1000)
+                        translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncProcessing') +'</small>';
+                    else
+                        translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
                 }
                 
                 TemplateVar.set(template, 'text', translatedText);

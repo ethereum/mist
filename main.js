@@ -1,15 +1,32 @@
 global._ = require('underscore');
 const fs = require('fs');
-const app = require('app');  // Module to control application life.
 const electron = require('electron');
+const app = require('app');  // Module to control application life.
+const appMenu = require('./modules/menuItems');
+const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
+const ipc = electron.ipcMain;
 
 
 // GLOBAL Variables
+global.path = {
+    HOME: app.getPath('home'),
+    APPDATA: app.getPath('appData'),
+    USERDATA: app.getPath('userData')
+};
+
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const NodeConnector = require('./modules/ipc/nodeConnector.js');
+const createPopupWindow = require('./modules/createPopupWindow.js');
+const ethereumNodes = require('./modules/ethereumNodes.js');
+const getIpcPath = require('./modules/ipc/getIpcPath.js');
+var ipcPath = getIpcPath();
+
+
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -19,20 +36,15 @@ global.nodes = {
     eth: null
 };
 global.network = 'main'; // or 'test', will be set by the file later
-
+global.mining = false;
 
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
-
-global.path = {
-    HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData'),
-    USERDATA: app.getPath('userData')
-};
 
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
+global.nodeConnector = new NodeConnector(ipcPath);
 
 
 // INTERFACE PATHS
@@ -54,14 +66,6 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 }
-
-
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const ipc = electron.ipcMain;
-const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const menuItems = require('./modules/menuItems');
-const createPopupWindow = require('./modules/createPopupWindow.js');
-const ethereumNodes = require('./modules/ethereumNodes.js');
 
 
 // const getCurrentKeyboardLayout = require('keyboard-layout');
@@ -201,7 +205,7 @@ app.on('ready', function() {
     // require('./customProtocols.js');
 
     // add menu already her, so we have copy and past functionality
-    menuItems([]);
+    appMenu([]);
 
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([
@@ -287,10 +291,8 @@ app.on('ready', function() {
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const getIpcPath = require('./modules/ipc/getIpcPath.js');
         const net = require('net');
         const socket = new net.Socket();
-        var ipcPath = getIpcPath();
         var intervalId;
         var count = 0;
 
@@ -434,7 +436,7 @@ var startMainWindow = function(appStartWindow){
     // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
         var webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
-        menuItems(webviews || []);
+        appMenu(webviews || []);
     });
 
     // instantiate the application menu

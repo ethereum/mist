@@ -28,7 +28,9 @@
                 "runTests": "Run tests",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
-                "mainNetwork": "Main Network"
+                "mainNetwork": "Main Network",
+                "startMining": "⛏ Start Mining",
+                "stopMining": "⛏ Stop Mining"
             },
             "window": {
                 "label": "Window",
@@ -70,6 +72,7 @@
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
+            "nodeSyncProcessing": "Processing blocks, please wait...",
             "privateChainTimeout": "Skip peer search"
         },
         "popupWindows": {

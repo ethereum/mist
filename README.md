@@ -20,8 +20,8 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed. When this is done, install Electron:
 
-    $ npm install -g electron-prebuilt
     $ curl https://install.meteor.com/ | sh
+    $ sudo npm install -g electron-prebuilt
 
 ### Installation
 
@@ -45,7 +45,7 @@ Switch the `global.mode` to `"mist"` in the `main.js`.
 
 For development we start the interface with a Meteor server for autoreload etc. Start the interface in a separate terminal window:
 
-    $ cd interface && meteor
+    $ cd mist/interface && meteor
 
 In the original window you can then start Mist with:
 

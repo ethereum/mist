@@ -373,7 +373,10 @@ app.on('ready', function() {
 
             clearInterval(intervalId);
 
-            checkNodeSync(socket, appStartWindow, function(e){
+            // update menu, to show node switching possibilities
+            appMenu([]);
+
+            checkNodeSync(appStartWindow, function(e){
 
                 appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
                 clearSocket(socket);

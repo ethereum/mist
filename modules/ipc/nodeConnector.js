@@ -46,7 +46,8 @@ var NodeConnector = function(ipcPath) {
 };
 
 NodeConnector.prototype.connect = function() {
-    this.socket.connect({path: this.ipcPath});
+     if(!this.socket.writable)
+        this.socket.connect({path: this.ipcPath});
 };
 
 NodeConnector.prototype.send = function(name, params, callback) {

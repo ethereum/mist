@@ -65,7 +65,8 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 } else {
                     // show progress bar
                     TemplateVar.set(template, 'showProgressBar', true);
-                    if(lastData._highestBlock - lastData._currentBlock < 5000)
+
+                    if(lastData._highestBlock - lastData._currentBlock < 2500)
                         translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncProcessing') +'</small>';
                     else
                         translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncInfo', lastData) +'</small>';

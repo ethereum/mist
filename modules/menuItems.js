@@ -241,8 +241,7 @@ var menuTempl = function(webviews) {
             enabled: (global.network === 'test'),
             click: function(){
                 // TODO remove on new RPC
-                if(!global.nodeConnector.socket.writable)
-                    global.nodeConnector.connect();
+                global.nodeConnector.connect();
 
                 if(!global.mining) {
                     global.nodeConnector.send('miner_start', [1], function(e, result){

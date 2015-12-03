@@ -1,5 +1,11 @@
 <template name="elements_nodeInfo">
     <div class="node-info">
+        {{#if TemplateVar.get "mining"}}
+            <span data-tooltip="Mining" class="simptip-position-left simptip-movable">⛏ {{TemplateVar.get "mining"}} KH/s</span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+        {{/if}}
+        
+
         {{#if $eq (TemplateVar.get "network") "test"}}
             <span class="orange" style="font-weight: 400;">TEST-NET</span>
             &nbsp;&nbsp;|&nbsp;&nbsp;

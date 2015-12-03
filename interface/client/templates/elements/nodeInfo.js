@@ -17,6 +17,25 @@ var getPeerCount = function(template) {
 };
 
 /**
+Update the mining hashrate
+
+@method getMining
+*/
+var getMining = function(template) {
+    web3.eth.getMining(function(e, res) {
+        if(!e && res) {
+            web3.eth.getHashrate(function(e, res) {
+                if(!e) {
+                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.000'));
+                }
+            });
+        } else {
+            TemplateVar.set(template, 'mining', false);
+        }
+    });
+};
+
+/**
 The main template
 
 @class [template] elements_nodeInfo
@@ -78,6 +97,17 @@ Template['elements_nodeInfo'].onCreated(function(){
     Meteor.clearInterval(this.peerCountIntervalId);
     this.peerCountIntervalId = setInterval(function() {
         getPeerCount(template);
+    }, 1000);
+
+    // CHECK MINING and HASHRATE
+    this.miningIntervalId = null;
+
+    TemplateVar.set('mining', false);
+    getMining(template);
+
+    Meteor.clearInterval(this.miningIntervalId);
+    this.miningIntervalId = setInterval(function() {
+        getMining(template);
     }, 1000);
 });
 

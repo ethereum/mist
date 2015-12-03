@@ -240,9 +240,13 @@ var menuTempl = function(webviews) {
             label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
             enabled: (global.network === 'test'),
             click: function(){
+                // TODO remove on new RPC
+                if(!global.nodeConnector.socket.writable)
+                    global.nodeConnector.connect();
+
                 if(!global.mining) {
                     global.nodeConnector.send('miner_start', [1], function(e, result){
-                        console.log('miner_start', result);
+                        console.log('miner_start', result, e);
                         if(result === true) {
                             global.mining = !global.mining;
                             createMenu(webviews);
@@ -250,7 +254,7 @@ var menuTempl = function(webviews) {
                     });
                 } else {
                     global.nodeConnector.send('miner_stop', [], function(e, result){
-                        console.log('miner_stop', result);
+                        console.log('miner_stop', result, e);
                         if(result === true) {
                             global.mining = !global.mining;
                             createMenu(webviews);

@@ -26,7 +26,7 @@ var ipcPath = getIpcPath();
 
 
 global.production = false;
-global.mode = 'wallet';
+global.mode = 'mist';
 
 global.mainWindow = null;
 global.windows = {};

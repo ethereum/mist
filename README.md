@@ -13,15 +13,17 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Development
 
-For development, a Meteor needs to be started to assist with live reload and CSS injection.
+For development, a Meteor server will to be started to assist with live reload and CSS injection.
 Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 
-To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) installed. When this is done, install Electron:
+Requires electron version 0.35.2
 
-    $ npm install -g electron-prebuilt
+To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
+
     $ curl https://install.meteor.com/ | sh
+    $ npm install -g electron-prebuilt
 
 ### Installation
 
@@ -34,31 +36,32 @@ Now you're ready to install Mist:
 
 To update Mist in the future, run:
 
-    $ git pull
-    $ git submodule update
-    $ npm update
+    $ cd mist
+    $ git pull && git submodule update
 
 
 ### Run Mist
 
 Switch the `global.mode` to `"mist"` in the `main.js`.
 
-For development we start the interface with a Meteor server for autoreload etc. Start the interface in a separate terminal window:
+For development we start the interface with a Meteor server for autoreload etc.
+*Start the interface in a separate terminal window:*
 
-    $ cd interface && meteor
+    $ cd mist/interface && meteor
 
 In the original window you can then start Mist with:
 
-    $ electron ./
+    $ cd mist
+    $ electron .
 
 
 ### Run the Wallet
 
 Switch the `global.mode` to `"wallet"` in the `main.js`.
 
-Start the wallet app for development, in a separate terminal window:
+Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd interface && meteor
+    $ cd mist/interface && meteor
 
     // and in another terminal
 
@@ -66,11 +69,13 @@ Start the wallet app for development, in a separate terminal window:
 
 In the original window you can then start Mist with:
 
-    $ electron ./
+    $ cd mist
+    $ electron .
 
-### Using Mist with a testnet
 
-To run a testnet you need to have `geth` installed separately and run it with the `ipcpath` flag:
+### Using Mist with a privatenet
+
+To run a privatenet you need to have `geth` installed separately and run it with the `ipcpath` flag:
 
     $ geth --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
 

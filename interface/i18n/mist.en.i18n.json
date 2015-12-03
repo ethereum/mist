@@ -70,7 +70,7 @@
             "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>Are you already running a node? Make sure your IPC path is set to the default: <code>$ geth --ipcpath __path__</code></small>",
             "nodeBinaryNotFound": "No Ethereum node binary found!<br>Please start one manually.",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
-            "nodeSyncInfo": "Processing block __currentBlock__ of __highestBlock__.",
+            "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
             "nodeSyncProcessing": "Processing blocks, please wait...",
             "privateChainTimeout": "Skip peer search"

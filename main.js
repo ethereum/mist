@@ -193,8 +193,22 @@ ipc.on("installFromGit", function(e, options) {
 
     nodegit.Clone.clone(options.url, packageRoot, null)
         .then(function() {
-            global.mainWindow.webContents.send('installedFromGit', {name: packageName, url: accessUrl});
-        });
+            global.mainWindow.webContents.send('installedFromGit',
+                {
+                    name: packageName,
+                    url: accessUrl,
+                    success: true
+                });
+        })
+        .catch(function(error) {
+            console.log("git install error" + error);
+            global.mainWindow.webContents.send('installedFromGit',
+                {
+                    url: options.url,
+                    success: false,
+                    message: error.toString()
+                });
+        })
 
 });
 

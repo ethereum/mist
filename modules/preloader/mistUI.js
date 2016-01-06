@@ -100,18 +100,31 @@ ipc.on('runTests', function(e, type){
 });
 
 ipc.on("installedFromGit", function(e, options) {
-    var id = "git::" + options.url;
+    if (options.success)
+    {
+        var id = "git::" + options.url;
 
-    Tabs.upsert(id, {
-        position: 9999,
-        name: options.name,
-        url: options.url
-    });
+        Tabs.upsert(id, {
+            position: 9999,
+            name: options.name,
+            url: options.url
+        });
 
-    Tracker.afterFlush(function(){
-        LocalStore.set('selectedTab', options.url);
-    });
+        Tracker.afterFlush(function(){
+            LocalStore.set('selectedTab', options.url);
+        });
 
+        GlobalNotification.success({
+            content: TAPi18n.__('mist.popupWindows.gitInstall.success') + ": " + options.name,
+            duration: 5
+        });
+    }
+    else {
+        GlobalNotification.error({
+            content: TAPi18n.__('mist.popupWindows.gitInstall.failure') + ": " + options.message,
+            duration: 5
+        });
+    }
 });
 
 

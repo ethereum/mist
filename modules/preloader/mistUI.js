@@ -102,10 +102,10 @@ ipc.on('runTests', function(e, type){
 ipc.on("installedFromGit", function(e, options) {
     if (options.success)
     {
-        var id = "git::" + options.url;
+        var id = (new Meteor.Collection.ObjectID()).toHexString();
 
         Tabs.upsert(id, {
-            position: 9999,
+            position: 9998,
             name: options.name,
             url: options.url
         });

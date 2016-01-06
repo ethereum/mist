@@ -8,6 +8,7 @@
   "main": "main.js",
   "devDependencies": {
     "del": "^1.2.1",
+	"electron-packager": "^5.0.2",
     "gulp": "^3.9.0",
     "gulp-jszip": "^0.1.2",
     "gulp-rename": "^1.2.2",

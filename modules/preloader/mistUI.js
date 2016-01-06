@@ -117,6 +117,7 @@ ipc.on("installedFromGit", function(e, options) {
         GlobalNotification.success({
             content: TAPi18n.__('mist.popupWindows.gitInstall.success') + ": " + options.name,
             duration: 5
+
         });
     }
     else {

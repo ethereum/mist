@@ -207,6 +207,7 @@ ipc.on("installFromGit", function(e, options) {
                     url: options.url,
                     success: false,
                     message: error.toString()
+
                 });
         })
 

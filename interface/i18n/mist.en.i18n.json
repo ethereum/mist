@@ -86,6 +86,10 @@
                     "passwordMismatch": "Your passwords don't match."
                 }
             },
+            "gitInstall": {
+                "success": "Install success",
+                "failure": "Install failed"
+            },
             "unlockMasterPassword": {
                 "title": "Enter master password",
                 "enterPassword": "Enter master password",

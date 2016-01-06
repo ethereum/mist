@@ -22,6 +22,9 @@ const NodeConnector = require('./modules/ipc/nodeConnector.js');
 const createPopupWindow = require('./modules/createPopupWindow.js');
 const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
+
+const nodegit = require('nodegit');
+
 var ipcPath = getIpcPath();
 
 
@@ -180,6 +183,21 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 ipc.on('mistAPI_requestAccount', function(e){
     createPopupWindow.show('requestAccount', 400, 210, null, e);
 });
+
+
+ipc.on("installFromGit", function(e, options) {
+
+    var packageName = options.url.substr(options.url.lastIndexOf("/")+1);
+    var packageRoot = __dirname + "/packages/" + packageName;
+    var accessUrl = 'file://'+ packageRoot + "/index.html";
+
+    nodegit.Clone.clone(options.url, packageRoot, null)
+        .then(function() {
+            global.mainWindow.webContents.send('installedFromGit', {name: packageName, url: accessUrl});
+        });
+
+});
+
 
 
 

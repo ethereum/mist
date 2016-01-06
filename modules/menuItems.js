@@ -131,6 +131,7 @@ var menuTempl = function(webviews) {
             });
         });
 
+
     // wallet
     } else {
         devtToolsSubMenu = [{

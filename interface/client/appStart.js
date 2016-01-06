@@ -23,7 +23,7 @@ mistInit = function(){
                 url: 'about:blank',
                 position: 0
             });
-            
+
             Tabs.insert({
                 url: 'http://ethereum-dapp-wallet.meteor.com',
                 position: 1,
@@ -31,6 +31,14 @@ mistInit = function(){
                     accounts: web3.eth.accounts
                 }
             });
+        }
+
+        if(!Tabs.findOne("install")) {
+            Tabs.insert({
+                _id: "install",
+                position: 9999,
+                name: "Install"
+            })
         }
     }, 1500);
 

@@ -15,6 +15,8 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
+
+
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);
 
@@ -95,6 +97,21 @@ ipc.on('runTests', function(e, type){
             // });
         });
     }
+});
+
+ipc.on("installedFromGit", function(e, options) {
+    var id = "git::" + options.url;
+
+    Tabs.upsert(id, {
+        position: 9999,
+        name: options.name,
+        url: options.url
+    });
+
+    Tracker.afterFlush(function(){
+        LocalStore.set('selectedTab', options.url);
+    });
+
 });
 
 

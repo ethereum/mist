@@ -172,8 +172,9 @@ module.exports = function(){
                 // FILTER RESPONSES
                 var event = _this.getResponseEvent(result);
 
+                // if notification, then send it back to the creator of this socket
                 if(!event)
-                    return;
+                    return _this.sender.send('ipcProvider-data', JSON.stringify(result));
 
                 result = _this.filterRequestResponse(result, event);
 

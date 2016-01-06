@@ -111,7 +111,7 @@ ipc.on("installedFromGit", function(e, options) {
         });
 
         Tracker.afterFlush(function(){
-            LocalStore.set('selectedTab', options.url);
+            LocalStore.set('selectedTab', id);
         });
 
         GlobalNotification.success({

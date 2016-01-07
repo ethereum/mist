@@ -30,7 +30,8 @@
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining",
-                "stopMining": "⛏ Stop Mining"
+                "stopMining": "⛏ Stop Mining",
+                "gitInstall": "Install from Git"
             },
             "window": {
                 "label": "Window",
@@ -84,6 +85,10 @@
                 "errors": {
                     "passwordMismatch": "Your passwords don't match."
                 }
+            },
+            "gitInstall": {
+                "success": "Install success",
+                "failure": "Install failed"
             },
             "unlockMasterPassword": {
                 "title": "Enter master password",

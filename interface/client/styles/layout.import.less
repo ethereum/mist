@@ -139,7 +139,7 @@ main {
     }
 }
 
-webview {
+webview, div.webview-content {
     position: absolute;
     top: 0;
     top: 0;
@@ -149,4 +149,13 @@ webview {
     overflow: hidden;
     margin-top: @gridHeight*2;
     border-top: solid 1px rgba(0, 0, 0, 0.1)
+}
+
+div.webview-content {
+    margin: 60px 30px;
+}
+
+input:required:invalid, input:focus:invalid {
+    /* insert your own styles for invalid form input */
+    -moz-box-shadow: none;
 }

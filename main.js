@@ -183,38 +183,17 @@ ipc.on('mistAPI_requestAccount', function(e){
     createPopupWindow.show('requestAccount', 400, 210, null, e);
 });
 
-function getApplicationPackagesHome() {
-	var path = global.path.home;
-	
-    if(process.platform === 'darwin')
-        path = path + '/Library/Mist/Applications/';
-
-    if(process.platform === 'freebsd' ||
-       process.platform === 'linux' ||
-       process.platform === 'sunos')
-        path = path + '/.mist/applications/';
-
-    if(process.platform === 'win32')
-        path = global.path.USERDATA + '\\Applications\\';	
-	
-	if (!fs.existsSync(path))
-		fs.mkdirSync(path);
-	
-	return path;
-	
-}
-
-
 ipc.on("installFromGit", function(e, options) {
+    var packagesHome = global.path.USERDATA + '\\Applications\\';
     var packageName = options.url.substr(options.url.lastIndexOf("/")+1);
-    var packageRoot = getApplicationPackagesHome() + packageName;
+    var packageRoot = packagesHome + packageName;
     var accessUrl = 'file://'+ packageRoot + "/index.html";
 	var hasError = false;
 
 	try {
 		ghdownload(options.url, packageRoot)
 			.on("error", function(error) {
-				console.log("git install error" + error);
+				console.log("git install error: " + error);
 				global.mainWindow.webContents.send('installedFromGit',
 					{
 						url: options.url,
@@ -237,7 +216,7 @@ ipc.on("installFromGit", function(e, options) {
 			})
 	}
 	catch(error) {
-		console.log("git install error" + error);
+		console.log("git install error: " + error);
 		global.mainWindow.webContents.send('installedFromGit',
 			{
 				url: options.url,

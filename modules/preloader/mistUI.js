@@ -104,8 +104,13 @@ ipc.on("installedFromGit", function(e, options) {
     {
         var id = (new Meteor.Collection.ObjectID()).toHexString();
 
+        var lastPosition = _.max(
+            Tabs.find().map(
+                function(x) { return x.position; }
+            ));
+
         Tabs.upsert(id, {
-            position: 9998,
+            position: lastPosition + 1,
             name: options.name,
             url: options.url
         });

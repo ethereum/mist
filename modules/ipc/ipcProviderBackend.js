@@ -447,12 +447,17 @@ module.exports = function(){
     @method destroy
     */
     GethConnection.prototype.destroy = function() {
+        if(this.destroyed)
+            return;
+        
         this.ipcSocket.destroy();
         this.ipcSocket.removeAllListeners();
 
         this.timeout();
 
         delete global.sockets['id_'+ this.id];
+
+        this.destroyed = true;
 
         console.log('SOCKET '+ this.id + ' DESTROYED!');
     };

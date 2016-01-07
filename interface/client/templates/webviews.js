@@ -63,7 +63,7 @@ webviewLoadStart = function(e){
         url = e.newUrl,
         foundTab = _.find(tabs, function(tab){
             var tabOrigin = new URL(tab.url).origin;
-            return (url.indexOf(tabOrigin) !== -1);
+            return (url && url.indexOf(tabOrigin) !== -1);
         });
 
 

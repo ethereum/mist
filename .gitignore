@@ -3,3 +3,5 @@ packages/
 interface_build/
 dist_wallet/
 dist_mist/
+.idea
+.npmrc

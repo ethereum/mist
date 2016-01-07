@@ -8,7 +8,7 @@
   "main": "main.js",
   "devDependencies": {
     "del": "^1.2.1",
-    "electron-packager": "^5.0.2",
+	"electron-packager": "^5.0.2",
     "gulp": "^3.9.0",
     "gulp-jszip": "^0.1.2",
     "gulp-rename": "^1.2.2",
@@ -20,8 +20,11 @@
   },
   "dependencies": {
     "bignumber.js": "^2.0.7",
+    "electron-prebuilt": "^0.36.2",
+    "github-download": "^0.4.0",
     "i18next": "^1.10.3",
     "minimongo-standalone": "0.0.9",
+    "nodegit": "^0.6.3",
     "numeral": "^1.5.3",
     "solc": "^0.1.3-2",
     "underscore": "^1.8.3",

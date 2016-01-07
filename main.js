@@ -22,6 +22,8 @@ const NodeConnector = require('./modules/ipc/nodeConnector.js');
 const createPopupWindow = require('./modules/createPopupWindow.js');
 const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
+const ghdownload = require('github-download')
+
 var ipcPath = getIpcPath();
 
 
@@ -175,11 +177,59 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
     }
 });
 
-
+	
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
     createPopupWindow.show('requestAccount', 400, 210, null, e);
 });
+
+ipc.on("installFromGit", function(e, options) {
+    var packagesHome = global.path.USERDATA + '\\Applications\\';
+    var packageName = options.url.substr(options.url.lastIndexOf("/")+1);
+    var packageRoot = packagesHome + packageName;
+    var accessUrl = 'file://'+ packageRoot + "/index.html";
+	var hasError = false;
+
+	try {
+		ghdownload(options.url, packageRoot)
+			.on("error", function(error) {
+				console.log("git install error: " + error);
+				global.mainWindow.webContents.send('installedFromGit',
+					{
+						url: options.url,
+						success: false,
+						message: error.toString()
+
+					});
+				hasError = true;
+			})
+			.on("end", function() {
+				if (hasError)
+					return;
+				
+				global.mainWindow.webContents.send('installedFromGit',
+					{
+						name: packageName,
+						url: accessUrl,
+						success: true
+					});
+			})
+	}
+	catch(error) {
+		console.log("git install error: " + error);
+		global.mainWindow.webContents.send('installedFromGit',
+			{
+				url: options.url,
+				success: false,
+				message: error.toString()
+
+			});
+		hasError = true;		
+	}
+
+
+});
+
 
 
 

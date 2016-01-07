@@ -15,6 +15,8 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
+
+
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);
 
@@ -93,6 +95,40 @@ ipc.on('runTests', function(e, type){
             //         'permissions.accounts': accounts
             //     }});
             // });
+        });
+    }
+});
+
+ipc.on("installedFromGit", function(e, options) {
+    if (options.success)
+    {
+        var id = (new Meteor.Collection.ObjectID()).toHexString();
+
+        var lastPosition = _.max(
+            Tabs.find().map(
+                function(x) { return x.position; }
+            ));
+
+        Tabs.upsert(id, {
+            position: lastPosition + 1,
+            name: options.name,
+            url: options.url
+        });
+
+        Tracker.afterFlush(function(){
+            LocalStore.set('selectedTab', id);
+        });
+
+        GlobalNotification.success({
+            content: TAPi18n.__('mist.popupWindows.gitInstall.success') + ": " + options.name,
+            duration: 5
+
+        });
+    }
+    else {
+        GlobalNotification.error({
+            content: TAPi18n.__('mist.popupWindows.gitInstall.failure') + ": " + options.message,
+            duration: 5
         });
     }
 });

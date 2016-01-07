@@ -3,11 +3,16 @@
         {{#if $eq _id "browser"}}
             {{debug url}}
             <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/browser.js" autosize="on"></webview> 
-        {{/if}}
-        {{#if $eq _id "tests"}}
-            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/tests.js" autosize="on" nodeintegration></webview> 
         {{else}}
-            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/dapps.js" autosize="on"></webview> 
+            {{#if $eq _id "install"}}
+                {{> gitUrlSelect }}
+            {{else}}
+                {{#if $eq _id "tests"}}
+                    <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/tests.js" autosize="on" nodeintegration></webview>
+                {{else}}
+                    <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{dirname}}/dapps.js" autosize="on"></webview>
+                {{/if}}
+            {{/if}}
         {{/if}}
         <!-- preload="./test.js" allowtransparency="on" -->
     </div>

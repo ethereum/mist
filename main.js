@@ -185,7 +185,7 @@ ipc.on('mistAPI_requestAccount', function(e){
 
 ipc.on("installFromGit", function(e, options) {
     var packagesHome = global.path.USERDATA + '\\Applications\\';
-    var packageName = options.url.substr(options.url.lastIndexOf("/")+1);
+    var packageName = options.url.substr(options.url.lastIndexOf("/")+1).replace("#", ".");
     var packageRoot = packagesHome + packageName;
     var accessUrl = 'file://'+ packageRoot + "/index.html";
 	var hasError = false;

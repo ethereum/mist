@@ -166,7 +166,7 @@ var menuTempl = function(webviews) {
                 label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
                 submenu: [
                   {
-                    label: 'Geth 1.3.2 (Go)',
+                    label: 'Geth 1.3.3 (Go)',
                     checked: !!global.nodes.geth,
                     enabled: !global.nodes.geth,
                     type: 'checkbox',

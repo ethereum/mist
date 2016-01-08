@@ -29,7 +29,7 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining",
+                "startMining": "⛏ Start Mining (Testnet only)",
                 "stopMining": "⛏ Stop Mining"
             },
             "window": {

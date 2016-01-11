@@ -50,7 +50,7 @@ ipcProviderWrapper = {
                 callback(result);
             });
 
-            // rely to all webviews
+            // relay to all webviews
         }
 
         if(name === 'error'){
@@ -60,11 +60,19 @@ ipcProviderWrapper = {
         }
 
         // dont send the end connection error
-        // if(name === 'end'){
-        //     ipc.on('ipcProvider-end', function(e, result){
-        //         callback(result);
-        //     });
-        // }
+        if(name === 'end'){
+            ipc.on('ipcProvider-end', function(e, result){
+                callback(result);
+            });
+        }
+    },
+    /**
+    Removes listeners
+
+    @method removeAllListeners
+    */
+    removeAllListeners: function(type){
+        ipc.removeAllListeners('ipcProvider-'+ type);
     },
     /**
     Write to the IPC connection through the backend

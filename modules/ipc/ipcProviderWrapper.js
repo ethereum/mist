@@ -43,14 +43,14 @@ ipcProviderWrapper = {
     Returns data from the IPC through the backend
 
     @method on
+    @param {String} name `connect`, `error`, `end`, `timeout` or `data`
+    @param  {Funciton} callback
     */
     on: function(name, callback) {
         if(name === 'data'){
             ipc.on('ipcProvider-data', function(e, result){
                 callback(result);
             });
-
-            // relay to all webviews
         }
 
         if(name === 'error'){
@@ -59,9 +59,20 @@ ipcProviderWrapper = {
             });
         }
 
-        // dont send the end connection error
         if(name === 'end'){
             ipc.on('ipcProvider-end', function(e, result){
+                callback(result);
+            });
+        }
+
+        if(name === 'connect'){
+            ipc.on('ipcProvider-connect', function(e, result){
+                callback(result);
+            });
+        }
+
+        if(name === 'timeout'){
+            ipc.on('ipcProvider-timeout', function(e, result){
                 callback(result);
             });
         }

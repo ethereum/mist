@@ -155,8 +155,9 @@ module.exports = function(){
         var _this = this;
         
 
-        this.ipcSocket.on('connect', function(){
+        this.ipcSocket.on('connect', function(data){
             _this.sender.send('ipcProvider-setWritable', true);
+            _this.sender.send('ipcProvider-connect', data);
         });
 
         // wait for data on the socket
@@ -212,26 +213,26 @@ module.exports = function(){
         //     console.log('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
         // });
 
-        this.ipcSocket.on('timeout', function(e){
+        this.ipcSocket.on('timeout', function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' TIMEDOUT', e);
+                console.log('IPCSOCKET '+ _this.id +' TIMEDOUT', data);
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-                _this.sender.send('ipcProvider-end');
+                _this.sender.send('ipcProvider-timeout', data);
 
             } catch(e) {
                 _this.destroy();
             }
         });
 
-        this.ipcSocket.on('end', function(e){
+        this.ipcSocket.on('end', function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED', e, _this.ipcSocket.writable);
+                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED', data, _this.ipcSocket.writable);
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
-                _this.sender.send('ipcProvider-end');
+                _this.sender.send('ipcProvider-end', data);
 
             } catch(e) {
                 _this.destroy();

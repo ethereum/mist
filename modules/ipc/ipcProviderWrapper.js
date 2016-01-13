@@ -47,38 +47,21 @@ ipcProviderWrapper = {
     @param  {Funciton} callback
     */
     on: function(name, callback) {
-        if(name === 'data'){
-            ipc.on('ipcProvider-data', function(e, result){
-                callback(result);
-            });
-        }
-
-        if(name === 'error'){
-            ipc.on('ipcProvider-error', function(e, result){
-                callback(result);
-            });
-        }
-
-        if(name === 'end'){
-            ipc.on('ipcProvider-end', function(e, result){
-                callback(result);
-            });
-        }
-
-        if(name === 'connect'){
-            ipc.on('ipcProvider-connect', function(e, result){
-                callback(result);
-            });
-        }
-
-        if(name === 'timeout'){
-            ipc.on('ipcProvider-timeout', function(e, result){
-                callback(result);
-            });
-        }
+        ipc.on('ipcProvider-'+ name, function(e, result){
+            callback(result);
+        });
     },
     /**
-    Removes listeners
+    Removes listener
+
+    @method removeListener
+    */
+    removeListener: function(type, callback){
+        ipc.removeListener('ipcProvider-'+ type, callback);
+    },
+
+    /**
+    Removes all listeners
 
     @method removeAllListeners
     */

@@ -1,16 +1,21 @@
 const protocol = require('protocol');
+const path = require('path');
 
 
 
-protocol.registerHttpProtocol('eth', function(request, callback) {
+protocol.registerHttpProtocol('mist', function(request, callback) {
 
     // callback({mimeType: 'text/html', data: new Buffer('<h5>Response</h5>')});
+
+console.log((request.url.indexOf('mist://interface') !== -1) ? global.interfaceAppUrl + request.url.replace('mist://interface','') : '');
+
     var call = {
-        url: 'http://localhost:3050/' + request.url.replace('eth://',''),
+        url: (request.url.indexOf('mist://interface') !== -1) ? global.interfaceAppUrl + request.url.replace('mist://interface','') : '',//'http://localhost:3050/' + request.url.replace('mist://',''),
         method: request.method,
         referrer: request.referrer
     };
 
+    console.log(call);
     // console.log(call);
 
     callback(call);
@@ -19,6 +24,7 @@ protocol.registerHttpProtocol('eth', function(request, callback) {
   if (error)
     console.error('Failed to register protocol')
 });
+
 
 
 // protocol.registerProtocol('eth', function(request) {
@@ -32,4 +38,4 @@ protocol.registerHttpProtocol('eth', function(request, callback) {
 // });
 
 
-protocol.registerStandardSchemes(['eth', 'bzz']); //'eth', 'bzz'
+// protocol.registerStandardSchemes(['eth', 'bzz']); //'eth', 'bzz'

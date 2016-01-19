@@ -26,6 +26,7 @@ module.exports = function(){
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
         errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
+        errorSendTxBatch = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
@@ -324,7 +325,7 @@ module.exports = function(){
 
 
         // main window or popupwindows are admin
-        if(this.id === global.mainWindow.webContents.getId() ||
+        if(global.mainWindow && this.id === global.mainWindow.webContents.getId() ||
            (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
             return payload;
         }
@@ -356,7 +357,10 @@ module.exports = function(){
 
         // batch request can't unlock for now (they might be deprecated soon) 
         if(_.isArray(filteredPayload)) {
-            return callback(null, filteredPayload);
+            if(_.find(filteredPayload, function(payload){ return (payload.method === 'eth_sendTransaction'); }))
+                return callback(errorSendTxBatch);
+            else
+                return callback(null, filteredPayload);
         }
 
 
@@ -457,7 +461,8 @@ module.exports = function(){
 
         this.timeout();
 
-        delete global.sockets['id_'+ this.id];
+        if(global.sockets['id_'+ this.id])
+            delete global.sockets['id_'+ this.id];
 
         this.destroyed = true;
 

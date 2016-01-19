@@ -202,7 +202,7 @@ app.on('ready', function() {
     createPopupWindow.initLoadingWindow();
 
     // instantiate custom protocols
-    // require('./customProtocols.js');
+    require('./customProtocols.js');
 
     // add menu already her, so we have copy and past functionality
     appMenu([]);
@@ -263,7 +263,7 @@ app.on('ready', function() {
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true,
-                'web-security': false // necessary to make routing work on file:// protocol
+                //'web-security': false // necessary to make routing work on file:// protocol
             }
         });
     }

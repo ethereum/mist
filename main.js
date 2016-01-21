@@ -289,6 +289,24 @@ app.on('ready', function() {
 
     appStartWindow.webContents.on('did-finish-load', function() {
 
+
+        var onboardingWindow = new BrowserWindow({
+            width: 576,
+            height: 442,
+            icon: global.icon,
+            resizable: false,
+            'node-integration': false,
+            preload: __dirname +'/modules/preloader/popupWindow.js',
+            'standard-window': true,
+            'use-content-size': true,
+            frame: false,
+            'web-preferences': {
+                'web-security': false // necessary to make routing work on file:// protocol
+            }
+        });
+        onboardingWindow.loadURL(global.interfacePopupsUrl + '#onboardingScreen');
+        onboardingWindow.openDevTools();
+
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
         const net = require('net');

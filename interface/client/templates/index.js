@@ -25,6 +25,9 @@ Template.body.helpers({
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }
+        if(~location.hash.indexOf('#onboardingScreen')) {
+            return 'popupWindows_onboardingScreen';
+        }
         if(~location.hash.indexOf('#loadingWindow')) {
             return 'popupWindows_loadingWindow';
         }

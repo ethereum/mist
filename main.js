@@ -89,6 +89,9 @@ if(global.mode === 'wallet') {
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
     console.log('UNCAUGHT EXCEPTION', error);
+    // var stack = new Error().stack;
+    // console.log(stack);
+
     app.quit();
 });
 
@@ -120,8 +123,9 @@ app.on('before-quit', function(event){
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
-        ethereumNodes.stopNodes();
-        app.quit();
+        ethereumNodes.stopNodes(function(){
+            app.quit();
+        });
     }, 500);
 });
 
@@ -275,6 +279,7 @@ app.on('ready', function() {
             icon: global.icon,
             resizable: false,
             'node-integration': false,
+            backgroundColor: '#dddddd',
             preload: __dirname +'/modules/preloader/splashScreen.js',
             'standard-window': false,
             'use-content-size': true,

@@ -18,29 +18,36 @@ module.exports = {
 
     @method stopNodes
     */
-    stopNodes: function() {
+    stopNodes: function(callback) {
         console.log('Stopping nodes...');
 
-        // kill running geth
-        if(global.nodes.geth) {
-            global.nodes.geth.stderr.removeAllListeners('data');
-            global.nodes.geth.stdout.removeAllListeners('data');
-            global.nodes.geth.stdin.removeAllListeners('error');
-            global.nodes.geth.removeAllListeners('error');
-            global.nodes.geth.removeAllListeners('exit');
-            global.nodes.geth.kill('SIGKILL');
-            global.nodes.geth = null;
-        }
+        var node = global.nodes.geth || global.nodes.eth;
 
-        // kill running eth
-        if(global.nodes.eth) {
-            global.nodes.eth.stderr.removeAllListeners('data');
-            global.nodes.eth.stdout.removeAllListeners('data');
-            global.nodes.eth.stdin.removeAllListeners('error');
-            global.nodes.eth.removeAllListeners('error');
-            global.nodes.eth.removeAllListeners('exit');
-            global.nodes.eth.kill('SIGKILL');
-            global.nodes.eth = null;
+        // kill running geth
+        if(node) {
+            node.stderr.removeAllListeners('data');
+            node.stdout.removeAllListeners('data');
+            node.stdin.removeAllListeners('error');
+            node.removeAllListeners('error');
+            node.removeAllListeners('exit');
+            node.kill('SIGINT');
+
+            // kill if not closed already
+            var timeoutId = setTimeout(function(){
+                node.kill('SIGKILL');
+                if(_.isFunction(callback))
+                    callback();
+
+                node = null;
+            }, 8000);
+
+            node.once('close', function(){
+                clearTimeout(timeoutId);
+                if(_.isFunction(callback))
+                    callback();
+
+                node = null;
+            });
         }
     },
     /**

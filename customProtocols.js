@@ -38,4 +38,4 @@ console.log((request.url.indexOf('mist://interface') !== -1) ? global.interfaceA
 // });
 
 
-// protocol.registerStandardSchemes(['eth', 'bzz']); //'eth', 'bzz'
+// protocol.registerStandardSchemes(['mist','eth', 'bzz']); //'eth', 'bzz'

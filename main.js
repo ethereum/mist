@@ -13,8 +13,8 @@ const ipc = electron.ipcMain;
 // GLOBAL Variables
 global.path = {
     HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData'),
-    USERDATA: app.getPath('userData')
+    APPDATA: app.getPath('appData'), // Application Support/
+    USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');

@@ -10,6 +10,7 @@
   "dependencies": {
     "bignumber.js": "^2.0.7",
     "i18next": "^1.10.3",
+    "log-rotate": "^0.2.7",
     "minimongo-standalone": "0.0.9",
     "numeral": "^1.5.3",
     "solc": "^0.1.6",

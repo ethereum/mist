@@ -158,6 +158,7 @@ ipc.on('uiAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId();
 
     if(global.windows[windowId]) {
+        console.log(global.windows[windowId].window);
         global.windows[windowId].window.close();
         delete global.windows[windowId];
     }

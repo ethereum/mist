@@ -453,7 +453,7 @@ module.exports = function(){
     @method destroy
     */
     GethConnection.prototype.destroy = function() {
-        if(this.destroyed)
+        if(!this || this.destroyed)
             return;
         
         this.ipcSocket.destroy();

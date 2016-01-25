@@ -24,6 +24,7 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
+global.appName = 'Mist';
 
 global.production = false;
 global.mode = 'mist';
@@ -227,6 +228,7 @@ app.on('ready', function() {
     // MIST
     if(global.mode === 'mist') {
         global.mainWindow = new BrowserWindow({
+            title: global.appName,
             show: false,
             width: 1024 + 208,
             height: 700,
@@ -252,6 +254,7 @@ app.on('ready', function() {
     } else {
 
         global.mainWindow = new BrowserWindow({
+            title: global.appName,
             show: false,
             width: 1024,
             height: 680,
@@ -274,6 +277,7 @@ app.on('ready', function() {
 
 
     var appStartWindow = new BrowserWindow({
+            title: global.appName,
             width: 400,
             height: 230,
             icon: global.icon,

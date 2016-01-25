@@ -1,0 +1,274 @@
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('fonts/SourceSansPro.otf');
+  font-weight: 500;
+  font-style: normal;
+}
+
+.onboarding-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    // background: @colorOSBackgroundFocus;
+    // .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 30%, lighten(@colorOSBackgroundFocus, 10%) 75%));
+    
+    
+    .main-content {
+        flex: 1 100%;
+        max-height: @gridHeight * 19;
+
+        h1 {
+            margin: @gridHeight*2 0 @gridHeight/2;
+        }
+
+        .description {
+            font-weight: 500;
+            padding-bottom: @gridHeight;
+        }
+
+        .col {
+            padding: 0;
+        }
+
+        button, a.button {
+            display: block;
+            text-transform: uppercase;
+            font-weight: 500;
+            color: @colorLinkActive;
+            font-size: 110%;
+        }
+
+        p {
+            margin: 0;
+            padding: @gridHeight 0;
+            font-size: 90%;
+        }
+
+        .onboarding-start {
+            padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
+            background-image: url('/images/onboarding-logo.png');
+            background-repeat: no-repeat;
+            background-position: @gridWidth @gridHeight*3;
+        }
+
+        .droppable {
+            display: block;
+            padding: @gridHeight*4 @gridWidth;
+            margin: @gridHeight 0;
+            background: lighten(@colorLinkActive, 30%);
+            border: dashed 3px @colorLinkActive;
+            border-radius: 3px;
+            text-align: center;
+            font-size: 150%;
+            color: @colorLinkActive;
+        }
+
+        .dapp-block-button {
+            margin: 0 auto;
+            background-color: transparent;
+            border: solid 1px @colorLinkActive; 
+            font-size: 80%;
+        }
+
+        input {
+            background-color: transparent;
+            border-bottom: dashed 1px @colorLinkActive;
+        }
+
+        input.name {
+            text-align: center;
+            margin: @gridHeight/2 0 @gridHeight;
+        }
+
+        h6 {
+            opacity: 0.2;
+            margin: 0 0 @gridHeight/2;
+        }
+
+        .footer-buttons {
+            position: absolute;
+            bottom: @gridHeight*5;
+
+            button {
+                position: absolute;
+            }
+        }
+        .right-align {
+            right: @gridWidth * 2; 
+        }
+
+        .col-left {
+            padding-right: @gridWidth;
+            p {
+                padding-bottom: 0;
+            }
+        }
+    }
+
+    footer {
+        flex: 0 @gridHeight * 4;
+        height: @gridHeight * 4;
+        padding: @gridHeight/2 @gridWidth/4;
+        display: flex;
+        flex-flow: row wrap;
+
+        progress {
+            width: 100%;
+            height: 2px;
+        }
+
+        button {
+            display: none;
+        }
+
+        .status {
+            flex: 1;
+        }
+
+        div {
+            font-size: 80%;
+            opacity: 0.5;
+            padding: 0 @gridWidth/2;
+        }
+    }
+
+
+    /* Screen transitions */
+
+    .onboarding-section {
+        padding: @gridHeight @gridWidth;
+        display: none;
+        transition: opacity 0.2s ease-in-out;
+        position: absolute;
+        height: 100%;
+    }
+
+    .onboarding-start {
+        transition: opacity 0.5s, background-position-x 0.2s ease-in-out;
+        p {
+            transition: transform 0.2s ease-in-out;
+        }
+    }
+
+    &.active-start .onboarding-start {
+        display: block;
+        opacity: 1;
+        z-index: 100;
+        transition-delay: 0.2s;
+    }
+
+    &.outgoing-start .onboarding-start {
+        display: block;
+        opacity: 0;
+        background-position-x: -200px;
+
+        p {
+            transform: translateX(100px);
+        }
+    }
+
+
+
+    .onboarding-drop-file {
+        opacity: 0;
+        z-index: 0;
+        .col-6 {
+            transform: scale(0.9) translateZ(-10px);
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;            
+        }
+    }
+
+
+    &.active-drop-file .onboarding-drop-file {
+        display: block;
+        opacity: 1;
+        z-index: 100;
+        transition-delay: 0.2s;
+        .col-6 {        
+            transform: scale(1) translateZ(0);  
+            transition-delay: 0.1s;      
+        }
+    }
+
+    &.outgoing-drop-file .onboarding-drop-file {
+        display: block;
+        z-index: 0;
+    }
+
+
+
+    .onboarding-password {
+        opacity: 0;
+        .col-6 {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-300px)
+        }
+        .col-6.col-left {
+            transform: translateX(300px)
+        }
+    }
+
+
+    &.active-password .onboarding-password {
+        display: block;
+        opacity: 1;
+        z-index: 100;
+        transition-delay: 0.2s;
+
+        .col-6 {
+            transform: translateX(0);
+            transition-delay: 0.3s;
+        }
+    }
+
+    &.outgoing-password .onboarding-password {
+        display: block;
+        z-index: 0;
+        .col-6 {
+            transform: translateX(300px);
+        }
+        .col-6.col-left {
+            transform: translateX(-300px)
+        }
+    }
+
+    .onboarding-bitcoin {
+        opacity: 0;
+        .col-6 {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(-300px)
+        }
+        .col-6.col-left {
+            transform: translateX(300px)
+        }
+        .col-deposit {
+            text-align: center;
+        }
+        
+    }
+
+
+    &.active-bitcoin .onboarding-bitcoin {
+        display: block;
+        opacity: 1;
+        z-index: 100;
+        transition-delay: 0.2s;
+
+        .col-6 {
+            transform: translateX(0);
+            transition-delay: 0.3s;
+        }
+    }
+
+    &.outgoing-bitcoin .onboarding-bitcoin {
+        display: block;
+        z-index: 0;
+        .col-6 {
+            transform: translateX(300px);
+        }
+        .col-6.col-left {
+            transform: translateX(-300px)
+        }
+    }
+}

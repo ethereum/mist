@@ -237,9 +237,9 @@ app.on('ready', function() {
             'standard-window': false,
             'dark-theme': true,
             'accept-first-mouse': true,
-            preload: __dirname +'/modules/preloader/mistUI.js',
-            'node-integration': false,
             'web-preferences': {
+                preload: __dirname +'/modules/preloader/mistUI.js',
+                'node-integration': false,
                 'overlay-scrollbars': true,
                 'webaudio': true,
                 'webgl': true,
@@ -263,9 +263,9 @@ app.on('ready', function() {
             'standard-window': false,
             'dark-theme': true,
             'accept-first-mouse': true,
-            preload: __dirname +'/modules/preloader/wallet.js',
-            'node-integration': false,
             'web-preferences': {
+                preload: __dirname +'/modules/preloader/wallet.js',
+                'node-integration': false,
                 'overlay-fullscreen-video': true,
                 'overlay-scrollbars': true,
                 'webaudio': true,
@@ -283,13 +283,13 @@ app.on('ready', function() {
             height: 230,
             icon: global.icon,
             resizable: false,
-            'node-integration': false,
             backgroundColor: '#dddddd',
-            preload: __dirname +'/modules/preloader/splashScreen.js',
             'standard-window': false,
             'use-content-size': true,
             frame: false,
             'web-preferences': {
+                preload: __dirname +'/modules/preloader/splashScreen.js',
+                'node-integration': false,
                 'web-security': false // necessary to make routing work on file:// protocol
             }
         });

@@ -20,8 +20,8 @@ module.exports = {
             'use-content-size': true,
             frame: false,
             'use-content-size': true,
-            'node-integration': false,
             'web-preferences': {
+                'node-integration': false,
                 'webgl': true,
                 'overlay-scrollbars': true,
                 'web-security': false
@@ -49,10 +49,10 @@ module.exports = {
             show: false,
             icon: global.icon,
             'standard-window': false,
-            preload: noWeb3 ? __dirname +'/preloader/popupWindowsNoWeb3.js' : __dirname +'/preloader/popupWindows.js',
             'use-content-size': true,
-            'node-integration': false,
             'web-preferences': {
+                preload: noWeb3 ? __dirname +'/preloader/popupWindowsNoWeb3.js' : __dirname +'/preloader/popupWindows.js',
+                'node-integration': false,
                 'overlay-scrollbars': true,
                 'text-areas-are-resizable': false,
                 'web-security': false

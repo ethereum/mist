@@ -138,74 +138,86 @@
 
     .onboarding-section {
         padding: @gridHeight @gridWidth;
-        display: none;
+        // display: none;
+        opacity: 0;
+        z-index: 0;
         transition: opacity 0.2s ease-in-out;
+        // transition-delay: 0.4s;
         position: absolute;
         height: 100%;
+
+        &> * {
+            // transition-delay: 0.5s;
+        }
     }
 
     .onboarding-start {
-        transition: opacity 0.5s, background-position-x 0.2s ease-in-out;
+        transition: opacity 0.4s, background-position-x 0.4s ease-in-out;
+        background-position-x: -200px !important;
         p {
-            transition: transform 0.2s ease-in-out;
+            transform: translateX(100px);
+            transition: transform 0.5s ease-in-out;
         }
     }
 
     &.active-start .onboarding-start {
         display: block;
         opacity: 1;
+        background-position-x: 0 !important;        
         z-index: 100;
-        transition-delay: 0.2s;
-    }
-
-    &.outgoing-start .onboarding-start {
-        display: block;
-        opacity: 0;
-        background-position-x: -200px;
-
+        transition-delay: 0.3s;
         p {
-            transform: translateX(100px);
+            transform: translateX(0);
+            transition-delay: 0.3s;
+            // color: blue;
         }
     }
 
-
+    // &.outgoing-start .onboarding-start {
+    //     display: block;
+    //     p {
+    //     }
+    // }
 
     .onboarding-drop-file {
         opacity: 0;
         z-index: 0;
+        // transition-duration: 0.1s;
         .col-6 {
             transform: scale(0.9) translateZ(-10px);
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;            
+            transition: transform 0.3s ease-in-out, opacity 0.1s ease-in-out;            
         }
     }
 
+    // &.active-drop-file * {
+    //     color: red !important;
+    // }
 
     &.active-drop-file .onboarding-drop-file {
-        display: block;
+        // display: block;
         opacity: 1;
         z-index: 100;
-        transition-delay: 0.2s;
+        transition-delay: 0.1s;
         .col-6 {        
             transform: scale(1) translateZ(0);  
-            transition-delay: 0.1s;      
+            transition-delay: 0.1s;
         }
     }
 
-    &.outgoing-drop-file .onboarding-drop-file {
-        display: block;
-        z-index: 0;
-    }
-
-
+    // &.outgoing-drop-file .onboarding-drop-file {
+    //     // display: block;
+    //     // z-index: 0;
+    //     // transition-delay: 0;
+    // }
 
     .onboarding-password {
-        opacity: 0;
+        // opacity: 0;
         .col-6 {
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(-300px)
+            transition: transform 0.4s ease-in-out;
+            transform: translateX(100px)
         }
         .col-6.col-left {
-            transform: translateX(300px)
+            transform: translateX(-100px)
         }
     }
 
@@ -215,60 +227,70 @@
         opacity: 1;
         z-index: 100;
         transition-delay: 0.2s;
-
         .col-6 {
             transform: translateX(0);
-            transition-delay: 0.3s;
+            transition-delay: 0.2s;
         }
     }
 
-    &.outgoing-password .onboarding-password {
-        display: block;
-        z-index: 0;
-        .col-6 {
-            transform: translateX(300px);
-        }
-        .col-6.col-left {
-            transform: translateX(-300px)
-        }
-    }
+    // &.outgoing-password .onboarding-password {
+    //     // display: block;
+    //     // z-index: 0;
+    //     // transition-delay: 0;
+    //     .col-6 {
+    //         transform: translateX(200px);
+    //         // transition-delay: 0;
+    //     }
+    //     .col-6.col-left {
+    //         transform: translateX(-200px)
+    //     }
+    // }
 
     .onboarding-bitcoin {
-        opacity: 0;
-        .col-6 {
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(-300px)
-        }
-        .col-6.col-left {
-            transform: translateX(300px)
-        }
         .col-deposit {
             text-align: center;
         }
         
+    }    
+
+    .onboarding-tutorial-1,
+    .onboarding-tutorial-2,
+    .onboarding-bitcoin {
+        .col-6 {
+            transition: transform 0.2s ease-in-out;
+            transform: translateX(100px)
+        }
+        .col-6.col-left {
+            transform: translateX(-100px)
+        }
     }
 
 
-    &.active-bitcoin .onboarding-bitcoin {
+    &.active-bitcoin .onboarding-bitcoin,
+    &.active-tutorial-1 .onboarding-tutorial-1,
+    &.active-tutorial-2 .onboarding-tutorial-2 {
         display: block;
         opacity: 1;
         z-index: 100;
         transition-delay: 0.2s;
-
         .col-6 {
             transform: translateX(0);
-            transition-delay: 0.3s;
+            transition-delay: 0.2s;
         }
     }
 
-    &.outgoing-bitcoin .onboarding-bitcoin {
-        display: block;
-        z-index: 0;
-        .col-6 {
-            transform: translateX(300px);
-        }
-        .col-6.col-left {
-            transform: translateX(-300px)
-        }
+    .onboarding-tutorial-1 .tutorial-token, 
+    .onboarding-tutorial-2 .tutorial-dao {
+        position: relative;
+        top: @gridHeight * -1;
+        height: @gridHeight * 12;
+        background-image: url('/images/tutorial-token.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+    }
+
+    .onboarding-tutorial-2 .tutorial-dao {
+        background-image: url('/images/tutorial-dao.png');
     }
 }

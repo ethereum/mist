@@ -2,18 +2,11 @@ const app = require('app');
 const BrowserWindow = require('browser-window');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
+const shell = require('electron').shell;
 const config = require('../config');
 const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 
-
-// TODO change selector to role
-/*
-+  * `click` Function - Will be called with `click(menuItem, browserWindow)` when
--  * `selector` String - Call the selector of first responder when clicked (OS      +     the menu item is clicked
--     X only)       +  * `role` String - Define the action of the menu item, when specified the
-+     `click` property will be ignored
-*/
 
 // create menu
 // null -> null
@@ -100,6 +93,37 @@ var menuTempl = function(webviews) {
                 accelerator: 'CommandOrControl+F',
                 click: function(){
                     global.mainWindow.setFullScreen(!global.mainWindow.isFullScreen());
+                }
+            }
+        ]
+    })
+
+    // BACKUP
+    menu.push({
+        label: i18n.t('mist.applicationMenu.backup.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.backup.backupKeyStore'),
+                click: function(){
+                    var path = global.path.HOME;
+
+                    if(process.platform === 'darwin')
+                        path += '/Library/Ethereum/keystore';
+
+                    if(process.platform === 'freebsd' ||
+                       process.platform === 'linux' ||
+                       process.platform === 'sunos')
+                        path += '/.ethereum/keystore';
+
+                    if(process.platform === 'win32')
+                        path = global.path.APPDATA + '\\Roaming\\Ethereum\\keystore';
+
+                    shell.showItemInFolder(path);
+                }
+            },{
+                label: i18n.t('mist.applicationMenu.backup.backupMist'),
+                click: function(){
+                    shell.showItemInFolder(global.path.USERDATA);
                 }
             }
         ]

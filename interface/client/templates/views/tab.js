@@ -29,6 +29,8 @@ Template['views_tab'].onRendered(function(){
 
             if(!c.firstRun)
                 webview.send('sendData', tab);
+
+            // ADD SWITCHUNG USING webview.loadURL();
         });
     }
 

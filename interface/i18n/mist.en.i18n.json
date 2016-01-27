@@ -19,6 +19,11 @@
                 "label": "View",
                 "fullscreen": "Toggle Fullscreen"
             },
+            "backup": {
+                "label": "Backup",
+                "backupKeyStore": "Backup Keystore",
+                "backupMist": "Backup Mist Data"
+            },
             "develop": {
                 "label": "Develop",
                 "devTools": "Toggle Developer Tools",

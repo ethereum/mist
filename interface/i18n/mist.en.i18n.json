@@ -21,8 +21,8 @@
             },
             "backup": {
                 "label": "Backup",
-                "backupKeyStore": "Backup Keystore",
-                "backupMist": "Backup Mist Data"
+                "backupKeyStore": "Backup Accounts",
+                "backupMist": "Backup App Data"
             },
             "develop": {
                 "label": "Develop",

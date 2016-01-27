@@ -198,6 +198,13 @@ ipc.on('mistAPI_requestAccount', function(e){
 // });
 
 
+// append ignore GPU blacklist on linux
+// if(process.platform === 'freebsd' ||
+//    process.platform === 'linux' ||
+//    process.platform === 'sunos') {
+//     app.commandLine.appendSwitch('--ignore-cpu-blacklist');
+// }
+
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.

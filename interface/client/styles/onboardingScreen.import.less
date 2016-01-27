@@ -5,13 +5,17 @@
   font-style: normal;
 }
 
+.app-blur .onboarding-screen {
+        background: @colorOSBackgroundBlur;
+}
+
 .onboarding-screen {
     display: flex;
     flex-direction: column;
     height: 100%;
     position: relative;
-    // background: @colorOSBackgroundFocus;
-    // .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 30%, lighten(@colorOSBackgroundFocus, 10%) 75%));
+    background: lighten(@colorOSBackgroundFocus, 10%);
+    .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 30%, lighten(@colorOSBackgroundFocus, 10%) 75%));
     
     
     .main-content {
@@ -36,7 +40,6 @@
             text-transform: uppercase;
             font-weight: 500;
             color: @colorLinkActive;
-            font-size: 110%;
         }
 
         p {
@@ -50,6 +53,10 @@
             background-image: url('/images/onboarding-logo.png');
             background-repeat: no-repeat;
             background-position: @gridWidth @gridHeight*3;
+
+            button, a.button {
+                font-size: 110%;
+            }
         }
 
         .droppable {
@@ -119,7 +126,14 @@
         }
 
         button {
-            display: none;
+            position: relative;
+            top: -3px;
+            text-transform: uppercase;
+            font-weight: 500;
+            text-align: center;
+            display: block;
+            width: 100%;
+            color: @colorLinkActive;
         }
 
         .status {
@@ -138,17 +152,13 @@
 
     .onboarding-section {
         padding: @gridHeight @gridWidth;
-        // display: none;
         opacity: 0;
         z-index: 0;
         transition: opacity 0.2s ease-in-out;
-        // transition-delay: 0.4s;
         position: absolute;
         height: 100%;
-
-        &> * {
-            // transition-delay: 0.5s;
-        }
+        width: 100%;
+        perspective: 500px;
     }
 
     .onboarding-start {
@@ -165,122 +175,117 @@
         opacity: 1;
         background-position-x: 0 !important;        
         z-index: 100;
-        transition-delay: 0.3s;
+        transition-delay: 0.1s;
         p {
             transform: translateX(0);
             transition-delay: 0.3s;
-            // color: blue;
         }
     }
-
-    // &.outgoing-start .onboarding-start {
-    //     display: block;
-    //     p {
-    //     }
-    // }
 
     .onboarding-drop-file {
         opacity: 0;
         z-index: 0;
-        // transition-duration: 0.1s;
         .col-6 {
             transform: scale(0.9) translateZ(-10px);
-            transition: transform 0.3s ease-in-out, opacity 0.1s ease-in-out;            
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;            
         }
     }
 
-    // &.active-drop-file * {
-    //     color: red !important;
-    // }
+    .onboarding-bitcoin .col-deposit {
+            text-align: center;        
+    }    
 
-    &.active-drop-file .onboarding-drop-file {
-        // display: block;
-        opacity: 1;
-        z-index: 100;
-        transition-delay: 0.1s;
-        .col-6 {        
-            transform: scale(1) translateZ(0);  
-            transition-delay: 0.1s;
-        }
-    }
-
-    // &.outgoing-drop-file .onboarding-drop-file {
-    //     // display: block;
-    //     // z-index: 0;
-    //     // transition-delay: 0;
-    // }
-
-    .onboarding-password {
-        // opacity: 0;
+    .onboarding-password ,
+    .onboarding-bitcoin {
         .col-6 {
-            transition: transform 0.4s ease-in-out;
+            transition: transform 0.2s ease-in-out, opacity 0.2s;
             transform: translateX(100px)
         }
         .col-6.col-left {
+            opacity: 0;
             transform: translateX(-100px)
         }
-    }
 
+        .dapp-identicon {
+            transition: transform 0.4s;
+            transition-timing-function: cubic-bezier(.66,-0.14,.64,1.27);
+            transition-delay: 0.8s;
+            // transform: translateX(100px) rotateY(90deg) scale(0.9);
+            transform: translateY(-200px) rotateZ(720deg);
+            backface-visibility: hidden;
+        }
 
-    &.active-password .onboarding-password {
-        display: block;
-        opacity: 1;
-        z-index: 100;
-        transition-delay: 0.2s;
-        .col-6 {
-            transform: translateX(0);
-            transition-delay: 0.2s;
+        .you {
+            position: absolute;
+            font-weight: 600;
+            color: @colorLinkActive;
+            border: dashed @colorLinkActive 2px;
+            width: @gridWidth*2;
+            height: @gridWidth*2;
+            border-radius: 50%;
+            line-height: 60px;
+            top: 0;
+            left: @gridWidth*3;
+            z-index: -1;
         }
     }
 
-    // &.outgoing-password .onboarding-password {
-    //     // display: block;
-    //     // z-index: 0;
-    //     // transition-delay: 0;
-    //     .col-6 {
-    //         transform: translateX(200px);
-    //         // transition-delay: 0;
-    //     }
-    //     .col-6.col-left {
-    //         transform: translateX(-200px)
-    //     }
-    // }
-
-    .onboarding-bitcoin {
-        .col-deposit {
-            text-align: center;
-        }
-        
-    }    
 
     .onboarding-tutorial-1,
     .onboarding-tutorial-2,
-    .onboarding-bitcoin {
+    .onboarding-tutorial-3 {
         .col-6 {
-            transition: transform 0.2s ease-in-out;
-            transform: translateX(100px)
+            transition: transform 0.2s ease-in-out, opacity 0.2s;
+            transform: translateX(10px) rotateY(-90deg) scale(0.7);
+            backface-visibility: hidden;
         }
         .col-6.col-left {
-            transform: translateX(-100px)
+            opacity: 0;
+            transform: translateX(-100px);
         }
-    }
+    }    
 
-
+    &.active-drop-file .onboarding-drop-file,
+    &.active-password .onboarding-password,
     &.active-bitcoin .onboarding-bitcoin,
     &.active-tutorial-1 .onboarding-tutorial-1,
-    &.active-tutorial-2 .onboarding-tutorial-2 {
+    &.active-tutorial-2 .onboarding-tutorial-2,
+    &.active-tutorial-3 .onboarding-tutorial-3 {
         display: block;
         opacity: 1;
         z-index: 100;
-        transition-delay: 0.2s;
+        transition-delay: 0.1s;
         .col-6 {
+            opacity: 1;
             transform: translateX(0);
             transition-delay: 0.2s;
         }
+        .dapp-identicon {
+            transform: translateX(0);
+        }
     }
 
+
+    &.active-tutorial-1 .onboarding-tutorial-1,
+    &.active-tutorial-2 .onboarding-tutorial-2,
+    &.active-tutorial-3 .onboarding-tutorial-3 {
+        .col-6 {
+            transition-delay: 0;
+        }
+    } 
+
+
+    &.outgoing-tutorial-1 .onboarding-tutorial-1,
+    &.outgoing-tutorial-2 .onboarding-tutorial-2,
+    &.outgoing-tutorial-3 .onboarding-tutorial-3 {
+        .col-6:not(.col-left) {
+            transform: translateX(10px) rotateY(180deg) scale(0.7);
+        }
+    } 
+
     .onboarding-tutorial-1 .tutorial-token, 
-    .onboarding-tutorial-2 .tutorial-dao {
+    .onboarding-tutorial-2 .tutorial-crowdsale, 
+    .onboarding-tutorial-3 .tutorial-dao {
         position: relative;
         top: @gridHeight * -1;
         height: @gridHeight * 12;
@@ -290,7 +295,10 @@
         background-position: center;
     }
 
-    .onboarding-tutorial-2 .tutorial-dao {
+    .onboarding-tutorial-2 .tutorial-crowdsale {
+        background-image: url('/images/tutorial-crowdsale.png');
+    }
+    .onboarding-tutorial-3 .tutorial-dao {
         background-image: url('/images/tutorial-dao.png');
     }
 }

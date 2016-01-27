@@ -53,7 +53,7 @@
                 </div>
                 
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-drop-file"> Back </button>                 
+                    <button class="goto-start"> Back </button>                 
                     <button class="goto-bitcoin right-align"> Skip (dev only) </button>                 
                 </div>
                 
@@ -74,9 +74,11 @@
 
                 <div class="col col-6 col-deposit">
                     {{> dapp_identicon identity='0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb'}}
+                    <div class="you"> YOU </div>
                     <input type="text" value="Etherbase" class="name">
                     <h6>0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb</h6>
-                    <button class="dapp-block-button dapp-small shapeshift">Deposit Bitcoin</button>
+                    <!-- <button class="dapp-block-button dapp-small shapeshift">Deposit Bitcoin</button> -->
+                    <a href="https://shapeshift.io/shifty.html?destination=0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="shapeshift">Deposit Bitcoin</a>
                 </div>
                 
                 <div class="col col-12 footer-buttons">
@@ -91,18 +93,16 @@
                 
                 <div class="col col-6 col-left">
                     <p>
-                    We still have to process a few blocks so your wallet is up to date. You can catch up on some reading on the things you can build:
+                    Here's some reading suggestions while you wait:
                     </p>
-                    
+                                        
                     <p>
-                    Make your own cryptocurrency
-                    </p>
-                    
-                    <p>
+                    <strong>Make your own cryptocurrency</strong><br>
+
                     Make a crypto currency with a fixed market supply, create tokens representing real world assets or even a puzzle based coin
                     </p>
 
-                    <a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank"></a>
+                    <p><a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank">Learn this recipe</a></p>
                 </div>
 
                 <div class="col col-6 tutorial-token">
@@ -110,7 +110,7 @@
                 </div>
                 
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-password"> Back </button>                 
+                    <button class="goto-bitcoin"> Back </button>                 
                     <button class="goto-tutorial-2 right-align"> Skip this step </button>                 
                 </div>
                 
@@ -120,15 +120,39 @@
                 <h1>Learn it</h1>
                 
                 <div class="col col-6 col-left">
+                    <h4>
+                    Create a crowdsale
+                    </h4>
                     <p>
-                    We still have to process a few blocks so your wallet is up to date. You can catch up on some reading on the things you can build:
-                    </p><p>
+                    Raise funds for a common goal, fully trustable without a third party.
+                    </p>
+
+                    <p><a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank">Learn this recipe</a></p>
+                </div>
+
+                <div class="col col-6 tutorial-crowdsale">
+                    
+                </div>
+                
+                <div class="col col-12 footer-buttons">
+                    <button class="goto-tutorial-1"> Back </button>                 
+                    <button class="goto-tutorial-3 right-align"> Skip this step </button>                 
+                </div>
+                
+            </div>
+
+            <div class="onboarding-section onboarding-tutorial-3 row">
+                <h1>Learn it</h1>
+                
+                <div class="col col-6 col-left">
+                    <h4>
                     Blockchain Organization
-                    </p><p>
+                    </h4>
+                    <p>
                     Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions.
                     </p>
 
-                    <a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank"></a>
+                    <p><a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank">Learn this recipe</a></p>
                 </div>
 
                 <div class="col col-6 tutorial-dao">
@@ -136,8 +160,7 @@
                 </div>
                 
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-password"> Back </button>                 
-                    <button class="goto- right-align"> Skip this step </button>                 
+                    <button class="goto-tutorial-2"> Back </button>                 
                 </div>
                 
             </div>
@@ -145,9 +168,13 @@
         </div>
         <footer>
             <progress value="25" max="100"></progress>
+
+            {{#if TemplateVar.get 'readyToLaunch'}}
+            <button class="launch-app"> Launch App </button>
+            {{else}}            
             <div class="status"> Downloading blocks </div>
             <div class="blocks"> Block 234,567</div>
-            <button class="launch-app"> Launch App </button>
+            {{/if}}
         </footer>     
 
     </div>

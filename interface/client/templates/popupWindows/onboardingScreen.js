@@ -15,6 +15,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
     var template = this;
 
     TemplateVar.set('currentActive','start');
+    TemplateVar.set('readyToLaunch', false);
 
 })
 
@@ -42,6 +43,11 @@ Template['popupWindows_onboardingScreen'].events({
    'click .goto-tutorial-2': function(){
         TemplateVar.set('lastActive', TemplateVar.get('currentActive'));
         TemplateVar.set('currentActive','tutorial-2');
+   },
+   'click .goto-tutorial-3': function(){
+        TemplateVar.set('lastActive', TemplateVar.get('currentActive'));
+        TemplateVar.set('currentActive','tutorial-3');
+        TemplateVar.set('readyToLaunch', true);
    },
    /**
     Request to create an account in mist

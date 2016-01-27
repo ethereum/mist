@@ -116,7 +116,7 @@ var menuTempl = function(webviews) {
                         path += '/.ethereum/keystore';
 
                     if(process.platform === 'win32')
-                        path = global.path.APPDATA + '\\Roaming\\Ethereum\\keystore';
+                        path = global.path.APPDATA + '\\Ethereum\\keystore';
 
                     shell.showItemInFolder(path);
                 }

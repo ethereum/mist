@@ -158,7 +158,6 @@ ipc.on('uiAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId();
 
     if(global.windows[windowId]) {
-        console.log(global.windows[windowId].window);
         global.windows[windowId].window.close();
         delete global.windows[windowId];
     }
@@ -271,7 +270,7 @@ app.on('ready', function() {
                 'webaudio': true,
                 'webgl': true,
                 'text-areas-are-resizable': true,
-                //'web-security': false // necessary to make routing work on file:// protocol
+                'web-security': false // necessary to make routing work on file:// protocol
             }
         });
     }

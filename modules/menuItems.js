@@ -107,16 +107,26 @@ var menuTempl = function(webviews) {
                 click: function(){
                     var path = global.path.HOME;
 
-                    if(process.platform === 'darwin')
-                        path += '/Library/Ethereum/keystore';
+                    // eth
+                    if(global.nodes.eth) {
+                        if(process.platform === 'win32')
+                            path = global.path.APPDATA + '\\Web3\\keys';
+                        else
+                            path += '/.web3/keys';
+                    
+                    // geth
+                    } else {
+                        if(process.platform === 'darwin')
+                            path += '/Library/Ethereum/keystore';
 
-                    if(process.platform === 'freebsd' ||
-                       process.platform === 'linux' ||
-                       process.platform === 'sunos')
-                        path += '/.ethereum/keystore';
+                        if(process.platform === 'freebsd' ||
+                           process.platform === 'linux' ||
+                           process.platform === 'sunos')
+                            path += '/.ethereum/keystore';
 
-                    if(process.platform === 'win32')
-                        path = global.path.APPDATA + '\\Ethereum\\keystore';
+                        if(process.platform === 'win32')
+                            path = global.path.APPDATA + '\\Ethereum\\keystore';
+                    }
 
                     shell.showItemInFolder(path);
                 }

@@ -15,16 +15,16 @@ if(typeof mist !== 'undefined') {
 You have three different possibilities to use `web3`:
 
 ```js
-// 1. Simply use web3 from mist
+// 1. simply use, web3 comes already defined
 web3
 
-// 2. Use web3 from Mist, OR load your own if you're outside of Mist
+// 2. optional use web3 from mist, OR load if outside of mist
 if(typeof web3 === 'undefined')
   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-// 3. Use your own web3 version, but the provider from mist ("Web3" won't be supplied by Mist, so it should come from your packages)
-if(typeof mist !== 'undefined')
-  web3 = new Web3(mist.web3Provider);
+// 3. always use web3 provided by the dapp ("Web3" won't be supplied by Mist), but the provider from mist
+if(typeof web3 !== 'undefined')
+  web3 = new Web3(web3.currentProvider);
 else
   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 ```
@@ -49,17 +49,6 @@ Returns the current platform, mist is running on:
 - `win32` // Windows
 - `linux`
 
-***
-
-### mist.web3Provider
-
-Returns the current mist provider, which should be used when using a different `Web3` version
-
-#### Example
-
-```js
-web3 = new Web3(mist.web3Provider);
-```
 
 ***
 

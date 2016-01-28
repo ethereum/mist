@@ -13,8 +13,8 @@ const ipc = electron.ipcMain;
 // GLOBAL Variables
 global.path = {
     HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData'),
-    USERDATA: app.getPath('userData')
+    APPDATA: app.getPath('appData'), // Application Support/
+    USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
@@ -24,9 +24,10 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
+global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -89,6 +90,9 @@ if(global.mode === 'wallet') {
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
     console.log('UNCAUGHT EXCEPTION', error);
+    // var stack = new Error().stack;
+    // console.log(stack);
+
     app.quit();
 });
 
@@ -120,8 +124,9 @@ app.on('before-quit', function(event){
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
-        ethereumNodes.stopNodes();
-        app.quit();
+        ethereumNodes.stopNodes(function(){
+            app.quit();
+        });
     }, 500);
 });
 
@@ -193,6 +198,13 @@ ipc.on('mistAPI_requestAccount', function(e){
 // });
 
 
+// append ignore GPU blacklist on linux
+// if(process.platform === 'freebsd' ||
+//    process.platform === 'linux' ||
+//    process.platform === 'sunos') {
+//     app.commandLine.appendSwitch('ignore-cpu-blacklist');
+// }
+
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -202,7 +214,7 @@ app.on('ready', function() {
     createPopupWindow.initLoadingWindow();
 
     // instantiate custom protocols
-    // require('./customProtocols.js');
+    require('./customProtocols.js');
 
     // add menu already her, so we have copy and past functionality
     appMenu([]);
@@ -223,21 +235,23 @@ app.on('ready', function() {
     // MIST
     if(global.mode === 'mist') {
         global.mainWindow = new BrowserWindow({
+            title: global.appName,
             show: false,
             width: 1024 + 208,
             height: 700,
             icon: global.icon,
-            'standard-window': false,
-            'dark-theme': true,
-            'accept-first-mouse': true,
-            preload: __dirname +'/modules/preloader/mistUI.js',
-            'node-integration': false,
-            'web-preferences': {
+            titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            backgroundColor: '#D2D2D2',
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
+                preload: __dirname +'/modules/preloader/mistUI.js',
+                nodeIntegration: false,
                 'overlay-scrollbars': true,
-                'webaudio': true,
-                'webgl': true,
-                'text-areas-are-resizable': true,
-                'web-security': false // necessary to make routing work on file:// protocol
+                webaudio: true,
+                webgl: false,
+                textAreasAreResizable: true,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
 
@@ -248,39 +262,42 @@ app.on('ready', function() {
     } else {
 
         global.mainWindow = new BrowserWindow({
+            title: global.appName,
             show: false,
             width: 1024,
             height: 680,
             icon: global.icon,
-            'standard-window': false,
-            'dark-theme': true,
-            'accept-first-mouse': true,
-            preload: __dirname +'/modules/preloader/wallet.js',
-            'node-integration': false,
-            'web-preferences': {
+            titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            backgroundColor: '#F6F6F6',
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
+                preload: __dirname +'/modules/preloader/wallet.js',
+                nodeIntegration: false,
                 'overlay-fullscreen-video': true,
                 'overlay-scrollbars': true,
-                'webaudio': true,
-                'webgl': true,
-                'text-areas-are-resizable': true,
-                'web-security': false // necessary to make routing work on file:// protocol
+                webaudio: true,
+                webgl: false,
+                textAreasAreResizable: true,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
     }
 
 
     var appStartWindow = new BrowserWindow({
+            title: global.appName,
             width: 400,
             height: 230,
             icon: global.icon,
             resizable: false,
-            'node-integration': false,
-            preload: __dirname +'/modules/preloader/splashScreen.js',
-            'standard-window': false,
-            'use-content-size': true,
+            backgroundColor: '#F6F6F6',
+            useContentSize: true,
             frame: false,
-            'web-preferences': {
-                'web-security': false // necessary to make routing work on file:// protocol
+            webPreferences: {
+                preload: __dirname +'/modules/preloader/splashScreen.js',
+                nodeIntegration: false,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
     appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
@@ -299,6 +316,7 @@ app.on('ready', function() {
             preload: __dirname +'/modules/preloader/popupWindow.js',
             'standard-window': false,
             'use-content-size': false,
+            titleBarStyle: 'hidden-inset', 
             frame: true,
             'web-preferences': {
                 'web-security': false // necessary to make routing work on file:// protocol

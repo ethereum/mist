@@ -9,6 +9,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const ipc = require('electron').ipcMain;
 const createPopupWindow = require('./createPopupWindow.js');
+const logRotate = require('log-rotate');
 
 const binaryPath = path.resolve(__dirname + '/../nodes');
 
@@ -18,29 +19,40 @@ module.exports = {
 
     @method stopNodes
     */
-    stopNodes: function() {
+    stopNodes: function(callback) {
         console.log('Stopping nodes...');
 
-        // kill running geth
-        if(global.nodes.geth) {
-            global.nodes.geth.stderr.removeAllListeners('data');
-            global.nodes.geth.stdout.removeAllListeners('data');
-            global.nodes.geth.stdin.removeAllListeners('error');
-            global.nodes.geth.removeAllListeners('error');
-            global.nodes.geth.removeAllListeners('exit');
-            global.nodes.geth.kill('SIGKILL');
-            global.nodes.geth = null;
-        }
+        var node = global.nodes.geth || global.nodes.eth;
 
-        // kill running eth
-        if(global.nodes.eth) {
-            global.nodes.eth.stderr.removeAllListeners('data');
-            global.nodes.eth.stdout.removeAllListeners('data');
-            global.nodes.eth.stdin.removeAllListeners('error');
-            global.nodes.eth.removeAllListeners('error');
-            global.nodes.eth.removeAllListeners('exit');
-            global.nodes.eth.kill('SIGKILL');
-            global.nodes.eth = null;
+        // kill running geth
+        if(node) {
+            node.stderr.removeAllListeners('data');
+            node.stdout.removeAllListeners('data');
+            node.stdin.removeAllListeners('error');
+            node.removeAllListeners('error');
+            node.removeAllListeners('exit');
+            node.kill('SIGINT');
+
+            // kill if not closed already
+            var timeoutId = setTimeout(function(){
+                node.kill('SIGKILL');
+                if(_.isFunction(callback))
+                    callback();
+
+                node = null;
+            }, 8000);
+
+            node.once('close', function(){
+                clearTimeout(timeoutId);
+                if(_.isFunction(callback))
+                    callback();
+
+                node = null;
+            });
+
+        } else {
+            if(_.isFunction(callback))
+                callback();
         }
     },
     /**
@@ -147,102 +159,114 @@ module.exports = {
     _startProcess: function(type, testnet, binPath, pw, callback, popupCallback){
         var _this = this,
             cbCalled = false,
-            error = false;
+            error = false,
+            logfilePath = global.path.USERDATA + '/node.log';
 
-        this.stopNodes();
 
-        console.log('Starting '+ type +' node...');
+        // rename the old log file
+        logRotate(logfilePath, {count: 5}, function(err) {
 
-        // wrap the starting callback
-        var callCb = function(err, res){
+            var logFile = fs.createWriteStream(logfilePath, {flags: 'a'});
 
-            _this._writeNodeToFile(type, testnet);
-            
-            cbCalled = true;
-            if(err)
+            _this.stopNodes();
+
+            console.log('Starting '+ type +' node...');
+
+            // wrap the starting callback
+            var callCb = function(err, res){
+
+                _this._writeNodeToFile(type, testnet);
+                
+                cbCalled = true;
+                if(err)
+                    error = true;
+                callback(err, res);
+            };
+
+
+
+            // START TESTNET
+            if(testnet) {
+                args = (type === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
+
+            // START MAINNET
+            } else {
+                args = (type === 'geth') ? ['--fast'] : ['--unsafe-transactions', '--master', pw];
+                pw = null;
+            }
+
+            global.nodes[type] = spawn(binPath, args);
+
+
+            // node has a problem starting
+            global.nodes[type].once('error',function(e){
                 error = true;
-            callback(err, res);
-        };
 
+                if(!cbCalled && _.isFunction(callback)){
+                    callCb('Couldn\'t start '+ type +' node!');
+                }
+            });
 
+            // node quit, e.g. master pw wrong
+            global.nodes[type].once('exit',function(){
 
-        // START TESTNET
-        if(testnet) {
-            args = (type === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
+                // If is eth then the password was typed wrong
+                if(!cbCalled && type === 'eth') {
+                    _this.stopNodes();
 
-        // START MAINNET
-        } else {
-            args = (type === 'geth') ? ['--fast'] : ['--unsafe-transactions', '--master', pw];
-            pw = null;
-        }
+                    if(popupCallback)
+                        popupCallback('Masterpassword wrong');
 
-        global.nodes[type] = spawn(binPath, args);
+                    // set default to geth, to prevent beeing unable to start the wallet
+                    _this._writeNodeToFile('geth', testnet);
 
+                    console.log('Password wrong '+ type +' node!');
+                }
+            });
 
-        // node has a problem starting
-        global.nodes[type].once('error',function(e){
-            error = true;
+            // we need to read the buff to prevent geth/eth from stop working
+            global.nodes[type].stdout.on('data', function(data) {
 
-            if(!cbCalled && _.isFunction(callback)){
-                callCb('Couldn\'t start '+ type +' node!');
-            }
-        });
+                // console.log('stdout ', data.toString());
+                if(!cbCalled && _.isFunction(callback)){
 
-        // node quit, e.g. master pw wrong
-        global.nodes[type].once('exit',function(){
+                    // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
+                    if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
+                        return;
+                    else if(popupCallback)
+                        popupCallback(null);
 
-            // If is eth then the password was typed wrong
-            if(!cbCalled && type === 'eth') {
-                _this.stopNodes();
+                    callCb(null);
+                }
+            });
+            // stream log output
+            global.nodes[type].stderr.pipe(logFile);
+            global.nodes[type].stderr.on('data', function(data) {
 
-                if(popupCallback)
-                    popupCallback('Masterpassword wrong');
-
-                // set default to geth, to prevent beeing unable to start the wallet
-                _this._writeNodeToFile('geth', testnet);
-
-                console.log('Password wrong '+ type +' node!');
-            }
-        });
-
-        // we need to read the buff to prevent geth/eth from stop working
-        global.nodes[type].stdout.on('data', function(data) {
-
-            // console.log('stdout ', data.toString());
-            if(!cbCalled && _.isFunction(callback)){
-
-                // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
-                if(type === 'eth' && data.toString().indexOf('Ethereum (++)') === -1)
-                    return;
-                else if(popupCallback)
-                    popupCallback(null);
-
-                callCb(null);
-            }
-        });
-        global.nodes[type].stderr.on('data', function(data) {
-            // dont react on stderr when eth++
-            if(type === 'eth')
-                return;
-
-            // console.log('stderr ', data.toString());
-            if(!cbCalled && _.isFunction(callback)) {
-
-                // (geth) prevent starying until IPC service is started
-                if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
+                // dont react on stderr when eth++
+                if(type === 'eth')
                     return;
 
-                callCb(null);
+                // console.log('stderr ', data.toString());
+                if(!cbCalled && _.isFunction(callback)) {
+
+                    // (geth) prevent starying until IPC service is started
+                    if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
+                        return;
+
+                    callCb(null);
+                }
+            });
+
+
+            // confirm to the disclaimer in geth
+            if(type === 'geth') {
+                setTimeout(function(){
+                    if(!error)
+                        global.nodes[type].stdin.write("y\r\n");
+                }, 10);
             }
+            
         });
-
-
-        // confirm to the disclaimer in geth
-        if(type === 'geth') {
-            setTimeout(function(){
-                if(!error)
-                    global.nodes[type].stdin.write("y\r\n");
-            }, 10);
-        }
     }
 };

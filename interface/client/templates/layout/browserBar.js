@@ -205,7 +205,7 @@ Template['layout_browserBar'].events({
 
         // look in tabs
         var foundTab = _.find(tabs, function(tab){
-                if(tab.url.indexOf('about:blank') === -1) {
+                if(tab.url && tab.url.indexOf('about:blank') === -1) {
                     var tabOrigin = new URL(tab.url).origin;
                     return (tabOrigin && url.indexOf(tabOrigin) !== -1);
                 }

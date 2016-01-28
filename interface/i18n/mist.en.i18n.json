@@ -19,6 +19,15 @@
                 "label": "View",
                 "fullscreen": "Toggle Fullscreen"
             },
+            "accounts": {
+                "label": "Accounts",
+                "importPresale": "Import Pre-sale Accounts"
+            },
+            "backup": {
+                "label": "Backup",
+                "backupKeyStore": "Backup Accounts",
+                "backupMist": "Backup App Data"
+            },
             "develop": {
                 "label": "Develop",
                 "devTools": "Toggle Developer Tools",
@@ -116,7 +125,31 @@
                 "errors": {
                     "wrongPassword": "Wrong password"
                 }
+            },
+            "onboarding": {
+                "description" : "Ethereum is a decentralized computing network for building blockchain applications that can transfer property and value on a peer to peer network",
+                "goToTestnet" : "Play with Ethereum",
+                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet.",
+                "gotoMainnet" : "Go to the real thing",
+                "gotoMainnetDescription" : " You’ll need to have access to either Ether or Bitcoin in order to create and execute contracts.",
+                "doYouHaveAWalletFile" : "Do you have a wallet file?",
+                "walletFileDescription" : "<p> If you participated on the 2014 Ethereum Presale, you must have received a .json file. </p><p>If you already created an ethereum node somewhere else, you can also drop the backup here.</p>",
+                "dropFilesHere" : "Drop Files here",
+                "skip" : "Skip this step",
+                "protectTitle" : "Protect your account",
+                "protectDescription" : "Create an account for your new account. Choose a password strong as if it was holding the keys to your house.",
+                "loadItTitle" : "Load it up",
+                "loadItDescription" : "<p> The ethereum network works based on the exchange of tokens called “Ether” so you’ll need to a small amount of it to do anything. If you already own Bitcoin or any other cryptocurrency you can easily convert it to and from ether using shapeshift. </p> <p> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>. </p>",
+                "you" : "YOU",
+                "depositBitcoin" : "Deposit Bitcoin",
+                "learnIt" : "Learn it",
+                "tutorial1Description" : "<p> Here's some reading suggestions while you wait: </p> <p> <strong>Make your own money </strong> Make a crypto currency with a fixed market supply, tokens representing real world assets or even a puzzle based coin </p> <p><a href=\"https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>",
+                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. </p>
+ <p><a href=\"https://www.ethereum.org/crowdsale\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>",
+                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p>
+ <p><a href=\"https://blog.ethereum.org/2015/12/04/ethereum-in-practice-part-2-how-to-build-a-better-democracy-in-under-a-100-lines-of-code/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>"
             }
         }
+
     }
 }

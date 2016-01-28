@@ -1,19 +1,13 @@
 const app = require('app');
 const BrowserWindow = require('browser-window');
+const createPopupWindow = require('./createPopupWindow.js');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
+const shell = require('electron').shell;
 const config = require('../config');
 const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 
-
-// TODO change selector to role
-/*
-+  * `click` Function - Will be called with `click(menuItem, browserWindow)` when
--  * `selector` String - Call the selector of first responder when clicked (OS      +     the menu item is clicked
--     X only)       +  * `role` String - Define the action of the menu item, when specified the
-+     `click` property will be ignored
-*/
 
 // create menu
 // null -> null
@@ -105,6 +99,60 @@ var menuTempl = function(webviews) {
         ]
     })
 
+    // ACCOUNTS
+    menu.push({
+        label: i18n.t('mist.applicationMenu.accounts.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                click: function(){
+                    createPopupWindow.show('importPresale', 400, 210);
+                }
+            }
+        ]
+    })
+
+    // BACKUP
+    menu.push({
+        label: i18n.t('mist.applicationMenu.backup.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.backup.backupKeyStore'),
+                click: function(){
+                    var path = global.path.HOME;
+
+                    // eth
+                    if(global.nodes.eth) {
+                        if(process.platform === 'win32')
+                            path = global.path.APPDATA + '\\Web3\\keys';
+                        else
+                            path += '/.web3/keys';
+                    
+                    // geth
+                    } else {
+                        if(process.platform === 'darwin')
+                            path += '/Library/Ethereum/keystore';
+
+                        if(process.platform === 'freebsd' ||
+                           process.platform === 'linux' ||
+                           process.platform === 'sunos')
+                            path += '/.ethereum/keystore';
+
+                        if(process.platform === 'win32')
+                            path = global.path.APPDATA + '\\Ethereum\\keystore';
+                    }
+
+                    shell.showItemInFolder(path);
+                }
+            },{
+                label: i18n.t('mist.applicationMenu.backup.backupMist'),
+                click: function(){
+                    shell.showItemInFolder(global.path.USERDATA);
+                }
+            }
+        ]
+    })
+
     // DEVELOP
     var devToolsMenu = [];
 
@@ -171,13 +219,12 @@ var menuTempl = function(webviews) {
                     enabled: !global.nodes.geth,
                     type: 'checkbox',
                     click: function(){
-                        ethereumNodes.stopNodes();
-                        setTimeout(function(){
+                        ethereumNodes.stopNodes(function(){
                             ethereumNodes.startNode('geth', false, function(){
                                 global.mainWindow.loadURL(global.interfaceAppUrl);
                                 createMenu(webviews);
                             });
-                        }, 10);
+                        });
                     }
                   },
                   {
@@ -186,13 +233,12 @@ var menuTempl = function(webviews) {
                     checked: !!global.nodes.eth,
                     enabled: !global.nodes.eth,
                     click: function(){
-                        ethereumNodes.stopNodes();
-                        setTimeout(function(){
+                        ethereumNodes.stopNodes(function(){
                             ethereumNodes.startNode('eth', false, function(){
                                 global.mainWindow.loadURL(global.interfaceAppUrl);
                                 createMenu(webviews);
                             });
-                        }, 10);
+                        });
                     }
                   }
             ]});
@@ -209,13 +255,12 @@ var menuTempl = function(webviews) {
                 click: function(){
                     var geth = !!global.nodes.geth;
 
-                    ethereumNodes.stopNodes();
-                    setTimeout(function(){
+                    ethereumNodes.stopNodes(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', false, function(){
                             global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
-                    }, 10);
+                    });
                 }
               },
               {
@@ -225,13 +270,12 @@ var menuTempl = function(webviews) {
                 click: function(){
                     var geth = !!global.nodes.geth;
 
-                    ethereumNodes.stopNodes();
-                    setTimeout(function(){
+                    ethereumNodes.stopNodes(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', true, function(){
                             global.mainWindow.loadURL(global.interfaceAppUrl);
                             createMenu(webviews);
                         });
-                    }, 10);
+                    });
                 }
               }
         ]});

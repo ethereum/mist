@@ -26,6 +26,7 @@ module.exports = function(){
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
         errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
         errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
+        errorSendTxBatch = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."}, "id": "__id__"},
         nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
         ipcPath = getIpcPath();
 
@@ -184,12 +185,14 @@ module.exports = function(){
 
                 // SEND SYNC back
                 if(event.sync) {
-                    event.returnValue = JSON.stringify(result);
+                    if(!event.sender.isDestroyed())
+                        event.returnValue = JSON.stringify(result);
                     delete _this.syncEvents[event.eventId];
 
                 // SEND async back
                 } else {
-                    event.sender.send('ipcProvider-data', JSON.stringify(result));
+                    if(!event.sender.isDestroyed())
+                        event.sender.send('ipcProvider-data', JSON.stringify(result));
                     delete _this.asyncEvents[event.eventId];
                 }
             });
@@ -220,9 +223,9 @@ module.exports = function(){
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
                 _this.sender.send('ipcProvider-timeout', data);
+                _this.destroy();
 
             } catch(e) {
-                _this.destroy();
             }
         });
 
@@ -233,9 +236,9 @@ module.exports = function(){
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
                 _this.sender.send('ipcProvider-end', data);
+                _this.destroy();
 
             } catch(e) {
-                _this.destroy();
             }
         });
 
@@ -324,7 +327,7 @@ module.exports = function(){
 
 
         // main window or popupwindows are admin
-        if(this.id === global.mainWindow.webContents.getId() ||
+        if(global.mainWindow && this.id === global.mainWindow.webContents.getId() ||
            (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
             return payload;
         }
@@ -352,11 +355,15 @@ module.exports = function(){
     @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
     */
     GethConnection.prototype.checkRequests = function(filteredPayload, event, callback){
+        var _this = this;
         var called = false;
 
         // batch request can't unlock for now (they might be deprecated soon) 
         if(_.isArray(filteredPayload)) {
-            return callback(null, filteredPayload);
+            if(_.find(filteredPayload, function(payload){ return (payload.method === 'eth_sendTransaction'); }))
+                return callback(errorSendTxBatch);
+            else
+                return callback(null, filteredPayload);
         }
 
 
@@ -385,7 +392,7 @@ module.exports = function(){
                         // set the changed provided gas
                         filteredPayload.params[0].gas = result;
 
-                        console.log('Confirmed transaction:', filteredPayload.params[0]);
+                        console.log('Confirmed transaction on socket '+ _this.id +':', filteredPayload.params[0]);
                         if(!called) {
                             callback(null, filteredPayload);
                         }
@@ -430,15 +437,18 @@ module.exports = function(){
     GethConnection.prototype.timeout = function() {
         var _this = this;
         
-        this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+        if(!this.sender.isDestroyed())
+            this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
 
         // cancel all requests
         _.each(this.asyncEvents, function(event, key){
-            event.sender.send('ipcProvider-data', JSON.stringify(returnError(event.payload, errorTimeout)));
+            if(!event.sender.isDestroyed())
+                event.sender.send('ipcProvider-data', JSON.stringify(returnError(event.payload, errorTimeout)));
             delete _this.asyncEvents[key];
         });
         _.each(this.syncEvents, function(event, key){
-            event.returnValue = JSON.stringify(returnError(event.payload, errorTimeout));
+            if(!event.sender.isDestroyed())
+                event.returnValue = JSON.stringify(returnError(event.payload, errorTimeout));
             delete _this.syncEvents[key];
         });
     };
@@ -449,19 +459,18 @@ module.exports = function(){
     @method destroy
     */
     GethConnection.prototype.destroy = function() {
-        if(this.destroyed)
+        if(!this || !this.ipcSocket)
             return;
-        
-        this.ipcSocket.destroy();
-        this.ipcSocket.removeAllListeners();
 
         this.timeout();
-
-        delete global.sockets['id_'+ this.id];
-
-        this.destroyed = true;
+        
+        this.ipcSocket.removeAllListeners();
+        this.ipcSocket.destroy();
 
         console.log('SOCKET '+ this.id + ' DESTROYED!');
+
+        if(global.sockets['id_'+ this.id])
+            delete global.sockets['id_'+ this.id];
     };
 
 
@@ -476,10 +485,8 @@ module.exports = function(){
     // wait for incoming requests from dapps/ui
     ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
-        if(socket && socket.destroyed) return;
 
         // console.log('Called ipcProvider-create');
-
 
         if(socket)
             socket.connect(event);
@@ -496,7 +503,7 @@ module.exports = function(){
 
     ipc.on('ipcProvider-destroy', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
-        if(socket && socket.destroyed) return;
+        if(!socket) return;
 
         // console.log('Called ipcProvider-destroy');
 
@@ -508,7 +515,6 @@ module.exports = function(){
 
     var sendRequest = function(event, payload, sync) {
         var socket = global.sockets['id_'+ event.sender.getId()];
-        if(socket && socket.destroyed) return;
 
         if(!socket)
             // TODO: should we really try to reconnect, after the connection was destroyed?

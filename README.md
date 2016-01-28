@@ -138,3 +138,13 @@ Options are:
 - `master`
 - `develop`
 - `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
+
+
+### Code signing
+
+After the bundle run:
+
+    $ codesign --deep --force --verbose --sign "<identity>" path/to/Ethereum-Wallet.app
+
+Replace `<identity>` with your identidy e.g. `0D11C72F07B969F4F29BD6881D7A30D7540B5AA1`
+

@@ -14,13 +14,10 @@
     flex-direction: column;
     height: 100%;
     position: relative;
-    background: lighten(@colorOSBackgroundFocus, 10%);
-    .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 30%, lighten(@colorOSBackgroundFocus, 10%) 75%));
-    
+    background: lighten(@colorOSBackgroundFocus, 10%);    
     
     .main-content {
         flex: 1 100%;
-        max-height: @gridHeight * 19;
 
         h1 {
             margin: @gridHeight*2 0 @gridHeight/2;
@@ -236,7 +233,7 @@
     .onboarding-tutorial-3 {
         .col-6 {
             transition: transform 0.2s ease-in-out, opacity 0.2s;
-            transform: translateX(10px) rotateY(-90deg) scale(0.7);
+            transform: translateX(50px) translateY(10px) rotateY(180deg) scale(0.7);
             backface-visibility: hidden;
         }
         .col-6.col-left {
@@ -274,12 +271,11 @@
         }
     } 
 
-
     &.outgoing-tutorial-1 .onboarding-tutorial-1,
     &.outgoing-tutorial-2 .onboarding-tutorial-2,
     &.outgoing-tutorial-3 .onboarding-tutorial-3 {
         .col-6:not(.col-left) {
-            transform: translateX(10px) rotateY(180deg) scale(0.7);
+            transform: translateX(-50px) translateY(10px) rotateY(-180deg) scale(0.7);
         }
     } 
 
@@ -299,6 +295,9 @@
         background-image: url('/images/tutorial-crowdsale.png');
     }
     .onboarding-tutorial-3 .tutorial-dao {
+        position: relative;
+        top: -20px;
+        height: 70%;
         background-image: url('/images/tutorial-dao.png');
     }
 }

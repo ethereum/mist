@@ -1,173 +1,96 @@
 <template name="popupWindows_onboardingScreen">
     <div class="onboarding-screen {{mode}} active-{{TemplateVar.get 'currentActive'}} outgoing-{{TemplateVar.get 'lastActive'}} ">
         
-        <div class="main-content">   
-            
+        <div class="main-content">    
             <div class="onboarding-section onboarding-start">
-                <p class="description">Ethereum is a decentralized computing network for building blockchain applications that can transfer property and value on a peer to peer network</p>
-
+                <p class="description">{{i18n "mist.popupWindows.onboarding.description"}}</p>
                 <p> 
-                    <button class="goto-password"> Play with Ethereum</button> 
-                    Test the technology freely in a sandboxed testnet. 
+                    <button class="goto-password"> {{i18n "mist.popupWindows.onboarding.goToTestnet"}} </button> 
+                    {{i18n "mist.popupWindows.onboarding.goToTestnetDescription"}}
                 </p>
-
                 <p> 
-                    <button class="goto-drop-file"> Go to the real thing </button> 
-                    You’ll need to have access to either Ether or Bitcoin in order to create and execute contracts. 
+                    <button class="goto-drop-file"> {{i18n "mist.popupWindows.onboarding.gotoMainnet"}} </button> 
+                    {{i18n "mist.popupWindows.onboarding.gotoMainnetDescription"}}
                 </p>
             </div>
 
             <div class="onboarding-section onboarding-drop-file row">
-                <h1>Do you have a wallet file?</h1>
-                
+                <h1>{{i18n "mist.popupWindows.onboarding.doYouHaveAWalletFile"}}</h1>
                 <div class="col col-6 col-left">
-                    <p>If you participated on the 2014 Ethereum Presale, you must have received a .json file. 
-                    </p>
-
-                    <p>If you already created an ethereum node somewhere else, you can also drop the backup here.
-                    </p>
+                    {{{i18n "mist.popupWindows.onboarding.walletFileDescription"}}}
                 </div>
-
-                <div class="col col-6 droppable">Drop Files here</div>
+                <div class="col col-6 droppable"> {{i18n "mist.popupWindows.onboarding.dropFilesHere"}}</div>
                 
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> Back </button> 
-                
-                    <button class="goto-password right-align"> Skip this step </button> 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button> 
+                    <button class="goto-password right-align"> {{i18n "mist.popupWindows.onboarding.skip"}} </button> 
                 </div>
                 
             </div>
 
             <div class="onboarding-section onboarding-password row">
-                <h1>Protect your account</h1>
-                
+                <h1> {{i18n "mist.popupWindows.onboarding.protectTitle"}} </h1>
                 <div class="col col-6 col-left">
-                    <p>
-                    Create an account for your new account. Choose a password strong as if it was holding the keys to your house.
-                    </p>
+                    <p> {{i18n "mist.popupWindows.onboarding.protectDescription"}} </p>
                 </div>
-
                 <div class="col col-6">
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class='password-repeat'>
                 </div>
-                
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> Back </button>                 
-                    <button class="goto-bitcoin right-align"> Skip (dev only) </button>                 
+                    <button class="goto-start">  {{i18n "buttons.back"}}  </button>                 
+                    <button class="goto-bitcoin right-align"> {{i18n "mist.popupWindows.onboarding.skip"}} </button>
                 </div>
-                
             </div>
 
             <div class="onboarding-section onboarding-bitcoin row">
-                <h1>Load it up</h1>
-                
-                <div class="col col-6 col-left">
-                    <p>
-                    The ethereum network works based on the exchange of tokens called “Ether” so you’ll need to a small amount of it to do anything. If you already own Bitcoin or any other cryptocurrency you can easily convert it to and from ether using shapeshift.
-                    </p>
-
-                    <p>
-                    We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.
-                    </p>
-                </div>
-
+                <h1>{{i18n "mist.popupWindows.onboarding.loadItTitle"}} </h1>
+                <div class="col col-6 col-left"> {{{i18n "mist.popupWindows.onboarding.loadItDescription"}}} </div>
                 <div class="col col-6 col-deposit">
                     {{> dapp_identicon identity='0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb'}}
-                    <div class="you"> YOU </div>
+                    <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
                     <input type="text" value="Etherbase" class="name">
-                    <h6>0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb</h6>
-                    <a href="https://shapeshift.io/shifty.html?destination=0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="shapeshift">Deposit Bitcoin</a>
+                    <h6> 0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb </h6>
+                    <a href="https://shapeshift.io/shifty.html?destination=0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="shapeshift"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
                 </div>
-                
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-password"> Back </button>                 
-                    <button class="goto-tutorial-1 right-align"> Skip this step </button>                 
+                    <button class="goto-password"> {{i18n "buttons.back"}}  </button>                 
+                    <button class="goto-tutorial-1 right-align">  {{i18n "mist.popupWindows.onboarding.skip"}} </button>                 
                 </div>
-                
             </div>
 
             <div class="onboarding-section onboarding-tutorial-1 row">
-                <h1>Learn it</h1>
-                
-                <div class="col col-6 col-left">
-                    <p>
-                    Here's some reading suggestions while you wait:
-                    </p>
-                                        
-                    <p>
-                    <strong>Make your own cryptocurrency</strong><br>
-
-                    Make a crypto currency with a fixed market supply, create tokens representing real world assets or even a puzzle based coin
-                    </p>
-
-                    <p><a href="https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/" class="button" target="_blank">Learn this recipe</a></p>
-                </div>
-
-                <div class="col col-6 tutorial-token">
-                    
-                </div>
-                
+                <h1> {{i18n "mist.popupWindows.onboarding.learnIt"}} </h1>
+                <div class="col col-6 col-left"> {{{i18n "mist.popupWindows.onboarding.tutorial1Description"}}} </div>
+                <div class="col col-6 tutorial-token"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-bitcoin"> Back </button>                 
-                    <button class="goto-tutorial-2 right-align"> Skip this step </button>                 
+                    <button class="goto-bitcoin"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-tutorial-2 right-align">  {{i18n "mist.popupWindows.onboarding.skip"}} </button>                 
                 </div>
-                
             </div>
 
             <div class="onboarding-section onboarding-tutorial-2 row">
-                <h1>Learn it</h1>
-                
-                <div class="col col-6 col-left">
-                    <h4>
-                    Create a crowdsale
-                    </h4>
-                    <p>
-                    Raise funds for a common goal, fully trustable without a third party.
-                    </p>
-
-                    <p><a href="https://www.ethereum.org/crowdsale" class="button" target="_blank">Learn this recipe</a></p>
-                </div>
-
-                <div class="col col-6 tutorial-crowdsale">
-                    
-                </div>
-                
+                <h1> {{i18n "mist.popupWindows.onboarding.learnIt"}} </h1>
+                <div class="col col-6 col-left"> {{{i18n "mist.popupWindows.onboarding.tutorial1Description"}}} </div>
+                <div class="col col-6 tutorial-crowdsale"></div>  
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-tutorial-1"> Back </button>                 
-                    <button class="goto-tutorial-3 right-align"> Skip this step </button>                 
+                    <button class="goto-tutorial-1"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-tutorial-3 right-align">  {{i18n "mist.popupWindows.onboarding.skip"}} </button>                 
                 </div>
-                
             </div>
 
             <div class="onboarding-section onboarding-tutorial-3 row">
-                <h1>Learn it</h1>
-                
-                <div class="col col-6 col-left">
-                    <h4>
-                    Blockchain Organization
-                    </h4>
-                    <p>
-                    Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions.
-                    </p>
-
-                    <p><a href="https://blog.ethereum.org/2015/12/04/ethereum-in-practice-part-2-how-to-build-a-better-democracy-in-under-a-100-lines-of-code/" class="button" target="_blank">Learn this recipe</a></p>
-                </div>
-
-                <div class="col col-6 tutorial-dao">
-                    
-                </div>
-                
+                <h1> {{i18n "mist.popupWindows.onboarding.learnIt"}} </h1>
+                <div class="col col-6 col-left"> {{{i18n "mist.popupWindows.onboarding.tutorial1Description"}}} </div>
+                <div class="col col-6 tutorial-dao"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-tutorial-2"> Back </button>                 
+                    <button class="goto-tutorial-2"> {{i18n "buttons.back"}} </button>                 
                 </div>
-                
             </div>
 
         </div>
         <footer>
             <progress value="25" max="100"></progress>
-
             {{#if TemplateVar.get 'readyToLaunch'}}
             <button class="launch-app"> Launch App </button>
             {{else}}            
@@ -175,6 +98,5 @@
             <div class="blocks"> Block 234,567</div>
             {{/if}}
         </footer>     
-
     </div>
 </template>

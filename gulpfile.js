@@ -167,17 +167,19 @@ gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
 gulp.task('create-binaries', ['copy-i18n'], function(cb) {
     packager({
         dir: './dist_'+ type +'/app/',
+        out: './dist_'+ type +'/',
         name: filenameUppercase,
         platform: options.platform.join(','),
         arch: 'all',
-        version: electronVersion,
-        out: './dist_'+ type +'/',
         icon: './icons/'+ type +'/icon.icns',
-        //'app-bundle-id': 'com.github.electron',
-        //'helper-bundle-id': 'com.github.electron.helper',
-        'app-bundle-id': 'com.ethereum.'+ type,
-        'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
+        version: electronVersion,
         'app-version': version,
+        'build-version': electronVersion,
+        // DO AFTER: codesign --deep --force --verbose --sign "0D11C72F07B969F4F29BD6881D7A30D7540B5AA1" Ethereum-Wallet.app
+        'sign': '0D11C72F07B969F4F29BD6881D7A30D7540B5AA1',
+        'app-bundle-id': 'com.ethereum.'+ type,
+        //'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
+        //'helper-bundle-id': 'com.github.electron.helper',
         // cache: './dist_'+ type +'/', // directory of cached electron downloads. Defaults to '$HOME/.electron'
         ignore: '', //do not copy files into App whose filenames regex .match this string
         prune: true,
@@ -185,12 +187,10 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
         asar: true,
         // sign: '',
         'version-string': {
-            CompanyName: 'Ethereum',
+            CompanyName: 'Stiftung Ethereum',
             // LegalCopyright
             // FileDescription
             // OriginalFilename
-            // FileVersion: version,
-            ProductVersion: version,
             ProductName: applicationName
             // InternalName: 
         }

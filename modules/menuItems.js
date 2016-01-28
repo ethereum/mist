@@ -1,5 +1,6 @@
 const app = require('app');
 const BrowserWindow = require('browser-window');
+const createPopupWindow = require('./createPopupWindow.js');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const shell = require('electron').shell;
@@ -93,6 +94,19 @@ var menuTempl = function(webviews) {
                 accelerator: 'CommandOrControl+F',
                 click: function(){
                     global.mainWindow.setFullScreen(!global.mainWindow.isFullScreen());
+                }
+            }
+        ]
+    })
+
+    // ACCOUNTS
+    menu.push({
+        label: i18n.t('mist.applicationMenu.accounts.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                click: function(){
+                    createPopupWindow.show('importPresale', 400, 210);
                 }
             }
         ]

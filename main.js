@@ -202,7 +202,7 @@ ipc.on('mistAPI_requestAccount', function(e){
 // if(process.platform === 'freebsd' ||
 //    process.platform === 'linux' ||
 //    process.platform === 'sunos') {
-//     app.commandLine.appendSwitch('--ignore-cpu-blacklist');
+//     app.commandLine.appendSwitch('ignore-cpu-blacklist');
 // }
 
 
@@ -240,17 +240,17 @@ app.on('ready', function() {
             width: 1024 + 208,
             height: 700,
             icon: global.icon,
-            'standard-window': false,
-            'dark-theme': true,
-            'accept-first-mouse': true,
-            'web-preferences': {
+            titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
                 preload: __dirname +'/modules/preloader/mistUI.js',
-                'node-integration': false,
+                nodeIntegration: false,
                 'overlay-scrollbars': true,
-                'webaudio': true,
-                'webgl': true,
-                'text-areas-are-resizable': true,
-                'web-security': false // necessary to make routing work on file:// protocol
+                webaudio: true,
+                webgl: false,
+                textAreasAreResizable: true,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
 
@@ -266,18 +266,18 @@ app.on('ready', function() {
             width: 1024,
             height: 680,
             icon: global.icon,
-            'standard-window': false,
-            'dark-theme': true,
-            'accept-first-mouse': true,
-            'web-preferences': {
+            titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
                 preload: __dirname +'/modules/preloader/wallet.js',
-                'node-integration': false,
+                nodeIntegration: false,
                 'overlay-fullscreen-video': true,
                 'overlay-scrollbars': true,
-                'webaudio': true,
-                'webgl': true,
-                'text-areas-are-resizable': true,
-                'web-security': false // necessary to make routing work on file:// protocol
+                webaudio: true,
+                webgl: false,
+                textAreasAreResizable: true,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
     }
@@ -295,8 +295,8 @@ app.on('ready', function() {
             frame: false,
             'web-preferences': {
                 preload: __dirname +'/modules/preloader/splashScreen.js',
-                'node-integration': false,
-                'web-security': false // necessary to make routing work on file:// protocol
+                nodeIntegration: false,
+                webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
     appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');

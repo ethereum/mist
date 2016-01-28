@@ -10,21 +10,22 @@ module.exports = {
 
         this.loadingwindow = new BrowserWindow({
             title: '',
-            'always-on-top': true,
+            alwaysOnTop: true,
             resizable: false,
             width: 100,
             height: 50,
             center: true,
             show: false,
             icon: global.icon,
-            'use-content-size': true,
             frame: false,
-            'use-content-size': true,
-            'web-preferences': {
-                'node-integration': false,
-                'webgl': true,
-                'overlay-scrollbars': true,
-                'web-security': false
+            useContentSize: true,
+            titleBarStyle: 'hidden', //hidden-inset: more space
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
+                nodeIntegration: false,
+                webgl: false,
+                webSecurity: false
             }
         });
         this.loadingwindow.on('closed', function() {
@@ -41,21 +42,21 @@ module.exports = {
 
         var modalWindow = new BrowserWindow({
             title: '',
-            'always-on-top': true,
+            alwaysOnTop: true,
             resizable: false,
             width: width,
             height: height,
             center: true,
             show: false,
             icon: global.icon,
-            'standard-window': false,
-            'use-content-size': true,
-            'web-preferences': {
+            useContentSize: true,
+            titleBarStyle: 'hidden', //hidden-inset: more space
+            webPreferences: {
                 preload: noWeb3 ? __dirname +'/preloader/popupWindowsNoWeb3.js' : __dirname +'/preloader/popupWindows.js',
-                'node-integration': false,
-                'overlay-scrollbars': true,
-                'text-areas-are-resizable': false,
-                'web-security': false
+                nodeIntegration: false,
+                webgl: false,
+                textAreasAreResizable: false,
+                webSecurity: false
             }
         });
         // modalWindow.setSize(width, 0);

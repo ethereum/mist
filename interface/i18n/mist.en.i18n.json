@@ -19,6 +19,10 @@
                 "label": "View",
                 "fullscreen": "Toggle Fullscreen"
             },
+            "accounts": {
+                "label": "Accounts",
+                "importPresale": "Import Pre-sale Accounts"
+            },
             "backup": {
                 "label": "Backup",
                 "backupKeyStore": "Backup Accounts",

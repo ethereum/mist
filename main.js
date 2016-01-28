@@ -241,6 +241,7 @@ app.on('ready', function() {
             height: 700,
             icon: global.icon,
             titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            backgroundColor: '#D2D2D2',
             acceptFirstMouse: true,
             darkTheme: true,
             webPreferences: {
@@ -267,6 +268,7 @@ app.on('ready', function() {
             height: 680,
             icon: global.icon,
             titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            backgroundColor: '#F6F6F6',
             acceptFirstMouse: true,
             darkTheme: true,
             webPreferences: {
@@ -289,11 +291,10 @@ app.on('ready', function() {
             height: 230,
             icon: global.icon,
             resizable: false,
-            backgroundColor: '#dddddd',
-            'standard-window': false,
-            'use-content-size': true,
+            backgroundColor: '#F6F6F6',
+            useContentSize: true,
             frame: false,
-            'web-preferences': {
+            webPreferences: {
                 preload: __dirname +'/modules/preloader/splashScreen.js',
                 nodeIntegration: false,
                 webSecurity: false // necessary to make routing work on file:// protocol

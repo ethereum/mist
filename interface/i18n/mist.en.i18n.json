@@ -127,7 +127,7 @@
                 }
             },
             "onboarding": {
-                "description" : "Ethereum is a decentralized computing network for building blockchain applications that can transfer property and value on a peer to peer network",
+                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
                 "goToTestnet" : "Play with Ethereum",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet.",
                 "gotoMainnet" : "Go to the real thing",
@@ -148,6 +148,5 @@
                 "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p><p><a href=\"https://blog.ethereum.org/2015/12/04/ethereum-in-practice-part-2-how-to-build-a-better-democracy-in-under-a-100-lines-of-code/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>"
             }
         }
-
     }
 }

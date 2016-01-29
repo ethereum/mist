@@ -13,10 +13,12 @@ The onboardingScreen template
 
 Template['popupWindows_onboardingScreen'].onCreated(function(){
     var template = this;
-
-    TemplateVar.set('currentActive','start');
     TemplateVar.set('readyToLaunch', false);
+})
 
+Template['popupWindows_onboardingScreen'].onRendered(function(){
+    var template = this;
+    TemplateVar.set('currentActive','start');
 })
 
 Template['popupWindows_onboardingScreen'].events({

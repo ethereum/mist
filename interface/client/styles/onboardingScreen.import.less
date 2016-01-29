@@ -47,7 +47,7 @@
 
         .onboarding-start {
             padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
-            background-image: url('/images/onboarding-logo-2.png');
+            background-image: url('/images/onboarding-logo-metal.png');
             background-repeat: no-repeat;
             background-position-y: @gridHeight*4;
             background-size: 255px 257px;
@@ -160,11 +160,11 @@
     }
 
     .onboarding-start {
-        transition: opacity 0.4s, background-position-x 0.8s ease-in-out;
+        transition: opacity 0.8s, background-position-x 1.2s ease-in-out;
         background-position-x: -200px;
         p {
-            transform: translateX(100px);
-            transition: transform 0.5s ease-in-out;
+            transform: translateX(300px);
+            transition: transform 0.6s ease-in-out;
         }
     }
 
@@ -173,10 +173,10 @@
         opacity: 1;
         background-position-x: @gridWidth;        
         z-index: 100;
-        transition-delay: 0.1s;
+        transition-delay: 0.3s;
         p {
             transform: translateX(0);
-            transition-delay: 0.3s;
+            transition-delay: 0.9s;
         }
     }
 
@@ -208,7 +208,6 @@
             transition: transform 0.4s;
             transition-timing-function: cubic-bezier(.66,-0.14,.64,1.27);
             transition-delay: 0.8s;
-            // transform: translateX(100px) rotateY(90deg) scale(0.9);
             transform: translateY(-200px) rotateZ(720deg);
             backface-visibility: hidden;
         }

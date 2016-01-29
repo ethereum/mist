@@ -47,9 +47,10 @@
 
         .onboarding-start {
             padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
-            background-image: url('/images/onboarding-logo.png');
+            background-image: url('/images/onboarding-logo-2.png');
             background-repeat: no-repeat;
-            background-position: @gridWidth @gridHeight*3;
+            background-position-y: @gridHeight*4;
+            background-size: 255px 257px;
 
             button, a.button {
                 font-size: 110%;
@@ -159,8 +160,8 @@
     }
 
     .onboarding-start {
-        transition: opacity 0.4s, background-position-x 0.4s ease-in-out;
-        background-position-x: -200px !important;
+        transition: opacity 0.4s, background-position-x 0.8s ease-in-out;
+        background-position-x: -200px;
         p {
             transform: translateX(100px);
             transition: transform 0.5s ease-in-out;
@@ -170,7 +171,7 @@
     &.active-start .onboarding-start {
         display: block;
         opacity: 1;
-        background-position-x: 0 !important;        
+        background-position-x: @gridWidth;        
         z-index: 100;
         transition-delay: 0.1s;
         p {

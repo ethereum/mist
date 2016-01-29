@@ -144,10 +144,8 @@
                 "depositBitcoin" : "Deposit Bitcoin",
                 "learnIt" : "Learn it",
                 "tutorial1Description" : "<p> Here's some reading suggestions while you wait: </p> <p> <strong>Make your own money </strong> Make a crypto currency with a fixed market supply, tokens representing real world assets or even a puzzle based coin </p> <p><a href=\"https://blog.ethereum.org/2015/12/03/how-to-build-your-own-cryptocurrency/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>",
-                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. </p>
- <p><a href=\"https://www.ethereum.org/crowdsale\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>",
-                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p>
- <p><a href=\"https://blog.ethereum.org/2015/12/04/ethereum-in-practice-part-2-how-to-build-a-better-democracy-in-under-a-100-lines-of-code/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>"
+                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. </p><p><a href=\"https://www.ethereum.org/crowdsale\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>",
+                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p><p><a href=\"https://blog.ethereum.org/2015/12/04/ethereum-in-practice-part-2-how-to-build-a-better-democracy-in-under-a-100-lines-of-code/\" class=\"button\" target=\"_blank\">Learn this recipe</a></p>"
             }
         }
 

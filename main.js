@@ -183,7 +183,7 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow.show('requestAccount', 400, 210, null, e);
+    createPopupWindow.show('requestAccount', 400, 230, null, e);
 });
 
 
@@ -307,23 +307,25 @@ app.on('ready', function() {
     appStartWindow.webContents.on('did-finish-load', function() {
 
 
-        var onboardingWindow = new BrowserWindow({
-            width: 576,
-            height: 442,
-            icon: global.icon,
-            resizable: false,
-            'node-integration': false,
-            preload: __dirname +'/modules/preloader/popupWindow.js',
-            'standard-window': false,
-            'use-content-size': false,
-            titleBarStyle: 'hidden-inset', 
-            frame: true,
-            'web-preferences': {
-                'web-security': false // necessary to make routing work on file:// protocol
-            }
-        });
-        onboardingWindow.loadURL(global.interfacePopupsUrl + '#onboardingScreen');
-        onboardingWindow.openDevTools();
+        setTimeout(function(){
+            var onboardingWindow = createPopupWindow.show('onboardingScreen', 576, 442);
+            // var onboardingWindow = new BrowserWindow({
+            //     width: 576,
+            //     height: 442,
+            //     icon: global.icon,
+            //     backgroundColor: '#F6F6F6',
+            //     resizable: false,
+            //     useContentSize: false,
+            //     titleBarStyle: 'hidden-inset', 
+            //     webPreferences: {
+            //         preload: __dirname +'/modules/preloader/popupWindows.js',
+            //         nodeIntegration: false,
+            //         webSecurity: false // necessary to make routing work on file:// protocol
+            //     }
+            // });
+            // onboardingWindow.loadURL(global.interfacePopupsUrl + '#onboardingScreen');
+            onboardingWindow.openDevTools();
+        }, 4000);
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');

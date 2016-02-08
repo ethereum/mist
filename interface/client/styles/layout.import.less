@@ -1,7 +1,7 @@
 
 // Platform specifics
 // Mac OSX
-@colorOSBackgroundFocus: #D2D2D2;
+@colorOSBackgroundFocus: #F1F1F1;
 @colorOSBackgroundBlur: #F6F6F6;
 
 @colorWinBackgroundFocus: #F0F0F0;
@@ -35,11 +35,18 @@
     body {
         background: @colorOSBackgroundFocus;
         .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 50%, lighten(@colorOSBackgroundFocus, 20%) 75%));
-        
+        padding-top: @gridHeight;
 
         &.app-blur {
             background: @colorOSBackgroundBlur;
         }
+
+        aside,
+        main,
+        div.browser-bar {
+            top: @gridHeight * 2.5;
+        }
+
     }
 }
 

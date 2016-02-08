@@ -58,7 +58,7 @@ module.exports = function(isWallet) {
     /**
     Mist API
 
-    TODO: queue up all changes and send them all together, to prevent multiple update calls in the mist ui db?
+    Provides an API for all dapps, which specifically targets features from the Mist browser
 
     @class mist
     @constructor

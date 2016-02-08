@@ -1,3 +1,8 @@
+/**
+Gets the right IPC path
+
+@module getIpcPath
+*/
 
 module.exports = function() {
     var p = require('path');

@@ -175,8 +175,8 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
         version: electronVersion,
         'app-version': version,
         'build-version': electronVersion,
-        // DO AFTER: codesign --deep --force --verbose --sign "0D11C72F07B969F4F29BD6881D7A30D7540B5AA1" Ethereum-Wallet.app
-        'sign': '0D11C72F07B969F4F29BD6881D7A30D7540B5AA1',
+        // DO AFTER: codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
+        //'sign': '03582BDFE9A39A7ACB401420659437A673BDE85A',
         'app-bundle-id': 'com.ethereum.'+ type,
         //'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
         //'helper-bundle-id': 'com.github.electron.helper',

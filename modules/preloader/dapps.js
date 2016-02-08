@@ -3,6 +3,7 @@
 */
 const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
+require('../openExternal.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
@@ -16,14 +17,6 @@ ipc.sendToHost('setWebviewId');
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
 
-
-// open a[target="_blank"] in external browser
-document.addEventListener('click', function(e) {
-    if(e.target.nodeName === 'A' && e.target.attributes.target && e.target.attributes.target.value === "_blank") {
-        e.preventDefault();
-        shell.openExternal(e.target.href);
-    }
-}, false);
 
 window.mist = mist();
 window.BigNumber = BigNumber;

@@ -12,6 +12,8 @@ const ethereumNodes = require('./ethereumNodes.js');
 // create menu
 // null -> null
 var createMenu = function(webviews) {
+    webviews = webviews || [];
+
     // re create connection
     if(global.nodeConnector.socket.writable) {
         global.nodeConnector.destroy();
@@ -26,6 +28,7 @@ var createMenu = function(webviews) {
 // null -> obj
 var menuTempl = function(webviews) {
     const menu = []
+    webviews = webviews || [];
 
     // APP
     menu.push({

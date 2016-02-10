@@ -45,3 +45,15 @@ Template.body.helpers({
         }
     }
 });
+
+/*
+Template.body.events({
+    /**
+    On drag over prevent redirect
+
+    @event dragover body > *, drop body > *
+    *
+   'dragover body > *, drop body > *': function(e){
+        e.preventDefault();
+    },
+});*/

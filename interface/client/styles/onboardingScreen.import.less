@@ -1,10 +1,3 @@
-@font-face {
-  font-family: 'Source Sans Pro';
-  src: url('fonts/SourceSansPro.otf');
-  font-weight: 500;
-  font-style: normal;
-}
-
 // .app-blur .onboarding-screen {
 //     background: @colorOSBackgroundBlur;
 // }
@@ -17,6 +10,7 @@
     // background: lighten(@colorOSBackgroundFocus, 10%);    
     
     .main-content {
+        z-index: 1;
         flex: 1 100%;
 
         h1 {
@@ -57,7 +51,7 @@
             }
         }
 
-        .droppable {
+        .dropable {
             display: block;
             padding: @gridHeight*4 @gridWidth;
             margin: @gridHeight 0;
@@ -67,6 +61,10 @@
             text-align: center;
             font-size: 150%;
             color: @colorLinkActive;
+
+            &.active {
+                transform: scale(1.05) !important;
+            }
         }
 
         .dapp-block-button {
@@ -112,6 +110,7 @@
     }
 
     footer {
+        z-index: 2;
         flex: 0 @gridHeight * 4;
         height: @gridHeight * 4;
         padding: @gridHeight/2 @gridWidth/4;
@@ -126,11 +125,12 @@
         button {
             position: relative;
             top: -3px;
+            margin: 0 auto;
             text-transform: uppercase;
             font-weight: 500;
             text-align: center;
             display: block;
-            width: 100%;
+            // width: 100%;
             color: @colorLinkActive;
         }
 
@@ -181,7 +181,7 @@
         }
     }
 
-    .onboarding-drop-file {
+    .onboarding-import-account {
         opacity: 0;
         z-index: 0;
         .col-6 {
@@ -190,12 +190,13 @@
         }
     }
 
-    .onboarding-bitcoin .col-deposit {
+    .onboarding-account .col-deposit {
             text-align: center;        
     }    
 
-    .onboarding-password ,
-    .onboarding-bitcoin {
+    .onboarding-password,
+    .onboarding-testnet,
+    .onboarding-account {
         .col-6 {
             transition: transform 0.2s ease-in-out, opacity 0.2s;
             transform: translateX(100px)
@@ -241,11 +242,12 @@
             opacity: 0;
             transform: translateX(-100px);
         }
-    }    
+    }
 
-    &.active-drop-file .onboarding-drop-file,
+    &.active-import-account .onboarding-import-account,
     &.active-password .onboarding-password,
-    &.active-bitcoin .onboarding-bitcoin,
+    &.active-testnet .onboarding-testnet,
+    &.active-account .onboarding-account,
     &.active-tutorial-1 .onboarding-tutorial-1,
     &.active-tutorial-2 .onboarding-tutorial-2,
     &.active-tutorial-3 .onboarding-tutorial-3 {
@@ -269,14 +271,6 @@
     &.active-tutorial-3 .onboarding-tutorial-3 {
         .col-6 {
             transition-delay: 0;
-        }
-    } 
-
-    &.outgoing-tutorial-1 .onboarding-tutorial-1,
-    &.outgoing-tutorial-2 .onboarding-tutorial-2,
-    &.outgoing-tutorial-3 .onboarding-tutorial-3 {
-        .col-6:not(.col-left) {
-            transform: translateX(-50px) translateY(10px) rotateY(-180deg) scale(0.7);
         }
     } 
 

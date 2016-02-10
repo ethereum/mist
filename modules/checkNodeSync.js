@@ -6,6 +6,8 @@ checks the current node whether its synching or not and how much it kept up alre
 */
 
 const _ = require('underscore');
+const app = require('app');
+const createPopupWindow = require('./createPopupWindow.js');
 const ipc = require('electron').ipcMain;
 
 // var dechunker = require('./ipc/dechunker.js');
@@ -15,7 +17,7 @@ Check if the nodes needs sync and start the app
 
 @method checkNodeSync
 */
-module.exports = function(appStartWindow, callback){
+module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
     var intervalId,
         timeoutId,
         cbCalled = false;
@@ -25,31 +27,44 @@ module.exports = function(appStartWindow, callback){
 
     global.nodeConnector.connect();
 
-    // check last block time
-    global.nodeConnector.send('eth_getBlockByNumber', ['latest', false], function(e, result){
-        var now = Math.floor(new Date().getTime() / 1000);
+    global.nodeConnector.send('eth_accounts', [], function(e, result){
+        
+        // start on boarding screen
+        if(!e && (global.nodes.eth || global.nodes.geth) && result && result.length !== 0) {
+        
+            callbackOnBoarding();
 
-        console.log('Time between last block', (now - +result.timestamp) + 's');
-
-        // need sync if > 2 minutes
-        if(now - +result.timestamp > 60 * 2) {
-
-            intervalId = setInterval(function(){
-                
-                // get the latest sync status
-                if(global.nodeConnector.socket.writable) {
-                    global.nodeConnector.send('eth_syncing', [], cb);
-                }
-            }, 50);
-
-
-        // start app
+        // show progress in start screen
         } else {
-            console.log('No sync necessary, starting app!');
-            callback();
-            cbCalled = true;
+
+            // check last block time
+            global.nodeConnector.send('eth_getBlockByNumber', ['latest', false], function(e, result){
+                var now = Math.floor(new Date().getTime() / 1000);
+
+                console.log('Time between last block', (now - +result.timestamp) + 's');
+
+                // need sync if > 2 minutes
+                if(now - +result.timestamp > 60 * 2) {
+
+                    intervalId = setInterval(function(){
+                        
+                        // get the latest sync status
+                        if(global.nodeConnector.socket.writable) {
+                            global.nodeConnector.send('eth_syncing', [], cb);
+                        }
+                    }, 50);
+
+
+                // start app
+                } else {
+                    console.log('No sync necessary, starting app!');
+                    callbackSplash();
+                    cbCalled = true;
+                }
+            });
         }
     });
+
 
 
     var cb = function(error, result){
@@ -62,7 +77,7 @@ module.exports = function(appStartWindow, callback){
 
                 clearInterval(intervalId);
                 clearTimeout(timeoutId);
-                callback();
+                callbackSplash();
                 cbCalled = true;
             }
 
@@ -80,7 +95,7 @@ module.exports = function(appStartWindow, callback){
 
                 clearInterval(intervalId);
                 clearTimeout(timeoutId);
-                callback();
+                callbackSplash();
 
                 // prevent double call of the callback
                 cbCalled = true;
@@ -110,10 +125,12 @@ module.exports = function(appStartWindow, callback){
 
                             ipc.on('uiAction_startApp', function() {
                                 clearInterval(intervalId);
-                                callback();
+                                callbackSplash();
 
                                 // prevent double call of the callback
                                 cbCalled = true;
+
+                                ipc.removeAllListeners('uiAction_startApp');
                             });
                         }
                     }, 1000 * 12);

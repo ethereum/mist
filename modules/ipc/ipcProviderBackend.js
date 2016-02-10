@@ -488,9 +488,9 @@ module.exports = function(){
 
         // console.log('Called ipcProvider-create');
 
-        if(socket)
+        if(socket) {
             socket.connect(event);
-        else {
+        } else {
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         }
 

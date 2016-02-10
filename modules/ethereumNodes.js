@@ -5,13 +5,11 @@
 const _ = require('underscore');
 const fs = require('fs');
 const app = require('app');
-const path = require('path');
 const spawn = require('child_process').spawn;
 const ipc = require('electron').ipcMain;
+const getNodePath = require('./getNodePath.js');
 const createPopupWindow = require('./createPopupWindow.js');
 const logRotate = require('log-rotate');
-
-const binaryPath = path.resolve(__dirname + '/../nodes');
 
 module.exports = {
     /**
@@ -67,28 +65,13 @@ module.exports = {
         var _this = this,
             called = false;
 
-        var binPath = (!global.production)
-            ? binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type
-            : binaryPath.replace('nodes','node') + '/'+ type +'/'+ type;
-
-        if(global.production)
-            binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
-
-
-        if(process.platform === 'win32') {
-            binPath = binPath.replace(/\/+/,'\\');
-            binPath += '.exe';
-        }
-
-        // if(process.platform === 'linux')
-        //     binPath = type; // simply try to run a global binary
-
+        var binPath = getNodePath(type);
 
         console.log('Start node from '+ binPath);
 
         if(type === 'eth') {
 
-            var modalWindow = createPopupWindow.show('unlockMasterPassword', 400, 220, null, null, true);
+            var modalWindow = createPopupWindow.show('unlockMasterPassword', {width: 400, height: 220, alwaysOnTop: true}, null, null, true);
             modalWindow.on('closed', function() {
                 if(!called)
                     app.quit();
@@ -99,14 +82,14 @@ module.exports = {
                     called = true;
                     modalWindow.close();
                     modalWindow = null;
-                    ipc.removeAllListeners('uiAction_unlockedMasterPassword');
+                    ipc.removeAllListeners('backendAction_unlockedMasterPassword');
 
                 } else if(modalWindow) {
                     modalWindow.webContents.send('data', {masterPasswordWrong: true});
                 }
             };
 
-            ipc.on('uiAction_unlockedMasterPassword', function(ev, err, result){
+            ipc.on('backendAction_unlockedMasterPassword', function(ev, err, result){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
 
                     if(!err) {

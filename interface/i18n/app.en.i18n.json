@@ -13,9 +13,12 @@
         "save": "Save",
         "edit": "edit",
         "send": "Send",
+        "next": "Next",
+        "previous": "Previous",
+        "back": "Back",
+        "skip": "Skip",
         "sending": "Sending...",
         "create": "Create",
-        "back": "Back",
         "tryToReconnect": "Try to reconnect"
     },
     "commonWords": {

@@ -14,7 +14,14 @@
                 </p>
             </div>
 
-            {{> popupWindows_onboardingScreen_importAccount}}
+            <div class="onboarding-section onboarding-import-account row">
+                {{> popupWindows_onboardingScreen_importAccount}}
+
+                <div class="col col-12 footer-buttons">
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button> 
+                    <button class="goto-password right-align"> {{i18n "buttons.skip"}} </button> 
+                </div>
+            </div>
 
             <div class="onboarding-section onboarding-password row">
                 {{> popupWindows_onboardingScreen_password}}
@@ -50,12 +57,12 @@
                     <h6> {{TemplateVar.get "newAccount"}} </h6>
 
                     {{#unless TemplateVar.get "testnet"}}
-                        <a href="https://shapeshift.io/shifty.html?destination=0xdbf03b407c01e7cd3cbea99509d93f8dddc8c6fb&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
+                        <a href="https://shapeshift.io/shifty.html?destination={{TemplateVar.get "newAccount"}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
                     {{/unless}}
                 </div>
                 <div class="col col-12 footer-buttons">
                     <button class="goto-password"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-1 right-align"> {{i18n "mist.popupWindows.onboarding.next"}} </button>                 
+                    <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
 
@@ -65,7 +72,7 @@
                 <div class="col col-6 tutorial-token"></div>
                 <div class="col col-12 footer-buttons">
                     <button class="goto-account"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-2 right-align">  {{i18n "mist.popupWindows.onboarding.next"}} </button>                 
+                    <button class="goto-tutorial-2 right-align">  {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
 
@@ -75,7 +82,7 @@
                 <div class="col col-6 tutorial-crowdsale"></div>  
                 <div class="col col-12 footer-buttons">
                     <button class="goto-tutorial-1"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-3 right-align">  {{i18n "mist.popupWindows.onboarding.next"}} </button>                 
+                    <button class="goto-tutorial-3 right-align">  {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
 
@@ -97,7 +104,7 @@
                 <div class="blocks"> {{i18n "mist.popupWindows.onboarding.block"}} {{dapp_formatNumber currentBlock}} of {{dapp_formatNumber highestBlock}}</div>
             {{else}}
                 {{#if TemplateVar.get 'readyToLaunch'}}
-                    <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.launchApp"}} </button>
+                    <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.buttons.launchApp"}} </button>
                 {{/if}}
             {{/with}}
 
@@ -107,29 +114,26 @@
 
 
 <template name="popupWindows_onboardingScreen_importAccount">
-    <div class="onboarding-section onboarding-import-account row">
-        <h1>{{i18n "mist.popupWindows.onboarding.doYouHaveAWalletFile"}}</h1>
-        <div class="col col-6 col-left">
-            {{{i18n "mist.popupWindows.onboarding.walletFileDescription"}}}
-        </div>
-        {{#if TemplateVar.get "filePath"}}
-            <div class="col col-6">
+    <h1>{{i18n "mist.popupWindows.onboarding.doYouHaveAWalletFile"}}</h1>
+    <div class="col col-6 col-left">
+        {{{i18n "mist.popupWindows.onboarding.walletFileDescription"}}}
+    </div>
+    {{#if TemplateVar.get "filePath"}}
+        <div class="col col-6">
+            {{#if TemplateVar.get "importing"}}
+                <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.importing"}}</h2>
+            {{else}}
                 <form action="about:blank" target="dapp-form-helper-iframe">
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class='password-repeat'>
                     <br><br>
-                    <button type="submit">Import account</button>
+                    <button type="submit" style="margin-left: 15px;">{{i18n "mist.popupWindows.onboarding.buttons.importAccount"}}</button>
                 </form>
-            </div>
-        {{else}}
-            <div class="col col-6 dropable"> {{i18n "mist.popupWindows.onboarding.dropFilesHere"}}</div>
-        {{/if}}
-        
-        <div class="col col-12 footer-buttons">
-            <button class="goto-start"> {{i18n "buttons.back"}} </button> 
-            <button class="goto-password right-align"> {{i18n "mist.popupWindows.onboarding.skip"}} </button> 
+            {{/if}}
         </div>
-    </div>
+    {{else}}
+        <div class="col col-6 dropable"> {{i18n "mist.popupWindows.onboarding.dropFilesHere"}}</div>
+    {{/if}}
 </template>
 
 
@@ -150,7 +154,7 @@
 
         <div class="col col-12 footer-buttons">
             <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>                 
-            <button class="create-account right-align" type="submit"> {{i18n "mist.popupWindows.onboarding.next"}} </button>
+            <button class="create-account right-align" type="submit"> {{i18n "buttons.next"}} </button>
         </div>
     </form>
 </template>

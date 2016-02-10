@@ -103,17 +103,17 @@ var menuTempl = function(webviews) {
     })
 
     // ACCOUNTS
-    // menu.push({
-    //     label: i18n.t('mist.applicationMenu.accounts.label'),
-    //     submenu: [
-    //         {
-    //             label: i18n.t('mist.applicationMenu.accounts.importPresale'),
-    //             click: function(){
-    //                 createPopupWindow.show('importPresale', 400, 210);
-    //             }
-    //         }
-    //     ]
-    // })
+    menu.push({
+        label: i18n.t('mist.applicationMenu.accounts.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                click: function(){
+                    createPopupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                }
+            }
+        ]
+    })
 
     // BACKUP
     menu.push({

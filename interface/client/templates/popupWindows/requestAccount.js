@@ -18,7 +18,7 @@ Template['popupWindows_requestAccount'].onRendered(function(){
 
 Template['popupWindows_requestAccount'].events({
    'click .cancel': function(){
-        ipc.send('uiAction_closePopupWindow');
+        ipc.send('backendAction_closePopupWindow');
    },
    'submit form': function(e, template){
         e.preventDefault();
@@ -39,12 +39,12 @@ Template['popupWindows_requestAccount'].events({
             TemplateVar.set('creating', true);
             web3.personal.newAccount(pwRepeat, function(e, res){
                 if(!e)
-                    ipc.send('uiAction_sendToOwner', null, res);
+                    ipc.send('backendAction_sendToOwner', null, res);
                 else
-                    ipc.send('uiAction_sendToOwner', e);
+                    ipc.send('backendAction_sendToOwner', e);
 
                 TemplateVar.set(template, 'creating', false);
-                ipc.send('uiAction_closePopupWindow');
+                ipc.send('backendAction_closePopupWindow');
             });
         
         } else {

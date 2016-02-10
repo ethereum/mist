@@ -123,14 +123,14 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
                         if(appStartWindow && appStartWindow.webContents) {
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeout');
 
-                            ipc.on('uiAction_startApp', function() {
+                            ipc.on('backendAction_startApp', function() {
                                 clearInterval(intervalId);
                                 callbackSplash();
 
                                 // prevent double call of the callback
                                 cbCalled = true;
 
-                                ipc.removeAllListeners('uiAction_startApp');
+                                ipc.removeAllListeners('backendAction_startApp');
                             });
                         }
                     }, 1000 * 12);

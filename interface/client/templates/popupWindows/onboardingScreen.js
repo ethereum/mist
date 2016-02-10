@@ -49,7 +49,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 console.log('Restart app operation again');
 
                 TemplateVar.set(template, 'syncing', false);
-                TemplateVar.set(template, 'readyToLaunch', true);
             }
         }
     });
@@ -136,31 +135,7 @@ Template['popupWindows_onboardingScreen'].events({
     */
    'dragover .onboarding-screen, drop .onboarding-screen': function(e){
         e.preventDefault();
-    },
-    /**
-    Buy ether using shapeshift
-
-    @event click .shapeshift
-    */
-    'click .shapeshift': function(e){
-
-        // var shapeshiftWindow = new BrowserWindow({
-        //     width: 600 ,
-        //     height: 500,
-        //     icon: global.icon,
-        //     resizable: false,
-        //     'node-integration': false,
-        //     'standard-window': false,
-        //     'use-content-size': false,
-        //     frame: true,
-        //     'web-preferences': {
-        //         'web-security': false // necessary to make routing work on file:// protocol
-        //     }
-        // });
-        // shapeshiftWindow.loadURL('http://google.com');
-
-    },
-
+    }
 });
 
 
@@ -237,18 +212,27 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
         } else {
 
-            ipc.send('onBoarding_importPresaleFile', TemplateVar.get('filePath'), pw);
+            ipc.send('backendAction_importPresaleFile', TemplateVar.get('filePath'), pw);
 
             TemplateVar.set('importing', true);
-            ipc.on('onBoarding_importedPresaleFile', function(e){
+            ipc.on('uiAction_importedPresaleFile', function(e, address){
                 TemplateVar.set(template, 'importing', false);
                 TemplateVar.set(template, 'filePath', false);
-                
-                if(!e) {
-                    ipc.removeAllListeners('onBoarding_importedPresaleFile');
 
-                    // move to add account screen
-                    TemplateVar.setTo('.onboarding-section', 'currentActive', 'password');
+                console.log('Imported account: ', address);
+                
+                if(address) {
+                    ipc.removeAllListeners('uiAction_importedPresaleFile');
+
+                    // move to add account screen, when in the onboarding window
+                    if($('.onboarding-start')[0]) {
+                        TemplateVar.setTo('.onboarding-account', 'newAccount', address);
+                        TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
+                    
+                    // otherwise simply close the window
+                    } else {
+                        ipc.send('backendAction_closePopupWindow');
+                    }
 
 
                 } else {
@@ -313,11 +297,9 @@ Template['popupWindows_onboardingScreen_password'].events({
 
                 if(!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', res);
-                    TemplateVar.setTo('.onboarding-section', 'currentActive', 'account');
+                    TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 
                     // clear form
-                    template.find('input.password').value = '';
-                    template.find('input.password-repeat').value = '';
                     pw = pwRepeat = null;
 
                 } else {

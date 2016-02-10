@@ -370,7 +370,7 @@ module.exports = function(){
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var modalWindow = createPopupWindow.show('sendTransactionConfirmation', 580, 550, filteredPayload.params[0]);
+            var modalWindow = createPopupWindow.show('sendTransactionConfirmation', {width: 580, height: 550, alwaysOnTop: true}, filteredPayload.params[0]);
             modalWindow.on('closed', function() {
                 if(!called) {
                     callback(errorUnlock);
@@ -378,7 +378,7 @@ module.exports = function(){
                 }
             });
 
-            ipc.once('uiAction_unlockedAccount', function(ev, err, result){
+            ipc.once('backendAction_unlockedAccount', function(ev, err, result){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
                     if(err || !result) {
                         console.log('Confirmation error:', err);

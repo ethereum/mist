@@ -34,18 +34,18 @@ module.exports = {
         // load URL
         this.loadingwindow.loadURL(global.interfacePopupsUrl +'#loadingWindow');
     },
-    show: function(windowType, width, height, data, e, noWeb3){
+    show: function(windowType, options, data, e, noWeb3){
         var _this = this;
 
         this.loadingwindow.center();
         this.loadingwindow.show();
 
-        var modalWindow = new BrowserWindow({
+        options = {
             title: '',
-            alwaysOnTop: true,
-            resizable: false,
-            width: width,
-            height: height,
+            alwaysOnTop: !!options.alwaysOnTop,
+            resizable: !!options.alwaysOnTop,
+            width: options.width,
+            height: options.height,
             center: true,
             show: false,
             icon: global.icon,
@@ -58,7 +58,9 @@ module.exports = {
                 textAreasAreResizable: false,
                 webSecurity: false
             }
-        });
+        };
+
+        var modalWindow = new BrowserWindow(options);
         // modalWindow.setSize(width, 0);
         // modalWindow.show();
 

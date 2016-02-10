@@ -359,7 +359,7 @@ app.on('ready', function() {
                     appStartWindow.close();
                 appStartWindow = null;
 
-                var onboardingWindow = createPopupWindow.show('onboardingScreen', 576, 442);
+                var onboardingWindow = createPopupWindow.show('onboardingScreen', {width: 576, height: 442});
                 onboardingWindow.openDevTools();
                 onboardingWindow.on('close', function(){
                     app.quit();
@@ -375,11 +375,6 @@ app.on('ready', function() {
                         });
                     });
                 });
-                // import presale file
-                ipc.on('onBoarding_importPresaleFile', function(e, path, pw) {
-                    console.log('IMPORT', path, pw);
-                });
-                
                 // launch app
                 ipc.on('onBoarding_launchApp', function(e) {
                     clearSocket(socket);

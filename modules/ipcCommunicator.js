@@ -27,10 +27,10 @@ windows = {
 */
 
 // UI ACTIONS
-ipc.on('uiAction_closeApp', function() {
+ipc.on('backendAction_closeApp', function() {
     app.quit();
 });
-ipc.on('uiAction_closePopupWindow', function(e) {
+ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId();
 
     if(global.windows[windowId]) {
@@ -38,7 +38,7 @@ ipc.on('uiAction_closePopupWindow', function(e) {
         delete global.windows[windowId];
     }
 });
-ipc.on('uiAction_setWindowSize', function(e, width, height) {
+ipc.on('backendAction_setWindowSize', function(e, width, height) {
     var windowId = e.sender.getId();
 
     if(global.windows[windowId]) {
@@ -47,7 +47,7 @@ ipc.on('uiAction_setWindowSize', function(e, width, height) {
     }
 });
 
-ipc.on('uiAction_sendToOwner', function(e, error, value) {
+ipc.on('backendAction_sendToOwner', function(e, error, value) {
     var windowId = e.sender.getId();
 
     if(global.windows[windowId]) {
@@ -56,8 +56,55 @@ ipc.on('uiAction_sendToOwner', function(e, error, value) {
     }
 });
 
+// import presale file
+ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
+    const spawn = require('child_process').spawn;
+    const getNodePath = require('./getNodePath.js');
+    var error = false;
+
+    // start import process
+    var nodeProcess = spawn(getNodePath('geth'), ['wallet', 'import', path]);
+
+    nodeProcess.once('error',function(){
+        error = true;
+    });
+    nodeProcess.stdout.on('data', function(data) {
+        var data = data.toString();
+        if(data)
+            console.log('Imported presale: ', data);
+
+        if(data.indexOf('Decryption failed:') !== -1) {
+            e.sender.send('uiAction_importedPresaleFile', false);
+
+        // if imported, return the address
+        } else if(data.indexOf('Address:') !== -1) {
+            var find = data.match(/\{([a-f0-9]+)\}/i);
+            if(find.length && find[1])
+                e.sender.send('uiAction_importedPresaleFile', '0x'+ find[1]);
+            else
+                e.sender.send('uiAction_importedPresaleFile', false);
+        
+        // if not stop, so we don't kill the process
+        } else {
+            return;
+        }
+
+        nodeProcess.stdout.removeAllListeners('data');
+        nodeProcess.removeAllListeners('error');
+        nodeProcess.kill('SIGINT');
+    });
+
+    // file password
+    setTimeout(function(){
+        if(!error)
+            nodeProcess.stdin.write(pw +"\r\n");
+    }, 10);
+});
+
+
+
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow.show('requestAccount', 400, 230, null, e);
+    createPopupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
 });

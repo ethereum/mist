@@ -20,7 +20,7 @@ global.path = {
 require('./modules/ipcCommunicator.js');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const NodeConnector = require('./modules/ipc/nodeConnector.js');
-const createPopupWindow = require('./modules/createPopupWindow.js');
+const popupWindow = require('./modules/popupWindow.js');
 const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
@@ -160,7 +160,7 @@ app.on('before-quit', function(event){
 app.on('ready', function() {
 
     // init prepared popup window
-    createPopupWindow.initLoadingWindow();
+    popupWindow.loadingWindow.init();
 
     // initialize the IPC provider on the main window
     ipcProviderBackend();
@@ -359,7 +359,7 @@ app.on('ready', function() {
                     appStartWindow.close();
                 appStartWindow = null;
 
-                var onboardingWindow = createPopupWindow.show('onboardingScreen', {width: 576, height: 442});
+                var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
                 onboardingWindow.openDevTools();
                 onboardingWindow.on('close', function(){
                     app.quit();
@@ -382,6 +382,8 @@ app.on('ready', function() {
                     onboardingWindow.removeAllListeners('close');
                     onboardingWindow.close();
                     onboardingWindow = null;
+
+                    popupWindow.loadingWindow.show();
 
                     ipc.removeAllListeners('onBoarding_changeNet');
                     ipc.removeAllListeners('onBoarding_importPresaleFile');
@@ -425,6 +427,8 @@ var startMainWindow = function(appStartWindow){
     global.mainWindow.loadURL(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
+        popupWindow.loadingWindow.hide();
+
         global.mainWindow.show();
         // global.mainWindow.center();
 

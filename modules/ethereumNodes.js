@@ -8,7 +8,7 @@ const app = require('app');
 const spawn = require('child_process').spawn;
 const ipc = require('electron').ipcMain;
 const getNodePath = require('./getNodePath.js');
-const createPopupWindow = require('./createPopupWindow.js');
+const popupWindow = require('./popupWindow.js');
 const logRotate = require('log-rotate');
 
 module.exports = {
@@ -71,7 +71,7 @@ module.exports = {
 
         if(type === 'eth') {
 
-            var modalWindow = createPopupWindow.show('unlockMasterPassword', {width: 400, height: 220, alwaysOnTop: true}, null, null, true);
+            var modalWindow = popupWindow.show('unlockMasterPassword', {width: 400, height: 220, alwaysOnTop: true}, null, null, true);
             modalWindow.on('closed', function() {
                 if(!called)
                     app.quit();

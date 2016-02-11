@@ -7,7 +7,6 @@ checks the current node whether its synching or not and how much it kept up alre
 
 const _ = require('underscore');
 const app = require('app');
-const createPopupWindow = require('./createPopupWindow.js');
 const ipc = require('electron').ipcMain;
 
 // var dechunker = require('./ipc/dechunker.js');

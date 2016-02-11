@@ -1,6 +1,6 @@
 const app = require('app');
 const BrowserWindow = require('browser-window');
-const createPopupWindow = require('./createPopupWindow.js');
+const popupWindow = require('./popupWindow.js');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const shell = require('electron').shell;
@@ -109,7 +109,7 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.accounts.importPresale'),
                 click: function(){
-                    createPopupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                    popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
                 }
             }
         ]

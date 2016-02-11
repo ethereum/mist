@@ -43,7 +43,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
 
                 TemplateVar.set(template, 'syncing', syncing);
-                TemplateVar.set(template, 'readyToLaunch', false);
                 
             } else {
                 console.log('Restart app operation again');

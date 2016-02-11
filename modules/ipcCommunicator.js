@@ -5,7 +5,7 @@ Window communication
 */
 
 const app = require('app');  // Module to control application life.
-const createPopupWindow = require('./createPopupWindow.js');
+const popupWindow = require('./popupWindow.js');
 const ipc = require('electron').ipcMain;
 
 /*
@@ -106,5 +106,5 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
+    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
 });

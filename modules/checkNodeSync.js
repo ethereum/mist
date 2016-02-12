@@ -29,7 +29,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
     global.nodeConnector.send('eth_accounts', [], function(e, result){
         
         // start on boarding screen
-        if(!e && (global.nodes.eth || global.nodes.geth) && result && result.length !== 0) {
+        if(!e && global.nodes.geth && result && result.length !== 0) {
         
             callbackOnBoarding();
 

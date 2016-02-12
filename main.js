@@ -28,7 +28,7 @@ var ipcPath = getIpcPath();
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -372,6 +372,7 @@ app.on('ready', function() {
                     ethereumNodes.stopNodes(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', testnet, function(){
                             console.log('Changed to ', (testnet ? 'testnet' : 'mainnet'));
+                            appMenu();
                         });
                     });
                 });

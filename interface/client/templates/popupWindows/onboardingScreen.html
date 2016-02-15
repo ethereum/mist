@@ -1,6 +1,10 @@
 <template name="popupWindows_onboardingScreen">
     <div class="onboarding-screen {{mode}} active-{{TemplateVar.get 'currentActive'}} outgoing-{{TemplateVar.get 'lastActive'}} ">
         
+        {{#if TemplateVar.get "testnet"}}
+            <div class="testnet-indicator">TEST-NET</div>
+        {{/if}}
+
         <div class="main-content">    
             <div class="onboarding-section onboarding-start">
                 <p class="description">{{i18n "mist.popupWindows.onboarding.description"}}</p>
@@ -136,7 +140,6 @@
             {{else}}
                 <form action="about:blank" target="dapp-form-helper-iframe">
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
-                    <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class='password-repeat'>
                     <br><br>
                     <button type="submit" style="margin-left: 15px;">{{i18n "mist.popupWindows.onboarding.buttons.importAccount"}}</button>
                 </form>

@@ -96,8 +96,10 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
     // file password
     setTimeout(function(){
-        if(!error)
+        if(!error) {
             nodeProcess.stdin.write(pw +"\r\n");
+            pw = null;
+        }
     }, 10);
 });
 

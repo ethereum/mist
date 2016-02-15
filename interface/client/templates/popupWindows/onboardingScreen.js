@@ -12,6 +12,29 @@ The onboardingScreen template
 */
 
 /**
+Check if its the testnet
+
+@method isTestnet
+*/
+var isTestnet = function(template){
+    // CHECK FOR NETWORK
+    web3.eth.getBlock(0, function(e, res){
+        if(!e){
+            switch(res.hash) {
+                case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
+                    TemplateVar.set(template, 'testnet', true);
+                    break;
+                case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
+                    TemplateVar.set(template, 'testnet', false);
+                    break;
+                default:
+                    TemplateVar.set(template, 'testnet', false);
+            }
+        }
+    });
+}
+
+/**
 Update the peercount
 
 @method getPeerCount
@@ -74,7 +97,8 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
 })
 
 Template['popupWindows_onboardingScreen'].onRendered(function(){
-    var template = this;
+    // check which net it is
+    isTestnet(this);
 })
 
 Template['popupWindows_onboardingScreen'].events({
@@ -82,20 +106,26 @@ Template['popupWindows_onboardingScreen'].events({
         if(TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
-            // TODO: start syncing subscription
+            // TODO: re-start syncing subscription
         }
 
         TemplateVar.set('currentActive','start');
     },
    'click .goto-import-account': function(){
         TemplateVar.set('currentActive','import-account');
+
+        // if testnet, make sure to switch to the mainnet
+        if(TemplateVar.get('testnet')) {
+            ipc.send('onBoarding_changeNet', false);
+            TemplateVar.set('testnet', false);
+            // TODO: re-start syncing subscription
+        }
     },
    'click .start-testnet': function(e, template){
 
         ipc.send('onBoarding_changeNet', true);
         TemplateVar.set('testnet', true);
-
-        // TODO: start syncing subscription
+        // TODO: re-start syncing subscription
 
         TemplateVar.set('currentActive','testnet');
         template.$('.onboarding-testnet input.password').focus();
@@ -200,54 +230,45 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     @event submit form
     */
     'submit form': function(e, template){
-        var pw = template.find('input.password').value,
-            pwRepeat = template.find('input.password-repeat').value;
+        var pw = template.find('input.password').value;
 
-        if(!pw || pw !== pwRepeat) {
-            GlobalNotification.warning({
-                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
-                duration: 3
-            });
 
-        } else {
+        ipc.send('backendAction_importPresaleFile', TemplateVar.get('filePath'), pw);
 
-            ipc.send('backendAction_importPresaleFile', TemplateVar.get('filePath'), pw);
+        TemplateVar.set('importing', true);
+        ipc.on('uiAction_importedPresaleFile', function(e, address){
+            TemplateVar.set(template, 'importing', false);
+            TemplateVar.set(template, 'filePath', false);
 
-            TemplateVar.set('importing', true);
-            ipc.on('uiAction_importedPresaleFile', function(e, address){
-                TemplateVar.set(template, 'importing', false);
-                TemplateVar.set(template, 'filePath', false);
+            console.log('Imported account: ', address);
+            
+            if(address) {
+                ipc.removeAllListeners('uiAction_importedPresaleFile');
 
-                console.log('Imported account: ', address);
+                // move to add account screen, when in the onboarding window
+                if($('.onboarding-start')[0]) {
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', address);
+                    TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
                 
-                if(address) {
-                    ipc.removeAllListeners('uiAction_importedPresaleFile');
-
-                    // move to add account screen, when in the onboarding window
-                    if($('.onboarding-start')[0]) {
-                        TemplateVar.setTo('.onboarding-account', 'newAccount', address);
-                        TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-                    
-                    // otherwise simply close the window
-                    } else {
-                        ipc.send('backendAction_closePopupWindow');
-                    }
-
-
+                // otherwise simply close the window
                 } else {
-
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed'),
-                        duration: 4
-                    });
+                    ipc.send('backendAction_closePopupWindow');
                 }
-            });
 
-            // clear form
-            template.find('input.password').value = '';
-            template.find('input.password-repeat').value = '';
-            pw = pwRepeat = null;
-        }
+
+            } else {
+
+                GlobalNotification.warning({
+                    content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed'),
+                    duration: 4
+                });
+            }
+        });
+
+        // clear form
+        template.find('input.password').value = '';
+        template.find('input.password-repeat').value = '';
+        pw = null;
     }
 });
 

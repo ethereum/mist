@@ -241,14 +241,6 @@ module.exports = {
                 }
             });
 
-
-            // confirm to the disclaimer in geth
-            if(type === 'geth') {
-                setTimeout(function(){
-                    if(!error)
-                        global.nodes[type].stdin.write("y\r\n");
-                }, 10);
-            }
             
         });
     }

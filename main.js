@@ -360,7 +360,7 @@ app.on('ready', function() {
                 appStartWindow = null;
 
                 var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
-                onboardingWindow.openDevTools();
+                // onboardingWindow.openDevTools();
                 onboardingWindow.on('close', function(){
                     app.quit();
                 });
@@ -380,6 +380,7 @@ app.on('ready', function() {
                 ipc.on('onBoarding_launchApp', function(e) {
                     clearSocket(socket);
 
+                    // prevent that it closes the app
                     onboardingWindow.removeAllListeners('close');
                     onboardingWindow.close();
                     onboardingWindow = null;

@@ -68,8 +68,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 TemplateVar.set(template, 'syncing', syncing);
                 
             } else {
-                console.log('Restart app operation again');
-
                 TemplateVar.set(template, 'syncing', false);
             }
         }
@@ -200,7 +198,6 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     */
    'drop .dropable': function(e, template){
         e.preventDefault();
-        console.log(e);
 
         if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
             TemplateVar.set('filePath', e.originalEvent.dataTransfer.files[0].path);
@@ -267,7 +264,6 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
         // clear form
         template.find('input.password').value = '';
-        template.find('input.password-repeat').value = '';
         pw = null;
     }
 });

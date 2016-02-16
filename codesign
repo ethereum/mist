@@ -8,7 +8,12 @@ APP_PATH="dist_wallet/Ethereum-Wallet-macosx64-0-4-0/Ethereum-Wallet.app"
 RESULT_PATH="dist_wallet/$APP.pkg"
 # The name of certificates you requested.
 APP_KEY="3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)"
+#"Mac Developer: Fabian Vogelsteller (YK2P3ZENMX)"
+#"3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)"
 INSTALLER_KEY="3rd Party Mac Developer Installer: Stiftung Ethereum (3W6577R383)"
+
+cd $APP_PATH && find . -name "*.DS_Store" -type f -delete
+cd ../../../
 
 FRAMEWORKS_PATH="$APP_PATH/Contents/Frameworks"
 

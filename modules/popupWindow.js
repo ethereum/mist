@@ -4,48 +4,56 @@
 const BrowserWindow = require('browser-window');
 
 module.exports = {
-    loadingwindow: null,
-    initLoadingWindow: function(){
-        var _this = this;
+    loadingWindow: {
+        window: null,
+        init: function(){
+            var _this = this;
 
-        this.loadingwindow = new BrowserWindow({
-            title: '',
-            alwaysOnTop: true,
-            resizable: false,
-            width: 100,
-            height: 50,
-            center: true,
-            show: false,
-            icon: global.icon,
-            frame: false,
-            useContentSize: true,
-            titleBarStyle: 'hidden', //hidden-inset: more space
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                nodeIntegration: false,
-                webgl: false,
-                webSecurity: false
-            }
-        });
-        this.loadingwindow.on('closed', function() {
-            _this.loadingwindow = null;
-        });
-        // load URL
-        this.loadingwindow.loadURL(global.interfacePopupsUrl +'#loadingWindow');
+            this.window = new BrowserWindow({
+                title: '',
+                alwaysOnTop: true,
+                resizable: false,
+                width: 100,
+                height: 50,
+                center: true,
+                show: false,
+                icon: global.icon,
+                frame: false,
+                useContentSize: true,
+                titleBarStyle: 'hidden', //hidden-inset: more space
+                acceptFirstMouse: true,
+                darkTheme: true,
+                webPreferences: {
+                    nodeIntegration: false,
+                    webgl: false,
+                    webSecurity: false
+                }
+            });
+            this.window.on('closed', function() {
+                _this.window = null;
+            });
+            // load URL
+            this.window.loadURL(global.interfacePopupsUrl +'#loadingWindow');
+        },
+        show: function(){
+            this.window.center();
+            this.window.show();
+        },
+        hide: function(){
+            this.window.hide();
+        }  
     },
-    show: function(windowType, width, height, data, e, noWeb3){
+    show: function(windowType, options, data, e, noWeb3){
         var _this = this;
 
-        this.loadingwindow.center();
-        this.loadingwindow.show();
+        this.loadingWindow.show();
 
-        var modalWindow = new BrowserWindow({
+        options = {
             title: '',
-            alwaysOnTop: true,
-            resizable: false,
-            width: width,
-            height: height,
+            alwaysOnTop: !!options.alwaysOnTop,
+            resizable: !!options.alwaysOnTop,
+            width: options.width,
+            height: options.height,
             center: true,
             show: false,
             icon: global.icon,
@@ -58,7 +66,9 @@ module.exports = {
                 textAreasAreResizable: false,
                 webSecurity: false
             }
-        });
+        };
+
+        var modalWindow = new BrowserWindow(options);
         // modalWindow.setSize(width, 0);
         // modalWindow.show();
 
@@ -82,7 +92,7 @@ module.exports = {
                 modalWindow.webContents.send('data', data);
         });
         modalWindow.webContents.on('did-finish-load', function() {
-            _this.loadingwindow.hide();
+            _this.loadingWindow.hide();
             modalWindow.show();
         });
         modalWindow.on('closed', function() {

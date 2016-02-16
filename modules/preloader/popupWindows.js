@@ -3,6 +3,7 @@
 */
 
 const ipc = require('electron').ipcRenderer;
+require('../openExternal.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
@@ -25,4 +26,5 @@ web3Admin.extend(window.web3);
 window.dirname = __dirname;
 window.ipc = ipc;
 window.platform = process.platform;
+    
 

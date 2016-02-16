@@ -34,8 +34,6 @@
 .darwin {
     body {
         background: @colorOSBackgroundFocus;
-        .background-image(linear-gradient(to bottom,  @colorOSBackgroundFocus 5%, lighten(@colorOSBackgroundFocus, 12%) 50%, lighten(@colorOSBackgroundFocus, 20%) 75%));
-        padding-top: @gridHeight;
 
         &.app-blur {
             background: @colorOSBackgroundBlur;
@@ -47,6 +45,9 @@
             top: @gridHeight * 2.5;
         }
 
+        .node-info {
+            top: @gridHeight;
+        }
     }
 }
 
@@ -73,12 +74,7 @@ h1, h2, h3, p {
     cursor: default;
 }
 pre {
-    -webkit-touch-callout: initial;
-    -webkit-user-select: initial;
-    -khtml-user-select: initial;
-    -moz-user-select: initial;
-    -ms-user-select: initial;
-    user-select: initial;
+    .allowSelection;
     cursor: text;
 }
 a h1, a h2, a h3, a p,

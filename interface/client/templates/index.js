@@ -22,11 +22,17 @@ Template.body.helpers({
             $('title').text('Mist');
             return 'layout_main';
         }
+        if(~location.hash.indexOf('#loadingWindow')) {
+            return 'popupWindows_loadingWindow';
+        }
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }
-        if(~location.hash.indexOf('#loadingWindow')) {
-            return 'popupWindows_loadingWindow';
+        if(~location.hash.indexOf('#onboardingScreen')) {
+            return 'popupWindows_onboardingScreen';
+        }
+        if(~location.hash.indexOf('#importAccount')) {
+            return 'popupWindows_importAccount';
         }
         if(location.hash === '#requestAccount') {
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
@@ -42,3 +48,15 @@ Template.body.helpers({
         }
     }
 });
+
+/*
+Template.body.events({
+    /**
+    On drag over prevent redirect
+
+    @event dragover body > *, drop body > *
+    *
+   'dragover body > *, drop body > *': function(e){
+        e.preventDefault();
+    },
+});*/

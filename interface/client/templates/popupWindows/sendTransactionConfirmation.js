@@ -6,7 +6,7 @@ Template Controllers
 
 var setWindowSize = function(template){
     Tracker.afterFlush(function(){
-        ipc.send('uiAction_setWindowSize', 580, template.$('.popup-windows').height() + 60);
+        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows').height() + 60);
     });
 }
 
@@ -167,8 +167,8 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event click .cancel
     */
     'click .cancel': function(){
-        ipc.send('uiAction_unlockedAccount', 'Transaction not confirmed');
-        ipc.send('uiAction_closePopupWindow');
+        ipc.send('backendAction_unlockedAccount', 'Transaction not confirmed');
+        ipc.send('backendAction_closePopupWindow');
     },
     /**
     Confirm the transaction
@@ -192,7 +192,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             TemplateVar.set(template, 'unlocking', false);
 
             if(!e && res) {
-                ipc.send('uiAction_unlockedAccount', null, gas);
+                ipc.send('backendAction_unlockedAccount', null, gas);
 
             } else {
                 Tracker.afterFlush(function(){

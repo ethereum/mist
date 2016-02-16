@@ -12,6 +12,18 @@ The Mist browser is the tool of choice to browse and use Ðapps.
 
 For the mist API see the [MISTAPI.md](MISTAPI.md).
 
+## Installation
+
+If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
+you can simply run the executeable after download. 
+
+For updating simply dwonload the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
+The data folder for Mist is stored in other places:
+
+- Windows `%APPDATA%/Roaming/Mist`
+- MacOSX `~/Library/Application Support/Mist`
+- Linux `~/.config/Mist`
+
 
 ## Development
 

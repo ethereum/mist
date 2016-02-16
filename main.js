@@ -17,9 +17,10 @@ global.path = {
     USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
+require('./modules/ipcCommunicator.js');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const NodeConnector = require('./modules/ipc/nodeConnector.js');
-const createPopupWindow = require('./modules/createPopupWindow.js');
+const popupWindow = require('./modules/popupWindow.js');
 const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
@@ -27,7 +28,7 @@ var ipcPath = getIpcPath();
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -102,6 +103,11 @@ app.on('window-all-closed', function() {
     app.quit();
 });
 
+// Listen to custom protocole incoming messages, needs registering of URL schemes
+app.on('open-url', function (e, url) {
+    console.log('Open URL', url);
+});
+
 
 // app.on('will-quit', function(event){
 //     event.preventDefault()
@@ -131,63 +137,6 @@ app.on('before-quit', function(event){
 });
 
 
-
-/*
-
-// windows including webviews
-windows = {
-    23: {
-        type: 'requestWindow',
-        window: obj,
-        owner: 12
-    },
-    12: {
-        type: 'webview'
-        window: obj
-        owner: null
-    }
-}
-
-*/
-
-// UI ACTIONS
-ipc.on('uiAction_closeApp', function() {
-    app.quit();
-});
-ipc.on('uiAction_closePopupWindow', function(e) {
-    var windowId = e.sender.getId();
-
-    if(global.windows[windowId]) {
-        global.windows[windowId].window.close();
-        delete global.windows[windowId];
-    }
-});
-ipc.on('uiAction_setWindowSize', function(e, width, height) {
-    var windowId = e.sender.getId();
-
-    if(global.windows[windowId]) {
-        global.windows[windowId].window.setSize(width, height);
-        global.windows[windowId].window.center(); // ?
-    }
-});
-
-ipc.on('uiAction_sendToOwner', function(e, error, value) {
-    var windowId = e.sender.getId();
-
-    if(global.windows[windowId]) {
-        global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
-        global.mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
-    }
-});
-
-
-// MIST API
-ipc.on('mistAPI_requestAccount', function(e){
-    createPopupWindow.show('requestAccount', 400, 210, null, e);
-});
-
-
-
 // Emitted when the application is activated while there is no opened windows.
 // It usually happens when a user has closed all of application's windows and then
 // click on the application's dock icon.
@@ -211,13 +160,16 @@ ipc.on('mistAPI_requestAccount', function(e){
 app.on('ready', function() {
 
     // init prepared popup window
-    createPopupWindow.initLoadingWindow();
+    popupWindow.loadingWindow.init();
+
+    // initialize the IPC provider on the main window
+    ipcProviderBackend();
 
     // instantiate custom protocols
     require('./customProtocols.js');
 
-    // add menu already her, so we have copy and past functionality
-    appMenu([]);
+    // add menu already here, so we have copy and past functionality
+    appMenu();
 
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([
@@ -284,7 +236,6 @@ app.on('ready', function() {
         });
     }
 
-
     var appStartWindow = new BrowserWindow({
             title: global.appName,
             width: 400,
@@ -301,10 +252,10 @@ app.on('ready', function() {
             }
         });
     appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
-    // appStartWindow.openDevTools();
 
 
     appStartWindow.webContents.on('did-finish-load', function() {
+
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
@@ -391,13 +342,58 @@ app.on('ready', function() {
             clearInterval(intervalId);
 
             // update menu, to show node switching possibilities
-            appMenu([]);
+            appMenu();
 
-            checkNodeSync(appStartWindow, function(e){
+            checkNodeSync(appStartWindow,
+            // -> callback splash screen finished
+            function(e){
 
                 appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
                 clearSocket(socket);
                 startMainWindow(appStartWindow);
+
+            // -> callback onboarding
+            }, function(){
+
+                if(appStartWindow)
+                    appStartWindow.close();
+                appStartWindow = null;
+
+                var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
+                // onboardingWindow.openDevTools();
+                onboardingWindow.on('close', function(){
+                    app.quit();
+                });
+
+                // change network types (mainnet, testnet)
+                ipc.on('onBoarding_changeNet', function(e, testnet) {
+                    var geth = !!global.nodes.geth;
+
+                    ethereumNodes.stopNodes(function(){
+                        ethereumNodes.startNode(geth ? 'geth' : 'eth', testnet, function(){
+                            console.log('Changed to ', (testnet ? 'testnet' : 'mainnet'));
+                            appMenu();
+                        });
+                    });
+                });
+                // launch app
+                ipc.on('onBoarding_launchApp', function(e) {
+                    clearSocket(socket);
+
+                    // prevent that it closes the app
+                    onboardingWindow.removeAllListeners('close');
+                    onboardingWindow.close();
+                    onboardingWindow = null;
+
+                    popupWindow.loadingWindow.show();
+
+                    ipc.removeAllListeners('onBoarding_changeNet');
+                    ipc.removeAllListeners('onBoarding_importPresaleFile');
+                    ipc.removeAllListeners('onBoarding_launchApp');
+
+                    startMainWindow(appStartWindow);
+                });
+
             });
         });
     });
@@ -433,6 +429,8 @@ var startMainWindow = function(appStartWindow){
     global.mainWindow.loadURL(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
 
     global.mainWindow.webContents.on('did-finish-load', function() {
+        popupWindow.loadingWindow.hide();
+
         global.mainWindow.show();
         // global.mainWindow.center();
 
@@ -464,7 +462,4 @@ var startMainWindow = function(appStartWindow){
     //     global.language = lang;
 
     // });
-
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
 };

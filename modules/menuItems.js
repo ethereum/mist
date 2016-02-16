@@ -1,6 +1,6 @@
 const app = require('app');
 const BrowserWindow = require('browser-window');
-const createPopupWindow = require('./createPopupWindow.js');
+const popupWindow = require('./popupWindow.js');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const shell = require('electron').shell;
@@ -12,6 +12,8 @@ const ethereumNodes = require('./ethereumNodes.js');
 // create menu
 // null -> null
 var createMenu = function(webviews) {
+    webviews = webviews || [];
+
     // re create connection
     if(global.nodeConnector.socket.writable) {
         global.nodeConnector.destroy();
@@ -26,6 +28,7 @@ var createMenu = function(webviews) {
 // null -> obj
 var menuTempl = function(webviews) {
     const menu = []
+    webviews = webviews || [];
 
     // APP
     menu.push({
@@ -100,17 +103,19 @@ var menuTempl = function(webviews) {
     })
 
     // ACCOUNTS
-    // menu.push({
-    //     label: i18n.t('mist.applicationMenu.accounts.label'),
-    //     submenu: [
-    //         {
-    //             label: i18n.t('mist.applicationMenu.accounts.importPresale'),
-    //             click: function(){
-    //                 createPopupWindow.show('importPresale', 400, 210);
-    //             }
-    //         }
-    //     ]
-    // })
+    if(global.nodes.geth) {
+        menu.push({
+            label: i18n.t('mist.applicationMenu.accounts.label'),
+            submenu: [
+                {
+                    label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                    click: function(){
+                        popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                    }
+                }
+            ]
+        })
+    }
 
     // BACKUP
     menu.push({

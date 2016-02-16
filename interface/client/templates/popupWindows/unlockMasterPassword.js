@@ -39,7 +39,7 @@ Template['popupWindows_unlockMasterPassword'].onRendered(function(){
 
 Template['popupWindows_unlockMasterPassword'].events({
    'click .cancel': function(){
-        ipc.send('uiAction_closePopupWindow');
+        ipc.send('backendAction_closePopupWindow');
    },
    'submit form': function(e, template){
         e.preventDefault();
@@ -47,7 +47,7 @@ Template['popupWindows_unlockMasterPassword'].events({
 
         TemplateVar.set('unlocking', true);
 
-        ipc.send('uiAction_unlockedMasterPassword', null, pw);
+        ipc.send('backendAction_unlockedMasterPassword', null, pw);
 
         template.find('input.password').value = '';
         pw = null;

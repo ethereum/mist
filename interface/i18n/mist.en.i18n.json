@@ -125,6 +125,45 @@
                 "errors": {
                     "wrongPassword": "Wrong password"
                 }
+            },
+            "onboarding": {
+                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
+                "goToTestnet" : "Play with the Testnet",
+                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet.",
+                "gotoMainnet" : "Start using Ethereum",
+                "gotoMainnetDescription" : " You’ll need to some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
+                "doYouHaveAWalletFile" : "Do you have a wallet file?",
+                "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you have received a <code>.json</code> file.</p>",
+                "dropFilesHere" : "Drop pre-sale file",
+                "creating": "Creating...",
+                "importing": "Importing...",
+                "skip" : "Skip this step",
+                "next" : "Next",
+                "protectTitle" : "Protect your account",
+                "protectDescription" : "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
+                "accountTitle" : "Load it up!",
+                "accountTitleTestnet" : "Mine some!",
+                "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
+                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency you can easily convert it to ether using shapeshift. <br><br> We recommend loading some where between <strong>0.25 to 1 ether</strong>.",
+                "mineItDescription": "On the testnet you can mine ether yourself by choosing \"Start Mining\" from the \"Develop\" menu.",
+                "you" : "YOU",
+                "depositBitcoin" : "Deposit Bitcoin",
+                "learnIt" : "Learn it",
+                "downloadingBlocks": "Downloading blocks",
+                "block": "Block",
+                "tutorial1Description" : "<p> Here's some reading suggestions while you wait: </p> <h4>Make your own money </h4> <p> Make a crypto currency with a fixed market supply, tokens representing real world assets or even a puzzle based coin </p>",
+                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. </p>",
+                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p>",
+                "buttons": {
+                    "importAccount": "Import account",
+                    "launchApp": "Launch Application!",
+                    "learnReceipt": "Learn this recipe"
+                },
+                "errors": {
+                    "nodeNotStartedYet": "Wait until your node is started up...",
+                    "unknownFile": "File not recognised.",
+                    "importFailed": "Couldn't import the file, password wrong?"
+                }
             }
         }
     }

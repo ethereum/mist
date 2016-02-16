@@ -33,7 +33,7 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 
-var electronVersion = '0.36.4';
+var electronVersion = '0.36.7';
 var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
@@ -176,9 +176,9 @@ gulp.task('create-binaries', ['copy-i18n'], function(cb) {
         'app-version': version,
         'build-version': electronVersion,
         // DO AFTER: codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
-        //'sign': '03582BDFE9A39A7ACB401420659437A673BDE85A',
+        //'sign': '3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)',
         'app-bundle-id': 'com.ethereum.'+ type,
-        //'helper-bundle-id': 'com.ethereum.'+ type + '-helper',
+        'helper-bundle-id': 'com.ethereum.'+ type + '.helper',
         //'helper-bundle-id': 'com.github.electron.helper',
         // cache: './dist_'+ type +'/', // directory of cached electron downloads. Defaults to '$HOME/.electron'
         ignore: '', //do not copy files into App whose filenames regex .match this string
@@ -239,7 +239,7 @@ gulp.task('change-files', ['create-binaries'], function() {
             .pipe(gulp.dest(path + '/')));
 
         var destPath = (os === 'darwin-x64')
-            ? path +'/'+ filenameUppercase +'.app/Contents/Resources/node'
+            ? path +'/'+ filenameUppercase +'.app/Contents/Frameworks/node'
             : path +'/resources/node';
 
 

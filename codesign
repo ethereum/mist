@@ -1,61 +1,40 @@
-#! /bin/bash 
+#!/bin/bash
 
-path="dist_wallet/Ethereum-Wallet-darwin-x64-0-3-9/Ethereum-Wallet.app"
-FRAMEWORKS_PATH="$path/Contents/Frameworks"
-app="Ethereum-Wallet"
-identity="5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4"
+# Name of your app.
+APP="Ethereum-Wallet"
+# The path of you app to sign.
+APP_PATH="dist_wallet/Ethereum-Wallet-macosx64-0-4-0/Ethereum-Wallet.app"
+# The path to the location you want to put the signed package.
+RESULT_PATH="dist_wallet/$APP.pkg"
+# The name of certificates you requested.
+APP_KEY="3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)"
+INSTALLER_KEY="3rd Party Mac Developer Installer: Stiftung Ethereum (3W6577R383)"
 
+FRAMEWORKS_PATH="$APP_PATH/Contents/Frameworks"
 
-# echo "################"
-# echo "### signing frameworks"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Electron Framework.framework/Electron Framework"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Electron Framework.framework/Versions/A"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Electron Framework.framework/Versions/Current/Electron Framework"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/$app Helper EH.app/Contents/MacOS/$app Helper EH"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/$app Helper NP.app/Contents/MacOS/$app Helper NP"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/$app Helper.app/Contents/MacOS/$app Helper"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Mantle.framework/Mantle"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Mantle.framework/Versions/A"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/ReactiveCocoa.framework/ReactiveCocoa"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/ReactiveCocoa.framework/Versions/A"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Squirrel.framework/Squirrel"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Frameworks/Squirrel.framework/Versions/A"
-
-# codesign -f -s "$identity" --entitlements "$path/Contents/Resources/node/geth/geth.entitlements" "$path/Contents/Resources/node/geth/geth"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Resources/node/geth/geth"
-# codesign -f -s "$identity" --entitlements "$path/Contents/Resources/node/eth/eth.entitlements" "$path/Contents/Resources/node/eth/eth"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path/Contents/Resources/node/eth/eth"
-
-# codesign -fs "$identity" --entitlements parent.plist "$path"
-
-# echo "################"
-# echo "### signing app"
-# codesign --deep --force --verify --verbose --sign "$identity" "$path"
-
-#cd path && find . -name "*.DS_Store" -type f -delete
-#cd ..
-
-
-codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/Electron Framework.framework/Versions/A"
-codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/$app Helper.app/"
-codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/$app Helper EH.app/"
-codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/$app Helper NP.app/"
+codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/Electron Framework.framework/Versions/A"
+codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/$APP Helper.app/"
+codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/$APP Helper EH.app/"
+codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/$APP Helper NP.app/"
 if [ -d "$FRAMEWORKS_PATH/Squirrel.framework/Versions/A" ]; then
   # Signing a non-MAS build.
-  codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/Mantle.framework/Versions/A"
-  codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/ReactiveCocoa.framework/Versions/A"
-  codesign --deep -fs "$identity" --entitlements child.plist "$FRAMEWORKS_PATH/Squirrel.framework/Versions/A"
+  codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/Mantle.framework/Versions/A"
+  codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/ReactiveCocoa.framework/Versions/A"
+  codesign --deep -fs "$APP_KEY" --entitlements child.plist "$FRAMEWORKS_PATH/Squirrel.framework/Versions/A"
 fi
 
-codesign --deep -fs "$identity" --entitlements nodes.plist "$path/Contents/Resources/node/eth/eth"
-codesign --deep -fs "$identity" --entitlements nodes.plist "$path/Contents/Resources/node/geth/geth"
+codesign --deep -fs "$APP_KEY" --entitlements nodes.plist "$FRAMEWORKS_PATH/node/eth/eth"
+codesign --deep -fs "$APP_KEY" --entitlements nodes.plist "$FRAMEWORKS_PATH/node/geth/geth"
 
 
-codesign -fs "$identity" --entitlements parent.plist "$path"
+codesign -fs "$APP_KEY" --entitlements parent.plist "$APP_PATH"
+
+# codesign --force --verify --verbose --sign "$APP_KEY" "$APP_PATH"
+
+#productbuild --component "$APP_PATH" /Applications --sign "$INSTALLER_KEY" "$RESULT_PATH"
 
 
 echo "################"
 echo "### verifing app"
-codesign --verify -vvvv "$path"
-spctl -a -vvvv "$path"
-
+codesign --verify -vvvv "$RESULT_PATH"
+spctl -a -vvvv "$RESULT_PATH"

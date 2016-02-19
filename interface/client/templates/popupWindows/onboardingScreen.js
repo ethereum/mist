@@ -264,7 +264,6 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
                 if($('.onboarding-start')[0]) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(address));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-                    console.log('web3.toChecksumAddress(address): ', web3.toChecksumAddress(address))
                 
                 // otherwise simply close the window
                 } else {
@@ -334,8 +333,6 @@ Template['popupWindows_onboardingScreen_password'].events({
                 if(!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-
-                    console.log('web3.toChecksumAddress(address): ', web3.toChecksumAddress(address));
                     
                     // clear form
                     pw = pwRepeat = null;

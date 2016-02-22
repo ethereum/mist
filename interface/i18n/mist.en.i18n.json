@@ -21,12 +21,11 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts"
-            },
-            "backup": {
-                "label": "Backup",
-                "backupKeyStore": "Backup Accounts",
-                "backupMist": "Backup App Data"
+                "importPresale": "Import Pre-sale Accounts",
+                "newAccount": "New account",
+                "backup": "Backup",
+                "backupKeyStore": "Accounts",
+                "backupMist": "Application Data"
             },
             "develop": {
                 "label": "Develop",
@@ -133,7 +132,7 @@
                 "gotoMainnet" : "Start using Ethereum",
                 "gotoMainnetDescription" : " You’ll need to some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
-                "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you have received a <code>.json</code> file.</p>",
+                "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
                 "dropFilesHere" : "Drop pre-sale file",
                 "creating": "Creating...",
                 "importing": "Importing...",
@@ -155,6 +154,7 @@
                 "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. </p>",
                 "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can take of the decisions. </p>",
                 "buttons": {
+                    "showPassword": "Show password",
                     "importAccount": "Import account",
                     "launchApp": "Launch Application!",
                     "learnReceipt": "Learn this recipe"

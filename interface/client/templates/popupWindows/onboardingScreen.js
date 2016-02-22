@@ -173,6 +173,17 @@ The onboardingScreen account import template
 @constructor
 */
 
+Template['popupWindows_onboardingScreen_importAccount'].helpers({
+    /**
+    Show password
+
+    @method showPassword
+    */
+    'showPassword': function() {
+        return TemplateVar.get('showPassword')? 'text' : 'password' ;
+    }
+})
+
 
 Template['popupWindows_onboardingScreen_importAccount'].events({
     /**
@@ -222,6 +233,14 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         e.preventDefault();
     },
     /**
+    On show password
+
+    @event click #show-password
+    */
+   'click #show-password': function(e){
+        TemplateVar.set('showPassword', e.currentTarget.checked)
+    },
+    /**
     Checks the password match sends the file path and password to the mist backend to import
     
     @event submit form
@@ -237,14 +256,13 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
             TemplateVar.set(template, 'importing', false);
             TemplateVar.set(template, 'filePath', false);
 
-            console.log('Imported account: ', address);
-            
             if(address) {
                 ipc.removeAllListeners('uiAction_importedPresaleFile');
+                console.log('Imported account: ', address);
 
                 // move to add account screen, when in the onboarding window
                 if($('.onboarding-start')[0]) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', address);
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(address));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
                 
                 // otherwise simply close the window
@@ -254,6 +272,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
 
             } else {
+                console.log('Import failed');
 
                 GlobalNotification.warning({
                     content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed'),
@@ -312,9 +331,9 @@ Template['popupWindows_onboardingScreen_password'].events({
                 TemplateVar.set(template, 'creatingPassword', false);
 
                 if(!e) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', res);
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-
+                    
                     // clear form
                     pw = pwRepeat = null;
 

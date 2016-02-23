@@ -92,6 +92,17 @@
             margin: @gridHeight/2 0 @gridHeight;
         }
 
+        input[type='checkbox'] {
+            margin-left: 14px;
+        }
+
+        input[type='checkbox'] + label {
+            position: relative;
+            top: -7px;
+            left: 9px;
+            opacity: 0.9;
+        }
+
         h6 {
             opacity: 0.2;
             margin: 0 0 @gridHeight/2;
@@ -196,34 +207,51 @@
     .onboarding-import-account {
         opacity: 0;
         z-index: 0;
-        .col-6 {
+        transition-duration: 0s;
+        .col-6.col-left {
             transform: scale(0.9) translateZ(-10px);
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;            
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;  
         }
+    }
+
+
+    .dapp-identicon.dapp-icon-loading {
+        position: relative;
+        margin-left: -32px;
+        left: 50%;
     }
 
     .onboarding-account .col-deposit {
             text-align: center;        
     }    
 
-    .onboarding-password,
-    .onboarding-testnet,
+    .onboarding-password {
+        transition: none;
+        .col-6 {
+            transition: none;
+            transform: translateX(0);
+        }
+        .col-6.col-left {
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+    }
+
+    .onboarding-testnet ,
     .onboarding-account {
+        transition: opacity 0.4s ease-in-out;
+
         .col-6 {
             transition: transform 0.2s ease-in-out, opacity 0.2s;
-            transform: translateX(100px)
+            transform: translateX(0)
         }
         .col-6.col-left {
             opacity: 0;
             transform: translateX(-100px)
         }
 
-        .dapp-identicon {
-            transition: transform 0.4s;
-            transition-timing-function: cubic-bezier(.66,-0.14,.64,1.27);
-            transition-delay: 0.8s;
-            transform: translateY(-200px) rotateZ(720deg);
-            backface-visibility: hidden;
+        .dapp-identicon.dapp-icon-loading{
+            margin-left: 0 auto;
         }
 
         .you {
@@ -260,6 +288,7 @@
         }
     }
 
+
     &.active-import-account .onboarding-import-account,
     &.active-password .onboarding-password,
     &.active-testnet .onboarding-testnet,
@@ -281,7 +310,14 @@
         }
     }
 
+    .onboarding-testnet ,
+    &.active-account .onboarding-account{
+        transition-delay: 0;
+        transition-duration: 0;
+        transition: none;
+    }
 
+    &.active-account .onboarding-account,
     &.active-tutorial-1 .onboarding-tutorial-1,
     &.active-tutorial-2 .onboarding-tutorial-2,
     &.active-tutorial-3 .onboarding-tutorial-3 {

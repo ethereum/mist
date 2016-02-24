@@ -145,8 +145,9 @@
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
                 "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency you can easily convert it to ether using shapeshift. <br><br> We recommend loading some where between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "On the testnet you can mine ether yourself by choosing \"Start Mining\" from the \"Develop\" menu.",
+                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong>",
                 "you" : "YOU",
+                "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit Bitcoin",
                 "learnIt" : "Learn while you wait",
                 "downloadingBlocks": "Downloading blocks",
@@ -161,7 +162,7 @@
                     "learnReceipt": "Learn this recipe"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Wait until your node is started up...",
+                    "nodeNotStartedYet": "Wait a few more seconds until your node is started up and try again",
                     "unknownFile": "File not recognised.",
                     "importFailed": "Couldn't import the file, password wrong?"
                 }

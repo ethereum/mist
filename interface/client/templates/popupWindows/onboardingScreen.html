@@ -57,7 +57,7 @@
                 <div class="col col-6 col-deposit">
                     {{> dapp_identicon identity=(TemplateVar.get "newAccount")}}
                     <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
-                    <input type="text" value="Etherbase" class="name" disabled>
+                    <input type="text" value="{{i18n 'mist.popupWindows.onboarding.etherbase'}}" class="name" disabled>
                     <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
 
                     {{#unless TemplateVar.get "testnet"}}

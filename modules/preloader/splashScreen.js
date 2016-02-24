@@ -1,4 +1,5 @@
 const ipc = require('electron').ipcRenderer;
+require('../openExternal.js');
 
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);

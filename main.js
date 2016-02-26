@@ -28,7 +28,7 @@ var ipcPath = getIpcPath();
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'wallet';
+global.mode = 'mist';
 
 global.mainWindow = null;
 global.windows = {};
@@ -261,7 +261,7 @@ app.on('ready', function() {
         const checkNodeSync = require('./modules/checkNodeSync.js');
         const net = require('net');
         const socket = new net.Socket();
-        var intervalId;
+        var intervalId = null;
         var count = 0;
 
 
@@ -302,17 +302,20 @@ app.on('ready', function() {
                 }, 60000);
 
                 var node = ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
+                    clearInterval(intervalId);
+
                     // TRY TO CONNECT EVERY 500MS
                     if(!e) {
                         intervalId = setInterval(function(){
-                            socket.connect({path: ipcPath});
+                            if(socket)
+                                socket.connect({path: ipcPath});
                             count++;
 
                             // timeout after 10 seconds
                             if(count >= 60) {
                                 clearTimeout(startingTimeout);
 
-                                if(appStartWindow && appStartWindow.webContents)
+                                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed())
                                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
                                 clearInterval(intervalId);
@@ -329,8 +332,6 @@ app.on('ready', function() {
                             clearTimeout(startingTimeout);
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                         }
-
-                        clearInterval(intervalId);
 
                         clearSocket(socket, true);
                     }

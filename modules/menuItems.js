@@ -46,73 +46,71 @@ var menuTempl = function(webviews) {
                 }
             }
         ]
-    })
+    });
 
-    // ACCOUNTS
-    if(global.nodes.geth) {
-        menu.push({
-            label: i18n.t('mist.applicationMenu.accounts.label'),
-            submenu: [
-                {
-                    label: i18n.t('mist.applicationMenu.accounts.newAccount'),
-                    accelerator: 'CommandOrControl+N',
-                    click: function(){
-                        popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true});
-                    }
-                },
-                {
-                    label: i18n.t('mist.applicationMenu.accounts.importPresale'),
-                    accelerator: 'CommandOrControl+I',
-                    enabled: (global.network === 'main'),            
-                    click: function(){
-                        popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
-                    }
-                }, 
-                {
-                    type: 'separator'
-                },
-                {
-                    label: i18n.t('mist.applicationMenu.accounts.backup'),
-                    submenu: [
-                        {
-                            label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
-                            click: function(){
-                                var path = global.path.HOME;
-
-                                // eth
-                                if(global.nodes.eth) {
-                                    if(process.platform === 'win32')
-                                        path = global.path.APPDATA + '\\Web3\\keys';
-                                    else
-                                        path += '/.web3/keys';
-                                
-                                // geth
-                                } else {
-                                    if(process.platform === 'darwin')
-                                        path += '/Library/Ethereum/keystore';
-
-                                    if(process.platform === 'freebsd' ||
-                                       process.platform === 'linux' ||
-                                       process.platform === 'sunos')
-                                        path += '/.ethereum/keystore';
-
-                                    if(process.platform === 'win32')
-                                        path = global.path.APPDATA + '\\Ethereum\\keystore';
-                                }
-
-                                shell.showItemInFolder(path);
-                            }
-                        },{
-                            label: i18n.t('mist.applicationMenu.accounts.backupMist'),
-                            click: function(){
-                                shell.showItemInFolder(global.path.USERDATA);
-                            }
-                        }
-                    ]
+      // ACCOUNTS
+    menu.push({
+        label: i18n.t('mist.applicationMenu.accounts.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.accounts.newAccount'),
+                accelerator: 'CommandOrControl+N',
+                click: function(){
+                    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true});
                 }
-            ]
-        })
-    }
+            },
+            {
+                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                accelerator: 'CommandOrControl+I',
+                enabled: (global.network === 'main'),            
+                click: function(){
+                    popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                }
+            }, 
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.accounts.backup'),
+                submenu: [
+                    {
+                        label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
+                        click: function(){
+                            var path = global.path.HOME;
+
+                            // eth
+                            if(global.nodes.eth) {
+                                if(process.platform === 'win32')
+                                    path = global.path.APPDATA + '\\Web3\\keys';
+                                else
+                                    path += '/.web3/keys';
+                            
+                            // geth
+                            } else {
+                                if(process.platform === 'darwin')
+                                    path += '/Library/Ethereum/keystore';
+
+                                if(process.platform === 'freebsd' ||
+                                   process.platform === 'linux' ||
+                                   process.platform === 'sunos')
+                                    path += '/.ethereum/keystore';
+
+                                if(process.platform === 'win32')
+                                    path = global.path.APPDATA + '\\Ethereum\\keystore';
+                            }
+
+                            shell.showItemInFolder(path);
+                        }
+                    },{
+                        label: i18n.t('mist.applicationMenu.accounts.backupMist'),
+                        click: function(){
+                            shell.showItemInFolder(global.path.USERDATA);
+                        }
+                    }
+                ]
+            }
+        ]
+    });
 
     // EDIT
     menu.push({
@@ -167,6 +165,7 @@ var menuTempl = function(webviews) {
             }
         ]
     })
+
 
     // DEVELOP
     var devToolsMenu = [];

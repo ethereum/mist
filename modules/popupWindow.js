@@ -59,6 +59,7 @@ module.exports = {
             icon: global.icon,
             useContentSize: true,
             titleBarStyle: 'hidden', //hidden-inset: more space
+            autoHideMenuBar: true, // TODO: test on windows
             webPreferences: {
                 preload: noWeb3 ? __dirname +'/preloader/popupWindowsNoWeb3.js' : __dirname +'/preloader/popupWindows.js',
                 nodeIntegration: false,

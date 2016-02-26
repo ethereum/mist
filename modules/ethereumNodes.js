@@ -174,7 +174,7 @@ module.exports = {
 
             // START MAINNET
             } else {
-                args = (type === 'geth') ? ['--fast'] : ['--unsafe-transactions', '--master', pw];
+                args = (type === 'geth') ? ['--fast', '--cache=512'] : ['--unsafe-transactions', '--master', pw];
                 pw = null;
             }
 

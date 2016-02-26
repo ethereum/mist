@@ -46,7 +46,71 @@ var menuTempl = function(webviews) {
                 }
             }
         ]
-    })
+    });
+
+      // ACCOUNTS
+    menu.push({
+        label: i18n.t('mist.applicationMenu.accounts.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.accounts.newAccount'),
+                accelerator: 'CommandOrControl+N',
+                click: function(){
+                    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true});
+                }
+            },
+            {
+                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                accelerator: 'CommandOrControl+I',
+                enabled: (global.network === 'main'),            
+                click: function(){
+                    popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                }
+            }, 
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.accounts.backup'),
+                submenu: [
+                    {
+                        label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
+                        click: function(){
+                            var path = global.path.HOME;
+
+                            // eth
+                            if(global.nodes.eth) {
+                                if(process.platform === 'win32')
+                                    path = global.path.APPDATA + '\\Web3\\keys';
+                                else
+                                    path += '/.web3/keys';
+                            
+                            // geth
+                            } else {
+                                if(process.platform === 'darwin')
+                                    path += '/Library/Ethereum/keystore';
+
+                                if(process.platform === 'freebsd' ||
+                                   process.platform === 'linux' ||
+                                   process.platform === 'sunos')
+                                    path += '/.ethereum/keystore';
+
+                                if(process.platform === 'win32')
+                                    path = global.path.APPDATA + '\\Ethereum\\keystore';
+                            }
+
+                            shell.showItemInFolder(path);
+                        }
+                    },{
+                        label: i18n.t('mist.applicationMenu.accounts.backupMist'),
+                        click: function(){
+                            shell.showItemInFolder(global.path.USERDATA);
+                        }
+                    }
+                ]
+            }
+        ]
+    });
 
     // EDIT
     menu.push({
@@ -102,59 +166,6 @@ var menuTempl = function(webviews) {
         ]
     })
 
-    // ACCOUNTS
-    menu.push({
-        label: i18n.t('mist.applicationMenu.accounts.label'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
-                click: function(){
-                    popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
-                }
-            }
-        ]
-    });
-
-    // BACKUP
-    menu.push({
-        label: i18n.t('mist.applicationMenu.backup.label'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.backup.backupKeyStore'),
-                click: function(){
-                    var path = global.path.HOME;
-
-                    // eth
-                    if(global.nodes.eth) {
-                        if(process.platform === 'win32')
-                            path = global.path.APPDATA + '\\Web3\\keys';
-                        else
-                            path += '/.web3/keys';
-                    
-                    // geth
-                    } else {
-                        if(process.platform === 'darwin')
-                            path += '/Library/Ethereum/keystore';
-
-                        if(process.platform === 'freebsd' ||
-                           process.platform === 'linux' ||
-                           process.platform === 'sunos')
-                            path += '/.ethereum/keystore';
-
-                        if(process.platform === 'win32')
-                            path = global.path.APPDATA + '\\Ethereum\\keystore';
-                    }
-
-                    shell.showItemInFolder(path);
-                }
-            },{
-                label: i18n.t('mist.applicationMenu.backup.backupMist'),
-                click: function(){
-                    shell.showItemInFolder(global.path.USERDATA);
-                }
-            }
-        ]
-    })
 
     // DEVELOP
     var devToolsMenu = [];
@@ -253,6 +264,7 @@ var menuTempl = function(webviews) {
               {
                 label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
                 type: 'checkbox',
+                accelerator: 'Alt+CommandOrControl+1',
                 checked: (global.network === 'main'),
                 enabled: !(global.network === 'main'),
                 click: function(){
@@ -268,6 +280,7 @@ var menuTempl = function(webviews) {
               },
               {
                 label: 'Testnet (Morden)',
+                accelerator: 'Alt+CommandOrControl+2',                
                 checked: (global.network === 'test'),
                 enabled: !(global.network === 'test'),
                 click: function(){
@@ -285,6 +298,7 @@ var menuTempl = function(webviews) {
 
         devToolsMenu.push({
             label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
+            accelerator: 'CommandOrControl+M',            
             enabled: (global.network === 'test'),
             click: function(){
                 // TODO remove on new RPC

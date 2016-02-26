@@ -296,6 +296,11 @@ app.on('ready', function() {
                 console.log('Node type: ', nodeType);
                 console.log('Network: ', global.network);
 
+                // If nothing else happens, show an error message in 60 seconds
+                var startingTimeout = setTimeout(function(){ 
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeNotStarted');
+                }, 60000);
+
                 var node = ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
                     clearInterval(intervalId);
 
@@ -308,6 +313,7 @@ app.on('ready', function() {
 
                             // timeout after 10 seconds
                             if(count >= 60) {
+                                clearTimeout(startingTimeout);
 
                                 if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed())
                                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
@@ -323,6 +329,7 @@ app.on('ready', function() {
                     } else {
 
                         if(appStartWindow && appStartWindow.webContents) {
+                            clearTimeout(startingTimeout);
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                         }
 

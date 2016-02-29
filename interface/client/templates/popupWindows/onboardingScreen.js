@@ -262,7 +262,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
                 // move to add account screen, when in the onboarding window
                 if($('.onboarding-start')[0]) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', address);
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(address));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
                 
                 // otherwise simply close the window
@@ -331,9 +331,9 @@ Template['popupWindows_onboardingScreen_password'].events({
                 TemplateVar.set(template, 'creatingPassword', false);
 
                 if(!e) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', res);
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-
+                    
                     // clear form
                     pw = pwRepeat = null;
 

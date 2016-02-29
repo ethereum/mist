@@ -101,7 +101,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
 
             // if still needs syncing
             } else {
-                if(appStartWindow && appStartWindow.webContents)
+                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed())
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', {
                         currentBlock: +result.number
                     });
@@ -119,7 +119,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
                 // create timeout for private chains, where no one is mining
                 if(!timeoutId) {
                     timeoutId = setTimeout(function(){
-                        if(appStartWindow && appStartWindow.webContents) {
+                        if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeout');
 
                             ipc.on('backendAction_startApp', function() {
@@ -142,11 +142,12 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
                 clearTimeout(timeoutId);
                 timeoutId = null;
                 
-                // remove the private chain button again
-                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeoutClear');
-
-                if(appStartWindow && appStartWindow.webContents)
+                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                    // remove the private chain button again
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeoutClear');
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', result);
+                }
+                    
             }
 
         }

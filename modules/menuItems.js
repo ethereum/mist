@@ -188,7 +188,8 @@ var menuTempl = function(webviews) {
             devtToolsSubMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    global.mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
+                    if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed())
+                        global.mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -212,7 +213,8 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.runTests'),
             enabled: (global.mode === 'mist'),
             click: function(){
-                global.mainWindow.webContents.send('runTests', 'webview');
+                if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed())
+                    global.mainWindow.webContents.send('runTests', 'webview');
             }
         }
     ];

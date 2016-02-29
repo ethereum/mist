@@ -89,7 +89,7 @@ module.exports = {
 
         modalWindow.webContents.on('dom-ready', function() {
             // send data, if available
-            if(data)
+            if(data && modalWindow && modalWindow.webContents && !modalWindow.webContents.isDestroyed())
                 modalWindow.webContents.send('data', data);
         });
         modalWindow.webContents.on('did-finish-load', function() {

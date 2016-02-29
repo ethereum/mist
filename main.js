@@ -28,7 +28,7 @@ var ipcPath = getIpcPath();
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};
@@ -154,6 +154,7 @@ app.on('before-quit', function(event){
 //     app.commandLine.appendSwitch('ignore-cpu-blacklist');
 // }
 
+var appStartWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -261,7 +262,7 @@ app.on('ready', function() {
         const checkNodeSync = require('./modules/checkNodeSync.js');
         const net = require('net');
         const socket = new net.Socket();
-        var intervalId = null;
+        var intervalId = startingTimeout = null;
         var count = 0;
 
 
@@ -279,7 +280,7 @@ app.on('ready', function() {
                 count++;
 
                 // STARTING NODE
-                if(appStartWindow && appStartWindow.webContents)
+                if(appStartWindow)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
 
                 // read which node is used on this machine
@@ -297,8 +298,10 @@ app.on('ready', function() {
                 console.log('Network: ', global.network);
 
                 // If nothing else happens, show an error message in 60 seconds
-                var startingTimeout = setTimeout(function(){ 
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeNotStarted');
+                startingTimeout = setTimeout(function(){
+                    console.log('KILLLLLLLLL', appStartWindow.webContents.isDestroyed());
+                    if(appStartWindow)
+                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeNotStarted');
                 }, 60000);
 
                 var node = ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
@@ -307,15 +310,16 @@ app.on('ready', function() {
                     // TRY TO CONNECT EVERY 500MS
                     if(!e) {
                         intervalId = setInterval(function(){
+                            count++;
+
                             if(socket)
                                 socket.connect({path: ipcPath});
-                            count++;
 
                             // timeout after 10 seconds
                             if(count >= 60) {
                                 clearTimeout(startingTimeout);
 
-                                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed())
+                                if(appStartWindow)
                                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
                                 clearInterval(intervalId);
@@ -328,11 +332,11 @@ app.on('ready', function() {
                     // NO Binary
                     } else {
 
-                        if(appStartWindow && appStartWindow.webContents) {
-                            clearTimeout(startingTimeout);
+                        if(appStartWindow) {
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                         }
 
+                        clearTimeout(startingTimeout);
                         clearSocket(socket, true);
                     }
                 });
@@ -340,7 +344,7 @@ app.on('ready', function() {
         });
         socket.on('connect', function(data){
             console.log('Geth connection FOUND');
-            if(appStartWindow && appStartWindow.webContents) {
+            if(appStartWindow) {
                 if(count === 0)
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
                 else
@@ -348,6 +352,7 @@ app.on('ready', function() {
             }
 
             clearInterval(intervalId);
+            clearTimeout(startingTimeout);
 
             // update menu, to show node switching possibilities
             appMenu();
@@ -356,7 +361,8 @@ app.on('ready', function() {
             // -> callback splash screen finished
             function(e){
 
-                appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+                if(appStartWindow)
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
                 clearSocket(socket);
                 startMainWindow(appStartWindow);
 

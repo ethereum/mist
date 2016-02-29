@@ -52,6 +52,9 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
 
     if(global.windows[windowId]) {
         global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
+
+    }
+    if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed()) {
         global.mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
     }
 });

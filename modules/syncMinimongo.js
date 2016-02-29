@@ -14,21 +14,21 @@ module.exports = function(db, webContents){
     // send
     db.find().observeChanges({
         'added': function(id, fields){
-            // if(webContents)
+            // if(webContents && !webContents.isDestroyed())
             //     webContents.send('minimongo-add', {id: id, fields: fields});
             // else
             if(!webContents)
                 ipc.send('minimongo-add', {id: id, fields: fields});
         },
         'changed': function(id, fields){
-            // if(webContents)
+            // if(webContents && !webContents.isDestroyed())
             //     webContents.send('minimongo-changed', {id: id, fields: fields});
             // else
             if(!webContents)
                 ipc.send('minimongo-changed', {id: id, fields: fields});
         },
         removed: function(id) {
-            // if(webContents)
+            // if(webContents && !webContents.isDestroyed())
             //     webContents.send('minimongo-removed', id);
             // else
             if(!webContents)

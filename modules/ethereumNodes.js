@@ -84,7 +84,7 @@ module.exports = {
                     modalWindow = null;
                     ipc.removeAllListeners('backendAction_unlockedMasterPassword');
 
-                } else if(modalWindow) {
+                } else if(modalWindow && modalWindow.webContents && !modalWindow.webContents.isDestroyed()) {
                     modalWindow.webContents.send('data', {masterPasswordWrong: true});
                 }
             };

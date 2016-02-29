@@ -495,8 +495,8 @@ module.exports = function(){
         }
 
       
-        // if(event.sender.returnValue)       
-        //     event.sender.returnValue = socket.ipcSocket.writable;      
+        if(event.sender.returnValue)
+            event.sender.returnValue = socket.ipcSocket.writable;      
         // else       
         //     event.sender.send('ipcProvider-setWritable', socket.ipcSocket.writable);
     });

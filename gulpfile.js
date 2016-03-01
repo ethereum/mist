@@ -33,7 +33,7 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 
-var electronVersion = '0.36.7';
+var electronVersion = '0.36.9';
 var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;

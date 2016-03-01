@@ -297,35 +297,37 @@ app.on('ready', function() {
                 console.log('Node type: ', nodeType);
                 console.log('Network: ', global.network);
 
-                // If nothing else happens, show an error message in 60 seconds
+                // If nothing else happens, show an error message in 60 seconds, with the node log text
                 startingTimeout = setTimeout(function(){
-                    console.log('KILLLLLLLLL', appStartWindow.webContents.isDestroyed());
                     if(appStartWindow)
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeNotStarted');
-                }, 60000);
+                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
-                var node = ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
                     clearInterval(intervalId);
+                    clearSocket(socket, true);
 
+                    var dialog = require('dialog'),
+                        log = '';
+                    try {
+                        log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
+                        log = '...'+ log.slice(-1000);
+                    } catch(e){
+                        log = 'Node couldn\'t be started, please create an issue in http://github.com/ethereum/mist/issues';
+                    };
+
+                    // add node type
+                    log = 'Node type: '+ nodeType + "\n" + 'Network: '+ global.network + "net\n\n" + log;
+
+                    dialog.showErrorBox('Node crashed, please create an issue in http://github.com/ethereum/mist/issues and supply the following information:', log);
+
+                }, 30 * 1000);
+
+
+                ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
                     // TRY TO CONNECT EVERY 500MS
                     if(!e) {
                         intervalId = setInterval(function(){
-                            count++;
-
                             if(socket)
                                 socket.connect({path: ipcPath});
-
-                            // timeout after 10 seconds
-                            if(count >= 60) {
-                                clearTimeout(startingTimeout);
-
-                                if(appStartWindow)
-                                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-
-                                clearInterval(intervalId);
-
-                                clearSocket(socket, true);
-                            }
                         }, 200);
 
 

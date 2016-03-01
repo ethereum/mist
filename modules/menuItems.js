@@ -244,7 +244,7 @@ var menuTempl = function(webviews) {
                     }
                   },
                   {
-                    label: 'Eth 1.1.0 develop (C++)',
+                    label: 'Eth 1.1.0 (C++) [experimental!]',
                     type: 'checkbox',
                     checked: !!global.nodes.eth,
                     enabled: !global.nodes.eth,

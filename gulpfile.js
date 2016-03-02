@@ -271,7 +271,18 @@ gulp.task('change-files', ['create-binaries'], function() {
 gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
     osVersions.forEach(function(os){
-        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os + '-'+ version.replace(/\./g,'-');
+        var newOs;
+        if(os.indexOf('win32') !== -1) {
+            newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
+        }
+        if(os.indexOf('darwin') !== -1) {
+            newOs = 'macosx';
+        }
+        if(os.indexOf('linux') !== -1) {
+            newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
+        }
+        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
+
         fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
 
         // change icon on windows
@@ -302,7 +313,7 @@ gulp.task('zip', ['rename-folders'], function () {
         var stream,
             name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
 
-            // TODO doesnt work!!!!!
+        // TODO doesnt work!!!!!
         stream = gulp.src([
             './dist_'+ type +'/'+ name + '/**/*'
             ])

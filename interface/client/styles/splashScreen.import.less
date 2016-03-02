@@ -16,12 +16,12 @@
     font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
     overflow: hidden;
 
-    background-size: 115%;
+    background-size: cover;
     background-position: 50% 50%;
     -webkit-app-region: drag;
 
     &.wallet {
-        background-image: url('/images/bg-homestead-blur.png?3');
+        background-image: url('/images/bg-homestead.jpg?7');
 
         h1 {
             color: #fff;
@@ -99,6 +99,7 @@
     img {
         margin-top: 7px;
         width: 128px;
+        transition: width 1.5s  ease-in-out;
     }
     &.small img {
         width: 80px;

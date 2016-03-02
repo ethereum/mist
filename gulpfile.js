@@ -3,11 +3,13 @@ var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
 var replace = require('gulp-replace');
-var packager = require('electron-packager')
+var packager = require('electron-packager');
+var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 // var zip = require('gulp-zip');
-var zip = require('gulp-jszip') 
+// var zip = require('gulp-jszip');
+var EasyZip = require('easy-zip').EasyZip;
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
@@ -68,6 +70,24 @@ if(_.contains(options.platform, 'all')) {
     ];
 }
 console.log('Bundling platforms: ', osVersions);
+
+
+// Helpers
+var createNewFileName(os) {
+    var newOs;
+    if(os.indexOf('win32') !== -1) {
+        newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
+    }
+    if(os.indexOf('darwin') !== -1) {
+        newOs = 'macosx';
+    }
+    if(os.indexOf('linux') !== -1) {
+        newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
+    }
+    return './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
+};
+
+
 
 /// --------------------------------------------------------------
 
@@ -271,17 +291,8 @@ gulp.task('change-files', ['create-binaries'], function() {
 gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
     osVersions.forEach(function(os){
-        var newOs;
-        if(os.indexOf('win32') !== -1) {
-            newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
-        }
-        if(os.indexOf('darwin') !== -1) {
-            newOs = 'macosx';
-        }
-        if(os.indexOf('linux') !== -1) {
-            newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
-        }
-        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
+
+        var path = createNewFileName(os);
 
         fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
 
@@ -298,11 +309,19 @@ gulp.task('rename-folders', ['change-files'], function(done) {
             });
         }
 
+
+        var zip5 = new EasyZip();
+        zip5.zipFolder(path, function(){
+            zip5.writeToFile(path +'.zip');
+
+           
+        });
+
+
         count++;
 
         if(osVersions.length === count) {
             done();
-            count++;
         }
     });
 });
@@ -333,6 +352,33 @@ gulp.task('zip', ['rename-folders'], function () {
 
 
 
+gulp.task('getChecksums', [], function(done) {
+    var count = 0;
+    osVersions.forEach(function(os){
+
+        var path = createNewFileName(os) + '.zip';
+
+        // spit out shasum and md5
+        var fileName = path.replace('./dist_'+ type +'/', '');
+        var sha = spawn('shasum', [path]);
+        sha.stdout.on('data', function(data){
+            console.log('SHASUM '+ fileName +': '+ data.toString().replace(path, ''));
+        });
+        var md5 = spawn('md5', [path]);
+        md5.stdout.on('data', function(data){
+            console.log('MD5 '+ fileName +': '+ data.toString().replace('MD5 ('+ path +') = ', ''));
+        });
+
+
+        count++;
+        if(osVersions.length === count) {
+            done();
+        }
+    });
+});
+
+
+
 gulp.task('taskQueue', [
     'clean:dist',
     'copy-files',
@@ -359,5 +405,14 @@ gulp.task('wallet', [
     'taskQueue'
 ]);
 
+// WALLET task
+gulp.task('mist-checksums', [
+    'set-variables-mist',
+    'getChecksums'
+]);
+gulp.task('wallet-checksums', [
+    'set-variables-wallet',
+    'getChecksums'
+]);
 
 gulp.task('default', ['mist']);

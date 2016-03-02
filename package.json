@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "del": "^1.2.1",
+    "easy-zip": "0.0.4",
     "electron-packager": "^5.2.1",
     "gulp": "^3.9.0",
     "gulp-jszip": "^0.1.2",

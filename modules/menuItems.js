@@ -245,7 +245,7 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.2.0 (C++) [experimental!]',
+                label: 'Eth 1.2.1 (C++) [experimental!]',
                 type: 'checkbox',
                 checked: !!global.nodes.eth,
                 enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.eth),

@@ -21,10 +21,23 @@
     -webkit-app-region: drag;
 
     &.wallet {
-        background-image: url('/images/bg-mountain.png');
+        background-image: url('/images/bg-homestead-blur.png?3');
 
         h1 {
-            color: #142031;
+            color: #fff;
+        }
+        button.start-app {
+            color: #BCD3E6;
+            &:hover {
+                color: darken(#BCD3E6, 5%);
+            }
+        }
+        button.close {
+            color: rgba(0,0,0, 0.3);
+
+            &:hover {
+                color: rgba(0,0,0, 0.8);
+            }
         }
     }
     &.mist {
@@ -74,7 +87,7 @@
         margin: 0;
         padding: 0;
         text-align: center;
-        color: #4A90E2;;
+        color: #4A90E2;
         text-transform: uppercase;
         font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
         font-size: 1em;
@@ -126,7 +139,7 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
     }
     progress.wallet::-webkit-progress-value {
-        background-image: -webkit-linear-gradient(left, #9FCBE3, #1F3B75);
+        background-image: -webkit-linear-gradient(left, #DCCAB6, #fff);
     }
     progress.mist::-webkit-progress-value {
         background-image: -webkit-linear-gradient(left, #3185CC, #ADA1E2);

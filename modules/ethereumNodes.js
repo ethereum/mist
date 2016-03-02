@@ -192,8 +192,13 @@ module.exports = {
                 if(!cbCalled && _.isFunction(callback)){
                     callCb('Couldn\'t start '+ type +' node!');
 
-                    if(popupCallback)
+                    if(popupCallback) {
                         popupCallback('noBinary');
+
+                        // set default to geth, to prevent beeing unable to start the wallet
+                        if(type === 'eth')
+                            _this._writeNodeToFile('geth', testnet);
+                    }
                 }
             });
 

@@ -76,7 +76,7 @@
             "startingNode": "Starting Ethereum node...",
             "startedNode": "Starting application...",
             "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
-            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please install one manually. </a> </small>",
+            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",

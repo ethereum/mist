@@ -219,6 +219,7 @@ var menuTempl = function(webviews) {
         }
     ];
 
+
     // add node switching menu
     devToolsMenu.push({
         type: 'separator'
@@ -246,9 +247,9 @@ var menuTempl = function(webviews) {
               },
               {
                 label: 'Eth 1.2.1 (C++) [experimental!]',
-                type: 'checkbox',
                 checked: !!global.nodes.eth,
                 enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.eth),
+                type: 'checkbox',
                 click: function(){
                     ethereumNodes.stopNodes(function(){
                         popupWindow.loadingWindow.show();
@@ -262,16 +263,17 @@ var menuTempl = function(webviews) {
               }
         ]});
     }
+
     // add network switch
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.network'),
         submenu: [
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-            type: 'checkbox',
             accelerator: 'Alt+CommandOrControl+1',
-            checked: (global.network === 'main'),
+            checked: !!(global.network === 'main'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'main'),
+            type: 'checkbox',
             click: function(){
                 var geth = !!global.nodes.geth;
 
@@ -288,8 +290,9 @@ var menuTempl = function(webviews) {
           {
             label: 'Testnet (Morden)',
             accelerator: 'Alt+CommandOrControl+2',                
-            checked: (global.network === 'test'),
+            checked: !!(global.network === 'test'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'test'),
+            type: 'checkbox',
             click: function(){
                 var geth = !!global.nodes.geth;
 
@@ -307,7 +310,7 @@ var menuTempl = function(webviews) {
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
-        accelerator: 'CommandOrControl+M',            
+        accelerator: 'CommandOrControl+M',
         enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
         click: function(){
             // TODO remove on new RPC

@@ -151,6 +151,24 @@ Options are:
 - `develop`
 - `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
 
+##### mist-checksums | wallet-checksums
+
+Spits out the SHASUM and MD5 checksums of zip files. The zip files need to be generated manually for now!
+It expects zip files to be named as the generated folders e.g. `dist_wallet/Ethereum-Wallet-macosx-0-5-0.zip`
+
+    $ gulp mist-checksums
+
+    > MD5 Ethereum-Wallet-win32-0-5-0.zip: 8ce2a562e8cfa77f2283d8b689732d59
+    > MD5 Ethereum-Wallet-linux32-0-5-0.zip: 6bbd5876d59f23eec018a204d3a08dc8
+    > MD5 Ethereum-Wallet-linux64-0-5-0.zip: 551cc4cf95c81b0faebf8460d155e041
+    > MD5 Ethereum-Wallet-macosx-0-5-0.zip: 5e781413a9880e78acd3ff396b4ce39a
+    > MD5 Ethereum-Wallet-win64-0-5-0.zip: 332e71f57aa2dac2fb8db8f6f87cda21
+
+    > SHASUM Ethereum-Wallet-linux32-0-5-0.zip: 983dc9f1bc14a17a46f1e34d46f1bfdc01dc0868
+    > SHASUM Ethereum-Wallet-win32-0-5-0.zip: 1f8e56c198545c235d47921888e5ede76ce42dcf
+    > SHASUM Ethereum-Wallet-macosx-0-5-0.zip: dba5a13d6114b2abf1d4beca8bde25f1869feb45
+    > SHASUM Ethereum-Wallet-linux64-0-5-0.zip: 2104b0fe75109681a70f9bf4e844d83a38796311
+    > SHASUM Ethereum-Wallet-win64-0-5-0.zip: fc20b746eb37686edb04aee3e442492956adb546
 
 ### Code signing for production
 

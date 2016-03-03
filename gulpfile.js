@@ -290,6 +290,7 @@ gulp.task('change-files', ['create-binaries'], function() {
 
 gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
+    var called = false;
     osVersions.forEach(function(os){
 
         var path = createNewFileName(os);
@@ -303,8 +304,9 @@ gulp.task('rename-folders', ['change-files'], function(done) {
                 'product-version': version,
                 'icon': './icons/'+ type +'/icon.ico'
             }, function(){
-                if(osVersions.length === count) {
+                if(!called && osVersions.length === count) {
                     done();
+                    called = true;
                 }
             });
         }
@@ -318,8 +320,9 @@ gulp.task('rename-folders', ['change-files'], function(done) {
 
         count++;
 
-        if(osVersions.length === count) {
+        if(!called && osVersions.length === count) {
             done();
+            called = true;
         }
     });
 });

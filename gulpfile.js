@@ -73,7 +73,7 @@ console.log('Bundling platforms: ', osVersions);
 
 
 // Helpers
-var createNewFileName(os) {
+var createNewFileName = function(os) {
     var newOs;
     if(os.indexOf('win32') !== -1) {
         newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
@@ -310,12 +310,10 @@ gulp.task('rename-folders', ['change-files'], function(done) {
         }
 
 
-        var zip5 = new EasyZip();
-        zip5.zipFolder(path, function(){
-            zip5.writeToFile(path +'.zip');
-
-           
-        });
+        //var zip5 = new EasyZip();
+        //zip5.zipFolder(path, function(){
+        //    zip5.writeToFile(path +'.zip'); 
+        //});
 
 
         count++;

@@ -28,7 +28,7 @@ var ipcPath = getIpcPath();
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'wallet';
+global.mode = 'mist';
 
 global.mainWindow = null;
 global.windows = {};

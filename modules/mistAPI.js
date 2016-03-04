@@ -1,6 +1,10 @@
 /**
 @module MistAPI
 */
+
+const packageJson = require('./../package.json');
+
+
 module.exports = function(isWallet) {
 
     const ipc = require('electron').ipcRenderer;
@@ -65,6 +69,8 @@ module.exports = function(isWallet) {
     */
     var mist = {
         callbacks: {},
+        version: packageJson.version,
+        license: packageJson.license,
         platform: process.platform,
         requestAccount:  function(callback){
             if(callback) {

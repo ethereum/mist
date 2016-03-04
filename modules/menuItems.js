@@ -36,7 +36,9 @@ var menuTempl = function(webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
-                role: 'about'
+                click: function(){
+                    popupWindow.show('about_'+ global.mode, {width: 420, height: 230, alwaysOnTop: true});
+                }
             },
             {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),

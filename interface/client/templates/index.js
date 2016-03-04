@@ -34,6 +34,9 @@ Template.body.helpers({
         if(~location.hash.indexOf('#importAccount')) {
             return 'popupWindows_importAccount';
         }
+        if(~location.hash.indexOf('#about')) {
+            return 'popupWindows_about';
+        }
         if(location.hash === '#requestAccount') {
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_requestAccount';

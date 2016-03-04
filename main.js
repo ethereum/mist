@@ -2,12 +2,12 @@ global._ = require('underscore');
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
-const appMenu = require('./modules/menuItems');
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
+const packageJson = require('./package.json');
 
 
 // GLOBAL Variables
@@ -17,7 +17,17 @@ global.path = {
     USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
+global.appName = 'Mist';
+
+global.production = false;
+global.mode = 'wallet';
+
+global.version = packageJson.version;
+global.license = packageJson.license;
+
+
 require('./modules/ipcCommunicator.js');
+const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const NodeConnector = require('./modules/ipc/nodeConnector.js');
 const popupWindow = require('./modules/popupWindow.js');
@@ -25,10 +35,6 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
-global.appName = 'Mist';
-
-global.production = false;
-global.mode = 'wallet';
 
 global.mainWindow = null;
 global.windows = {};

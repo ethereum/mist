@@ -200,13 +200,18 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                     template.$('input[type="password"]').focus();
                 });
 
-                GlobalNotification.warning({
-                    content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
-                    duration: 3
-                });
+                if(e.message.indexOf('CONNECTION ERROR') !== -1) {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
+                        duration: 3
+                    });
+                } else {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+                        duration: 3
+                    });
+                }
             }
-
         });
-
    } 
 });

@@ -259,7 +259,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         ipc.send('backendAction_importPresaleFile', TemplateVar.get('filePath'), pw);
 
         TemplateVar.set('importing', true);
-        ipc.on('uiAction_importedPresaleFile', function(e, address){
+        ipc.on('uiAction_importedPresaleFile', function(e, error, address){
             TemplateVar.set(template, 'importing', false);
             TemplateVar.set(template, 'filePath', false);
 
@@ -279,12 +279,19 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
 
             } else {
-                console.log('Import failed');
+                console.log('Import failed', error);
 
-                GlobalNotification.warning({
-                    content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed'),
-                    duration: 4
-                });
+                if(error === 'Decryption Failed') {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.passwordError'),
+                        duration: 4
+                    });
+                } else {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', {error: error}),
+                        duration: 4
+                    });
+                }
             }
         });
 

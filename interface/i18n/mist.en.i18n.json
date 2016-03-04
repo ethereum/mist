@@ -122,14 +122,15 @@
                     "sendTransaction": "Send transaction"
                 },
                 "errors": {
+                    "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
                     "wrongPassword": "Wrong password"
                 }
             },
             "onboarding": {
                 "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
-                "goToTestnet" : "Play with the Testnet",
+                "goToTestnet" : "Use the test network",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
-                "gotoMainnet" : "Start using Ethereum",
+                "gotoMainnet" : "Use the main network",
                 "gotoMainnetDescription" : " You’ll need to some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
                 "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
@@ -163,7 +164,8 @@
                 "errors": {
                     "nodeNotStartedYet": "Wait a few more seconds until your node is started up and try again",
                     "unknownFile": "File not recognised.",
-                    "importFailed": "Couldn't import the file, password wrong?"
+                    "passwordError": "Wrong password.",
+                    "importFailed": "Couldn't import the file got: __error__"
                 }
             }
         }

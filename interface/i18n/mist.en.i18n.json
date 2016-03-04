@@ -128,7 +128,7 @@
             "onboarding": {
                 "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
                 "goToTestnet" : "Play with the Testnet",
-                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet.",
+                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
                 "gotoMainnet" : "Start using Ethereum",
                 "gotoMainnetDescription" : " You’ll need to some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
@@ -144,7 +144,7 @@
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
                 "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency you can easily convert it to ether using shapeshift. <br><br> We recommend loading some where between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong>",
+                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit Bitcoin",

@@ -99,6 +99,13 @@ Template['popupWindows_onboardingScreen'].onRendered(function(){
     isTestnet(this);
 })
 
+Template['popupWindows_onboardingScreen'].helpers({
+    'newAccountLowerCase': function(){
+        var account = TemplateVar.get('newAccount');
+        return (account) ? account.toLowerCase() : '';
+    }
+});
+
 Template['popupWindows_onboardingScreen'].events({
    'click .goto-start': function(e){
         if(TemplateVar.get('testnet')) {

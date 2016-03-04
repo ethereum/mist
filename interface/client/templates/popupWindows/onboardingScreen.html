@@ -61,7 +61,7 @@
                     <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
 
                     {{#unless TemplateVar.get "testnet"}}
-                        <a href="https://shapeshift.io/shifty.html?destination={{TemplateVar.get "newAccount"}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
+                        <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
                     {{/unless}}
                 </div>
                 <div class="col col-12 footer-buttons">

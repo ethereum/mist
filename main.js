@@ -315,7 +315,7 @@ app.on('ready', function() {
                     };
 
                     // add node type
-                    log = 'Node type: '+ nodeType + "\n" + 'Network: '+ global.network + "net\n\n" + log;
+                    log = 'Node type: '+ nodeType + "\n" + 'Network: '+ global.network + "\n" + 'Platform: '+ process.platform +"\n\n" + log;
 
                     dialog.showErrorBox('Node crashed, please create an issue in http://github.com/ethereum/mist/issues and supply the following information:', log);
 

@@ -308,9 +308,6 @@ app.on('ready', function() {
                     if(appStartWindow)
                         appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
-                    clearInterval(intervalId);
-                    clearSocket(socket, true);
-
                     var dialog = require('dialog'),
                         log = '';
                     try {
@@ -326,9 +323,9 @@ app.on('ready', function() {
                         'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
                         log;
 
-                    dialog.showErrorBox('Node crashed, please create an issue in http://github.com/ethereum/mist/issues and supply the following information:', log);
+                    dialog.showErrorBox('Node couldn\'t be started, please create an issue in http://github.com/ethereum/mist/issues and supply the following information:', log);
 
-                }, 60 * 1000);
+                }, 80 * 1000);
 
 
                 ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){

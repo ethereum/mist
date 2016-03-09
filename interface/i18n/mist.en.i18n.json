@@ -116,7 +116,7 @@
                 "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
-                "providedGas": "Provided maximum fee",
+                "gasLimit": "Provide maximum fee",
                 "data": "Data",
                 "buttons": {
                     "sendTransaction": "Send transaction"

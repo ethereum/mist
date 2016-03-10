@@ -8,11 +8,11 @@
 
         {{#if $eq (TemplateVar.get "network") "test"}}
             <span class="orange" style="font-weight: 400;">TEST-NET</span>
-            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <br>
         {{/if}}
         {{#if $eq (TemplateVar.get "network") "private"}}
             <span class="orange" style="font-weight: 400;">PRIVATE-NET</span>
-            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <br>
         {{/if}}
 
         {{#with TemplateVar.get "syncing"}}
@@ -27,7 +27,8 @@
         {{else}}
             <i class="icon-feed"></i> {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
             &nbsp;&nbsp;|&nbsp;&nbsp;
-            <i class="icon-layers"></i> {{formattedBlockNumber}} <i class="icon-clock" style="margin-left: 10px;"></i> {{{timeSinceBlock}}}
+            <i class="icon-layers"></i> {{formattedBlockNumber}} 
+            <br> <i class="icon-clock" style="margin-left: 10px;"></i> {{{timeSinceBlock}}}
         {{/with}}
     </div>
 </template>

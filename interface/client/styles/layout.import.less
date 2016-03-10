@@ -39,11 +39,13 @@
             background: @colorOSBackgroundBlur;
         }
 
-        aside,
-        main,
-        div.browser-bar {
-            top: @gridHeight * 2.5;
+        aside {
+            top: @gridHeight * 1.5;
         }
+        
+        div.browser-bar {
+            top: @gridHeight * 1.5;
+        }        
 
         .node-info {
             top: @gridHeight;
@@ -109,7 +111,7 @@ main {
     position: absolute;
     right: 0;
     left: @widthSideBar;
-    top: @gridHeight * 1.5; 
+    top: 0; 
     bottom: 0;
 
     &.open-bar {
@@ -144,8 +146,7 @@ main {
 
 webview {
     position: absolute;
-    top: 0;
-    top: 0;
+    top: @gridHeight * 1.5;
     left: 0;
     right: 0;
     bottom: 0;

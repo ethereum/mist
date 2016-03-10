@@ -171,7 +171,8 @@ var logFunction = function(data) {
         global.nodes[nodeType].stderr.removeListener('data', logFunction);
     }
 
-    if(appStartWindow)
+    // show line if its not empty or "------"
+    if(appStartWindow && !/^\-*$/.test(data))
         appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
 };
 
@@ -341,6 +342,7 @@ app.on('ready', function() {
                 }, 120 * 1000);
 
 
+                // -> START NODE
                 ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
                     // TRY TO CONNECT EVERY 500MS
                     if(!e) {

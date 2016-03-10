@@ -70,6 +70,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
     nodeProcess.once('error',function(){
         error = true;
+        e.sender.send('uiAction_importedPresaleFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
     nodeProcess.stdout.on('data', function(data) {
         var data = data.toString();
@@ -100,10 +101,10 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
     // file password
     setTimeout(function(){
         if(!error) {
-            nodeProcess.stdin.write(pw +"\r\n");
+            nodeProcess.stdin.write(pw +"\n");
             pw = null;
         }
-    }, 10);
+    }, 2000);
 });
 
 

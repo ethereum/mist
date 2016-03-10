@@ -25,6 +25,11 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     ipc.on('startScreenText', function(e, text, data){
         var translatedText = '';
 
+        if(text === 'logText') {
+            TemplateVar.set(template, 'logText', data);
+            return;
+        }
+
         // show text
         if(text.indexOf('privateChainTimeout') === -1 &&
            text.indexOf('privateChainTimeoutClear') === -1) {
@@ -60,11 +65,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 // lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
 
                 // show node info text
-                if(!lastData.startingBlock) {
-                    translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncConnecting') +'</small>';
-                } else {
+                if(lastData.startingBlock) {
                     // show progress bar
                     TemplateVar.set(template, 'showProgressBar', true);
+                    TemplateVar.set(template, 'logText', false);
 
                     if(lastData._highestBlock - lastData._currentBlock < 2500)
                         translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncProcessing') +'</small>';

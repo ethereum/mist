@@ -1,7 +1,7 @@
 # Mist Browser
 
 **NOTE** Mist is under heavy development and not intended to be tested by the community yet,
-therefore it might not run out of the box as described the the README below.
+therefore it might not run out of the box as described in the README below.
 To save us time getting you all up and running, better wait for now. Thanks :)
 
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -15,7 +15,7 @@ For the mist API see the [MISTAPI.md](MISTAPI.md).
 ## Installation
 
 If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
-you can simply run the executeable after download. 
+you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 The data folder for Mist is stored in other places:

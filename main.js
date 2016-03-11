@@ -288,7 +288,7 @@ app.on('ready', function() {
         var ntpTime = new Date(date);
         var timeDiff = ntpTime.getTime() - localTime.getTime();
 
-        console.log('NTP time difference in ms ', timeDiff);
+        console.log('NTP time difference: ', timeDiff + 'ms');
         if(timeDiff > 10000 || timeDiff < -10000) {
             dialog.showMessageBox({
                 type: "error",

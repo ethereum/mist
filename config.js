@@ -6,7 +6,7 @@ var config = {
 
 // change for wallet
 if(global.mode === 'wallet') {
-    config.name = 'Ξthereum Wallet'
+    config.name = 'Ethereum Wallet'
 }
 
 

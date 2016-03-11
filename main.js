@@ -7,6 +7,7 @@ const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
+const dialog = require('dialog');
 const packageJson = require('./package.json');
 
 
@@ -275,6 +276,33 @@ app.on('ready', function() {
     appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
 
 
+    // check time sync
+    var ntpClient = require('ntp-client');
+    ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+        if(err) {
+            console.error('Couldn\'t get time from NTP time sync server.', err);
+            return;
+        }
+
+        var localTime = new Date();
+        var ntpTime = new Date(date);
+        var timeDiff = ntpTime.getTime() - localTime.getTime();
+
+        console.log('NTP time difference in ms ', timeDiff);
+        if(timeDiff > 10000 || timeDiff < -10000) {
+            dialog.showMessageBox({
+                type: "error",
+                buttons: ['OK'],
+                message: global.i18n.t('mist.errors.timeSync.title'),
+                detail: global.i18n.t('mist.errors.timeSync.description', {ntpTime: ntpTime.toGMTString(), localTime: localTime.toGMTString()})
+            }, function(){
+                app.quit();
+            });
+        }
+    });
+
+
+
     appStartWindow.webContents.on('did-finish-load', function() {
 
 
@@ -322,13 +350,12 @@ app.on('ready', function() {
                     if(appStartWindow)
                         appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
 
-                    var dialog = require('dialog'),
-                        log = '';
+                    var log = '';
                     try {
                         log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
                         log = '...'+ log.slice(-1000);
                     } catch(e){
-                        log = 'Node couldn\'t be started, please create an issue in http://github.com/ethereum/mist/issues';
+                        log = global.i18n.t('mist.errors.nodeStartup');
                     };
 
                     // add node type
@@ -337,7 +364,13 @@ app.on('ready', function() {
                         'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
                         log;
 
-                    dialog.showErrorBox('Couldn\'t connect to node, see the logs for more:', log);
+                    dialog.showMessageBox({
+                        type: "error",
+                        buttons: ['OK'],
+                        message: global.i18n.t('mist.errors.nodeConnect'),
+                        detail: log
+                    }, function(){
+                    });
 
                 }, 120 * 1000);
 

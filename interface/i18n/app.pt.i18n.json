@@ -1,0 +1,34 @@
+{
+    "app": {
+        "loading": "Carregando...",
+        "offline": "Você não está conectado a internet",
+        "logginIn": "Autenticando..."
+    },
+    "error": {
+        "insufficientRights": "Você não tem privilégios admnistrativos o suficiente"
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Cancelar",
+        "save": "Salvar",
+        "edit": "editar",
+        "send": "Enviar",
+        "next": "Próximo",
+        "previous": "Anterior",
+        "back": "Back",
+        "skip": "Pular",
+        "sending": "Enviando...",
+        "create": "Criar",
+        "tryToReconnect": "Tentando reconectar"
+    },
+    "commonWords": {
+        "you": "Você",
+        "send": "Enviar",
+        "or": "ou",
+        "of": "de",
+        "with": "com",
+        "and": "e",
+        "on": "em",
+        "per": "por"
+    }
+}

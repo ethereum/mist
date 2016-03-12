@@ -34,6 +34,7 @@
                 "devToolsWalletUI": "Interface Carteira",
                 "devToolsWebview": "__webview__",
                 "runTests": "Realizar testes",
+                "logFiles": "Mostrar arquivos de logs",
                 "ethereumNode": "Node",
                 "network": "Rede",
                 "mainNetwork": "Rede principal",

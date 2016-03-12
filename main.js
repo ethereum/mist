@@ -212,7 +212,7 @@ app.on('ready', function() {
             title: global.appName,
             show: false,
             width: 1024 + 208,
-            height: 700,
+            height: 720,
             icon: global.icon,
             titleBarStyle: 'hidden-inset', //hidden-inset: more space
             backgroundColor: '#D2D2D2',
@@ -239,7 +239,7 @@ app.on('ready', function() {
             title: global.appName,
             show: false,
             width: 1100,
-            height: 680,
+            height: 720,
             icon: global.icon,
             titleBarStyle: 'hidden-inset', //hidden-inset: more space
             backgroundColor: '#F6F6F6',

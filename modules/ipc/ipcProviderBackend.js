@@ -520,12 +520,18 @@ module.exports = function(){
         if(!socket) {
             // TODO: should we really try to reconnect, after the connection was destroyed?
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
-
-            if(!socket.ipcSocket.writable)
-                return;
         // make sure we are connected
         } else if(!socket.ipcSocket.writable) {
             socket.connect(event);
+        }
+
+        // if not writeable send error back
+        if(!socket.ipcSocket.writable) {
+            if(event.sync)
+                event.returnValue = JSON.stringify(returnError(jsonPayload, errorTimeout));
+            else
+                event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorTimeout)));
+            return;
         }
 
         // console.log('SEND REQ', event.sender.getId());

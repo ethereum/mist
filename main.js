@@ -167,7 +167,7 @@ var logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
     console.log('NODE LOG:', data);
 
-    if(~data.indexOf('Block synchronisation started')) {
+    if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
         global.nodes[nodeType].stdout.removeListener('data', logFunction);
         global.nodes[nodeType].stderr.removeListener('data', logFunction);
     }
@@ -238,7 +238,7 @@ app.on('ready', function() {
         global.mainWindow = new BrowserWindow({
             title: global.appName,
             show: false,
-            width: 1024,
+            width: 1100,
             height: 680,
             icon: global.icon,
             titleBarStyle: 'hidden-inset', //hidden-inset: more space
@@ -385,8 +385,10 @@ app.on('ready', function() {
                         }, 200);
 
                         // log data to the splash screen
-                        global.nodes[nodeType].stdout.on('data', logFunction);
-                        global.nodes[nodeType].stderr.on('data', logFunction);
+                        if(global.nodes[nodeType]) {
+                            global.nodes[nodeType].stdout.on('data', logFunction);
+                            global.nodes[nodeType].stderr.on('data', logFunction);
+                        }
 
                     // NO Binary
                     } else {
@@ -501,8 +503,10 @@ Start the main window and all its processes
 var startMainWindow = function(appStartWindow){
 
     // remove the splash screen logger
-    global.nodes[nodeType].stdout.removeListener('data', logFunction);
-    global.nodes[nodeType].stderr.removeListener('data', logFunction);
+    if(global.nodes[nodeType]) {
+        global.nodes[nodeType].stdout.removeListener('data', logFunction);
+        global.nodes[nodeType].stderr.removeListener('data', logFunction);
+    }
 
 
     // and load the index.html of the app.

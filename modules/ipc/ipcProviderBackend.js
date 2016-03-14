@@ -534,7 +534,7 @@ module.exports = function(){
             return;
         }
 
-        console.log('SEND REQ', event.sender.getId());
+        // console.log('SEND REQ', event.sender.getId());
 
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequestResponse(jsonPayload);

@@ -34,6 +34,7 @@
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
+                "logFiles": "Show log file",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
@@ -48,6 +49,14 @@
             },
             "help": {
                 "label": "Help"
+            }
+        },
+        "errors": {
+            "nodeConnect": "Couldn't connect to node? See the logs for more:",
+            "nodeStartup": "It seems like the node couldn't be started, do you have already one running? Does it upgrades the database right now?",
+            "timeSync": {
+                "title": "Your computers time is out of sync!",
+                "description": "To successfully synchronize to the Ethereum network you need to set your computers time to sync with a time server. Look in your system settings for options.\n\nYour time: __localTime__\nReal time: __ntpTime__"
             }
         },
         "rightClick": {
@@ -116,7 +125,7 @@
                 "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
-                "providedGas": "Provided maximum fee",
+                "gasLimit": "Provide maximum fee",
                 "data": "Data",
                 "buttons": {
                     "sendTransaction": "Send transaction"

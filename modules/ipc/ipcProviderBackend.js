@@ -181,7 +181,8 @@ module.exports = function(){
                 result = _this.filterRequestResponse(result, event);
 
                 // if(result && !_.isArray(result))
-                //     console.log('IPCSOCKET '+ _this.sender.getId()  +' RESPONSE', event.payload, result, "\n\n");
+                if(!result.id && !_.isArray(result))
+                    console.log('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -516,13 +517,22 @@ module.exports = function(){
     var sendRequest = function(event, payload, sync) {
         var socket = global.sockets['id_'+ event.sender.getId()];
 
-        if(!socket)
+        if(!socket) {
             // TODO: should we really try to reconnect, after the connection was destroyed?
-            // socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
-            return;
+            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         // make sure we are connected
-        else if(!socket.ipcSocket.writable)
-            socket.connect();
+        } else if(!socket.ipcSocket.writable) {
+            socket.connect(event);
+        }
+
+        // if not writeable send error back
+        if(!socket.ipcSocket.writable) {
+            if(event.sync)
+                event.returnValue = JSON.stringify(returnError(jsonPayload, errorTimeout));
+            else
+                event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorTimeout)));
+            return;
+        }
 
         // console.log('SEND REQ', event.sender.getId());
 

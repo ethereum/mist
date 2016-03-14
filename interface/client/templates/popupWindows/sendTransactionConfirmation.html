@@ -25,7 +25,7 @@
                         <span class="simptip-position-bottom simptip-movable" data-tooltip="{{from}}">{{shortenAddress from}}</span>
                     </div>
                     <div class="amount">
-                        {{dapp_formatBalance value "0,0.00[000000]" "ether"}} <span class="unit">ETHER</span>
+                        {{{totalAmount}}} <span class="unit">ETHER</span>
 
                         {{#if executionFunction}}
                             <span class="execute-function">{{executionFunction}}</span>
@@ -73,7 +73,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {{i18n "mist.popupWindows.sendTransactionConfirmation.providedGas"}}
+                                {{i18n "mist.popupWindows.sendTransactionConfirmation.gasLimit"}}
                             </td>
                             <td>
                                 {{providedGas}} ether (<span class="provided-gas" contenteditable="true">{{dapp_formatNumber (TemplateVar.get 'initialProvidedGas') '0'}}</span> gas)

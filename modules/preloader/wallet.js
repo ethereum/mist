@@ -24,5 +24,6 @@ window.mist = mist(true);
 window.platform = process.platform;
 
 setTimeout(function(){
-    document.getElementsByTagName('html')[0].className =  window.platform;
-}, 100);
+    if(document.getElementsByTagName('html')[0])
+        document.getElementsByTagName('html')[0].className =  window.platform;
+}, 500);

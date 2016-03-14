@@ -6,7 +6,12 @@
         {{/if}}
 
         <img id="image" src="{{iconPath}}">
-        <h1>{{{TemplateVar.get "text"}}}</h1>
+        <h1>
+            {{{TemplateVar.get "text"}}}
+            {{#if TemplateVar.get "logText"}}
+                <br><small style="font-size: 0.7em">{{TemplateVar.get "logText"}}</small>
+            {{/if}}
+        </h1>
 
         {{#if TemplateVar.get "showProgressBar"}}
             <progress class="{{mode}}" max="100" value="{{TemplateVar.get 'progress'}}"></progress>

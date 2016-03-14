@@ -1,0 +1,180 @@
+{
+    "mist": {
+        "applicationMenu": {
+            "app": {
+                "label": "__app__",
+                "about": "Über __app__",
+                "quit": "__app__ schließen"
+            },
+            "edit": {
+                "label": "Bearbeiten",
+                "undo": "Rückgängig",
+                "redo": "Wiederholen",
+                "cut": "Ausschneiden",
+                "copy": "Kopieren",
+                "paste": "Einfügen",
+                "selectAll": "Alles auswählen"
+            },
+            "view": {
+                "label": "Ansicht",
+                "fullscreen": "Vollbildmodus"
+            },
+            "accounts": {
+                "label": "Konten",
+                "importPresale": "Pre-sale-Konten importieren",
+                "newAccount": "Neues Konto",
+                "backup": "Sicherung",
+                "backupKeyStore": "Konten",
+                "backupMist": "Anwendungsdaten"
+            },
+            "develop": {
+                "label": "Entwicklung",
+                "devTools": "Entwicklerwerkzeuge",
+                "devToolsMistUI": "Mist UI",
+                "devToolsWalletUI": "Wallet UI",
+                "devToolsWebview": "__webview__",
+                "runTests": "Tests durchführen",
+                "ethereumNode": "Ethereum Node",
+                "network": "Netzwerk",
+                "mainNetwork": "Hauptnetzwerk",
+                "startMining": "⛏ Mining starten (nur auf Testnetz)",
+                "stopMining": "⛏ Mining stoppen"
+            },
+            "window": {
+                "label": "Fenster",
+                "minimize": "Minimieren",
+                "close": "Schließen",
+                "toFront": "Alle Fenster in den Vordergrund"
+            },
+            "help": {
+                "label": "Hilfe"
+            }
+        },
+        "rightClick": {
+            "reload": "Neu laden",
+            "openDevTools": "Entwicklerwerkzeuge öffnen",
+            "inspectElements": "Element prüfen"
+        },
+        "nodeInfo": {
+            "nodeSyncing": "__blockDiff__ Blöcke übrig",
+            "blockReceived": "Neuer Block empfangen",
+            "timeSinceBlock": "seit letztem Block",
+            "peers": "Peers"
+        },
+        "sidebar": {
+            "buttons": {
+                "browser": "Browser"
+            }
+        },
+        "browserBar": {
+            "buttons": {
+                "noAccounts": "Keine Konten vorhanden"
+            }
+        },
+        "startScreen": {
+            "runningNodeFound": "Laufender Ethereum Node gefunden!",
+            "startingNode": "Starte Ethereum Node...",
+            "startedNode": "Starte Anwendung...",
+            "nodeConnectionTimeout": "Ethereum Node konnte nicht gestartet werden!<br><small>Wenn Sie <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert haben,</a>, verwenden Sie bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder senden Sie einen Fehlerreport</a></small>",
+            "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Node gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starten Sie den Ethereum Node manuell. </a> </small>",
+            "nodeSyncing": "Ethereum Node muss synchronisiert werden, bitte warten...",
+            "nodeSyncInfo": "Block __currentBlock__ von __highestBlock__ wird heruntergeladen.",
+            "nodeSyncConnecting": "Suche nach Peers...",
+            "nodeSyncProcessing": "Blöcke werden verarbeitet, bitte warten...",
+            "privateChainTimeout": "Peer-Suche überspringen"
+        },
+        "popupWindows": {
+            "requestAccount": {
+                "title": "Konto anlegen",
+                "enterPassword": "Passwort eingeben",
+                "repeatPassword": "Passwort wiederholen",
+                "creating": "Konto wird angelegt...",
+                "errors": {
+                    "passwordMismatch": "Die Passwörter stimmen nicht überein."
+                }
+            },
+            "unlockMasterPassword": {
+                "title": "Master-Passwort eingeben",
+                "enterPassword": "Geben Sie das Master-Passwort ein",
+                "unlocking": "Entschlüsseln...",
+                "errors": {
+                    "wrongPassword": "Passwort falsch, bitte nochmals versuchen."
+                }
+            },
+            "sendTransactionConfirmation": {
+                "title": {
+                    "sendTransaction": "Transaktion senden",
+                    "contractExecution": "Vertrag ausführen",
+                    "createContract": "Vertrag anlegen"  
+                },
+                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
+                "contractExecutionInfo": "Sie sind dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
+                "contractCreationInfo": "Sie sind dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
+                "enterPassword": "Bitte geben Sie das Passwort ein, um die Transaktion durchzuführen.",
+                "unlocking": "Warten auf Bestätigung...",
+                "createContract": "Vertrag anlegen",
+                "estimatedFee": "Geschätzter Gebührenbetrag",
+                "estimatedGasError": "Der Auftrag kann nicht ausgeführt werden, da er das gesamte vorgegebene Gas verbrauchen würde.",
+                "gasPrice": "Gaspreis",
+                "perMillionGas": "Ether pro Millionen Gas",
+                "providedGas": "Vorgegebene Höchstgebühr",
+                "data": "Daten",
+                "buttons": {
+                    "sendTransaction": "Transaktion absenden"
+                },
+                "errors": {
+                    "connectionTimeout": "Eine Verbindung mit dem Node war nicht möglich, eventuell ist der Node im Hintergrund abgestürzt?",
+                    "wrongPassword": "Falsches Passwort"
+                }
+            },
+            "onboarding": {
+                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
+                "description" : "Ethereum ist eine dezentrale Plattform, um Anwendungen auf einer Blockchain zu bauen: Fälschungssichere Software, die Werte und Vermögen übertragen kann und für immer besteht",
+                "goToTestnet" : "Verwende das Testnetz",
+                "goToTestnetDescription" : "Teste die Technologie frei in der Testnetz-Sandbox, ",
+                "gotoMainnet" : "Verwende das Hauptnetz",
+                "gotoMainnetDescription" : " You’ll need to some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
+                "gotoMainnetDescription" : " Sie werden etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden Ihnen helfen, etwas zu bekommen ...",
+                "doYouHaveAWalletFile" : "Haben Sie eine Wallet-Datei?",
+                "walletFileDescription" : "<p>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
+                "dropFilesHere" : "Pre-sale Datei hochladen",
+                "creating": "Erstellen...",
+                "importing": "Importieren...",
+                "skip" : "Diesen Schritt überspringen",
+                "next" : "Nächster",
+                "protectTitle" : "Schützen Sie Ihr Konto",
+                "protectDescription" : "Wählen Sie ein Passwort für Ihr Konto. Machen Sie es so stark, als wären es Ihre Hausschlüssel!",
+                "accountTitle" : "Laden Sie die Datei hoch!",
+                "accountTitleTestnet" : "Minen etwas Ether!",
+                "etherDescription": "Das Ethereum Netz basiert auf einem Tokan namens “Ether”. Sie benötigen eine kleine Menge davon, um irgendetwas auf dem Ethereum-Netz zu tun.",
+                "loadItDescription" : "Wenn Sie bereits über Bitcoin oder eine andere Kryptowährung verfügen, können Sie diese mit Shapeshift einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
+                "mineItDescription": "<strong>Auf dem Testnetz können Sie selbst Ether minen. Bitte gehen Sie dazu in den Menüpunkt <em>Entwicklung</em> menu und wählen Sie <em>Mining starten</em>. </strong> <br> <strong> VERSUCHEN SIE NICHT, ECHTE ETHER AN DIESE ADRESSE ZU SENDEN! </strong>",
+                "you" : "SIE",
+                "etherbase" : "Hauptkonto (etherbase)",
+                "depositBitcoin" : "Bitcoin eintauschen",
+                "learnIt" : "Lernen Sie Ethereum kennen, während Sie warten",
+                "downloadingBlocks": "Blöcke werden heruntergeladen",
+                "block": "Block",
+                "tutorial1Description" : "<p> Nun müssen Sie lediglich warten, bis der Download abgeschlossen ist. Hier finden Sie weitere Informationen:</p> <h4>Make your own money </h4> <p> Erstellen Sie eine eigene Kryptowährung mit einer festen Geldmenge, Token, die reale Vermögenswerte darstellen, und so weiter ...</p>",
+                "tutorial2Description" : "<h4> Erstellen Sie ein Crowdsale</h4> <p> Sammeln Sie Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinden Sie die Hürden von traditionellen Crowdfunding-Systemen und gehen Sie direkt an die Quellen, indem Sie Ihre Organisation über die Blockchain mit Mitteln versorgen.</p>",
+                "tutorial3Description" : "<h4> Blockchain-Organisation </h4> <p> Schaffen Sie eine autonome Organisation, deren Grundsätze über Geldverwendung und Entscheidungen nicht gebrochen werden können. Geben Sie Ihren Unterstützern eine aktive Rolle, wie die Mittel verwendet werden sollen</p>",
+				"buttons": {
+                    "showPassword": "Passwort anzeigen",
+                    "importAccount": "Konto importieren",
+                    "launchApp": "Anwendung wird gestartet!",
+                    "learnReceipt": "Lernen Sie dieses Rezept kennen"
+                },
+                "errors": {
+                    "nodeNotStartedYet": "Warten Sie noch einige Sekunden, bis der Node gestartet ist, und versuchen Sie es dann noch einmal",
+                    "unknownFile": "Datei nicht erkannt.",
+                    "passwordError": "Falsches Passwort.",
+                    "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
+                }
+            }
+        }
+    },
+    "elements": {
+        "checksumAlert":"Diese Adresse sieht gültig aus, aber ihr fehlen einige Sicherheits-Features, die Sie z.B. gegen Tippfehler schützen könnten. Bitte prüfen Sie daher nochmals, ob Sie die Adresse richtig eingegeben haben. Sofern vorhanden, prüfen Sie bitte auch, ob das Sicherheits-Icon übereinstimmt. ",
+        "identiconHelper": "Dies ist ein Sicherheits-Icon. Bei einer abweichenden Adresse sollte das Sicherheits-Icon völlig anders aussehen."
+    }
+}

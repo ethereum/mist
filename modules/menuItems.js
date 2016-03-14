@@ -7,6 +7,8 @@ const shell = require('electron').shell;
 const config = require('../config');
 const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
+const fs = require('fs');
+const dialog = require('dialog');
 
 
 // create menu
@@ -218,9 +220,32 @@ var menuTempl = function(webviews) {
                 if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed())
                     global.mainWindow.webContents.send('runTests', 'webview');
             }
+        },{
+            label: i18n.t('mist.applicationMenu.develop.logFiles'),
+            click: function(){
+                var log = '';
+                try {
+                    log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
+                    log = '...'+ log.slice(-1000);
+                } catch(e){
+                    console.log(e);
+                    log = 'Couldn\'t load log file.';
+                };
+
+                dialog.showMessageBox({
+                    type: "info",
+                    buttons: ['OK'],
+                    message: 'Log file',
+                    detail: log
+                }, function(){
+                });
+            }
         }
     ];
 
+
+
+                   
 
     // add node switching menu
     devToolsMenu.push({

@@ -4,7 +4,7 @@ Mist provides an API for dapp developers to use special features only available 
 
 ## Note for dapp developers
 
-To make you dapp compatible with other browsers, its recommended that you check the `mist` object before you use it:
+To make your dapp compatible with other browsers, it is recommended that you check the `mist` object before you use it:
 
 ```js
 if(typeof mist !== 'undefined') {
@@ -15,14 +15,14 @@ if(typeof mist !== 'undefined') {
 You have three different possibilities to use `web3`:
 
 ```js
-// 1. simply use, web3 comes already defined
+// 1. simply use it: web3 comes already defined
 web3
 
-// 2. optional use web3 from mist, OR load if outside of mist
+// 2. optionally use web3 from Mist or load if outside of Mist
 if(typeof web3 === 'undefined')
   web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-// 3. always use web3 provided by the dapp ("Web3" won't be supplied by Mist), but the provider from mist
+// 3. always use web3 provided by the dapp ("Web3" won't be supplied by Mist), but the provider from Mist
 if(typeof web3 !== 'undefined')
   web3 = new Web3(web3.currentProvider);
 else

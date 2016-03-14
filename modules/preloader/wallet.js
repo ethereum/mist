@@ -17,8 +17,14 @@ require('web-frame').setZoomLevelLimits(1, 1);
 // window.dirname = __dirname;
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
-web3Admin.extend(window.web3);
+// add admin later
+setTimeout(function(){
+    web3Admin.extend(window.web3);
+}, 1000);
 
+// prevent overwriting the Dapps Web3
+delete global.Web3;
+delete window.Web3;
 
 window.mist = mist(true);
 window.platform = process.platform;

@@ -1,6 +1,9 @@
 const ipc = require('electron').ipcRenderer;
 require('../openExternal.js');
 
+// get and set language
+ipc.send('backendAction_setLanguage', navigator.language);
+
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);
 

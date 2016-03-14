@@ -3,12 +3,12 @@ const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
 const dialog = require('dialog');
 const packageJson = require('./package.json');
+const i18n = require('./modules/i18n.js');
 
 
 // GLOBAL Variables
@@ -39,6 +39,7 @@ var ipcPath = getIpcPath();
 
 global.mainWindow = null;
 global.windows = {};
+global.webviews = [];
 
 global.nodes = {
     geth: null,
@@ -192,6 +193,7 @@ app.on('ready', function() {
 
     // add menu already here, so we have copy and past functionality
     appMenu();
+
 
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([
@@ -538,13 +540,7 @@ var startMainWindow = function(appStartWindow){
     // instantiate the application menu
     // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
-        var webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
-        appMenu(webviews || []);
+        global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
+        appMenu(global.webviews);
     });
-
-    // instantiate the application menu
-    // ipc.on('setLanguage', function(e, lang){
-    //     global.language = lang;
-
-    // });
 };

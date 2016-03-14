@@ -17,6 +17,7 @@ caching-html-compiler@1.0.2
 callback-hook@1.0.4
 cfs:http-methods@0.0.30
 check@1.1.0
+chuangbo:cookie@1.1.0
 coffeescript@1.0.11
 cosmos:browserify@0.4.0
 ddp@1.2.2

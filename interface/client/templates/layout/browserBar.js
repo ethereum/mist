@@ -75,6 +75,14 @@ Template['layout_browserBar'].helpers({
     */
     'currentWebView': function(){
         return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+    },
+    /**
+    Return the url bar style
+
+    @method (urlBarTransparent)
+    */
+    'urlBarTransparent': function() {
+        return (this.urlBar == 'transparent');
     }
 });
 

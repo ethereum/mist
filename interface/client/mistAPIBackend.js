@@ -56,6 +56,14 @@ mistAPIBackend = function(event) {
         }});
     }
 
+    console.log("event.channel", event.channel);
+    // SET FAVICON
+    if(event.channel === 'urlBar') {
+        Tabs.update(template.data._id, {$set:{
+            urlBar: arg
+        }});
+    }
+
     if(event.channel === 'mistAPI_sound') {
         sound[arg].play();
     }

@@ -9,6 +9,7 @@ const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');
 require('../getFavicon.js');
+require('../getMetaTags.js');
 
 
 // notifiy the tab to store the webview id

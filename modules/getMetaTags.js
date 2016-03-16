@@ -4,13 +4,13 @@ module.export = (function() {
     document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
 
     function DOMContentLoaded(event) {
-        var urlBar = document.querySelector('meta[name="ethereum-dapp-url-bar-style"]');
-        console.log('urlBar: ', urlBar.content);
+        var appBar = document.querySelector('meta[name="ethereum-dapp-url-bar-style"]');
+        console.log('appBar: ', appBar.content);
 
-        if(statusBar)
-            ipc.sendToHost('urlBar', urlBar.content);
+        if(appBar)
+            ipc.sendToHost('appBar', appBar.content);
         else
-            ipc.sendToHost('urlBar', null);
+            ipc.sendToHost('appBar', null);
 
         document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);
     }

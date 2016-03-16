@@ -58,9 +58,10 @@ mistAPIBackend = function(event) {
 
     console.log("event.channel", event.channel);
     // SET FAVICON
-    if(event.channel === 'urlBar') {
+    if(event.channel === 'appBar') {
+        console.log('appBar arg',arg);
         Tabs.update(template.data._id, {$set:{
-            urlBar: arg
+            appBar: arg
         }});
     }
 

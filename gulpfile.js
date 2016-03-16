@@ -102,7 +102,7 @@ gulp.task('set-variables-wallet', function () {
     type = 'wallet';
     filenameLowercase = 'ethereum-wallet';
     filenameUppercase = 'Ethereum-Wallet';
-    applicationName = 'Ξthereum Wallet';
+    applicationName = 'Ethereum Wallet';
 });
 
 

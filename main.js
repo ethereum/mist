@@ -2,6 +2,7 @@ global._ = require('underscore');
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
+const timesync = require("os-timesync");
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
@@ -279,26 +280,21 @@ app.on('ready', function() {
 
 
     // check time sync
-    var ntpClient = require('ntp-client');
-    ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+    // var ntpClient = require('ntp-client');
+    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+    timesync.checkEnabled(function (err, enabled) {
         if(err) {
             console.error('Couldn\'t get time from NTP time sync server.', err);
             return;
         }
 
-        var localTime = new Date();
-        var ntpTime = new Date(date);
-        var timeDiff = ntpTime.getTime() - localTime.getTime();
-
-        console.log('NTP time difference: ', timeDiff + 'ms');
-        if(timeDiff > 10000 || timeDiff < -10000) {
+        if(enabled) {
             dialog.showMessageBox({
-                type: "error",
+                type: "warning",
                 buttons: ['OK'],
                 message: global.i18n.t('mist.errors.timeSync.title'),
-                detail: global.i18n.t('mist.errors.timeSync.description', {ntpTime: ntpTime.toGMTString(), localTime: localTime.toGMTString()})
+                detail: global.i18n.t('mist.errors.timeSync.description') +"\n\n"+ global.i18n.t('mist.errors.timeSync.'+ process.platform)
             }, function(){
-                app.quit();
             });
         }
     });

@@ -77,12 +77,16 @@ Template['layout_browserBar'].helpers({
         return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
     },
     /**
-    Return the url bar style
+    Return the app bar style
 
-    @method (urlBarTransparent)
+    @method (appBarTransparent)
     */
-    'urlBarTransparent': function() {
-        return (this.urlBar == 'transparent');
+    'appBar': function() {
+        var tabId = LocalStore.get('selectedTab');
+        var tab = Tabs.find(tabId).fetch();
+
+        if (tab[0])
+            return (tab[0].appBar);
     }
 });
 

@@ -288,7 +288,7 @@ app.on('ready', function() {
             return;
         }
 
-        if(enabled) {
+        if(!enabled) {
             dialog.showMessageBox({
                 type: "warning",
                 buttons: ['OK'],
@@ -506,10 +506,9 @@ var startMainWindow = function(appStartWindow){
         global.nodes[nodeType].stderr.removeListener('data', logFunction);
     }
 
-
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadURL(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
+    global.mainWindow.loadURL(global.interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         popupWindow.loadingWindow.hide();

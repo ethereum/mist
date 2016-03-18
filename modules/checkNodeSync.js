@@ -51,7 +51,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
                         if(global.nodeConnector.socket.writable) {
                             global.nodeConnector.send('eth_syncing', [], cb);
                         }
-                    }, 50);
+                    }, 200);
 
 
                 // start app

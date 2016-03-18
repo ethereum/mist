@@ -34,7 +34,7 @@
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Tests durchführen",
-                "logFiles": "Zeige log Datei",
+                "logFiles": "Logdatei anzeigen",
                 "ethereumNode": "Ethereum Node",
                 "network": "Netzwerk",
                 "mainNetwork": "Hauptnetzwerk",
@@ -52,8 +52,8 @@
             }
         },      
         "errors": {     
-            "nodeConnect": "Konnte mich nicht mit der Node verbinden? Siehe logs für mehr:",      
-            "nodeStartup": "Es sieht so aus also konnte die Node nicht gestartet werden, läuft evtl. schon eine andere? Läuft gerade ein Datenbank update?",     
+            "nodeConnect": "Es konnte keine Verbindung mit dem Node hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",      
+            "nodeStartup": "Anscheinend konnte der Node nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",     
             "timeSync": {       
                 "title": "Deine Computer Uhr ist nicht synchronisiert!",     
                 "description": "Um mit dem Ethereum netzwerk zu synchronisieren muss deine Computer Uhr mit einem Zeit-Server synchronisiert werden.",

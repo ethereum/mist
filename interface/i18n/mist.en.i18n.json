@@ -184,6 +184,6 @@
     },
     "elements": {
         "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completelly different one"
+        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
     }
 }

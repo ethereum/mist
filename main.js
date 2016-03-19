@@ -16,7 +16,7 @@ const argv = require('yargs')
     .describe('version', 'Display app version')
     .help('h')
     .alias('h', 'help')
-    .argv;
+    .parse(process.argv.slice(1));
 
 if (argv.version) {
     console.log(packageJson.version);

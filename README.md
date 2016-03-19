@@ -37,7 +37,7 @@ Requires electron version 0.35.2
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt
+    $ npm install -g electron-prebuilt@0.36.9
 
 ### Installation
 

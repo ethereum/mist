@@ -10,6 +10,19 @@ const ipc = electron.ipcMain;
 const dialog = require('dialog');
 const packageJson = require('./package.json');
 
+// CLI options
+const argv = require('yargs')
+    .usage('Usage: $0 [options]')
+    .describe('version', 'Display app version')
+    .help('h')
+    .alias('h', 'help')
+    .argv;
+
+if (argv.version) {
+    console.log(packageJson.version);
+    process.exit(0);
+}
+
 
 // GLOBAL Variables
 global.path = {

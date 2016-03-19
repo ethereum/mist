@@ -71,7 +71,7 @@ In the original window you can then start Mist with:
 
 ### Run the Wallet
 
-Switch the `global.mode` to `"wallet"` in the `main.js`.
+Add `--model wallet` to the Mist command-line.
 
 Start the wallet app for development, *in a separate terminal window:*
 
@@ -84,7 +84,7 @@ Start the wallet app for development, *in a separate terminal window:*
 In the original window you can then start Mist with:
 
     $ cd mist
-    $ electron .
+    $ electron . --mode wallet
 
 
 ### Using Mist with a privatenet

@@ -14,6 +14,8 @@ const packageJson = require('./package.json');
 const argv = require('yargs')
     .usage('Usage: $0 [options]')
     .describe('version', 'Display app version')
+    .describe('mode', 'App mode: wallet, mist (default)')
+    .alias('m', 'mode')
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
@@ -34,7 +36,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
 
 global.version = packageJson.version;
 global.license = packageJson.license;

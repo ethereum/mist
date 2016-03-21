@@ -106,7 +106,6 @@ Template['views_tab'].helpers({
     'appBar': function() {
         var tabId = LocalStore.get('selectedTab');
         var tab = Tabs.find(tabId).fetch();
-        console.log('this tab:',tabId, tab[0], tab[0].appBar);
         if (tab[0])
             return (tab[0].appBar);
     }

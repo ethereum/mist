@@ -5,6 +5,7 @@ Window communication
 */
 
 const app = require('app');  // Module to control application life.
+const appMenu = require('./menuItems');   
 const popupWindow = require('./popupWindow.js');
 const ipc = require('electron').ipcMain;
 
@@ -56,6 +57,18 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
     }
     if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed()) {
         global.mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
+    }
+});
+
+ipc.on('backendAction_setLanguage', function(e, lang){
+    if(global.language !== lang) {
+        global.i18n.changeLanguage(lang.substr(0,2), function(err, t){
+            if(!err) {
+                global.language = global.i18n.language;
+                console.log('Backend language set to: ', global.language);
+                appMenu(global.webviews);
+            }
+        });
     }
 });
 

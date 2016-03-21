@@ -2,13 +2,14 @@ global._ = require('underscore');
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
+const timesync = require("os-timesync");
 const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const i18n = require('./modules/i18n.js');
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
 const dialog = require('dialog');
 const packageJson = require('./package.json');
+const i18n = require('./modules/i18n.js');
 
 
 // GLOBAL Variables
@@ -21,7 +22,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.version = packageJson.version;
 global.license = packageJson.license;
@@ -39,6 +40,7 @@ var ipcPath = getIpcPath();
 
 global.mainWindow = null;
 global.windows = {};
+global.webviews = [];
 
 global.nodes = {
     geth: null,
@@ -193,6 +195,7 @@ app.on('ready', function() {
     // add menu already here, so we have copy and past functionality
     appMenu();
 
+
     // appIcon = new Tray('./icons/icon-tray.png');
     // var contextMenu = Menu.buildFromTemplate([
     //     { label: 'Item1', type: 'radio' },
@@ -277,26 +280,21 @@ app.on('ready', function() {
 
 
     // check time sync
-    var ntpClient = require('ntp-client');
-    ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+    // var ntpClient = require('ntp-client');
+    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+    timesync.checkEnabled(function (err, enabled) {
         if(err) {
             console.error('Couldn\'t get time from NTP time sync server.', err);
             return;
         }
 
-        var localTime = new Date();
-        var ntpTime = new Date(date);
-        var timeDiff = ntpTime.getTime() - localTime.getTime();
-
-        console.log('NTP time difference: ', timeDiff + 'ms');
-        if(timeDiff > 10000 || timeDiff < -10000) {
+        if(!enabled) {
             dialog.showMessageBox({
-                type: "error",
+                type: "warning",
                 buttons: ['OK'],
                 message: global.i18n.t('mist.errors.timeSync.title'),
-                detail: global.i18n.t('mist.errors.timeSync.description', {ntpTime: ntpTime.toGMTString(), localTime: localTime.toGMTString()})
+                detail: global.i18n.t('mist.errors.timeSync.description') +"\n\n"+ global.i18n.t('mist.errors.timeSync.'+ process.platform)
             }, function(){
-                app.quit();
             });
         }
     });
@@ -508,10 +506,9 @@ var startMainWindow = function(appStartWindow){
         global.nodes[nodeType].stderr.removeListener('data', logFunction);
     }
 
-
     // and load the index.html of the app.
     console.log('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadURL(global.interfaceAppUrl); // 'file:///Users/frozeman/Sites/_ethereum/meteor-dapp-wallet/build/index.html'
+    global.mainWindow.loadURL(global.interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {
         popupWindow.loadingWindow.hide();
@@ -538,13 +535,7 @@ var startMainWindow = function(appStartWindow){
     // instantiate the application menu
     // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
-        var webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
-        appMenu(webviews || []);
+        global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
+        appMenu(global.webviews);
     });
-
-    // instantiate the application menu
-    // ipc.on('setLanguage', function(e, lang){
-    //     global.language = lang;
-
-    // });
 };

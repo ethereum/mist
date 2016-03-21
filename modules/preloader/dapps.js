@@ -3,12 +3,15 @@
 */
 const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
-require('../openExternal.js');
 const shell = require('shell');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');
+const basePath = require('../setBasePath.js');
 require('../getFavicon.js');
+require('../openExternal.js');
+
+basePath('interface');
 
 
 // notifiy the tab to store the webview id

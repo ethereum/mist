@@ -1,5 +1,5 @@
 <template name="layout_browserBar">
-    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}}">
+    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#with appBar}}url-bar-{{appBar}}{{/with}}">
         <button title="go back" class="back icon icon-arrow-left"></button>
         <button title="refresh page" class="reload icon icon-refresh"></button>
 

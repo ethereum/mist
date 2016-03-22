@@ -75,18 +75,6 @@ Template['layout_browserBar'].helpers({
     */
     'currentWebView': function(){
         return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
-    },
-    /**
-    Return the app bar style
-
-    @method (appBarTransparent)
-    */
-    'appBar': function() {
-        var tabId = LocalStore.get('selectedTab');
-        var tab = Tabs.find(tabId).fetch();
-
-        if (tab[0])
-            return (tab[0].appBar);
     }
 });
 

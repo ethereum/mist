@@ -1,34 +1,37 @@
 <template name="elements_nodeInfo">
     <div class="node-info">
         {{#if TemplateVar.get "mining"}}
-            <span data-tooltip="Mining" class="simptip-position-left simptip-movable">⛏ {{TemplateVar.get "mining"}} KH/s</span>
-            &nbsp;&nbsp;|&nbsp;&nbsp;
-        {{/if}}
-        
-
-        {{#if $eq (TemplateVar.get "network") "test"}}
-            <span class="orange" style="font-weight: 400;">TEST-NET</span>
-            <br>
-        {{/if}}
-        {{#if $eq (TemplateVar.get "network") "private"}}
-            <span class="orange" style="font-weight: 400;">PRIVATE-NET</span>
-            <br>
+            <span data-tooltip="Mining" class="mining-indicator simptip-position-top simptip-movable">⛏ {{TemplateVar.get "mining"}}&nbsp;KH/s</span>
         {{/if}}
 
         {{#with TemplateVar.get "syncing"}}
-            <span class="text">
-                <i class="icon-feed"></i> {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
-                &nbsp;&nbsp;|&nbsp;&nbsp;
+            <div class='block-number'  title="{{i18n 'mist.nodeInfo.blockNumber'}}">
                 <i class="icon-layers"></i> {{{i18n "mist.nodeInfo.nodeSyncing" blockDiff=blockDiff}}}
-                &nbsp;&nbsp;|&nbsp;&nbsp;
+            </div>
+            <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
+                <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
+            </div>
+            <div>            
                 <i class="icon-cloud-download"></i> {{progress}}%
-            </span>
+            </div>
             <progress max="100" value="{{progress}}"></progress>
         {{else}}
-            <i class="icon-feed"></i> {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
-            &nbsp;&nbsp;|&nbsp;&nbsp;
-            <i class="icon-layers"></i> {{formattedBlockNumber}} 
-            <br> <i class="icon-clock" style="margin-left: 10px;"></i> {{{timeSinceBlock}}}
+            <div class='block-number'  title="{{i18n 'mist.nodeInfo.blockNumber'}}">
+                <i class="icon-layers"></i> {{formattedBlockNumber}} 
+            </div>
+            <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
+                <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
+            </div>
+            <div title="{{i18n 'mist.nodeInfo.timeSinceBlock'}}">            
+                <i class="icon-clock"></i> {{{timeSinceBlock}}}
+            </div>
         {{/with}}
+
+        {{#if $eq (TemplateVar.get "network") "test"}}
+            <span class="private-chain" title="{{i18n 'mist.nodeInfo.testnetExplain'}}">TEST-NET</span>
+        {{/if}}
+        {{#if $eq (TemplateVar.get "network") "private"}}
+            <span class="private-chain" title="{{i18n 'mist.nodeInfo.testnetExplain'}}">PRIVATE-NET</span>
+        {{/if}}
     </div>
 </template>

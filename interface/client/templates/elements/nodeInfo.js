@@ -26,7 +26,7 @@ var getMining = function(template) {
         if(!e && res) {
             web3.eth.getHashrate(function(e, res) {
                 if(!e) {
-                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.000'));
+                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.0'));
                 }
             });
         } else {
@@ -142,13 +142,13 @@ Template['elements_nodeInfo'].helpers({
 
         if (diff>60) {
             Helpers.rerun["10s"].tick();
-            return timeSince.fromNow(true) + " " + TAPi18n.__('mist.nodeInfo.timeSinceBlock');
+            return timeSince.fromNow(true);
         } else if (diff<2) {
             Helpers.rerun["1s"].tick();
             return ' <span class="blue">' + TAPi18n.__('mist.nodeInfo.blockReceived') + '</span>'
         } else {
             Helpers.rerun["1s"].tick();
-            return diff + "s " + TAPi18n.__('mist.nodeInfo.timeSinceBlock')
+            return diff + "s";
         }
     }
 });

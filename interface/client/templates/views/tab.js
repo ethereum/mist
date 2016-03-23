@@ -103,7 +103,7 @@ Template['views_tab'].helpers({
 
     @method (appBarTransparent)
     */
-    'appBar': function() {
+    'appBarX': function() {
         var tabId = LocalStore.get('selectedTab');
         var tab = Tabs.find(tabId).fetch();
         if (tab[0])

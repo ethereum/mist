@@ -1,6 +1,6 @@
 <template name="layout_browserBar">
     {{#with dapp}}
-    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} url-bar-{{appBar}}">
+    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}}">
         <button title="go back" class="back icon icon-arrow-left"></button>
         <button title="refresh page" class="reload icon icon-refresh"></button>
 

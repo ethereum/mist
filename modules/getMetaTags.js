@@ -5,7 +5,6 @@ module.export = (function() {
 
     function DOMContentLoaded(event) {
         var appBar = document.querySelector('meta[name="ethereum-dapp-url-bar-style"]');
-        console.log('appBar: ', appBar.content);
 
         if(appBar)
             ipc.sendToHost('appBar', appBar.content);

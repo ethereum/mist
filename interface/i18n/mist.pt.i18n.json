@@ -56,7 +56,10 @@
             "nodeStartup": "O node não pode ser iniciado. Você já tem um instalado? Ele está fazendo upgrade do banco de dados?",
             "timeSync": {
                 "title": "Seu computador está fora de sincronia!",
-                "description": "Para sincronizar com a rede você precisa estar sincronizado com um servidor de tempo preciso. Procure isso nas suas opções de sistema.\n\nSeu horário: __localTime__\nHorário real: __ntpTime__"
+                "description": "Para sincronizar com a rede Ethereum você precisa que seu computador esteja sincronizado com um servidor de tempo preciso.",
+                "win32": "Vá em ‘Ajustes de tempo’ depois a aba ‘internet’ nas suas preferências de sistema e marque a opção ‘sincronizar com um servidor de tempo’. Veja esse guia para mais detalhes: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "Para instalar um servidor de tempo, instale \"ntp\" via \"apt-get install ntp\".",
+                "darwin": "Abra suas preferências, escolha \"preferências de tempo\" e marque \"Ajustar o tempo automaticamente\"."
             }
         },
         "rightClick": {

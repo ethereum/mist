@@ -1,13 +1,16 @@
 /**
 @module preloader wallet
 */
+
 const mist = require('../mistAPI.js');
-require('../openExternal.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
+const basePath = require('../setBasePath.js');
+require('../openExternal.js');
 
+basePath('interface/wallet');
 
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);

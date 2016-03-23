@@ -56,7 +56,7 @@ mistAPIBackend = function(event) {
         }});
     }
 
-    // SET FAVICON
+    // SET APPBAR
     if(event.channel === 'appBar') {
         Tabs.update(template.data._id, {$set:{
             appBar: arg

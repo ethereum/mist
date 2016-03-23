@@ -14,7 +14,6 @@ require('../openExternal.js');
 
 basePath('interface');
 
-
 // notifiy the tab to store the webview id
 ipc.sendToHost('setWebviewId');
 

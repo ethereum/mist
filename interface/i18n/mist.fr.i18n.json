@@ -1,0 +1,187 @@
+{
+    "mist": {
+        "applicationMenu": {
+            "app": {
+                "label": "__app__",
+                "about": "À propos __app__",
+                "quit": "Quitter __app__"
+            },
+            "edit": {
+                "label": "Éditer",
+                "undo": "Annuler",
+                "redo": "Refaire",
+                "cut": "Couper",
+                "copy": "Copier",
+                "paste": "Coller",
+                "selectAll": "Tout sélectionner"
+            },
+            "view": {
+                "label": "Affichage",
+                "fullscreen": "Plein écran"
+            },
+            "accounts": {
+                "label": "Comptes",
+                "importPresale": "Importer un compte de prévente",
+                "newAccount": "Nouveau compte",
+                "backup": "Sauvegarde",
+                "backupKeyStore": "Comptes",
+                "backupMist": "Données de l’application"
+            },
+            "develop": {
+                "label": "Développement",
+                "devTools": "Outils de développement",
+                "devToolsMistUI": "Interface de Mist",
+                "devToolsWalletUI": "Interface du porte-monnaie",
+                "devToolsWebview": "__webview__",
+                "runTests": "Lancer les tests",
+                "logFiles": "Voir le journal",
+                "ethereumNode": "Nœud Ethereum",
+                "network": "Réseau",
+                "mainNetwork": "Réseau principal",
+                "startMining": "⛏ Commencer à miner (Testnet seulement)",
+                "stopMining": "⛏ Arrêter de miner"
+            },
+            "window": {
+                "label": "Fenêtre",
+                "minimize": "Réduire",
+                "close": "Fermer",
+                "toFront": "Tout ramener au premier plan"
+            },
+            "help": {
+                "label": "Aide"
+            }
+        },
+        "errors": {
+            "nodeConnect": "Impossible de vous connecter au nœud ? Consultez le journal pour en savoir plus :",
+             "nodeStartup": "Le nœud ne semble pas démarrer, un nœud est-il déjà lancé ? La base de donnée est-elle en train d’être mise à jour ?",
+            "timeSync": {
+                "title": "La date de votre ordinateur est désynchronisée !",
+                 "description": "Pour vous synchroniser avec le réseau Ethereum, vous avez besoin de synchroniser l’horloge de votre ordinateur avec un serveur de temps : consultez les paramètres de votre système. \n\nHeure configurée : __localTime__\nHeure réelle : __ntpTime__"
+            }
+        },
+        "rightClick": {
+            "reload": "Actualiser",
+            "openDevTools": "Ouvrir les outils de développement",
+            "inspectElements": "Inspecter l’élément"
+        },
+        "nodeInfo": {
+            "nodeSyncing": "__blockDiff__ blocs restants",
+            "blockReceived": "nouveaux blocs reçus",
+            "timeSinceBlock": "depuis le dernier bloc",
+            "peers": "pairs"
+        },
+        "sidebar": {
+            "buttons": {
+                "browser": "Naviguer"
+            }
+        },
+        "browserBar": {
+            "buttons": {
+                "noAccounts": "Pas de compte"
+            }
+        },
+        "startScreen": {
+            "runningNodeFound": "Un nœud Ethereum actif a été trouvé !",
+            "startingNode": "Démarrage du nœud Ethereum…",
+            "startedNode": "Démarrage de l’application…",
+            "nodeConnectionTimeout": "Le nœud Ethereum n’a pas pu être démarré !<br><small>Si vous <a href='https://www.ethereum.org/cli#geth'  class='button' target='_blank'>avez installé Geth</a>, utilisez la  commande suivante pour le lancer : <br> <code>geth --ipcpath  __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ou rapportez le problème</a></small>",
+            "nodeBinaryNotFound": "L’exécutable du nœud Ethereum n’a pas été trouvé ! <br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Veuillez en démarrer un manuellement.</a> </small>",
+            "nodeSyncing": "Le nœud Ethereum est en cours de synchronisation, veuillez patienter…",
+            "nodeSyncInfo": "Téléchargement du bloc __currentBlock__ sur __highestBlock__.",
+            "nodeSyncConnecting": "Recherche de pairs…",
+            "nodeSyncProcessing": "Traitement des blocs, veuillez patienter…",
+            "privateChainTimeout": "Passer la recherche de pairs"
+        },
+        "popupWindows": {
+            "requestAccount": {
+                "title": "Créer un compte",
+                "enterPassword": "Entrer le mot de passe",
+                "repeatPassword": "Répéter le mot de passe",
+                "creating": "Génération du compte…",
+                "errors": {
+                    "passwordMismatch": "Vos mots de passe ne correspondent pas."
+                }
+            },
+            "unlockMasterPassword": {
+                "title": "Entrez le mot de passe principal",
+                "enterPassword": "Entrez le mot de passe principal",
+                "unlocking": "Déverrouillage…",
+                "errors": {
+                    "wrongPassword": "Mauvais mot de passe, veuillez recommencer."
+                }
+            },
+            "sendTransactionConfirmation": {
+                "title": {
+                    "sendTransaction": "Envoyer une transaction",
+                    "contractExecution": "Exécuter un contrat",
+                    "createContract": "Créer un contrat"
+                },
+                 "contractExecutionInfo": "Vous êtes sur le point d'exécuter une fonction d’un contrat, ce qui pourrait impliquer un transfert de valeur.",
+                "contractCreationInfo": "Vous êtes sur le point de créer un contrat à partir des données fournies.",
+                "enterPassword": "Entrez votre mot de passe pour confirmer la transaction",
+                "unlocking": "Confirmation…",
+                "createContract": "Création du contrat",
+                "estimatedFee": "Estimation des frais",
+                "estimatedGasError": "Les données n’ont pas pu s’exécuter, tout le gaz disponible sera donc utilisé.",
+                "gasPrice": "Prix du gaz",
+                "perMillionGas": "ether par million de gaz",
+                "gasLimit": "Plafonner les frais",
+                "data": "Données",
+                "buttons": {
+                    "sendTransaction": "Lancer la transaction"
+                },
+                "errors": {
+                    "connectionTimeout": "Impossible de se connecter au nœud. A-t-il été anormalement interrompu ?",
+                    "wrongPassword": "Mauvais mot de passe"
+                }
+            },
+            "onboarding": {
+                 "description" : "Ethereum est une plate-forme décentralisée qui permet de développer des applications basés sur la blockchain : des programmes inaltérables, transférant valeurs et propriétés sans limite dans le temps.",
+                "goToTestnet" : "Utiliser le réseau de test",
+                "goToTestnetDescription" : "Tester sans risque sur le réseau bac à sable Testnet, sans utiliser de vrai ether.",
+                "gotoMainnet" : "Utiliser le réseau principal",
+                 "gotoMainnetDescription" : "Vous allez avoir besoin d’Ether pour créer et exécuter des contrats. Ne vous inquiétez pas, nous allons vous aider à en obtenir…",
+                "doYouHaveAWalletFile" : "Avez-vous un porte-monnaie ?",
+                "walletFileDescription" : "<p>Si vous avez participé à la prévente Ethereum de 2014, vous devriez avoir un fichier <code>ethereum_wallet_backup.json</code>. Il a été téléchargé et envoyé sur votre boîte e-mail juste après l’achat</p>",
+                "dropFilesHere" : "Déposer le fichier de prévente",
+                "creating": "Création…",
+                "importing": "Importation…",
+                "skip" : "Passer cette étape",
+                "next" : "Suivant",
+                "protectTitle" : "Protégez votre compte",
+                "protectDescription" : "Choisissez un mot de passe pour votre nouveau compte. Imaginez-vous protéger les clés de votre maison !",
+                "accountTitle" : "Le charger !",
+                "accountTitleTestnet" : "Miner !",
+                "etherDescription": "Le réseau Ethereum est basé sur la notion de jeton appelé « Ether ». Un petit montant est nécessaire pour pouvoir utiliser le réseau Ethereum.",
+                "loadItDescription" : "Si vous possédez des Bitcoins, ou une autre cryto-monnaie, vous pouvez facilement les convertir en Ether en utilisant le service en ligne ShapeShift.<br><br>Nous vous recommandons d’acquérir entre<strong>0.25 et 1 Ether</strong>.", 
+                "mineItDescription": "<strong>Sur le réseau de test (Testnet), vous pouvez miner vous-même de l’Ether en utilisant le menu <em>Développement</em> puis <em>⛏ Commencer à miner (Testnet seulement)</em>.</strong> <br> <strong> N’ESSAYEZ PAS D’ENVOYER DE VRAIS ETHER A CETTE ADRESSE </strong>",
+                "you" : "VOUS",
+                "etherbase" : "Compte principal (etherbase)",
+                "depositBitcoin" : "Déposer des Bitcoins",
+                "learnIt" : "Apprendre en attendant",
+                "downloadingBlocks": "Téléchargement des blocs",
+                "block": "Bloc",
+                "tutorial1Description" : "<p>Désormais, la seule chose à faire est d’attendre la fin du téléchargement. Quelques suggestions de lectures (en) : </p><h4>Créez votre propre monnaie</h4> <p>Créez une crypto-monnaie avec plafond fixe, des jetons représentant de vrais actifs, etc.</p>",
+                 "tutorial2Description" : "<h4>Créez votre levée de fonds</h4> <p> Levez des fonds pour un objectif commun, avec un système de confiance sans tierce partie. Contournez le système de financement traditionnel et reposez-vous directement sur la blockchain.</p>",
+                "tutorial3Description" : "<h4>Organisation autonome avec la blockchain</h4> <p>Créez une association ou entreprise dont les règles de dépenses et de prises de décisions sont définies de manière inaltérables. Laissez vos soutiens prendre un rôle actif sur la manière dont les fonds sont dépensés</p>",
+                "buttons": {
+                    "showPassword": "Afficher le mot de passe",
+                    "importAccount": "Importer un compte",
+                    "launchApp": "Lancer l’application !",
+                    "learnReceipt": "Apprendre cette méthode"
+                },
+                "errors": {
+                    "nodeNotStartedYet": "Attendez quelques secondes que votre nœud démarre et réessayez",
+                    "unknownFile": "Fichier non reconnu.",
+                    "passwordError": "Mauvais mot de passe.",
+                    "importFailed": "N’a pas pu importer le fichier : __error__"
+                }
+            }
+        }
+    },
+    "elements": {
+         "checksumAlert":"Cette adresse semble valide, mais est vulnérable aux fautes de frappes, aussi vérifiez bien qu’il s'agit de la bonne adresse. Si l’image de sécurité est fournie, verifiez qu’elle correspond bien à celle que vous voyez.",
+        "identiconHelper": "C’est l’image de sécurité : le moindre changement sur l’adresse la rendra radicalement différente"
+    }
+}
+

@@ -67,7 +67,9 @@
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocos restantes",
             "blockReceived": "Novo bloco recebido",
-            "timeSinceBlock": "desde último bloco",
+            "timeSinceBlock": "Tempo corrido desde último bloco",
+            "blockNumber": "Número de seu bloco atual",            
+            "testnetExplain": "Você está na rede de teste, NÃO ENVIE ethers de verdade para essas contas",
             "peers": "nós"
         },
         "sidebar": {

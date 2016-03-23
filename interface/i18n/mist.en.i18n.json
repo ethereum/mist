@@ -67,7 +67,9 @@
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocks left",
             "blockReceived": "New Block Received",
-            "timeSinceBlock": "since last block",
+            "blockNumber": "Your latest block number",
+            "timeSinceBlock": "Elapsed time since last block",
+            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
             "peers": "peers"
         },
         "sidebar": {

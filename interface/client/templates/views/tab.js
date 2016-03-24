@@ -97,16 +97,5 @@ Template['views_tab'].helpers({
 
             return Helpers.formatUrl(template.url);
         }
-    },
-    /**
-    Return the app bar style
-
-    @method (appBarTransparent)
-    */
-    'appBarX': function() {
-        var tabId = LocalStore.get('selectedTab');
-        var tab = Tabs.find(tabId).fetch();
-        if (tab[0])
-            return (tab[0].appBar);
     }
 });

@@ -16,7 +16,9 @@ const argv = require('yargs')
     .usage('Usage: $0 [options]')
     .describe('version', 'Display app version')
     .describe('mode', 'App mode: wallet, mist (default)')
+    .describe('rpc', 'RPC endpoint. Can be http URL or IPC socket path')
     .alias('m', 'mode')
+    .alias('r', 'rpc')
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
@@ -37,6 +39,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
+global.rpcUri = argv.rpc;
 global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
 
 global.version = packageJson.version;
@@ -321,8 +324,7 @@ app.on('ready', function() {
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const net = require('net');
-        const socket = new net.Socket();
+        const socket = require('./modules/ipc/socket')(ipcPath);
         var intervalId = errorTimeout = null;
         var count = 0;
 

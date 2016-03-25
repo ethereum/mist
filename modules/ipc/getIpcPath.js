@@ -6,8 +6,12 @@ Gets the right IPC path
 
 module.exports = function() {
     var p = require('path');
-    var path = global.path.HOME;
+    var providedPath = global.rpcUri;
+    if (providedPath) {
+        return providedPath;
+    }
 
+    var path = global.path.HOME;
     if(process.platform === 'darwin')
         path += '/Library/Ethereum/geth.ipc';
 

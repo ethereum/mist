@@ -4,7 +4,8 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 @module ipcProviderBackend
 */
 
-var dechunker = require('./dechunker.js');
+const dechunker = require('./dechunker.js');
+const newSocket = require('./socket.js');
 
 /**
 make sockets globally available
@@ -17,8 +18,6 @@ global.sockets = {};
 module.exports = function(){
     const _ = require('underscore');
     const ipc = require('electron').ipcMain;
-    const net = require('net');
-    const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');
     const popupWindow = require('../popupWindow.js');
 
@@ -67,7 +66,7 @@ module.exports = function(){
     @constructor
     */
     var GethConnection = function(event) {
-        this.ipcSocket = new Socket();
+        this.ipcSocket = newSocket(ipcPath);
         this.path = ipcPath;
         this.syncEvents = {};
         this.asyncEvents = {};

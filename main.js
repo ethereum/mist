@@ -11,6 +11,21 @@ const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 
+// CLI options
+const argv = require('yargs')
+    .usage('Usage: $0 [options]')
+    .describe('version', 'Display app version')
+    .describe('mode', 'App mode: wallet, mist (default)')
+    .alias('m', 'mode')
+    .help('h')
+    .alias('h', 'help')
+    .parse(process.argv.slice(1));
+
+if (argv.version) {
+    console.log(packageJson.version);
+    process.exit(0);
+}
+
 
 // GLOBAL Variables
 global.path = {
@@ -22,7 +37,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
 
 global.version = packageJson.version;
 global.license = packageJson.license;

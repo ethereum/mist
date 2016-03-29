@@ -262,10 +262,24 @@
                 }            
             }
         }
-
     }
 
+    &.url-bar-transparent {
+        button.reload, button.back {
+            display: none;
+        }
 
+        button.icon-close {
+            width: @gridWidth;
+            padding: 0;
+        }
+
+        .app-bar {
+            margin-left: @gridWidth * 1;
+            margin-right: 0;
+        }
+        
+    }
 }
 
 

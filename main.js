@@ -169,14 +169,16 @@ var logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
     console.log('NODE LOG:', data);
 
-    if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
-        global.nodes[nodeType].stdout.removeListener('data', logFunction);
-        global.nodes[nodeType].stderr.removeListener('data', logFunction);
-    }
+    // if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
+    //     global.nodes[nodeType].stdout.removeListener('data', logFunction);
+    //     global.nodes[nodeType].stderr.removeListener('data', logFunction);
+    // }
 
     // show line if its not empty or "------"
-    if(appStartWindow && !/^\-*$/.test(data))
+    if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
+        console.log('"'+ data +'"');
         appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
+    }
 };
 
 // This method will be called when Electron has done everything

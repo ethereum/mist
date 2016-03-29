@@ -16,7 +16,8 @@ Contains the last state of the data
 
 @property lastData
 */
-var lastData = {};
+var lastData = {},
+    showLog = true;
 
 
 Template['popupWindows_splashScreen'].onCreated(function(){
@@ -25,14 +26,15 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     ipc.on('startScreenText', function(e, text, data){
         var translatedText = '';
 
-        if(text === 'logText') {
+        if(text === 'logText' && showLog) {
             TemplateVar.set(template, 'logText', data);
             return;
         }
 
         // show text
         if(text.indexOf('privateChainTimeout') === -1 &&
-           text.indexOf('privateChainTimeoutClear') === -1) {
+           text.indexOf('privateChainTimeoutClear') === -1 &&
+           text !== 'logText') {
             translatedText = TAPi18n.__(text);
             TemplateVar.set(template, 'text', translatedText);
         }
@@ -68,15 +70,20 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 if(lastData.startingBlock) {
                     // show progress bar
                     TemplateVar.set(template, 'showProgressBar', true);
-                    TemplateVar.set(template, 'logText', false);
 
-                    if(lastData._highestBlock - lastData._currentBlock < 2500)
+                    if(lastData._highestBlock - lastData._currentBlock < 3000) {
+                        showLog = true;
                         translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncProcessing') +'</small>';
-                    else
+                    } else {
+                        showLog = false;
                         translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
+                    }
                 }
                 
-                TemplateVar.set(template, 'text', translatedText);
+                if(!showLog) {
+                    TemplateVar.set(template, 'logText', false);
+                    TemplateVar.set(template, 'text', translatedText);
+                }
 
 
                 // set progress value

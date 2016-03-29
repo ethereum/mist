@@ -56,6 +56,13 @@ mistAPIBackend = function(event) {
         }});
     }
 
+    // SET APPBAR
+    if(event.channel === 'appBar') {
+        Tabs.update(template.data._id, {$set:{
+            appBar: arg
+        }});
+    }
+
     if(event.channel === 'mistAPI_sound') {
         sound[arg].play();
     }

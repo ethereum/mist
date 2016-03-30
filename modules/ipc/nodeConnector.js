@@ -2,7 +2,7 @@
 @module Node Connector
 */
 
-const _ = require('underscore');
+const _ = require('lodash');
 const dechunker = require('./dechunker.js');
 const net = require('net');
 var idCount = 1;

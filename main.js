@@ -1,4 +1,8 @@
-global._ = require('underscore');
+global._ = require('lodash');
+// for certain packages which expect underscore.js
+global._.contains = global._.includes;  
+global._.all = global._.every;  
+
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
@@ -11,6 +15,21 @@ const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 
+// CLI options
+const argv = require('yargs')
+    .usage('Usage: $0 [options]')
+    .describe('version', 'Display app version')
+    .describe('mode', 'App mode: wallet, mist (default)')
+    .alias('m', 'mode')
+    .help('h')
+    .alias('h', 'help')
+    .parse(process.argv.slice(1));
+
+if (argv.version) {
+    console.log(packageJson.version);
+    process.exit(0);
+}
+
 
 // GLOBAL Variables
 global.path = {
@@ -22,7 +41,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
 
 global.version = packageJson.version;
 global.license = packageJson.license;
@@ -99,9 +118,7 @@ if(global.mode === 'wallet') {
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
-    console.log('UNCAUGHT EXCEPTION', error);
-    // var stack = new Error().stack;
-    // console.log(stack);
+    console.log('UNCAUGHT EXCEPTION', error.stack || error);
 
     app.quit();
 });

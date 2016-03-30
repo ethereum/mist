@@ -4,7 +4,7 @@ The dechunker module gets IPC buffers and tries to decode them.
 @module dechunker
 */
 
-const _ = require('underscore');
+const _ = require('lodash');
 
 var lastChunk = null,
     lastChunkTimeout = null;

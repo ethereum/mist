@@ -52,8 +52,8 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
     var windowId = e.sender.getId();
 
-    var mainWin = global.mainWindow || {},
-        win = _.get(global.windows, windowId) || {};
+    var mainWin = _.get(global, 'mainWindow', {}),
+        win = _.get(global, `windows.${windowId}`, {});
 
     if(win.owner) {
         win.owner.send('windowMessage', win.type, error, value);

@@ -39,6 +39,10 @@ global.appName = 'Mist';
 
 global.production = false;
 global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
+global.paths = {
+    geth: argv.gethpath,
+    eth: argv.ethpath,
+};
 
 global.version = packageJson.version;
 global.license = packageJson.license;

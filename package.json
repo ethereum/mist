@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
@@ -9,11 +9,11 @@
   "main": "main.js",
   "dependencies": {
     "bignumber.js": "^2.1.4",
-    "i18next": "^1.10.6",
+    "i18next": "^2.3.4",
     "log-rotate": "^0.2.7",
     "minimongo-standalone": "0.0.9",
-    "ntp-client": "^0.5.3",
     "numeral": "^1.5.3",
+    "os-timesync": "^1.0.3",
     "solc": "^0.2.1-1",
     "underscore": "^1.8.3",
     "web3": "^0.15.1",

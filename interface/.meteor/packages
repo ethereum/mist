@@ -18,8 +18,10 @@ frozeman:global-notifications
 numeral:numeral
 reactive-var
 sacha:spin
+chuangbo:cookie
 agnito:simptip
 mrt:jquery-ui-sortable
+ethereum:web3
 ethereum:elements
 ethereum:accounts
 ethereum:blocks

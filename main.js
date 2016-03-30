@@ -1,4 +1,8 @@
-global._ = require('underscore');
+global._ = require('lodash');
+// for certain packages which expect underscore.js
+global._.contains = global._.includes;  
+global._.all = global._.every;  
+
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
@@ -114,9 +118,7 @@ if(global.mode === 'wallet') {
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
-    console.log('UNCAUGHT EXCEPTION', error);
-    // var stack = new Error().stack;
-    // console.log(stack);
+    console.log('UNCAUGHT EXCEPTION', error.stack || error);
 
     app.quit();
 });

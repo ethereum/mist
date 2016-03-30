@@ -4,6 +4,7 @@ Window communication
 @module ipcCommunicator
 */
 
+const _ = require('lodash');
 const app = require('app');  // Module to control application life.
 const appMenu = require('./menuItems');   
 const popupWindow = require('./popupWindow.js');
@@ -34,7 +35,7 @@ ipc.on('backendAction_closeApp', function() {
 ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId();
 
-    if(global.windows[windowId]) {
+    if(_.get(global.windows, windowId)) {
         global.windows[windowId].window.close();
         delete global.windows[windowId];
     }
@@ -42,7 +43,7 @@ ipc.on('backendAction_closePopupWindow', function(e) {
 ipc.on('backendAction_setWindowSize', function(e, width, height) {
     var windowId = e.sender.getId();
 
-    if(global.windows[windowId]) {
+    if(_.get(global.windows, windowId)) {
         global.windows[windowId].window.setSize(width, height);
         global.windows[windowId].window.center(); // ?
     }
@@ -51,12 +52,15 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
     var windowId = e.sender.getId();
 
-    if(global.windows[windowId]) {
-        global.windows[windowId].owner.send('windowMessage', global.windows[windowId].type, error, value);
+    var mainWin = global.mainWindow || {},
+        win = _.get(global.windows, windowId) || {};
 
-    }
-    if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed()) {
-        global.mainWindow.webContents.send('mistUI_windowMessage', global.windows[windowId].type, global.windows[windowId].owner.getId(), error, value);
+    if(win.owner) {
+        win.owner.send('windowMessage', win.type, error, value);
+
+        if(mainWin.webContents && !mainWin.webContents.isDestroyed()) {
+            mainWin.webContents.send('mistUI_windowMessage', win.type, win.owner.getId(), error, value);
+        }
     }
 });
 

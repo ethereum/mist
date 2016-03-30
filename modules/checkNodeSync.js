@@ -5,7 +5,7 @@ checks the current node whether its synching or not and how much it kept up alre
 @module checkNodeSync
 */
 
-const _ = require('underscore');
+const _ = require('lodash');
 const app = require('app');
 const ipc = require('electron').ipcMain;
 

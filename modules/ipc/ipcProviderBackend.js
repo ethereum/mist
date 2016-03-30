@@ -15,7 +15,7 @@ global.sockets = {};
 
 
 module.exports = function(){
-    const _ = require('underscore');
+    const _ = require('lodash');
     const ipc = require('electron').ipcMain;
     const net = require('net');
     const Socket = net.Socket;

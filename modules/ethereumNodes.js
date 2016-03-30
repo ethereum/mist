@@ -2,7 +2,7 @@
 @module ethereumNodes
 */
 
-const _ = require('underscore');
+const _ = require('lodash');
 const fs = require('fs');
 const app = require('app');
 const spawn = require('child_process').spawn;

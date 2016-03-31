@@ -23,7 +23,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-global.mode = 'mist';
+global.mode = 'wallet';
 
 global.version = packageJson.version;
 global.license = packageJson.license;

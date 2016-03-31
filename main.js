@@ -1,4 +1,5 @@
-global._ = require('underscore');
+global._ = require('./utils/underscore');
+
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
@@ -99,7 +100,7 @@ if(global.mode === 'wallet') {
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
-    console.log('UNCAUGHT EXCEPTION', error);
+    console.log('UNCAUGHT EXCEPTION', error.stack || error);
     // var stack = new Error().stack;
     // console.log(stack);
 

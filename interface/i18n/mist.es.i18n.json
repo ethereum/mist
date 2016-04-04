@@ -43,7 +43,7 @@
             },
             "window": {
                 "label": "Ventana",
-                "minimize": "Miniminar",
+                "minimize": "Minimizar",
                 "close": "Cerrar",
                 "toFront": "Traer Todo al Frente"
             },

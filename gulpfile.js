@@ -130,7 +130,6 @@ gulp.task('copy-files', ['clean:dist'], function() {
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-
 gulp.task('switch-production', ['clean:dist'], function() {
     return gulp.src(['./main.js'])
         .pipe(replace('global.production = false;', 'global.production = true;'))
@@ -179,7 +178,8 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 // needs to be copied, so the backend can use it
 gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
     return gulp.src([
-        './interface/i18n/*.*'
+        './interface/i18n/*.*',
+        './interface/project-tap.i18n'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });

@@ -1,4 +1,4 @@
-global._ = require('./utils/underscore');
+global._ = require('./modules/utils/underscore');
 
 const fs = require('fs');
 const electron = require('electron');

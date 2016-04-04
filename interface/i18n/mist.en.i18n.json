@@ -53,10 +53,10 @@
         },
         "errors": {
             "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you have already one running? Does it upgrades the database right now?",
+            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
             "timeSync": {
-                "title": "Your computers clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computers clock with a time sync server.",
+                "title": "Your computer's clock is not synced.",
+                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
                 "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
@@ -112,7 +112,7 @@
                 "enterPassword": "Enter master password",
                 "unlocking": "Unlocking...",
                 "errors": {
-                    "wrongPassword": "Password wrong, try again."
+                    "wrongPassword": "Password is wrong, try again."
                 }
             },
             "sendTransactionConfirmation": {
@@ -176,7 +176,7 @@
                     "learnReceipt": "Learn this recipe"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Wait a few more seconds until your node is started up and try again",
+                    "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
                     "unknownFile": "File not recognised.",
                     "passwordError": "Wrong password.",
                     "importFailed": "Couldn't import the file got: __error__"

@@ -18,6 +18,7 @@ const argv = require('yargs')
     .describe('mode', 'App mode: wallet, mist (default)')
     .describe('gethpath', 'Path to geth executable to use instead of default')
     .describe('ethpath', 'Path to eth executable to use instead of default')
+    .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
     .alias('m', 'mode')
     .help('h')
     .alias('h', 'help')
@@ -28,6 +29,9 @@ if (argv.version) {
     process.exit(0);
 }
 
+if (argv.ignoreGpuBlacklist) {
+    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
+}
 
 // GLOBAL Variables
 global.path = {
@@ -44,6 +48,7 @@ global.paths = {
     geth: argv.gethpath,
     eth: argv.ethpath,
 };
+
 
 global.version = packageJson.version;
 global.license = packageJson.license;

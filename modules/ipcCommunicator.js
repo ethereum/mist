@@ -98,7 +98,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
         if(data)
             console.log('Imported presale: ', data);
 
-        if(/Decryption failed|not equal to expected addr|could not decrypt/.match(data)) {
+        if(/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
             e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');
 
         // if imported, return the address

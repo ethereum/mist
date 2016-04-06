@@ -133,7 +133,7 @@ gulp.task('copy-files', ['clean:dist'], function() {
 gulp.task('switch-production', ['clean:dist'], function() {
     return gulp.src(['./main.js'])
         .pipe(replace('global.production = false;', 'global.production = true;'))
-        .pipe(replace('global.mode = \''+ (type === 'mist' ? 'wallet' : 'mist') +'\';', 'global.mode = \''+ type +'\';'))
+        .pipe(replace('global.mode = (argv.mode ? argv.mode : \'mist\');', 'global.mode = (argv.mode ? argv.mode : \''+ type +'\');'))
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 

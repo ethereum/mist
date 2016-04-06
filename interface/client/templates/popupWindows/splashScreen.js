@@ -26,7 +26,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     ipc.on('startScreenText', function(e, text, data){
         var translatedText = '';
 
-        if(text === 'logText' && showLog) {
+        if(text === 'logText' && showLog && data) {
             TemplateVar.set(template, 'logText', data);
             return;
         }

@@ -37,7 +37,7 @@ Requires electron version 0.37.2
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@0.36.9
+    $ npm install -g electron-prebuilt@0.37.2
 
 ### Installation
 
@@ -71,7 +71,7 @@ In the original window you can then start Mist with:
 
 ### Run the Wallet
 
-Add `--model wallet` to the Mist command-line.
+Add `--mode wallet` to the Mist command-line.
 
 Start the wallet app for development, *in a separate terminal window:*
 

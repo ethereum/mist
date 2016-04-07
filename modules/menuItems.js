@@ -52,7 +52,7 @@ var menuTempl = function(webviews) {
         ]
     });
 
-      // ACCOUNTS
+    // ACCOUNTS
     menu.push({
         label: i18n.t('mist.applicationMenu.accounts.label'),
         submenu: [

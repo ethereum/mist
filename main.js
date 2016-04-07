@@ -45,7 +45,7 @@ global.appName = 'Mist';
 
 global.production = false;
 
-global.mode = ('wallet' === argv.mode ? 'wallet' : 'mist');
+global.mode = (argv.mode ? argv.mode : 'mist');
 global.paths = {
     geth: argv.gethpath,
     eth: argv.ethpath,

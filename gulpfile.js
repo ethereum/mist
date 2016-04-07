@@ -102,7 +102,7 @@ gulp.task('set-variables-wallet', function () {
     type = 'wallet';
     filenameLowercase = 'ethereum-wallet';
     filenameUppercase = 'Ethereum-Wallet';
-    applicationName = 'Ξthereum Wallet';
+    applicationName = 'Ethereum Wallet';
 });
 
 
@@ -129,7 +129,6 @@ gulp.task('copy-files', ['clean:dist'], function() {
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
-
 
 gulp.task('switch-production', ['clean:dist'], function() {
     return gulp.src(['./main.js'])
@@ -179,7 +178,8 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 // needs to be copied, so the backend can use it
 gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
     return gulp.src([
-        './interface/i18n/*.*'
+        './interface/i18n/*.*',
+        './interface/project-tap.i18n'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });

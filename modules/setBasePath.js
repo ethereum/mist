@@ -11,7 +11,7 @@ module.exports = function(appPath) {
     // set the base path for relative assets in production mode
     if(remote.getGlobal('production') && ~location.origin.indexOf('file://')) {
         var base = document.createElement('base');
-        base.href = String(path.resolve(__dirname + '/../../'+ appPath)).replace('/interface','/app.asar/interface') + '/';
+        base.href = String(path.resolve(__dirname + '/../../'+ appPath)).replace(/\\/g,'/').replace('/interface','/app.asar/interface') + '/';
         document.getElementsByTagName('head')[0].appendChild(base);
     }
 };

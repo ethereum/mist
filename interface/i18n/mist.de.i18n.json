@@ -70,7 +70,9 @@
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ Blöcke übrig",
             "blockReceived": "Neuer Block empfangen",
-            "timeSinceBlock": "seit letztem Block",
+            "timeSinceBlock": "Abgelaufene Zeit seit dem letzten Block",
+            "blockNumber": "Ihre letzte Blocknummer",            
+            "testnetExplain": "Sie sind mit dem Testnetz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
             "peers": "Peers"
         },
         "sidebar": {

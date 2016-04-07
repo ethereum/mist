@@ -1,13 +1,11 @@
 
 var config = {
-    name: 'Mist'
+    name: 'Mist',
 };
 
 // change for wallet
 if(global.mode === 'wallet') {
-    config.name = 'Ethereum Wallet'
+    config.name = 'Ethereum Wallet';
 }
-
-
 
 module.exports = config;

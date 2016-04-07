@@ -1,9 +1,9 @@
 <template name="layout_browserBar">
-    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}}">
+    {{#with dapp}}
+    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}}">
         <button title="go back" class="back icon icon-arrow-left"></button>
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
-        {{#with dapp}}
             <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
                 <button class="dapp-info">
                     {{#if icon}}
@@ -42,7 +42,6 @@
                     {{> layout_browserBar_accounts}}
                 </div>
             </div>
-        {{/with}}
         
         {{#if isBrowser}}
             <button title="Add as app" class="add-tab icon icon-plus"></button>
@@ -51,4 +50,5 @@
         {{/if}}
 
     </div>
+    {{/with}}    
 </template>

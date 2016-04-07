@@ -3,7 +3,8 @@
 */
 
 const packageJson = require('./../package.json');
-
+const config = require('./../config');
+const remote = require('remote');
 
 module.exports = function(isWallet) {
 
@@ -67,9 +68,11 @@ module.exports = function(isWallet) {
     @class mist
     @constructor
     */
+    
     var mist = {
         callbacks: {},
         version: packageJson.version,
+        mode: remote.getGlobal('mode'),
         license: packageJson.license,
         platform: process.platform,
         requestAccount:  function(callback){

@@ -258,4 +258,40 @@ aside.sidebar {
             border-top-left-radius: 0;
         }
     }
+
+    .node-info {
+        display: flex;
+        top: initial;
+        bottom: @gridHeight;
+        left: @gridWidth/2;
+        flex-flow: row wrap;
+        
+        div, span {
+            padding: @gridHeight/2 1px;
+            flex: 1;
+            text-align: center;
+        }
+
+        progress {
+            flex: 1 100%;
+        }
+
+        .mining-indicator  {
+            flex: 3;
+        }
+
+        .block-number {
+            flex: 2;
+        }
+
+        .private-chain {
+            flex: 1 100%;
+            padding: 1px 5px 2px;
+            margin: @gridHeight/2 @gridWidth/4;
+            border-radius: 2px;
+            color: @colorWhite;
+            background-color: @colorError;
+            text-align: center;
+        }
+    }
 }

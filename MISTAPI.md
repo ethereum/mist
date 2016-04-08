@@ -169,13 +169,13 @@ None
 
 ### mist.sounds
 
-Provides a list of sounds
+Provides a list of sounds.
 
 ***
 
 ### mist.sounds.bip()
 
-Makes a bip counds
+Makes a bip sound.
 
 #### Parameters
 

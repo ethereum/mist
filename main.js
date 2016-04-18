@@ -11,6 +11,7 @@ const ipc = electron.ipcMain;
 const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
+const logger = require('./modules/utils/logger');
 
 // CLI options
 const argv = require('yargs')
@@ -20,6 +21,8 @@ const argv = require('yargs')
     .describe('gethpath', 'Path to geth executable to use instead of default')
     .describe('ethpath', 'Path to eth executable to use instead of default')
     .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
+    .describe('logfile', 'Logs will be written to this file')
+    .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
     .alias('m', 'mode')
     .help('h')
     .alias('h', 'help')
@@ -33,6 +36,10 @@ if (argv.version) {
 if (argv.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
+
+// logging setup
+logger.setup(argv);
+const log = logger.create('main');
 
 // GLOBAL Variables
 global.path = {
@@ -64,7 +71,6 @@ const ethereumNodes = require('./modules/ethereumNodes.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
-
 global.mainWindow = null;
 global.windows = {};
 global.webviews = [];
@@ -91,6 +97,8 @@ global.interfacePopupsUrl;
 
 // WALLET
 if(global.mode === 'wallet') {
+    log.info('Starting in Wallet mode');
+
     global.interfaceAppUrl = (global.production)
         ? 'file://' + __dirname + '/interface/wallet/index.html'
         : 'http://localhost:3050';
@@ -100,6 +108,8 @@ if(global.mode === 'wallet') {
 
 // MIST
 } else {
+    log.info('Starting in Mist mode');
+
     global.interfaceAppUrl = global.interfacePopupsUrl = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
@@ -126,12 +136,15 @@ if(global.mode === 'wallet') {
 
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
-    console.log('UNCAUGHT EXCEPTION', error.stack || error);
+    log.error('UNCAUGHT EXCEPTION', error);
+
     // var stack = new Error().stack;
     // console.log(stack);
 
     app.quit();
 });
+
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -141,7 +154,7 @@ app.on('window-all-closed', function() {
 
 // Listen to custom protocole incoming messages, needs registering of URL schemes
 app.on('open-url', function (e, url) {
-    console.log('Open URL', url);
+    log.info('Open URL', url);
 });
 
 
@@ -157,7 +170,7 @@ app.on('before-quit', function(event){
     // CLEAR open IPC sockets to geth
     _.each(global.sockets, function(socket){
         if(socket) {
-            console.log('Closing Socket ', socket.id);
+            log.info('Closing socket', socket.id);
             socket.destroy();
         }
     });
@@ -194,7 +207,7 @@ var appStartWindow;
 var nodeType = 'geth';
 var logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
-    console.log('NODE LOG:', data);
+    log.trace('NODE LOG:', data);
 
     // if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
     //     global.nodes[nodeType].stdout.removeListener('data', logFunction);
@@ -203,7 +216,7 @@ var logFunction = function(data) {
 
     // show line if its not empty or "------"
     if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
-        console.log('"'+ data +'"');
+        log.trace('"'+ data +'"');
         appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
     }
 };
@@ -313,7 +326,7 @@ app.on('ready', function() {
     // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
     timesync.checkEnabled(function (err, enabled) {
         if(err) {
-            console.error('Couldn\'t get time from NTP time sync server.', err);
+            log.error('Couldn\'t get time from NTP time sync server.', err);
             return;
         }
 
@@ -348,7 +361,7 @@ app.on('ready', function() {
 
         // try to connect
         socket.on('error', function(e){
-            // console.log('Geth connection REFUSED', count);
+            log.debug('Geth connection REFUSED', count);
 
             // if no geth is running, try starting your own
             if(count === 0) {
@@ -368,8 +381,9 @@ app.on('ready', function() {
                     global.network = fs.readFileSync(global.path.USERDATA + '/network', {encoding: 'utf8'});
                 } catch(e){
                 }
-                console.log('Node type: ', nodeType);
-                console.log('Network: ', global.network);
+
+                log.info('Node type: ', nodeType);
+                log.info('Network: ', global.network);
 
 
                 // If nothing else happens, show an error message in 120 seconds, with the node log text
@@ -432,7 +446,7 @@ app.on('ready', function() {
             }
         });
         socket.on('connect', function(data){
-            console.log('Geth connection FOUND');
+            log.info('Geth connection FOUND');
 
             if(appStartWindow) {
                 if(count === 0)
@@ -476,7 +490,7 @@ app.on('ready', function() {
 
                     ethereumNodes.stopNodes(function(){
                         ethereumNodes.startNode(geth ? 'geth' : 'eth', testnet, function(){
-                            console.log('Changed to ', (testnet ? 'testnet' : 'mainnet'));
+                            log.info('Changed to ', (testnet ? 'testnet' : 'mainnet'));
                             appMenu();
                         });
                     });
@@ -536,7 +550,7 @@ var startMainWindow = function(appStartWindow){
     }
 
     // and load the index.html of the app.
-    console.log('Loading Interface at '+ global.interfaceAppUrl);
+    log.info('Loading Interface at '+ global.interfaceAppUrl);
     global.mainWindow.loadURL(global.interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {

@@ -11,6 +11,7 @@
     "bignumber.js": "^2.1.4",
     "i18next": "^2.3.4",
     "log-rotate": "^0.2.7",
+    "log4js": "^0.6.35",
     "minimongo-standalone": "0.0.9",
     "numeral": "^1.5.3",
     "os-timesync": "^1.0.3",

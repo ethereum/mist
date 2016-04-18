@@ -5,6 +5,7 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 */
 
 var dechunker = require('./dechunker.js');
+const log = require('../utils/logger').create('ipcProviderBackend');
 
 /**
 make sockets globally available
@@ -104,7 +105,7 @@ module.exports = function(){
 
         if(!this.ipcSocket.writable) {
 
-            // console.log('IPCSOCKET '+ this.id +' CONNECTING..');
+            // log.info('IPCSOCKET '+ this.id +' CONNECTING..');
 
             this.ipcSocket = this.ipcSocket.connect({path: this.path});
 
@@ -166,7 +167,7 @@ module.exports = function(){
             dechunker(data, function(error, result){
 
                 if(error) {
-                    console.log('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                    log.info('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
                     _this.timeout();
                     return;
                 }
@@ -182,7 +183,7 @@ module.exports = function(){
 
                 // if(result && !_.isArray(result))
                 if(!result.id && !_.isArray(result))
-                    console.log('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
+                    log.info('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -202,7 +203,7 @@ module.exports = function(){
 
         this.ipcSocket.on('error', function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' ERROR', data);
+                log.info('IPCSOCKET '+ _this.id +' ERROR', data);
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
@@ -214,12 +215,12 @@ module.exports = function(){
         });
 
         // this.ipcSocket.on('drain', function(data){
-        //     console.log('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
+        //     log.info('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
         // });
 
         this.ipcSocket.on('timeout', function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' TIMEDOUT', data);
+                log.info('IPCSOCKET '+ _this.id +' TIMEDOUT', data);
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
@@ -232,7 +233,7 @@ module.exports = function(){
 
         this.ipcSocket.on('end', function(data){
             try {
-                console.log('IPCSOCKET '+ _this.id +' CONNECTION ENDED', data, _this.ipcSocket.writable);
+                log.debug('IPCSOCKET '+ _this.id +' CONNECTION ENDED', data, _this.ipcSocket.writable);
 
                 var id = _this.sender.getId(); // will throw an error, if webview is already closed
 
@@ -382,7 +383,7 @@ module.exports = function(){
             ipc.once('backendAction_unlockedAccount', function(ev, err, result){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
                     if(err || !result) {
-                        console.log('Confirmation error:', err);
+                        log.info('Confirmation error:', err);
 
                         // return error, to stop sending the request
                         if(!called) {
@@ -393,7 +394,7 @@ module.exports = function(){
                         // set the changed provided gas
                         filteredPayload.params[0].gas = result;
 
-                        console.log('Confirmed transaction on socket '+ _this.id +':', filteredPayload.params[0]);
+                        log.info('Confirmed transaction on socket '+ _this.id +':', filteredPayload.params[0]);
                         if(!called) {
                             callback(null, filteredPayload);
                         }
@@ -468,7 +469,7 @@ module.exports = function(){
         this.ipcSocket.removeAllListeners();
         this.ipcSocket.destroy();
 
-        console.log('SOCKET '+ this.id + ' DESTROYED!');
+        log.debug('SOCKET '+ this.id + ' DESTROYED!');
 
         if(global.sockets['id_'+ this.id])
             delete global.sockets['id_'+ this.id];
@@ -487,7 +488,7 @@ module.exports = function(){
     ipc.on('ipcProvider-create', function(event){
         var socket = global.sockets['id_'+ event.sender.getId()];
 
-        // console.log('Called ipcProvider-create');
+        // log.info('Called ipcProvider-create');
 
         if(socket) {
             socket.connect(event);
@@ -506,7 +507,7 @@ module.exports = function(){
         var socket = global.sockets['id_'+ event.sender.getId()];
         if(!socket) return;
 
-        // console.log('Called ipcProvider-destroy');
+        // log.info('Called ipcProvider-destroy');
 
         if(socket) {
             socket.destroy();
@@ -534,7 +535,7 @@ module.exports = function(){
             return;
         }
 
-        // console.log('SEND REQ', event.sender.getId());
+        // log.info('SEND REQ', event.sender.getId());
 
         var jsonPayload = JSON.parse(payload),
             filteredPayload = socket.filterRequestResponse(jsonPayload);
@@ -563,7 +564,7 @@ module.exports = function(){
                 // SEND REQUEST
                 var id = result.id || result[0].id;
                 
-                // console.log('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (result.method || result[0].method) + ' Params: '+ (result.params || result[0].params));
+                // log.info('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (result.method || result[0].method) + ' Params: '+ (result.params || result[0].params));
 
                 // add the payload to the event, so we can time it out if necessary
                 event.payload = result;

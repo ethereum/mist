@@ -4,6 +4,9 @@ Gets the right IPC path
 @module getIpcPath
 */
 
+const log = require('../utils/logger').create('getIpcPath');
+
+
 module.exports = function() {
     var p = require('path');
     var path = global.path.HOME;
@@ -19,6 +22,7 @@ module.exports = function() {
     if(process.platform === 'win32')
         path = '\\\\.\\pipe\\geth.ipc';
     
-    console.log('CONNECT to IPC PATH: '+ path);
+    log.debug('CONNECT to IPC PATH: '+ path);
+
     return path;
 };

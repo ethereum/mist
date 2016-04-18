@@ -9,6 +9,7 @@ const spawn = require('child_process').spawn;
 const ipc = require('electron').ipcMain;
 const getNodePath = require('./getNodePath.js');
 const popupWindow = require('./popupWindow.js');
+const log = require('./utils/logger').create('ethereumNodes');
 const logRotate = require('log-rotate');
 
 module.exports = {
@@ -18,7 +19,7 @@ module.exports = {
     @method stopNodes
     */
     stopNodes: function(callback) {
-        console.log('Stopping nodes...');
+        log.info('Stopping nodes...');
 
         var node = global.nodes.geth || global.nodes.eth;
 
@@ -67,7 +68,7 @@ module.exports = {
 
         var binPath = getNodePath(type);
 
-        console.log('Start node from '+ binPath);
+        log.info('Start node from '+ binPath);
 
         if(type === 'eth') {
 
@@ -121,9 +122,9 @@ module.exports = {
         // set standard node
         fs.writeFile(global.path.USERDATA + '/node', writeType, function(err) {
             if(!err) {
-                console.log('Saved standard node "'+ writeType +'" to file: '+ global.path.USERDATA + '/node');
+                log.debug('Saved standard node "'+ writeType +'" to file: '+ global.path.USERDATA + '/node');
             } else {
-                console.log(err);
+                log.error(err);
             }
         });
 
@@ -133,9 +134,9 @@ module.exports = {
         // write network type
         fs.writeFile(global.path.USERDATA + '/network', global.network , function(err) {
             if(!err) {
-                console.log('Saved network type "'+ global.network +'" to file: '+ global.path.USERDATA + '/network');
+                log.debug('Saved network type "'+ global.network +'" to file: '+ global.path.USERDATA + '/network');
             } else {
-                console.log(err);
+                log.error(err);
             }
         });
     },
@@ -157,7 +158,7 @@ module.exports = {
 
             _this.stopNodes();
 
-            console.log('Starting '+ type +' node...');
+            log.info('Starting '+ type +' node...');
 
             // wrap the starting callback
             var callCb = function(err, res){
@@ -214,7 +215,7 @@ module.exports = {
                     // set default to geth, to prevent beeing unable to start the wallet
                     _this._writeNodeToFile('geth', testnet);
 
-                    console.log('Password wrong '+ type +' node!');
+                    log.warn('Password wrong '+ type +' node!');
                 }
             });
 

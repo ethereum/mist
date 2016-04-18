@@ -9,6 +9,9 @@ const _ = require('underscore');
 const app = require('app');
 const ipc = require('electron').ipcMain;
 
+const log = require('./utils/logger').create('checkNodeSync');
+
+
 // var dechunker = require('./ipc/dechunker.js');
 
 /**
@@ -21,8 +24,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
         timeoutId,
         cbCalled = false;
 
-
-    console.log('Checking node sync status...');
+    log.info('Checking node sync status...');
 
     global.nodeConnector.connect();
 
@@ -40,7 +42,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
             global.nodeConnector.send('eth_getBlockByNumber', ['latest', false], function(e, result){
                 var now = Math.floor(new Date().getTime() / 1000);
 
-                console.log('Time between last block', (now - +result.timestamp) + 's');
+                log.debug('Time between last block', (now - +result.timestamp) + 's');
 
                 // need sync if > 2 minutes
                 if(now - +result.timestamp > 60 * 2) {
@@ -56,7 +58,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
 
                 // start app
                 } else {
-                    console.log('No sync necessary, starting app!');
+                    log.info('No sync necessary, starting app!');
                     callbackSplash();
                     cbCalled = true;
                 }
@@ -72,7 +74,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
         if(result.error) {
             // if sync method is not implemented, just start the app
             if(result.error.code === -32601) {
-                console.log('Syncing method not implemented, start app anyway.');
+                log.info('Syncing method not implemented, start app anyway.');
 
                 clearInterval(intervalId);
                 clearTimeout(timeoutId);
@@ -90,7 +92,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
 
             // If ready!
             if(now - +result.timestamp < 120 && !cbCalled) {
-                console.log('Sync finished, starting app!');
+                log.info('Sync finished, starting app!');
 
                 clearInterval(intervalId);
                 clearTimeout(timeoutId);

@@ -3,6 +3,8 @@
 */
 
 
+const log = require('./utils/logger').create('syncMinimongo');
+
 
 module.exports = function(db, webContents){
 
@@ -40,14 +42,14 @@ module.exports = function(db, webContents){
     ipc.on('minimongo-add', function(event, args) {
 
         if(!db.findOne(args.id)) {
-            // console.log('add', args.id);
+            // log.info('add', args.id);
             args.fields._id = args.id;
             db.insert(args.fields);
         }
     });
     ipc.on('minimongo-changed', function(event, args) {
 
-        // console.log('updated', args.id, args.fields);
+        // log.info('updated', args.id, args.fields);
         db.update(args.id, {$set: args.fields});
     });
     ipc.on('minimongo-removed', function(event, id) {

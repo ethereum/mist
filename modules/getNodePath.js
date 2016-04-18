@@ -8,6 +8,7 @@ Gets the right Node path
 
 const path = require('path');
 const binaryPath = path.resolve(__dirname + '/../nodes');
+const log = require('./utils/logger').create('getNodePath');
 
 // cache
 const resolvedPaths = {};
@@ -45,7 +46,7 @@ module.exports = function(type) {
         resolvedPaths[type] = binPath;
     }
 
-    console.log(`Resolved path for ${type}: ${resolvedPaths[type]}`);
+    log.debug(`Resolved path for ${type}: ${resolvedPaths[type]}`);
 
     return resolvedPaths[type];
 };

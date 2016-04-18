@@ -4,6 +4,7 @@
 
 const _ = require('underscore');
 const dechunker = require('./dechunker.js');
+const log = require('../utils/logger').create('nodeConnector');
 const net = require('net');
 var idCount = 1;
 
@@ -21,14 +22,14 @@ var NodeConnector = function(ipcPath) {
 
     // error
     this.socket.on('error', function(error){
-        console.log('NODECONNECTOR ERROR', error);
+        log.warn('NODECONNECTOR ERROR', error);
     });
 
     // wait for data on the socket
     this.socket.on('data', function(data){
         dechunker(data, function(error, result){
             if(error) {
-                console.log('NODECONNECTOR TIMEOUT ERROR', error);
+                log.error('NODECONNECTOR TIMEOUT ERROR', error);
                 _.each(_this.callbacks, function(cb){
                     cb(error);
                 });

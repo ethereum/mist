@@ -5,6 +5,7 @@ const MenuItem = require('menu-item');
 const Menu = require('menu');
 const shell = require('electron').shell;
 const config = require('../config.js');
+const log = require('./utils/logger').create('menuItems');
 const ipc = require('electron').ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 const fs = require('fs');
@@ -228,7 +229,7 @@ var menuTempl = function(webviews) {
                     log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
                     log = '...'+ log.slice(-1000);
                 } catch(e){
-                    console.log(e);
+                    log.info(e);
                     log = 'Couldn\'t load log file.';
                 };
 
@@ -345,7 +346,7 @@ var menuTempl = function(webviews) {
 
             if(!global.mining) {
                 global.nodeConnector.send('miner_start', [1], function(e, result){
-                    console.log('miner_start', result, e);
+                    log.info('miner_start', result, e);
                     if(result === true) {
                         global.mining = !global.mining;
                         createMenu(webviews);
@@ -353,7 +354,7 @@ var menuTempl = function(webviews) {
                 });
             } else {
                 global.nodeConnector.send('miner_stop', [], function(e, result){
-                    console.log('miner_stop', result, e);
+                    log.info('miner_stop', result, e);
                     if(result === true) {
                         global.mining = !global.mining;
                         createMenu(webviews);

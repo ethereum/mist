@@ -15,8 +15,6 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-
-
     Meteor.setTimeout(function() {
         if(!Tabs.findOne('browser')) {
             Tabs.insert({
@@ -41,6 +39,18 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
+    // send console logging to IPC backend
+    ['trace', 'debug', 'info', 'warn', 'error', 'log'].forEach(function(method) {
+        console[method] = (function(origMethod) {
+            return function() {
+                origMethod.apply(console, arguments);
+                ipc.send('console_log', 'mist', ('log' === method ? 'info' : method), arguments);
+            }
+        })(console[method]);
+    }); 
+
+    console.log('Meteor starting up...');
+
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {
         if(e || !sync)

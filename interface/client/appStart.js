@@ -41,10 +41,19 @@ mistInit = function(){
 Meteor.startup(function(){
     // send console logging to IPC backend
     ['trace', 'debug', 'info', 'warn', 'error', 'log'].forEach(function(method) {
+        console['orig_' + method] = console[method];
         console[method] = (function(origMethod) {
             return function() {
                 origMethod.apply(console, arguments);
-                ipc.send('console_log', 'mist', ('log' === method ? 'info' : method), arguments);
+
+                try {
+                    ipc.send('console_log', 'mist', ('log' === method ? 'info' : method), 
+                        JSON.stringify(arguments)
+                    );                    
+                } catch (err) {
+                    console.orig_error('Unable to stringify arguments to log to backend', err.stack);
+                }
+
             }
         })(console[method]);
     }); 

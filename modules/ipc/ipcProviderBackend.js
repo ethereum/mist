@@ -600,17 +600,19 @@ module.exports = function(){
 
     const uiLoggers = {};
 
-    ipc.on('console_log', function(event, id, logLevel, logItems) {
-        let loggerId = `(ui: ${id})`;
+    ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
+        try {
+            let loggerId = `(ui: ${id})`;
 
-        let windowLogger = uiLoggers[loggerId];
+            let windowLogger = uiLoggers[loggerId];
 
-        if (!windowLogger) {
-            windowLogger = uiLoggers[loggerId] = logger.create(loggerId);
-        }
+            if (!windowLogger) {
+                windowLogger = uiLoggers[loggerId] = logger.create(loggerId);
+            }
 
-        if (windowLogger[logLevel]) {
-            windowLogger[logLevel].apply(windowLogger, _.toArray(logItems));
+            windowLogger[logLevel].apply(windowLogger, _.toArray(JSON.parse(logItemsStr)));
+        } catch (err) {
+            log.error(err);
         }
     });
 };

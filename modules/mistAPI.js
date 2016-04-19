@@ -91,7 +91,7 @@ module.exports = function(isWallet) {
                     sound.bip.play();
                 // if mist
                 else
-                    ipc.sendToHost('mistAPI_sound', 'bip');
+                    ipc.sendToHost('mistAPI_sound', sound.bip.src);
             }
         },
         menu: {

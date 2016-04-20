@@ -71,8 +71,6 @@ In the original window you can then start Mist with:
 
 ### Run the Wallet
 
-Add `--mode wallet` to the Mist command-line.
-
 Start the wallet app for development, *in a separate terminal window:*
 
     $ cd mist/interface && meteor

@@ -71,7 +71,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
     var cb = function(error, result){
     
         // error occured, ignore
-        if(error || result.error) {
+        if(error || (result && result.error)) {
             // if sync method is not implemented, just start the app
             if(result && result.error.code === -32601) {
                 log.info('Syncing method not implemented, start app anyway.');

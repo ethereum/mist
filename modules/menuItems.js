@@ -274,7 +274,7 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.2.3 (C++) [experimental!]',
+                label: 'Eth 1.2.4 (C++) [experimental!]',
                 checked: !!global.nodes.eth,
                 enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.eth),
                 type: 'checkbox',

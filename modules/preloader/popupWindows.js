@@ -2,6 +2,7 @@
 @module preloader PopupWindows
 */
 
+require('./console-log-capture')('popup');
 const ipc = require('electron').ipcRenderer;
 require('../openExternal.js');
 const mist = require('../mistAPI.js');

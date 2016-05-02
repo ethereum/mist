@@ -15,8 +15,12 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
+    console.debug('Init Mist');
+
     Meteor.setTimeout(function() {
         if(!Tabs.findOne('browser')) {
+            console.debug('Insert tabs');
+
             Tabs.insert({
                 _id: 'browser',
                 url: 'about:blank',
@@ -39,25 +43,6 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
-    // send console logging to IPC backend
-    ['trace', 'debug', 'info', 'warn', 'error', 'log'].forEach(function(method) {
-        console['orig_' + method] = console[method];
-        console[method] = (function(origMethod) {
-            return function() {
-                origMethod.apply(console, arguments);
-
-                try {
-                    ipc.send('console_log', 'mist', ('log' === method ? 'info' : method), 
-                        JSON.stringify(arguments)
-                    );                    
-                } catch (err) {
-                    console.orig_error('Unable to stringify arguments to log to backend', err.stack);
-                }
-
-            }
-        })(console[method]);
-    }); 
-
     console.log('Meteor starting up...');
 
     // check that it is not syncing before
@@ -67,9 +52,10 @@ Meteor.startup(function(){
     });
 
 
+    console.debug('Setting language');
 
     // SET default language
-    if(Cookie.get('TAPi18next')) {
+    if(Cookie.get('TAPi18next')) {        
         TAPi18n.setLanguage(Cookie.get('TAPi18next'));
     } else {
         var userLang = navigator.language || navigator.userLanguage,

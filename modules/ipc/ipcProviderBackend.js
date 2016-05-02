@@ -597,24 +597,6 @@ module.exports = function(){
     ipc.on('ipcProvider-writeSync', function(event, payload){
         sendRequest(event, payload, true);
     });
-
-    const uiLoggers = {};
-
-    ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
-        try {
-            let loggerId = `(ui: ${id})`;
-
-            let windowLogger = uiLoggers[loggerId];
-
-            if (!windowLogger) {
-                windowLogger = uiLoggers[loggerId] = logger.create(loggerId);
-            }
-
-            windowLogger[logLevel].apply(windowLogger, _.toArray(JSON.parse(logItemsStr)));
-        } catch (err) {
-            log.error(err);
-        }
-    });
 };
 
 

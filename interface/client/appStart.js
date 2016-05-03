@@ -15,19 +15,25 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-
+    console.log('Initialise Mist');
 
     Meteor.setTimeout(function() {
+        if (0 <= location.search.indexOf('reset-tabs')) {
+            console.log('Resetting UI tabs');
+            
+            Tabs.remove({});
+        }
+
         if(!Tabs.findOne('browser')) {
             Tabs.insert({
                 _id: 'browser',
-                url: 'about:blank',
+                url: 'https://ethereum.org',
                 position: 0
             });
             
             Tabs.insert({
                 url: 'http://ethereum-dapp-wallet.meteor.com',
-                position: 1,
+                position: 0,
                 permissions: {
                     accounts: web3.eth.accounts
                 }
@@ -41,12 +47,13 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
+    console.log('Meteor starting up');
+
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {
         if(e || !sync)
             mistInit();
     });
-
 
 
     // SET default language

@@ -42,7 +42,7 @@ Object.assign(HttpCompatSocket.prototype, {
         this.call(JSON.stringify({
             jsonrpc: "2.0",
             id: 0,
-            method: "eth_syncing",
+            method: "eth_accounts",
             params: []
         })).then((res) => {
             if (res.statusCode === 200) {

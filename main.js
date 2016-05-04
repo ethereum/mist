@@ -116,30 +116,9 @@ if(global.mode === 'wallet') {
 }
 
 
-// const getCurrentKeyboardLayout = require('keyboard-layout');
-// const etcKeyboard = require('etc-keyboard');
-// console.log(getCurrentKeyboardLayout());
-// etcKeyboard(function (err, layout) {
-//     console.log('KEYBOARD:', layout);
-// });
-
-
-// const Menu = require('menu');
-// const Tray = require('tray');
-// var appIcon = null;
-
-
-
-// const processRef = global.process;
-// process.nextTick(function() { global.process = processRef; });
-
-
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
     log.error('UNCAUGHT EXCEPTION', error);
-
-    // var stack = new Error().stack;
-    // console.log(stack);
 
     app.quit();
 });
@@ -157,10 +136,6 @@ app.on('open-url', function (e, url) {
     log.info('Open URL', url);
 });
 
-
-// app.on('will-quit', function(event){
-//     event.preventDefault()
-// });
 
 var killedSockets = false;
 app.on('before-quit', function(event){
@@ -186,33 +161,12 @@ app.on('before-quit', function(event){
 });
 
 
-// Emitted when the application is activated while there is no opened windows.
-// It usually happens when a user has closed all of application's windows and then
-// click on the application's dock icon.
-// app.on('activate-with-no-open-windows', function () {
-//     if (global.mainWindow) {
-//         global.mainWindow.show();
-//     }
-// });
-
-
-// append ignore GPU blacklist on linux
-// if(process.platform === 'freebsd' ||
-//    process.platform === 'linux' ||
-//    process.platform === 'sunos') {
-//     app.commandLine.appendSwitch('ignore-cpu-blacklist');
-// }
 
 var appStartWindow;
 var nodeType = 'geth';
 var logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
     log.trace('NODE LOG:', data);
-
-    // if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
-    //     global.nodes[nodeType].stdout.removeListener('data', logFunction);
-    //     global.nodes[nodeType].stderr.removeListener('data', logFunction);
-    // }
 
     // show line if its not empty or "------"
     if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
@@ -236,17 +190,6 @@ app.on('ready', function() {
 
     // add menu already here, so we have copy and past functionality
     appMenu();
-
-
-    // appIcon = new Tray('./icons/icon-tray.png');
-    // var contextMenu = Menu.buildFromTemplate([
-    //     { label: 'Item1', type: 'radio' },
-    //     { label: 'Item2', type: 'radio' },
-    //     { label: 'Item3', type: 'radio', checked: true },
-    //     { label: 'Item4', type: 'radio' },
-    // ]);
-    // appIcon.setToolTip('This is my application.');
-    // appIcon.setContextMenu(contextMenu);
 
 
     // Create the browser window.
@@ -376,10 +319,12 @@ app.on('ready', function() {
                 try {
                     nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
                 } catch(e){
+                    console.error('Unable to read node type', e.stack);
                 }
                 try {
                     global.network = fs.readFileSync(global.path.USERDATA + '/network', {encoding: 'utf8'});
                 } catch(e){
+                    console.error('Unable to read network id', e.stack);
                 }
 
                 log.info('Node type: ', nodeType);
@@ -507,7 +452,6 @@ app.on('ready', function() {
                     popupWindow.loadingWindow.show();
 
                     ipc.removeAllListeners('onBoarding_changeNet');
-                    ipc.removeAllListeners('onBoarding_importPresaleFile');
                     ipc.removeAllListeners('onBoarding_launchApp');
 
                     startMainWindow(appStartWindow);
@@ -576,7 +520,6 @@ var startMainWindow = function(appStartWindow){
 
 
     // instantiate the application menu
-    // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
         global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
         appMenu(global.webviews);

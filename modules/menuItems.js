@@ -338,7 +338,7 @@ var menuTempl = function(webviews) {
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
-        accelerator: 'CommandOrControl+M',
+        accelerator: 'CommandOrControl+Shift+M',
         enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
         click: function(){
             // TODO remove on new RPC

@@ -75,10 +75,6 @@ global.mainWindow = null;
 global.windows = {};
 global.webviews = [];
 
-global.nodes = {
-    geth: null,
-    eth: null
-};
 global.mining = false;
 
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
@@ -168,6 +164,7 @@ const NODE_LOGGER = logger.create('eth-node');
 
 const logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
+
     NODE_LOGGER.trace(data);
 
     // show line if its not empty or "------"
@@ -290,9 +287,7 @@ app.on('ready', function() {
     appStartWindow.webContents.on('did-finish-load', function() {
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const socket = global.gethSocket = new (require('./modules/socket'))('geth-ipc');
-        var intervalId = errorTimeout = null;
-        var count = 0;
+        const socket = global.gethIpcSocket = new (require('./modules/socket'))('geth-ipc');
 
         socket.connect({ path: ipcPath })
             .catch((err) => {
@@ -331,7 +326,7 @@ app.on('ready', function() {
                             });
                     })
                     .catch((err) => {
-                        const log = ethereumNode.getNodeLog();
+                        let log = ethereumNode.getNodeLog();
 
                         if (log) {
                             log = '...'+ log.slice(-1000);
@@ -351,11 +346,15 @@ app.on('ready', function() {
                             message: global.i18n.t('mist.errors.nodeConnect'),
                             detail: log
                         }, function(){});
-                        
                     });
             })
             .then(() => {
+                if (!socket.isConnected || !ethereumNode.isRunning()) {
+                    return;
+                }
+
                 /* At this point Geth is running and the socket is connected. */
+
                 log.info('Connected via IPC to geth.');
 
                 if (ethereumNode.isRunning()) {
@@ -375,65 +374,72 @@ app.on('ready', function() {
                 //             socket.connect({path: ipcPath});
                 //     }, 200);
 
-            });
+                checkNodeSync(
+                    appStartWindow,
+                    // -> callback splash screen finished
+                    function(e) {
+                        if(appStartWindow) {
+                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+                        }
+                        clearSocket(socket);
+                        startMainWindow(appStartWindow);
 
-        });
-        socket.on('connect', function(data){
-            checkNodeSync(appStartWindow,
-            // -> callback splash screen finished
-            function(e){
+                    // -> callback onboarding
+                    }, 
+                    function(){
+                        if(appStartWindow) {
+                            appStartWindow.close();
+                        }
+                        appStartWindow = null;
 
-                if(appStartWindow)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-                clearSocket(socket);
-                startMainWindow(appStartWindow);
-
-            // -> callback onboarding
-            }, function(){
-
-                if(appStartWindow)
-                    appStartWindow.close();
-                appStartWindow = null;
-
-                var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
-                // onboardingWindow.openDevTools();
-                onboardingWindow.on('close', function(){
-                    app.quit();
-                });
-
-                // change network types (mainnet, testnet)
-                ipc.on('onBoarding_changeNet', function(e, testnet) {
-                    var geth = !!global.nodes.geth;
-
-                    ethereumNode.stopNodes(function(){
-                        ethereumNode.start(geth ? 'geth' : 'eth', testnet, function(){
-                            log.info('Changed to ', (testnet ? 'testnet' : 'mainnet'));
-                            appMenu();
+                        var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
+                        // onboardingWindow.openDevTools();
+                        onboardingWindow.on('close', function(){
+                            app.quit();
                         });
-                    });
-                });
-                // launch app
-                ipc.on('onBoarding_launchApp', function(e) {
-                    clearSocket(socket);
 
-                    // prevent that it closes the app
-                    onboardingWindow.removeAllListeners('close');
-                    onboardingWindow.close();
-                    onboardingWindow = null;
+                        // change network types (mainnet, testnet)
+                        ipc.on('onBoarding_changeNet', function(e, testnet) {
+                            let newType = ethereumNode.type;
+                            let newNetwork = testnet ? 'test' : 'main';
 
-                    popupWindow.loadingWindow.show();
+                            ethereumNode.stop()
+                                .then(() => {
+                                    return ethereumNode.start(newType, newNetwork)
+                                        .then(() => {
+                                            log.info('Changed node', newType, newNetwork);
+                                            appMenu();
+                                        });
+                                })
+                                .catch((err) => {
+                                    log.error('Error changing network', err);
+                                });
+                            });
+                        });
 
-                    ipc.removeAllListeners('onBoarding_changeNet');
-                    ipc.removeAllListeners('onBoarding_launchApp');
+                        // launch app
+                        ipc.on('onBoarding_launchApp', function(e) {
+                            clearSocket(socket);
 
-                    startMainWindow(appStartWindow);
-                });
+                            // prevent that it closes the app
+                            onboardingWindow.removeAllListeners('close');
+                            onboardingWindow.close();
+                            onboardingWindow = null;
 
-            });
-        });
-    });
+                            popupWindow.loadingWindow.show();
 
-});
+                            ipc.removeAllListeners('onBoarding_changeNet');
+                            ipc.removeAllListeners('onBoarding_launchApp');
+
+                            startMainWindow(appStartWindow);
+                        });
+                    }
+                );
+            }); /* socket connected successfully to geth */;
+
+    }); /* on appStartWindow did-finish-load */
+
+}); /* on app ready */
 
 
 /**
@@ -458,12 +464,8 @@ Start the main window and all its processes
 @method startMainWindow
 */
 var startMainWindow = function(appStartWindow){
-
     // remove the splash screen logger
-    if(global.nodes[NODE_TYPE]) {
-        global.nodes[NODE_TYPE].stdout.removeListener('data', logFunction);
-        global.nodes[NODE_TYPE].stderr.removeListener('data', logFunction);
-    }
+    ethereumNode.removeListener('data', logFunction);
 
     // and load the index.html of the app.
     log.info('Loading Interface at '+ global.interfaceAppUrl);
@@ -475,8 +477,9 @@ var startMainWindow = function(appStartWindow){
         global.mainWindow.show();
         // global.mainWindow.center();
 
-        if(appStartWindow)
+        if(appStartWindow) {
             appStartWindow.close();
+        }
         appStartWindow = null;
     });
 

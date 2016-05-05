@@ -13,10 +13,19 @@ const EventEmitter = require('events').EventEmitter;
  */
 class Socket extends EventEmitter {
     constructor (name) {
+        super();
+        
         let _name = 'Socket' + (name ? `(${name})` : '');
 
         this._log = logger.create(_name);
+        this._state = null;
     }
+
+
+    get isConnected () {
+        return STATE.CONNECTING === this._state;
+    }
+
 
     /**
      * Connect to host.
@@ -34,30 +43,32 @@ class Socket extends EventEmitter {
             .then(() => {
                 this._log.debug('Connecting...');
 
-                this._socket.state = Socket.CONNECTING;
+                this._state = STATE.CONNECTING;
 
                 return new Q((resolve, reject) => {
                     this._socket.once('connect', () => {
                         this._log.debug('Connected!');
 
-                        this._socket.state = Socket.CONNECTED;
+                        this._state = STATE.CONNECTED;
 
                         resolve();
                     });
 
                     this._socket.once('error', (err) => {
-                        if (Socket.CONNECTING === this._socket.state) {
+                        if (STATE.CONNECTING === this._state) {
                             this._log.error('Connection error', err);
 
-                            this._socket.state = Socket.ERROR;
+                            this._state = STATE.ERROR;
 
                             return reject(new Error(`Unable to connect to socket: ${err.message}`));
                         }
                     });
 
                     if (options.timeout) {
+                        this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
+
                         setTimeout(() => {
-                            if (Socket.CONNECTING === this._socket.state) {
+                            if (STATE.CONNECTING === this._state) {
                                 this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
                             }
                         }, options.timeout);
@@ -78,17 +89,17 @@ class Socket extends EventEmitter {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
 
-                this._socket.status = Socket.DISCONNECTING;
+                this._socket.status = STATE.DISCONNECTING;
 
                 let timer = setTimeout(() => {
-                    this._socket.status = Socket.ERROR;
+                    this._socket.status = STATE.ERROR;
 
                     reject(new Error('Disconnection timed out'));
                 }, 10000 /* wait 10 seconds for disconnection */)
 
                 this._socket.once('close', () => {
                     // if we manually killed it then all good
-                    if (Socket.DISCONNECTING === this._socket.status) {
+                    if (STATE.DISCONNECTING === this._socket.status) {
                         clearTimeout(timer);
 
                         resolve();
@@ -115,7 +126,7 @@ class Socket extends EventEmitter {
         this._log.debug('Resetting socket');
 
         return Q.try(() => {
-            if (Socket.CONNECTED === this._socket.state) {
+            if (STATE.CONNECTED === this._state) {
                 this._log.debug('Disconnecting prior to reset');
 
                 return this.disconnect();
@@ -126,7 +137,7 @@ class Socket extends EventEmitter {
 
                 this._socket.on('close', (hadError) => {
                     // if we did the disconnection then all good
-                    if (Socket.DISCONNECTING === this._socket.status) {
+                    if (STATE.DISCONNECTING === this._socket.status) {
                       return;
                     }
 
@@ -147,7 +158,7 @@ class Socket extends EventEmitter {
 
                 this._socket.on('error', (err) => {
                     // connection errors will be handled elsewhere
-                    if (Socket.CONNECTING === this._socket.state) {
+                    if (STATE.CONNECTING === this._state) {
                       return;
                     }
 
@@ -160,7 +171,7 @@ class Socket extends EventEmitter {
 }
 
 
-const Socket.SOCKET_STATE = {
+const STATE = Socket.STATE = {
     CREATED: 0,
     CONNECTING: 1,
     CONNECTED: 2,

@@ -1,3 +1,5 @@
+"use strict";
+
 global._ = require('./modules/utils/underscore');
 
 const fs = require('fs');
@@ -133,13 +135,22 @@ app.on('open-url', function (e, url) {
 
 
 var killedSockets = false;
+
 app.on('before-quit', function(event){
-    if(!killedSockets)
+    if(!killedSockets) {
         event.preventDefault();
+    }
+
+    if (this.nodeIpcSocket) {
+        this.nodeIpcSocket.destroy()
+            .catch((err) => {
+                log.error('Error shutting down node IPC socket');
+            });
+    }
 
     // CLEAR open IPC sockets to geth
-    _.each(global.sockets, function(socket){
-        if(socket) {
+    _.each(global.sockets || {}, function(socket){
+        if (socket) {
             log.info('Closing socket', socket.id);
             socket.destroy();
         }
@@ -149,8 +160,9 @@ app.on('before-quit', function(event){
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
-        ethereumNode.stopAll().then(function() {
-            app.quit();
+
+        ethereumNode.stop().then(function() {
+            app.quit(); 
         });
     }, 500);
 });
@@ -287,11 +299,11 @@ app.on('ready', function() {
     appStartWindow.webContents.on('did-finish-load', function() {
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const socket = global.gethIpcSocket = new (require('./modules/socket'))('geth-ipc');
+        const socket = global.nodeIpcSocket = new (require('./modules/socket'))('geth-ipc');
 
         socket.connect({ path: ipcPath })
             .catch((err) => {
-                log.warn('Failed to connect to geth. Maybe it\'s not running so starting our own');
+                log.warn('Failed to connect to geth. Maybe it\'s not running so let\'s start our own...');
 
                 if (appStartWindow) {
                     log.debug('Tell UI we are going to start a node');
@@ -349,16 +361,19 @@ app.on('ready', function() {
                     });
             })
             .then(() => {
-                if (!socket.isConnected || !ethereumNode.isRunning()) {
-                    return;
+                if (!socket.isConnected) {
+                    log.info('Either geth didn\'t start or IPC socket failed to connect.');
+
+                    return app.quit();
                 }
 
                 /* At this point Geth is running and the socket is connected. */
 
                 log.info('Connected via IPC to geth.');
 
-                if (ethereumNode.isRunning()) {
+                if (ethereumNode.isRunning) {
                     ethereumNode.on('data', logFunction);
+
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
                 } else {
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
@@ -381,7 +396,9 @@ app.on('ready', function() {
                         if(appStartWindow) {
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
                         }
-                        clearSocket(socket);
+
+                        socket.destroy();
+
                         startMainWindow(appStartWindow);
 
                     // -> callback onboarding
@@ -408,18 +425,18 @@ app.on('ready', function() {
                                     return ethereumNode.start(newType, newNetwork)
                                         .then(() => {
                                             log.info('Changed node', newType, newNetwork);
+
                                             appMenu();
                                         });
                                 })
                                 .catch((err) => {
                                     log.error('Error changing network', err);
                                 });
-                            });
                         });
 
                         // launch app
                         ipc.on('onBoarding_launchApp', function(e) {
-                            clearSocket(socket);
+                            socket.destroy();
 
                             // prevent that it closes the app
                             onboardingWindow.removeAllListeners('close');
@@ -442,20 +459,6 @@ app.on('ready', function() {
 }); /* on app ready */
 
 
-/**
-Clears the socket
-
-@method clearSocket
-*/
-var clearSocket = function(socket, timeout){
-    if(timeout) {
-        ethereumNode.stopNodes();
-    }
-
-    socket.removeAllListeners();
-    socket.destroy();
-    socket = null;
-}
 
 
 /**

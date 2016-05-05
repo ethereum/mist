@@ -23,7 +23,7 @@ class Socket extends EventEmitter {
 
 
     get isConnected () {
-        return STATE.CONNECTING === this._state;
+        return STATE.CONNECTED === this._state;
     }
 
 
@@ -91,6 +91,9 @@ class Socket extends EventEmitter {
 
                 this._socket.status = STATE.DISCONNECTING;
 
+                // remove all existing listeners
+                this._socket.removeAllListeners();
+
                 let timer = setTimeout(() => {
                     this._socket.status = STATE.ERROR;
 
@@ -120,6 +123,15 @@ class Socket extends EventEmitter {
 
 
     /**
+     * An alias to `disconnect()`.
+     * @return {Promise}
+     */
+    destroy () {
+        return this.disconnect();
+    }
+
+
+    /**
      * Reset socket.
      */
     _resetSocket () {
@@ -141,7 +153,7 @@ class Socket extends EventEmitter {
                       return;
                     }
 
-                    this.emit('close', hasError);
+                    this.emit('close', hadError);
                 });
 
                 this._socket.on('end', () => {

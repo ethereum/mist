@@ -114,7 +114,7 @@ class EthereumNode extends EventEmitter {
     _startNode (nodeType, network) {
         this._state = STATE.STARTING;
 
-        const binPath = getNodeType(nodeType);
+        const binPath = getNodePath(nodeType);
 
         log.debug(`Start node using ${binPath}`);
 
@@ -128,7 +128,7 @@ class EthereumNode extends EventEmitter {
 
                 let called = false;
 
-                modalWindow.on('closed', () {
+                modalWindow.on('closed', () => {
                     if (!called) {
                         app.quit();
                     }
@@ -165,7 +165,7 @@ class EthereumNode extends EventEmitter {
                     }
                 });
             } else {
-                this._startProcess(type, network, binPath)
+                this._startProcess(nodeType, network, binPath)
                     .then(resolve, reject);
             }
             
@@ -179,7 +179,7 @@ class EthereumNode extends EventEmitter {
     _startProcess (nodeType, network, binPath, pw, popupCallback) {
         return new Q((resolve, reject) => {
             // rotate the log file
-            logRotate(logfilePath, {count: 5}, (err) => {
+            logRotate(this._buildFilePath('node.log'), {count: 5}, (err) => {
                 if (err) {
                     log.error('Log rotation problems', err);
 
@@ -189,7 +189,7 @@ class EthereumNode extends EventEmitter {
                 let args;
 
                 // START TESTNET
-                if (testnet) {
+                if ('test' == network) {
                     args = (nodeType === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
                 } 
                 // START MAINNET
@@ -231,13 +231,11 @@ class EthereumNode extends EventEmitter {
 
                 // when proc outputs data
                 proc.stdout.on('data', (data) => {
-                    data = data.toString();
-
-                    proc.emit('data', data);
+                    this.emit('data', data);
 
                     if (STATE.STARTING === this._state) {
                         // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
-                        if (nodeType === 'eth' && data.indexOf('Ethereum (++)') === -1) {
+                        if (nodeType === 'eth' && data.toString().indexOf('Ethereum (++)') === -1) {
                             return;
                         } else if (popupCallback) {
                             popupCallback(null);
@@ -249,15 +247,15 @@ class EthereumNode extends EventEmitter {
 
                 // when proc outputs data in stderr
                 proc.stderr.on('data', (data) => {
+                    this.emit('data', data);
+
                     if ('eth' === nodeType) {
                         return;
                     }
 
-                    data = data.toString();
-
                     if (STATE.STARTING === this._state) {
                         // (geth) prevent starting until IPC service is started
-                        if (nodeType === 'geth' && data.indexOf('IPC service started') === -1) {
+                        if (nodeType === 'geth' && data.toString().indexOf('IPC service started') === -1) {
                             return;
                         } 
 
@@ -275,15 +273,16 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     stop () {
-        log.info('Stopping node');
 
         if (!this._stopPromise) {
             this._state = STATE.STOPPING;
 
-            this_stopPromise = new Q((resolve, reject) => {
+            this._stopPromise = new Q((resolve, reject) => {
                 if (!this._node) {
                     return resolve();
                 }
+
+                log.info('Stopping node');
 
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');

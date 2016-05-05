@@ -2,10 +2,12 @@
 @module Node Connector
 */
 
-const _ = require('underscore');
+const _ = require('../utils/underscore');
 const dechunker = require('./dechunker.js');
-const log = require('../utils/logger').create('nodeConnector');
-const net = require('net');
+const log = require('../utils/logger').create('NodeConnector');
+const Sockets = require('../sockets');
+
+
 var idCount = 1;
 
 /**
@@ -14,6 +16,38 @@ The node connection, is a wrapper for the JSON RPC to execute commands on the no
 @class NodeConnector
 @constructor
 */
+class NodeConnector {
+    constructor () {
+        this._socket = Sockets.get('node-ipc');
+
+        this._socket.on('data', _.bind(this._handleData, this));
+
+        this._callbacks = {};
+    }
+
+    _handleData (data) {
+        dechunker(data, (err, result) => {
+            if (err) {
+                log.error('Data dechunker error', err);
+
+                _.each(this.callbacks, (cb) => {
+                    cb(err);
+                });
+
+                this.callbacks = {};
+
+                return;
+            }
+
+            let cb = this._callbacks[result.id];
+
+            if (_.isFunction(cb)) {
+                cb(null, result.result);
+            }
+        });
+    }
+}
+
 var NodeConnector = function(ipcPath) {
     var _this = this;
     this.socket = new net.Socket();

@@ -14,6 +14,7 @@ const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
+const Sockets = require('./modules/sockets');
 
 // CLI options
 const argv = require('yargs')
@@ -141,12 +142,11 @@ app.on('before-quit', function(event){
         event.preventDefault();
     }
 
-    if (this.nodeIpcSocket) {
-        this.nodeIpcSocket.destroy()
-            .catch((err) => {
-                log.error('Error shutting down node IPC socket');
-            });
-    }
+    // sockets manager
+    Sockets.destroyAll()
+        .catch((err) => {
+            log.error('Error shutting down sockets');
+        });
 
     // CLEAR open IPC sockets to geth
     _.each(global.sockets || {}, function(socket){
@@ -155,7 +155,6 @@ app.on('before-quit', function(event){
             socket.destroy();
         }
     });
-
 
     // delay quit, so the sockets can close
     setTimeout(function(){
@@ -299,7 +298,7 @@ app.on('ready', function() {
     appStartWindow.webContents.on('did-finish-load', function() {
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const socket = global.nodeIpcSocket = new (require('./modules/socket'))('geth-ipc');
+        const socket = Sockets.get('node-ipc');
 
         socket.connect({ path: ipcPath })
             .catch((err) => {

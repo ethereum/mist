@@ -12,12 +12,15 @@ const EventEmitter = require('events').EventEmitter;
  * Etheruem nodes manager.
  */
 class Socket extends EventEmitter {
-    constructor (name) {
+    constructor (socketMgr, id) {
         super();
-        
-        let _name = 'Socket' + (name ? `(${name})` : '');
 
-        this._log = logger.create(_name);
+        this._mgr = socketMgr;
+        this._id = id;
+
+        let _name = 'Socket' + (id ? `(${id})` : '');
+
+        this._log = logger.create(this._id);
         this._state = null;
     }
 
@@ -104,6 +107,8 @@ class Socket extends EventEmitter {
                     // if we manually killed it then all good
                     if (STATE.DISCONNECTING === this._socket.status) {
                         clearTimeout(timer);
+
+                        this._mgr._remove(this._id);
 
                         resolve();
                     }
@@ -192,5 +197,50 @@ const STATE = Socket.STATE = {
 };
 
 
-module.exports = Socket;
+
+class SocketManager {
+    constructor () {
+        this._sockets = {};
+    }
+
+
+    /**
+     * Get socket with given id, creating it if it does not exist.
+     * 
+     * @return {Socket}
+     */
+    get (id) {
+        if (!this._sockets[id]) {
+            this._sockets[id] = new Socket(this, id);
+        }
+
+        return this._sockets[id];
+    }
+
+
+
+    /**
+     * @return {Promise}
+     */
+    destroyAll () {
+        return Q.all(_.map(this._sockets, (s) => {
+            return s.destroy();
+        }));
+    }
+
+    /**
+     * Remove socket with given id from this manager.
+     *
+     * Usually called by `Socket` instances when they're destroyed.
+     */
+    _remove (id) {
+        delete this._sockets[id];
+    }
+
+}
+
+
+
+
+module.exports = SocketManager;
 

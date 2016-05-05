@@ -1,5 +1,5 @@
 /**
-@module ethereumNodes
+@module ethereumNode
 */
 
 const _ = require('underscore');
@@ -9,7 +9,7 @@ const spawn = require('child_process').spawn;
 const ipc = require('electron').ipcMain;
 const getNodePath = require('./getNodePath.js');
 const popupWindow = require('./popupWindow.js');
-const log = require('./utils/logger').create('ethereumNodes');
+const log = require('./utils/logger').create('ethereumNode');
 const logRotate = require('log-rotate');
 
 module.exports = {

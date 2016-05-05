@@ -7,7 +7,7 @@ const shell = require('electron').shell;
 const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
 const ipc = require('electron').ipcMain;
-const ethereumNodes = require('./ethereumNodes.js');
+const ethereumNode = require('./ethereumNode.js');
 const fs = require('fs');
 const dialog = require('dialog');
 
@@ -26,6 +26,30 @@ var createMenu = function(webviews) {
     const menu = Menu.buildFromTemplate(menuTempl(webviews));
     Menu.setApplicationMenu(menu);
 };
+
+
+const restartNode = function(newType, newNetwork) {
+    newNetwork = newNetwork || ethereumNode.network || ethereumNode.defaultNetwork;
+
+    log.info('Switch node', newType, newNetwork);
+
+    ethereumNode.stop()
+        .then(() => {
+            popupWindow.loadingWindow.show();
+
+            return ethereumNode.start(newType, newNetwork || ethereumNode.network)
+                .then(() => {
+                    popupWindow.loadingWindow.hide();
+                    global.mainWindow.loadURL(global.interfaceAppUrl);
+                    createMenu(webviews);
+                });
+        })
+        .catch((err) => {
+            log.error('Error switching node', err);
+        });
+};
+
+
 
 // create a menu template
 // null -> obj
@@ -67,7 +91,7 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.accounts.importPresale'),
                 accelerator: 'CommandOrControl+I',
-                enabled: (global.network === 'main'),            
+                enabled: ethereumNode.isMainNetwork,            
                 click: function(){
                     popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
                 }
@@ -84,7 +108,7 @@ var menuTempl = function(webviews) {
                             var path = global.path.HOME;
 
                             // eth
-                            if(global.nodes.eth) {
+                            if(ethereumNode.isEth) {
                                 if(process.platform === 'win32')
                                     path = global.path.APPDATA + '\\Web3\\keys';
                                 else
@@ -259,34 +283,20 @@ var menuTempl = function(webviews) {
             submenu: [
               {
                 label: 'Geth 1.3.6 (Go)',
-                checked: !!global.nodes.geth,
-                enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.geth),
+                checked: ethereumNode.isGeth,
+                enabled: !ethereumNode.isGeth,
                 type: 'checkbox',
                 click: function(){
-                    ethereumNodes.stopNodes(function(){
-                        popupWindow.loadingWindow.show();
-                        ethereumNodes.startNode('geth', false, function(){
-                            popupWindow.loadingWindow.hide();
-                            global.mainWindow.loadURL(global.interfaceAppUrl);
-                            createMenu(webviews);
-                        });
-                    });
+                    restartNode('geth');
                 }
               },
               {
                 label: 'Eth 1.2.4 (C++) [experimental!]',
-                checked: !!global.nodes.eth,
-                enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.eth),
+                checked: ethereumNode.isEth,
+                enabled: !ethereumNode.isEth,
                 type: 'checkbox',
                 click: function(){
-                    ethereumNodes.stopNodes(function(){
-                        popupWindow.loadingWindow.show();
-                        ethereumNodes.startNode('eth', false, function(){
-                            popupWindow.loadingWindow.hide();
-                            global.mainWindow.loadURL(global.interfaceAppUrl);
-                            createMenu(webviews);
-                        });
-                    });
+                    restartNode('eth');
                 }
               }
         ]});
@@ -299,39 +309,21 @@ var menuTempl = function(webviews) {
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
             accelerator: 'Alt+CommandOrControl+1',
-            checked: !!(global.network === 'main'),
-            enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'main'),
+            checked: ethereumNode.isMainNetwork,
+            enabled: !ethereumNode.isMainNetwork,
             type: 'checkbox',
             click: function(){
-                var geth = !!global.nodes.geth;
-
-                ethereumNodes.stopNodes(function(){
-                    popupWindow.loadingWindow.show();
-                    ethereumNodes.startNode(geth ? 'geth' : 'eth', false, function(){
-                        popupWindow.loadingWindow.hide();
-                        global.mainWindow.loadURL(global.interfaceAppUrl);
-                        createMenu(webviews);
-                    });
-                });
+                restartNode(ethereumNode.type, 'main');
             }
           },
           {
             label: 'Testnet (Morden)',
             accelerator: 'Alt+CommandOrControl+2',                
-            checked: !!(global.network === 'test'),
-            enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'test'),
+            checked: ethereumNode.isTestNetwork,
+            enabled: !ethereumNode.isTestNetwork,
             type: 'checkbox',
             click: function(){
-                var geth = !!global.nodes.geth;
-
-                ethereumNodes.stopNodes(function(){
-                    popupWindow.loadingWindow.show();
-                    ethereumNodes.startNode(geth ? 'geth' : 'eth', true, function(){
-                        popupWindow.loadingWindow.hide();
-                        global.mainWindow.loadURL(global.interfaceAppUrl);
-                        createMenu(webviews);
-                    });
-                });
+                restartNode(ethereumNode.type, 'test');
             }
           }
     ]});
@@ -339,7 +331,7 @@ var menuTempl = function(webviews) {
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+M',
-        enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
+        enabled: (ethereumNode.isRunning && ethereumNode.isTestNework),
         click: function(){
             // TODO remove on new RPC
             global.nodeConnector.connect();

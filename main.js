@@ -67,7 +67,7 @@ const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const NodeConnector = require('./modules/ipc/nodeConnector.js');
 const popupWindow = require('./modules/popupWindow.js');
-const ethereumNodes = require('./modules/ethereumNodes.js');
+const ethereumNode = require('./modules/ethereumNode.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
@@ -79,7 +79,6 @@ global.nodes = {
     geth: null,
     eth: null
 };
-global.network = 'main'; // or 'test', will be set by the file later
 global.mining = false;
 
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
@@ -154,7 +153,7 @@ app.on('before-quit', function(event){
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
-        ethereumNodes.stopAll().then(function() {
+        ethereumNode.stopAll().then(function() {
             app.quit();
         });
     }, 500);
@@ -163,14 +162,16 @@ app.on('before-quit', function(event){
 
 
 var appStartWindow;
-var nodeType = 'geth';
-var logFunction = function(data) {
+
+const NODE_TYPE = 'geth';
+const NODE_LOGGER = logger.create('eth-node');
+
+const logFunction = function(data) {
     data = data.toString().replace(/[\r\n]+/,'');
-    log.trace('NODE LOG:', data);
+    NODE_LOGGER.trace(data);
 
     // show line if its not empty or "------"
     if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
-        log.trace('"'+ data +'"');
         appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
     }
 };
@@ -289,173 +290,95 @@ app.on('ready', function() {
     appStartWindow.webContents.on('did-finish-load', function() {
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const socket = global.gethSocket = new (require('./modules/socket'));
+        const socket = global.gethSocket = new (require('./modules/socket'))('geth-ipc');
         var intervalId = errorTimeout = null;
         var count = 0;
 
         socket.connect({ path: ipcPath })
-            .then(() => {
-
-            })
             .catch((err) => {
-                log.warn('Geth socket failed to connect', err);
+                log.warn('Failed to connect to geth. Maybe it\'s not running so starting our own');
 
-                if (!ethereumNodes.hasActiveNodes()) {
-                    if (appStartWindow) {
-                        log.debug('Tell UI we are going to start a node');
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
-                    }
-
-                    log.info(`Node type: ${ethereumNodes.defaultNodeType}`);
-                    log.info(`Network: ${ethereumNodes.defaultNetwork}`);
-
-                    return ethereumNodes.startNode();
-                }
-            })
-            .catch((err) => {
-                if(appStartWindow)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-
-                var log = '';
-                try {
-                    log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
-                    log = '...'+ log.slice(-1000);
-                } catch(e){
-                    log = global.i18n.t('mist.errors.nodeStartup');
-                };
-
-                // add node type
-                log = 'Node type: '+ nodeType + "\n" +
-                    'Network: '+ global.network + "\n" +
-                    'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-                    log;
-
-                dialog.showMessageBox({
-                    type: "error",
-                    buttons: ['OK'],
-                    message: global.i18n.t('mist.errors.nodeConnect'),
-                    detail: log
-                }, function(){});
-            })
-
-
-        // TRY to CONNECT
-        setTimeout(function(){
-            socket.connect({path: ipcPath});
-        }, 1);
-
-        // try to connect
-        socket.on('error', function(e){
-            log.debug('Geth connection REFUSED', count);
-
-            // if no geth is running, try starting your own
-            if(count === 0) {
-                count++;
-
-                // STARTING NODE
-                if(appStartWindow)
+                if (appStartWindow) {
+                    log.debug('Tell UI we are going to start a node');
                     appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
-
-
-                // read which node is used on this machine
-                try {
-                    nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
-                } catch(e){
-                    console.error('Unable to read node type', e.stack);
-                }
-                try {
-                    global.network = fs.readFileSync(global.path.USERDATA + '/network', {encoding: 'utf8'});
-                } catch(e){
-                    console.error('Unable to read network id', e.stack);
                 }
 
-                log.info('Node type: ', nodeType);
-                log.info('Network: ', global.network);
+                log.info(`Node type: ${ethereumNode.defaultNodeType}`);
+                log.info(`Network: ${ethereumNode.defaultNetwork}`);
 
-
-                // If nothing else happens, show an error message in 120 seconds, with the node log text
-                errorTimeout = setTimeout(function(){
-                    if(appStartWindow)
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-
-                    var log = '';
-                    try {
-                        log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
-                        log = '...'+ log.slice(-1000);
-                    } catch(e){
-                        log = global.i18n.t('mist.errors.nodeStartup');
-                    };
-
-                    // add node type
-                    log = 'Node type: '+ nodeType + "\n" +
-                        'Network: '+ global.network + "\n" +
-                        'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-                        log;
-
-                    dialog.showMessageBox({
-                        type: "error",
-                        buttons: ['OK'],
-                        message: global.i18n.t('mist.errors.nodeConnect'),
-                        detail: log
-                    }, function(){
-                    });
-
-                }, 120 * 1000);
-
-
-                // -> START NODE
-                ethereumNodes.start(nodeType, global.network)
-                    .then(function() {})
-                    .catch(function(err) {
-                        console.error(`Unable to start node ${nodeType} node`);
+                return ethereumNode.start()
+                    .catch((err) => {
+                        log.error('Failed to start node', err);
 
                         if (appStartWindow) {
                             appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
                         }
-
-                        clearTimeout(errorTimeout);
-                        clearSocket(socket, true);
-
+                            
+                        throw err;
                     })
+                    .then(() => {
+                        return socket.connect({ path: ipcPath }, {
+                            timeout: 120000 /* 2 minutes */
+                        })
+                            .catch((err) => {
+                                log.error('Failed to connect to node', err);
 
-                ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
-                    // TRY TO CONNECT EVERY 500MS
-                    if(!e) {
-                        intervalId = setInterval(function(){
-                            if(socket)
-                                socket.connect({path: ipcPath});
-                        }, 200);
+                                if (appStartWindow) {
+                                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
+                                }
 
-                        // log data to the splash screen
-                        if(global.nodes[nodeType]) {
-                            global.nodes[nodeType].stdout.on('data', logFunction);
-                            global.nodes[nodeType].stderr.on('data', logFunction);
+                                throw err;
+                            });
+                    })
+                    .catch((err) => {
+                        const log = ethereumNode.getNodeLog();
+
+                        if (log) {
+                            log = '...'+ log.slice(-1000);
+                        } else {
+                            log = global.i18n.t('mist.errors.nodeStartup');
                         }
 
-                    // NO Binary
-                    } else {
-                    }
-                });
+                        // add node type
+                        log = 'Node type: '+ NODE_TYPE + "\n" +
+                            'Network: '+ ethereumNode.defaultNetwork + "\n" +
+                            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
+                            log;
 
-            }
+                        dialog.showMessageBox({
+                            type: "error",
+                            buttons: ['OK'],
+                            message: global.i18n.t('mist.errors.nodeConnect'),
+                            detail: log
+                        }, function(){});
+                        
+                    });
+            })
+            .then(() => {
+                /* At this point Geth is running and the socket is connected. */
+                log.info('Connected via IPC to geth.');
+
+                if (ethereumNode.isRunning()) {
+                    ethereumNode.on('data', logFunction);
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
+                } else {
+                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
+                }
+
+                // update menu, to show node switching possibilities
+                appMenu();
+
+                // TRY TO CONNECT EVERY 500MS
+                // if(!e) {
+                //     intervalId = setInterval(function(){
+                //         if(socket)
+                //             socket.connect({path: ipcPath});
+                //     }, 200);
+
+            });
+
         });
         socket.on('connect', function(data){
-            log.info('Geth connection FOUND');
-
-            if(appStartWindow) {
-                if(count === 0)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
-                else
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-            }
-
-            clearInterval(intervalId);
-            clearTimeout(errorTimeout);
-
-
-            // update menu, to show node switching possibilities
-            appMenu();
-
             checkNodeSync(appStartWindow,
             // -> callback splash screen finished
             function(e){
@@ -482,8 +405,8 @@ app.on('ready', function() {
                 ipc.on('onBoarding_changeNet', function(e, testnet) {
                     var geth = !!global.nodes.geth;
 
-                    ethereumNodes.stopNodes(function(){
-                        ethereumNodes.startNode(geth ? 'geth' : 'eth', testnet, function(){
+                    ethereumNode.stopNodes(function(){
+                        ethereumNode.start(geth ? 'geth' : 'eth', testnet, function(){
                             log.info('Changed to ', (testnet ? 'testnet' : 'mainnet'));
                             appMenu();
                         });
@@ -520,7 +443,7 @@ Clears the socket
 */
 var clearSocket = function(socket, timeout){
     if(timeout) {
-        ethereumNodes.stopNodes();
+        ethereumNode.stopNodes();
     }
 
     socket.removeAllListeners();
@@ -537,9 +460,9 @@ Start the main window and all its processes
 var startMainWindow = function(appStartWindow){
 
     // remove the splash screen logger
-    if(global.nodes[nodeType]) {
-        global.nodes[nodeType].stdout.removeListener('data', logFunction);
-        global.nodes[nodeType].stderr.removeListener('data', logFunction);
+    if(global.nodes[NODE_TYPE]) {
+        global.nodes[NODE_TYPE].stdout.removeListener('data', logFunction);
+        global.nodes[NODE_TYPE].stderr.removeListener('data', logFunction);
     }
 
     // and load the index.html of the app.

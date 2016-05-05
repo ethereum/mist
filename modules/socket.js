@@ -1,6 +1,6 @@
 "use strict";
 
-const log = require('./utils/logger').create('Socket');
+const logger = require('./utils/logger');
 const net = require('net');
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
@@ -12,23 +12,33 @@ const EventEmitter = require('events').EventEmitter;
  * Etheruem nodes manager.
  */
 class Socket extends EventEmitter {
+    constructor (name) {
+        let _name = 'Socket' + (name ? `(${name})` : '');
+
+        this._log = logger.create(_name);
+    }
+
     /**
      * Connect to host.
-     * @param  {*} connectOptions
+     * @param  {Object} connectConfig
+     * @param  {Object} [options]
+     * @param  {Number} [options.timeout] Milliseconds to wait before timeout.
      * @return {Promise}
      */
-    connect (connectOptions) {
-        log.info(`Connect to ${JSON.stringify(connectOptions)}`);
+    connect (connectConfig, options) {
+        this._log.info(`Connect to ${JSON.stringify(connectConfig)}`);
+
+        options = options || {};
 
         return this._resetSocket()
             .then(() => {
-                log.debug('Connecting...');
+                this._log.debug('Connecting...');
 
                 this._socket.state = Socket.CONNECTING;
 
                 return new Q((resolve, reject) => {
                     this._socket.once('connect', () => {
-                        log.debug('Connected!');
+                        this._log.debug('Connected!');
 
                         this._socket.state = Socket.CONNECTED;
 
@@ -37,7 +47,7 @@ class Socket extends EventEmitter {
 
                     this._socket.once('error', (err) => {
                         if (Socket.CONNECTING === this._socket.state) {
-                            log.error('Connection error', err);
+                            this._log.error('Connection error', err);
 
                             this._socket.state = Socket.ERROR;
 
@@ -45,7 +55,15 @@ class Socket extends EventEmitter {
                         }
                     });
 
-                    this._socket.connect(connectOptions);
+                    if (options.timeout) {
+                        setTimeout(() => {
+                            if (Socket.CONNECTING === this._socket.state) {
+                                this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
+                            }
+                        }, options.timeout);
+                    }
+
+                    this._socket.connect(connectConfig);
                 });            
             });
     } 
@@ -58,7 +76,7 @@ class Socket extends EventEmitter {
     disconnect () {
         if (!this._disconnectPromise) {
             this._disconnectPromise = new Q((resolve, reject) => {
-                log.info('Disconnecting...');
+                this._log.info('Disconnecting...');
 
                 this._socket.status = Socket.DISCONNECTING;
 
@@ -94,11 +112,11 @@ class Socket extends EventEmitter {
      * Reset socket.
      */
     _resetSocket () {
-        log.debug('Resetting socket');
+        this._log.debug('Resetting socket');
 
         return Q.try(() => {
             if (Socket.CONNECTED === this._socket.state) {
-                log.debug('Disconnecting prior to reset');
+                this._log.debug('Disconnecting prior to reset');
 
                 return this.disconnect();
             }
@@ -116,13 +134,13 @@ class Socket extends EventEmitter {
                 });
 
                 this._socket.on('end', () => {
-                    log.debug('Server wants to end connection');
+                    this._log.debug('Server wants to end connection');
 
                     this.emit('end');
                 });
 
                 this._socket.on('data', (data) => {
-                    log.trace('Got some data');
+                    this._log.trace('Got some data');
 
                     this.emit('data', data);
                 });
@@ -133,7 +151,7 @@ class Socket extends EventEmitter {
                       return;
                     }
 
-                    log.error(err);
+                    this._log.error(err);
 
                     this.emit('error', err);
                 });

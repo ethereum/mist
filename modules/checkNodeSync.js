@@ -8,7 +8,7 @@ checks the current node whether its synching or not and how much it kept up alre
 const _ = require('underscore');
 const app = require('app');
 const ipc = require('electron').ipcMain;
-
+const ethereumNode = require('./ethereumNode');
 const log = require('./utils/logger').create('checkNodeSync');
 
 
@@ -31,7 +31,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
     global.nodeConnector.send('eth_accounts', [], function(e, result){
         
         // start on boarding screen
-        if(!e && global.nodes.geth && result && result.length === 0) {
+        if(!e && ethereumNode.geth && result && result.length === 0) {
         
             callbackOnBoarding();
 

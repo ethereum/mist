@@ -6,20 +6,57 @@ const Q = require('bluebird');
 const getNodePath = require('./getNodePath.js');
 
 
+const DEFAULT_NODE_TYPE = 'geth';
+const DEFAULT_NETWORK = 'main';
+
+
 
 /**
  * Etheruem nodes manager.
  */
-class EthereumNodeManager {
+class EthereumNode {
     constructor() {
         this._loadDefaults();
 
         this._node = null;
+        this._type = null;
+        this._network = null;
     }
 
-
-    get hasActiveNodes () {
+    get isRunning () {
         return !!this._node;
+    }
+
+    get type () {
+        return this._type;
+    }
+
+    get isEth () {
+        return 'eth' === this._type;
+    }
+
+    get isGeth () {
+        return 'geth' === this._type;
+    }
+
+    get network () {
+        return this._network;
+    }
+
+    get isMainNetwork () {
+        return 'main' === this._network;
+    }
+
+    get isTestNetwork () {
+        return 'test' === this._network;
+    }
+
+    /**
+     * Get eth node, if running.
+     * @return {[type]} [description]
+     */
+    get eth () {
+        return !!
     }
 
     /**
@@ -28,7 +65,7 @@ class EthereumNodeManager {
      * @param  {String} network  network id
      * @return {Promise}
      */
-    startNode (nodeType, network) {
+    start (nodeType, network) {
         nodeType = nodeType || this.defaultNodeType;
         network = network || this.defaultNetwork;
 
@@ -44,10 +81,13 @@ class EthereumNodeManager {
             log.debug('Node will connect to the test network');
         }
 
-        return this.stopAllNodes()
+        return this.stop()
             .then(() => {
-                
             })
+            .then(() => {
+                this._network = network;
+                this._type = nodeType;
+            });
     }
 
 
@@ -56,7 +96,7 @@ class EthereumNodeManager {
      * 
      * @return {Promise}
      */
-    stopAllNodes () {
+    stop () {
         log.info('Stopping node');
 
         if (!this._stopPromise) {
@@ -101,9 +141,14 @@ class EthereumNodeManager {
     }
 
 
+    getLog () {
+        return this._loadUserData('/node.log');
+    }
+
+
     _loadDefaults () {
-        this.defaultNodeType = this._loadUserData('/node');
-        this.defaultNetwork = this._loadUserData('/network');
+        this.defaultNodeType = this._loadUserData('/node') || DEFAULT_NODE_TYPE;
+        this.defaultNetwork = this._loadUserData('/network') || DEFAULT_NETWORK;
     }
 
 
@@ -113,7 +158,7 @@ class EthereumNodeManager {
         try {
             return fs.readFileSync(fullPath, {encoding: 'utf8'});
         } catch (err){
-            log.error(`Unable to read setting from ${fullPath}`, err);
+            log.error(`Unable to read from ${fullPath}`, err);
         }
 
         return null;
@@ -122,4 +167,4 @@ class EthereumNodeManager {
 }
 
 
-module.exports = new EthereumNodeManager();
+module.exports = new EthereumNode();

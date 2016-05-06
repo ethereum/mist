@@ -10,7 +10,6 @@ const BrowserWindow = require('browser-window');  // Module to create native bro
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
-const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
@@ -68,9 +67,9 @@ global.license = packageJson.license;
 require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const NodeConnector = require('./modules/ipc/nodeConnector.js');
 const popupWindow = require('./modules/popupWindow.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/checkNodeSync.js');
 const getIpcPath = require('./modules/ipc/getIpcPath.js');
 var ipcPath = getIpcPath();
 
@@ -86,7 +85,6 @@ global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
-global.nodeConnector = new NodeConnector(ipcPath);
 
 
 // INTERFACE PATHS
@@ -171,18 +169,8 @@ app.on('before-quit', function(event){
 var appStartWindow;
 
 const NODE_TYPE = 'geth';
-const NODE_LOGGER = logger.create('eth-node');
 
-const logFunction = function(data) {
-    data = data.toString().replace(/[\r\n]+/,'');
 
-    NODE_LOGGER.trace(data);
-
-    // show line if its not empty or "------"
-    if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
-        appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
-    }
-};
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -199,7 +187,6 @@ app.on('ready', function() {
 
     // add menu already here, so we have copy and past functionality
     appMenu();
-
 
     // Create the browser window.
 
@@ -294,122 +281,48 @@ app.on('ready', function() {
     });
 
 
-
     appStartWindow.webContents.on('did-finish-load', function() {
-        // START GETH
-        const checkNodeSync = require('./modules/checkNodeSync.js');
-        const socket = Sockets.get('node-ipc');
-
-        socket.connect({ path: ipcPath })
-            .catch((err) => {
-                log.warn('Failed to connect to geth. Maybe it\'s not running so let\'s start our own...');
-
-                if (appStartWindow) {
-                    log.debug('Tell UI we are going to start a node');
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
+        ethereumNode.on('info', function(type, data1, data2) {
+            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                switch (type) {
+                    'nodelog':
+                        appStartWindow.webContents.send('startScreenText', 'logText', data1.replace(/^.*[0-9]\]/,''));
+                        break;
+                    default:
+                        appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
                 }
+            }
+        });
 
-                log.info(`Node type: ${ethereumNode.defaultNodeType}`);
-                log.info(`Network: ${ethereumNode.defaultNetwork}`);
+        nodeSync.on('info', function(type, data) {
+            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+            }
+        });
 
-                return ethereumNode.start()
-                    .catch((err) => {
-                        log.error('Failed to start node', err);
-
-                        if (appStartWindow) {
-                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
-                        }
-                            
-                        throw err;
-                    })
-                    .then(() => {
-                        return socket.connect({ path: ipcPath }, {
-                            timeout: 120000 /* 2 minutes */
-                        })
-                            .catch((err) => {
-                                log.error('Failed to connect to node', err);
-
-                                if (appStartWindow) {
-                                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-                                }
-
-                                throw err;
-                            });
-                    })
-                    .catch((err) => {
-                        let log = ethereumNode.getNodeLog();
-
-                        if (log) {
-                            log = '...'+ log.slice(-1000);
-                        } else {
-                            log = global.i18n.t('mist.errors.nodeStartup');
-                        }
-
-                        // add node type
-                        log = 'Node type: '+ NODE_TYPE + "\n" +
-                            'Network: '+ ethereumNode.defaultNetwork + "\n" +
-                            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-                            log;
-
-                        dialog.showMessageBox({
-                            type: "error",
-                            buttons: ['OK'],
-                            message: global.i18n.t('mist.errors.nodeConnect'),
-                            detail: log
-                        }, function(){});
-                    });
-            })
-            .then(() => {
-                if (!socket.isConnected) {
-                    log.info('Either geth didn\'t start or IPC socket failed to connect.');
-
-                    return app.quit();
+        ethereumNode.init()
+            .then(function sanityCheck() {
+                if (!ethereumNode.isIpcConnected) {
+                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
                 }
 
                 /* At this point Geth is running and the socket is connected. */
-
-                log.info('Connected via IPC to geth.');
-
-                if (ethereumNode.isRunning) {
-                    ethereumNode.on('data', logFunction);
-
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-                } else {
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
-                }
+                log.info('Connected via IPC to node.');
 
                 // update menu, to show node switching possibilities
                 appMenu();
+            })
+            .then(function getAccounts() {
+                return ethereumNode.send('eth_accounts', []);
+            })
+            .then(function onboarding(result) {
+                if (ethereumNode.isGeth && result && result.length === 0) {
+                    log.info('No accounts setup yet, lets do onboarding first.');
 
-                // TRY TO CONNECT EVERY 500MS
-                // if(!e) {
-                //     intervalId = setInterval(function(){
-                //         if(socket)
-                //             socket.connect({path: ipcPath});
-                //     }, 200);
-
-                checkNodeSync(
-                    appStartWindow,
-                    // -> callback splash screen finished
-                    function(e) {
-                        if(appStartWindow) {
-                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-                        }
-
-                        socket.destroy();
-
-                        startMainWindow(appStartWindow);
-
-                    // -> callback onboarding
-                    }, 
-                    function(){
-                        if(appStartWindow) {
-                            appStartWindow.close();
-                        }
-                        appStartWindow = null;
+                    return new Q((resolve, reject) => {
+                        appStartWindow.close();
 
                         var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
-                        // onboardingWindow.openDevTools();
+
                         onboardingWindow.on('close', function(){
                             app.quit();
                         });
@@ -419,24 +332,19 @@ app.on('ready', function() {
                             let newType = ethereumNode.type;
                             let newNetwork = testnet ? 'test' : 'main';
 
-                            ethereumNode.stop()
-                                .then(() => {
-                                    return ethereumNode.start(newType, newNetwork)
-                                        .then(() => {
-                                            log.info('Changed node', newType, newNetwork);
-
-                                            appMenu();
-                                        });
+                            ethereumNode.restart(nodeType, newNetwork)
+                                .then(function nodeRestarted() {
+                                    appMenu();
                                 })
                                 .catch((err) => {
-                                    log.error('Error changing network', err);
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
                                 });
                         });
 
                         // launch app
                         ipc.on('onBoarding_launchApp', function(e) {
-                            socket.destroy();
-
                             // prevent that it closes the app
                             onboardingWindow.removeAllListeners('close');
                             onboardingWindow.close();
@@ -447,11 +355,22 @@ app.on('ready', function() {
                             ipc.removeAllListeners('onBoarding_changeNet');
                             ipc.removeAllListeners('onBoarding_launchApp');
 
-                            startMainWindow(appStartWindow);
+                            resolve();
                         });
-                    }
-                );
-            }); /* socket connected successfully to geth */;
+                    });
+                }
+            })
+            .then(function doSync() {
+                return nodeSync.run();
+            })
+            .then(function allDone() {
+                startMainWindow(appStartWindow);
+            })
+            .catch((err) => {
+                log.error('Error starting up node and/or syncing', err);
+
+                app.quit();
+            }); /* socket connected to geth */;
 
     }); /* on appStartWindow did-finish-load */
 

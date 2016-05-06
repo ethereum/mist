@@ -1,5 +1,3 @@
-"use strict";
-
 /**
 Gets the right Node path
 

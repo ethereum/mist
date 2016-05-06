@@ -1,5 +1,3 @@
-"use strict";
-
 const logger = require('./utils/logger');
 const net = require('net');
 const Q = require('bluebird');
@@ -133,6 +131,17 @@ class Socket extends EventEmitter {
      */
     destroy () {
         return this.disconnect();
+    }
+
+
+    write (data, encoding, callback) {
+        if (STATE.CONNECTED !== this._state) {
+            throw new Error('Socket not connected');
+        }
+
+        this._log.debug('Write data...');
+
+        this._socket.write(data, encoding, callback);
     }
 
 

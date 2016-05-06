@@ -6,65 +6,54 @@ checks the current node whether its synching or not and how much it kept up alre
 */
 
 const _ = require('underscore');
+const Q = require('bluebird');
 const app = require('app');
 const ipc = require('electron').ipcMain;
 const ethereumNode = require('./ethereumNode');
-const log = require('./utils/logger').create('checkNodeSync');
+const log = require('./utils/logger').create('NodeSync');
 
 
-// var dechunker = require('./ipc/dechunker.js');
+class NodeSync {
+    /**
+     * @return {Promise}
+     */
+    run () {
+        log.info('Checking node sync status...');
 
-/**
-Check if the nodes needs sync and start the app
+        if (!ethereumNode.isIpcConnected) {
+            return Q.reject(new Error('Not yet connected to node via IPC'));
+        }
 
-@method checkNodeSync
-*/
-module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
-    var intervalId,
-        timeoutId,
-        cbCalled = false;
+        return new Q((resolve, reject) => {
+            this._doLoop(resolve, reject);
+        });
+    }
 
-    log.info('Checking node sync status...');
+    _doLoop (onDone, onError) {
+        log.debug('Get last obtained block');
 
-    global.nodeConnector.connect();
+        ethereumNode.send('eth_getBlockByNumber', ['latest', false])
+            .then((result) => {
+                const now = Math.floor(new Date().getTime() / 1000);
 
-    global.nodeConnector.send('eth_accounts', [], function(e, result){
-        
-        // start on boarding screen
-        if(!e && ethereumNode.geth && result && result.length === 0) {
-        
-            callbackOnBoarding();
+                const lastBlockTime = parseInt(Math.abs(result.timestamp));
 
-        // show progress in start screen
-        } else {
+                const diff = now - lastBlockTime;
 
-            // check last block time
-            global.nodeConnector.send('eth_getBlockByNumber', ['latest', false], function(e, result){
-                var now = Math.floor(new Date().getTime() / 1000);
+                log.debug(`Time since last block: ${diff}s`);
 
-                log.debug('Time between last block', (now - +result.timestamp) + 's');
+                // need sync if > 1 minutes
+                if(diff > 60) {
+                    log.info('Sync necessary, starting now...');
 
-                // need sync if > 2 minutes
-                if(now - +result.timestamp > 60 * 2) {
-
-                    intervalId = setInterval(function(){
-                        
-                        // get the latest sync status
-                        if(global.nodeConnector.socket.writable) {
-                            global.nodeConnector.send('eth_syncing', [], cb);
-                        }
-                    }, 200);
-
-
-                // start app
+                    this._startSync(onDone, onError);
                 } else {
-                    log.info('No sync necessary, starting app!');
-                    callbackSplash();
-                    cbCalled = true;
+                    log.info('No sync necessary, starting app');
+
+                    onDone();
                 }
             });
-        }
-    });
+    }
 
 
 
@@ -163,4 +152,10 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
 
         }
     };
-};
+}
+
+
+module.exports = new NodeSync();
+
+
+

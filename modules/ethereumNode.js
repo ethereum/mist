@@ -1,5 +1,3 @@
-"use strict";
-
 const _ = require('./utils/underscore');
 const log = require('./utils/logger').create('EthereumNodes');
 const app = require('app');
@@ -7,11 +5,13 @@ const ipc = require('electron').ipcMain;
 const spawn = require('child_process').spawn;
 const popupWindow = require('./popupWindow.js');
 const logRotate = require('log-rotate');
+const dialog = require('dialog');
 const fs = require('fs');
 const Q = require('bluebird');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
-
+const getIpcPath = require('./ipc/getIpcPath.js')
+const Sockets = require('./sockets');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
@@ -34,34 +34,115 @@ class EthereumNode extends EventEmitter {
         this._state = null;
         this._type = null;
         this._network = null;
+
+        this._socket = Sockets.get('node-ipc');
+
+        this.on('data', _.bind(this._logNodeData, this));
     }
 
-    get isRunning () {
-        return STATE.STARTED = this._state;
+    get isOwnNode () {
+        return !!this._node;
+    }
+
+    get isExternalNode () {
+        return !this._node;
+    }
+
+    get isIpcConnected () {
+        return this._socket.isConnected;
     }
 
     get type () {
-        return this._type;
-    }
-
-    get isEth () {
-        return 'eth' === this._type;
-    }
-
-    get isGeth () {
-        return 'geth' === this._type;
+        return this.isOwnNode ? this._type : null;
     }
 
     get network () {
-        return this._network;
+        return this.isOwnNode ? this._network : null;
+    }
+
+    get isEth () {
+        return this.type === 'eth';
+    }
+
+    get isGeth () {
+        return this.type === 'geth';
     }
 
     get isMainNetwork () {
-        return 'main' === this._network;
+        return 'main' === this.network;
     }
 
     get isTestNetwork () {
-        return 'test' === this._network;
+        return 'test' === this.network;
+    }
+
+
+    /**
+     * This method should always be called first to initialise the connection.
+     * @return {Promise}
+     */
+    init () {
+        const ipcPath = getIpcPath();
+
+        // TODO: if connection to external node is successful then query it to
+        // determine node and network type
+
+        return this._socket.connect({path: ipcPath})
+            .then(()=> {
+                this.emit('info', 'runningNodeFound');
+            })
+            .catch((err) => {
+                log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
+
+                this.emit('info', 'msg', 'startingNode');
+
+                log.info(`Node type: ${this.defaultNodeType}`);
+                log.info(`Network: ${this.defaultNetwork}`);
+
+                return this._start(this.defaultNodeType, this.defaultNetwork)
+                    .then(() => {
+                        this.emit('info', 'msg', 'startedNode');
+                    })
+                    .catch((err) => {
+                        log.error('Failed to start node', err);
+
+                        this.emit('info', 'msg', 'nodeBinaryNotFound');
+                            
+                        throw err;
+                    });
+            });
+    }
+
+
+
+    restart (newType, newNetwork, popupWindow) {
+        return Q.try(() => {
+            if (!this.isOwnNode) {
+                throw new Error('Cannot restart node since it was started externally');
+            }
+
+            log.info('Restart node', newType, newNetwork);
+
+            return this._stop()
+                .then(() => {
+                    if (popupWindow) {
+                        popupWindow.loadingWindow.show();
+                    }
+                })
+                .then(() => {
+                    return this._start(newType || this.type, newNetwork || this.network);
+                })
+                .then(() => {
+                    if (popupWindow) {
+                        popupWindow.loadingWindow.hide();
+                    }
+                })
+                .catch((err) => {
+                    log.error('Error restarting node', err);
+
+                    throw err;
+                });
+        });
     }
 
 
@@ -71,9 +152,8 @@ class EthereumNode extends EventEmitter {
      * @param  {String} network  network id
      * @return {Promise}
      */
-    start (nodeType, network) {
-        nodeType = nodeType || this.defaultNodeType;
-        network = network || this.defaultNetwork;
+    _start (nodeType, network) {
+        const ipcPath = getIpcPath();
 
         log.info('Start node', nodeType, network);
 
@@ -83,9 +163,33 @@ class EthereumNode extends EventEmitter {
             log.debug('Node will connect to the test network');
         }
 
-        return this.stop()
+        return this._stop()
             .then(() => {
-                return this._startNode(nodeType, network);
+                return this.__startNode(nodeType, network)
+                    .catch((err) => {
+                        let nodelog = this.getNodeLog();
+
+                        if (nodelog) {
+                            nodelog = '...'+ nodelog.slice(-1000);
+                        } else {
+                            nodelog = global.i18n.t('mist.errors.nodeStartup');
+                        }
+
+                        // add node type
+                        nodelog = 'Node type: '+ nodeType + "\n" +
+                            'Network: '+ network + "\n" +
+                            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
+                            nodelog;
+
+                        dialog.showMessageBox({
+                            type: "error",
+                            buttons: ['OK'],
+                            message: global.i18n.t('mist.errors.nodeConnect'),
+                            detail: nodelog
+                        }, function(){});
+
+                        throw err;
+                    });
             })
             .then((proc) => {
                 this._node = proc;
@@ -96,6 +200,19 @@ class EthereumNode extends EventEmitter {
 
                 this._saveUserData('node', this._type);
                 this._saveUserData('network', this._network);
+
+                return this._socket.connect({ path: ipcPath }, {
+                    timeout: 60000 /* 60s */
+                })  
+                    .catch((err) => {
+                        log.error('Failed to connect to node', err);
+
+                        if (err.toString().contains('timeout')) {
+                            this.emit('info', 'msg', 'nodeConnectionTimeout', ipcPath);
+                        }
+
+                        throw err;
+                    });
             })
             .catch((err) => {
                 // if unable to start eth node then write geth to defaults
@@ -111,7 +228,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    _startNode (nodeType, network) {
+    __startNode (nodeType, network) {
         this._state = STATE.STARTING;
 
         const binPath = getNodePath(nodeType);
@@ -155,7 +272,7 @@ class EthereumNode extends EventEmitter {
                 ipc.on('backendAction_unlockedMasterPassword', (ev, err, pw) => {
                     if (_.get(modalWindow, 'webContents') && ev.sender.getId() === modalWindow.webContents.getId()) {
                         if (!err) {
-                            this._startProcess(nodeType, network, binPath, pw, popupCallback)
+                            this.__startProcess(nodeType, network, binPath, pw, popupCallback)
                                 .then(resolve, reject);
                         } else {
                             app.quit();
@@ -165,7 +282,7 @@ class EthereumNode extends EventEmitter {
                     }
                 });
             } else {
-                this._startProcess(nodeType, network, binPath)
+                this.__startProcess(nodeType, network, binPath)
                     .then(resolve, reject);
             }
             
@@ -176,7 +293,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    _startProcess (nodeType, network, binPath, pw, popupCallback) {
+    __startProcess (nodeType, network, binPath, pw, popupCallback) {
         return new Q((resolve, reject) => {
             // rotate the log file
             logRotate(this._buildFilePath('node.log'), {count: 5}, (err) => {
@@ -262,6 +379,8 @@ class EthereumNode extends EventEmitter {
                         resolve();
                     }
                 });
+
+                this.on('data', _.bind(this._logNodeData, this));
             });
         });
     }
@@ -272,7 +391,7 @@ class EthereumNode extends EventEmitter {
      * 
      * @return {Promise}
      */
-    stop () {
+    _stop () {
 
         if (!this._stopPromise) {
             this._state = STATE.STOPPING;
@@ -323,6 +442,17 @@ class EthereumNode extends EventEmitter {
 
     getLog () {
         return this._loadUserData('node.log');
+    }
+
+
+    _logNodeData (data) {
+        data = data.toString().replace(/[\r\n]+/,'');
+
+        log.trace(`${this.type}: ${data}`);
+
+        if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
+            this.emit('info', 'nodelog', data);
+        }
     }
 
 

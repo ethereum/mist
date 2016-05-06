@@ -17,32 +17,21 @@ const dialog = require('dialog');
 var createMenu = function(webviews) {
     webviews = webviews || [];
 
-    // re create connection
-    if(global.nodeConnector.socket.writable) {
-        global.nodeConnector.destroy();
-    }
-    global.nodeConnector.connect();
-
     const menu = Menu.buildFromTemplate(menuTempl(webviews));
     Menu.setApplicationMenu(menu);
 };
 
 
 const restartNode = function(newType, newNetwork) {
-    newNetwork = newNetwork || ethereumNode.network || ethereumNode.defaultNetwork;
+    newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
 
-    ethereumNode.stop()
+    return ethereumNode.restart(newType, newNetwork, popupWindow)
         .then(() => {
-            popupWindow.loadingWindow.show();
+            global.mainWindow.loadURL(global.interfaceAppUrl);
 
-            return ethereumNode.start(newType, newNetwork || ethereumNode.network)
-                .then(() => {
-                    popupWindow.loadingWindow.hide();
-                    global.mainWindow.loadURL(global.interfaceAppUrl);
-                    createMenu(webviews);
-                });
+            createMenu(webviews);
         })
         .catch((err) => {
             log.error('Error switching node', err);
@@ -283,8 +272,8 @@ var menuTempl = function(webviews) {
             submenu: [
               {
                 label: 'Geth 1.3.6 (Go)',
-                checked: ethereumNode.isGeth,
-                enabled: !ethereumNode.isGeth,
+                checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click: function(){
                     restartNode('geth');
@@ -292,8 +281,8 @@ var menuTempl = function(webviews) {
               },
               {
                 label: 'Eth 1.2.4 (C++) [experimental!]',
-                checked: ethereumNode.isEth,
-                enabled: !ethereumNode.isEth,
+                checked: ethereumNode.isOwnNode && ethereumNode.isEth,
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click: function(){
                     restartNode('eth');
@@ -309,8 +298,8 @@ var menuTempl = function(webviews) {
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
             accelerator: 'Alt+CommandOrControl+1',
-            checked: ethereumNode.isMainNetwork,
-            enabled: !ethereumNode.isMainNetwork,
+            checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
+            enabled: ethereumNode.isOwnNode,
             type: 'checkbox',
             click: function(){
                 restartNode(ethereumNode.type, 'main');
@@ -319,8 +308,8 @@ var menuTempl = function(webviews) {
           {
             label: 'Testnet (Morden)',
             accelerator: 'Alt+CommandOrControl+2',                
-            checked: ethereumNode.isTestNetwork,
-            enabled: !ethereumNode.isTestNetwork,
+            checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+            enabled: ethereumNode.isOwnNode,
             type: 'checkbox',
             click: function(){
                 restartNode(ethereumNode.type, 'test');
@@ -331,26 +320,35 @@ var menuTempl = function(webviews) {
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+M',
-        enabled: (ethereumNode.isRunning && ethereumNode.isTestNework),
+        enabled: ethereumNode.isIpcConnected,
         click: function(){
-            // TODO remove on new RPC
-            global.nodeConnector.connect();
-
             if(!global.mining) {
-                global.nodeConnector.send('miner_start', [1], function(e, result){
-                    log.info('miner_start', result, e);
-                    if(result === true) {
-                        global.mining = !global.mining;
-                        createMenu(webviews);
-                    }
+                ethereumNode.send('miner_start', [1])
+                    .then((result) => {
+                        log.info('miner_start', result);
+
+                        if (result) {
+                            global.mining = true;
+                            createMenu(webviews);
+                        }                        
+                    })
+                    .catch(err) {
+                        log.error('miner_start', err);
+                    })
                 });
             } else {
-                global.nodeConnector.send('miner_stop', [], function(e, result){
-                    log.info('miner_stop', result, e);
-                    if(result === true) {
-                        global.mining = !global.mining;
-                        createMenu(webviews);
-                    }
+                ethereumNode.send('miner_stop', [1])
+                    .then((result) => {
+                        log.info('miner_stop', result);
+
+                        if (result) {
+                            global.mining = false;
+                            createMenu(webviews);
+                        }                        
+                    })
+                    .catch(err) {
+                        log.error('miner_stop', err);
+                    })
                 });
             }
         }

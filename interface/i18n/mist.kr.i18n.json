@@ -3,189 +3,189 @@
         "applicationMenu": {
             "app": {
                 "label": "__app__",
-                "about": "About __app__",
-                "quit": "Quit __app__"
+                "about": "__app__에 대하여",
+                "quit": "__app__ 끝내기"
             },
             "edit": {
-                "label": "Edit",
-                "undo": "Undo",
-                "redo": "Redo",
-                "cut": "Cut",
-                "copy": "Copy",
-                "paste": "Paste",
-                "selectAll": "Select all"
+                "label": "고침",
+                "undo": "되돌림",
+                "redo": "다시적용",
+                "cut": "자르기",
+                "copy": "복사하기",
+                "paste": "붙여넣기",
+                "selectAll": "전부 선택"
             },
             "view": {
-                "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "label": "보기",
+                "fullscreen": "전체화면 전환"
             },
             "accounts": {
-                "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
-                "newAccount": "New account",
-                "backup": "Backup",
-                "backupKeyStore": "Accounts",
-                "backupMist": "Application Data"
+                "label": "어카운트",
+                "importPresale": "프리세일 어카운트 불러오기",
+                "newAccount": "새 어카운트",
+                "backup": "백업",
+                "backupKeyStore": "어카운트",
+                "backupMist": "어플리케이션 데이타"
             },
             "develop": {
-                "label": "Develop",
-                "devTools": "Toggle Developer Tools",
-                "devToolsMistUI": "Mist UI",
-                "devToolsWalletUI": "Wallet UI",
+                "label": "개발",
+                "devTools": "개발툴 전환",
+                "devToolsMistUI": "미스트 UI",
+                "devToolsWalletUI": "지갑 UI",
                 "devToolsWebview": "__webview__",
-                "runTests": "Run tests",
-                "logFiles": "Show log file",
-                "ethereumNode": "Ethereum Node",
-                "network": "Network",
-                "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "runTests": "테스트 실행",
+                "logFiles": "로그파일 보기",
+                "ethereumNode": "이더리움 노드",
+                "network": "네트워크",
+                "mainNetwork": "메인 네트워크",
+                "startMining": "⛏ 채굴시작(테스트넷만 해당)",
+                "stopMining": "⛏ 채굴중단"
             },
             "window": {
-                "label": "Window",
-                "minimize": "Minimize",
-                "close": "Close",
-                "toFront": "Bring All to Front"
+                "label": "윈도우",
+                "minimize": "최소화",
+                "close": "닫기",
+                "toFront": "전면으로 보내기"
             },
             "help": {
-                "label": "Help"
+                "label": "도움말"
             }
         },
         "errors": {
-            "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
+            "nodeConnect": "노드에 연결할 수 없었습니다? 자세한 것은 로그를 확인하세요:",
+            "nodeStartup": "노드를 시작할 수 없었던 같습니다, 이미 다른 노드를 실행하고 있나요? 현재 데이타베이스를 업그레이드 하고 있나요?",
             "timeSync": {
-                "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
-                "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
-                "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
+                "title": "당신의 컴퓨터 시간이 동기화되어 있지 않습니다. Your computer's clock is not synced.",
+                "description": "이더리움 네트워크와 성공적으로 동기화하기 위해서는 사용하시는 컴퓨터의 시간을 시간서버와 동기화해야 합니다.",
+                "win32": "시스템 설정에 있는 인터넷 시간 셋팅에서 박스를 체크하세요. 자세한 것은 다음의 가이드를 참조하세요: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 의 방법으로 설치하세요.",
+                "darwin": "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동셋팅(Set the time and date automatically)\" 옵션을 선택하세요."
             }
         },
         "rightClick": {
-            "reload": "Reload",
-            "openDevTools": "Open Developer Tools",
-            "inspectElements": "Inspect Element"
+            "reload": "다시로딩",
+            "openDevTools": "개발툴 열기",
+            "inspectElements": "엘리먼트 조사"
         },
         "nodeInfo": {
-            "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "New Block Received",
-            "blockNumber": "Your latest block number",
-            "timeSinceBlock": "Elapsed time since last block",
-            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
-            "peers": "peers"
+            "nodeSyncing": "__blockDiff__ 블럭 남음",
+            "blockReceived": "새 블럭을 받았음",
+            "blockNumber": "마지막 블럭 넘버",
+            "timeSinceBlock": "마지막 블럭이후 경과시간",
+            "testnetExplain": "현재 테스트넷 상에 있습니다. 진짜 이더를 이 주소로 절대 보내지 마세요.",
+            "peers": "피어들"
         },
         "sidebar": {
             "buttons": {
-                "browser": "Browse"
+                "browser": "브라우즈"
             }
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "어카운트가 선택되지 않음"
             }
         },
         "startScreen": {
-            "runningNodeFound": "Found running Ethereum node!",
-            "startingNode": "Starting Ethereum node...",
-            "startedNode": "Starting application...",
-            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
-            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
-            "nodeSyncing": "Ethereum node needs to sync, please wait...",
-            "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
-            "nodeSyncConnecting": "Looking for peers...",
-            "nodeSyncProcessing": "Processing blocks, please wait...",
-            "privateChainTimeout": "Skip peer search"
+            "runningNodeFound": "작동중인 이더리움 노드를 발견!",
+            "startingNode": "이더리움 노드 시작...",
+            "startedNode": "어플리케이션 시작...",
+            "nodeConnectionTimeout": "이더리움 노드를 시작할 수 없었습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
+            "nodeBinaryNotFound": "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
+            "nodeSyncing": "이더리움 노드가 동기화가 필요합니다, 기다려 주세요...",
+            "nodeSyncInfo": "현재 highestBlock__ 중 __currentBlcok 을 다운로드중",
+            "nodeSyncConnecting": "피어(peer)를 찾고 있는중...",
+            "nodeSyncProcessing": "블럭들을 처리하고 있습니다, 기다려 주세요...",
+            "privateChainTimeout": "피어찾기 넘어가기"
         },
         "popupWindows": {
             "requestAccount": {
-                "title": "Create account",
-                "enterPassword": "Enter password",
-                "repeatPassword": "Repeat password",
-                "creating": "Generating account...",
+                "title": "어카운트 만들기",
+                "enterPassword": "암호를 넣으세요",
+                "repeatPassword": "암호를 다시 넣으세요",
+                "creating": "어카운트 만드는 중...",
                 "errors": {
-                    "passwordMismatch": "Your passwords don't match."
+                    "passwordMismatch": "암호가 일치하지 않습니다."
                 }
             },
             "unlockMasterPassword": {
-                "title": "Enter master password",
-                "enterPassword": "Enter master password",
-                "unlocking": "Unlocking...",
+                "title": "마스터 암호 입력",
+                "enterPassword": "마스터 암호를 넣으세요",
+                "unlocking": "잠금을 풀고 있는중...",
                 "errors": {
-                    "wrongPassword": "Password is wrong, try again."
+                    "wrongPassword": "암호가 틀렸습니다. 다시 해보세요."
                 }
             },
             "sendTransactionConfirmation": {
                 "title": {
-                    "sendTransaction": "Send transaction",
-                    "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "sendTransaction": "트랜잭션 보내기",
+                    "contractExecution": "컨트랙트 실행",
+                    "createContract": "컨트랙트 만들기"  
                 },
-                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
-                "contractCreationInfo": "You are about to create a contract from the provided data.",
-                "enterPassword": "Enter password to confirm the transaction",
-                "unlocking": "Confirming...",
-                "createContract": "Create contract",
-                "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
-                "gasPrice": "Gas price",
-                "perMillionGas": "ether per million gas",
-                "gasLimit": "Provide maximum fee",
-                "data": "Data",
+                "contractExecutionInfo": "컨트랙트상의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
+                "contractCreationInfo": "주어진 데이타를 가지고 컨트랙을 만들려고 합니다.",
+                "enterPassword": "트랜잭션을 확인하기 위해 암호를 넣으세요",
+                "unlocking": "확인중...",
+                "createContract": "컨트랙트 만들기",
+                "estimatedFee":"예상 수수료 사용량",
+                "estimatedGasError": "데이타가 실행될 수 없었습니다. 따라서 제공된 모든 개스가 다 소모될 것입니다.",
+                "gasPrice": "개스 가격",
+                "perMillionGas": "백만 개스당 이더수",
+                "gasLimit": "최고 수수료 제공",
+                "data": "데이타",
                 "buttons": {
-                    "sendTransaction": "Send transaction"
+                    "sendTransaction": "트랜잭션 보내기"
                 },
                 "errors": {
-                    "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
-                    "wrongPassword": "Wrong password"
+                    "connectionTimeout": "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지 되었습니까?",
+                    "wrongPassword": "암호 불일치"
                 }
             },
             "onboarding": {
-                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
-                "goToTestnet" : "Use the test network",
-                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
-                "gotoMainnet" : "Use the main network",
-                "gotoMainnetDescription" : " You’ll need some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
-                "doYouHaveAWalletFile" : "Do you have a wallet file?",
-                "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
-                "dropFilesHere" : "Drop pre-sale file",
-                "creating": "Creating...",
-                "importing": "Importing...",
-                "skip" : "Skip this step",
-                "next" : "Next",
-                "protectTitle" : "Protect your account",
-                "protectDescription" : "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
-                "accountTitle" : "Load it up!",
-                "accountTitleTestnet" : "Mine some!",
-                "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
-                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading some where between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
-                "you" : "YOU",
-                "etherbase" : "Main account (etherbase)",
-                "depositBitcoin" : "Deposit Bitcoin",
-                "learnIt" : "Learn while you wait",
-                "downloadingBlocks": "Downloading blocks",
-                "block": "Block",
-                "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
-                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
-                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can make the decisions. Let your backers take an active role on how the money is spent</p>",
+                "description" : "이더리움은 블럭체인상에 앱을 만들기 위한 탈중앙화된 플랫폼이며, 이 블럭체인은 변조방지가능한 소프트웨어로서 가치와 자산을 전송할 수 있고 영구히 존속합니다.",
+                "goToTestnet" : "테스트 네트워크 사용하기",
+                "goToTestnetDescription" : "샌드박스 테스트넷에서 실제 이더를 사용하지 않고 자유롭게 테스트하기.",
+                "gotoMainnet" : "메인 네트워크 사용하기",
+                "gotoMainnetDescription" : "컨트랙트를 만들고 사용하기 위해서는 약간의 이더가 필요합니다. 약간의 이더를 가질 수 있도록 도와줄 수 있습니다.",
+                "doYouHaveAWalletFile" : "지갑 파일을 가지고 있나요?",
+                "walletFileDescription" : "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이란 파일을 가지고 있을 겁니다. 세일이 끝나고 다운도르를 받았거나 이메일로 받았을 겁니다.</p>",
+                "dropFilesHere" : "프리세일 파일을 가져다 놓기",
+                "creating": "만드는 중...",
+                "importing": "불러오는중...",
+                "skip" : "이 단계 건너뛰기",
+                "next" : "다음",
+                "protectTitle" : "어카운트 보호",
+                "protectDescription" : "새 어카운트를 위한 암호를 선택하세요. 마치 당신의 집열쇠를 보호하듯이 강력한 암호를 선택하세요!",
+                "accountTitle" : "구동시작!",
+                "accountTitleTestnet" : "채굴 성공!",
+                "etherDescription": "이더리움은 “Ether” 이라는 토큰을 기반으로 하고 있습니다. 이더리움을 사용하기 위해서는 약간의 이더가 필요하게 될 것입니다.",
+                "loadItDescription" : "만일 비트코인이나 다른 암호화 화폐를 가지고 있다면, shapeshift를 이용해 손쉽게 이더로 바꿀 수 있습니다. <br><br> 약 <strong>0.25 to 1 ether</strong> 이더 정도를 바꾸기를 추천합니다.",
+                "mineItDescription": "<strong>테스트넷상에서는 <em>개발</em> 메뉴에 있는 <em>채굴 시작</em>선택 함으로써 이더를 채굴할 수 있습니다. </strong> <br> <strong>이 주소로 진짜 이더를 절대 보내지 마세요.</strong>",
+                "you" : "당신",
+                "etherbase" : "메인 어카운트 (이더베이스)",
+                "depositBitcoin" : "비트코인 입금",
+                "learnIt" : "기다리는 동안 배우기",
+                "downloadingBlocks": "블럭을 다운로드중",
+                "block": "블럭",
+                "tutorial1Description" : "<p> 이제 남은 것은 다운로드가 끝날 때까지 기다리는 것입니다. 여기 읽어볼 내용들이 있습니다: </p> <h4>여려분 자신의 화폐 만들기 </h4> <p> 실제 자산을 표현하는 제한된 공급을 가진 암호화 화폐만들기 등등, </p>",
+                "tutorial2Description" : "<h4> 크라우드세일 만들기 </h4> <p> 제3자 없이 완벽히 신뢰할 수 공동의 목표를 위한 펀드 조성. 전통적인 펀딩에서 발생하는 여러가지 장벽들을 피해서, 블럭체인을 사용해서 직접 대상조직에 펀딩.</p>",
+                "tutorial3Description" : "<h4> 블럭체인 조직 </h4> <p> 어떻게 자금이 사용되고, 누가 결정권을 가게 될지 등에 대한 위반할 수 없는 룰들을 가진 자율 조직을 만들 수 있습니다. 어떻게 자금이 사용되어야 할지에 대해 당신의 지지자들에게 적극적인 역할을 부여하세요.</p>",
                 "buttons": {
-                    "showPassword": "Show password",
-                    "importAccount": "Import account",
-                    "launchApp": "Launch Application!",
-                    "learnReceipt": "Learn this recipe"
+                    "showPassword": "암호보기Show password",
+                    "importAccount": "어카운트 가져오기",
+                    "launchApp": "어플리케이션 시작",
+                    "learnReceipt": "이 기법을 배우기"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
-                    "unknownFile": "File not recognised.",
-                    "passwordError": "Wrong password.",
-                    "importFailed": "Couldn't import the file got: __error__"
+                    "nodeNotStartedYet": "노드가 완전히 구동될 때까지 몇초 기다렸다 다시 시도해 보세요.",
+                    "unknownFile": "파일이 인식되지 않습니다.",
+                    "passwordError": "암호가 틀렸습니다.",
+                    "importFailed": "파일을 가져올 수 없었습니다: __error__"
                 }
             }
         }
     },
     "elements": {
-        "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "checksumAlert":"이 주소는 유효해보이지만, 오타등의 실수로부터 당신을 보호할 수 있는 보안기능이 없습니다. 다시 한번 맞는지 확인해 보시기 바랍니다. 보안 아이콘이 있는 경우 이것이 일치하는지 확인하시기 바랍니다.",
+        "identiconHelper": "이것은 보안 아이콘입니다. 주소의 어떤 변화라도 생기면, 이 아이콘은 완전히 다른 모양이 됩니다."
     }
 }

@@ -56,7 +56,7 @@ class NodeSync extends EventEmitter {
                 return;
             }
 
-            log.debug('Check sync status');
+            log.trace('Check sync status');
 
             ethereumNode.send('eth_syncing', [])
                 .then((result) => {
@@ -86,7 +86,7 @@ class NodeSync extends EventEmitter {
                     } 
                     // got no result, let's check the block number
                     else {
-                        log.info('Check latest block number');
+                        log.debug('Check latest block number');
 
                         return ethereumNode.send('eth_getBlockByNumber', ['latest', false])
                             .then((blockResult) => {
@@ -94,7 +94,7 @@ class NodeSync extends EventEmitter {
 
                                 const diff = now - +blockResult.timestamp;
 
-                                log.info(`Time since last block: ${diff}s`);
+                                log.debug(`Last block: ${blockResult.number}, ${diff}s ago`);
 
                                 // need sync if > 1 minutes
                                 if(diff > 60) {
@@ -102,11 +102,13 @@ class NodeSync extends EventEmitter {
                                         currentBlock: +blockResult.number
                                     });
 
-                                    log.info('Keep syncing...');
+                                    log.trace('Keep syncing...');
 
                                     // fallback timeout
                                     if (!this._syncTimeout) {
                                         this._syncTimeout = _.delay(() => {
+                                            log.debug('Sync timeout handler running');
+
                                             this.emit('info', 'msg', 'privateChainTimeout');
 
                                             ipc.on('backendAction_startApp', function() {
@@ -131,7 +133,7 @@ class NodeSync extends EventEmitter {
 
                     this._onError(err);
                 });
-        }, 500);
+        }, 2000 /* 2 seconds */);
     }
 
 }

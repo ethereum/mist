@@ -296,7 +296,6 @@ app.on('ready', function() {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
                 switch (type) {
                     case 'msg':
-                        console.log(type, data1, data2);
                         appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
                         break;
                 }

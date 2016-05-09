@@ -5,7 +5,7 @@ Window communication
 */
 
 const app = require('app');  // Module to control application life.
-const appMenu = require('./menuItems');   
+const appMenu = require('./menuItems');
 const popupWindow = require('./popupWindow.js');
 const logger = require('./utils/logger');
 const ipc = require('electron').ipcMain;
@@ -73,7 +73,7 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
 
 ipc.on('backendAction_setLanguage', function(e, lang){
     if(global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0,2), function(err, t){
+        global.i18n.changeLanguage(lang.substr(0,5), function(err, t){
             if(!err) {
                 global.language = global.i18n.language;
                 log.info('Backend language set to: ', global.language);
@@ -111,7 +111,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
                 e.sender.send('uiAction_importedPresaleFile', null, '0x'+ find[1]);
             else
                 e.sender.send('uiAction_importedPresaleFile', data);
-        
+
         // if not stop, so we don't kill the process
         } else {
             return;

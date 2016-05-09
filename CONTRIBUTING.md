@@ -9,7 +9,7 @@ To help make Mist (Ethereum Wallet) better please file issue with the following 
 - What do you run? binary from [releases](https://github.com/ethereum/mist/releases) or the development version from the [commandline](https://github.com/ethereum/mist#run-mist)
 - Which version do you used? You can find that in the `VERSION` file in the Mist folder
 - What OS you're on?
-- Provide a log file if necessary, you can find that in the Mist data folder (linux: `~/.config/Mist/*.log`, win: `%APPDATA%/Roaming/Mist/*.log`, MacOSX: `~/Library/Application Support/Mist/*.log`)
+- Provide a log file if necessary, you can find that in the Mist data folder (Linux: `~/.config/Mist/*.log`, Windows: `%APPDATA%/Roaming/Mist/*.log`, MacOSX: `~/Library/Application Support/Mist/*.log`)
 - Ideally also a screenshot, if its an interface issue
 
 

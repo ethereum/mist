@@ -86,7 +86,7 @@ class Socket extends EventEmitter {
      * Disconnect from socket.
      * @return {Promise}
      */
-    disconnect () {
+    disconnect (options) {
         if (!this._disconnectPromise) {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
@@ -97,17 +97,19 @@ class Socket extends EventEmitter {
                 this._socket.removeAllListeners();
 
                 let timer = setTimeout(() => {
-                    this._socket.status = STATE.ERROR;
+                    log.warn('Disconnection timed out, continuing anyway...');
 
-                    reject(new Error('Disconnection timed out'));
+                    this._socket.status = STATE.DISCONNECTION_TIMEOUT;
+
+                    resolve();
                 }, 10000 /* wait 10 seconds for disconnection */)
 
                 this._socket.once('close', () => {
                     // if we manually killed it then all good
                     if (STATE.DISCONNECTING === this._socket.status) {
-                        clearTimeout(timer);
+                        this._socket.status = STATE.DISCONNECTED;
 
-                        this._mgr._remove(this._id);
+                        clearTimeout(timer);
 
                         resolve();
                     }
@@ -203,7 +205,9 @@ const STATE = Socket.STATE = {
     CONNECTING: 1,
     CONNECTED: 2,
     DISCONNECTING: 3,
-    ERROR: 4,
+    DISCONNECTED: 4,
+    ERROR: -1,
+    DISCONNECTION_TIMEOUT: -2,
 };
 
 

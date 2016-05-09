@@ -159,16 +159,15 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     stop () {
-
         if (!this._stopPromise) {
             this._state = STATE.STOPPING;
 
-            this._stopPromise = new Q((resolve, reject) => {
+            log.info('Stopping node');
+
+            return new Q((resolve, reject) => {
                 if (!this._node) {
                     return resolve();
                 }
-
-                log.info('Stopping node');
 
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');
@@ -197,11 +196,14 @@ class EthereumNode extends EventEmitter {
                     resolve();
                 }); 
             })
-                .finally(() => {
+                .then(() => {
                     this._sendRequests = {};
                     this._state = STATE.STOPPED;
                     this._stopPromise = null;
                 });
+        } else {
+            log.debug('Disconnection already in progress, returning Promise.');
+
         }
 
         return this._stopPromise;
@@ -336,7 +338,7 @@ class EthereumNode extends EventEmitter {
                     .catch((err) => {
                         log.error('Failed to connect to node', err);
 
-                        if (err.toString().contains('timeout')) {
+                        if (0 <= err.toString().indexOf('timeout')) {
                             this.emit('info', 'msg', 'nodeConnectionTimeout', ipcPath);
                         }
 

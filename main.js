@@ -2,6 +2,7 @@
 
 global._ = require('./modules/utils/underscore');
 const fs = require('fs');
+const Q = require('bluebird');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
 const timesync = require("os-timesync");
@@ -254,7 +255,7 @@ app.on('ready', function() {
                 webSecurity: false // necessary to make routing work on file:// protocol
             }
         });
-    appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
+    appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);
 
 
     // check time sync
@@ -322,7 +323,7 @@ app.on('ready', function() {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {
-                        appStartWindow.close();
+                        appStartWindow.hide();
 
                         var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
 
@@ -335,7 +336,7 @@ app.on('ready', function() {
                             let newType = ethereumNode.type;
                             let newNetwork = testnet ? 'test' : 'main';
 
-                            ethereumNode.restart(nodeType, newNetwork)
+                            ethereumNode.restart(newType, newNetwork)
                                 .then(function nodeRestarted() {
                                     appMenu();
                                 })
@@ -353,10 +354,13 @@ app.on('ready', function() {
                             onboardingWindow.close();
                             onboardingWindow = null;
 
-                            popupWindow.loadingWindow.show();
+                            // popupWindow.loadingWindow.show();
 
                             ipc.removeAllListeners('onBoarding_changeNet');
                             ipc.removeAllListeners('onBoarding_launchApp');
+
+                            // we're going to do the sync - so show splash
+                            appStartWindow.show();
 
                             resolve();
                         });
@@ -399,12 +403,11 @@ var startMainWindow = function(appStartWindow){
         popupWindow.loadingWindow.hide();
 
         global.mainWindow.show();
-        // global.mainWindow.center();
 
         if(appStartWindow) {
             appStartWindow.close();
+            appStartWindow = null;
         }
-        appStartWindow = null;
     });
 
     // close app, when the main window is closed

@@ -152,6 +152,68 @@ class EthereumNode extends EventEmitter {
     }
 
 
+
+    /**
+     * Stop node.
+     * 
+     * @return {Promise}
+     */
+    stop () {
+
+        if (!this._stopPromise) {
+            this._state = STATE.STOPPING;
+
+            this._stopPromise = new Q((resolve, reject) => {
+                if (!this._node) {
+                    return resolve();
+                }
+
+                log.info('Stopping node');
+
+                this._node.stderr.removeAllListeners('data');
+                this._node.stdout.removeAllListeners('data');
+                this._node.stdin.removeAllListeners('error');
+                this._node.removeAllListeners('error');
+                this._node.removeAllListeners('exit');
+                
+                this._node.kill('SIGINT');
+
+                // after some time just kill it if not already done so
+                let killTimeout = setTimeout(() => {
+                    if (this._node) {
+                        this._node.kill('SIGKILL');
+
+                        this._node = null;
+
+                        resolve();
+                    }
+                }, 8000 /* 8 seconds */)
+
+                this._node.once('close', () => {
+                    clearTimeout(killTimeout);
+
+                    this._node = null;
+
+                    resolve();
+                }); 
+            })
+                .finally(() => {
+                    this._sendRequests = {};
+                    this._state = STATE.STOPPED;
+                    this._stopPromise = null;
+                });
+        }
+
+        return this._stopPromise;
+    }
+
+
+    getLog () {
+        return this._loadUserData('node.log');
+    }
+
+
+
     /** 
      * Send command to socket.
      * @param  {String} name
@@ -164,12 +226,10 @@ class EthereumNode extends EventEmitter {
                 throw new Error('IPC socket not connected');
             }
 
-            log.debug('Send request', name, params);
-
             return new Q((resolve, reject) => {
                 let requestId = _.uuid();
 
-                log.trace('Request id', requestId);
+                log.trace('Request', requestId, name , params);
 
                 this._sendRequests[requestId] = {
                     resolve: resolve,
@@ -203,6 +263,8 @@ class EthereumNode extends EventEmitter {
                     let req = this._sendRequests[result.id];
 
                     if (req) {
+                        log.trace('Response', result.id, result.result);
+
                         req.resolve(result.result);
                     } else {
                         log.debug(`Unable to find corresponding request for ${result.id}`, result);
@@ -263,7 +325,6 @@ class EthereumNode extends EventEmitter {
             })
             .then((proc) => {
                 this._node = proc;
-
                 this._state = STATE.STARTED;
 
                 this._saveUserData('node', this._type);
@@ -428,7 +489,7 @@ class EthereumNode extends EventEmitter {
                             popupCallback(null);
                         }
 
-                        resolve();
+                        resolve(proc);
                     }
                 });
 
@@ -446,73 +507,13 @@ class EthereumNode extends EventEmitter {
                             return;
                         } 
 
-                        resolve();
+                        resolve(proc);
                     }
                 });
 
                 this.on('data', _.bind(this._logNodeData, this));
             });
         });
-    }
-
-
-    /**
-     * Stop node.
-     * 
-     * @return {Promise}
-     */
-    stop () {
-
-        if (!this._stopPromise) {
-            this._state = STATE.STOPPING;
-
-            this._stopPromise = new Q((resolve, reject) => {
-                if (!this._node) {
-                    return resolve();
-                }
-
-                log.info('Stopping node');
-
-                this._node.stderr.removeAllListeners('data');
-                this._node.stdout.removeAllListeners('data');
-                this._node.stdin.removeAllListeners('error');
-                this._node.removeAllListeners('error');
-                this._node.removeAllListeners('exit');
-                
-                this._node.kill('SIGINT');
-
-                // after some time just kill it if not already done so
-                let killTimeout = setTimeout(() => {
-                    if (this._node) {
-                        this._node.kill('SIGKILL');
-
-                        this._node = null;
-
-                        resolve();
-                    }
-                }, 8000 /* 8 seconds */)
-
-                this._node.once('close', () => {
-                    clearTimeout(killTimeout);
-
-                    this._node = null;
-
-                    resolve();
-                }); 
-            })
-                .finally(() => {
-                    this._sendRequests = {};
-                    this._state = STATE.STOPPED;
-                    this._stopPromise = null;
-                });
-        }
-
-        return this._stopPromise;
-    }
-
-
-    getLog () {
-        return this._loadUserData('node.log');
     }
 
 

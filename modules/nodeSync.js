@@ -17,153 +17,121 @@ const log = require('./utils/logger').create('NodeSync');
 
 
 class NodeSync extends EventEmitter {
-    constructor () {
-        super();
-
-        this._doLoop = _.bind(this._doLoop, this);
-    }
-
     /**
      * @return {Promise}
      */
     run () {
-        log.info('Checking node sync status...');
+        if (this._syncPromise) {
+            log.debug('Sync already in progress, returning promise');
+
+            return this._syncPromise;
+        }
 
         if (!ethereumNode.isIpcConnected) {
             return Q.reject(new Error('Not yet connected to node via IPC'));
         }
 
-        return new Q((resolve, reject) => {
-            log.info('Starting sync loop...');
+        this._syncPromise = new Q((resolve, reject) => {
+            log.info('Starting sync loop');
 
-            this._syncing = true;
+            this._onDone = resolve;
+            this._onError = reject;
 
-            this._doLoop(resolve, reject);
+            return this._sync();
         })
             .finally(() => {
-                this._clearFallbackTimeout();
-                this._syncing = false;
+                log.info('Sync loop ended');
+
+                this._syncPromise = this._onDone = this._onError = null;
             });
+
+        return this._syncPromise;
     }
 
-    _doLoop (onDone, onError) {
-        log.debug('Check latest block');
 
-        if (!this._syncing) {
-            return;
-        }
 
-        ethereumNode.send('eth_getBlockByNumber', ['latest', false])
-            .then((result) => {
-                if (!this._syncing) {
-                    return;
-                }
+    _sync () {
+        _.delay(() => {
+            if (!this._onDone) {
+                return;
+            }
 
-                const now = Math.floor(new Date().getTime() / 1000);
+            log.debug('Check sync status');
 
-                const lastBlockTime = parseInt(Math.abs(result.timestamp));
+            ethereumNode.send('eth_syncing', [])
+                .then((result) => {
+                    // got a result, check for error
+                    if (result) {
+                        log.trace('Sync status', result);
 
-                const diff = now - lastBlockTime;
+                        // got an error?
+                        if (result.error) {
+                            if (-32601 === result.error.code) {
+                                log.warn('Sync method not implemented, skipping sync.');
 
-                log.info(`Time since last block: ${diff}s`);
-
-                // need sync if > 1 minutes
-                if(diff > 60) {
-                    log.info('Sync necessary, doing it now...');
-
-                    // inform listeners of where we are
-                    this.emit('info', 'msg', 'nodeSyncing', {
-                        currentBlock: +result.number
-                    });
-
-                    ethereumNode.send('eth_syncing', [])
-                        .then((result) => {
-                            if (!this._syncing) {
-                                return;
+                                return this._onDone();
+                            } else {
+                                throw new Error(`Unexpected error: ${result.error}`);
                             }
+                        } 
+                        // no error, so call again in a bit
+                        else {
+                            clearTimeout(this._syncTimeout);
 
-                            this._resetFallbackTimeout(onDone, onError);
+                            this.emit('info', 'msg', 'privateChainTimeoutClear');
+                            this.emit('info', 'msg', 'nodeSyncing', result);
 
-                            // got a result?
-                            if (result) {
-                                // got an error?
-                                if (result.error) {
-                                    if (-32601 === result.error.code) {
-                                        log.warn('Sync method not implemented, skipping sync.');
+                            return this._sync();
+                        }
+                    } 
+                    // got no result, let's check the block number
+                    else {
+                        log.info('Check latest block number');
 
-                                        onDone();
-                                    } else {
-                                        throw new Error(`Unexpected error: ${result.error}`);
+                        return ethereumNode.send('eth_getBlockByNumber', ['latest', false])
+                            .then((blockResult) => {
+                                const now = Math.floor(new Date().getTime() / 1000);
+
+                                const diff = now - +blockResult.timestamp;
+
+                                log.info(`Time since last block: ${diff}s`);
+
+                                // need sync if > 1 minutes
+                                if(diff > 60) {
+                                    this.emit('info', 'msg', 'nodeSyncing', {
+                                        currentBlock: +blockResult.number
+                                    });
+
+                                    log.info('Keep syncing...');
+
+                                    // fallback timeout
+                                    if (!this._syncTimeout) {
+                                        this._syncTimeout = _.delay(() => {
+                                            this.emit('info', 'msg', 'privateChainTimeout');
+
+                                            ipc.on('backendAction_startApp', function() {
+                                                ipc.removeAllListeners('backendAction_startApp');
+
+                                                this._onDone();
+                                            });
+                                        }, 12000 /* 12 seconds */);
                                     }
 
-                                    return; // all done
+                                    return this._sync();
+                                } else {
+                                    log.info('No more sync necessary');
+
+                                    return this._onDone();
                                 }
+                            });
+                    }
+                })
+                .catch((err) => {
+                    log.error('Node crashed while syncing?', err);
 
-                                // no block, let's just update the progress bar
-                                if (!_.isString(result.hash)) {
-                                    this.emit('info', 'msg', 'privateChainTimeoutClear');
-                                    this.emit('info', 'msg', 'nodeSyncing', result);
-                                }
-
-                                // loop again
-                                return _.defer(this._doLoop);
-                            } 
-                            // got no result, not syncing anymore
-                            else {
-                                this._startFallbackTimeout(onDone, onError);
-                            }
-                        })
-                        .catch((err) => {
-                            if (!this._syncing) {
-                                return;
-                            }
-
-                            this._resetFallbackTimeout(onDone, onError);
-
-                            log.error('Node crashed while syncing?', err);
-
-                            onError(err);
-                        });
-                } else {
-                    log.info('No sync necessary, starting app');
-
-                    onDone();
-                }
-            });
-    }
-
-
-    _startFallbackTimeout (onDone, onError) {
-        log.trace('Start fallback timeout');
-
-        this._fallbackTimeout = setTimeout(() => {
-            log.debug('Fallback timeout handler running. We are probably running a private chain with no mining.');
-
-            this.emit('info', 'msg', 'privateChainTimeout');
-
-            ipc.on('backendAction_startApp', () => {
-                log.debug('Short-circuit sync and start the app.');
-
-                ipc.removeAllListeners('backendAction_startApp');
-
-                onDone();
-            });
-        }, 1000 * 12 /* 12 seconds */);
-    }
-
-
-    _clearFallbackTimeout (onDone, onError) {
-        if (this._fallbackTimeout) {
-            log.trace('Reset fallback timeout');
-            
-            clearTimeout(this._fallbackTimeout);
-        }
-    }
-
-
-    _resetFallbackTimeout (onDone, onError) {
-        this._clearFallbackTimeout();
-        this._startFallbackTimeout(onDone, onError);
+                    this._onError(err);
+                });
+        }, 500);
     }
 
 }

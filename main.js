@@ -285,15 +285,21 @@ app.on('ready', function() {
                     case 'nodelog':
                         appStartWindow.webContents.send('startScreenText', 'logText', data1.replace(/^.*[0-9]\]/,''));
                         break;
-                    default:
+                    case 'msg':
                         appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
+                        break;
                 }
             }
         });
 
         nodeSync.on('info', function(type, data1, data2) {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
+                switch (type) {
+                    case 'msg':
+                        console.log(type, data1, data2);
+                        appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
+                        break;
+                }
             }
         });
 

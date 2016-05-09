@@ -140,7 +140,7 @@ class Socket extends EventEmitter {
             throw new Error('Socket not connected');
         }
 
-        this._log.debug('Write data...');
+        this._log.trace('Write data...');
 
         this._socket.write(data, encoding, callback);
     }
@@ -178,7 +178,7 @@ class Socket extends EventEmitter {
                 });
 
                 this._socket.on('data', (data) => {
-                    this._log.trace('Got some data');
+                    this._log.trace('Got data');
 
                     this.emit('data', data);
                 });

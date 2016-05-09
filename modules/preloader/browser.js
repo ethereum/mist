@@ -1,6 +1,7 @@
 /**
 @module preloader browser
 */
+require('./console-log-capture')('browser');
 const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
 require('../openExternal.js');

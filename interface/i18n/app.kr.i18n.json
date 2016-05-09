@@ -12,7 +12,7 @@
         "cancel": "취소",
         "save": "저장",
         "edit": "고침",
-        "send": "보냄",
+        "send": "보내기",
         "next": "다음",
         "previous": "이전",
         "back": "뒤로",
@@ -23,7 +23,7 @@
     },
     "commonWords": {
         "you": "당신",
-        "send": "보냄",
+        "send": "보내기",
         "or": "또는",
         "of": "의",
         "with": "와",

@@ -10,7 +10,7 @@ To save us time getting you all up and running, better wait for now. Thanks :)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
-For the mist API see the [MISTAPI.md](MISTAPI.md).
+For the Mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Installation
 

@@ -1,6 +1,6 @@
 Ethereum Wallet
 
-The ethereum wallet, which allows you to create simple and multisig wallets to manage your ether.
+The Ethereum wallet, which allows you to create simple and multisig wallets to manage your ether.
 
 The wallet contains its own node, but can also use an already running one, if the IPC path of that node is the standard path.
 (See below)
@@ -33,12 +33,12 @@ The paths which store your wallets database and node are different:
 
 The wallet (Mist) stores its data at:
 - Mac: ~/Library/Application Support/Mist
-- Win: %APPDATA%\Roaming\Mist
+- Windows: %APPDATA%\Roaming\Mist
 - Linux: ~/.config/Mist
 
 The nodes data is stored at:
 - Mac: ~/Library/Ethereum
-- Win: %APPDATA%\Roaming\Ethereum
+- Windows: %APPDATA%\Roaming\Ethereum
 - Linux: ~/.ethereum
 
 

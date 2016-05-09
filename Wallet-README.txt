@@ -8,7 +8,7 @@ The wallet contains its own node, but can also use an already running one, if th
 ## Running on a testnet
 
 When you start the wallet on a testnet (e.g. different `--datadir`) you need to make sure to set the `--ipcpath` back to the original one.
-On OSX its `/Users/<you>/Library/Ethereum/geth.ipc` on linux `/home/<you>/.ethereum/geth.ipc` and on windows it uses a named pipe, which doesn't need to be renamed.
+On OSX its `/Users/<you>/Library/Ethereum/geth.ipc` on linux `/home/<you>/.thereum/geth.ipc` and on windows it uses a named pipe, which doesn't need to be renamed.
 
 Example:
 

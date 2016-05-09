@@ -166,8 +166,8 @@ module.exports = function(){
         this.ipcSocket.on('data', function(data){
             dechunker(data, function(error, result){
 
-                if(error) {
-                    log.info('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                if (error) {
+                    log.error('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
                     _this.timeout();
                     return;
                 }
@@ -183,7 +183,7 @@ module.exports = function(){
 
                 // if(result && !_.isArray(result))
                 if(!result.id && !_.isArray(result))
-                    log.info('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
+                    log.debug('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {

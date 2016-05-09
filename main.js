@@ -311,15 +311,17 @@ app.on('ready', function() {
                 }
             });
 
-            nodeSync.on('error', (err) => {
+            nodeSync.on('error', function(err) {
                 log.error('Error syncing node', err);
 
                 reject(err);
             });
 
-            nodeSync.on('finished', () => {
-                nodeSync.removeAllListeners();
-                
+            nodeSync.on('finished', function() {
+                nodeSync.removeAllListeners('info');
+                nodeSync.removeAllListeners('error');
+                nodeSync.removeAllListeners('finished');
+
                 resolve();
             });
         });
@@ -388,6 +390,8 @@ app.on('ready', function() {
                 }
             })
             .then(function doSync() {
+                ethereumNode.removeAllListeners('info');
+
                 return syncResultPromise;
             })
             .then(function allDone() {
@@ -414,17 +418,18 @@ Start the main window and all its processes
 var startMainWindow = function(appStartWindow) {
     // and load the index.html of the app.
     log.info('Loading Interface at '+ global.interfaceAppUrl);
+
     global.mainWindow.loadURL(global.interfaceAppUrl);
 
     global.mainWindow.webContents.on('did-finish-load', function() {
-        popupWindow.loadingWindow.hide();
-
-        global.mainWindow.show();
-
         if(appStartWindow) {
             appStartWindow.close();
             appStartWindow = null;
         }
+
+        popupWindow.loadingWindow.hide();
+
+        global.mainWindow.show();
     });
 
     // close app, when the main window is closed
@@ -434,13 +439,11 @@ var startMainWindow = function(appStartWindow) {
         app.quit();
     });
 
-
-    // STARTUP PROCESSES
-
-
     // instantiate the application menu
     Tracker.autorun(function(){
         global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
         appMenu(global.webviews);
     });
 };
+
+

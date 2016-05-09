@@ -164,7 +164,7 @@ class NodeSync extends EventEmitter {
 
                                             this.emit('info', 'msg', 'privateChainTimeout');
 
-                                            ipc.on('backendAction_startApp', function() {
+                                            ipc.on('backendAction_startApp', () => {
                                                 ipc.removeAllListeners('backendAction_startApp');
 
                                                 this._onSyncDone();

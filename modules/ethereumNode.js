@@ -21,6 +21,7 @@ const DEFAULT_NETWORK = 'main';
 
 
 const SPAWN_ERROR = 'SpawnError';
+const PASSWORD_WRONG_ERROR = 'PasswordWrongError';
 
 
 
@@ -215,7 +216,6 @@ class EthereumNode extends EventEmitter {
                 });
         } else {
             log.debug('Disconnection already in progress, returning Promise.');
-
         }
 
         return this._stopPromise;
@@ -429,7 +429,7 @@ class EthereumNode extends EventEmitter {
                             app.quit();
                         }
 
-                        result = null;
+                        return;
                     }
                 });
             } else {
@@ -503,11 +503,15 @@ class EthereumNode extends EventEmitter {
 
                 // when proc outputs data
                 proc.stdout.on('data', (data) => {
+                    log.trace('Got stdout data');
+
                     this.emit('data', data);
 
                     if (STATES.STARTING === this.state) {
                         // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                         if (nodeType === 'eth' && data.toString().indexOf('Ethereum (++)') === -1) {
+                            log.trace('Running eth so wait until we see Ethereum (++) msg');
+
                             return;
                         } else if (popupCallback) {
                             popupCallback(null);
@@ -519,6 +523,8 @@ class EthereumNode extends EventEmitter {
 
                 // when proc outputs data in stderr
                 proc.stderr.on('data', (data) => {
+                    log.trace('Got stderr data');
+
                     this.emit('data', data);
 
                     if ('eth' === nodeType) {
@@ -528,6 +534,8 @@ class EthereumNode extends EventEmitter {
                     if (STATES.STARTING === this.state) {
                         // (geth) prevent starting until IPC service is started
                         if (nodeType === 'geth' && data.toString().indexOf('IPC service started') === -1) {
+                            log.trace('Running geth so wait until we see IPC service start msg');
+
                             return;
                         } 
 

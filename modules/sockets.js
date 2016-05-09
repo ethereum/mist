@@ -49,7 +49,7 @@ class Socket extends EventEmitter {
 
                 return new Q((resolve, reject) => {
                     this._socket.once('connect', () => {
-                        this._log.debug('Connected!');
+                        this._log.info('Connected!');
 
                         this._state = STATE.CONNECTED;
 
@@ -102,7 +102,7 @@ class Socket extends EventEmitter {
                     this._socket.status = STATE.DISCONNECTION_TIMEOUT;
 
                     resolve();
-                }, 10000 /* wait 10 seconds for disconnection */)
+                }, 5000 /* wait 5 seconds for disconnection */)
 
                 this._socket.once('close', () => {
                     // if we manually killed it then all good

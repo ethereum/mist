@@ -354,8 +354,6 @@ app.on('ready', function() {
                             onboardingWindow.close();
                             onboardingWindow = null;
 
-                            // popupWindow.loadingWindow.show();
-
                             ipc.removeAllListeners('onBoarding_changeNet');
                             ipc.removeAllListeners('onBoarding_launchApp');
 
@@ -391,10 +389,7 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-var startMainWindow = function(appStartWindow){
-    // remove the splash screen logger
-    ethereumNode.removeListener('data', logFunction);
-
+var startMainWindow = function(appStartWindow) {
     // and load the index.html of the app.
     log.info('Loading Interface at '+ global.interfaceAppUrl);
     global.mainWindow.loadURL(global.interfaceAppUrl);

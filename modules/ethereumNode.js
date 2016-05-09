@@ -162,13 +162,13 @@ class EthereumNode extends EventEmitter {
         if (!this._stopPromise) {
             this._state = STATE.STOPPING;
 
-            log.info('Stopping node');
-
             return new Q((resolve, reject) => {
                 if (!this._node) {
                     return resolve();
                 }
 
+                log.info(`Stopping existing node: ${this.type} ${this.network}`);
+                
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');
                 this._node.stdin.removeAllListeners('error');
@@ -289,7 +289,7 @@ class EthereumNode extends EventEmitter {
     _start (nodeType, network) {
         const ipcPath = getIpcPath();
 
-        log.info('Start node', nodeType, network);
+        log.info(`Start node: ${nodeType} ${network}`);
 
         const isTestNet = ('test' === network);
 
@@ -326,6 +326,8 @@ class EthereumNode extends EventEmitter {
                     });
             })
             .then((proc) => {
+                log.info(`Started node successfully: ${nodeType} ${network}`);
+
                 this._node = proc;
                 this._state = STATE.STARTED;
 

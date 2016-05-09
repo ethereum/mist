@@ -31,10 +31,11 @@ class EthereumNode extends EventEmitter {
     constructor() {
         super();
 
+        this.STATES = STATES;
+
         this._loadDefaults();
 
         this._node = null;
-        this._state = null;
         this._type = null;
         this._network = null;
 
@@ -82,6 +83,15 @@ class EthereumNode extends EventEmitter {
         return 'test' === this.network;
     }
 
+    get state () {
+        return this._state;
+    }
+
+    set state (newState) {
+        this._state = newState;
+
+        this.emit('state', newState)
+    }
 
     /**
      * This method should always be called first to initialise the connection.
@@ -95,6 +105,8 @@ class EthereumNode extends EventEmitter {
 
         return this._socket.connect({path: ipcPath})
             .then(()=> {
+                this.state = STATES.CONNECTED;
+
                 this.emit('info', 'runningNodeFound');
             })
             .catch((err) => {
@@ -160,7 +172,7 @@ class EthereumNode extends EventEmitter {
      */
     stop () {
         if (!this._stopPromise) {
-            this._state = STATE.STOPPING;
+            this.state = STATES.STOPPING;
 
             return new Q((resolve, reject) => {
                 if (!this._node) {
@@ -168,7 +180,7 @@ class EthereumNode extends EventEmitter {
                 }
 
                 log.info(`Stopping existing node: ${this.type} ${this.network}`);
-                
+
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');
                 this._node.stdin.removeAllListeners('error');
@@ -198,7 +210,7 @@ class EthereumNode extends EventEmitter {
             })
                 .then(() => {
                     this._sendRequests = {};
-                    this._state = STATE.STOPPED;
+                    this.state = STATES.STOPPED;
                     this._stopPromise = null;
                 });
         } else {
@@ -329,14 +341,17 @@ class EthereumNode extends EventEmitter {
                 log.info(`Started node successfully: ${nodeType} ${network}`);
 
                 this._node = proc;
-                this._state = STATE.STARTED;
+                this.state = STATES.STARTED;
 
                 this._saveUserData('node', this._type);
                 this._saveUserData('network', this._network);
 
                 return this._socket.connect({ path: ipcPath }, {
-                    timeout: 60000 /* 60s */
+                    timeout: 30000 /* 30s */
                 })  
+                    .then(() => {
+                        this.state = STATES.CONNECTED;
+                    })
                     .catch((err) => {
                         log.error('Failed to connect to node', err);
 
@@ -362,7 +377,8 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     __startNode (nodeType, network) {
-        this._state = STATE.STARTING;
+        this.state = STATES.STARTING;
+
         this._network = network;
         this._type = nodeType;
 
@@ -430,6 +446,8 @@ class EthereumNode extends EventEmitter {
      */
     __startProcess (nodeType, network, binPath, pw, popupCallback) {
         return new Q((resolve, reject) => {
+            log.trace('Rotate log file');
+
             // rotate the log file
             logRotate(this._buildFilePath('node.log'), {count: 5}, (err) => {
                 if (err) {
@@ -450,12 +468,14 @@ class EthereumNode extends EventEmitter {
                     pw = null;
                 }
 
+                log.trace('Spawn', binPath, args);
+
                 const proc = spawn(binPath, args);
 
                 // node has a problem starting
                 proc.once('error', (err) => {
-                    if (STATE.STARTING === this._state) {
-                        this._state = STATE.ERROR;
+                    if (STATES.STARTING === this.state) {
+                        this.state = STATES.ERROR;
                         
                         if (popupCallback) {
                             popupCallback(SPAWN_ERROR);
@@ -485,7 +505,7 @@ class EthereumNode extends EventEmitter {
                 proc.stdout.on('data', (data) => {
                     this.emit('data', data);
 
-                    if (STATE.STARTING === this._state) {
+                    if (STATES.STARTING === this.state) {
                         // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
                         if (nodeType === 'eth' && data.toString().indexOf('Ethereum (++)') === -1) {
                             return;
@@ -505,7 +525,7 @@ class EthereumNode extends EventEmitter {
                         return;
                     }
 
-                    if (STATE.STARTING === this._state) {
+                    if (STATES.STARTING === this.state) {
                         // (geth) prevent starting until IPC service is started
                         if (nodeType === 'geth' && data.toString().indexOf('IPC service started') === -1) {
                             return;
@@ -568,15 +588,17 @@ class EthereumNode extends EventEmitter {
     _buildFilePath (path) {
         return global.path.USERDATA + '/' + path;   
     }
+
 }
 
 
-const STATE = EthereumNode.STATE = {
-    STARTING: 0,
-    STARTED: 1,
-    STOPPED: 2,
-    STOPPING: 3,
-    ERROR: 4,
+const STATES = {
+    STARTING: 0, /* Node about to be started */
+    STARTED: 1, /* Node started */
+    CONNECTED: 2, /* IPC connected - all ready */
+    STOPPING: 3, /* Node about to be stopped */
+    STOPPED: 4, /* Node stopped */
+    ERROR: -1, /* Unexpected error */
 };
 
 
@@ -588,3 +610,4 @@ EthereumNode.STARTING = 0;
 
 
 module.exports = new EthereumNode();
+

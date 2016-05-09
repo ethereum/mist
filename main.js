@@ -1,8 +1,13 @@
 "use strict";
 
 global._ = require('./modules/utils/underscore');
-const fs = require('fs');
+
 const Q = require('bluebird');
+Q.config({
+    cancellation: true,
+});
+
+const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
 const timesync = require("os-timesync");
@@ -280,6 +285,7 @@ app.on('ready', function() {
 
 
     appStartWindow.webContents.on('did-finish-load', function() {
+        // node connection messages
         ethereumNode.on('info', function(type, data1, data2) {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
                 switch (type) {
@@ -293,16 +299,32 @@ app.on('ready', function() {
             }
         });
 
-        nodeSync.on('info', function(type, data1, data2) {
-            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                switch (type) {
-                    case 'msg':
-                        appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
-                        break;
+        // capture sync results
+        const syncResultPromise = new Q((resolve, reject) => {
+            nodeSync.on('info', function(type, data1, data2) {
+                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                    switch (type) {
+                        case 'msg':
+                            appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
+                            break;
+                    }
                 }
-            }
+            });
+
+            nodeSync.on('error', (err) => {
+                log.error('Error syncing node', err);
+
+                reject(err);
+            });
+
+            nodeSync.on('finished', () => {
+                nodeSync.removeAllListeners();
+                
+                resolve();
+            });
         });
 
+        // go!
         ethereumNode.init()
             .then(function sanityCheck() {
                 if (!ethereumNode.isIpcConnected) {
@@ -366,7 +388,7 @@ app.on('ready', function() {
                 }
             })
             .then(function doSync() {
-                return nodeSync.run();
+                return syncResultPromise;
             })
             .then(function allDone() {
                 startMainWindow(appStartWindow);

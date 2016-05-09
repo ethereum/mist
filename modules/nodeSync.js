@@ -16,43 +16,96 @@ const ethereumNode = require('./ethereumNode');
 const log = require('./utils/logger').create('NodeSync');
 
 
+const SYNC_CHECK_INTERVAL_MS = 2000;
+
+
 class NodeSync extends EventEmitter {
+    constructor () {
+        super();
+
+        ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
+    }
+
     /**
      * @return {Promise}
      */
-    run () {
+    start () {
         if (this._syncPromise) {
-            log.debug('Sync already in progress, returning promise');
+            log.warn('Sync already in progress, returning Promise');
 
-            return this._syncPromise;
+            return Q.resolve(this._syncPromise);
         }
 
-        if (!ethereumNode.isIpcConnected) {
-            return Q.reject(new Error('Not yet connected to node via IPC'));
-        }
+        this._syncPromise = Q.try(() => {
+            if (!ethereumNode.isIpcConnected) {
+                throw new Error('Cannot sync - Ethereum node not yet connected');
+            }
 
-        this._syncPromise = new Q((resolve, reject) => {
-            log.info('Starting sync loop');
+            return new Q((resolve, reject) => {
+                log.info('Starting sync loop');
 
-            this._onDone = resolve;
-            this._onError = reject;
+                this._syncInProgress = true;
+                this._onSyncDone = resolve;
+                this._onSyncError = reject;
 
-            return this._sync();
+                this.emit('starting');
+
+                this._sync();
+            });
         })
+            .then(() => {
+                this.emit('finished');
+            })
+            .catch((err) => {
+                log.error('Sync error', err);
+
+                this.emit('error', err);
+            })
             .finally(() => {
                 log.info('Sync loop ended');
 
-                this._syncPromise = this._onDone = this._onError = null;
+                this._clearState();
             });
 
         return this._syncPromise;
     }
 
 
+    /**
+     * @return {Promise}
+     */
+    stop () {
+        return Q.try(() => {
+            if (!this._syncInProgress) {
+                log.debug('Sync not already in progress.');
+            } else {
+                log.info('Stopping sync loop');
+
+                this._clearState();
+
+                return Q.delay(SYNC_CHECK_INTERVAL_MS)
+                    .then(() => {
+                        this.emit('stopped');
+                    });
+            }                        
+        });
+    }
+
+
+    _clearState () {
+        this._syncInProgress 
+            = this._syncPromise 
+            = this._onSyncDone 
+            = this._onSyncError 
+            = false;
+    }
+
 
     _sync () {
         _.delay(() => {
-            if (!this._onDone) {
+            if (!this._syncInProgress) {
+                log.debug('Sync no longer in progress, so ending sync loop.');
+
                 return;
             }
 
@@ -69,7 +122,7 @@ class NodeSync extends EventEmitter {
                             if (-32601 === result.error.code) {
                                 log.warn('Sync method not implemented, skipping sync.');
 
-                                return this._onDone();
+                                return this._onSyncDone();
                             } else {
                                 throw new Error(`Unexpected error: ${result.error}`);
                             }
@@ -114,7 +167,7 @@ class NodeSync extends EventEmitter {
                                             ipc.on('backendAction_startApp', function() {
                                                 ipc.removeAllListeners('backendAction_startApp');
 
-                                                this._onDone();
+                                                this._onSyncDone();
                                             });
                                         }, 12000 /* 12 seconds */);
                                     }
@@ -123,7 +176,7 @@ class NodeSync extends EventEmitter {
                                 } else {
                                     log.info('No more sync necessary');
 
-                                    return this._onDone();
+                                    return this._onSyncDone();
                                 }
                             });
                     }
@@ -131,11 +184,31 @@ class NodeSync extends EventEmitter {
                 .catch((err) => {
                     log.error('Node crashed while syncing?', err);
 
-                    this._onError(err);
+                    this._onSyncError(err);
                 });
-        }, 2000 /* 2 seconds */);
+        }, SYNC_CHECK_INTERVAL_MS);
     }
 
+
+    _onNodeStateChanged (state) {
+        switch (state) {
+            // stop syncing when node about to be stopped
+            case ethereumNode.STATES.STOPPING:
+                log.info('Ethereum node stopping, so stop sync');
+
+                this.stop()
+                break;
+            // auto-sync whenever node gets connected
+            case ethereumNode.STATES.CONNECTED:
+                log.info('Ethereum node connected, re-start sync');
+
+                // stop syncing, then start again
+                this.stop().then(() => {
+                    this.start();
+                });
+                break;
+        }
+    }
 }
 
 

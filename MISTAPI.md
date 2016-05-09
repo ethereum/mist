@@ -45,9 +45,9 @@ else
 
 Returns the current platform, mist is running on:
 
-- `darwin` // Mac OSX
-- `win32` // Windows
-- `linux`
+- `darwin` (Mac OSX)
+- `win32` (Windows)
+- `linux` (Linux)
 
 
 ***

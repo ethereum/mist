@@ -332,10 +332,9 @@ var menuTempl = function(webviews) {
                             createMenu(webviews);
                         }                        
                     })
-                    .catch(err) {
+                    .catch((err) => {
                         log.error('miner_start', err);
-                    })
-                });
+                    });
             } else {
                 ethereumNode.send('miner_stop', [1])
                     .then((result) => {
@@ -346,10 +345,9 @@ var menuTempl = function(webviews) {
                             createMenu(webviews);
                         }                        
                     })
-                    .catch(err) {
+                    .catch((err) => {
                         log.error('miner_stop', err);
-                    })
-                });
+                    });
             }
         }
     });

@@ -1,7 +1,6 @@
 "use strict";
 
 global._ = require('./modules/utils/underscore');
-
 const fs = require('fs');
 const electron = require('electron');
 const app = require('app');  // Module to control application life.
@@ -69,9 +68,7 @@ const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const popupWindow = require('./modules/popupWindow.js');
 const ethereumNode = require('./modules/ethereumNode.js');
-const nodeSync = require('./modules/checkNodeSync.js');
-const getIpcPath = require('./modules/ipc/getIpcPath.js');
-var ipcPath = getIpcPath();
+const nodeSync = require('./modules/nodeSync.js');
 
 global.mainWindow = null;
 global.windows = {};
@@ -285,7 +282,7 @@ app.on('ready', function() {
         ethereumNode.on('info', function(type, data1, data2) {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
                 switch (type) {
-                    'nodelog':
+                    case 'nodelog':
                         appStartWindow.webContents.send('startScreenText', 'logText', data1.replace(/^.*[0-9]\]/,''));
                         break;
                     default:
@@ -294,8 +291,9 @@ app.on('ready', function() {
             }
         });
 
-        nodeSync.on('info', function(type, data) {
+        nodeSync.on('info', function(type, data1, data2) {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
             }
         });
 

@@ -22,7 +22,7 @@ module.exports = function() {
     if(process.platform === 'win32')
         path = '\\\\.\\pipe\\geth.ipc';
     
-    log.debug('CONNECT to IPC PATH: '+ path);
+    log.debug(`IPC path: ${path}`);
 
     return path;
 };

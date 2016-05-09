@@ -1,3 +1,5 @@
+"use strict";
+
 const _ = require('./underscore');
 const log4js = require('log4js');
 

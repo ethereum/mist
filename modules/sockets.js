@@ -1,4 +1,6 @@
-const logger = require('./utils/logger');
+"use strict";
+
+const log = require('./utils/logger').create('Sockets');
 const net = require('net');
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
@@ -16,9 +18,8 @@ class Socket extends EventEmitter {
         this._mgr = socketMgr;
         this._id = id;
 
-        let _name = 'Socket' + (id ? `(${id})` : '');
+        this._log = log.create(this._id);
 
-        this._log = logger.create(this._id);
         this._state = null;
     }
 
@@ -220,6 +221,8 @@ class SocketManager {
      */
     get (id) {
         if (!this._sockets[id]) {
+            log.debug('Create socket', id);
+
             this._sockets[id] = new Socket(this, id);
         }
 
@@ -232,6 +235,8 @@ class SocketManager {
      * @return {Promise}
      */
     destroyAll () {
+        log.info('Destroy all sockets');
+
         return Q.all(_.map(this._sockets, (s) => {
             return s.destroy();
         }));
@@ -243,6 +248,8 @@ class SocketManager {
      * Usually called by `Socket` instances when they're destroyed.
      */
     _remove (id) {
+        log.debug('Remove socket', id);
+
         delete this._sockets[id];
     }
 
@@ -251,5 +258,5 @@ class SocketManager {
 
 
 
-module.exports = SocketManager;
+module.exports = new SocketManager();
 

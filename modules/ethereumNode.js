@@ -1,5 +1,7 @@
-const _ = require('./utils/underscore');
-const log = require('./utils/logger').create('EthereumNodes');
+"use strict";
+
+const _ = global._;
+const log = require('./utils/logger').create('EthereumNode');
 const app = require('app');
 const ipc = require('electron').ipcMain;
 const spawn = require('child_process').spawn;
@@ -8,6 +10,7 @@ const logRotate = require('log-rotate');
 const dialog = require('dialog');
 const fs = require('fs');
 const Q = require('bluebird');
+const dechunker = require('./ipc/dechunker.js');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const getIpcPath = require('./ipc/getIpcPath.js')
@@ -36,6 +39,9 @@ class EthereumNode extends EventEmitter {
         this._network = null;
 
         this._socket = Sockets.get('node-ipc');
+        this._socket.on('data', _.bind(this._handleSocketResponse, this));
+
+        this._sendRequests = {};
 
         this.on('data', _.bind(this._logNodeData, this));
     }
@@ -123,7 +129,7 @@ class EthereumNode extends EventEmitter {
 
             log.info('Restart node', newType, newNetwork);
 
-            return this._stop()
+            return this.stop()
                 .then(() => {
                     if (popupWindow) {
                         popupWindow.loadingWindow.show();
@@ -146,6 +152,70 @@ class EthereumNode extends EventEmitter {
     }
 
 
+    /** 
+     * Send command to socket.
+     * @param  {String} name
+     * @param  {Array} [params]
+     * @return {Promise} resolves to result or error.
+     */
+    send (name, params) {
+        return Q.try(() => {
+            if (!this.isIpcConnected) {
+                throw new Error('IPC socket not connected');
+            }
+
+            log.debug('Send request', name, params);
+
+            return new Q((resolve, reject) => {
+                let requestId = _.uuid();
+
+                log.trace('Request id', requestId);
+
+                this._sendRequests[requestId] = {
+                    resolve: resolve,
+                    reject: reject,
+                };
+
+                this._socket.write(JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: requestId,
+                    method: name,
+                    params: params || []
+                }));
+            })
+        });
+    }
+
+
+
+    _handleSocketResponse (data) {
+        dechunker(data, (err, result) => {
+            try {
+                if (err) {
+                    log.error('Socket response error', err);
+
+                    _.each(this._sendRequests, (req) => {
+                        req.reject(err);
+                    });
+
+                    this._sendRequests = {};
+                } else {
+                    let req = this._sendRequests[result.id];
+
+                    if (req) {
+                        req.resolve(result.result);
+                    } else {
+                        log.debug(`Unable to find corresponding request for ${result.id}`, result);
+                    }
+                }
+            } catch (err) {
+                log.error('Error handling socket response', err);
+            }
+        });
+    }
+
+
+
     /**
      * Start an ethereum node.
      * @param  {String} nodeType geth, eth, etc
@@ -163,7 +233,7 @@ class EthereumNode extends EventEmitter {
             log.debug('Node will connect to the test network');
         }
 
-        return this._stop()
+        return this.stop()
             .then(() => {
                 return this.__startNode(nodeType, network)
                     .catch((err) => {
@@ -193,8 +263,6 @@ class EthereumNode extends EventEmitter {
             })
             .then((proc) => {
                 this._node = proc;
-                this._network = network;
-                this._type = nodeType;
 
                 this._state = STATE.STARTED;
 
@@ -230,6 +298,8 @@ class EthereumNode extends EventEmitter {
      */
     __startNode (nodeType, network) {
         this._state = STATE.STARTING;
+        this._network = network;
+        this._type = nodeType;
 
         const binPath = getNodePath(nodeType);
 
@@ -387,11 +457,11 @@ class EthereumNode extends EventEmitter {
 
 
     /**
-     * Stop all nodes.
+     * Stop node.
      * 
      * @return {Promise}
      */
-    _stop () {
+    stop () {
 
         if (!this._stopPromise) {
             this._state = STATE.STOPPING;
@@ -431,6 +501,7 @@ class EthereumNode extends EventEmitter {
                 }); 
             })
                 .finally(() => {
+                    this._sendRequests = {};
                     this._state = STATE.STOPPED;
                     this._stopPromise = null;
                 });
@@ -448,7 +519,9 @@ class EthereumNode extends EventEmitter {
     _logNodeData (data) {
         data = data.toString().replace(/[\r\n]+/,'');
 
-        log.trace(`${this.type}: ${data}`);
+        let nodeType = (this.type || 'node').toUpperCase();
+
+        log.trace(`${nodeType}: ${data}`);
 
         if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
             this.emit('info', 'nodelog', data);

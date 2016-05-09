@@ -1,11 +1,13 @@
+"use strict";
+
 /**
-The checkNodeSync module,
+The nodeSync module,
 checks the current node whether its synching or not and how much it kept up already.
 
-@module checkNodeSync
+@module nodeSync
 */
 
-const _ = require('underscore');
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const app = require('app');
@@ -15,6 +17,12 @@ const log = require('./utils/logger').create('NodeSync');
 
 
 class NodeSync extends EventEmitter {
+    constructor () {
+        super();
+
+        this._doLoop = _.bind(this._doLoop, this);
+    }
+
     /**
      * @return {Promise}
      */
@@ -26,28 +34,96 @@ class NodeSync extends EventEmitter {
         }
 
         return new Q((resolve, reject) => {
+            log.info('Starting sync loop...');
+
+            this._syncing = true;
+
             this._doLoop(resolve, reject);
-        });
+        })
+            .finally(() => {
+                this._clearFallbackTimeout();
+                this._syncing = false;
+            });
     }
 
     _doLoop (onDone, onError) {
-        log.debug('Get last obtained block');
+        log.debug('Check latest block');
+
+        if (!this._syncing) {
+            return;
+        }
 
         ethereumNode.send('eth_getBlockByNumber', ['latest', false])
             .then((result) => {
+                if (!this._syncing) {
+                    return;
+                }
+
                 const now = Math.floor(new Date().getTime() / 1000);
 
                 const lastBlockTime = parseInt(Math.abs(result.timestamp));
 
                 const diff = now - lastBlockTime;
 
-                log.debug(`Time since last block: ${diff}s`);
+                log.info(`Time since last block: ${diff}s`);
 
                 // need sync if > 1 minutes
                 if(diff > 60) {
-                    log.info('Sync necessary, starting now...');
+                    log.info('Sync necessary, doing it now...');
 
-                    this._startSync(onDone, onError);
+                    // inform listeners of where we are
+                    this.emit('info', 'msg', 'nodeSyncing', {
+                        currentBlock: +result.number
+                    });
+
+                    ethereumNode.send('eth_syncing', [])
+                        .then((result) => {
+                            if (!this._syncing) {
+                                return;
+                            }
+
+                            this._resetFallbackTimeout(onDone, onError);
+
+                            // got a result?
+                            if (result) {
+                                // got an error?
+                                if (result.error) {
+                                    if (-32601 === result.error.code) {
+                                        log.warn('Sync method not implemented, skipping sync.');
+
+                                        onDone();
+                                    } else {
+                                        throw new Error(`Unexpected error: ${result.error}`);
+                                    }
+
+                                    return; // all done
+                                }
+
+                                // no block, let's just update the progress bar
+                                if (!_.isString(result.hash)) {
+                                    this.emit('info', 'msg', 'privateChainTimeoutClear');
+                                    this.emit('info', 'msg', 'nodeSyncing', result);
+                                }
+
+                                // loop again
+                                return _.defer(this._doLoop);
+                            } 
+                            // got no result, not syncing anymore
+                            else {
+                                this._startFallbackTimeout(onDone, onError);
+                            }
+                        })
+                        .catch((err) => {
+                            if (!this._syncing) {
+                                return;
+                            }
+
+                            this._resetFallbackTimeout(onDone, onError);
+
+                            log.error('Node crashed while syncing?', err);
+
+                            onError(err);
+                        });
                 } else {
                     log.info('No sync necessary, starting app');
 
@@ -57,102 +133,39 @@ class NodeSync extends EventEmitter {
     }
 
 
+    _startFallbackTimeout (onDone, onError) {
+        log.trace('Start fallback timeout');
 
-    var cb = function(error, result){
-    
-        // error occured, ignore
-        if(error || (result && result.error)) {
-            // if sync method is not implemented, just start the app
-            if(result && result.error.code === -32601) {
-                log.info('Syncing method not implemented, start app anyway.');
+        this._fallbackTimeout = setTimeout(() => {
+            log.debug('Fallback timeout handler running. We are probably running a private chain with no mining.');
 
-                clearInterval(intervalId);
-                clearTimeout(timeoutId);
-                callbackSplash();
-                cbCalled = true;
-            }
+            this.emit('info', 'msg', 'privateChainTimeout');
 
-            if(error) {
-                log.error('Node crashed while syncing?');
+            ipc.on('backendAction_startApp', () => {
+                log.debug('Short-circuit sync and start the app.');
 
-                clearInterval(intervalId);
-                clearTimeout(timeoutId);
-                callbackSplash();
-                cbCalled = true;
-            }
+                ipc.removeAllListeners('backendAction_startApp');
 
-            return;
+                onDone();
+            });
+        }, 1000 * 12 /* 12 seconds */);
+    }
+
+
+    _clearFallbackTimeout (onDone, onError) {
+        if (this._fallbackTimeout) {
+            log.trace('Reset fallback timeout');
+            
+            clearTimeout(this._fallbackTimeout);
         }
-            
-
-        // CHECK BLOCK (AGAIN)
-        if(_.isString(result.hash)) {
-            var now = Math.floor(new Date().getTime() / 1000);
-
-            // If ready!
-            if(now - +result.timestamp < 120 && !cbCalled) {
-                log.info('Sync finished, starting app!');
-
-                clearInterval(intervalId);
-                clearTimeout(timeoutId);
-                callbackSplash();
-
-                // prevent double call of the callback
-                cbCalled = true;
-
-            // if still needs syncing
-            } else {
-                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed())
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', {
-                        currentBlock: +result.number
-                    });
-            }
+    }
 
 
-        // CHECK SYNC STATUS
-        } else {
-            
-            // if not syncing anymore
-            if(!result) {
+    _resetFallbackTimeout (onDone, onError) {
+        this._clearFallbackTimeout();
+        this._startFallbackTimeout(onDone, onError);
+    }
 
-                global.nodeConnector.send('eth_getBlockByNumber', ['latest', false], cb);
-
-                // create timeout for private chains, where no one is mining
-                if(!timeoutId) {
-                    timeoutId = setTimeout(function(){
-                        if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeout');
-
-                            ipc.on('backendAction_startApp', function() {
-                                clearInterval(intervalId);
-                                callbackSplash();
-
-                                // prevent double call of the callback
-                                cbCalled = true;
-
-                                ipc.removeAllListeners('backendAction_startApp');
-                            });
-                        }
-                    }, 1000 * 12);
-                }
-            
-            // update progress bar
-            } else {
-
-                // clear timeout if blocks start to get imported
-                clearTimeout(timeoutId);
-                timeoutId = null;
-                
-                if(appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    // remove the private chain button again
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.privateChainTimeoutClear');
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeSyncing', result);
-                }
-                    
-            }
-
-        }
-    };
 }
 
 

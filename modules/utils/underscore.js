@@ -1,3 +1,5 @@
+const uuid = require('uuid');
+
 const _ = module.exports = require('underscore');
 
 _.mixin({
@@ -27,7 +29,10 @@ _.mixin({
         }
 
         return result || fallbackValue;
-    }  
+    },
+    uuid: function() {
+        return uuid.v4();
+    },
 });
 
 module.exports = _;

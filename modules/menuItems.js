@@ -298,7 +298,7 @@ var menuTempl = function(webviews) {
         submenu: [
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-            accelerator: 'Alt+CommandOrControl+1',
+            accelerator: 'CommandOrControl+Shift+1',
             checked: !!(global.network === 'main'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'main'),
             type: 'checkbox',
@@ -317,7 +317,7 @@ var menuTempl = function(webviews) {
           },
           {
             label: 'Testnet (Morden)',
-            accelerator: 'Alt+CommandOrControl+2',                
+            accelerator: 'CommandOrControl+Shift+2',                
             checked: !!(global.network === 'test'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'test'),
             type: 'checkbox',
@@ -338,7 +338,7 @@ var menuTempl = function(webviews) {
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
-        accelerator: 'CommandOrControl+M',
+        accelerator: 'CommandOrControl+Shift+M',
         enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
         click: function(){
             // TODO remove on new RPC

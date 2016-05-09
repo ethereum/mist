@@ -2,6 +2,7 @@
 @module preloader wallet
 */
 
+require('./console-log-capture')('wallet');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');

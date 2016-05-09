@@ -15,10 +15,12 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-
+    console.debug('Init Mist');
 
     Meteor.setTimeout(function() {
         if(!Tabs.findOne('browser')) {
+            console.debug('Insert tabs');
+
             Tabs.insert({
                 _id: 'browser',
                 url: 'about:blank',
@@ -41,6 +43,8 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
+    console.log('Meteor starting up...');
+
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {
         if(e || !sync)
@@ -48,9 +52,10 @@ Meteor.startup(function(){
     });
 
 
+    console.debug('Setting language');
 
     // SET default language
-    if(Cookie.get('TAPi18next')) {
+    if(Cookie.get('TAPi18next')) {        
         TAPi18n.setLanguage(Cookie.get('TAPi18next'));
     } else {
         var userLang = navigator.language || navigator.userLanguage,

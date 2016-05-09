@@ -33,12 +33,12 @@ The paths which store your wallets database and node are different:
 
 The wallet (Mist) stores its data at:
 - Mac: ~/Library/Application Support/Mist
-- Win: C:\users\app data\roaming\Mist
+- Win: %APPDATA%\Roaming\Mist
 - Linux: ~/.config/Mist
 
 The nodes data is stored at:
 - Mac: ~/Library/Ethereum
-- Win: C:\users\app data\roaming\Ethereum
+- Win: %APPDATA%\Roaming\Ethereum
 - Linux: ~/.ethereum
 
 

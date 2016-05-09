@@ -20,7 +20,7 @@ you can simply run the executeable after download.
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 The data folder for Mist is stored in other places:
 
-- Windows `%APPDATA%/Roaming/Mist`
+- Windows `%APPDATA%\Roaming\Mist`
 - MacOSX `~/Library/Application Support/Mist`
 - Linux `~/.config/Mist`
 

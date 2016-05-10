@@ -298,8 +298,8 @@ var menuTempl = function(webviews) {
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
             accelerator: 'CommandOrControl+Shift+1',
-            checked: !!(global.network === 'main'),
-            enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'main'),
+            checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
+            enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
             type: 'checkbox',
             click: function(){
                 restartNode(ethereumNode.type, 'main');
@@ -308,8 +308,8 @@ var menuTempl = function(webviews) {
           {
             label: 'Testnet (Morden)',
             accelerator: 'CommandOrControl+Shift+2',                
-            checked: !!(global.network === 'test'),
-            enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'test'),
+            checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+            enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
             type: 'checkbox',
             click: function(){
                 restartNode(ethereumNode.type, 'test');
@@ -320,7 +320,7 @@ var menuTempl = function(webviews) {
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+Shift+M',
-        enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
+        enabled: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
         click: function(){
             if(!global.mining) {
                 ethereumNode.send('miner_start', [1])

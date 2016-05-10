@@ -113,8 +113,6 @@ class EthereumNode extends EventEmitter {
             .catch((err) => {
                 log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
 
-                this.emit('info', 'msg', 'startingNode');
-
                 log.info(`Node type: ${this.defaultNodeType}`);
                 log.info(`Network: ${this.defaultNetwork}`);
 
@@ -179,6 +177,8 @@ class EthereumNode extends EventEmitter {
                 if (!this._node) {
                     return resolve();
                 }
+
+                this.emit('info', 'msg', 'stoppingNode');
 
                 log.info(`Stopping existing node: ${this.type} ${this.network}`);
 
@@ -302,6 +302,8 @@ class EthereumNode extends EventEmitter {
         const ipcPath = getIpcPath();
 
         log.info(`Start node: ${nodeType} ${network}`);
+
+        this.emit('info', 'msg', 'startingNode');
 
         const isTestNet = ('test' === network);
 

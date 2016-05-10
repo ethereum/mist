@@ -318,6 +318,10 @@ app.on('ready', function() {
                 }
             });
 
+            nodeSync.on('stopped', function() {
+                appStartWindow.webContents.send('startScreenText', `mist.startScreen.nodeSyncingStopped`);
+            });
+
             nodeSync.on('error', function(err) {
                 log.error('Error syncing node', err);
 

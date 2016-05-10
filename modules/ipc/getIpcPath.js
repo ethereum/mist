@@ -11,6 +11,9 @@ module.exports = function() {
     var p = require('path');
     var path = global.path.HOME;
 
+    if(global.paths.ipc)
+        return global.paths.ipc;
+
     if(process.platform === 'darwin')
         path += '/Library/Ethereum/geth.ipc';
 

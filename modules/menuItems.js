@@ -249,7 +249,7 @@ var menuTempl = function(webviews) {
                 dialog.showMessageBox({
                     type: "info",
                     buttons: ['OK'],
-                    message: 'Log file',
+                    message: 'Node log file',
                     detail: log
                 }, function(){
                 });

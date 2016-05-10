@@ -36,6 +36,7 @@
     "rcedit": "^0.3.0"
   },
   "engines": {
+    "node": ">4.3.0",
     "electron": "0.36.2",
     "atom-shell": "0.36.2"
   }

@@ -1,6 +1,7 @@
 /**
 @module preloader dapps
 */
+require('./console-log-capture')('dapps');
 const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
 const shell = require('shell');

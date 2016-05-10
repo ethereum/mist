@@ -5,12 +5,14 @@ Window communication
 */
 
 const app = require('app');  // Module to control application life.
-const appMenu = require('./menuItems');   
+const appMenu = require('./menuItems');
 const popupWindow = require('./popupWindow.js');
-const log = require('./utils/logger').create('ipcCommunicator');
+const logger = require('./utils/logger');
 const ipc = require('electron').ipcMain;
 
 const _ = global._;
+
+const log = logger.create('ipcCommunicator');
 
 /*
 
@@ -71,7 +73,7 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
 
 ipc.on('backendAction_setLanguage', function(e, lang){
     if(global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0,2), function(err, t){
+        global.i18n.changeLanguage(lang.substr(0,5), function(err, t){
             if(!err) {
                 global.language = global.i18n.language;
                 log.info('Backend language set to: ', global.language);
@@ -109,7 +111,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
                 e.sender.send('uiAction_importedPresaleFile', null, '0x'+ find[1]);
             else
                 e.sender.send('uiAction_importedPresaleFile', data);
-        
+
         // if not stop, so we don't kill the process
         } else {
             return;
@@ -136,3 +138,25 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 ipc.on('mistAPI_requestAccount', function(e){
     popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
 });
+
+
+
+const uiLoggers = {};
+
+ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
+    try {
+        let loggerId = `(ui: ${id})`;
+
+        let windowLogger = uiLoggers[loggerId];
+
+        if (!windowLogger) {
+            windowLogger = uiLoggers[loggerId] = logger.create(loggerId);
+        }
+
+        windowLogger[logLevel].apply(windowLogger, _.toArray(JSON.parse(logItemsStr)));
+    } catch (err) {
+        log.error(err);
+    }
+});
+
+

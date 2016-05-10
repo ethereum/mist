@@ -404,6 +404,8 @@ class EthereumNode extends EventEmitter {
 
                 let popupCallback = function(err) {
                     if (err && _.get(modalWindow,'webContents')) {
+                        log.error('unlockMasterPassword error', err);
+
                         if(SPAWN_ERROR === err) {
                             modalWindow.close();
                             modalWindow = null;
@@ -509,12 +511,14 @@ class EthereumNode extends EventEmitter {
 
                     if (STATES.STARTING === this.state) {
                         // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
-                        if (nodeType === 'eth' && data.toString().indexOf('Ethereum (++)') === -1) {
-                            log.trace('Running eth so wait until we see Ethereum (++) msg');
+                        if (nodeType === 'eth' && data.toString().indexOf('JSONRPC') === -1) {
+                            log.trace('Running eth so wait until we see "JSONRPC" string');
 
                             return;
-                        } else if (popupCallback) {
-                            popupCallback(null);
+                        }
+
+                        if (popupCallback) {
+                            popupCallback();
                         }
 
                         resolve(proc);

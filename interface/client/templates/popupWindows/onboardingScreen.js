@@ -83,12 +83,6 @@ Template['popupWindows_onboardingScreen'].helpers({
 
 Template['popupWindows_onboardingScreen'].events({
    'click .goto-start': function(e){
-        if(TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', false);
-            TemplateVar.set('testnet', false);
-            // TODO: re-start syncing subscription
-        }
-
         TemplateVar.set('currentActive','start');
     },
    'click .goto-import-account': function(){
@@ -98,14 +92,13 @@ Template['popupWindows_onboardingScreen'].events({
         if(TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
-            // TODO: re-start syncing subscription
         }
     },
    'click .start-testnet': function(e, template){
-
-        ipc.send('onBoarding_changeNet', true);
-        TemplateVar.set('testnet', true);
-        // TODO: re-start syncing subscription
+        if(!TemplateVar.get('testnet')) {
+            ipc.send('onBoarding_changeNet', true);
+            TemplateVar.set('testnet', true);
+        }
 
         TemplateVar.set('currentActive','testnet');
         template.$('.onboarding-testnet input.password').focus();

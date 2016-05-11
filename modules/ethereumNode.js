@@ -88,10 +88,27 @@ class EthereumNode extends EventEmitter {
         return this._state;
     }
 
+    get stateAsText () {
+        switch (this._state) {
+            case STATES.STARTING:
+                return 'starting';
+            case STATES.STARTED:
+                return 'started';
+            case STATES.CONNECTED:
+                return 'connected';
+            case STATES.STOPPING:
+                return 'stopping';
+            case STATES.STOPPED:
+                return 'stopped';
+            case STATES.ERROR:
+                return 'error';
+        }
+    }
+
     set state (newState) {
         this._state = newState;
 
-        this.emit('state', newState)
+        this.emit('state', this.state, this.stateAsText);
     }
 
     /**
@@ -108,7 +125,7 @@ class EthereumNode extends EventEmitter {
             .then(()=> {
                 this.state = STATES.CONNECTED;
 
-                this.emit('info', 'runningNodeFound');
+                this.emit('runningNodeFound');
             })
             .catch((err) => {
                 log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
@@ -117,13 +134,8 @@ class EthereumNode extends EventEmitter {
                 log.info(`Network: ${this.defaultNetwork}`);
 
                 return this._start(this.defaultNodeType, this.defaultNetwork)
-                    .then(() => {
-                        this.emit('info', 'msg', 'startedNode');
-                    })
                     .catch((err) => {
                         log.error('Failed to start node', err);
-
-                        this.emit('info', 'msg', 'nodeBinaryNotFound');
                             
                         throw err;
                     });
@@ -177,8 +189,6 @@ class EthereumNode extends EventEmitter {
                 if (!this._node) {
                     return resolve();
                 }
-
-                this.emit('info', 'msg', 'stoppingNode');
 
                 log.info(`Stopping existing node: ${this.type} ${this.network}`);
 
@@ -303,8 +313,6 @@ class EthereumNode extends EventEmitter {
 
         log.info(`Start node: ${nodeType} ${network}`);
 
-        this.emit('info', 'msg', 'startingNode');
-
         const isTestNet = ('test' === network);
 
         if (isTestNet) {
@@ -358,7 +366,7 @@ class EthereumNode extends EventEmitter {
                         log.error('Failed to connect to node', err);
 
                         if (0 <= err.toString().indexOf('timeout')) {
-                            this.emit('info', 'msg', 'nodeConnectionTimeout', ipcPath);
+                            this.emit('nodeConnectionTimeout');
                         }
 
                         throw err;
@@ -495,6 +503,9 @@ class EthereumNode extends EventEmitter {
                             popupCallback(SPAWN_ERROR);
                         }
 
+                        // TODO: detect this properly
+                        // this.emit('nodeBinaryNotFound');
+
                         reject(err);
                     }
                 });
@@ -590,7 +601,7 @@ class EthereumNode extends EventEmitter {
         log.trace(`${nodeType}: ${data}`);
 
         if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
-            this.emit('info', 'nodelog', data);
+            this.emit('nodeLog', data);
         }
     }
 

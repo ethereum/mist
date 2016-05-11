@@ -292,28 +292,25 @@ app.on('ready', function() {
 
 
     appStartWindow.webContents.on('did-finish-load', function() {
-        // node connection messages
-        ethereumNode.on('info', function(type, data1, data2) {
+        // node connection stuff
+        ethereumNode.on('nodeConnectionTimeout', function() {
             if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                switch (type) {
-                    case 'nodelog':
-                        appStartWindow.webContents.send('startScreenText', 'logText', data1.replace(/^.*[0-9]\]/,''));
-                        break;
-                    case 'msg':
-                        appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
-                        break;
-                }
+                appStartWindow.webContents.send('nodeStatus', 'connectionTimeout');
+            }
+        });
+
+        ethereumNode.on('nodeLog', function(data) {
+            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                appStartWindow.webContents.send('nodeLogText', data.replace(/^.*[0-9]\]/,''));
             }
         });
 
         // state change
-        ethereumNode.on('state', function(state) {
-            if (ethereumNode.STATES.CONNECTED === state) {
-                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                        appStartWindow.webContents.send('nodeConnected');
-                        popupWindow.send('nodeConnected');
-                }
+        ethereumNode.on('state', function(state, stateAsText) {
+            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                appStartWindow.webContents.send('nodeStatus', stateAsText);
             }
+            popupWindow.send('nodeStatus', stateAsText);
         });
 
 
@@ -321,27 +318,26 @@ app.on('ready', function() {
         const syncResultPromise = new Q((resolve, reject) => {
             nodeSync.on('privateChainTimeoutClear', function() {
                 if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.privateChainTimeoutClear`);
+                    appStartWindow.webContents.send('nodeSyncStatus', 'privateChainTimeoutClear');
                 }
             });
 
             nodeSync.on('privateChainTimeout', function() {
                 if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.privateChainTimeout`);
+                    appStartWindow.webContents.send('nodeSyncStatus', 'privateChainTimeout');
                 }
             });
 
             nodeSync.on('nodeSyncing', function(result) {
                 if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.nodeSyncing`, result);
-                    appStartWindow.webContents.send('nodeSyncing', result);
+                    appStartWindow.webContents.send('nodeSyncStatus', 'inProgress', result);
                 }
-                popupWindow.send('nodeSyncing', result);
+                popupWindow.send('nodeSyncStatus', 'inProgress', result);
             });
 
             nodeSync.on('stopped', function() {
-                appStartWindow.webContents.send('startScreenText', `mist.startScreen.nodeSyncingStopped`);
-                popupWindow.send('nodeSyncingStopped');
+                appStartWindow.webContents.send('nodeSyncStatus', 'stopped');
+                popupWindow.send('nodeSyncStatus', 'stopped');
             });
 
             nodeSync.on('error', function(err) {
@@ -393,6 +389,8 @@ app.on('ready', function() {
                             let newType = ethereumNode.type;
                             let newNetwork = testnet ? 'test' : 'main';
 
+                            log.debug('Onboarding change network', newNetwork);
+                            
                             ethereumNode.restart(newType, newNetwork)
                                 .then(function nodeRestarted() {
                                     appMenu();
@@ -423,8 +421,6 @@ app.on('ready', function() {
                 }
             })
             .then(function doSync() {
-                ethereumNode.removeAllListeners('info');
-
                 return syncResultPromise;
             })
             .then(function allDone() {

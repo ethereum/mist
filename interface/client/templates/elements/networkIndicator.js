@@ -51,17 +51,27 @@ Template['elements_networkIndicator'].onRendered(function(){
 
     checkNetworkType(template);
 
-    ipc.on('nodeConnected', function() {
-        console.debug('Node (re)connected, reset network type indicator');
+    ipc.on('nodeStatus', function(e, status) {
+        console.trace('Node status', status);
 
-        TemplateVar.set(template, 'unknown', true);
-        TemplateVar.set(template, 'mainnet', false);
-        TemplateVar.set(template, 'testnet', false);
-        TemplateVar.set(template, 'devnet', false);
+        switch (status) {
+            case 'starting':
+            case 'stopping':
+            case 'connected':
+                console.debug('Node status changing, reset network type indicator');
+
+                TemplateVar.set(template, 'unknown', true);
+                TemplateVar.set(template, 'mainnet', false);
+                TemplateVar.set(template, 'testnet', false);
+                TemplateVar.set(template, 'devnet', false);            
+            break;
+        }
     });
 
-    ipc.on('nodeSyncing', function() {
-        if (true === TemplateVar.get(template, 'unknown')) {
+    ipc.on('nodeSyncStatus', function(e, status, data) {
+        console.trace('Node sync status', status);
+
+        if ('inProgress' === status && !!TemplateVar.get(template, 'unknown')) {
             console.debug('Node syncing, re-check network type.');
 
             checkNetworkType(template);            

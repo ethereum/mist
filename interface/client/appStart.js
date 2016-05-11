@@ -49,11 +49,7 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
-<<<<<<< HEAD
-    console.log('Meteor starting up');
-=======
     console.log('Meteor starting up...');
->>>>>>> develop
 
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {
@@ -62,11 +58,8 @@ Meteor.startup(function(){
     });
 
 
-<<<<<<< HEAD
-=======
     console.debug('Setting language');
 
->>>>>>> develop
     // SET default language
     if(Cookie.get('TAPi18next')) {        
         TAPi18n.setLanguage(Cookie.get('TAPi18next'));

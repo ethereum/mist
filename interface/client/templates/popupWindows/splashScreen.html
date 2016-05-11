@@ -1,6 +1,7 @@
 <template name="popupWindows_splashScreen">
     <div class="splash-screen {{mode}} {{TemplateVar.get 'smallClass'}}">
-        <button class="close">×</button>
+        {{> elements_networkIndicator}}
+
         {{#if TemplateVar.get "showStartAppButton"}}
             <button class="start-app">{{{TemplateVar.get "startAppButtonText"}}}</button>
         {{/if}}

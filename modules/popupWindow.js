@@ -3,6 +3,8 @@
 */
 const BrowserWindow = require('browser-window');
 
+const log = require('./utils/logger').create('popupWindow');
+
 module.exports = {
     loadingWindow: {
         window: null,
@@ -36,10 +38,14 @@ module.exports = {
             this.window.loadURL(global.interfacePopupsUrl +'#loadingWindow');
         },
         show: function(){
+            log.debug('Show loading window');
+
             this.window.center();
             this.window.show();
         },
         hide: function(){
+            log.debug('Hide loading window');
+
             this.window.hide();
         }  
     },
@@ -81,6 +87,8 @@ module.exports = {
                 return;
         }
 
+        log.debug('Show window', windowType);
+
         // load URL
         modalWindow.loadURL(global.interfacePopupsUrl +'#'+ windowType);
 
@@ -109,5 +117,20 @@ module.exports = {
         };
 
         return modalWindow;
+    },
+    send: function(msg, data) {
+        _.each(global.windows, (info, id) => {
+            let wnd = info.window;
+
+            try {
+                if (wnd && wnd.webContents && !wnd.isDestroyed()) {
+                    log.trace('Send via IPC to window', info.type, msg, data);
+
+                    wnd.webContents.send(msg, data);
+                }
+            } catch (err) {}
+        });
     }
 };
+
+

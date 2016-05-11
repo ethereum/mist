@@ -1,9 +1,7 @@
 <template name="popupWindows_onboardingScreen">
     <div class="onboarding-screen {{mode}} active-{{TemplateVar.get 'currentActive'}} outgoing-{{TemplateVar.get 'lastActive'}} ">
-        
-        {{#if TemplateVar.get "testnet"}}
-            <div class="testnet-indicator">TEST-NET</div>
-        {{/if}}
+
+        {{> elements_networkIndicator}}
 
         <div class="main-content">    
             <div class="onboarding-section onboarding-start">

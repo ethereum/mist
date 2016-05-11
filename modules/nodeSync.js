@@ -130,9 +130,8 @@ class NodeSync extends EventEmitter {
                         // no error, so call again in a bit
                         else {
                             clearTimeout(this._syncTimeout);
-
-                            this.emit('info', 'msg', 'privateChainTimeoutClear');
-                            this.emit('info', 'msg', 'nodeSyncing', result);
+                            this.emit('privateChainTimeoutClear');
+                            this.emit('nodeSyncing', result);
 
                             return this._sync();
                         }
@@ -151,18 +150,16 @@ class NodeSync extends EventEmitter {
 
                                 // need sync if > 1 minutes
                                 if(diff > 60) {
-                                    this.emit('info', 'msg', 'nodeSyncing', {
-                                        currentBlock: +blockResult.number
-                                    });
+                                    this.emit('nodeSyncing', result);
 
                                     log.trace('Keep syncing...');
 
                                     // fallback timeout
                                     if (!this._syncTimeout) {
                                         this._syncTimeout = _.delay(() => {
+                                            this.emit('privateChainTimeout');
+                                            
                                             log.debug('Sync timeout handler running');
-
-                                            this.emit('info', 'msg', 'privateChainTimeout');
 
                                             ipc.on('backendAction_startApp', () => {
                                                 ipc.removeAllListeners('backendAction_startApp');

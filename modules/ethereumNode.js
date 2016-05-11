@@ -464,13 +464,23 @@ class EthereumNode extends EventEmitter {
 
                 // START TESTNET
                 if ('test' == network) {
-                    args = (nodeType === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
+                    args = (nodeType === 'geth') 
+                        ? ['--testnet', '--fast', '--ipcpath', getIpcPath()] 
+                        : ['--morden', '--unsafe-transactions'];
                 } 
                 // START MAINNET
                 else {
-                    args = (nodeType === 'geth') ? ['--fast', '--cache','512'] : ['--unsafe-transactions', '--master', pw];
+                    args = (nodeType === 'geth') 
+                        ? ['--fast', '--cache', '512'] 
+                        : ['--unsafe-transactions', '--master', pw];
                     pw = null;
                 }
+
+                // if ('geth' == nodeType) {
+                //     args.push('--rpc')
+                //     args.push('--rpcapi')
+                //     args.push('admin,db,eth,debug,miner,net,shh,txpool,personal,web3')
+                // }
 
                 log.trace('Spawn', binPath, args);
 
@@ -512,16 +522,22 @@ class EthereumNode extends EventEmitter {
                     this.emit('data', data);
 
                     if (STATES.STARTING === this.state) {
-                        // (eth) prevent starting, when "Ethereum (++)" didn't appear yet (necessary for the master pw unlock)
-                        if (nodeType === 'eth' && data.toString().indexOf('JSONRPC') === -1) {
-                            log.trace('Running eth so wait until we see "JSONRPC" string');
+                        if ('eth' === nodeType) {
+                            let dataStr = data.toString().toLowerCase();
 
-                            return;
+                            // (eth) prevent started until str appears
+                            if (-1 === dataStr.indexOf('jsonrpc')) {
+                                log.trace('Running eth so wait until we see JSONRPC message');
+
+                                return;
+                            }
                         }
 
                         if (popupCallback) {
                             popupCallback();
                         }
+
+                        log.trace('Process successfully started');
 
                         resolve(proc);
                     }
@@ -538,12 +554,23 @@ class EthereumNode extends EventEmitter {
                     }
 
                     if (STATES.STARTING === this.state) {
-                        // (geth) prevent starting until IPC service is started
-                        if (nodeType === 'geth' && data.toString().indexOf('IPC service started') === -1) {
-                            log.trace('Running geth so wait until we see IPC service start msg');
+                        if ('geth' === nodeType) {
+                            let dataStr = data.toString().toLowerCase();
 
-                            return;
-                        } 
+                            if (
+                                /* geth < 1.4 */
+                                -1 === dataStr.indexOf('ipc service started')
+                                /* geth === 1.4 */
+                                && -1 === dataStr.indexOf('ipc endpoint opened')
+                            ) 
+                            {
+                                log.trace('Running geth so wait until we see IPC service start msg');
+
+                                return;
+                            }
+                        }
+
+                        log.trace('Process successfully started');
 
                         resolve(proc);
                     }
@@ -570,6 +597,8 @@ class EthereumNode extends EventEmitter {
 
 
     _loadDefaults () {
+        log.trace('Load defaults');
+
         this.defaultNodeType = this._loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = this._loadUserData('network') || DEFAULT_NETWORK;
     }
@@ -577,6 +606,8 @@ class EthereumNode extends EventEmitter {
 
     _loadUserData (path) {
         const fullPath = this._buildFilePath(path);
+
+        log.trace('Load user data', fullPath);
 
         try {
             return fs.readFileSync(fullPath, {encoding: 'utf8'});

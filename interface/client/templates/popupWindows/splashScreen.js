@@ -132,10 +132,8 @@ Template['popupWindows_splashScreen'].helpers({
     }
 });
 
+
 Template['popupWindows_splashScreen'].events({
-   'click .close': function(){
-        ipc.send('backendAction_closeApp');
-   },
    'click .start-app': function(){
         ipc.send('backendAction_startApp');
    } 

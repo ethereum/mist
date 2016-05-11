@@ -1,0 +1,19 @@
+<template name="elements_networkIndicator">
+    <div class="network-indicator">
+        {{#if TemplateVar.get "unknown"}}
+            <div class="unknown indicator" type="Network not yet known">CHECKING NET...</div>
+        {{/if}}
+
+        {{#if TemplateVar.get "mainnet"}}
+            <div class="mainnet indicator" type="This is the main global Ethereum network">HOMESTEAD</div>
+        {{/if}}
+
+        {{#if TemplateVar.get "testnet"}}
+            <div class="testnet indicator" type="This is the global Morden test network">TEST-NET</div>
+        {{/if}}
+
+        {{#if TemplateVar.get "devnet"}}
+            <div class="devnet indicator" type="This is a developer network">DEV-NET</div>
+        {{/if}}
+    </div>
+</template>

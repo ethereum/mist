@@ -306,20 +306,42 @@ app.on('ready', function() {
             }
         });
 
+        // state change
+        ethereumNode.on('state', function(state) {
+            if (ethereumNode.STATES.CONNECTED === state) {
+                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                        appStartWindow.webContents.send('nodeConnected');
+                        popupWindow.send('nodeConnected');
+                }
+            }
+        });
+
+
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
-            nodeSync.on('info', function(type, data1, data2) {
+            nodeSync.on('privateChainTimeoutClear', function() {
                 if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    switch (type) {
-                        case 'msg':
-                            appStartWindow.webContents.send('startScreenText', `mist.startScreen.${data1}`, data2);
-                            break;
-                    }
+                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.privateChainTimeoutClear`);
                 }
+            });
+
+            nodeSync.on('privateChainTimeout', function() {
+                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.privateChainTimeout`);
+                }
+            });
+
+            nodeSync.on('nodeSyncing', function(result) {
+                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
+                    appStartWindow.webContents.send('startScreenText', `mist.startScreen.nodeSyncing`, result);
+                    appStartWindow.webContents.send('nodeSyncing', result);
+                }
+                popupWindow.send('nodeSyncing', result);
             });
 
             nodeSync.on('stopped', function() {
                 appStartWindow.webContents.send('startScreenText', `mist.startScreen.nodeSyncingStopped`);
+                popupWindow.send('nodeSyncingStopped');
             });
 
             nodeSync.on('error', function(err) {
@@ -329,7 +351,7 @@ app.on('ready', function() {
             });
 
             nodeSync.on('finished', function() {
-                nodeSync.removeAllListeners('info');
+                nodeSync.removeAllListeners('nodeSyncing');
                 nodeSync.removeAllListeners('error');
                 nodeSync.removeAllListeners('finished');
 

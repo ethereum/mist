@@ -19,6 +19,7 @@ const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
+const Windows = require('./modules/windows');
 
 // CLI options
 const argv = require('yargs')
@@ -77,8 +78,6 @@ const popupWindow = require('./modules/popupWindow.js');
 const ethereumNode = require('./modules/ethereumNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
-global.mainWindow = null;
-global.windows = {};
 global.webviews = [];
 
 global.mining = false;
@@ -176,10 +175,12 @@ app.on('before-quit', function(event){
 
 
 
-var appStartWindow;
 
 const NODE_TYPE = 'geth';
 
+
+var mainWindow;
+var splashWindow;
 
 
 // This method will be called when Electron has done everything
@@ -202,73 +203,50 @@ app.on('ready', function() {
 
     // MIST
     if(global.mode === 'mist') {
-        global.mainWindow = new BrowserWindow({
-            title: global.appName,
-            show: false,
-            width: 1024 + 208,
-            height: 720,
-            icon: global.icon,
-            titleBarStyle: 'hidden-inset', //hidden-inset: more space
-            backgroundColor: '#D2D2D2',
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/mistUI.js',
-                nodeIntegration: false,
-                'overlay-scrollbars': true,
-                webaudio: true,
-                webgl: false,
-                textAreasAreResizable: true,
-                webSecurity: false // necessary to make routing work on file:// protocol
+        mainWindow = Windows.create('main', {
+            electronOptions: {
+                width: 1024 + 208,
+                height: 720,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/mistUI.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true,
+                }
             }
         });
 
-        syncMinimongo(Tabs, global.mainWindow.webContents);
-
+        syncMinimongo(Tabs, mainWindow.webContents);
 
     // WALLET
     } else {
-
-        global.mainWindow = new BrowserWindow({
-            title: global.appName,
-            show: false,
-            width: 1100,
-            height: 720,
-            icon: global.icon,
-            titleBarStyle: 'hidden-inset', //hidden-inset: more space
-            backgroundColor: '#F6F6F6',
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/wallet.js',
-                nodeIntegration: false,
-                'overlay-fullscreen-video': true,
-                'overlay-scrollbars': true,
-                webaudio: true,
-                webgl: false,
-                textAreasAreResizable: true,
-                webSecurity: false // necessary to make routing work on file:// protocol
+        mainWindow = Windows.create('main', {
+            electronOptions: {
+                width: 1100,
+                height: 720,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/wallet.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true,
+                }
             }
         });
     }
 
-    appStartWindow = new BrowserWindow({
-            title: global.appName,
+    splashWindow = Windows.create('splash', {
+        url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
+        show: true,
+        electronOptions: {
             width: 400,
             height: 230,
-            icon: global.icon,
             resizable: false,
             backgroundColor: '#F6F6F6',
             useContentSize: true,
             frame: false,
             webPreferences: {
                 preload: __dirname +'/modules/preloader/splashScreen.js',
-                nodeIntegration: false,
-                webSecurity: false // necessary to make routing work on file:// protocol
             }
-        });
-    appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);
-
+        }
+    });
 
     // check time sync
     // var ntpClient = require('ntp-client');
@@ -291,52 +269,40 @@ app.on('ready', function() {
     });
 
 
-    appStartWindow.webContents.on('did-finish-load', function() {
+    splashWindow.on('content-loaded', function() {
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
-            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                appStartWindow.webContents.send('nodeStatus', 'connectionTimeout');
-            }
+            Windows.broadcast('nodeStatus', 'connectionTimeout');
         });
 
         ethereumNode.on('nodeLog', function(data) {
-            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                appStartWindow.webContents.send('nodeLogText', data.replace(/^.*[0-9]\]/,''));
-            }
+            Windows.broadcast('nodeLogText', data.replace(/^.*[0-9]\]/,''));
         });
 
         // state change
         ethereumNode.on('state', function(state, stateAsText) {
-            if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                appStartWindow.webContents.send('nodeStatus', stateAsText);
-            }
+            Windows.broadcast('nodeStatus', stateAsText);
             popupWindow.send('nodeStatus', stateAsText);
         });
 
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
-            nodeSync.on('privateChainTimeoutClear', function() {
-                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('nodeSyncStatus', 'privateChainTimeoutClear');
-                }
+            nodeSync.on('peerSearchTimeoutClear', function() {
+                Windows.broadcast('nodeSyncStatus', 'peerSearchTimeoutClear');
             });
 
-            nodeSync.on('privateChainTimeout', function() {
-                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('nodeSyncStatus', 'privateChainTimeout');
-                }
+            nodeSync.on('peerSearchTimeout', function() {
+                Windows.broadcast('nodeSyncStatus', 'peerSearchTimeout');
             });
 
             nodeSync.on('nodeSyncing', function(result) {
-                if (appStartWindow && appStartWindow.webContents && !appStartWindow.webContents.isDestroyed()) {
-                    appStartWindow.webContents.send('nodeSyncStatus', 'inProgress', result);
-                }
+                Windows.broadcast('nodeSyncStatus', 'inProgress', result);
                 popupWindow.send('nodeSyncStatus', 'inProgress', result);
             });
 
             nodeSync.on('stopped', function() {
-                appStartWindow.webContents.send('nodeSyncStatus', 'stopped');
+                Windows.broadcast('nodeSyncStatus', 'stopped');
                 popupWindow.send('nodeSyncStatus', 'stopped');
             });
 
@@ -347,7 +313,6 @@ app.on('ready', function() {
             });
 
             nodeSync.on('finished', function() {
-                nodeSync.removeAllListeners('nodeSyncing');
                 nodeSync.removeAllListeners('error');
                 nodeSync.removeAllListeners('finished');
 
@@ -376,7 +341,7 @@ app.on('ready', function() {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {
-                        appStartWindow.hide();
+                        splashWindow.hide();
 
                         var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
 
@@ -407,13 +372,9 @@ app.on('ready', function() {
                             // prevent that it closes the app
                             onboardingWindow.removeAllListeners('close');
                             onboardingWindow.close();
-                            onboardingWindow = null;
 
                             ipc.removeAllListeners('onBoarding_changeNet');
                             ipc.removeAllListeners('onBoarding_launchApp');
-
-                            // we're going to do the sync - so show splash
-                            appStartWindow.show();
 
                             resolve();
                         });
@@ -421,10 +382,13 @@ app.on('ready', function() {
                 }
             })
             .then(function doSync() {
+                // we're going to do the sync - so show splash
+                splashWindow.show();
+
                 return syncResultPromise;
             })
             .then(function allDone() {
-                startMainWindow(appStartWindow);
+                startMainWindow();
             })
             .catch((err) => {
                 log.error('Error starting up node and/or syncing', err);
@@ -432,7 +396,7 @@ app.on('ready', function() {
                 app.quit();
             }); /* socket connected to geth */;
 
-    }); /* on appStartWindow did-finish-load */
+    }); /* on splash screen loaded */
 
 }); /* on app ready */
 
@@ -444,27 +408,20 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-var startMainWindow = function(appStartWindow) {
-    // and load the index.html of the app.
+var startMainWindow = function() {
     log.info('Loading Interface at '+ global.interfaceAppUrl);
 
-    global.mainWindow.loadURL(global.interfaceAppUrl);
-
-    global.mainWindow.webContents.on('did-finish-load', function() {
-        if(appStartWindow) {
-            appStartWindow.close();
-            appStartWindow = null;
-        }
-
+    mainWindow.on('content-loaded', function() {
+        splashWindow.close();
         popupWindow.loadingWindow.hide();
 
-        global.mainWindow.show();
+        mainWindow.show();
     });
 
-    // close app, when the main window is closed
-    global.mainWindow.on('closed', function() {
-        global.mainWindow = null;
+    mainWindow.load(global.interfaceAppUrl);
 
+    // close app, when the main window is closed
+    mainWindow.on('closed', function() {
         app.quit();
     });
 

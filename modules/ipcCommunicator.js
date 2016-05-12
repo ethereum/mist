@@ -8,6 +8,7 @@ const app = require('app');  // Module to control application life.
 const appMenu = require('./menuItems');
 const popupWindow = require('./popupWindow.js');
 const logger = require('./utils/logger');
+const Windows = require('./windows');
 const ipc = require('electron').ipcMain;
 
 const _ = global._;
@@ -38,18 +39,17 @@ ipc.on('backendAction_closeApp', function() {
 });
 ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    if(senderWindow) {
-        senderWindow.window.close();
-        delete global.windows[windowId];
+    if (senderWindow) {
+        senderWindow.close();
     }
 });
 ipc.on('backendAction_setWindowSize', function(e, width, height) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    if(senderWindow) {
+    if (senderWindow) {
         senderWindow.window.setSize(width, height);
         senderWindow.window.center(); // ?
     }
@@ -57,16 +57,14 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    var mainWindow = global.mainWindow;
+    var mainWindow = Windows.getByType('main');
 
-    if (_.get(senderWindow, 'owner')) {
+    if (senderWindow.owner) {
         senderWindow.owner.send('windowMessage', senderWindow.type, error, value);
-
-        if(mainWindow && mainWindow.webContents && !mainWindow.webContents.isDestroyed()) {
-            mainWindow.webContents.send('mistUI_windowMessage', senderWindow.type, senderWindow.owner.getId(), error, value);
-        }
+        
+        mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.owner.getId(), error, value);
     }
 
 });

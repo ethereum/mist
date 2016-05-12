@@ -17,6 +17,7 @@ const log = require('./utils/logger').create('NodeSync');
 
 
 const SYNC_CHECK_INTERVAL_MS = 2000;
+const PEER_SEARCH_TIMEOUT_MS = 4000;
 
 
 class NodeSync extends EventEmitter {
@@ -129,8 +130,8 @@ class NodeSync extends EventEmitter {
                         } 
                         // no error, so call again in a bit
                         else {
-                            clearTimeout(this._syncTimeout);
-                            this.emit('privateChainTimeoutClear');
+                            clearTimeout(this._peerSearchTimeout);
+                            this.emit('peerSearchTimeoutClear');
                             this.emit('nodeSyncing', result);
 
                             return this._sync();
@@ -154,10 +155,10 @@ class NodeSync extends EventEmitter {
 
                                     log.trace('Keep syncing...');
 
-                                    // fallback timeout
-                                    if (!this._syncTimeout) {
-                                        this._syncTimeout = _.delay(() => {
-                                            this.emit('privateChainTimeout');
+                                    // peer-search timeout
+                                    if (!this._peerSearchTimeout) {
+                                        this._peerSearchTimeout = _.delay(() => {
+                                            this.emit('peerSearchTimeout');
                                             
                                             log.debug('Sync timeout handler running');
 
@@ -166,7 +167,7 @@ class NodeSync extends EventEmitter {
 
                                                 this._onSyncDone();
                                             });
-                                        }, 12000 /* 12 seconds */);
+                                        }, PEER_SEARCH_TIMEOUT_MS);
                                     }
 
                                     return this._sync();

@@ -8,6 +8,7 @@ const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
 const ipc = require('electron').ipcMain;
 const ethereumNode = require('./ethereumNode.js');
+const Windows = require('./windows');
 const fs = require('fs');
 const dialog = require('dialog');
 
@@ -29,7 +30,7 @@ const restartNode = function(newType, newNetwork) {
 
     return ethereumNode.restart(newType, newNetwork, popupWindow)
         .then(() => {
-            global.mainWindow.loadURL(global.interfaceAppUrl);
+            Windows.get('main').load(global.interfaceAppUrl);
 
             createMenu(webviews);
         })
@@ -178,7 +179,9 @@ var menuTempl = function(webviews) {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
                 accelerator: 'CommandOrControl+F',
                 click: function(){
-                    global.mainWindow.setFullScreen(!global.mainWindow.isFullScreen());
+                    let mainWindow = Windows.get('main');
+
+                    mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
                 }
             }
         ]
@@ -206,8 +209,7 @@ var menuTempl = function(webviews) {
             devtToolsSubMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed())
-                        global.mainWindow.webContents.send('toggleWebviewDevTool', webview._id);
+                    Windows.get('main').send('toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -231,8 +233,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.runTests'),
             enabled: (global.mode === 'mist'),
             click: function(){
-                if(global.mainWindow && global.mainWindow.webContents && !global.mainWindow.webContents.isDestroyed())
-                    global.mainWindow.webContents.send('runTests', 'webview');
+                Windows.get('main').send('runTests', 'webview');
             }
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles'),

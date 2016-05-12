@@ -93,7 +93,7 @@
             "nodeSyncInfo": "Télechargement du bloc __currentBlock__ depuis le bloc __highestBlock__.",
             "nodeSyncConnecting": "A la recherche de pairs...",
             "nodeSyncProcessing": "Traitement de bloc, veuillez patienter...",
-            "privateChainTimeout": "Recherche de pairs ignorée"
+            "peerSearchTimeout": "Recherche de pairs ignorée"
         },
         "popupWindows": {
             "requestAccount": {

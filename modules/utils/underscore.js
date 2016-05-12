@@ -1,5 +1,5 @@
 const uuid = require('uuid');
-
+const deepExtend = require('deep-extend');
 const _ = module.exports = require('underscore');
 
 _.mixin({
@@ -29,6 +29,9 @@ _.mixin({
         }
 
         return result || fallbackValue;
+    },
+    extendDeep: function(obj1, obj2) {
+        deepExtend(obj1, obj2);
     },
     uuid: function() {
         return uuid.v4();

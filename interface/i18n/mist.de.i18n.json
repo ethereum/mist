@@ -95,7 +95,7 @@
             "nodeSyncInfo": "Block __currentBlock__ von __highestBlock__ wird heruntergeladen.",
             "nodeSyncConnecting": "Suche nach Peers...",
             "nodeSyncProcessing": "Blöcke werden verarbeitet, bitte warten...",
-            "privateChainTimeout": "Peer-Suche überspringen"
+            "peerSearchTimeout": "Peer-Suche überspringen"
         },
         "popupWindows": {
             "requestAccount": {

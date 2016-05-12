@@ -76,12 +76,12 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         TemplateVar.set(template, 'smallClass', 'small');
 
         switch (status) {
-            case 'privateChainTimeout':
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.privateChainTimeout'));
+            case 'peerSearchTimeout':
+                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.peerSearchTimeout'));
                 TemplateVar.set(template, 'showStartAppButton', true);
                 break;
 
-            case 'privateChainTimeoutClear':
+            case 'peerSearchTimeoutClear':
                 TemplateVar.set(template, 'showStartAppButton', false);
                 break;
 

@@ -7,6 +7,8 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 var dechunker = require('./dechunker.js');
 const _ = global._;
 
+const Windows = require('../windows');
+
 const logger = require('../utils/logger');
 
 const log = logger.create('ipcProviderBackend');
@@ -331,10 +333,12 @@ module.exports = function(){
         if(!_.isObject(payload))
             return false;
 
-
         // main window or popupwindows are admin
-        if(global.mainWindow && this.id === global.mainWindow.webContents.getId() ||
-           (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
+        let mainWindow = Windows.getByType('main'),
+            thisWindow = Windows.getById(this.id);
+
+        if(mainWindow && this.id === mainWindow.id ||
+           (thisWindow && thisWindow.type && thisWindow.type !== 'webview')) {
             return payload;
         }
 

@@ -93,7 +93,7 @@
             "nodeSyncInfo": "blockをダウンロードしています。 __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "ピアーを探しています。...",
             "nodeSyncProcessing": "ブロックを処理しています...",
-            "privateChainTimeout": "ピアーの検索を中止しています"
+            "peerSearchTimeout": "ピアーの検索を中止しています"
         },
         "popupWindows": {
             "requestAccount": {

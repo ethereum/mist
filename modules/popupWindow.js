@@ -5,6 +5,8 @@ const BrowserWindow = require('browser-window');
 
 const log = require('./utils/logger').create('popupWindow');
 
+global.windows = {};
+
 module.exports = {
     loadingWindow: {
         window: null,

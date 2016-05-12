@@ -99,20 +99,20 @@
         },
         "popupWindows": {
             "requestAccount": {
-                "title": "Create account",
-                "enterPassword": "Enter password",
-                "repeatPassword": "Repeat password",
-                "creating": "Generating account...",
+                "title": "Account aanmaken",
+                "enterPassword": "Wachtwoord invoeren",
+                "repeatPassword": "Wachtwoord herhalen",
+                "creating": "Account genereren...",
                 "errors": {
-                    "passwordMismatch": "Your passwords don't match."
+                    "passwordMismatch": "Uw wachtwoorden komen niet overeen."
                 }
             },
             "unlockMasterPassword": {
-                "title": "Enter master password",
-                "enterPassword": "Enter master password",
-                "unlocking": "Unlocking...",
+                "title": "Voer meesterwachtwoord in",
+                "enterPassword": "Voer meesterwachtwoord in",
+                "unlocking": "Ontgrendelen...",
                 "errors": {
-                    "wrongPassword": "Password is wrong, try again."
+                    "wrongPassword": "Wachtwoord is niet correct, probeer het nog eens."
                 }
             },
             "sendTransactionConfirmation": {
@@ -121,23 +121,23 @@
                     "contractExecution": "Execute contract",
                     "createContract": "Create contract"  
                 },
-                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
-                "contractCreationInfo": "You are about to create a contract from the provided data.",
-                "enterPassword": "Enter password to confirm the transaction",
-                "unlocking": "Confirming...",
-                "createContract": "Create contract",
-                "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
-                "gasPrice": "Gas price",
-                "perMillionGas": "ether per million gas",
-                "gasLimit": "Provide maximum fee",
+                "contractExecutionInfo": "U staat op het punt een functie uit te voeren op een contract. Dit kan overdrachten van waarde tot gevolg hebben.",
+                "contractCreationInfo": "U staat op het punt een contract aan te maken met de gegeven gevevens.",
+                "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
+                "unlocking": "Bevestigen...",
+                "createContract": "Contract aanmaken",
+                "estimatedFee": "Ingeschatte kosten",
+                "estimatedGasError": "Data kon niet worden uitgevoerd, dus het zal alle mogelijke gas gebruiken.",
+                "gasPrice": "Gas prijs",
+                "perMillionGas": "ether per millioen gas",
+                "gasLimit": "Geef maximum kosten aan",
                 "data": "Data",
                 "buttons": {
-                    "sendTransaction": "Send transaction"
+                    "sendTransaction": "Verstuur transactie"
                 },
                 "errors": {
-                    "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
-                    "wrongPassword": "Wrong password"
+                    "connectionTimeout": "Kon niet verbinden naar de node, is het in de achtergrond uitgevallen?",
+                    "wrongPassword": "Onjuist wachtwoord"
                 }
             },
             "onboarding": {

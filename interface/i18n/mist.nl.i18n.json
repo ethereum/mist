@@ -185,7 +185,7 @@
         }
     },
     "elements": {
-        "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "checksumAlert":"Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die u zullen beschermen teken typfouten, dus ga graag even na of dit de goede is. Als aangeveven, ga na of het beveiligingsicoon klopt.",
+        "identiconHelper": "Dit is een beveilliginsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan"
     }
 }

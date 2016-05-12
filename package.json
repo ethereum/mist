@@ -35,7 +35,7 @@
   },
   "engines": {
     "node": ">4.3.0",
-    "electron": "0.36.2",
+    "electron": "1.0.1",
     "atom-shell": "0.36.2"
   }
 }

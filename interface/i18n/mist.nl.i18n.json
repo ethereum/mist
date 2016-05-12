@@ -52,14 +52,14 @@
             }
         },
         "errors": {
-            "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
+            "nodeConnect": "Verbinden naar node niet mogelijk? Zie de logboek bestanden voor meer informatie:",
+            "nodeStartup": "Het lijkt erop dat de node niet kan worden opgestart, heeft u er al een aan staan? Is deze de database aan het upgraden?",
             "timeSync": {
-                "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
-                "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
-                "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
+                "title": "Uw computer's klok is niet gesynchroniseerd.",
+                "description": "Om succesvol met het Ethereum netwerk te verbinden moet u uw computer's klok synchroniseren met een tijdssynchronisatie server.",
+                "win32": "Ga naat uw Internet Tijd Instellingen in uw configuratiescherm en selecteer de optie. Zie deze uitleg voor details: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
+                "darwin": "Om tijdssynchronisatie aan de zetten opent u uw instellingen en activeert u \"Tijd en datum automatisch instellen\"."
             }
         },
         "rightClick": {

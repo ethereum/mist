@@ -3,29 +3,29 @@
         "applicationMenu": {
             "app": {
                 "label": "__app__",
-                "about": "About __app__",
-                "quit": "Quit __app__"
+                "about": "Over __app__",
+                "quit": "__app__ afsluiten"
             },
             "edit": {
-                "label": "Edit",
-                "undo": "Undo",
-                "redo": "Redo",
-                "cut": "Cut",
-                "copy": "Copy",
-                "paste": "Paste",
-                "selectAll": "Select all"
+                "label": "Bewerken",
+                "undo": "Ongedaan maken",
+                "redo": "Overdoen",
+                "cut": "Knippen",
+                "copy": "Kopieren",
+                "paste": "Plakken",
+                "selectAll": "Alles selecteren"
             },
             "view": {
-                "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "label": "Bekijken",
+                "fullscreen": "Volledig Scherm Inschakelen"
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
-                "newAccount": "New account",
+                "importPresale": "Importeer Pre-sale Accounts",
+                "newAccount": "Nieuw account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
-                "backupMist": "Application Data"
+                "backupMist": "Applicatie Data"
             },
             "develop": {
                 "label": "Develop",

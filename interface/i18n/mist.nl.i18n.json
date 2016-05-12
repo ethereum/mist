@@ -28,24 +28,24 @@
                 "backupMist": "Applicatie Data"
             },
             "develop": {
-                "label": "Develop",
-                "devTools": "Toggle Developer Tools",
+                "label": "Ontwikkelen",
+                "devTools": "Ontwikkelaars Opties Inschakelen",
                 "devToolsMistUI": "Mist UI",
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
-                "runTests": "Run tests",
-                "logFiles": "Show log file",
+                "runTests": "Tests uitvoeren",
+                "logFiles": "Toon log bestand",
                 "ethereumNode": "Ethereum Node",
-                "network": "Network",
-                "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
+                "network": "Netwerk",
+                "mainNetwork": "Hoofdnetwerk",
+                "startMining": "⛏ Start Mining (Alleen testnet)",
                 "stopMining": "⛏ Stop Mining"
             },
             "window": {
-                "label": "Window",
-                "minimize": "Minimize",
-                "close": "Close",
-                "toFront": "Bring All to Front"
+                "label": "Scherm",
+                "minimize": "Minimaliseer",
+                "close": "Sluiten",
+                "toFront": "Alles op voorgrond"
             },
             "help": {
                 "label": "Help"

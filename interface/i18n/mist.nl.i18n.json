@@ -141,10 +141,10 @@
                 }
             },
             "onboarding": {
-                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
-                "goToTestnet" : "Use the test network",
-                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
-                "gotoMainnet" : "Use the main network",
+                "description" : "Ethereum is een decentraal platform voor het bouwen van applicaties op een blockchain: software die immuun is voor fruide en levenslang waarde en eigendom over kan brengen",
+                "goToTestnet" : "Gebruik het test netwerk",
+                "goToTestnetDescription" : "Test de technologie vrij in een testongeving, zonder echte ether te gebruiken.",
+                "gotoMainnet" : "Gebruik hoofdnetwerk",
                 "gotoMainnetDescription" : " You’ll need some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
                 "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",

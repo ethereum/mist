@@ -5,8 +5,11 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 */
 
 const dechunker = require('./dechunker.js');
+const _ = global._;
 const newSocket = require('./socket.js');
-const log = require('../utils/logger').create('ipcProviderBackend');
+const logger = require('../utils/logger');
+
+const log = logger.create('ipcProviderBackend');
 
 /**
 make sockets globally available
@@ -593,3 +596,4 @@ module.exports = function(){
         sendRequest(event, payload, true);
     });
 };
+

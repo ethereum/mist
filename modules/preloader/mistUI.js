@@ -2,7 +2,7 @@
 @module preloader MistUI
 */
 
-
+require('./console-log-capture')('mist');
 const ipc = require('electron').ipcRenderer;
 const syncMinimongo = require('../syncMinimongo.js');
 const remote = require('remote');
@@ -18,13 +18,13 @@ const basePath = require('../setBasePath.js');
 
 basePath('interface');
 
-
 // disable pinch zoom
 require('web-frame').setZoomLevelLimits(1, 1);
 
 // make variables globally accessable
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+
 // add admin later
 setTimeout(function(){
     web3Admin.extend(window.web3);

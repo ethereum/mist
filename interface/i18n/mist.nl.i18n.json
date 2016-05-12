@@ -63,26 +63,26 @@
             }
         },
         "rightClick": {
-            "reload": "Reload",
-            "openDevTools": "Open Developer Tools",
-            "inspectElements": "Inspect Element"
+            "reload": "Herladen",
+            "openDevTools": "Open Ontwikkelaarstools",
+            "inspectElements": "Element Inspecteren"
         },
         "nodeInfo": {
-            "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "New Block Received",
-            "blockNumber": "Your latest block number",
-            "timeSinceBlock": "Elapsed time since last block",
-            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
+            "nodeSyncing": "__blockDiff__ blokken te gaan",
+            "blockReceived": "Nieuw blok ontvangen",
+            "blockNumber": "Uw laatste bloknummer",
+            "timeSinceBlock": "Verstreken tijd sinds laatste blok",
+            "testnetExplain": "U best actief op een testnet, VERSTUUR GEEN echte ether naar deze adressen",
             "peers": "peers"
         },
         "sidebar": {
             "buttons": {
-                "browser": "Browse"
+                "browser": "Verkennen"
             }
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "Geen accounts ingesteld"
             }
         },
         "startScreen": {

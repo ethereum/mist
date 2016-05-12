@@ -74,7 +74,6 @@ global.license = packageJson.license;
 require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const popupWindow = require('./modules/popupWindow.js');
 const ethereumNode = require('./modules/ethereumNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
@@ -186,9 +185,8 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
-
-    // init prepared popup window
-    popupWindow.loadingWindow.init();
+    // Initialise window mgr
+    Windows.init();
 
     // initialize the IPC provider on the main window
     ipcProviderBackend();
@@ -269,7 +267,7 @@ app.on('ready', function() {
     });
 
 
-    splashWindow.on('content-loaded', function() {
+    splashWindow.on('ready', function() {
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
             Windows.broadcast('nodeStatus', 'connectionTimeout');
@@ -282,7 +280,6 @@ app.on('ready', function() {
         // state change
         ethereumNode.on('state', function(state, stateAsText) {
             Windows.broadcast('nodeStatus', stateAsText);
-            popupWindow.send('nodeStatus', stateAsText);
         });
 
 
@@ -298,12 +295,10 @@ app.on('ready', function() {
 
             nodeSync.on('nodeSyncing', function(result) {
                 Windows.broadcast('nodeSyncStatus', 'inProgress', result);
-                popupWindow.send('nodeSyncStatus', 'inProgress', result);
             });
 
             nodeSync.on('stopped', function() {
                 Windows.broadcast('nodeSyncStatus', 'stopped');
-                popupWindow.send('nodeSyncStatus', 'stopped');
             });
 
             nodeSync.on('error', function(err) {
@@ -343,7 +338,12 @@ app.on('ready', function() {
                     return new Q((resolve, reject) => {
                         splashWindow.hide();
 
-                        var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
+                        var onboardingWindow = Windows.createPopup('onboardingScreen', {
+                            electronOptions: {
+                                width: 576,
+                                height: 442,
+                            },
+                        });
 
                         onboardingWindow.on('close', function(){
                             app.quit();
@@ -411,9 +411,8 @@ Start the main window and all its processes
 var startMainWindow = function() {
     log.info('Loading Interface at '+ global.interfaceAppUrl);
 
-    mainWindow.on('content-loaded', function() {
+    mainWindow.on('ready', function() {
         splashWindow.close();
-        popupWindow.loadingWindow.hide();
 
         mainWindow.show();
     });

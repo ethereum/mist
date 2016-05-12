@@ -17,11 +17,11 @@ class Window extends EventEmitter {
         this._mgr = mgr;
         this._log = log.create(type);
         this.type = type;
-        this.owner = opts.owner;
+        this.ownerId = opts.ownerId;
 
         let electronOptions = {
             title: global.appName,
-            show: opts.show || false,
+            show: false,
             width: 1100,
             height: 720,
             icon: global.icon,
@@ -44,17 +44,28 @@ class Window extends EventEmitter {
         this.webContents = this.window.webContents;
 
 
-        this.window.webContents.on('did-finish-load', () => {
+        this.webContents.on('did-finish-load', () => {
             this._log.debug(`Content loaded`);
 
-            this.id = this.window.webContents.getId();
+            this.id = this.webContents.getId();
+
+            this.emit('loaded');
+        });
+
+        this.webContents.on('dom-ready', () => {
+            this._log.debug(`DOM ready`);
+
             this.isContentReady = true;
+
+            if (opts.show) {
+                this.window.show();
+            }
 
             if (opts.sendData) {
                 this.send(opts.sendData);
             }
 
-            this.emit('content-loaded');
+            this.emit('ready');
         });
 
         this.window.on('closed', () => {
@@ -64,10 +75,20 @@ class Window extends EventEmitter {
             this.isContentReady = false;
 
             delete this._mgr._windows[this.type];
+
+            this.emit('closed');
         });
 
         this.window.on('close', (e) => {
             this.emit('close', e);
+        });
+
+        this.window.on('show', (e) => {
+            this.emit('show', e);
+        });
+
+        this.window.on('hide', (e) => {
+            this.emit('hide', e);
         });
 
         if (opts.url) {
@@ -140,18 +161,95 @@ class Windows {
         this._windows = {};
     }
 
+
+    init () {
+        log.info('Creating commonly-used windows');
+
+        this.loading = this.create('loading', {
+            show: false,
+            url: global.interfacePopupsUrl +'#loadingWindow',
+            electronOptions: {
+                title: '',
+                alwaysOnTop: true,
+                resizable: false,
+                width: 100,
+                height: 50,
+                center: true,
+                frame: false,
+                useContentSize: true,
+                titleBarStyle: 'hidden', //hidden-inset: more space
+            },
+        });
+
+        this.loading.on('show', () => {
+            this.loading.window.center();
+        });
+    }
+
+
     create (type, options) {
+        options = options || {};
+
         let existing = this.getByType(type);
 
-        if (existing && existing.owner === options.owner) {
-            log.debug(`Window ${type} with owner ${options.owner} already created.`);
+        if (existing && existing.ownerId === options.ownerId) {
+            log.debug(`Window ${type} with owner ${options.ownerId} already created.`);
 
             return existing;
         }
 
-        log.info(`Create window: ${type}, owner: ${options.owner || 'notset'}`);
+        log.info(`Create window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
         let wnd = this._windows[type] = new Window(this, type, options);
+
+        return wnd;
+    }
+
+
+    createPopup(type, options) {
+        options = options || {};
+
+        let opts = {
+            url: global.interfacePopupsUrl +'#'+ type,
+            show: true,
+            ownerId: null,
+            useWeb3: true,
+            electronOptions: {
+                title: '',
+                alwaysOnTop: false,
+                width: 400,
+                height: 400,
+                center: true,
+                useContentSize: true,
+                titleBarStyle: 'hidden', //hidden-inset: more space
+                autoHideMenuBar: true, // TODO: test on windows
+                webPreferences: {
+                    textAreasAreResizable: false,
+                },
+            },
+        };
+
+        _.extendDeep(opts, options);
+
+        // resizable on by default if alwaysOnTop
+        opts.electronOptions.resizable = 
+            options.resizable || opts.electronOptions.alwaysOnTop;
+
+        if (opts.useWeb3) {
+            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';
+        } else {
+            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindowsNoWeb3.js';
+        }
+
+        this.loading.show();
+
+        log.info(`Create popup window: ${type}`);
+
+        let wnd = this.create(type, opts);
+
+        wnd.on('ready', () => {
+            this.loading.hide();
+        });
 
         return wnd;
     }

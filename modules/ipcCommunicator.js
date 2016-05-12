@@ -6,7 +6,6 @@ Window communication
 
 const app = require('app');  // Module to control application life.
 const appMenu = require('./menuItems');
-const popupWindow = require('./popupWindow.js');
 const logger = require('./utils/logger');
 const Windows = require('./windows');
 const ipc = require('electron').ipcMain;
@@ -61,10 +60,12 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
 
     var mainWindow = Windows.getByType('main');
 
-    if (senderWindow.owner) {
-        senderWindow.owner.send('windowMessage', senderWindow.type, error, value);
-        
-        mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.owner.getId(), error, value);
+    if (senderWindow.ownerId) {
+        let ownerWindow = Windows.getById(senderWindow.ownerId);
+
+        ownerWindow.send('windowMessage', senderWindow.type, error, value);
+
+        mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
     }
 
 });
@@ -134,7 +135,14 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
+    Windows.createPopup('requestAccount', {
+        ownerId: e.sender.getId(),
+        electronOptions: {
+            width: 400, 
+            height: 230, 
+            alwaysOnTop: true,
+        },
+    });
 });
 
 

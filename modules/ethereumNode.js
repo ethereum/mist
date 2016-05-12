@@ -5,7 +5,7 @@ const log = require('./utils/logger').create('EthereumNode');
 const app = require('app');
 const ipc = require('electron').ipcMain;
 const spawn = require('child_process').spawn;
-const popupWindow = require('./popupWindow.js');
+const Windows = require('./windows.js');
 const logRotate = require('log-rotate');
 const dialog = require('dialog');
 const fs = require('fs');
@@ -144,7 +144,7 @@ class EthereumNode extends EventEmitter {
 
 
 
-    restart (newType, newNetwork, popupWindow) {
+    restart (newType, newNetwork) {
         return Q.try(() => {
             if (!this.isOwnNode) {
                 throw new Error('Cannot restart node since it was started externally');
@@ -154,17 +154,13 @@ class EthereumNode extends EventEmitter {
 
             return this.stop()
                 .then(() => {
-                    if (popupWindow) {
-                        popupWindow.loadingWindow.show();
-                    }
+                    Windows.loading.show();
                 })
                 .then(() => {
                     return this._start(newType || this.type, newNetwork || this.network);
                 })
                 .then(() => {
-                    if (popupWindow) {
-                        popupWindow.loadingWindow.hide();
-                    }
+                    Windows.loading.hide();
                 })
                 .catch((err) => {
                     log.error('Error restarting node', err);
@@ -398,11 +394,13 @@ class EthereumNode extends EventEmitter {
 
         return new Q((resolve, reject) => {
             if ('eth' === nodeType) {
-                let modalWindow = popupWindow.show('unlockMasterPassword', {
-                    width: 400, 
-                    height: 220, 
-                    alwaysOnTop: true
-                }, null, null, true);
+                let modalWindow = Windows.createPopup('unlockMasterPassword', {
+                    electronOptions: {
+                        width: 400, 
+                        height: 220, 
+                    },
+                    useWeb3: false,
+                });
 
                 let called = false;
 

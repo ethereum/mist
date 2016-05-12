@@ -1,6 +1,5 @@
 const app = require('app');
 const BrowserWindow = require('browser-window');
-const popupWindow = require('./popupWindow.js');
 const MenuItem = require('menu-item');
 const Menu = require('menu');
 const shell = require('electron').shell;
@@ -28,9 +27,9 @@ const restartNode = function(newType, newNetwork) {
 
     log.info('Switch node', newType, newNetwork);
 
-    return ethereumNode.restart(newType, newNetwork, popupWindow)
+    return ethereumNode.restart(newType, newNetwork)
         .then(() => {
-            Windows.get('main').load(global.interfaceAppUrl);
+            Windows.getByType('main').load(global.interfaceAppUrl);
 
             createMenu(webviews);
         })
@@ -54,7 +53,13 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
                 click: function(){
-                    popupWindow.show('about_'+ global.mode, {width: 420, height: 230, alwaysOnTop: true});
+                    Windows.createPopup('about_'+ global.mode, {
+                        electronOptions: {
+                            width: 420, 
+                            height: 230,
+                            alwaysOnTop: true,
+                        }
+                    });
                 }
             },
             {
@@ -75,7 +80,11 @@ var menuTempl = function(webviews) {
                 label: i18n.t('mist.applicationMenu.accounts.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click: function(){
-                    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true});
+                    Windows.createPopup('requestAccount', {
+                        electronOptions: {
+                            width: 420, height: 230, alwaysOnTop: true
+                        }
+                    });
                 }
             },
             {
@@ -83,7 +92,11 @@ var menuTempl = function(webviews) {
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,            
                 click: function(){
-                    popupWindow.show('importAccount', {width: 600, height: 370, alwaysOnTop: true});
+                    Windows.createPopup('importAccount', {
+                        electronOptions: {
+                            width: 600, height: 370, alwaysOnTop: true
+                        }
+                    });
                 }
             }, 
             {
@@ -179,7 +192,7 @@ var menuTempl = function(webviews) {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
                 accelerator: 'CommandOrControl+F',
                 click: function(){
-                    let mainWindow = Windows.get('main');
+                    let mainWindow = Windows.getByType('main');
 
                     mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
                 }
@@ -209,7 +222,7 @@ var menuTempl = function(webviews) {
             devtToolsSubMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    Windows.get('main').send('toggleWebviewDevTool', webview._id);
+                    Windows.getByType('main').send('toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -233,7 +246,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.runTests'),
             enabled: (global.mode === 'mist'),
             click: function(){
-                Windows.get('main').send('runTests', 'webview');
+                Windows.getByType('main').send('runTests', 'webview');
             }
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles'),

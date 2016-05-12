@@ -27,7 +27,6 @@ module.exports = function(){
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');
-    const popupWindow = require('../popupWindow.js');
 
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
@@ -380,7 +379,15 @@ module.exports = function(){
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
 
-            var modalWindow = popupWindow.show('sendTransactionConfirmation', {width: 580, height: 550, alwaysOnTop: true}, filteredPayload.params[0]);
+            var modalWindow = Windows.create('sendTransactionConfirmation', {
+                sendData: filteredPayload.params[0],
+                electronOptions: {
+                    width: 580, 
+                    height: 550, 
+                    alwaysOnTop: true,
+                }
+            });
+
             modalWindow.on('closed', function() {
                 if(!called) {
                     callback(errorUnlock);
@@ -389,7 +396,7 @@ module.exports = function(){
             });
 
             ipc.once('backendAction_unlockedAccount', function(ev, err, result){
-                if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
+                if(modalWindow.webContents && ev.sender.getId() === modalWindow.id) {
                     if(err || !result) {
                         log.info('Confirmation error:', err);
 

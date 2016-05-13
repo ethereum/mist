@@ -244,9 +244,9 @@ module.exports = {
                 // console.log('stderr ', data.toString());
                 if(!cbCalled && _.isFunction(callback)) {
 
-                    // (geth) prevent starying until IPC service is started
-                    if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
-                        return;
+                    // (geth) prevent starting until IPC service is started
+                    // if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
+                    //     return;
 
                     callCb(null);
                 }

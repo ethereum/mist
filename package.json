@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
@@ -34,7 +34,8 @@
     "rcedit": "^0.3.0"
   },
   "engines": {
-    "electron": "0.36.2",
+    "node": ">4.3.0",
+    "electron": "1.0.1",
     "atom-shell": "0.36.2"
   }
 }

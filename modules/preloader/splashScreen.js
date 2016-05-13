@@ -1,3 +1,4 @@
+require('./console-log-capture')('splash');
 const ipc = require('electron').ipcRenderer;
 const basePath = require('../setBasePath.js');
 require('../openExternal.js');

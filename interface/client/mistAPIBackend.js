@@ -2,6 +2,8 @@
 @module MistAPI Backend
 */
 
+
+
 /**
 Filters a id the id to only contain a-z A-Z 0-9 _ -.
 
@@ -17,15 +19,7 @@ var filterId = function(str) {
 };
 
 
-var sound = {
-    bip: document.createElement('audio'),
-    bloop: document.createElement('audio'),
-    invite: document.createElement('audio'),
-};
-sound.bip.src = 'file://'+ dirname + '/../../sounds/bip.mp3';
-sound.bloop.src = 'file://'+ dirname + '/../../sounds/bloop.mp3';
-sound.invite.src = 'file://'+ dirname + '/../../sounds/invite.mp3';
-
+var sound = document.createElement('audio');
 
 /**
 The backend side of the mist API.
@@ -37,6 +31,7 @@ mistAPIBackend = function(event) {
     var webview = this.webview;
     var arg = event.args[0];
 
+    console.trace('mistAPIBackend event', event);
 
     if(event.channel === 'setWebviewId') {
         Tabs.update(template.data._id, {$set:{
@@ -64,7 +59,8 @@ mistAPIBackend = function(event) {
     }
 
     if(event.channel === 'mistAPI_sound') {
-        sound[arg].play();
+        sound.src = arg;
+        sound.play();
     }
 
     // STOP HERE, IF BROWSER

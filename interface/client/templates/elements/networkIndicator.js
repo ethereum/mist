@@ -28,8 +28,25 @@ var checkNetworkType = function(template) {
             if (e) {
                 console.error('Got error fetching block 0', e);
             } else {
-                var isTestNet = ('0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303' == res.hash);
-                var isMainNet = ('0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3' == res.hash);
+                
+                console.log('checkNetworkType', res.hash);
+
+                switch (res.hash) {
+                    case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
+                        console.log('network is mainnet')
+                        TemplateVar.set(template, 'network', 'mainnet' );
+                        break;
+
+                    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
+                        console.log('network is testnet')
+                        TemplateVar.set(template, 'network', 'testnet' );
+                        break;
+
+                    default:
+                        console.log('network is privatenet')
+                        TemplateVar.set(template, 'network', 'privatenet' );
+
+                }
 
                 TemplateVar.set(template, 'unknown', false);
                 TemplateVar.set(template, 'mainnet', isMainNet);
@@ -47,7 +64,7 @@ var checkNetworkType = function(template) {
 Template['elements_networkIndicator'].onRendered(function(){
     var template = this;
 
-    TemplateVar.set(template, 'unknown', true);
+    TemplateVar.set(template, 'network', 'unknown');
 
     checkNetworkType(template);
 
@@ -59,6 +76,8 @@ Template['elements_networkIndicator'].onRendered(function(){
             case 'stopping':
             case 'connected':
                 console.debug('Node status changing, reset network type indicator');
+
+                TemplateVar.set(template, 'network', 'unknown');
 
                 TemplateVar.set(template, 'unknown', true);
                 TemplateVar.set(template, 'mainnet', false);

@@ -3,131 +3,131 @@
         "applicationMenu": {
             "app": {
                 "label": "__app__",
-                "about": "About __app__",
-                "quit": "Quit __app__"
+                "about": "Mbi __app__",
+                "quit": "Dil __app__"
             },
             "edit": {
-                "label": "Edit",
-                "undo": "Undo",
-                "redo": "Redo",
-                "cut": "Cut",
-                "copy": "Copy",
-                "paste": "Paste",
-                "selectAll": "Select all"
+                "label": "Përpuno",
+                "undo": "Zhbëj",
+                "redo": "Ribëj",
+                "cut": "Pri",
+                "copy": "Kopjo",
+                "paste": "Bashko",
+                "selectAll": "Përzgjidh të gjitha"
             },
             "view": {
-                "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "label": "Shiko",
+                "fullscreen": "Kalo me ekran të plotë"
             },
             "accounts": {
-                "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
-                "newAccount": "New account",
-                "backup": "Backup",
-                "backupKeyStore": "Accounts",
-                "backupMist": "Application Data"
+                "label": "Llogari",
+                "importPresale": "Merr llogari të para-shitur",
+                "newAccount": "Llogari e re",
+                "backup": "Ruaj një kopje rezervë",
+                "backupKeyStore": "Llogari",
+                "backupMist": "Të Dhënat e Aplikimit"
             },
             "develop": {
-                "label": "Develop",
-                "devTools": "Toggle Developer Tools",
+                "label": "Zhvillo",
+                "devTools": "Kalo tek Mjetet e Zhvilluesit",
                 "devToolsMistUI": "Mist UI",
-                "devToolsWalletUI": "Wallet UI",
+                "devToolsWalletUI": "Kuletë UI",
                 "devToolsWebview": "__webview__",
-                "runTests": "Run tests",
-                "logFiles": "Show log file",
-                "ethereumNode": "Ethereum Node",
-                "network": "Network",
-                "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "runTests": "Fillo testimet",
+                "logFiles": "Trego skedën me të dhënat e rregjistruara",
+                "ethereumNode": "Nyje Ethereumi",
+                "network": "Rrjet",
+                "mainNetwork": "Rrjeti kryesor",
+                "startMining": "⛏  Fillo të Prodhosh (Rrjet testimi),
+                "stopMining": "⛏ Ndalo së Prodhuari
             },
             "window": {
-                "label": "Window",
-                "minimize": "Minimize",
-                "close": "Close",
-                "toFront": "Bring All to Front"
+                "label": "Dritare",
+                "minimize": "Minimizo",
+                "close": "Mbyll",
+                "toFront": "Sill Gjithçka në Pamje të Parë"
             },
             "help": {
-                "label": "Help"
+                "label": "Ndihmë"
             }
         },
         "errors": {
-            "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
+            "nodeConnect": "Nuk mund të lidhesh me nyje? Shiko të dhënat e rregjistruara për më shumë:",
+            "nodeStartup": "Duket se nyja nuk mund të krijohet. Mos keni ndonje qe është aktive? Mos është duke pasuruar bazën e të dhënave në këto momente?",
             "timeSync": {
-                "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
-                "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
-                "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
+                "title": "Ora e kompjuterit tuaj nuk është e sinkronizuar.",
+                "description": "Në mënyrë që të sinkronizoheni me sukses me rrjetin e Ethereum-it ju duhet të sinkronizoni orën tuaj të kompjuterit me një server sinkronizues kohe.",
+                "win32": "Shkoni në "Internet Time Settings" tek preferencat tuaja të sistemit dhe përzgjidhni opcionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "Që të fusni në punë një server kohe të sinkronizuar instaloni \"ntp\" nëpërmjet \"apt-get install ntp\".",
+                "darwin": "Që të mundësoni një sinkronizim kohe,  hapni preferencat e kohes dhe përzgjidhni \"Set the time and date automatically\"."
             }
         },
         "rightClick": {
-            "reload": "Reload",
-            "openDevTools": "Open Developer Tools",
-            "inspectElements": "Inspect Element"
+            "reload": "Ringarko",
+            "openDevTools": "Hap Mjetet e Zhvilluesit",
+            "inspectElements": "Inspekto Elementët"
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "New Block Received",
-            "blockNumber": "Your latest block number",
-            "timeSinceBlock": "Elapsed time since last block",
-            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
-            "peers": "peers"
+            "blockReceived": "U Mor një Bllok i Ri",
+            "blockNumber": "Numri i bllokut tuaj të fundit",
+            "timeSinceBlock": "Kohë e kaluar që nga blloku i fundit",
+            "testnetExplain": "You jeni në një rrjet testimi, MOS DERGONI asnjë ether në këto adresa",
+            "peers": "të barabartë"
         },
         "sidebar": {
             "buttons": {
-                "browser": "Browse"
+                "browser": "Shfleto"
             }
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "Nuk ka llogari të krijuar"
             }
         },
         "startScreen": {
-            "runningNodeFound": "Found running Ethereum node!",
-            "startingNode": "Starting Ethereum node...",
-            "startedNode": "Starting application...",
-            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
-            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
-            "nodeSyncing": "Ethereum node needs to sync, please wait...",
-            "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
-            "nodeSyncConnecting": "Looking for peers...",
-            "nodeSyncProcessing": "Processing blocks, please wait...",
-            "privateChainTimeout": "Skip peer search"
+            "runningNodeFound": "U gjet nyje Ethereumi në punë!",
+            "startingNode": "Duke krijuar nyje Ethereumi...",
+            "startedNode": "Duke filluar aplikacionin...",
+            "nodeConnectionTimeout": "Nuk mundi të fillojë krijimin e një nyje Ethereumi!<br><small>Nëse ju <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, përdorni këtë komandë ta krijoni atë: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ose raportoni një problem </a></small>",
+            "nodeBinaryNotFound": "Nuk u gjet nyje binare Ethereumi!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Lutemi krijoni një manualisht më parë. </a> </small>",
+            "nodeSyncing": "Nyja e Ethereumit ka nevojë të sinkronizohet, lutemi prisni...",
+            "nodeSyncInfo": "Duke marrë bllokun __currentBlock__ of __highestBlock__.",
+            "nodeSyncConnecting": "Duke kërkuar të barabartë...",
+            "nodeSyncProcessing": "Duke përpunuar blloqet, lutemi prisni...",
+            "privateChainTimeout": "Mënjano kërkimin e të barabartëve"
         },
         "popupWindows": {
             "requestAccount": {
-                "title": "Create account",
-                "enterPassword": "Enter password",
-                "repeatPassword": "Repeat password",
-                "creating": "Generating account...",
+                "title": "Krijoni llogari",
+                "enterPassword": "Fusni fjalëkalimin",
+                "repeatPassword": "Përsërisni fjalëkalimin",
+                "creating": "Duke krijuar llogari...",
                 "errors": {
-                    "passwordMismatch": "Your passwords don't match."
+                    "passwordMismatch": "Fjalëkalimi juaj nuk përputhet."
                 }
             },
             "unlockMasterPassword": {
-                "title": "Enter master password",
-                "enterPassword": "Enter master password",
-                "unlocking": "Unlocking...",
+                "title": "Fusni fjalëkalimin kryesor",
+                "enterPassword": "Fusni fjalëkalimin kryesor",
+                "unlocking": "Duke hapur...",
                 "errors": {
-                    "wrongPassword": "Password is wrong, try again."
+                    "wrongPassword": "Fjalëkalimi është i gabuar. Provoni përsëri."
                 }
             },
             "sendTransactionConfirmation": {
                 "title": {
-                    "sendTransaction": "Send transaction",
-                    "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "sendTransaction": "Dërgoni transaksionin",
+                    "contractExecution": "Kryeni kontratën.",
+                    "createContract": "Krijoni kontratë"  
                 },
-                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
-                "contractCreationInfo": "You are about to create a contract from the provided data.",
-                "enterPassword": "Enter password to confirm the transaction",
-                "unlocking": "Confirming...",
-                "createContract": "Create contract",
-                "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
+                "contractExecutionInfo": "Ju jeni pranë ekzekutimit të një funksioni në një kontratë. Kjo mund të përfshijë transferim vlerash.",
+                "contractCreationInfo": "Ju jeni pranë krijimit të një kontrate nga të dhënat e siguruara.",
+                "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
+                "unlocking": "Duke konfirmuar...",
+                "createContract": "Krijoni kontratë",
+                "estimatedFee": "Tarifa e vlerësuar e konsumuar (duhet kontrolluar)",
+                "estimatedGasError": "Të dhënat nuk mund të ekzekutohen keshtu që do të përdoret i gjithë ---- gas -------.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",

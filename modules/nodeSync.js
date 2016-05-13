@@ -17,7 +17,6 @@ const log = require('./utils/logger').create('NodeSync');
 
 
 const SYNC_CHECK_INTERVAL_MS = 2000;
-const PEER_SEARCH_TIMEOUT_MS = 4000;
 
 
 class NodeSync extends EventEmitter {
@@ -50,6 +49,12 @@ class NodeSync extends EventEmitter {
                 this._onSyncError = reject;
 
                 this.emit('starting');
+
+                ipc.on('backendAction_skipSync', () => {
+                    ipc.removeAllListeners('backendAction_skipSync');
+
+                    this._onSyncDone();
+                });
 
                 this._sync();
             });
@@ -130,8 +135,6 @@ class NodeSync extends EventEmitter {
                         } 
                         // no error, so call again in a bit
                         else {
-                            clearTimeout(this._peerSearchTimeout);
-                            this.emit('peerSearchTimeoutClear');
                             this.emit('nodeSyncing', result);
 
                             return this._sync();
@@ -149,26 +152,11 @@ class NodeSync extends EventEmitter {
 
                                 log.debug(`Last block: ${blockResult.number}, ${diff}s ago`);
 
-                                // need sync if > 1 minutes
+                                // need sync if > 1 minute
                                 if(diff > 60) {
                                     this.emit('nodeSyncing', result);
 
                                     log.trace('Keep syncing...');
-
-                                    // peer-search timeout
-                                    if (!this._peerSearchTimeout) {
-                                        this._peerSearchTimeout = _.delay(() => {
-                                            this.emit('peerSearchTimeout');
-                                            
-                                            log.debug('Sync timeout handler running');
-
-                                            ipc.on('backendAction_startApp', () => {
-                                                ipc.removeAllListeners('backendAction_startApp');
-
-                                                this._onSyncDone();
-                                            });
-                                        }, PEER_SEARCH_TIMEOUT_MS);
-                                    }
 
                                     return this._sync();
                                 } else {

@@ -103,7 +103,8 @@
             "nodeSyncConnecting": "Looking for peers...",
             "nodeSyncProcessing": "Processing blocks, please wait...",
             "nodeSyncingStopped": "Ethereum node sync stopped",
-            "peerSearchTimeout": "Skip peer search"
+            "peerSearchTimeout": "Skip peer search",
+            "startApp": "Goto app"
         },
         "popupWindows": {
             "requestAccount": {

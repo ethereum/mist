@@ -285,14 +285,6 @@ app.on('ready', function() {
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
-            nodeSync.on('peerSearchTimeoutClear', function() {
-                Windows.broadcast('nodeSyncStatus', 'peerSearchTimeoutClear');
-            });
-
-            nodeSync.on('peerSearchTimeout', function() {
-                Windows.broadcast('nodeSyncStatus', 'peerSearchTimeout');
-            });
-
             nodeSync.on('nodeSyncing', function(result) {
                 Windows.broadcast('nodeSyncStatus', 'inProgress', result);
             });

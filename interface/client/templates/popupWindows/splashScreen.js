@@ -1,3 +1,5 @@
+
+
 /**
 Template Controllers
 
@@ -40,6 +42,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 showNodeLog = true;
                 TemplateVar.set(template, 'logText', null);
                 TemplateVar.set(template, 'showProgressBar', false);
+                TemplateVar.set(template, 'showStartAppButton', false);
                 break;
 
             case 'started':
@@ -54,6 +57,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
             case 'stopping':
                 TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopping'));
                 TemplateVar.set(template, 'showProgressBar', false);
+                TemplateVar.set(template, 'showStartAppButton', false);
                 break;
 
             case 'stopped':
@@ -76,16 +80,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         TemplateVar.set(template, 'smallClass', 'small');
 
         switch (status) {
-            case 'peerSearchTimeout':
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.peerSearchTimeout'));
-                TemplateVar.set(template, 'showStartAppButton', true);
-                break;
-
-            case 'peerSearchTimeoutClear':
-                TemplateVar.set(template, 'showStartAppButton', false);
-                break;
-
             case 'inProgress':
+                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.startApp'));
+                TemplateVar.set(template, 'showStartAppButton', true);
+
                 showNodeLog = false;
 
                 lastSyncData = _.extend(lastSyncData, data || {});
@@ -156,6 +154,6 @@ Template['popupWindows_splashScreen'].helpers({
 
 Template['popupWindows_splashScreen'].events({
    'click .start-app': function(){
-        ipc.send('backendAction_startApp');
+        ipc.send('backendAction_skipSync');
    } 
 });

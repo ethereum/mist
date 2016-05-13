@@ -38,8 +38,8 @@
                 "ethereumNode": "Nyje Ethereumi",
                 "network": "Rrjet",
                 "mainNetwork": "Rrjeti kryesor",
-                "startMining": "⛏  Fillo të Prodhosh (Rrjet testimi),
-                "stopMining": "⛏ Ndalo së Prodhuari
+                "startMining": "⛏  Fillo të Prodhosh (Rrjet testimi)",
+                "stopMining": "⛏ Ndalo së Prodhuari"
             },
             "window": {
                 "label": "Dritare",
@@ -57,7 +57,7 @@
             "timeSync": {
                 "title": "Ora e kompjuterit tuaj nuk është e sinkronizuar.",
                 "description": "Në mënyrë që të sinkronizoheni me sukses me rrjetin e Ethereum-it ju duhet të sinkronizoni orën tuaj të kompjuterit me një server sinkronizues kohe.",
-                "win32": "Shkoni në "Internet Time Settings" tek preferencat tuaja të sistemit dhe përzgjidhni opcionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "win32": "Shkoni në \"Internet Time Settings\" tek preferencat tuaja të sistemit dhe përzgjidhni opcionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Që të fusni në punë një server kohe të sinkronizuar instaloni \"ntp\" nëpërmjet \"apt-get install ntp\".",
                 "darwin": "Që të mundësoni një sinkronizim kohe,  hapni preferencat e kohes dhe përzgjidhni \"Set the time and date automatically\"."
             }

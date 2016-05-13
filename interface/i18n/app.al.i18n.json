@@ -1,0 +1,34 @@
+{
+    "app": {
+        "loading": "Duke u ngarkuar...",
+        "offline": "Nuk mund të lidhet. Jeni i sigurtë qe jeni në internet?",
+        "logginIn": "Duke u lidhur..."
+    },
+    "error": {
+        "insufficientRights": "Ju nuk keni mjaftueshëm te drejta për të kryer këtë veprim."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Shuaj",
+        "save": "Ruaj",
+        "edit": "Përpuno",
+        "send": "Dërgo",
+        "next": "Vijuesi",
+        "previous": "Më parë",
+        "back": "Prapa",
+        "skip": "Kapërce",
+        "sending": "Duke dërguar...",
+        "create": "Krijo",
+        "tryToReconnect": "Provo të rilidhesh"
+    },
+    "commonWords": {
+        "you": "Ju",
+        "send": "Dërgo",
+        "or": "ose",
+        "of": "needed the context",
+        "with": "me",
+        "and": "dhe",
+        "on": "needed the context",
+        "per": "needed the context"
+    }
+}

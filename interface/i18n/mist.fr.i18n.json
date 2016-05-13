@@ -4,9 +4,12 @@
             "app": {
                 "label": "__app__",
                 "about": "A propos de __app__",
+                "hide": "Masquer __app__",
+                "hideOthers": "Masquer les autres",
+                "showAll": "Afficher tout",
                 "quit": "Quitter __app__"
             },
-            "edit": {
+            "edit": { 
                 "label": "Modifier",
                 "undo": "Annuler",
                 "redo": "Refaire",

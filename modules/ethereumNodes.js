@@ -11,6 +11,8 @@ const getNodePath = require('./getNodePath.js');
 const popupWindow = require('./popupWindow.js');
 const log = require('./utils/logger').create('ethereumNodes');
 const logRotate = require('log-rotate');
+const getIpcPath = require('./ipc/getIpcPath.js');
+var ipcPath = getIpcPath();
 
 module.exports = {
     /**
@@ -175,7 +177,7 @@ module.exports = {
 
             // START TESTNET
             if(testnet) {
-                args = (type === 'geth') ? ['--testnet', '--fast'] : ['--morden', '--unsafe-transactions'];
+                args = (type === 'geth') ? ['--testnet', '--fast', '--ipcpath=' + ipcPath] : ['--morden', '--unsafe-transactions'];
 
             // START MAINNET
             } else {
@@ -244,9 +246,9 @@ module.exports = {
                 // console.log('stderr ', data.toString());
                 if(!cbCalled && _.isFunction(callback)) {
 
-                    // (geth) prevent starting until IPC service is started
-                    // if(type === 'geth' && data.toString().indexOf('IPC service started') === -1)
-                    //     return;
+                    // (geth) prevent starying until IPC service is started
+                    if(type === 'geth' && data.toString().indexOf('IPC endpoint opened') === -1)
+                        return;
 
                     callCb(null);
                 }

@@ -430,7 +430,7 @@ app.on('ready', function() {
                         intervalId = setInterval(function(){
                             if(socket)
                                 socket.connect({path: ipcPath});
-                        }, 200);
+                        }, 500);
 
                         // log data to the splash screen
                         if(global.nodes[nodeType]) {

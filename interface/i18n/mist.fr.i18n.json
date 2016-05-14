@@ -41,8 +41,8 @@
                 "ethereumNode": "Nœud Ethereum",
                 "network": "Réseau",
                 "mainNetwork": "Réseau principal",
-                "startMining": "⛏ Commencer à Mmner (seulement pour Testnet)",
-                "stopMining": "⛏ Arrêter de Miner"
+                "startMining": "⛏ Commencer à miner (seulement pour Testnet)",
+                "stopMining": "⛏ Arrêter de miner"
             },
             "window": {
                 "label": "Fenêtre",

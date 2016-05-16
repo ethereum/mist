@@ -383,8 +383,6 @@ app.on('ready', function() {
             })
             .catch((err) => {
                 log.error('Error starting up node and/or syncing', err);
-
-                app.quit();
             }); /* socket connected to geth */;
 
     }); /* on splash screen loaded */

@@ -183,7 +183,7 @@ class EthereumNode extends EventEmitter {
             this.state = STATES.STOPPING;
 
             return new Q((resolve, reject) => {
-                if (!this._node) {
+                if (!(this._node && this._node.connected)) {
                     return resolve();
                 }
 
@@ -320,26 +320,9 @@ class EthereumNode extends EventEmitter {
             .then(() => {
                 return this.__startNode(nodeType, network)
                     .catch((err) => {
-                        let nodelog = this.getNodeLog();
+                        log.error('Failed to start node', err);
 
-                        if (nodelog) {
-                            nodelog = '...'+ nodelog.slice(-1000);
-                        } else {
-                            nodelog = global.i18n.t('mist.errors.nodeStartup');
-                        }
-
-                        // add node type
-                        nodelog = 'Node type: '+ nodeType + "\n" +
-                            'Network: '+ network + "\n" +
-                            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-                            nodelog;
-
-                        dialog.showMessageBox({
-                            type: "error",
-                            buttons: ['OK'],
-                            message: global.i18n.t('mist.errors.nodeConnect'),
-                            detail: nodelog
-                        }, function(){});
+                        this._showNodeErrorDialog(nodeType, network);
 
                         throw err;
                     });
@@ -366,10 +349,14 @@ class EthereumNode extends EventEmitter {
                             this.emit('nodeConnectionTimeout');
                         }
 
+                        this._showNodeErrorDialog(nodeType, network);
+
                         throw err;
                     });
             })
             .catch((err) => {
+                this.state = STATES.ERROR;
+
                 // if unable to start eth node then write geth to defaults
                 if ('eth' === nodeType) {
                     this._saveUserData('node', 'geth');
@@ -584,6 +571,30 @@ class EthereumNode extends EventEmitter {
                 this.on('data', _.bind(this._logNodeData, this));
             });
         });
+    }
+
+
+    _showNodeErrorDialog(nodeType, network) {
+        let nodelog = this.getLog();
+
+        if (nodelog) {
+            nodelog = '...'+ nodelog.slice(-1000);
+        } else {
+            nodelog = global.i18n.t('mist.errors.nodeStartup');
+        }
+
+        // add node type
+        nodelog = 'Node type: '+ nodeType + "\n" +
+            'Network: '+ network + "\n" +
+            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
+            nodelog;
+
+        dialog.showMessageBox({
+            type: "error",
+            buttons: ['OK'],
+            message: global.i18n.t('mist.errors.nodeConnect'),
+            detail: nodelog
+        }, function(){});
     }
 
 

@@ -566,12 +566,7 @@ class EthereumNode extends EventEmitter {
                         if ('geth' === nodeType) {
                             let dataStr = data.toString().toLowerCase();
 
-                            if (
-                                /* geth < 1.4 */
-                                -1 === dataStr.indexOf('ipc service started')
-                                /* geth === 1.4 */
-                                && -1 === dataStr.indexOf('ipc endpoint opened')
-                            ) 
+                            if (0 > dataStr.indexOf('ipc endpoint opened')) 
                             {
                                 log.trace('Running geth so wait until we see IPC service start msg');
 

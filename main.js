@@ -422,5 +422,3 @@ var startMainWindow = function() {
         appMenu(global.webviews);
     });
 };
-
-

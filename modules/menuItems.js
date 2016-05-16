@@ -63,6 +63,34 @@ var menuTempl = function(webviews) {
                 }
             },
             {
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hide', {app: config.name}),
+                accelerator: 'Command+H',
+                role: 'hide'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: config.name}),
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.showAll', {app: config.name}),
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
+            },
+            {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
                 accelerator: 'CommandOrControl+Q',
                 click: function(){

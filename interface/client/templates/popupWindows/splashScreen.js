@@ -25,7 +25,7 @@ var lastSyncData = {},
 Template['popupWindows_splashScreen'].onCreated(function(){
     var template = this;
 
-    ipc.on('nodeLogText', function(e, text, data) {
+    ipc.on('uiAction_nodeLogText', function(e, text, data) {
         if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
             return;
@@ -33,7 +33,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     });
 
 
-    ipc.on('nodeStatus', function(e, status) {
+    ipc.on('uiAction_nodeStatus', function(e, status) {
         console.trace('Node status', status);
 
         switch (status) {
@@ -74,7 +74,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         }
     });
 
-    ipc.on('nodeSyncStatus', function(e, status, data) {
+    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
         console.trace('Node sync status', status);
 
         TemplateVar.set(template, 'smallClass', 'small');

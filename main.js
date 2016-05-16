@@ -269,27 +269,27 @@ app.on('ready', function() {
     splashWindow.on('ready', function() {
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
-            Windows.broadcast('nodeStatus', 'connectionTimeout');
+            Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
         });
 
         ethereumNode.on('nodeLog', function(data) {
-            Windows.broadcast('nodeLogText', data.replace(/^.*[0-9]\]/,''));
+            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]\]/,''));
         });
 
         // state change
         ethereumNode.on('state', function(state, stateAsText) {
-            Windows.broadcast('nodeStatus', stateAsText);
+            Windows.broadcast('uiAction_nodeStatus', stateAsText);
         });
 
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
             nodeSync.on('nodeSyncing', function(result) {
-                Windows.broadcast('nodeSyncStatus', 'inProgress', result);
+                Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
             });
 
             nodeSync.on('stopped', function() {
-                Windows.broadcast('nodeSyncStatus', 'stopped');
+                Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
             });
 
             nodeSync.on('error', function(err) {

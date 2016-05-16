@@ -5,7 +5,7 @@
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
             <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
-                <button class="dapp-info">
+                <button class="dapp-info {{#if icon}}has-icon{{/if}}">
                     {{#if icon}}
                         {{> elements_img src=icon class="app-icon" }}
                     {{/if}}

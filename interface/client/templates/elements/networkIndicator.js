@@ -34,7 +34,7 @@ var checkNetworkType = function(template) {
                 TemplateVar.set(template, 'unknown', false);
                 TemplateVar.set(template, 'mainnet', isMainNet);
                 TemplateVar.set(template, 'testnet', isTestNet);
-                TemplateVar.set(template, 'devnet', !(isMainNet || isTestNet));
+                TemplateVar.set(template, 'privatenet', !(isMainNet || isTestNet));
             }
         });        
     } catch (err) {
@@ -63,7 +63,7 @@ Template['elements_networkIndicator'].onRendered(function(){
                 TemplateVar.set(template, 'unknown', true);
                 TemplateVar.set(template, 'mainnet', false);
                 TemplateVar.set(template, 'testnet', false);
-                TemplateVar.set(template, 'devnet', false);            
+                TemplateVar.set(template, 'privatenet', false);            
             break;
         }
     });

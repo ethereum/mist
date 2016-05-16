@@ -378,14 +378,15 @@ module.exports = function(){
 
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
+            log.debug('Send transaction');
 
-            var modalWindow = Windows.create('sendTransactionConfirmation', {
-                sendData: filteredPayload.params[0],
+            var modalWindow = Windows.createPopup('sendTransactionConfirmation', {
+                sendData: ['data', filteredPayload.params[0]],
                 electronOptions: {
                     width: 580, 
                     height: 550, 
                     alwaysOnTop: true,
-                }
+                },
             });
 
             modalWindow.on('closed', function() {
@@ -423,6 +424,8 @@ module.exports = function(){
 
         // COMPILE SOLIDITY
         } else if(filteredPayload.method === 'eth_compileSolidity') {
+            log.debug('Compile solidity');
+
             var solc = require('solc');
 
             var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
@@ -531,18 +534,26 @@ module.exports = function(){
 
 
     var sendRequest = function(event, payload, sync) {
+        log.trace('sendRequest', event.sender.getId(), payload, sync);
+
         var socket = global.sockets['id_'+ event.sender.getId()];
 
         if(!socket) {
+            log.trace('Create socket');
+
             // TODO: should we really try to reconnect, after the connection was destroyed?
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         // make sure we are connected
         } else if(!socket.ipcSocket.writable) {
+            log.trace('Ensure socket is connected');
+
             socket.connect(event);
         }
 
         // if not writeable send error back
         if(!socket.ipcSocket.writable) {
+            log.trace('Socket not writeable');
+
             if(event.sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorTimeout));
             else
@@ -562,6 +573,7 @@ module.exports = function(){
 
         // return error, if permission not passed
         if(_.isEmpty(filteredPayload)) {
+            log.trace('Not permitted to do request');
 
             if(event.sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
@@ -574,7 +586,10 @@ module.exports = function(){
 
 
         socket.checkRequests(filteredPayload, event, function(e, result){
+            log.trace('Got result', e, result);
+
             if(!e && !_.isEmpty(result)) {
+                log.trace('Success');
 
                 // SEND REQUEST
                 var id = result.id || result[0].id;
@@ -594,6 +609,7 @@ module.exports = function(){
          
             // SEND error
             } else if(e && e !== true){
+                log.trace('Error');
 
                 if(event.sync)
                     event.returnValue = JSON.stringify(returnError(jsonPayload, e));

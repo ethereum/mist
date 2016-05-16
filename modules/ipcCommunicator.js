@@ -4,7 +4,7 @@ Window communication
 @module ipcCommunicator
 */
 
-const app = require('app');  // Module to control application life.
+const app = require('electron').app;  // Module to control application life.
 const appMenu = require('./menuItems');
 const logger = require('./utils/logger');
 const Windows = require('./windows');

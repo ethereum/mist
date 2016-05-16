@@ -2,12 +2,13 @@
 
 const _ = global._;
 const log = require('./utils/logger').create('EthereumNode');
-const app = require('app');
-const ipc = require('electron').ipcMain;
+const electron = require('electron');
+const app = electron.app;
+const ipc = electron.ipcMain;
 const spawn = require('child_process').spawn;
 const Windows = require('./windows.js');
 const logRotate = require('log-rotate');
-const dialog = require('dialog');
+const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
 const dechunker = require('./ipc/dechunker.js');

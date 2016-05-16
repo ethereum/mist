@@ -5,7 +5,7 @@ Sets the base path in production, for the file protocol, so assets are loaded pr
 */
 
 const path = require('path');
-const remote = require('remote');
+const remote = require('electron').remote;
 
 module.exports = function(appPath) {
     // set the base path for relative assets in production mode

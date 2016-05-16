@@ -9,9 +9,8 @@ Q.config({
 
 const fs = require('fs');
 const electron = require('electron');
-const app = require('app');  // Module to control application life.
+const app = electron.app;
 const timesync = require("os-timesync");
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;

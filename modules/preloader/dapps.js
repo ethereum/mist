@@ -2,9 +2,10 @@
 @module preloader dapps
 */
 require('./console-log-capture')('dapps');
-const ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
+const shell = electron.shell;
 const mist = require('../mistAPI.js');
-const shell = require('shell');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');

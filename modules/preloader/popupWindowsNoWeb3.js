@@ -3,14 +3,15 @@
 */
 
 require('./console-log-capture')('popup-no-web3');
-const ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const basePath = require('../setBasePath.js');
 
 basePath('interface');
 
 // disable pinch zoom
-require('web-frame').setZoomLevelLimits(1, 1);
+electron.webFrame.setZoomLevelLimits(1, 1);
 
 // receive data in the popupWindow
 ipc.on('data', function(e, data) {

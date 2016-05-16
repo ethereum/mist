@@ -4,7 +4,7 @@ const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
+const BrowserWindow = require('electron').BrowserWindow;
 
 
 

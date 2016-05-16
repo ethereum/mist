@@ -1,19 +1,19 @@
 <template name="elements_networkIndicator">
     <div class="network-indicator">
         {{#if TemplateVar.get "unknown"}}
-            <div class="unknown indicator" type="Network not yet known">CHECKING NETWORK...</div>
+            <span class="unknown indicator" title="{{i18n 'mist.nodeInfo.unknownnetExplain'}}">{{i18n 'mist.nodeInfo.checkingWhichNetwork'}}</span>
         {{/if}}
 
         {{#if TemplateVar.get "mainnet"}}
-            <div class="mainnet indicator" type="This is the main global Ethereum network">MAIN-NET</div>
+            <span class="mainnet indicator" title="{{i18n 'mist.nodeInfo.mainnetExplain'}}">{{i18n 'mist.nodeInfo.mainNetwork'}}</span>
         {{/if}}
 
         {{#if TemplateVar.get "testnet"}}
-            <div class="testnet indicator" type="This is the global Morden test network">TEST-NET</div>
+            <span class="testnet indicator danger" title="{{i18n 'mist.nodeInfo.testnetExplain'}}">{{i18n 'mist.nodeInfo.testNetwork'}}</span>
         {{/if}}
 
         {{#if TemplateVar.get "privatenet"}}
-            <div class="privatenet indicator" type="This is a developer network">PRIVATE-NET</div>
+            <span class="privatenet indicator danger" title="{{i18n 'mist.nodeInfo.privatenetExplain'}}">{{i18n 'mist.nodeInfo.privateNetwork'}}</span>
         {{/if}}
     </div>
 </template>

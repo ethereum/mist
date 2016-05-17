@@ -1,7 +1,7 @@
-require('./console-log-capture')('splash');
+require('./consoleLogCapture')('splash');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
-const basePath = require('../setBasePath.js');
+const basePath = require('./setBasePath');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const Web3 = require('web3');
 require('../openExternal.js');

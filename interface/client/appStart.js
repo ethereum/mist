@@ -15,10 +15,10 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-    console.log('Initialise Mist');
+    console.info('Initialise Mist');
 
     if (0 <= location.search.indexOf('reset-tabs')) {
-        console.log('Resetting UI tabs');
+        console.info('Resetting UI tabs');
         
         Tabs.remove({});
     }
@@ -50,7 +50,9 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
-    console.log('Meteor starting up...');
+    console.info('meteor startup', document.getElementsByTagName('head').length);
+
+    console.info('Meteor starting up...');
 
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {

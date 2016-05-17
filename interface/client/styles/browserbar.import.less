@@ -103,18 +103,22 @@
                 display: flex;
             }
         }
-        
+
         > button {
             position: relative;
-            padding-left: @gridWidth*0.75;
+            padding-left: 0;
+            margin-top: 1px;
+            max-width: 33%;
+            height: @gridHeight;
             font-family: @sourceSansPro;
             font-size: @fontSizeSmall;
             font-weight: 500;
-            height: @gridHeight;
             line-height: @gridHeight;
             white-space: nowrap;
-            margin-top: 1px;
-            max-width: 33%;
+            
+            &.has-icon {
+                padding-left: @gridWidth*0.75;
+            }
 
             &:focus {
                 border-bottom: 0;

@@ -33,7 +33,7 @@ mistInit = function(){
         });
         
         // wait for accounts and blocks to be initialized below
-        Meteor.setTimeout({
+        Meteor.setTimeout(function() {
             Tabs.insert({
                 url: 'http://ethereum-dapp-wallet.meteor.com',
                 position: 0,

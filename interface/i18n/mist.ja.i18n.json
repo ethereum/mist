@@ -4,6 +4,9 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__ について",
+                "hide": "__app__ を隠す",
+                "hideOthers": "ほかを隠す",
+                "showAll": "すべてを表示",
                 "quit": " __app__ を中止する"
             },
             "edit": {

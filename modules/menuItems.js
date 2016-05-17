@@ -1,15 +1,16 @@
-const app = require('app');
-const BrowserWindow = require('browser-window');
-const MenuItem = require('menu-item');
-const Menu = require('menu');
-const shell = require('electron').shell;
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const MenuItem = electron.MenuItem;
+const Menu = electron.Menu;
+const shell = electron.shell;
 const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
 const ipc = require('electron').ipcMain;
 const ethereumNode = require('./ethereumNode.js');
 const Windows = require('./windows');
 const fs = require('fs');
-const dialog = require('dialog');
+const dialog = electron.dialog
 
 
 // create menu
@@ -61,6 +62,34 @@ var menuTempl = function(webviews) {
                         }
                     });
                 }
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hide', {app: config.name}),
+                accelerator: 'Command+H',
+                role: 'hide'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: config.name}),
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.showAll', {app: config.name}),
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
             },
             {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),

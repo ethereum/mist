@@ -63,7 +63,7 @@ Template['elements_networkIndicator'].onRendered(function(){
 
     checkNetworkType(template);
 
-    ipc.on('uiAction_nodeStatus', function(e, status) {
+    ipc.on('nodeStatus', function(e, status) {
         console.trace('Node status', status);
 
         switch (status) {
@@ -77,7 +77,7 @@ Template['elements_networkIndicator'].onRendered(function(){
         }
     });
 
-    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+    ipc.on('nodeSyncStatus', function(e, status, data) {
         console.trace('Node sync status', status);
 
         if ('inProgress' === status && !!TemplateVar.get(template, 'unknown')) {

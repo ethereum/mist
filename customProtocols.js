@@ -1,4 +1,4 @@
-const protocol = require('electron').protocol;
+const protocol = require('protocol');
 const path = require('path');
 
 

@@ -1,15 +1,14 @@
 /**
 @module preloader dapps
 */
-require('./consoleLogCapture')('dapps');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const shell = electron.shell;
+require('./console-log-capture')('dapps');
+const ipc = require('electron').ipcRenderer;
 const mist = require('../mistAPI.js');
+const shell = require('shell');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');
-const basePath = require('./setBasePath');
+const basePath = require('../setBasePath.js');
 require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');

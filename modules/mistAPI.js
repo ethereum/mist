@@ -4,7 +4,7 @@
 
 const packageJson = require('./../package.json');
 const config = require('./../config');
-const remote = require('electron').remote;
+const remote = require('remote');
 
 module.exports = function(isWallet) {
 

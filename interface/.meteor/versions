@@ -20,7 +20,7 @@ cfs:http-methods@0.0.32
 check@1.2.1
 chuangbo:cookie@1.1.0
 coffeescript@1.0.17
-cosmos:browserify@0.10.0
+cosmos:browserify@0.4.0
 ddp@1.2.5
 ddp-client@1.2.7
 ddp-common@1.2.5
@@ -34,7 +34,7 @@ ethereum:accounts@0.3.10
 ethereum:blocks@0.3.1
 ethereum:dapp-styles@0.5.1
 ethereum:elements@0.7.0
-ethereum:tools@0.5.2
+ethereum:tools@0.4.1
 ethereum:web3@0.15.3
 fastclick@1.0.11
 frozeman:animation-helper@0.2.6

@@ -2,13 +2,12 @@
 
 const _ = global._;
 const log = require('./utils/logger').create('EthereumNode');
-const electron = require('electron');
-const app = electron.app;
-const ipc = electron.ipcMain;
+const app = require('app');
+const ipc = require('electron').ipcMain;
 const spawn = require('child_process').spawn;
 const Windows = require('./windows.js');
 const logRotate = require('log-rotate');
-const dialog = electron.dialog;
+const dialog = require('dialog');
 const fs = require('fs');
 const Q = require('bluebird');
 const dechunker = require('./ipc/dechunker.js');
@@ -183,7 +182,7 @@ class EthereumNode extends EventEmitter {
             this.state = STATES.STOPPING;
 
             return new Q((resolve, reject) => {
-                if (!(this._node && this._node.connected)) {
+                if (!this._node) {
                     return resolve();
                 }
 
@@ -320,9 +319,26 @@ class EthereumNode extends EventEmitter {
             .then(() => {
                 return this.__startNode(nodeType, network)
                     .catch((err) => {
-                        log.error('Failed to start node', err);
+                        let nodelog = this.getNodeLog();
 
-                        this._showNodeErrorDialog(nodeType, network);
+                        if (nodelog) {
+                            nodelog = '...'+ nodelog.slice(-1000);
+                        } else {
+                            nodelog = global.i18n.t('mist.errors.nodeStartup');
+                        }
+
+                        // add node type
+                        nodelog = 'Node type: '+ nodeType + "\n" +
+                            'Network: '+ network + "\n" +
+                            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
+                            nodelog;
+
+                        dialog.showMessageBox({
+                            type: "error",
+                            buttons: ['OK'],
+                            message: global.i18n.t('mist.errors.nodeConnect'),
+                            detail: nodelog
+                        }, function(){});
 
                         throw err;
                     });
@@ -349,14 +365,10 @@ class EthereumNode extends EventEmitter {
                             this.emit('nodeConnectionTimeout');
                         }
 
-                        this._showNodeErrorDialog(nodeType, network);
-
                         throw err;
                     });
             })
             .catch((err) => {
-                this.state = STATES.ERROR;
-
                 // if unable to start eth node then write geth to defaults
                 if ('eth' === nodeType) {
                     this._saveUserData('node', 'geth');
@@ -554,7 +566,12 @@ class EthereumNode extends EventEmitter {
                         if ('geth' === nodeType) {
                             let dataStr = data.toString().toLowerCase();
 
-                            if (0 > dataStr.indexOf('ipc endpoint opened')) 
+                            if (
+                                /* geth < 1.4 */
+                                -1 === dataStr.indexOf('ipc service started')
+                                /* geth === 1.4 */
+                                && -1 === dataStr.indexOf('ipc endpoint opened')
+                            ) 
                             {
                                 log.trace('Running geth so wait until we see IPC service start msg');
 
@@ -571,30 +588,6 @@ class EthereumNode extends EventEmitter {
                 this.on('data', _.bind(this._logNodeData, this));
             });
         });
-    }
-
-
-    _showNodeErrorDialog(nodeType, network) {
-        let nodelog = this.getLog();
-
-        if (nodelog) {
-            nodelog = '...'+ nodelog.slice(-1000);
-        } else {
-            nodelog = global.i18n.t('mist.errors.nodeStartup');
-        }
-
-        // add node type
-        nodelog = 'Node type: '+ nodeType + "\n" +
-            'Network: '+ network + "\n" +
-            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-            nodelog;
-
-        dialog.showMessageBox({
-            type: "error",
-            buttons: ['OK'],
-            message: global.i18n.t('mist.errors.nodeConnect'),
-            detail: nodelog
-        }, function(){});
     }
 
 

@@ -4,9 +4,6 @@
             "app": {
                 "label": "__app__",
                 "about": "关于__app__",
-                "hide": "隐藏 __app__",
-                "hideOthers": "隐藏 其它",
-                "showAll": "显示 全部",
                 "quit": "退出__app__"
             },
             "edit": {

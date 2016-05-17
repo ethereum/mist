@@ -4,7 +4,7 @@ const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
-const BrowserWindow = require('electron').BrowserWindow;
+const BrowserWindow = require('browser-window');  // Module to create native browser window.
 
 
 
@@ -40,31 +40,35 @@ class Window extends EventEmitter {
 
         _.extendDeep(electronOptions, opts.electronOptions);
 
-        this._log.debug('Creating browser window');
-
         this.window = new BrowserWindow(electronOptions);
-
         this.webContents = this.window.webContents;
 
-        this.webContents.once('did-finish-load', () => {
-            this._log.debug(`Content loaded`);
 
-            this.isContentReady = true;
+        this.webContents.on('did-finish-load', () => {
+            this._log.debug(`Content loaded`);
 
             this.id = this.webContents.getId();
 
-            if (opts.sendData) {
-                this.send.apply(this, opts.sendData);
-            }
+            this.emit('loaded');
+        });
+
+        this.webContents.on('dom-ready', () => {
+            this._log.debug(`DOM ready`);
+
+            this.isContentReady = true;
 
             if (opts.show) {
                 this.window.show();
             }
 
+            if (opts.sendData) {
+                this.send(opts.sendData);
+            }
+
             this.emit('ready');
         });
 
-        this.window.once('closed', () => {
+        this.window.on('closed', () => {
             this._log.debug(`Closed`);
 
             this.isClosed = true;
@@ -243,7 +247,7 @@ class Windows {
 
         let wnd = this.create(type, opts);
 
-        wnd.once('ready', () => {
+        wnd.on('ready', () => {
             this.loading.hide();
         });
 

@@ -21,6 +21,7 @@ const argv = require('yargs')
     .describe('gethpath', 'Path to geth executable to use instead of default')
     .describe('ethpath', 'Path to eth executable to use instead of default')
     .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
+    .describe('reset-tabs', 'Reset Mist tabs to their default settings')
     .describe('logfile', 'Logs will be written to this file')
     .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
     .alias('m', 'mode')
@@ -110,9 +111,15 @@ if(global.mode === 'wallet') {
 } else {
     log.info('Starting in Mist mode');
 
-    global.interfaceAppUrl = global.interfacePopupsUrl = (global.production)
+    let url = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
+
+    if (argv.resetTabs) {
+        url += '?reset-tabs=true'
+    }
+
+    global.interfaceAppUrl = global.interfacePopupsUrl = url;
 }
 
 
@@ -423,7 +430,7 @@ app.on('ready', function() {
                         intervalId = setInterval(function(){
                             if(socket)
                                 socket.connect({path: ipcPath});
-                        }, 200);
+                        }, 500);
 
                         // log data to the splash screen
                         if(global.nodes[nodeType]) {

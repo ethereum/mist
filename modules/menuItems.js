@@ -44,6 +44,34 @@ var menuTempl = function(webviews) {
                 }
             },
             {
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hide', {app: config.name}),
+                accelerator: 'Command+H',
+                role: 'hide'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: config.name}),
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.showAll', {app: config.name}),
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
+            },
+            {
                 label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
                 accelerator: 'CommandOrControl+Q',
                 click: function(){
@@ -298,7 +326,7 @@ var menuTempl = function(webviews) {
         submenu: [
           {
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-            accelerator: 'Alt+CommandOrControl+1',
+            accelerator: 'CommandOrControl+Shift+1',
             checked: !!(global.network === 'main'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'main'),
             type: 'checkbox',
@@ -317,7 +345,7 @@ var menuTempl = function(webviews) {
           },
           {
             label: 'Testnet (Morden)',
-            accelerator: 'Alt+CommandOrControl+2',                
+            accelerator: 'CommandOrControl+Shift+2',                
             checked: !!(global.network === 'test'),
             enabled: !!((global.nodes.geth || global.nodes.eth) && global.network !== 'test'),
             type: 'checkbox',
@@ -338,7 +366,7 @@ var menuTempl = function(webviews) {
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
-        accelerator: 'CommandOrControl+M',
+        accelerator: 'CommandOrControl+Shift+M',
         enabled: !!((global.nodes.geth || global.nodes.eth) && global.network === 'test'),
         click: function(){
             // TODO remove on new RPC
@@ -401,7 +429,12 @@ var menuTempl = function(webviews) {
         menu.push({
             label: i18n.t('mist.applicationMenu.help.label'),
             role: 'help',
-            submenu: []
+            submenu: [{
+                label: 'Report a bug on Github',
+                click: function(){
+                    shell.openExternal('https://github.com/ethereum/mist/issues');
+                }
+            }]
         });
     }
 

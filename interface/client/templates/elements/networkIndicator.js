@@ -47,11 +47,6 @@ var checkNetworkType = function(template) {
                         TemplateVar.set(template, 'network', 'privatenet' );
 
                 }
-
-                TemplateVar.set(template, 'unknown', false);
-                TemplateVar.set(template, 'mainnet', isMainNet);
-                TemplateVar.set(template, 'testnet', isTestNet);
-                TemplateVar.set(template, 'devnet', !(isMainNet || isTestNet));
             }
         });        
     } catch (err) {
@@ -68,7 +63,7 @@ Template['elements_networkIndicator'].onRendered(function(){
 
     checkNetworkType(template);
 
-    ipc.on('nodeStatus', function(e, status) {
+    ipc.on('uiAction_nodeStatus', function(e, status) {
         console.trace('Node status', status);
 
         switch (status) {
@@ -78,16 +73,11 @@ Template['elements_networkIndicator'].onRendered(function(){
                 console.debug('Node status changing, reset network type indicator');
 
                 TemplateVar.set(template, 'network', 'unknown');
-
-                TemplateVar.set(template, 'unknown', true);
-                TemplateVar.set(template, 'mainnet', false);
-                TemplateVar.set(template, 'testnet', false);
-                TemplateVar.set(template, 'devnet', false);            
             break;
         }
     });
 
-    ipc.on('nodeSyncStatus', function(e, status, data) {
+    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
         console.trace('Node sync status', status);
 
         if ('inProgress' === status && !!TemplateVar.get(template, 'unknown')) {

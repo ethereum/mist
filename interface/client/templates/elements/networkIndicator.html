@@ -1,18 +1,22 @@
 <template name="elements_networkIndicator">
     <div class="network-indicator">
-    !!!!{{TemplateVar.get "network"}}!!!!
-    !!!!{{TemplateVar.get "mainnet"}}!!!!
-    !!!!{{TemplateVar.get "testnet"}}!!!!
+
         {{#if $eq (TemplateVar.get "network") "unknown"}}
-            <div class="unknown indicator" type="Network not yet known">CHECKING NETWORK...</div>
+            <div class="unknown indicator" type="Network not yet known"> 
+                {{i18n "mist.nodeInfo.checkingWhichNetwork"}} 
+            </div>
         {{/if}}
 
         {{#if $eq (TemplateVar.get "network") "testnet"}}
-            <div class="testnet indicator" type="This is the global Morden test network">TEST-NET</div>
+            <div class="testnet indicator" type="This is the global Morden test network">
+                {{i18n "mist.nodeInfo.testNetwork"}} 
+            </div>
         {{/if}}
 
         {{#if $eq (TemplateVar.get "network") "privatenet"}}
-            <div class="devnet indicator" type="This is a developer network">DEV-NET</div>
+            <div class="devnet indicator" type="This is a developer network">
+                {{i18n "mist.nodeInfo.privateNetwork"}}                 
+            </div>
         {{/if}}
     </div>
 </template>

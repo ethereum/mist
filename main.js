@@ -24,6 +24,7 @@ const argv = require('yargs')
     .describe('reset-tabs', 'Reset Mist tabs to their default settings')
     .describe('logfile', 'Logs will be written to this file')
     .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
+    .describe('ipcpath', 'Filename for IPC socket/pipe')
     .alias('m', 'mode')
     .help('h')
     .alias('h', 'help')
@@ -57,6 +58,7 @@ global.mode = (argv.mode ? argv.mode : 'mist');
 global.paths = {
     geth: argv.gethpath,
     eth: argv.ethpath,
+    ipc: argv.ipcpath,
 };
 
 global.version = packageJson.version;

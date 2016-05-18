@@ -4,8 +4,8 @@
 
 const _ = require('underscore');
 const dechunker = require('./dechunker.js');
+const newSocket = require('./socket.js');
 const log = require('../utils/logger').create('nodeConnector');
-const net = require('net');
 var idCount = 1;
 
 /**
@@ -16,7 +16,7 @@ The node connection, is a wrapper for the JSON RPC to execute commands on the no
 */
 var NodeConnector = function(ipcPath) {
     var _this = this;
-    this.socket = new net.Socket();
+    this.socket = newSocket(ipcPath);
     this.ipcPath = ipcPath;
     this.callbacks = {};
 

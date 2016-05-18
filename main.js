@@ -18,6 +18,7 @@ const argv = require('yargs')
     .usage('Usage: $0 [options]')
     .describe('version', 'Display app version')
     .describe('mode', 'App mode: wallet, mist (default)')
+    .describe('rpc', 'RPC endpoint. Can be http URL or IPC socket path')
     .describe('gethpath', 'Path to geth executable to use instead of default')
     .describe('ethpath', 'Path to eth executable to use instead of default')
     .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
@@ -52,7 +53,7 @@ global.path = {
 global.appName = 'Mist';
 
 global.production = false;
-
+global.rpcUri = argv.rpc;
 global.mode = (argv.mode ? argv.mode : 'mist');
 global.paths = {
     geth: argv.gethpath,
@@ -355,8 +356,7 @@ app.on('ready', function() {
 
         // START GETH
         const checkNodeSync = require('./modules/checkNodeSync.js');
-        const net = require('net');
-        const socket = new net.Socket();
+        const socket = require('./modules/ipc/socket')(ipcPath);
         var intervalId = errorTimeout = null;
         var count = 0;
 

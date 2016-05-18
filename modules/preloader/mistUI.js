@@ -3,23 +3,24 @@
 */
 
 require('./console-log-capture')('mist');
-const ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
 const syncMinimongo = require('../syncMinimongo.js');
-const remote = require('remote');
-const Menu = remote.require('menu');
-const MenuItem = remote.require('menu-item');
+const remote = electron.remote;
+const Menu = remote.Menu;
+const MenuItem = remote.MenuItem;
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
-const basePath = require('../setBasePath.js');
+const basePath = require('./setBasePath.js');
 
 basePath('interface');
 
 // disable pinch zoom
-require('web-frame').setZoomLevelLimits(1, 1);
+electron.webFrame.setZoomLevelLimits(1, 1);
 
 // make variables globally accessable
 window.BigNumber = BigNumber;

@@ -4,8 +4,9 @@ Opens windows and popups
 @module openExternal
 */
 
-const shell = require('shell');
-const remote = require('electron').remote;
+const electron = require('electron');
+const shell = electron.shell;
+const remote = electron.remote;
 const BrowserWindow = remote.BrowserWindow;
 
 

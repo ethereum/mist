@@ -1,4 +1,5 @@
-var ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+var ipc = electron.ipcRenderer;
 
 module.export = (function() {
     document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);

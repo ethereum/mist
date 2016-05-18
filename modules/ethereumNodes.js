@@ -4,9 +4,10 @@
 
 const _ = require('underscore');
 const fs = require('fs');
-const app = require('app');
+const electron = require('electron');
+const app = electron.app;
 const spawn = require('child_process').spawn;
-const ipc = require('electron').ipcMain;
+const ipc = electron.ipcMain;
 const getNodePath = require('./getNodePath.js');
 const popupWindow = require('./popupWindow.js');
 const log = require('./utils/logger').create('ethereumNodes');

@@ -5,7 +5,7 @@
         "logginIn": "로그인 중..."
     },
     "error": {
-        "insufficientRights": "당신은 이것을 실행할 권한이 없습니다."
+        "insufficientRights": "요청하신 명령을 실행할 권한이 없습니다."
     },
     "buttons": {
         "ok": "확인",

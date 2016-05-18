@@ -429,7 +429,12 @@ var menuTempl = function(webviews) {
         menu.push({
             label: i18n.t('mist.applicationMenu.help.label'),
             role: 'help',
-            submenu: []
+            submenu: [{
+                label: 'Report a bug on Github',
+                click: function(){
+                    shell.openExternal('https://github.com/ethereum/mist/issues');
+                }
+            }]
         });
     }
 

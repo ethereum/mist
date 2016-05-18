@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
@@ -28,13 +28,14 @@
     "gulp-jszip": "^0.1.2",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
-    "gulp-zip": "^3.0.2",
+    "gulp-zip": "^3.2.0",
     "merge-stream": "^1.0.0",
     "minimist": "^1.1.3",
     "rcedit": "^0.3.0"
   },
   "engines": {
-    "electron": "0.36.2",
+    "node": ">4.3.0",
+    "electron": "1.0.1",
     "atom-shell": "0.36.2"
   }
 }

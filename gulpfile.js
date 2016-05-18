@@ -7,6 +7,7 @@ var packager = require('electron-packager');
 var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
+// const zip = require('gulp-zip');
 // var zip = require('gulp-zip');
 // var zip = require('gulp-jszip');
 var EasyZip = require('easy-zip').EasyZip;

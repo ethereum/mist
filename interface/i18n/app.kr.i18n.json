@@ -19,7 +19,7 @@
         "skip": "건너뛰기",
         "sending": "보내는 중...",
         "create": "만들기",
-        "tryToReconnect": "재연결 시도 중"
+        "tryToReconnect": "재연결 시도"
     },
     "commonWords": {
         "you": "당신",

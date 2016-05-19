@@ -95,7 +95,7 @@
             "nodeSyncInfo": "正在下載第__currentBlock__塊，共__highestBlock__。",
             "nodeSyncConnecting": "正在查找節點……",
             "nodeSyncProcessing": "正在處理區塊，請等待……",
-            "privateChainTimeout": "跳過節點搜索"
+            "peerSearchTimeout": "跳過節點搜索"
         },
         "popupWindows": {
             "requestAccount": {

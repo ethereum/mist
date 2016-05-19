@@ -7,6 +7,8 @@ The IPC provider backend filter and tunnel all incoming request to the IPC geth 
 var dechunker = require('./dechunker.js');
 const _ = global._;
 
+const Windows = require('../windows');
+
 const logger = require('../utils/logger');
 
 const log = logger.create('ipcProviderBackend');
@@ -27,7 +29,6 @@ module.exports = function(){
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');
-    const popupWindow = require('../popupWindow.js');
 
 
     var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
@@ -172,8 +173,8 @@ module.exports = function(){
         this.ipcSocket.on('data', function(data){
             dechunker(data, function(error, result){
 
-                if(error) {
-                    log.info('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
+                if (error) {
+                    log.error('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
                     _this.timeout();
                     return;
                 }
@@ -189,7 +190,7 @@ module.exports = function(){
 
                 // if(result && !_.isArray(result))
                 if(!result.id && !_.isArray(result))
-                    log.info('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
+                    log.debug('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
 
                 // SEND SYNC back
                 if(event.sync) {
@@ -333,10 +334,12 @@ module.exports = function(){
         if(!_.isObject(payload))
             return false;
 
-
         // main window or popupwindows are admin
-        if(global.mainWindow && this.id === global.mainWindow.webContents.getId() ||
-           (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
+        let mainWindow = Windows.getByType('main'),
+            thisWindow = Windows.getById(this.id);
+
+        if(mainWindow && this.id === mainWindow.id ||
+           (thisWindow && thisWindow.type && thisWindow.type !== 'webview')) {
             return payload;
         }
 
@@ -377,8 +380,17 @@ module.exports = function(){
 
         // confirm SEND TRANSACTION
         if(filteredPayload.method === 'eth_sendTransaction') {
+            log.debug('Send transaction');
 
-            var modalWindow = popupWindow.show('sendTransactionConfirmation', {width: 580, height: 550, alwaysOnTop: true}, filteredPayload.params[0]);
+            var modalWindow = Windows.createPopup('sendTransactionConfirmation', {
+                sendData: ['data', filteredPayload.params[0]],
+                electronOptions: {
+                    width: 580, 
+                    height: 550, 
+                    alwaysOnTop: true,
+                },
+            });
+
             modalWindow.on('closed', function() {
                 if(!called) {
                     callback(errorUnlock);
@@ -387,7 +399,7 @@ module.exports = function(){
             });
 
             ipc.once('backendAction_unlockedAccount', function(ev, err, result){
-                if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
+                if(modalWindow.webContents && ev.sender.getId() === modalWindow.id) {
                     if(err || !result) {
                         log.info('Confirmation error:', err);
 
@@ -414,6 +426,8 @@ module.exports = function(){
 
         // COMPILE SOLIDITY
         } else if(filteredPayload.method === 'eth_compileSolidity') {
+            log.debug('Compile solidity');
+
             var solc = require('solc');
 
             var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
@@ -522,18 +536,26 @@ module.exports = function(){
 
 
     var sendRequest = function(event, payload, sync) {
+        log.trace('sendRequest', event.sender.getId(), payload, sync);
+
         var socket = global.sockets['id_'+ event.sender.getId()];
 
         if(!socket) {
+            log.trace('Create socket');
+
             // TODO: should we really try to reconnect, after the connection was destroyed?
             socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
         // make sure we are connected
         } else if(!socket.ipcSocket.writable) {
+            log.trace('Ensure socket is connected');
+
             socket.connect(event);
         }
 
         // if not writeable send error back
         if(!socket.ipcSocket.writable) {
+            log.trace('Socket not writeable');
+
             if(event.sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorTimeout));
             else
@@ -553,6 +575,7 @@ module.exports = function(){
 
         // return error, if permission not passed
         if(_.isEmpty(filteredPayload)) {
+            log.trace('Not permitted to do request');
 
             if(event.sync)
                 event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
@@ -565,7 +588,10 @@ module.exports = function(){
 
 
         socket.checkRequests(filteredPayload, event, function(e, result){
+            log.trace('Got result', e, result);
+
             if(!e && !_.isEmpty(result)) {
+                log.trace('Success');
 
                 // SEND REQUEST
                 var id = result.id || result[0].id;
@@ -585,6 +611,7 @@ module.exports = function(){
          
             // SEND error
             } else if(e && e !== true){
+                log.trace('Error');
 
                 if(event.sync)
                     event.returnValue = JSON.stringify(returnError(jsonPayload, e));

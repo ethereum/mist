@@ -5,9 +5,12 @@ setTimeout(function(){
 
     if (window.basePathHref) {
       var base = document.createElement('base');
+
       base.href = window.basePathHref;
-      document.getElementsByTagName('head')[0].appendChild(base);
+      
+      document.getElementsByTagName('head')[0].appendChild(base);      
     }
+
 }, 100);
 
 

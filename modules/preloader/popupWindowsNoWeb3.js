@@ -2,11 +2,11 @@
 @module preloader PopupWindows
 */
 
-require('./console-log-capture')('popup-no-web3');
+require('./consoleLogCapture')('popup-no-web3');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const basePath = require('./setBasePath.js');
+const basePath = require('./setBasePath');
 
 basePath('interface');
 

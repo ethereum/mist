@@ -1,15 +1,16 @@
-const app = require('app');
-const BrowserWindow = require('browser-window');
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
 const popupWindow = require('./popupWindow.js');
-const MenuItem = require('menu-item');
-const Menu = require('menu');
-const shell = require('electron').shell;
+const MenuItem = electron.MenuItem;
+const Menu = electron.Menu;
+const shell = electron.shell;
 const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
-const ipc = require('electron').ipcMain;
+const ipc = electron.ipcMain;
 const ethereumNodes = require('./ethereumNodes.js');
 const fs = require('fs');
-const dialog = require('dialog');
+const dialog = electron.dialog;
 
 
 // create menu
@@ -286,7 +287,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.3.6 (Go)',
+                label: 'Geth 1.4.4 (Go)',
                 checked: !!global.nodes.geth,
                 enabled: !!((global.nodes.geth || global.nodes.eth) && !global.nodes.geth),
                 type: 'checkbox',

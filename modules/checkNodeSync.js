@@ -6,8 +6,9 @@ checks the current node whether its synching or not and how much it kept up alre
 */
 
 const _ = require('underscore');
-const app = require('app');
-const ipc = require('electron').ipcMain;
+const electron = require('electron');
+const app = electron.app;
+const ipc = electron.ipcMain;
 
 const log = require('./utils/logger').create('checkNodeSync');
 
@@ -96,7 +97,7 @@ module.exports = function(appStartWindow, callbackSplash, callbackOnBoarding){
             
 
         // CHECK BLOCK (AGAIN)
-        if(_.isString(result.hash)) {
+        if(result && _.isString(result.hash)) {
             var now = Math.floor(new Date().getTime() / 1000);
 
             // If ready!

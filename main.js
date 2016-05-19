@@ -2,13 +2,13 @@ global._ = require('./modules/utils/underscore');
 
 const fs = require('fs');
 const electron = require('electron');
-const app = require('app');  // Module to control application life.
+const app = electron.app;  // Module to control application life.
 const timesync = require("os-timesync");
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
+const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
-const dialog = require('dialog');
+const dialog = electron.dialog;
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');

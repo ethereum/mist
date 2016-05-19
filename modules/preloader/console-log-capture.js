@@ -1,4 +1,6 @@
-const ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+
+const ipc = electron.ipcRenderer;
 
 module.exports = function(windowId) {
     if (typeof window === 'undefined') {

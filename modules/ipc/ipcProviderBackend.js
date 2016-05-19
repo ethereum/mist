@@ -12,6 +12,8 @@ const Windows = require('../windows');
 const logger = require('../utils/logger');
 
 const log = logger.create('ipcProviderBackend');
+const electron = require('electron');
+
 
 /**
 make sockets globally available
@@ -23,7 +25,7 @@ global.sockets = {};
 
 module.exports = function(){
     const _ = require('underscore');
-    const ipc = require('electron').ipcMain;
+    const ipc = electron.ipcMain;
     const net = require('net');
     const Socket = net.Socket;
     const getIpcPath = require('./getIpcPath.js');

@@ -10,6 +10,7 @@ Q.config({
 const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
+const dialog = electron.dialog;
 const timesync = require("os-timesync");
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');

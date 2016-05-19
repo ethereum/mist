@@ -4,8 +4,8 @@ Gets the right Node path
 @module getFavicon
 */
 
-
-var ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+var ipc = electron.ipcRenderer;
 
 (function() {
     document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);

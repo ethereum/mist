@@ -10,8 +10,9 @@ checks the current node whether its synching or not and how much it kept up alre
 const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
-const app = require('electron').app;
-const ipc = require('electron').ipcMain;
+const electron = require('electron');
+const app = electron.app;
+const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode');
 const log = require('./utils/logger').create('NodeSync');
 

@@ -2,13 +2,14 @@
 @module MistAPI
 */
 
+const electron = require('electron');
 const packageJson = require('./../package.json');
 const config = require('./../config');
-const remote = require('electron').remote;
+const remote = electron.remote;
 
 module.exports = function(isWallet) {
 
-    const ipc = require('electron').ipcRenderer;
+    const ipc = electron.ipcRenderer;
 
     var queue = [];
     var prefix = 'entry_';

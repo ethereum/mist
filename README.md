@@ -59,8 +59,6 @@ To update Mist in the future, run:
 
 ### Run Mist
 
-Switch the `global.mode` to `"mist"` in the `main.js`.
-
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
@@ -74,8 +72,6 @@ In the original window you can then start Mist with:
 
 ### Run the Wallet
 
-Add `--mode wallet` to the Mist command-line.
-
 Start the wallet app for development, *in a separate terminal window:*
 
     $ cd mist/interface && meteor
@@ -84,7 +80,7 @@ Start the wallet app for development, *in a separate terminal window:*
 
     $ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
 
-In the original window you can then start Mist with:
+In the original window you can then start Mist using wallet mode:
 
     $ cd mist
     $ electron . --mode wallet

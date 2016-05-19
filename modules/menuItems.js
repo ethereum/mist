@@ -6,7 +6,7 @@ const Menu = electron.Menu;
 const shell = electron.shell;
 const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
-const ipc = require('electron').ipcMain;
+const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
 const Windows = require('./windows');
 const fs = require('fs');
@@ -314,7 +314,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.3.6 (Go)',
+                label: 'Geth 1.4.4 (Go)',
                 checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
@@ -432,7 +432,12 @@ var menuTempl = function(webviews) {
         menu.push({
             label: i18n.t('mist.applicationMenu.help.label'),
             role: 'help',
-            submenu: []
+            submenu: [{
+                label: 'Report a bug on Github',
+                click: function(){
+                    shell.openExternal('https://github.com/ethereum/mist/issues');
+                }
+            }]
         });
     }
 

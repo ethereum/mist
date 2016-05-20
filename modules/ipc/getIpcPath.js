@@ -6,8 +6,15 @@ Gets the right IPC path
 
 const log = require('../utils/logger').create('getIpcPath');
 
+const Settings = require('../settings');
+
 
 module.exports = function() {
+    var ipcPath = Settings.get('ipcPath');
+    if (ipcPath) {
+        return ipcPath;
+    }
+    
     var p = require('path');
     var path = global.path.HOME;
 

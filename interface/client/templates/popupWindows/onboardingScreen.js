@@ -11,28 +11,7 @@ The onboardingScreen template
 @constructor
 */
 
-/**
-Check if its the testnet
 
-@method isTestnet
-*/
-var isTestnet = function(template){
-    // CHECK FOR NETWORK
-    web3.eth.getBlock(0, function(e, res){
-        if(!e){
-            switch(res.hash) {
-                case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
-                    TemplateVar.set(template, 'testnet', true);
-                    break;
-                case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
-                    TemplateVar.set(template, 'testnet', false);
-                    break;
-                default:
-                    TemplateVar.set(template, 'testnet', false);
-            }
-        }
-    });
-}
 
 /**
 Update the peercount
@@ -94,10 +73,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
     });
 })
 
-Template['popupWindows_onboardingScreen'].onRendered(function(){
-    // check which net it is
-    isTestnet(this);
-})
 
 Template['popupWindows_onboardingScreen'].helpers({
     'newAccountLowerCase': function(){
@@ -108,12 +83,6 @@ Template['popupWindows_onboardingScreen'].helpers({
 
 Template['popupWindows_onboardingScreen'].events({
    'click .goto-start': function(e){
-        if(TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', false);
-            TemplateVar.set('testnet', false);
-            // TODO: re-start syncing subscription
-        }
-
         TemplateVar.set('currentActive','start');
     },
    'click .goto-import-account': function(){
@@ -123,14 +92,13 @@ Template['popupWindows_onboardingScreen'].events({
         if(TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
-            // TODO: re-start syncing subscription
         }
     },
    'click .start-testnet': function(e, template){
-
-        ipc.send('onBoarding_changeNet', true);
-        TemplateVar.set('testnet', true);
-        // TODO: re-start syncing subscription
+        if(!TemplateVar.get('testnet')) {
+            ipc.send('onBoarding_changeNet', true);
+            TemplateVar.set('testnet', true);
+        }
 
         TemplateVar.set('currentActive','testnet');
         template.$('.onboarding-testnet input.password').focus();

@@ -10,7 +10,8 @@ if(location.origin !== "file://") {
 
 // load dapp preloader file
 require('./dapps.js');
-const ipc = require('electron').ipcRenderer;
+const electron = require('electron');
+const ipc = electron.ipcRenderer;
 
 window.ipcProvider = require('../ipc/ipcProviderWrapper.js');
 window.permissions = {};

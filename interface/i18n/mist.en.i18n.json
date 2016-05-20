@@ -75,7 +75,14 @@
             "blockReceived": "New Block Received",
             "blockNumber": "Your latest block number",
             "timeSinceBlock": "Elapsed time since last block",
-            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
+            "checkingWhichNetwork": "Checking network...",
+            "mainNetwork": "Main-net",
+            "testNetwork": "Test-net",
+            "privateNetwork": "Private-net",
+            "mainnetExplain": "You are on the main Ethereum global network",
+            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "unknownnetExplain": "Unable to determine which network you are on",
             "peers": "peers"
         },
         "sidebar": {
@@ -91,14 +98,23 @@
         "startScreen": {
             "runningNodeFound": "Found running Ethereum node!",
             "startingNode": "Starting Ethereum node...",
+            "stoppingNode": "Stopping Ethereum node...",
             "startedNode": "Starting application...",
-            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
+            "nodeConnectionTimeout": "Couldn't start Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
             "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
+            "nodeStarting": "Ethereum node starting up...",
+            "nodeStarted": "Ethereum node started",
+            "nodeConnected": "Ethereum node connected",
+            "nodeStopping": "Ethereum node stopping...",
+            "nodeStopped": "Ethereum node stopped",
+            "nodeError": "Ethereum node connection error :'(",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",
             "nodeSyncProcessing": "Processing blocks, please wait...",
-            "privateChainTimeout": "Skip peer search"
+            "nodeSyncingStopped": "Ethereum node sync stopped",
+            "peerSearchTimeout": "Skip peer search",
+            "startApp": "Goto app"
         },
         "popupWindows": {
             "requestAccount": {

@@ -1,7 +1,8 @@
 /**
 @module popupWindow
 */
-const BrowserWindow = require('browser-window');
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
 
 module.exports = {
     loadingWindow: {

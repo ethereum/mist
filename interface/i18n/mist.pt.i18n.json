@@ -98,7 +98,7 @@
             "nodeSyncInfo": "Carregando bloco  __currentBlock__ de __highestBlock__.",
             "nodeSyncConnecting": "Procurando outros nós...",
             "nodeSyncProcessing": "Processando blocos recebidos, favor aguarde...",
-            "privateChainTimeout": "Não procure nós agora"
+            "peerSearchTimeout": "Não procure nós agora"
         },
         "popupWindows": {
             "requestAccount": {

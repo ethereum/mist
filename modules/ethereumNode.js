@@ -180,12 +180,12 @@ class EthereumNode extends EventEmitter {
      */
     stop () {
         if (!this._stopPromise) {
-            this.state = STATES.STOPPING;
-
             return new Q((resolve, reject) => {
-                if (!(this._node && this._node.connected)) {
+                if (!this._node) {
                     return resolve();
                 }
+
+                this.state = STATES.STOPPING;
 
                 log.info(`Stopping existing node: ${this.type} ${this.network}`);
 
@@ -201,10 +201,6 @@ class EthereumNode extends EventEmitter {
                 let killTimeout = setTimeout(() => {
                     if (this._node) {
                         this._node.kill('SIGKILL');
-
-                        this._node = null;
-
-                        resolve();
                     }
                 }, 8000 /* 8 seconds */)
 
@@ -217,8 +213,8 @@ class EthereumNode extends EventEmitter {
                 }); 
             })
                 .then(() => {
-                    this._sendRequests = {};
                     this.state = STATES.STOPPED;
+                    this._sendRequests = {};
                     this._stopPromise = null;
                 });
         } else {
@@ -519,14 +515,22 @@ class EthereumNode extends EventEmitter {
                     this.emit('data', data);
 
                     if (STATES.STARTING === this.state) {
-                        if ('eth' === nodeType) {
-                            let dataStr = data.toString().toLowerCase();
+                        let dataStr = data.toString().toLowerCase();
 
+                        if ('eth' === nodeType) {
                             // (eth) prevent started until str appears
                             if (-1 === dataStr.indexOf('jsonrpc')) {
                                 log.trace('Running eth so wait until we see JSONRPC message');
 
                                 return;
+                            }
+                        } else if ('geth' === nodeType) {
+                            if (0 <= dataStr.indexOf('fatal: error')) {
+                                let str = `Error starting geth: ${dataStr}`;
+
+                                log.debug(str);
+
+                                return reject(new Error(str));
                             }
                         }
 

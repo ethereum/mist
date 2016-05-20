@@ -20,12 +20,14 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
+const Settings = require('./modules/settings');
 
 // CLI options
 const argv = require('yargs')
     .usage('Usage: $0 [options]')
     .describe('version', 'Display app version')
     .describe('mode', 'App mode: wallet, mist (default)')
+    .describe('ipcpath', 'Path to geth socket IPC file')
     .describe('gethpath', 'Path to geth executable to use instead of default')
     .describe('ethpath', 'Path to eth executable to use instead of default')
     .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
@@ -46,6 +48,7 @@ if (argv.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
+
 // logging setup
 logger.setup(argv);
 const log = logger.create('main');
@@ -62,10 +65,10 @@ global.appName = 'Mist';
 global.production = false;
 
 global.mode = (argv.mode ? argv.mode : 'mist');
-global.paths = {
-    geth: argv.gethpath,
-    eth: argv.ethpath,
-};
+
+Settings.set('gethPath', argv.gethpath);
+Settings.set('ethPath', argv.ethpath);
+Settings.set('ipcPath', argv.ipcpath);
 
 global.version = packageJson.version;
 global.license = packageJson.license;

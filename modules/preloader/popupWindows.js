@@ -2,7 +2,7 @@
 @module preloader PopupWindows
 */
 
-require('./console-log-capture')('popup');
+require('./consoleLogCapture')('popup');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 require('../openExternal.js');
@@ -11,7 +11,7 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const web3Admin = require('../web3Admin.js');
-const basePath = require('./setBasePath.js');
+const basePath = require('./setBasePath');
 
 basePath('interface');
 

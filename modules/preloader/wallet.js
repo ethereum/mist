@@ -2,14 +2,14 @@
 @module preloader wallet
 */
 
-require('./console-log-capture')('wallet');
+require('./consoleLogCapture')('wallet');
 const electron = require('electron');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
-const basePath = require('./setBasePath.js');
+const basePath = require('./setBasePath');
 require('../openExternal.js');
 
 basePath('interface/wallet');

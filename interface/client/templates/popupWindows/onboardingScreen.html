@@ -1,9 +1,7 @@
 <template name="popupWindows_onboardingScreen">
     <div class="onboarding-screen {{mode}} active-{{TemplateVar.get 'currentActive'}} outgoing-{{TemplateVar.get 'lastActive'}} ">
-        
-        {{#if TemplateVar.get "testnet"}}
-            <div class="testnet-indicator">TEST-NET</div>
-        {{/if}}
+
+        {{> elements_networkIndicator}}
 
         <div class="main-content">    
             <div class="onboarding-section onboarding-start">
@@ -119,7 +117,13 @@
                 {{#if TemplateVar.get 'readyToLaunch'}}
                     <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.buttons.launchApp"}} </button>
                 {{else}}
-                    <div class="status">{{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}</div>
+                    <div class="status">
+                    {{#if TemplateVar.get "peerCount"}}
+                        {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
+                    {{else}}
+                        Looking for peers...
+                    {{/if}}
+                    </div>
                 {{/if}}
             {{/with}}
 

@@ -1,16 +1,16 @@
 /**
 @module preloader browser
 */
-require('./console-log-capture')('browser');
+require('./consoleLogCapture')('browser');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
+const shell = electron.shell;
 const mist = require('../mistAPI.js');
 require('../openExternal.js');
-const shell = electron.shell;
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');
-const basePath = require('./setBasePath.js');
+const basePath = require('./setBasePath');
 require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');

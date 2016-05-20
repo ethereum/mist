@@ -81,7 +81,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
         switch (status) {
             case 'inProgress':
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.startApp'));
+                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
                 TemplateVar.set(template, 'showStartAppButton', true);
 
                 showNodeLog = false;

@@ -279,7 +279,9 @@ app.on('ready', function() {
 
         // state change
         ethereumNode.on('state', function(state, stateAsText) {
-            Windows.broadcast('uiAction_nodeStatus', stateAsText);
+            Windows.broadcast('uiAction_nodeStatus', stateAsText,
+                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+            );
         });
 
 

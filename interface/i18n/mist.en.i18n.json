@@ -177,7 +177,7 @@
                 "accountTitle" : "Load it up!",
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
-                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading some where between <strong>0.25 to 1 ether</strong>.",
+                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
                 "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",

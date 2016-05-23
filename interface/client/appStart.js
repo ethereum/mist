@@ -50,8 +50,6 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
-    console.info('meteor startup', document.getElementsByTagName('head').length);
-
     console.info('Meteor starting up...');
 
     // check that it is not syncing before

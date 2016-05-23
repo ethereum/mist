@@ -538,6 +538,7 @@ class EthereumNode extends EventEmitter {
                             }
                         } else if ('geth' === nodeType) {
                             if (0 <= dataStr.indexOf('fatal: error')) {
+
                                 let err = new Error(`Geth error: ${dataStr}`);
 
                                 if (0 <= dataStr.indexOf('bind')) {

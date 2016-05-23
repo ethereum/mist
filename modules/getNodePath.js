@@ -9,6 +9,8 @@ Gets the right Node path
 const path = require('path');
 const binaryPath = path.resolve(__dirname + '/../nodes');
 const log = require('./utils/logger').create('getNodePath');
+const Settings = require('./settings');
+
 
 // cache
 const resolvedPaths = {};
@@ -22,8 +24,10 @@ module.exports = function(type) {
     let ret = '';
 
     // global override?
-    if (global.paths && global.paths[type]) {
-        resolvedPaths[type] = global.paths[type];
+    let globallySetType = Settings.get(`${type}Path`);
+    
+    if (globallySetType) {
+        resolvedPaths[type] = globallySetType;
     } else {
         var binPath = (global.production)
             ? binaryPath.replace('nodes','node') + '/'+ type +'/'+ type

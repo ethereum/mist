@@ -20,7 +20,7 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
-const cliArgs = require('./modules/utils/cliArgs').getArgs();
+const cliArgs = require('./modules/utils/cliArgs');
 
 
 if (cliArgs.version) {

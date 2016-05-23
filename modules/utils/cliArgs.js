@@ -1,10 +1,11 @@
 "use strict";
 
+
 const argv = require('yargs')
-    .usage('Usage: $0 [Mist Options]')
+    .usage('Usage: $0 [Mist options] -- [Node options]')
     .option({
-        m: {
-            alias: 'mode',
+        mode: {
+            alias: 'm',
             demand: false,
             default: 'mist',
             describe: 'App mode: wallet, mist.',
@@ -62,8 +63,8 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',                        
         },
-        v: {
-            alias: 'version',
+        version: {
+            alias: 'v',
             demand: false,
             requiresArg: false,
             nargs: 0,
@@ -71,19 +72,28 @@ const argv = require('yargs')
             group: 'Mist options:',
             type: 'boolean',
         },
+        '': {
+            describe: 'Options to pass directly to the Ethereum client node (e.g. Geth).',
+            group: 'Node options:',
+        }
     })
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
 
 
+argv.nodeOptions = [];
+
+for (let optIdx in argv._) {
+    if ('-' === argv._[optIdx].charAt(0)) {
+        argv.nodeOptions = argv._.slice(optIdx);
+
+        break;
+    }
+}
 
 
-exports.getArgs = function() {
-    console.log(argv);
-    return argv;
-};
-
+module.exports = argv;
 
 
 

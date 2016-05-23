@@ -20,34 +20,20 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
+const cliArgs = require('./modules/utils/cliArgs').getArgs();
 
-// CLI options
-const argv = require('yargs')
-    .usage('Usage: $0 [options]')
-    .describe('version', 'Display app version')
-    .describe('mode', 'App mode: wallet, mist (default)')
-    .describe('gethpath', 'Path to geth executable to use instead of default')
-    .describe('ethpath', 'Path to eth executable to use instead of default')
-    .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
-    .describe('reset-tabs', 'Reset Mist tabs to their default settings')
-    .describe('logfile', 'Logs will be written to this file')
-    .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
-    .alias('m', 'mode')
-    .help('h')
-    .alias('h', 'help')
-    .parse(process.argv.slice(1));
 
-if (argv.version) {
+if (cliArgs.version) {
     console.log(packageJson.version);
     process.exit(0);
 }
 
-if (argv.ignoreGpuBlacklist) {
+if (cliArgs.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
 // logging setup
-logger.setup(argv);
+logger.setup(cliArgs);
 const log = logger.create('main');
 
 // GLOBAL Variables
@@ -61,10 +47,10 @@ global.appName = 'Mist';
 
 global.production = false;
 
-global.mode = (argv.mode ? argv.mode : 'mist');
+global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
 global.paths = {
-    geth: argv.gethpath,
-    eth: argv.ethpath,
+    geth: cliArgs.gethpath,
+    eth: cliArgs.ethpath,
 };
 
 global.version = packageJson.version;
@@ -112,7 +98,7 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
-    if (argv.resetTabs) {
+    if (cliArgs.resetTabs) {
         url += '?reset-tabs=true'
     }
 

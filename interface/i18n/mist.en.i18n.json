@@ -108,6 +108,7 @@
             "nodeStopping": "Ethereum node stopping...",
             "nodeStopped": "Ethereum node stopped",
             "nodeError": "Ethereum node connection error :'(",
+            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncing": "Ethereum node needs to sync, please wait...",
             "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "Looking for peers...",

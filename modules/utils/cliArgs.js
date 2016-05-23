@@ -80,7 +80,8 @@ const argv = require('yargs')
 
 
 exports.getArgs = function() {
-  return argv;
+    console.log(argv);
+    return argv;
 };
 
 

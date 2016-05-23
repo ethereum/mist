@@ -1,5 +1,6 @@
 node_modules/
 packages/
 interface_build/
+interface/public/i18n/
 dist_wallet/
 dist_mist/

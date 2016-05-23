@@ -14,9 +14,17 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        ipcpath: {
+            demand: false,
+            describe: 'Path to node IPC socket file (this will automatically get passed as an option to Geth).',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         gethpath: {
             demand: false,
-            describe: 'Path to geth executable to use instead of default.',
+            describe: 'Path to Geth executable to use instead of default.',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -24,7 +32,7 @@ const argv = require('yargs')
         },
         ethpath: {
             demand: false,
-            describe: 'Path to eth executable to use instead of default.',
+            describe: 'Path to Eth executable to use instead of default.',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -73,7 +81,7 @@ const argv = require('yargs')
             type: 'boolean',
         },
         '': {
-            describe: 'Options to pass directly to the Ethereum client node (e.g. Geth).',
+            describe: 'All options will be passed onto the node (e.g. Geth).',
             group: 'Node options:',
         }
     })
@@ -90,6 +98,11 @@ for (let optIdx in argv._) {
 
         break;
     }
+}
+
+// some options are shared
+if (argv.ipcpath) {
+    argv.nodeOptions.push('--ipcpcath', argv.ipcpath);
 }
 
 

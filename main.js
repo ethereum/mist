@@ -21,6 +21,7 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 const cliArgs = require('./modules/utils/cliArgs');
+const Settings = require('./modules/settings');
 
 
 if (cliArgs.version) {
@@ -31,6 +32,7 @@ if (cliArgs.version) {
 if (cliArgs.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
+
 
 // logging setup
 logger.setup(cliArgs);
@@ -48,6 +50,13 @@ global.appName = 'Mist';
 global.production = false;
 
 global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
+
+Settings.set('gethPath', cliArgs.gethpath);
+Settings.set('ethPath', cliArgs.ethpath);
+Settings.set('ipcPath', cliArgs.ipcpath);
+Settings.set('nodeOptions', cliArgs.nodeOptions);
+
+
 global.paths = {
     geth: cliArgs.gethpath,
     eth: cliArgs.ethpath,

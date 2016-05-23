@@ -16,6 +16,7 @@ const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const getIpcPath = require('./ipc/getIpcPath.js')
 const Sockets = require('./sockets');
+const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
@@ -470,11 +471,13 @@ class EthereumNode extends EventEmitter {
                     pw = null;
                 }
 
-                // if ('geth' == nodeType) {
-                //     args.push('--rpc')
-                //     args.push('--rpcapi')
-                //     args.push('admin,db,eth,debug,miner,net,shh,txpool,personal,web3')
-                // }
+                let nodeOptions = Settings.get('nodeOptions');
+
+                if (nodeOptions && nodeOptions.length) {
+                    log.debug('Custom node options', nodeOptions);
+
+                    args = args.concat(nodeOptions);
+                }
 
                 log.trace('Spawn', binPath, args);
 

@@ -188,8 +188,8 @@ app.on('ready', function() {
     // Initialise window mgr
     Windows.init();
 
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
     require('./customProtocols.js');

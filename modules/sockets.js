@@ -53,6 +53,8 @@ class Socket extends EventEmitter {
 
                         this._state = STATE.CONNECTED;
 
+                        this.emit('connect');
+
                         resolve();
                     });
 
@@ -183,6 +185,12 @@ class Socket extends EventEmitter {
                     this._log.trace('Got data');
 
                     this.emit('data', data);
+                });
+
+                this._socket.on('timeout', () => {
+                    this._log.trace('Timeout');
+
+                    this.emit('timeout');
                 });
 
                 this._socket.on('error', (err) => {

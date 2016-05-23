@@ -183,8 +183,8 @@ app.on('ready', function() {
     // check for update
     require('./modules/updateChecker').run();
 
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
     require('./customProtocols.js');

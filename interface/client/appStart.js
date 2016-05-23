@@ -15,24 +15,25 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-    console.log('Initialise Mist');
+    console.info('Initialise Mist');
 
-    Meteor.setTimeout(function() {
-        if (0 <= location.search.indexOf('reset-tabs')) {
-            console.log('Resetting UI tabs');
-            
-            Tabs.remove({});
-        }
+    if (0 <= location.search.indexOf('reset-tabs')) {
+        console.info('Resetting UI tabs');
+        
+        Tabs.remove({});
+    }
 
-        if(!Tabs.findOne('browser')) {
-            console.debug('Insert tabs');
+    if(!Tabs.findOne('browser')) {
+        console.debug('Insert tabs');
 
-            Tabs.insert({
-                _id: 'browser',
-                url: 'https://ethereum.org',
-                position: 0
-            });
-            
+        Tabs.insert({
+            _id: 'browser',
+            url: 'https://ethereum.org',
+            position: 0
+        });
+        
+        // wait for accounts and blocks to be initialized below
+        Meteor.setTimeout(function() {
             Tabs.insert({
                 url: 'http://ethereum-dapp-wallet.meteor.com',
                 position: 0,
@@ -40,8 +41,8 @@ mistInit = function(){
                     accounts: web3.eth.accounts
                 }
             });
-        }
-    }, 1500);
+        }, 1500);
+    }
 
     EthAccounts.init();
     EthBlocks.init();
@@ -49,7 +50,9 @@ mistInit = function(){
 
 
 Meteor.startup(function(){
-    console.log('Meteor starting up...');
+    console.info('meteor startup', document.getElementsByTagName('head').length);
+
+    console.info('Meteor starting up...');
 
     // check that it is not syncing before
     web3.eth.getSyncing(function(e, sync) {

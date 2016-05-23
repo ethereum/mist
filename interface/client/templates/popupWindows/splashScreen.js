@@ -1,3 +1,5 @@
+
+
 /**
 Template Controllers
 
@@ -14,103 +16,120 @@ The splashScreen template
 /**
 Contains the last state of the data
 
-@property lastData
+@property lastSyncData
 */
-var lastData = {},
-    showLog = true;
+var lastSyncData = {},
+    showNodeLog = true;
 
 
 Template['popupWindows_splashScreen'].onCreated(function(){
     var template = this;
 
-    ipc.on('startScreenText', function(e, text, data){
-        var translatedText = '';
-
-        if(text === 'logText' && showLog && data) {
+    ipc.on('uiAction_nodeLogText', function(e, text, data) {
+        if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
             return;
         }
+    });
 
-        // show text
-        if(text.indexOf('privateChainTimeout') === -1 &&
-           text.indexOf('privateChainTimeoutClear') === -1 &&
-           text !== 'logText') {
-            translatedText = TAPi18n.__(text);
-            TemplateVar.set(template, 'text', translatedText);
+
+    ipc.on('uiAction_nodeStatus', function(e, status) {
+        console.trace('Node status', status);
+
+        switch (status) {
+            case 'starting':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarting'));
+                showNodeLog = true;
+                TemplateVar.set(template, 'logText', null);
+                TemplateVar.set(template, 'showProgressBar', false);
+                TemplateVar.set(template, 'showStartAppButton', false);
+                break;
+
+            case 'started':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarted'));
+                break;
+
+            case 'connected':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnected'));
+                lastSyncData = {};
+                break;
+
+            case 'stopping':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopping'));
+                TemplateVar.set(template, 'showProgressBar', false);
+                TemplateVar.set(template, 'showStartAppButton', false);
+                break;
+
+            case 'stopped':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopped'));
+                break;
+
+            case 'connectionTimeout':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnectionTimeout'));
+                break;
+
+            case 'error':
+                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeError'));
+                break;
         }
+    });
 
+    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+        console.trace('Node sync status', status);
 
-        // make window closeable and image smaller on TIMEOUT
-        if(text.indexOf('nodeConnectionTimeout') !== -1 ||
-           text.indexOf('nodeBinaryNotFound') !== -1 ||
-           text.indexOf('nodeSyncing') !== -1 ||
-           text.indexOf('privateChainTimeout') !== -1) {
+        TemplateVar.set(template, 'smallClass', 'small');
 
-            // make icon small
-            TemplateVar.set(template, 'smallClass', 'small');
+        switch (status) {
+            case 'inProgress':
+                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.startApp'));
+                TemplateVar.set(template, 'showStartAppButton', true);
 
+                showNodeLog = false;
 
-            // SHOW SYNC STATUS
-            if(text.indexOf('nodeSyncing') !== -1) {
-                lastData = _.extend(lastData, data || {});
-                var progress = ((lastData.currentBlock - lastData.startingBlock) / (lastData.highestBlock - lastData.startingBlock)) * 100;
+                lastSyncData = _.extend(lastSyncData, data || {});
+                var progress = ((lastSyncData.currentBlock - lastSyncData.startingBlock) / (lastSyncData.highestBlock - lastSyncData.startingBlock)) * 100;
 
-                lastData._currentBlock = lastData.currentBlock;
-                lastData._highestBlock = lastData.highestBlock;
-                lastData.currentBlock = numeral(lastData.currentBlock).format('0,0');
-                lastData.highestBlock = numeral(lastData.highestBlock).format('0,0');
+                lastSyncData._currentBlock = lastSyncData.currentBlock;
+                lastSyncData._highestBlock = lastSyncData.highestBlock;
+                lastSyncData.currentBlock = numeral(lastSyncData.currentBlock).format('0,0');
+                lastSyncData.highestBlock = numeral(lastSyncData.highestBlock).format('0,0');
 
-                if(progress === 0)
+                if (progress === 0) {
                     progress = 1;
+                }
 
-                // improve time format
-                // lastData.timeEstimate = lastData.timeEstimate.replace('h','h ').replace('m','m ').replace(/ +/,' ');
+                var translatedText = '';                    
 
                 // show node info text
-                if(lastData.startingBlock) {
+                if(lastSyncData.startingBlock) {
                     // show progress bar
                     TemplateVar.set(template, 'showProgressBar', true);
 
-                    if(lastData._highestBlock - lastData._currentBlock < 3000) {
-                        showLog = true;
-                        translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncProcessing') +'</small>';
+                    if(lastSyncData._highestBlock - lastSyncData._currentBlock < 3000) {
+                        translatedText = TAPi18n.__('mist.startScreen.nodeSyncProcessing');
                     } else {
-                        showLog = false;
-                        translatedText += '<br><small>'+ TAPi18n.__('mist.startScreen.nodeSyncInfo', lastData) +'</small>';
+                        translatedText = TAPi18n.__('mist.startScreen.nodeSyncInfo', lastSyncData);
                     }
+                } else {
+                    translatedText = TAPi18n.__('mist.startScreen.nodeSyncConnecting');                    
                 }
                 
-                if(!showLog) {
-                    TemplateVar.set(template, 'logText', false);
-                    TemplateVar.set(template, 'text', translatedText);
-                }
-
+                TemplateVar.set(template, 'logText', false);
+                TemplateVar.set(template, 'text', 
+                    TAPi18n.__('mist.startScreen.nodeSyncing') + 
+                    '<br /><small>' + translatedText + '</small>'
+                );
 
                 // set progress value
-                if(_.isFinite(progress))
+                if(_.isFinite(progress)) {
+                    TemplateVar.set(template, 'showProgressBar', true);
                     TemplateVar.set(template, 'progress', progress);
+                }
 
-
-            // HIDE PRIVATE chain text
-            } else if(text.indexOf('privateChainTimeoutClear') !== -1) {
-                TemplateVar.set(template, 'showStartAppButton', false);
-
-
-            // SHOW PRIVATE chain text
-            } else if(text.indexOf('privateChainTimeout') !== -1) {
-                
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__(text));
-                TemplateVar.set(template, 'showStartAppButton', true);
-
-
-            // on ERROR MAKE CLOSEABLE
-            } else {
-                // show text with path
-                TemplateVar.set(template, 'text', TAPi18n.__(text, {path: data}));
-            }
+                break;
         }
-
     });
+
 });
 
 Template['popupWindows_splashScreen'].helpers({
@@ -132,11 +151,9 @@ Template['popupWindows_splashScreen'].helpers({
     }
 });
 
+
 Template['popupWindows_splashScreen'].events({
-   'click .close': function(){
-        ipc.send('backendAction_closeApp');
-   },
    'click .start-app': function(){
-        ipc.send('backendAction_startApp');
+        ipc.send('backendAction_skipSync');
    } 
 });

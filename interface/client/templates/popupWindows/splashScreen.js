@@ -33,7 +33,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     });
 
 
-    ipc.on('uiAction_nodeStatus', function(e, status) {
+    ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
         console.trace('Node status', status);
 
         switch (status) {
@@ -69,7 +69,9 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 break;
 
             case 'error':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeError'));
+                errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
+                
+                TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
                 break;
         }
     });

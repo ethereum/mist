@@ -21,8 +21,9 @@ const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
 
 
-const SPAWN_ERROR = 'SpawnError';
-const PASSWORD_WRONG_ERROR = 'PasswordWrongError';
+const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
+const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
+const PASSWORD_WRONG_ERROR = 'badPassword';
 
 
 
@@ -110,6 +111,14 @@ class EthereumNode extends EventEmitter {
         this._state = newState;
 
         this.emit('state', this.state, this.stateAsText);
+    }
+
+    get lastError () {
+        return this._lastErr;
+    }
+
+    set lastError (err) {
+        return this._lastErr = err;
     }
 
     /**
@@ -351,6 +360,9 @@ class EthereumNode extends EventEmitter {
                     });
             })
             .catch((err) => {
+                // set before updating state so that state change event observers
+                // can pick up on this
+                this.lastError = err.tag; 
                 this.state = STATES.ERROR;
 
                 // if unable to start eth node then write geth to defaults
@@ -398,7 +410,7 @@ class EthereumNode extends EventEmitter {
                     if (err && _.get(modalWindow,'webContents')) {
                         log.error('unlockMasterPassword error', err);
 
-                        if(SPAWN_ERROR === err) {
+                        if(UNABLE_TO_SPAWN_ERROR === err) {
                             modalWindow.close();
                             modalWindow = null;
                         } else {
@@ -482,7 +494,7 @@ class EthereumNode extends EventEmitter {
                         this.state = STATES.ERROR;
                         
                         if (popupCallback) {
-                            popupCallback(SPAWN_ERROR);
+                            popupCallback(UNABLE_TO_SPAWN_ERROR);
                         }
 
                         // TODO: detect this properly
@@ -526,11 +538,16 @@ class EthereumNode extends EventEmitter {
                             }
                         } else if ('geth' === nodeType) {
                             if (0 <= dataStr.indexOf('fatal: error')) {
-                                let str = `Error starting geth: ${dataStr}`;
 
-                                log.debug(str);
+                                let err = new Error(`Geth error: ${dataStr}`);
 
-                                return reject(new Error(str));
+                                if (0 <= dataStr.indexOf('bind')) {
+                                    err.tag = UNABLE_TO_BIND_PORT_ERROR;
+                                }
+
+                                log.debug(err.message);
+
+                                return reject(err);
                             }
                         }
 

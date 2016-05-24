@@ -18,11 +18,11 @@ const ipc = electron.ipcMain;
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
+const Settings = require('./modules/settings');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 const cliArgs = require('./modules/utils/cliArgs');
 const Settings = require('./modules/settings');
-
 
 if (cliArgs.version) {
     console.log(packageJson.version);
@@ -55,12 +55,6 @@ Settings.set('gethPath', cliArgs.gethpath);
 Settings.set('ethPath', cliArgs.ethpath);
 Settings.set('ipcPath', cliArgs.ipcpath);
 Settings.set('nodeOptions', cliArgs.nodeOptions);
-
-
-global.paths = {
-    geth: cliArgs.gethpath,
-    eth: cliArgs.ethpath,
-};
 
 global.version = packageJson.version;
 global.license = packageJson.license;
@@ -274,7 +268,9 @@ app.on('ready', function() {
 
         // state change
         ethereumNode.on('state', function(state, stateAsText) {
-            Windows.broadcast('uiAction_nodeStatus', stateAsText);
+            Windows.broadcast('uiAction_nodeStatus', stateAsText,
+                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+            );
         });
 
 

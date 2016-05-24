@@ -1,31 +1,158 @@
+"use strict";
+
 /**
 The IPC provider backend filter and tunnel all incoming request to the ethereum node.
 
 @module ipcProviderBackend
 */
 
-
+const _ = global._;
+const Q = require('bluebird');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 
+const log = require('../utils/logger').create('ipcProviderBackend');
+const ipcPath = require('getIpcPath')();
+const Sockets = require('../sockets');
+const ethereumNode = require('../ethereumNode');
 
+
+const Connections = {};
+
+
+/**
+ * Auto-reconnect sockets when ethereum node state changes
+ */
+ethereumNode.on('state', (newState) => {
+    switch (state) {
+        // stop syncing when node about to be stopped
+        case ethereumNode.STATES.STOPPING:
+            log.info('Ethereum node stopping, disconnecting sockets');
+
+            Q.map(Connections, (item) => {
+                log.debug(`Tell owner (${item.sender.getId()}) that socket is not currently writeable`);
+
+                item.owner.send('ipcProvider-setWritable', false);
+
+                return item.socket.disconnect();
+            })
+            .catch((err) => {
+                log.error('Error disconnecting sockets', err);
+            });
+
+            break;
+        // auto-sync whenever node gets connected
+        case ethereumNode.STATES.CONNECTED:
+            log.info('Ethereum node connected, re-connect sockets');
+
+            Q.map(Connections, (item) => {
+                item.socket.connect({ path: ipcPath}, {timeout: 5000})
+                    .then(() => {
+                        log.debug(`Tell owner (${item.sender.getId()}) that socket is again writeable`);
+
+                        item.owner.send('ipcProvider-setWritable', true);
+                    });
+            })
+            .catch((err) => {
+                log.error('Error re-connecting sockets', err);
+            });
+
+            break;
+    }
+});
+
+
+
+/**
+ * Initialise backend for UI's Web3 IPC wrapper.
+ */
 exports.init = function() {
-    
+    /*
+    Create a new socket.
+     */
     ipc.on('ipcProvider-create', function(event) {
-        var socket = global.sockets['id_'+ event.sender.getId()];
+        const id = event.sender.getId();
 
-        // log.info('Called ipcProvider-create');
+        // get the actual window instance for this sender
+        const wnd = Windows.getById(id);
 
-        if(socket) {
-            socket.connect(event);
-        } else {
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
+        if (!wnd) {
+            return log.error(`Unable to find window ${id}`);
         }
 
-      
-        if(event.sender.returnValue)
-            event.sender.returnValue = socket.ipcSocket.writable;      
+        // get or create a new socket
+        const socket = Sockets.get(wnd.id, Sockets.TYPES.WEB3_IPC);
+
+        Q.try(() => {
+            if (!socket.isConnected) {
+                return socket.connect({
+                    path: ipcPath,
+                }, {
+                    timeout: 5000,
+                });
+            }
+        })
+        .then(() => {
+            // save to collection
+            Connections[wnd.id] = {
+                owner: wnd,
+                socket: socket,
+            };
+
+            // if something goes wrong destroy the socket
+            ['error', 'timeout', 'end'].forEach((ev) => {
+                socket.on(ev, (data) => {
+                    socket.destroy().finally(() => {
+                        delete Connections[wnd.id];
+                        
+                        wnd.send(`ipcProvider-${ev}`, data);
+                    });
+                });                
+            });
+        });
     });
+
+
+    /*
+    Destroy socket.
+     */
+    ipc.on('ipcProvider-destroy', function(event) {
+        const id = event.sender.getId();
+
+        if (Connections[id]) {
+            Connections[id].socket.destroy().finally({
+                delete Connections[id];
+            });
+        }
+    });
+
+
+    /**
+     * Send a request.
+     * @param  {Object}  event   App IPC event
+     * @param  {Object}  payload Payload to send
+     * @param  {Boolean} isSync  Whether to treat this as a synchronous request or not.
+     */
+    let sendRequest = function(event, payload, isSync) {
+        
+    };
+
+
+
+    /*
+    Async request.
+     */
+    ipc.on('ipcProvider-write', sendRequest);
+
+
+
+    /*
+    Destroy socket.
+     */
+    ipc.on('ipcProvider-writeSync', (e, p) => {
+        sendRequest(e, p, true);
+    });
+
 };
 
 

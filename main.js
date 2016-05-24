@@ -146,14 +146,6 @@ app.on('before-quit', function(event){
             log.error('Error shutting down sockets');
         });
 
-    // CLEAR open IPC sockets to geth
-    _.each(global.sockets || {}, function(socket){
-        if (socket) {
-            log.info('Closing socket', socket.id);
-            socket.destroy();
-        }
-    });
-
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;

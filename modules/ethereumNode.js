@@ -43,7 +43,7 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        this._socket = Sockets.get('node-ipc');
+        this._socket = Sockets.get('node-ipc', Sockets.TYPES.WEB3_IPC);
         this._socket.on('data', _.bind(this._handleSocketResponse, this));
 
         this._sendRequests = {};
@@ -248,31 +248,8 @@ class EthereumNode extends EventEmitter {
      * @return {Promise} resolves to result or error.
      */
     send (name, params) {
-        return Q.try(() => {
-            if (!this.isIpcConnected) {
-                throw new Error('IPC socket not connected');
-            }
-
-            return new Q((resolve, reject) => {
-                let requestId = _.uuid();
-
-                log.trace('Request', requestId, name , params);
-
-                this._sendRequests[requestId] = {
-                    resolve: resolve,
-                    reject: reject,
-                };
-
-                this._socket.write(JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: requestId,
-                    method: name,
-                    params: params || []
-                }));
-            })
-        });
+        return this._socket.send(name, params);
     }
-
 
 
     _handleSocketResponse (data) {

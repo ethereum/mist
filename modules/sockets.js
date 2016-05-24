@@ -1,5 +1,6 @@
 "use strict";
 
+const _ = global._;
 const log = require('./utils/logger').create('Sockets');
 const net = require('net');
 const Q = require('bluebird');
@@ -9,7 +10,7 @@ const EventEmitter = require('events').EventEmitter;
 
 
 /**
- * Etheruem nodes manager.
+ * Socket connecting to Ethereum Node.
  */
 class Socket extends EventEmitter {
     constructor (socketMgr, id) {
@@ -23,6 +24,11 @@ class Socket extends EventEmitter {
         this._state = null;
     }
 
+
+    get id () {
+        return this._id;
+    }
+    
 
     get isConnected () {
         return STATE.CONNECTED === this._state;
@@ -150,6 +156,7 @@ class Socket extends EventEmitter {
     }
 
 
+
     /**
      * Reset socket.
      */
@@ -208,6 +215,42 @@ class Socket extends EventEmitter {
 }
 
 
+
+class Web3IpcSocket extends Socket {
+    constructor (socketMgr, id) {
+        super(socketMgr, id);
+
+        this._sendRequests = {};
+    }
+
+    sendRequest (name, params) {
+        return Q.try(() => {
+            if (!this.isConnected) {
+                throw new Error('Not connected');
+            }
+
+            return new Q((resolve, reject) => {
+                let requestId = _.uuid();
+
+                this._log.trace('Request', requestId, name , params);
+
+                this._sendRequests[requestId] = {
+                    resolve: resolve,
+                    reject: reject,
+                };
+
+                this.write(JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: requestId,
+                    method: name,
+                    params: params || []
+                }));
+            })
+        });
+    }
+}
+
+
 const STATE = Socket.STATE = {
     CREATED: 0,
     CONNECTING: 1,
@@ -219,10 +262,14 @@ const STATE = Socket.STATE = {
 };
 
 
-
+/**
+ * `Socket` manager.
+ */
 class SocketManager {
     constructor () {
         this._sockets = {};
+
+        this.TYPES = TYPES;
     }
 
 
@@ -231,11 +278,17 @@ class SocketManager {
      * 
      * @return {Socket}
      */
-    get (id) {
+    get (id, type) {
         if (!this._sockets[id]) {
-            log.debug('Create socket', id);
+            log.debug('Create socket', id, type);
 
-            this._sockets[id] = new Socket(this, id);
+            switch (type) {
+                case TYPES.WEB3_IPC:
+                    this._sockets[id] = new Web3IpcSocket(this, id);
+                    break;
+                default:
+                    this._sockets[id] = new Socket(this, id);
+            }
         }
 
         return this._sockets[id];
@@ -266,6 +319,12 @@ class SocketManager {
     }
 
 }
+
+
+const TYPES = {
+    DEFAULT: 1,
+    WEB3_IPC: 2,
+};
 
 
 

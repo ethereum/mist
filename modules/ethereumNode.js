@@ -21,8 +21,9 @@ const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
 
 
-const SPAWN_ERROR = 'SpawnError';
-const PASSWORD_WRONG_ERROR = 'PasswordWrongError';
+const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
+const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
+const PASSWORD_WRONG_ERROR = 'badPassword';
 
 
 
@@ -112,6 +113,14 @@ class EthereumNode extends EventEmitter {
         this.emit('state', this.state, this.stateAsText);
     }
 
+    get lastError () {
+        return this._lastErr;
+    }
+
+    set lastError (err) {
+        return this._lastErr = err;
+    }
+
     /**
      * This method should always be called first to initialise the connection.
      * @return {Promise}
@@ -180,12 +189,12 @@ class EthereumNode extends EventEmitter {
      */
     stop () {
         if (!this._stopPromise) {
-            this.state = STATES.STOPPING;
-
             return new Q((resolve, reject) => {
-                if (!(this._node && this._node.connected)) {
+                if (!this._node) {
                     return resolve();
                 }
+
+                this.state = STATES.STOPPING;
 
                 log.info(`Stopping existing node: ${this.type} ${this.network}`);
 
@@ -201,10 +210,6 @@ class EthereumNode extends EventEmitter {
                 let killTimeout = setTimeout(() => {
                     if (this._node) {
                         this._node.kill('SIGKILL');
-
-                        this._node = null;
-
-                        resolve();
                     }
                 }, 8000 /* 8 seconds */)
 
@@ -217,8 +222,8 @@ class EthereumNode extends EventEmitter {
                 }); 
             })
                 .then(() => {
-                    this._sendRequests = {};
                     this.state = STATES.STOPPED;
+                    this._sendRequests = {};
                     this._stopPromise = null;
                 });
         } else {
@@ -355,6 +360,9 @@ class EthereumNode extends EventEmitter {
                     });
             })
             .catch((err) => {
+                // set before updating state so that state change event observers
+                // can pick up on this
+                this.lastError = err.tag; 
                 this.state = STATES.ERROR;
 
                 // if unable to start eth node then write geth to defaults
@@ -402,7 +410,7 @@ class EthereumNode extends EventEmitter {
                     if (err && _.get(modalWindow,'webContents')) {
                         log.error('unlockMasterPassword error', err);
 
-                        if(SPAWN_ERROR === err) {
+                        if(UNABLE_TO_SPAWN_ERROR === err) {
                             modalWindow.close();
                             modalWindow = null;
                         } else {
@@ -486,7 +494,7 @@ class EthereumNode extends EventEmitter {
                         this.state = STATES.ERROR;
                         
                         if (popupCallback) {
-                            popupCallback(SPAWN_ERROR);
+                            popupCallback(UNABLE_TO_SPAWN_ERROR);
                         }
 
                         // TODO: detect this properly
@@ -519,14 +527,27 @@ class EthereumNode extends EventEmitter {
                     this.emit('data', data);
 
                     if (STATES.STARTING === this.state) {
-                        if ('eth' === nodeType) {
-                            let dataStr = data.toString().toLowerCase();
+                        let dataStr = data.toString().toLowerCase();
 
+                        if ('eth' === nodeType) {
                             // (eth) prevent started until str appears
                             if (-1 === dataStr.indexOf('jsonrpc')) {
                                 log.trace('Running eth so wait until we see JSONRPC message');
 
                                 return;
+                            }
+                        } else if ('geth' === nodeType) {
+                            if (0 <= dataStr.indexOf('fatal: error')) {
+
+                                let err = new Error(`Geth error: ${dataStr}`);
+
+                                if (0 <= dataStr.indexOf('bind')) {
+                                    err.tag = UNABLE_TO_BIND_PORT_ERROR;
+                                }
+
+                                log.debug(err.message);
+
+                                return reject(err);
                             }
                         }
 

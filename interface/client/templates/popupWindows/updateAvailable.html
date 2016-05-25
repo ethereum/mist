@@ -1,0 +1,14 @@
+<template name="popupWindows_updateAvailable">
+    <div class="row">
+        <div class="col col-4 ">
+            <img id="image" src="{{iconPath}}" style="position: relative;top: -40px;left: -132%;width: 150%;">
+        </div>
+        <div class="col col-8 ">
+            <h1>A new version is available!</h1>
+            {{#if TemplateVar.get "update"}}
+                <p class="name">{{TemplateVar.get "update.name"}}</p>
+                <a href='{{TemplateVar.get "update.url"}}'>Get it now</a>
+            {{/if}}
+        </div>
+    </div>
+</template>

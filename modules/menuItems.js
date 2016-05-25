@@ -54,7 +54,7 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
                 click: function(){
-                    Windows.createPopup('about_'+ global.mode, {
+                    Windows.createPopup('about', {
                         electronOptions: {
                             width: 420, 
                             height: 230,

@@ -39,6 +39,7 @@ const argv = require('yargs')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
 
+
 if (argv.version) {
     console.log(packageJson.version);
     process.exit(0);
@@ -61,6 +62,10 @@ global.path = {
 };
 
 global.appName = 'Mist';
+
+global.dirname  = __dirname;
+
+global.version = packageJson.version;
 
 global.production = false;
 
@@ -91,6 +96,8 @@ global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
 
+// check for update
+require('./modules/updateChecker').run();
 
 // INTERFACE PATHS
 global.interfaceAppUrl;

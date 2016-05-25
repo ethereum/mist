@@ -4,11 +4,11 @@
 
 require('./consoleLogCapture')('popup-no-web3');
 const electron = require('electron');
+const mist = require('../mistAPI.js');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const basePath = require('./setBasePath');
 
-basePath('interface');
+require('./setBasePath')('interface');
 
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
@@ -18,7 +18,5 @@ ipc.on('data', function(e, data) {
     Session.set('data', data);
 })
 
-window.dirname = __dirname;
 window.ipc = ipc;
-window.platform = process.platform;
-
+window.mist = mist();

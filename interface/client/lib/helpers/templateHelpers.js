@@ -30,12 +30,12 @@ Template.registerHelper('CurrentBlock', function(){
 });
 
 /**
-Return the current dirname.
+Return the preload modules dirname.
 
 @method (dirname)
 **/
-Template.registerHelper('dirname', function(){
-    return window.dirname;
+Template.registerHelper('preload_dirname', function(){
+    return window.mist.dirname + '/modules/preload';
 });
 
 /**
@@ -44,7 +44,7 @@ Get the current user agent
 @method (useragent)
 **/
 Template.registerHelper('useragent', function(){
-    return navigator.userAgent + ' Ethereum ' + (mist.mode === 'mist' ? 'Mist' : 'Wallet');
+    return navigator.userAgent + ' Ethereum ' + (window.mist.mode === 'mist' ? 'Mist' : 'Wallet');
 });
 
 /**

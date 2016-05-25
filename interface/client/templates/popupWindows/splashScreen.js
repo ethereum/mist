@@ -141,7 +141,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method mode
     */
     'mode': function(){
-        return mode;
+        return window.mist.mode;
     },
     /**
     Returns the icon path
@@ -149,7 +149,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ dirname +'icons/'+ mode +'/icon2x.png';
+        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
     }
 });
 

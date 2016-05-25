@@ -72,6 +72,7 @@ module.exports = function(isWallet) {
     
     var mist = {
         callbacks: {},
+        dirname: remote.getGlobal('dirname'),
         version: packageJson.version,
         mode: remote.getGlobal('mode'),
         license: packageJson.license,

@@ -4,7 +4,6 @@ Template Controllers
 @module Templates
 */
 
-var mode = location.hash.replace('#about_','');
 
 /**
 The about template
@@ -24,7 +23,7 @@ Template['popupWindows_about'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ dirname.replace('modules/preloader','') +'icons/'+ mode +'/icon2x.png';
+        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
     },
     /**
     Returns the application name
@@ -32,7 +31,7 @@ Template['popupWindows_about'].helpers({
     @method name
     */
     'name': function(){
-        return (mode === 'mist') ? 'Mist' : 'Ethereum Wallet';
+        return (window.mist.mode === 'mist') ? 'Mist' : 'Ethereum Wallet';
     },
     /**
     Returns mist api

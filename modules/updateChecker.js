@@ -18,7 +18,6 @@ const check = exports.check = function() {
     let str = null;
 
     switch (global.mode) {
-        // right now we are just releasing the wallet!
         case 'mist':
             str = 'mist':
             break;

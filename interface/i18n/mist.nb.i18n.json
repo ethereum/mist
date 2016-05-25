@@ -1,0 +1,211 @@
+{
+    "mist": {
+        "applicationMenu": {
+            "app": {
+                "label": "__app__",
+                "about": "Om __app__",
+                "hide": "Skjul __app__",
+                "hideOthers": "Skjul Andre",
+                "showAll": "Vis Alle",
+                "quit": "Avslutt __app__"
+            },
+            "edit": {
+                "label": "Endre",
+                "undo": "Angre",
+                "redo": "Gjenta",
+                "cut": "Klipp",
+                "copy": "Kopier",
+                "paste": "Lim inn",
+                "selectAll": "Velg alt"
+            },
+            "view": {
+                "label": "Vis",
+                "fullscreen": "Veksle Mellom Fullskjerm"
+            },
+            "accounts": {
+                "label": "Kontoer",
+                "importPresale": "Importer Forhåndssalg Kontoer",
+                "newAccount": "Ny konto",
+                "backup": "Sikkerhetskopier",
+                "backupKeyStore": "Kontoer",
+                "backupMist": "Applikasjonsdata"
+            },
+            "develop": {
+                "label": "Utvikle",
+                "devTools": "Veksle Mellom Utviklerverktøy",
+                "devToolsMistUI": "Mist UI",
+                "devToolsWalletUI": "Lommebok UI",
+                "devToolsWebview": "__webview__",
+                "runTests": "Kjør tester",
+                "logFiles": "Vis loggfil",
+                "ethereumNode": "Ethereum Node",
+                "network": "Nettverk",
+                "mainNetwork": "Hovednettverk",
+                "startMining": "⛏ Start Mining (Kun testnett)",
+                "stopMining": "⛏ Stopp Mining"
+            },
+            "window": {
+                "label": "Vindu",
+                "minimize": "Minimer",
+                "close": "Lukk",
+                "toFront": "Legg Alle I Forgrunnen"
+            },
+            "help": {
+                "label": "Hjelp"
+            }
+        },
+        "errors": {
+            "nodeConnect": "Kunne ikke koble til node? Se logger for mer:",
+            "nodeStartup": "Det virker som noden ikke kunne startes, har du allerede en som kjører? Oppgraderer den databasen akkurat nå?",
+            "timeSync": {
+                "title": "Datamaskinens klokke er ikke synkronisert.",
+                "description": "For å kunne synkronisere med Ethereum-nettverket trenger du å synkronisere datamaskinens klokke med en tidssynkroniseringsserver.",
+                "win32": "Gå til tidsinnstillinger for internett i systeminnstillinger og kryss av i boksen. Se denne guiden for detaljer: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "For å aktivere en tidssynkroniseringsserver installer \"ntp\" via \"apt-get install ntp\".",
+                "darwin": "For å aktivere tidssynkronisering, åpne tidsinnstillinger og velg \"Angi klokkeslett og dato automatisk\"."
+            }
+        },
+        "rightClick": {
+            "reload": "Last",
+            "openDevTools": "Åpne Utviklerverktøy",
+            "inspectElements": "Inspiser Element"
+        },
+        "nodeInfo": {
+            "nodeSyncing": "__blockDiff__ blokker igjen",
+            "blockReceived": "Ny Blokk Mottatt",
+            "blockNumber": "Det siste blokknummeret",
+            "timeSinceBlock": "Tid siden siste blokk",
+            "checkingWhichNetwork": "Kontrollerer nettverk...",
+            "mainNetwork": "Hovednett",
+            "testNetwork": "Testnett",
+            "privateNetwork": "Privatnett",
+            "mainnetExplain": "Du er på det globale Ethereum hovednettverket",
+            "testnetExplain": "Du er på testnettet, IKKE SEND noen ekte ether til disse adressene",
+            "privatenetExplain": "Du er på et privatnett, IKKE SEND noen ekte ether til disse adressene",
+            "unknownnetExplain": "Kan ikke fastslå hvilket nettverk du er på",
+            "peers": "peers"
+        },
+        "sidebar": {
+            "buttons": {
+                "browser": "Bla gjennom"
+            }
+        },
+        "browserBar": {
+            "buttons": {
+                "noAccounts": "Ingen kontoer satt"
+            }
+        },
+        "startScreen": {
+            "runningNodeFound": "Fant kjørende Ethereum-node!",
+            "startingNode": "Starter Ethereum-node...",
+            "stoppingNode": "Stopper Ethereum-node...",
+            "startedNode": "Starter applikasjonen...",
+            "nodeConnectionTimeout": "Kunne ikke starte Ethereum-node!<br><small>Hvis du <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installerte Geth</a>, bruk denne kommandoen for å kjøre det: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Eller rapporter et problem </a></small>",
+            "nodeBinaryNotFound": "Ingen Ethereum-node kilde funnet!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Vennligst start en manuelt først. </a> </small>",
+            "nodeStarting": "Ethereum-node starter opp...",
+            "nodeStarted": "Ethereum-node startet",
+            "nodeConnected": "Ethereum-node tilkoblet",
+            "nodeStopping": "Ethereum-node stopper...",
+            "nodeStopped": "Ethereum-node stoppet",
+            "nodeError": "Ethereum-node tilkoblingsfeil :'(",
+            "unableToBindPort": "Ethereum-node kan ikke kjøre. Kjører det en allerede?",
+            "nodeSyncing": "Ethereum-node trenger å synkroniseres, vennligst vent...",
+            "nodeSyncInfo": "Laster ned blokk __currentBlock__ av __highestBlock__.",
+            "nodeSyncConnecting": "Leter etter peers...",
+            "nodeSyncProcessing": "Behandler blokker, vennligst vent...",
+            "nodeSyncingStopped": "Ethereum-node synkronisering stoppet",
+            "peerSearchTimeout": "Hopp over peer søk",
+            "launchApp": "Start Applikasjonen"
+        },
+        "popupWindows": {
+            "requestAccount": {
+                "title": "Lag konto",
+                "enterPassword": "Oppgi passord",
+                "repeatPassword": "Gjenta passord",
+                "creating": "Genererer konto...",
+                "errors": {
+                    "passwordMismatch": "Passordene stemmer ikke overens."
+                }
+            },
+            "unlockMasterPassword": {
+                "title": "Oppgi hovedpassordet",
+                "enterPassword": "Oppgi hovedpassordet",
+                "unlocking": "Låser opp...",
+                "errors": {
+                    "wrongPassword": "Passordet er feil, prøv igjen."
+                }
+            },
+            "sendTransactionConfirmation": {
+                "title": {
+                    "sendTransaction": "Send transaksjon",
+                    "contractExecution": "Utfør kontrakt",
+                    "createContract": "Lag kontrakt"  
+                },
+                "contractExecutionInfo": "Du er i ferd med å utføre en funksjon på en kontrakt. Dette kan innebære overføring av verdier.",
+                "contractCreationInfo": "Du er i ferd med å lage en kontrakt fra de oppgitte data.",
+                "enterPassword": "Skriv inn passord for å bekrefte transaksjonen",
+                "unlocking": "Bekrefter...",
+                "createContract": "Lag kontrakt",
+                "estimatedFee": "Beregnet avgiftsforbruk",
+                "estimatedGasError": "Data kan ikke utføres, så den kommer til å bruke all gass.",
+                "gasPrice": "Gass pris",
+                "perMillionGas": "ether per million gass",
+                "gasLimit": "Gi maksimal avgift",
+                "data": "Data",
+                "buttons": {
+                    "sendTransaction": "Send transaksjon"
+                },
+                "errors": {
+                    "connectionTimeout": "Kunne ikke koble til noden, krasjet den i bakgrunnen?",
+                    "wrongPassword": "Feil passord"
+                }
+            },
+            "onboarding": {
+                "description" : "Ethereum er en desentralisert plattform for å bygge applikasjoner på en blokkjede: sabotasjesikker programvare som kan overføre verdi og eiendom, og som lever evig",
+                "goToTestnet" : "Bruk testnettet",
+                "goToTestnetDescription" : "Test teknologien fritt i en sandboks (testnett), uten å bruke ekte ether.",
+                "gotoMainnet" : "Bruk hovednettverket",
+                "gotoMainnetDescription" : " Du trenger noen ether for å skape og utføre kontrakter. Ikke bekymre deg, vi vil hjelpe deg å skaffe noen...",
+                "doYouHaveAWalletFile" : "Har du en lommebok-fil?",
+                "walletFileDescription" : "<p>Hvis du har deltatt på forhåndssalget av Ethereum i 2014, har du en fil med navnet <code>ethereum_wallet_backup.json</code>. Den ble lastet ned etter salget, og også sendt til din e-post</p>",
+                "dropFilesHere" : "Slipp filen fra forhåndssalget",
+                "creating": "Lager...",
+                "importing": "Importerer...",
+                "skip" : "Hopp over dette steget",
+                "next" : "Neste",
+                "protectTitle" : "Beskytt kontoen din",
+                "protectDescription" : "Velg et passord for den nye kontoen. Gjør det så sterkt som om det skulle beskyttet husnøklene dine!",
+                "accountTitle" : "Fyll den opp!",
+                "accountTitleTestnet" : "Mine noen!",
+                "etherDescription": "Ethereum-nettverket er basert på en enhet kalt "ether". Du trenger en liten mengde av den for å gjøre noe på Ethereum-nettverket.",
+                "loadItDescription" : "Hvis du allerede eier bitcoin, eller hvilken som helst annen kryptovaluta, kan du enkelt konvertere den til ether via Shapeshift. <br><br> Vi anbefaler å fylle opp med mellom <strong>0.25 til 1 ether</strong>.",
+                "mineItDescription": "<strong>På testnettet kan du mine ether selv ved å gå til <em>Utvikle</em> menyvalget og velge <em>Start Mining</em>. </strong> <br> <strong> IKKE PRØV Å SENDE EKTE ETHER TIL DENNE ADRESSEN </strong>",
+                "you" : "DU",
+                "etherbase" : "Hovedkonto (etherbase)",
+                "depositBitcoin" : "Sett inn bitcoin",
+                "learnIt" : "Lær mens du venter",
+                "downloadingBlocks": "Laster ned blokker",
+                "block": "Blokk",
+                "tutorial1Description" : "<p> Nå er den eneste tingen igjen er å vente til nedlastingen er ferdig. Her er noen lesetips: </p> <h4>Lag dine egne penger </h4> <p> Lag en kryptovaluta med en fast pengemengde, enhet som representerer verdier i den virkelige verden, etc </p>",
+                "tutorial2Description" : "<h4> Lag et crowdsale </h4> <p> Samle inn penger til et felles mål, på en sikker måte uten en tredjepart. Omgå hinder i det tradisjonelle finansieringssystemet, og gå direkte til kilden ved å finansiere en organisasjon via blokkjeden.</p>",
+                "tutorial3Description" : "<h4> Organisasjon på Blokkjeden </h4> <p> Lag en autonom organisasjon med uknuselige regler om hvordan pengene kan bli brukt og hvem som kan ta beslutningene. La dine støttespillere ta en aktiv rolle i hvordan pengene blir brukt</p>",
+                "buttons": {
+                    "showPassword": "Vis passord",
+                    "importAccount": "Importer konto",
+                    "launchApp": "Start Applikasjonen!",
+                    "learnReceipt": "Lær denne oppskriften"
+                },
+                "errors": {
+                    "nodeNotStartedYet": "Vent noen sekunder til noden er fullt i gang og prøv igjen",
+                    "unknownFile": "Fil ikke gjenkjent.",
+                    "passwordError": "Feil passord.",
+                    "importFailed": "Kunne ikke importere filen, fikk: __error__"
+                }
+            }
+        }
+    },
+    "elements": {
+        "checksumAlert":"Denne adressen ser gyldig ut, men den har ikke sikkerhetsfunksjonen som vil beskytte deg mot skrivefeil, så dobbeltsjekk at den er rett. Hvis det er mulig, sjekk om sikkerhetsikonet stemmer overens.",
+        "identiconHelper": "Dette er et sikkerhetsikon. Hvis det er noen endring på adressen vil resultatet gi et ikon som ser helt annerledes ut"
+    }
+}

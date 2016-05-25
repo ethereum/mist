@@ -44,7 +44,7 @@ Template['popupWindows_updateAvailable'].events({
         var update = TemplateVar.get('update');
 
         if (update && update.url) {
-            mist.shell.openExternal(url);
+            mist.shell.openExternal(update.url);
         }
     },
 });    

@@ -63,20 +63,48 @@ const check = exports.check = function() {
 };
 
 
+function showWindow(options) {
+    log.debug('Show update checker window');
+
+    return Windows.createPopup('updateAvailable', _.extend({
+        useWeb3: false,
+        electronOptions: {
+            width: 420, 
+            height: 230 ,
+            alwaysOnTop: true,
+        },
+    }, options));
+}
+
+
+
 
 exports.run = function() {
-    check().then((update) => {
+    check().then((update) => {     
         if (update) {
-            Windows.createPopup('updateAvailable', {
-                electronOptions: {
-                    width: 420, 
-                    height: 230 ,
-                    alwaysOnTop: true,
-                },
-                useWeb3: false,
-                sendData: ['uiAction_appUpdateInfo', update],
-            });
+            showWindow({
+                sendData: ['uiAction_checkUpdateDone', update],
+            });            
         }
+    }).catch((err) => {
+        log.error(err);
+    });
+};
+
+
+exports.runVisibly = function() {
+    let wnd = showWindow({
+        sendData: ['uiAction_checkUpdateInProgress'],
+    });
+
+    wnd.on('ready', function() {
+        check().then((update) => {
+            wnd.send('uiAction_checkUpdateDone', update);
+        }).catch((err) => {
+            log.error(err);
+
+            wnd.send('uiAction_checkUpdateDone');
+        })
     });
 };
 

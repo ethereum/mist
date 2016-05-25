@@ -76,6 +76,7 @@ module.exports = function(isWallet) {
         version: packageJson.version,
         mode: remote.getGlobal('mode'),
         license: packageJson.license,
+        shell: remote.shell,
         platform: process.platform,
         requestAccount:  function(callback){
             if(callback) {

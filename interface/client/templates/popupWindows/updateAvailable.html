@@ -1,13 +1,28 @@
 <template name="popupWindows_updateAvailable">
-    <div class="row">
-        <div class="col col-4 ">
-            <img id="image" src="{{iconPath}}" style="position: relative;top: -40px;left: -132%;width: 150%;">
+    <div class="popup-windows update-available row">
+        <div class="col col-4">
+            <img id="image" class="{{mode}}" src="{{appIconPath}}" />
         </div>
-        <div class="col col-8 ">
-            <h1>A new version is available!</h1>
-            {{#if TemplateVar.get "update"}}
-                <p class="name">{{TemplateVar.get "update.name"}}</p>
-                <a href='{{TemplateVar.get "update.url"}}'>Get it now</a>
+        <div class="col col-8 text">
+            {{#if TemplateVar.get "checking"}}
+                <h1 class="checking">
+                    {{i18n "mist.popupWindows.updateAvailable.checking" app=appName}}
+                </h1>
+            {{else}}
+                {{#if TemplateVar.get "update"}}
+                    {{#with TemplateVar.get "update"}}
+                        <h1 class="update-found">
+                            {{i18n "mist.popupWindows.updateAvailable.newVersionAvailable" app=appName }}
+                        </h1>
+                        <button class="get-update">
+                            {{i18n "mist.popupWindows.updateAvailable.download"}} v{{version}}
+                        </button>                
+                    {{/with}}
+                {{else}}
+                    <h1 class="no-upate">
+                        {{i18n "mist.popupWindows.updateAvailable.noUpdateFound" app=appName }}
+                    </h1>
+                {{/if}}
             {{/if}}
         </div>
     </div>

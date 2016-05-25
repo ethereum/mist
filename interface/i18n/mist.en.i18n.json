@@ -2,6 +2,7 @@
     "mist": {
         "applicationMenu": {
             "app": {
+                "checkForUpdates": "Check for updates...",
                 "label": "__app__",
                 "about": "About __app__",
                 "hide": "Hide __app__",
@@ -118,6 +119,12 @@
             "launchApp": "Launch Application"
         },
         "popupWindows": {
+            "updateAvailable": {
+                "download": "Download",
+                "newVersionAvailable": "A new version of __app__ is available!",
+                "checking": "Checking for updates to __app__...",
+                "noUpdateFound": "No update found. You are running the latest version of __app__."
+            },
             "requestAccount": {
                 "title": "Create account",
                 "enterPassword": "Enter password",

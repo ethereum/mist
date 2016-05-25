@@ -13,33 +13,41 @@ The updateAvailable template
 Template['popupWindows_updateAvailable'].onCreated(function(){
     var template = this;
 
+    TemplateVar.set(template, 'checking', true);
+
+    /*
+    When app update check is in progress it.
+     */
+    ipc.on('uiAction_checkUpdateInProgress', function(e, update) {
+        console.debug('Update check in progress...');
+
+        TemplateVar.set(template, 'checking', true);
+    });
+
     /*
     When app update data is received display it.
      */
-    ipc.on('uiAction_appUpdateInfo', function(e, update) {
-        TemplateVar.set(template, 'update.version', update.version);
-        TemplateVar.set(template, 'update.name', update.name);
-        TemplateVar.set(template, 'update.url', update.url);
+    ipc.on('uiAction_checkUpdateDone', function(e, update) {
+        console.debug('Update check done');
+
+        TemplateVar.set(template, 'checking', false);
+
+        if (update) {
+            TemplateVar.set(template, 'update', update);
+        }
     });
 });
 
 
+Template['popupWindows_updateAvailable'].events({
+   'click .get-update': function(e){
+        var update = TemplateVar.get('update');
 
-Template['popupWindows_updateAvailable'].helpers({
-    /**
-    Returns the icon path
-
-    @method iconPath
-    */
-    'iconPath': function(){
-        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        if (update && update.url) {
+            mist.shell.openExternal(url);
+        }
     },
-    /**
-    Returns the application name
+});    
 
-    @method name
-    */
-    'name': function(){
-        return (window.mist.mode === 'mist') ? 'Mist' : 'Ethereum Wallet';
-    },
-});
+
+

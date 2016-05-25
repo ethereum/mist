@@ -96,8 +96,6 @@ global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
 
-// check for update
-require('./modules/updateChecker').run();
 
 // INTERFACE PATHS
 global.interfaceAppUrl;
@@ -197,6 +195,9 @@ var splashWindow;
 app.on('ready', function() {
     // Initialise window mgr
     Windows.init();
+
+    // check for update
+    require('./modules/updateChecker').run();
 
     // initialize the IPC provider on the main window
     ipcProviderBackend();

@@ -20,6 +20,8 @@ const check = exports.check = function() {
     switch (global.mode) {
         // right now we are just releasing the wallet!
         case 'mist':
+            str = 'mist':
+            break;
         case 'wallet':
             str = 'wallet';
             break;

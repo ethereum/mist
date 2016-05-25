@@ -41,7 +41,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){
+Helpers.formatUrl = function(url){    
     // add http:// if no protocol is present
     if(url && url.indexOf('://') === -1)
         url = 'http://'+ url;

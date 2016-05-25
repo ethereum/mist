@@ -19,7 +19,7 @@ const check = exports.check = function() {
 
     switch (global.mode) {
         case 'mist':
-            str = 'mist':
+            str = 'mist';
             break;
         case 'wallet':
             str = 'wallet';

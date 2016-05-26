@@ -18,39 +18,23 @@ const ipc = electron.ipcMain;
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
-const Settings = require('./modules/settings');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
+const cliArgs = require('./modules/utils/cliArgs');
+const Settings = require('./modules/settings');
 
-// CLI options
-const argv = require('yargs')
-    .usage('Usage: $0 [options]')
-    .describe('version', 'Display app version')
-    .describe('mode', 'App mode: wallet, mist (default)')
-    .describe('ipcpath', 'Path to geth socket IPC file')
-    .describe('gethpath', 'Path to geth executable to use instead of default')
-    .describe('ethpath', 'Path to eth executable to use instead of default')
-    .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
-    .describe('reset-tabs', 'Reset Mist tabs to their default settings')
-    .describe('logfile', 'Logs will be written to this file')
-    .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
-    .alias('m', 'mode')
-    .help('h')
-    .alias('h', 'help')
-    .parse(process.argv.slice(1));
-
-if (argv.version) {
+if (cliArgs.version) {
     console.log(packageJson.version);
     process.exit(0);
 }
 
-if (argv.ignoreGpuBlacklist) {
+if (cliArgs.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
 
 // logging setup
-logger.setup(argv);
+logger.setup(cliArgs);
 const log = logger.create('main');
 
 // GLOBAL Variables
@@ -64,11 +48,12 @@ global.appName = 'Mist';
 
 global.production = false;
 
-global.mode = (argv.mode ? argv.mode : 'mist');
+global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
 
-Settings.set('gethPath', argv.gethpath);
-Settings.set('ethPath', argv.ethpath);
-Settings.set('ipcPath', argv.ipcpath);
+Settings.set('gethPath', cliArgs.gethpath);
+Settings.set('ethPath', cliArgs.ethpath);
+Settings.set('ipcPath', cliArgs.ipcpath);
+Settings.set('nodeOptions', cliArgs.nodeOptions);
 
 global.version = packageJson.version;
 global.license = packageJson.license;
@@ -115,7 +100,7 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
-    if (argv.resetTabs) {
+    if (cliArgs.resetTabs) {
         url += '?reset-tabs=true'
     }
 

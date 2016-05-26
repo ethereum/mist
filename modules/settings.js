@@ -1,4 +1,4 @@
-const log = require('./utils/logger').create('settings');
+const log = require('./utils/logger').create('Settings');
 
 
 var _settings = {};

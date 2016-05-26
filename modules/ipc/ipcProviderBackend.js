@@ -53,6 +53,20 @@ module.exports = function(){
     };
 
     /**
+    Make the retrun response object.
+
+    @method makeReturnValue
+    */
+    var makeReturnValue = function(payload, value) {
+        var result = {"jsonrpc": "2.0"};
+        if(value)
+            result.result = value;
+        result.id = payload.id;
+
+        return result;
+    };
+
+    /**
     Make the error response object for either an error or an batch array of errors
 
     @method returnError
@@ -64,6 +78,21 @@ module.exports = function(){
             });
         } else {
             return makeError(payload, error);
+        }
+    };
+
+    /**
+    Make the return response object
+
+    @method returnValue
+    */
+    var returnValue = function(payload, value) {
+        if(_.isArray(payload)) {
+            return _.map(payload, function(load){
+                return makeReturnValue(load, value);
+            });
+        } else {
+            return makeReturnValue(payload, value);
         }
     };
 
@@ -398,7 +427,7 @@ module.exports = function(){
                 }
             });
 
-            ipc.once('backendAction_unlockedAccount', function(ev, err, result){
+            ipc.once('backendAction_unlockedAccountAndSentTransaction', function(ev, err, result){
                 if(modalWindow.webContents && ev.sender.getId() === modalWindow.id) {
                     if(err || !result) {
                         log.info('Confirmation error:', err);
@@ -409,12 +438,11 @@ module.exports = function(){
                         }
 
                     } else {
-                        // set the changed provided gas
-                        filteredPayload.params[0].gas = result;
 
-                        log.info('Confirmed transaction on socket '+ _this.id +':', filteredPayload.params[0]);
+                        log.info('Transaction send on socket '+ modalWindow.id +':', result);
                         if(!called) {
-                            callback(null, filteredPayload);
+                            // call with result, rather than allowing transaction to go through
+                            callback(null, null, result);
                         }
                     }
 
@@ -587,10 +615,21 @@ module.exports = function(){
 
 
 
-        socket.checkRequests(filteredPayload, event, function(e, result){
+        socket.checkRequests(filteredPayload, event, function(e, result, returnVal){
             log.trace('Got result', e, result);
 
-            if(!e && !_.isEmpty(result)) {
+            // RETURN VALUE
+            if(!e && !_.isEmpty(returnVal)) {
+                log.trace('Return value received');
+
+                if(event.sync)
+                    event.returnValue = JSON.stringify(returnValue(jsonPayload, returnVal));
+                else
+                    event.sender.send('ipcProvider-data', JSON.stringify(returnValue(jsonPayload, returnVal)));
+
+
+            // SEND REQUEST
+            } else if(!e && !_.isEmpty(result)) {
                 log.trace('Success');
 
                 // SEND REQUEST
@@ -609,7 +648,7 @@ module.exports = function(){
 
                 socket.ipcSocket.write(JSON.stringify(result));
          
-            // SEND error
+            // RETURN ERROR
             } else if(e && e !== true){
                 log.trace('Error');
 

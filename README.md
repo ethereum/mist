@@ -86,11 +86,27 @@ In the original window you can then start Mist using wallet mode:
     $ electron . --mode wallet
 
 
+### Passing options to Geth
+
+You can pass command-line options directly to Geth by placing them after `--` in 
+the command-line invocation:
+
+```bash
+$ electron . --mode mist -- --rpcport 19343 --networkid 2 
+```
+
+
 ### Using Mist with a privatenet
 
-To run a privatenet you need to have `geth` installed separately and run it with the `ipcpath` flag:
+To run a private network you will need to set the `networkdid`, `ipcpath` and 
+`datadir` flags:
 
-    $ geth --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+```bash
+$ electron . -- --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+```
+
+You can also run `geth` separately yourself with the same options prior to start 
+Mist normally.
 
 
 ### Deployment

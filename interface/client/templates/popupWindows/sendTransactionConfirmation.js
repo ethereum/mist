@@ -178,7 +178,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event click .cancel
     */
     'click .cancel': function(){
-        ipc.send('backendAction_unlockedAccount', 'Transaction not confirmed');
+        ipc.send('backendAction_unlockedAccountAndSentTransaction', 'Transaction not confirmed');
         ipc.send('backendAction_closePopupWindow');
     },
     /**
@@ -189,21 +189,26 @@ Template['popupWindows_sendTransactionConfirmation'].events({
    'submit form': function(e, template){
         e.preventDefault();
         
-        var pw = template.find('input[type="password"]').value,
+        var data = Session.get('data'),
+            pw = template.find('input[type="password"]').value,
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
         console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
         if(!gas || !_.isFinite(gas))
             return;
+        else
+            data.gas = gas;
 
         TemplateVar.set('unlocking', true);
-        web3.personal.unlockAccount(Session.get('data').from, pw || '', 2, function(e, res){
+
+        // unlock and send transaction!
+        web3.personal.unlockAccountAndSendTransaction(data, pw || '', function(e, res){
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 
             if(!e && res) {
-                ipc.send('backendAction_unlockedAccount', null, gas);
+                ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
 
             } else {
                 Tracker.afterFlush(function(){

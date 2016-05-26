@@ -46,6 +46,10 @@ global.path = {
 
 global.appName = 'Mist';
 
+global.dirname  = __dirname;
+
+global.version = packageJson.version;
+
 global.production = false;
 
 global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
@@ -175,6 +179,9 @@ var splashWindow;
 app.on('ready', function() {
     // Initialise window mgr
     Windows.init();
+
+    // check for update
+    require('./modules/updateChecker').run();
 
     // initialize the IPC provider on the main window
     ipcProviderBackend();

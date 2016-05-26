@@ -9,8 +9,9 @@ const log = require('./utils/logger').create('menuItems');
 const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
 const Windows = require('./windows');
+const updateChecker = require('./updateChecker');
 const fs = require('fs');
-const dialog = electron.dialog
+const dialog = electron.dialog;
 
 
 // create menu
@@ -54,7 +55,7 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
                 click: function(){
-                    Windows.createPopup('about_'+ global.mode, {
+                    Windows.createPopup('about', {
                         electronOptions: {
                             width: 420, 
                             height: 230,
@@ -64,6 +65,11 @@ var menuTempl = function(webviews) {
                 }
             },
             {
+                label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
+                click: function() {
+                    updateChecker.runVisibly();
+                }
+            },            {
                 type: 'separator'
             },
             {

@@ -491,22 +491,6 @@ class EthereumNode extends EventEmitter {
 
                 const proc = spawn(binPath, args);
 
-                /*
-                    Assume startup succeeded after 5 seconds. At this point 
-                    IPC connections are usually possible.
-                */
-                setTimeout(() => {
-                    if (STATES.STARTING === this.state) {
-                        log.info('4s elapsed, assuming node started up successfully');
-
-                        if (popupCallback) {
-                            popupCallback();
-                        }
-
-                        resolve();                        
-                    }
-                }, 4000);
-
                 // node has a problem starting
                 proc.once('error', (err) => {
                     if (STATES.STARTING === this.state) {
@@ -576,6 +560,25 @@ class EthereumNode extends EventEmitter {
 
 
                 this.on('data', _.bind(this._logNodeData, this));
+
+                // when data is first received
+                this.once('data', () => {
+                    /*
+                        Assume startup succeeded after 5 seconds. At this point 
+                        IPC connections are usually possible.
+                    */
+                    setTimeout(() => {
+                        if (STATES.STARTING === this.state) {
+                            log.info('4s elapsed, assuming node started up successfully');
+
+                            if (popupCallback) {
+                                popupCallback();
+                            }
+
+                            resolve();                        
+                        }
+                    }, 4000);
+                })
             });
         });
     }

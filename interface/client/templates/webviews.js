@@ -55,12 +55,14 @@ webviewLoadStop = function(e){
 // TODO does this makes sense? use another
 // fired by "did-get-redirect-request"
 webviewLoadStart = function(e){
+    console.log('webviewLoadStart', e, e.isMainFrame);
+
     if(!e.isMainFrame)
-        return;
+        return;   
 
     var tabs = Tabs.find().fetch(),
         tabId = $(this).data('id'),
-        url = e.newUrl,
+        url = e.newURL,
         foundTab = _.find(tabs, function(tab){
             var tabOrigin = new URL(tab.url).origin;
             return (url && url.indexOf(tabOrigin) !== -1);
@@ -73,7 +75,7 @@ webviewLoadStart = function(e){
     else
         foundTab = 'browser';
 
-    console.log('Intercept request, switching to correct tab: '+ foundTab.name + ' -> '+ url);
+    console.log('Intercept request, switching to correct tab: '+ (foundTab.name || 'Browser') + ' -> '+ url);
 
     // stop this action
     this.stop();

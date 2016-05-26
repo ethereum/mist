@@ -17,6 +17,7 @@ class Window extends EventEmitter {
         this._mgr = mgr;
         this._log = log.create(type);
         this.type = type;
+        this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId;
 
         let electronOptions = {
@@ -228,6 +229,12 @@ class Windows {
         _.extendDeep(opts, options);
 
         // resizable on by default if alwaysOnTop
+        opts.electronOptions.resizable = 
+            options.resizable || opts.electronOptions.alwaysOnTop;
+
+        // mark it as a pop-up window
+        opts.isPopup = true;
+
         opts.electronOptions.resizable = 
             options.resizable || opts.electronOptions.alwaysOnTop;
 

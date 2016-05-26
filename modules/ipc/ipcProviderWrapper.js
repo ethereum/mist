@@ -40,8 +40,6 @@ ipcProviderWrapper = {
     connect: function(path) {
         console.debug('ipcProviderWrapper: connect');
 
-        this.writable = ipc.sendSync('ipcProvider-create');
-
         return this;
     },
     /**

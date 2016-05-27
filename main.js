@@ -46,6 +46,10 @@ global.path = {
 
 global.appName = 'Mist';
 
+global.dirname  = __dirname;
+
+global.version = packageJson.version;
+
 global.production = false;
 
 global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
@@ -170,6 +174,9 @@ app.on('ready', function() {
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
+
+    // check for update
+    require('./modules/updateChecker').run();
 
     // instantiate custom protocols
     require('./customProtocols.js');

@@ -1,0 +1,29 @@
+<template name="popupWindows_updateAvailable">
+    <div class="popup-windows update-available row">
+        <div class="col col-4">
+            <img class="left-overlay {{mode}}" src="{{appIconPath}}" />
+        </div>
+        <div class="col col-8 text">
+            {{#if TemplateVar.get "checking"}}
+                <h1 class="checking">
+                    {{i18n "mist.popupWindows.updateAvailable.checking" app=appName}}
+                </h1>
+            {{else}}
+                {{#if TemplateVar.get "update"}}
+                    {{#with TemplateVar.get "update"}}
+                        <h1 class="update-found">
+                            {{i18n "mist.popupWindows.updateAvailable.newVersionAvailable" app=appName }}
+                        </h1>
+                        <button class="get-update">
+                            {{i18n "mist.popupWindows.updateAvailable.download"}} v{{version}}
+                        </button>                
+                    {{/with}}
+                {{else}}
+                    <h1 class="no-upate">
+                        {{i18n "mist.popupWindows.updateAvailable.noUpdateFound" app=appName }}
+                    </h1>
+                {{/if}}
+            {{/if}}
+        </div>
+    </div>
+</template>

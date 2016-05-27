@@ -477,6 +477,8 @@ class EthereumNode extends EventEmitter {
                             popupCallback(UNABLE_TO_SPAWN_ERROR);
                         }
 
+                        log.info('Node startup error');
+
                         // TODO: detect this properly
                         // this.emit('nodeBinaryNotFound');
 
@@ -506,19 +508,12 @@ class EthereumNode extends EventEmitter {
 
                     this.emit('data', data);
 
+                    // check for startup errors
                     if (STATES.STARTING === this.state) {
                         let dataStr = data.toString().toLowerCase();
 
-                        if ('eth' === nodeType) {
-                            // (eth) prevent started until str appears
-                            if (-1 === dataStr.indexOf('jsonrpc')) {
-                                log.trace('Running eth so wait until we see JSONRPC message');
-
-                                return;
-                            }
-                        } else if ('geth' === nodeType) {
+                        if ('geth' === nodeType) {
                             if (0 <= dataStr.indexOf('fatal: error')) {
-
                                 let err = new Error(`Geth error: ${dataStr}`);
 
                                 if (0 <= dataStr.indexOf('bind')) {
@@ -530,14 +525,6 @@ class EthereumNode extends EventEmitter {
                                 return reject(err);
                             }
                         }
-
-                        if (popupCallback) {
-                            popupCallback();
-                        }
-
-                        log.trace('Process successfully started');
-
-                        resolve(proc);
                     }
                 });
 
@@ -546,30 +533,29 @@ class EthereumNode extends EventEmitter {
                     log.trace('Got stderr data');
 
                     this.emit('data', data);
-
-                    if ('eth' === nodeType) {
-                        return;
-                    }
-
-                    if (STATES.STARTING === this.state) {
-                        if ('geth' === nodeType) {
-                            let dataStr = data.toString().toLowerCase();
-
-                            if (0 > dataStr.indexOf('ipc endpoint opened')) 
-                            {
-                                log.trace('Running geth so wait until we see IPC service start msg');
-
-                                return;
-                            }
-                        }
-
-                        log.trace('Process successfully started');
-
-                        resolve(proc);
-                    }
                 });
 
+
                 this.on('data', _.bind(this._logNodeData, this));
+
+                // when data is first received
+                this.once('data', () => {
+                    /*
+                        Assume startup succeeded after 5 seconds. At this point 
+                        IPC connections are usually possible.
+                    */
+                    setTimeout(() => {
+                        if (STATES.STARTING === this.state) {
+                            log.info('4s elapsed, assuming node started up successfully');
+
+                            if (popupCallback) {
+                                popupCallback();
+                            }
+
+                            resolve();                        
+                        }
+                    }, 4000);
+                })
             });
         });
     }

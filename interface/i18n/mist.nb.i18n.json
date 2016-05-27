@@ -177,7 +177,7 @@
                 "protectDescription" : "Velg et passord for den nye kontoen. Gjør det så sterkt som om det skulle beskyttet husnøklene dine!",
                 "accountTitle" : "Fyll den opp!",
                 "accountTitleTestnet" : "Mine noen!",
-                "etherDescription": "Ethereum-nettverket er basert på en enhet kalt "ether". Du trenger en liten mengde av den for å gjøre noe på Ethereum-nettverket.",
+                "etherDescription": "Ethereum-nettverket er basert på en enhet kalt \"ether\". Du trenger en liten mengde av den for å gjøre noe på Ethereum-nettverket.",
                 "loadItDescription" : "Hvis du allerede eier bitcoin, eller hvilken som helst annen kryptovaluta, kan du enkelt konvertere den til ether via Shapeshift. <br><br> Vi anbefaler å fylle opp med mellom <strong>0.25 til 1 ether</strong>.",
                 "mineItDescription": "<strong>På testnettet kan du mine ether selv ved å gå til <em>Utvikle</em> menyvalget og velge <em>Start Mining</em>. </strong> <br> <strong> IKKE PRØV Å SENDE EKTE ETHER TIL DENNE ADRESSEN </strong>",
                 "you" : "DU",

@@ -4,7 +4,6 @@ const BrowserWindow = electron.BrowserWindow;
 const MenuItem = electron.MenuItem;
 const Menu = electron.Menu;
 const shell = electron.shell;
-const config = require('../config.js');
 const log = require('./utils/logger').create('menuItems');
 const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
@@ -50,10 +49,10 @@ var menuTempl = function(webviews) {
 
     // APP
     menu.push({
-        label: i18n.t('mist.applicationMenu.app.label', {app: config.name}),
+        label: i18n.t('mist.applicationMenu.app.label', {app: global.appName}),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.app.about', {app: config.name}),
+                label: i18n.t('mist.applicationMenu.app.about', {app: global.appName}),
                 click: function(){
                     Windows.createPopup('about', {
                         electronOptions: {
@@ -81,24 +80,24 @@ var menuTempl = function(webviews) {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hide', {app: config.name}),
+                label: i18n.t('mist.applicationMenu.app.hide', {app: global.appName}),
                 accelerator: 'Command+H',
                 role: 'hide'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: config.name}),
+                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: global.appName}),
                 accelerator: 'Command+Alt+H',
                 role: 'hideothers'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.showAll', {app: config.name}),
+                label: i18n.t('mist.applicationMenu.app.showAll', {app: global.appName}),
                 role: 'unhide'
             },
             {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.quit', {app: config.name}),
+                label: i18n.t('mist.applicationMenu.app.quit', {app: global.appName}),
                 accelerator: 'CommandOrControl+Q',
                 click: function(){
                     app.quit();

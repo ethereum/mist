@@ -125,17 +125,18 @@ gulp.task('copy-files', ['clean:dist'], function() {
         '!./interface/**/*.*',
         '!./geth',
         '!./geth.exe',
-        '!./main.js',
         '!./Wallet-README.txt'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-gulp.task('switch-production', ['clean:dist'], function() {
-    return gulp.src(['./main.js'])
-        .pipe(replace('global.production = false;', 'global.production = true;'))
-        .pipe(replace('global.mode = (argv.mode ? argv.mode : \'mist\');', 'global.mode = (argv.mode ? argv.mode : \''+ type +'\');'))
-        .pipe(gulp.dest('./dist_'+ type +'/app'));
+gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
+    fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
+        production: true,
+        mode: type,
+    }));
+
+    cb();
 });
 
 

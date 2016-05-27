@@ -15,7 +15,7 @@ const log = logger.create('ipcProviderBackend');
 const electron = require('electron');
 
 
-/**
+/**™
 make sockets globally available
 
 @property global.sockets

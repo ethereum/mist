@@ -22,7 +22,7 @@
     "solc": "^0.3.1-1",
     "underscore": "^1.8.3",
     "uuid": "^2.0.2",
-    "web3": "ethereum/web3.js#0f1ab3227b8985fa5b9cd1fdc75315383f4d7249",
+    "web3": "^0.17.0-alpha",
     "yargs": "^4.3.1"
   },
   "devDependencies": {

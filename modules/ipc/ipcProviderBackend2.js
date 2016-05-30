@@ -29,7 +29,11 @@ const ERRORS = {
 
 
 
-
+/**
+ * Process a generic request.
+ *
+ * This is the base class for all specialized request processors.
+ */
 class BaseProcessor {
     constructor (backend) {
         super();
@@ -39,7 +43,7 @@ class BaseProcessor {
     }
 
     handle (conn, payload) {
-        return conn.socket.write(JSON.stringify(payload));
+        return conn.socket.send(payload.method, payload.params);
     }
 
     canHandle (payload) {
@@ -114,9 +118,14 @@ class IpcProviderBackend {
                     socket.destroy().finally(() => {
                         delete Connections[wnd.id];
                         
-                        wnd.send(`ipcProvider-${ev}`, data);
+                        wnd.send(`ipcProvider-${ev}`, JSON.stringify(data));
                     });
                 });                
+            });
+
+            // pass notifications back up the chain
+            socket.on('data-notification', (data) => {
+                wnd.send('ipcProvider-data', JSON.stringify(data));
             });
 
             return this._connections[wnd.id];
@@ -212,37 +221,37 @@ class IpcProviderBackend {
                 throw this._returnError(jsonPayload, ERRORS.METHOD_TIMEOUT);
             }
 
-            return this._filterRequest(conn, jsonPayload);
+            return this._filterRequestPayload(conn, jsonPayload);
         })
-        .then((filteredRequest) => {
-            if (filteredRequest.error) {
-                log.trace('Not permitted to do request');
-
-                throw filteredRequest;
-            }
-
+        .then((filteredPayload) => {
             for (let p of this._customProcessors) {
-                if (p.canHandle(payload)) {
-                    return p.handle(payload);
+                if (p.canHandle(filteredPayload)) {
+                    return p.handle(filteredPayload);
                 }
             }
 
-            return this._baseProcessor.handle(payload);
+            return this._baseProcessor.handle(filteredPayload);
         })
         .then((result) => {
+            let returnValue = JSON.stringify(
+                this._makeReturnValue(payload, result)
+            );
+
             if (isSync) {
-                event.returnValue = JSON.stringify(response);
+                event.returnValue = returnValue;
             } else {
-                event.sender.send('ipcProvider-data', JSON.stringify(response));
+                event.sender.send('ipcProvider-data', returnValue);
             }
         })
         .catch((err) => {
             log.error('Send request failed', err);
 
+            let retVal = JSON.stringify(err);
+
             if (isSync) {
-                event.returnValue = JSON.stringify(err);
+                event.returnValue = retVal;
             } else {
-                event.sender.send('ipcProvider-data', JSON.stringify(err));
+                event.sender.send('ipcProvider-data', retVal);
             }
         })
 
@@ -250,17 +259,18 @@ class IpcProviderBackend {
 
 
     /**
-    Filter given request.
+    Filter given request payload.
 
-    @method _filterRequest
+    @method _filterRequestPayload
     @param {Object} conn The connection.
     @param {Object} payload The request payload.
-    @return {Object} Either payload or error object if request invalid.
+    @return {Object} Payload.
+    @throw {Error} if request invalid.
     */
-    _filterRequest(conn, payload) {
+    _filterRequestPayload(conn, payload) {
         let __filter = (p) => {
             if (!_.isObject(p)) {
-                return this._makeError(p, ERRORS.INVALID_PAYLOAD);
+                throw this._makeError(p, ERRORS.INVALID_PAYLOAD);
             }
 
             let wnd = connection.owner;
@@ -272,7 +282,7 @@ class IpcProviderBackend {
 
             // prevent dapps from acccesing admin endpoints
             if(!/^eth_|^shh_|^net_|^web3_|^db_/.test(p.method)){
-                return this._makeError(p, ERRORS.METHOD_DENIED);
+                throw this._makeError(p, ERRORS.METHOD_DENIED);
             }
 
             return p;
@@ -281,7 +291,7 @@ class IpcProviderBackend {
 
         if (_.isArray(payload)) {
             if (_.find(payload, (p) => p.method === 'eth_sendTransaction')) {
-                return this._returnError(payload, ERRORS.BATCH_TX_DENIED);
+                throw this._makeError(payload, ERRORS.BATCH_TX_DENIED);
             }
 
             for (let p of payload) {
@@ -340,14 +350,21 @@ class IpcProviderBackend {
     @method makeError
     */
     _makeError (payload, error) {
-        if (error.error) {
-            error.error.message = error.error.message.replace(/'[a-z_]*'/i, "'"+ payload.method +"'");
-        }
+        let e = ([].concat(payload)).map((item) => {
+            let e = _.extend({}, error);
 
-        error.id = payload.id;
+            if (e.error) {
+                e.error.message = e.error.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'");
+            }
 
-        return error;
+            e.id = item.id;
+
+            return e;
+        });
+
+        return _.isArray(payload) ? e : e[0];
     }
+
 
     /**
     Make the retrun response object.
@@ -355,45 +372,21 @@ class IpcProviderBackend {
     @method makeReturnValue
     */
     _makeReturnValue (payload, value) {
-        var result = {"jsonrpc": "2.0"};
+        let result = ([].concat(payload)).map((item) => {
+            let result = {
+                jsonrpc: "2.0"
+            };
 
-        if (value) {
-            result.result = value;
-        }
+            if (value) {
+                result.result = value;
+            }
 
-        result.id = payload.id;
+            result.id = item.id;
+            
+            return result;
+        });
 
-        return result;
-    }
-
-    /**
-    Make the error response object for either an error or an batch array of errors
-
-    @method returnError
-    */
-    _returnError (payload, error) {
-        if(_.isArray(payload)) {
-            return _.map(payload, function(load){
-                return this._makeError(load, error);
-            });
-        } else {
-            return this._makeError(payload, error);
-        }
-    }
-
-    /**
-    Make the return response object
-
-    @method returnValue
-    */
-    _returnValue (payload, value) {
-        if(_.isArray(payload)) {
-            return _.map(payload, function(load){
-                return this._makeReturnValue(load, value);
-            });
-        } else {
-            return this._makeReturnValue(payload, value);
-        }
+        return _.isArray(payload) ? result : result[0];
     }
 
 }

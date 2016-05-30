@@ -44,9 +44,6 @@ class EthereumNode extends EventEmitter {
         this._network = null;
 
         this._socket = Sockets.get('node-ipc', Sockets.TYPES.WEB3_IPC);
-        this._socket.on('data', _.bind(this._handleSocketResponse, this));
-
-        this._sendRequests = {};
 
         this.on('data', _.bind(this._logNodeData, this));
     }
@@ -224,7 +221,6 @@ class EthereumNode extends EventEmitter {
             })
                 .then(() => {
                     this.state = STATES.STOPPED;
-                    this._sendRequests = {};
                     this._stopPromise = null;
                 });
         } else {
@@ -249,35 +245,6 @@ class EthereumNode extends EventEmitter {
      */
     send (name, params) {
         return this._socket.send(name, params);
-    }
-
-
-    _handleSocketResponse (data) {
-        dechunker(data, (err, result) => {
-            try {
-                if (err) {
-                    log.error('Socket response error', err);
-
-                    _.each(this._sendRequests, (req) => {
-                        req.reject(err);
-                    });
-
-                    this._sendRequests = {};
-                } else {
-                    let req = this._sendRequests[result.id];
-
-                    if (req) {
-                        log.trace('Response', result.id, result.result);
-
-                        req.resolve(result.result);
-                    } else {
-                        log.debug(`Unable to find corresponding request for ${result.id}`, result);
-                    }
-                }
-            } catch (err) {
-                log.error('Error handling socket response', err);
-            }
-        });
     }
 
 

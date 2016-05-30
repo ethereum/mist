@@ -221,9 +221,18 @@ class Web3IpcSocket extends Socket {
         super(socketMgr, id);
 
         this._sendRequests = {};
+
+        this.on('data', _.bind(this._handleSocketResponse, this));
     }
 
-    sendRequest (name, params) {
+    /**
+     * Send an RPC call.
+     * @param  {String} name   Method name.
+     * @param  {Object} params Params
+     * @param {Object} data Addition data to return in result.
+     * @return {Promise}
+     */
+    send (name, params, data) {
         return Q.try(() => {
             if (!this.isConnected) {
                 throw new Error('Not connected');
@@ -235,6 +244,7 @@ class Web3IpcSocket extends Socket {
                 this._log.trace('Request', requestId, name , params);
 
                 this._sendRequests[requestId] = {
+                    data: data,
                     resolve: resolve,
                     reject: reject,
                 };
@@ -246,6 +256,41 @@ class Web3IpcSocket extends Socket {
                     params: params || []
                 }));
             })
+        });
+    }
+
+    /**
+     * Handle responses from Geth.
+     */
+    _handleSocketResponse (data) {
+        dechunker(data, (err, result) => {
+            try {
+                if (err) {
+                    this._log.error('Socket response error', err);
+
+                    _.each(this._sendRequests, (req) => {
+                        req.reject(err);
+                    });
+
+                    this._sendRequests = {};
+                } else {
+                    let req = (result.id) ? this._sendRequests[result.id] : null;
+
+                    if (req) {
+                        this._log.trace('Response', result.id, result.result);
+
+                        req.resolve({
+                            result: result.result,
+                            data: data,
+                        });
+                    } else {
+                        // not a response to a request so pass it on
+                        this.emit('data-notification', result);
+                    }
+                }
+            } catch (err) {
+                this._log.error('Error handling socket response', err);
+            }
         });
     }
 }

@@ -5,7 +5,7 @@
         "logginIn": "Autenticazione..."
     },
     "error": {
-        "insufficientRights": "Lei non ha sufficienti diritti per compiere quasta azione."
+        "insufficientRights": "Non hai sufficienti diritti per compiere quasta azione."
     },
     "buttons": {
         "ok": "OK",
@@ -28,7 +28,7 @@
         "of": "di",
         "with": "con",
         "and": "e",
-        "on": "needed the context",
+        "on": "su",
         "per": "per"
     }
 }

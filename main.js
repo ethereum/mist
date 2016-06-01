@@ -20,21 +20,22 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
-const cliArgs = require('./modules/utils/cliArgs');
-const Settings = require('./modules/settings');
 
-if (cliArgs.version) {
-    console.log(packageJson.version);
+const Settings = require('./modules/settings');
+Settings.init();
+
+
+if (Settings.cli.version) {
+    console.log(Settings.appVersion);
+
     process.exit(0);
 }
 
-if (cliArgs.ignoreGpuBlacklist) {
+if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
-
 // logging setup
-logger.setup(cliArgs);
 const log = logger.create('main');
 
 // GLOBAL Variables
@@ -44,23 +45,19 @@ global.path = {
     USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
-global.appName = 'Mist';
 
 global.dirname  = __dirname;
 
-global.version = packageJson.version;
+global.version = Settings.appVersion;
+global.license = Settings.appLicense;
 
-global.production = false;
+global.production = Settings.inProductionMode;
+log.info(`Running in production mode: ${global.production}`);
 
-global.mode = (cliArgs.mode ? cliArgs.mode : 'mist');
+global.mode = Settings.uiMode;
 
-Settings.set('gethPath', cliArgs.gethpath);
-Settings.set('ethPath', cliArgs.ethpath);
-Settings.set('ipcPath', cliArgs.ipcpath);
-Settings.set('nodeOptions', cliArgs.nodeOptions);
+global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
 
-global.version = packageJson.version;
-global.license = packageJson.license;
 
 
 require('./modules/ipcCommunicator.js');
@@ -104,7 +101,7 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
-    if (cliArgs.resetTabs) {
+    if (Settings.cli.resetTabs) {
         url += '?reset-tabs=true'
     }
 

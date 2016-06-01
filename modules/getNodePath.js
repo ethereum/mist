@@ -24,7 +24,7 @@ module.exports = function(type) {
     let ret = '';
 
     // global override?
-    let globallySetType = Settings.get(`${type}Path`);
+    let globallySetType = Settings[`${type}Path`];
     
     if (globallySetType) {
         resolvedPaths[type] = globallySetType;

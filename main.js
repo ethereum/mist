@@ -195,7 +195,7 @@ app.on('ready', function() {
                 webPreferences: {
                     preload: __dirname +'/modules/preloader/mistUI.js',
                     'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
+                    'overlay-scrollbars': true
                 }
             }
         });
@@ -211,7 +211,7 @@ app.on('ready', function() {
                 webPreferences: {
                     preload: __dirname +'/modules/preloader/wallet.js',
                     'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
+                    'overlay-scrollbars': true
                 }
             }
         });

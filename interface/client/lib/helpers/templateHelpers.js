@@ -35,7 +35,7 @@ Return the preload modules dirname.
 @method (dirname)
 **/
 Template.registerHelper('preload_dirname', function(){
-    return window.mist.dirname + '/modules/preload';
+    return window.mist.dirname + '/modules/preloader';
 });
 
 /**

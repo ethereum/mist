@@ -32,8 +32,6 @@ const ERRORS = {
 
 
 
-
-
 /**
  * IPC provider backend.
  */
@@ -231,7 +229,7 @@ class IpcProviderBackend {
             if (!conn.socket.isConnected) {
                 log.trace('Socket not connected.');
 
-                throw this._makeError(jsonPayload, ERRORS.METHOD_TIMEOUT);
+                throw this.ERRORS.METHOD_TIMEOUT;
             }
 
             this._validateRequestPayload(conn, jsonPayload);
@@ -298,12 +296,12 @@ class IpcProviderBackend {
 
         let __check = (p) => {
             if (!_.isObject(p)) {
-                throw this._makeError(p, ERRORS.INVALID_PAYLOAD);
+                throw ERRORS.INVALID_PAYLOAD;
             }
 
             // prevent dapps from acccesing admin endpoints
             if(!/^eth_|^shh_|^net_|^web3_|^db_/.test(p.method)){
-                throw this._makeError(p, ERRORS.METHOD_DENIED);
+                throw ERRORS.METHOD_DENIED;
             }
         }
 
@@ -311,7 +309,7 @@ class IpcProviderBackend {
         if (_.isArray(payload)) {
             for (let p of payload) {
                 if ('eth_sendTransaction' === p.method) {
-                    throw this._makeError(payload, ERRORS.BATCH_TX_DENIED);                    
+                    throw ERRORS.BATCH_TX_DENIED;                    
                 }
 
                 __check(p);

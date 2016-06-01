@@ -175,6 +175,8 @@ class Socket extends EventEmitter {
             .then(() => {
                 this._socket = new net.Socket();
 
+                this._socket.setTimeout(0);
+
                 this._socket.on('close', (hadError) => {
                     // if we did the disconnection then all good
                     if (STATE.DISCONNECTING === this._socket.status) {

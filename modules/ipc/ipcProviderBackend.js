@@ -267,6 +267,8 @@ class IpcProviderBackend {
         .then((returnValue) => {
             returnValue = JSON.stringify(returnValue);
 
+            log.trace('Return value', event.sender.getId(), returnValue);
+
             if (isSync) {
                 event.returnValue = returnValue;
             } else {

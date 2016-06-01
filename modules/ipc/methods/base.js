@@ -33,11 +33,10 @@ module.exports = class BaseProcessor {
             Result may be a single response or an array of responses.
              */
             
-            result = [].concat(result);
-            
+            let resultArray = [].concat(result);
             let ret = [];
 
-            for (let r in result) {
+            for (let r of resultArray) {
                 if (r.error) {
                     throw r.error;
                 } else {

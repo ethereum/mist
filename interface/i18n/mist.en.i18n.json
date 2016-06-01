@@ -148,7 +148,7 @@
                 "goToTestnet" : "Use the test network",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
                 "gotoMainnet" : "Use the main network",
-                "gotoMainnetDescription" : " You’ll need some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
+                "gotoMainnetDescription" : "You’ll need some Ether in order to create and execute contracts. Don't worry, we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
                 "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
                 "dropFilesHere" : "Drop pre-sale file",
@@ -182,7 +182,7 @@
                     "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
                     "unknownFile": "File not recognised.",
                     "passwordError": "Wrong password.",
-                    "importFailed": "Couldn't import the file got: __error__"
+                    "importFailed": "Couldn't import the file, got: __error__"
                 }
             }
         }

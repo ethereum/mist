@@ -101,7 +101,7 @@ class Socket extends EventEmitter {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
 
-                this._socket.status = STATE.DISCONNECTING;
+                this._state = STATE.DISCONNECTING;
 
                 // remove all existing listeners
                 this._socket.removeAllListeners();
@@ -109,25 +109,27 @@ class Socket extends EventEmitter {
                 let timer = setTimeout(() => {
                     log.warn('Disconnection timed out, continuing anyway...');
 
-                    this._socket.status = STATE.DISCONNECTION_TIMEOUT;
+                    this._state = STATE.DISCONNECTION_TIMEOUT;
 
                     resolve();
                 }, 5000 /* wait 5 seconds for disconnection */)
 
                 this._socket.once('close', () => {
                     // if we manually killed it then all good
-                    if (STATE.DISCONNECTING === this._socket.status) {
-                        this._socket.status = STATE.DISCONNECTED;
-
-                        clearTimeout(timer);
-
-                        resolve();
+                    if (STATE.DISCONNECTING === this._state) {
+                        this._log.debug('Disconnected as expected');
+                    } else {
+                        this._log.warn('Unexpectedly disconnected');
                     }
+
+                    this._state = STATE.DISCONNECTED;
+
+                    clearTimeout(timer);
+
+                    resolve();
                 });
 
                 this._socket.destroy();
-
-                this._socket.unref(); /* allow app to exit even if socket fails to close */
             })  
                 .finally(() => {
                     this._disconnectPromise = null;
@@ -152,7 +154,7 @@ class Socket extends EventEmitter {
             throw new Error('Socket not connected');
         }
 
-        this._log.trace('Write data...');
+        this._log.trace('Write data', data);
 
         this._socket.write(data, encoding, callback);
     }
@@ -176,10 +178,12 @@ class Socket extends EventEmitter {
                 this._socket = new net.Socket();
 
                 this._socket.setTimeout(0);
+                this._socket.setEncoding('utf8');
+                this._socket.unref(); /* allow app to exit even if socket fails to close */
 
                 this._socket.on('close', (hadError) => {
                     // if we did the disconnection then all good
-                    if (STATE.DISCONNECTING === this._socket.status) {
+                    if (STATE.DISCONNECTING === this._state) {
                       return;
                     }
 
@@ -187,7 +191,7 @@ class Socket extends EventEmitter {
                 });
 
                 this._socket.on('end', () => {
-                    this._log.debug('Server wants to end connection');
+                    this._log.debug('Got "end" event');
 
                     this.emit('end');
                 });
@@ -205,7 +209,7 @@ class Socket extends EventEmitter {
                 });
 
                 this._socket.on('error', (err) => {
-                    // connection errors will be handled elsewhere
+                    // connection errors will be handled in connect() code
                     if (STATE.CONNECTING === this._state) {
                       return;
                     }
@@ -229,46 +233,94 @@ class Web3IpcSocket extends Socket {
         this.on('data', _.bind(this._handleSocketResponse, this));
     }
 
+
+
     /**
      * Send an RPC call.
-     * @param  {String} name   Method name.
-     * @param  {Object} params Params
+     * @param {Array|Object} single or array of payloads.
      * @param {Object} options Additional options.
      * @param {Boolean} [options.fullResult] If set then will return full result JSON, not just result value.
      * @return {Promise}
      */
-    send (name, params, options) {
+    send (payload, options) {
         return Q.try(() => {
             if (!this.isConnected) {
                 throw new Error('Not connected');
             }
 
+            const isBatch = _.isArray(payload);
+
+            const finalPayload = isBatch
+                ? _.map(payload, (p) => this._finalizeSinglePayload(p))
+                : this._finalizeSinglePayload(payload);
+
+            /*
+            For batch requeests we use the id of the first request as the 
+            id to refer to the batch as one. We can do this because the 
+            response will also come back as a batch, in the same order as the 
+            the requests within the batch were sent.
+             */
+            const id = isBatch
+                ? finalPayload[0].id
+                : finalPayload.id;
+
+            this._log.trace(
+                isBatch ? 'Batch request' : 'Request', 
+                id, finalPayload
+            );
+
+            this._sendRequests[id] = {
+                options: options,
+                /* Preserve the original id of the request so that we can 
+                update the response with it */
+                origId: (
+                    isBatch ? _.map(payload, (p) => p.id) : payload.id
+                ),
+            };
+
+            this.write(JSON.stringify(finalPayload));
+
             return new Q((resolve, reject) => {
-                let requestId = _.uuid();
-
-                this._log.trace('Request', requestId, name , params);
-
-                this._sendRequests[requestId] = {
-                    options: options,
+                _.extend(this._sendRequests[id], {
                     resolve: resolve,
                     reject: reject,
-                };
-
-                this.write(JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: requestId,
-                    method: name,
-                    params: params || []
-                }));
-            })
+                });
+            });
         });
     }
+
+
+
+    /**
+     * Construct a payload object.
+     * @param {Object} payload Payload to send.
+     * @param  {String} payload.method   Method name.
+     * @param  {Object} [payload.params] Method arguments.
+     * @return {Object} final payload object
+     */
+    _finalizeSinglePayload (payload) {
+        if (!payload.method) {
+            throw new Error('Method required');
+        }
+
+        return {
+            jsonrpc: '2.0',
+            id: _.uuid(),
+            method: payload.method,
+            params: payload.params || [],            
+        };
+    }
+
+
+
 
     /**
      * Handle responses from Geth.
      */
     _handleSocketResponse (data) {
         dechunker(data, (err, result) => {
+            this._log.trace('Dechunked response', result);
+
             try {
                 if (err) {
                     this._log.error('Socket response error', err);
@@ -279,18 +331,41 @@ class Web3IpcSocket extends Socket {
 
                     this._sendRequests = {};
                 } else {
-                    let req = (result.id) ? this._sendRequests[result.id] : null;
+                    const isBatch = _.isArray(result);
+
+                    const firstItem = isBatch ? result[0] : result;
+
+                    const req = firstItem.id ? this._sendRequests[firstItem.id] : null;                        
 
                     if (req) {
-                        this._log.trace('Response', result.id, result.result);
-
+                        this._log.trace(
+                            isBatch ? 'Batch response' : 'Response', 
+                            firstItem.id, result
+                        );
+                        
+                        // if we don't want full JSOn result, send just the result
                         if (!_.get(req, 'options.fullResult')) {
-                            result = result.result;
+                            if (isBatch) {
+                                result = _.map(result, (r) => r.result);
+                            } else {
+                                result = result.result;
+                            }
+                        } else {
+                            // restore original ids
+                            if (isBatch) {
+                                req.origId.forEach((id, idx) => {
+                                    if (result[idx]) {
+                                        result[idx].id = id;
+                                    }
+                                });
+                            } else {
+                                result.id = req.origId;
+                            }
                         }
 
                         req.resolve(result);
                     } else {
-                        // not a response to a request so pass it on
+                        // not a response to a request so pass it on as a notification
                         this.emit('data-notification', result);
                     }
                 }

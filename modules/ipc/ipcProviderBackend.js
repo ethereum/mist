@@ -43,7 +43,7 @@ class IpcProviderBackend {
 
         ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
 
-        ipc.on('ipcProvider-create', _.bind(this._createConnection, this));
+        ipc.on('ipcProvider-create', _.bind(this._getOrCreateConnection, this));
         ipc.on('ipcProvider-destroy', _.bind(this._destroyConnection, this));
         ipc.on('ipcProvider-write', _.bind(this._sendRequest, this, false));
         ipc.on('ipcProvider-writeSync', _.bind(this._sendRequest, this, true));
@@ -66,9 +66,10 @@ class IpcProviderBackend {
 
 
     /**
-     * Handle IPC call to create new connection.
+     * Get/create new connection to node.
+     * @return {Promise}
      */
-    _createConnection (event) {
+    _getOrCreateConnection (event) {
         const id = event.sender.getId();
 
         // get the actual window instance for this sender
@@ -76,6 +77,11 @@ class IpcProviderBackend {
 
         if (!wnd) {
             return Q.reject(new Error(`Unable to find window associated with event sender ${id}`));
+        }
+
+        // already got?
+        if (this._connections[wnd.id]) {
+            return Q.resolve(this._connections[wnd.id]);
         }
 
         // get or create a new socket
@@ -118,6 +124,12 @@ class IpcProviderBackend {
             // pass notifications back up the chain
             socket.on('data-notification', (data) => {
                 log.trace('Notification received', wnd.id, data);
+
+                if (data.error) {
+                    data = this._makeError({}, data);
+                } else {
+                    data = this._makeReturnValue({}, data);
+                }
 
                 wnd.send('ipcProvider-data', JSON.stringify(data));
             });
@@ -217,13 +229,7 @@ class IpcProviderBackend {
         Q.try(() => {
             jsonPayload = JSON.parse(payload);
 
-            let conn = this._connections[event.sender.getId()];
-
-            if (!conn) {
-                return this._createConnection(event);
-            }            
-
-            return conn;
+            return this._getOrCreateConnection(event);
         })
         .then((conn) => {
             if (!conn.socket.isConnected) {
@@ -246,25 +252,20 @@ class IpcProviderBackend {
         .then((result) => {
             log.trace('Got result', result);
 
-            let returnValue = JSON.stringify(
-                this._makeReturnValue(jsonPayload, result)
-            );
-
-            if (isSync) {
-                event.returnValue = returnValue;
-            } else {
-                event.sender.send('ipcProvider-data', returnValue);
-            }
+            return this._makeReturnValue(jsonPayload, result);
         })
         .catch((err) => {
-            log.error('Send request failed', err);
-
             err = this._makeError(jsonPayload || {}, {
                 message: err.message,
                 code: err.code,
             });
 
-            let returnValue = JSON.stringify(err);
+            log.error('Send request failed', err);
+
+            return err;
+        })
+        .then((returnValue) => {
+            returnValue = JSON.stringify(returnValue);
 
             if (isSync) {
                 event.returnValue = returnValue;
@@ -272,7 +273,6 @@ class IpcProviderBackend {
                 event.sender.send('ipcProvider-data', returnValue);
             }
         })
-
     }
 
 
@@ -325,6 +325,9 @@ class IpcProviderBackend {
     /**
     Make the error response object.
 
+    @param {Object|Array} payload Original payload
+    @param {Object} error Error result
+
     @method makeError
     */
     _makeError (payload, error) {
@@ -347,24 +350,29 @@ class IpcProviderBackend {
     /**
     Make the retrun response object.
 
+    @param {Object|Array} payload Original payload
+    @param {Object|Array} value Response result.
+
     @method makeReturnValue
     */
     _makeReturnValue (payload, value) {
-        let result = ([].concat(payload)).map((item) => {
-            let result = {
+        value = [].concat(value);
+
+        let allResults = ([].concat(payload)).map((item, idx) => {
+            let ret = {
                 jsonrpc: "2.0"
             };
 
             if (value) {
-                result.result = value;
+                ret.result = value[idx];
             }
 
-            result.id = item.id;
+            ret.id = item.id;
             
-            return result;
+            return ret;
         });
 
-        return _.isArray(payload) ? result : result[0];
+        return _.isArray(payload) ? allResults : allResults[0];
     }
 
 }

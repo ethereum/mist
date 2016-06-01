@@ -1,5 +1,7 @@
 "use strict";
 
+const _ = global._;
+
 const log = require('../../utils/logger').create('method');
 
 
@@ -22,16 +24,28 @@ module.exports = class BaseProcessor {
      */
     exec (conn, payload) {
         this._log.trace('Execute request', payload);
-
-        return conn.socket.send(payload.method, payload.params, {
+ 
+        return conn.socket.send(payload, {
             fullResult: true,
         })
         .then((result) => {
-            if (result.error) {
-                throw result.error;
-            } else {
-                return result.result;
+            /*
+            Result may be a single response or an array of responses.
+             */
+            
+            result = [].concat(result);
+            
+            let ret = [];
+
+            for (let r in result) {
+                if (r.error) {
+                    throw r.error;
+                } else {
+                    ret.push(r.result);
+                }
             }
+
+            return _.isArray(result) ? ret : ret[0];
         });
     }
 };

@@ -237,13 +237,16 @@ class EthereumNode extends EventEmitter {
 
 
     /** 
-     * Send command to socket.
-     * @param  {String} name
-     * @param  {Array} [params]
+     * Send Web3 command to socket.
+     * @param  {String} method Method name
+     * @param  {Array} [params] Method arguments
      * @return {Promise} resolves to result or error.
      */
-    send (name, params) {
-        return this._socket.send(name, params);
+    send (method, params) {
+        return this._socket.send({
+            method: method, 
+            params: params
+        });
     }
 
 

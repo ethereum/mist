@@ -11,25 +11,23 @@ const Q = require('bluebird');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 const fs = require('fs');
-const path  require('path');
+const path = require('path');
 
 const log = require('../utils/logger').create('ipcProviderBackend');
-const ipcPath = require('getIpcPath')();
+const ipcPath = require('./getIpcPath')();
 const Sockets = require('../sockets');
 const ethereumNode = require('../ethereumNode');
+const Windows = require('../windows');
 
 
 
 const ERRORS = {
-    INVALID_PAYLOAD: {"jsonrpc": "2.0", "error": {"code": -32600, "message": "Payload invalid."}, "id": "__id__"},
-    METHOD_DENIED: {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
-    METHOD_TIMEOUT: {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
-    TX_DENIED: {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
-    BATCH_TX_DENIED: {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."}, "id": "__id__"},
-    INVALID_METHOD: {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
+    INVALID_PAYLOAD: {"code": -32600, "message": "Payload invalid."},
+    METHOD_DENIED: {"code": -32601, "message": "Method \'__method__\' not allowed."},
+    METHOD_TIMEOUT: {"code": -32603, "message": "Request timed out for method  \'__method__\'."},
+    TX_DENIED: {"code": -32603, "message": "Transaction denied"},
+    BATCH_TX_DENIED: {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."},
 };
-
-
 
 
 
@@ -58,11 +56,14 @@ class IpcProviderBackend {
         this._processors = {};
 
         processors.forEach((p) => {
-            let name = path.basename(p);
+            let name = path.basename(p, '.js');
 
-            this._processors[name] = 
-                new (require(path.join(__dirname, 'methods', p))(name, this);
+            let PClass = require(path.join(__dirname, 'methods', p));
+
+            this._processors[name] = new PClass(name, this);
         });
+
+        log.trace('Loaded processors', _.keys(this._processors));
     }
 
 
@@ -73,14 +74,14 @@ class IpcProviderBackend {
         const id = event.sender.getId();
 
         // get the actual window instance for this sender
-        const wnd = Windows.getById(id);
+        const wnd = Windows.getByWebContents(event.sender);
 
         if (!wnd) {
-            return log.error(`Unable to find window ${id}`);
+            return Q.reject(new Error(`Unable to find window associated with event sender ${id}`));
         }
 
         // get or create a new socket
-        log.debug('Get/create socket connection', wnd.id);
+        log.debug(`Get/create socket connection, id=${wnd.id}`);
 
         const socket = Sockets.get(wnd.id, Sockets.TYPES.WEB3_IPC);
 
@@ -94,6 +95,9 @@ class IpcProviderBackend {
             }
         })
         .then(() => {
+            // set writeable
+            wnd.send('ipcProvider-setWritable', true);
+
             // save to collection
             this._connections[wnd.id] = {
                 owner: wnd,
@@ -103,10 +107,10 @@ class IpcProviderBackend {
             // if something goes wrong destroy the socket
             ['error', 'timeout', 'end'].forEach((ev) => {
                 socket.on(ev, (data) => {
-                    log.debug('Destroy socket connection due to event', ev, wnd.id);
+                    log.debug(`Destroy socket connection due to event: ${ev}, id=${wnd.id}`);
 
                     socket.destroy().finally(() => {
-                        delete Connections[wnd.id];
+                        delete this._connections[wnd.id];
                         
                         wnd.send(`ipcProvider-${ev}`, JSON.stringify(data));
                     });
@@ -115,7 +119,7 @@ class IpcProviderBackend {
 
             // pass notifications back up the chain
             socket.on('data-notification', (data) => {
-                log.trace('Notification received', wnd.id);
+                log.trace('Notification received', wnd.id, data);
 
                 wnd.send('ipcProvider-data', JSON.stringify(data));
             });
@@ -135,7 +139,7 @@ class IpcProviderBackend {
             if (this._connections[id]) {
                 log.debug('Destroy socket connection', id);
 
-                return this._connections[id].socket.destroy().finally({
+                return this._connections[id].socket.destroy().finally(() => {
                     delete this._connections[id];
                 });
             }            
@@ -156,13 +160,18 @@ class IpcProviderBackend {
             case ethereumNode.STATES.STOPPING:
                 log.info('Ethereum node stopping, disconnecting sockets');
 
-                Q.map(this._connections, (item) => {
-                    log.debug(`Tell owner (${item.sender.getId()}) that socket is not currently writeable`);
+                Q.all(_.map(this._connections, (item) => {
+                    if (item.socket.isConnected) {
+                        return item.socket.disconnect()
+                        .then(() => {
+                            log.debug(`Tell owner (${item.wnd.id}) that socket is not currently writeable`);
 
-                    item.owner.send('ipcProvider-setWritable', false);
-
-                    return item.socket.disconnect();
-                })
+                            item.owner.send('ipcProvider-setWritable', false);                            
+                        });
+                    } else {
+                        return Q.resolve();
+                    }
+                }))
                 .catch((err) => {
                     log.error('Error disconnecting sockets', err);
                 });
@@ -172,14 +181,22 @@ class IpcProviderBackend {
             case ethereumNode.STATES.CONNECTED:
                 log.info('Ethereum node connected, re-connect sockets');
 
-                Q.map(this._connections, (item) => {
-                    item.socket.connect({ path: ipcPath}, {timeout: 5000})
+                Q.all(_.map(this._connections, (item) => {
+                    if (item.socket.isConnected) {
+                        return Q.resolve();
+                    } else {
+                        return item.socket.connect({ 
+                            path: ipcPath
+                        }, {
+                            timeout: 5000
+                        })
                         .then(() => {
-                            log.debug(`Tell owner (${item.sender.getId()}) that socket is again writeable`);
+                            log.debug(`Tell owner (${item.wnd.id}) that socket is again writeable`);
 
                             item.owner.send('ipcProvider-setWritable', true);
                         });
-                })
+                    }
+                }))
                 .catch((err) => {
                     log.error('Error re-connecting sockets', err);
                 });
@@ -191,13 +208,17 @@ class IpcProviderBackend {
     /**
      * Handle IPC call to send a request.
      * @param  {Boolean} isSync  whether request is sync.
-     * @param  {[type]}  event   IPC event.
-     * @param  {[type]}  payload request payload.
+     * @param  {Object}  event   IPC event.
+     * @param  {String}  payload request payload.
      */
     _sendRequest (isSync, event, payload) {
         log.trace('sendRequest', isSync ? 'sync' : 'async', event.sender.getId(), payload);
 
+        let jsonPayload = null;
+
         Q.try(() => {
+            jsonPayload = JSON.parse(payload);
+
             let conn = this._connections[event.sender.getId()];
 
             if (!conn) {
@@ -207,35 +228,28 @@ class IpcProviderBackend {
             return conn;
         })
         .then((conn) => {
-            const jsonPayload = JSON.parse(payload);
-
             if (!conn.socket.isConnected) {
                 log.trace('Socket not connected.');
 
-                throw this._returnError(jsonPayload, ERRORS.METHOD_TIMEOUT);
+                throw this._makeError(jsonPayload, ERRORS.METHOD_TIMEOUT);
             }
 
             this._validateRequestPayload(conn, jsonPayload);
 
-            return [conn, jsonPayload];
+            return conn;
         })
-        .spread((conn, filteredPayload) => {
-            if (!_.isArray(filteredPayload) && this._processors[filteredPayload.method]) {
-                return this._processors[filteredPayload.method].exec(conn, filteredPayload);
+        .then((conn) => {
+            if (!_.isArray(jsonPayload) && this._processors[jsonPayload.method]) {
+                return this._processors[jsonPayload.method].exec(conn, jsonPayload);
             } else {
-                return this._processors.generic.exec(conn, filteredPayload);                
+                return this._processors.base.exec(conn, jsonPayload);                
             }
         })
         .then((result) => {
             log.trace('Got result', result);
 
-            // check for error
-            if (result.error) {
-                throw this._makeError(payload, result.error);
-            }
-
             let returnValue = JSON.stringify(
-                this._makeReturnValue(payload, result)
+                this._makeReturnValue(jsonPayload, result)
             );
 
             if (isSync) {
@@ -247,12 +261,17 @@ class IpcProviderBackend {
         .catch((err) => {
             log.error('Send request failed', err);
 
+            err = this._makeError(jsonPayload || {}, {
+                message: err.message,
+                code: err.code,
+            });
+
             let returnValue = JSON.stringify(err);
 
             if (isSync) {
                 event.returnValue = returnValue;
             } else {
-                event.sender.send('ipcProvider-data', retVal);
+                event.sender.send('ipcProvider-data', returnValue);
             }
         })
 
@@ -268,13 +287,13 @@ class IpcProviderBackend {
     @throw {Error} if request invalid.
     */
     _validateRequestPayload(conn, payload) {
-        log.trace('Filter request payload', id);
+        log.trace('Filter request payload', payload);
 
         let wnd = conn.owner;
 
         // main window or popupwindows - always allow requests
         if ('main' === wnd.type || wnd.isPopup) {
-            return p;
+            return payload;
         }
 
         let __check = (p) => {
@@ -314,8 +333,8 @@ class IpcProviderBackend {
         let e = ([].concat(payload)).map((item) => {
             let e = _.extend({}, error);
 
-            if (e.error) {
-                e.error.message = e.error.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'");
+            if (e.message) {
+                e.message = e.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'");
             }
 
             e.id = item.id;

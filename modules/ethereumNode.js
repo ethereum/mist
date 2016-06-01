@@ -11,7 +11,6 @@ const logRotate = require('log-rotate');
 const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
-const dechunker = require('./ipc/dechunker.js');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const getIpcPath = require('./ipc/getIpcPath.js')

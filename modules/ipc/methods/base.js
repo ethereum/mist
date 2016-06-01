@@ -1,3 +1,5 @@
+"use strict";
+
 const log = require('../../utils/logger').create('method');
 
 
@@ -6,10 +8,8 @@ const log = require('../../utils/logger').create('method');
  *
  * This is the base class for all specialized request processors.
  */
-module.exports = class GenericProcessor {
+module.exports = class BaseProcessor {
     constructor (name, ipcProviderBackend) {
-        super();
-
         this._log = log.create(name);
         this._ipcProviderBackend = ipcProviderBackend;
     }
@@ -23,7 +23,16 @@ module.exports = class GenericProcessor {
     exec (conn, payload) {
         this._log.trace('Execute request', payload);
 
-        return conn.socket.send(payload.method, payload.params);
+        return conn.socket.send(payload.method, payload.params, {
+            fullResult: true,
+        })
+        .then((result) => {
+            if (result.error) {
+                throw result.error;
+            } else {
+                return result.result;
+            }
+        });
     }
 };
 

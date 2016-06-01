@@ -1,10 +1,12 @@
 "use strict";
 
-const _ = global._;
-const log = require('./utils/logger').create('Sockets');
 const net = require('net');
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
+
+const _ = global._;
+const log = require('./utils/logger').create('Sockets');
+const dechunker = require('./ipc/dechunker.js');
 
 
 
@@ -229,10 +231,11 @@ class Web3IpcSocket extends Socket {
      * Send an RPC call.
      * @param  {String} name   Method name.
      * @param  {Object} params Params
-     * @param {Object} data Addition data to return in result.
+     * @param {Object} options Additional options.
+     * @param {Boolean} [options.fullResult] If set then will return full result JSON, not just result value.
      * @return {Promise}
      */
-    send (name, params, data) {
+    send (name, params, options) {
         return Q.try(() => {
             if (!this.isConnected) {
                 throw new Error('Not connected');
@@ -244,7 +247,7 @@ class Web3IpcSocket extends Socket {
                 this._log.trace('Request', requestId, name , params);
 
                 this._sendRequests[requestId] = {
-                    data: data,
+                    options: options,
                     resolve: resolve,
                     reject: reject,
                 };
@@ -279,7 +282,11 @@ class Web3IpcSocket extends Socket {
                     if (req) {
                         this._log.trace('Response', result.id, result.result);
 
-                        req.resolve(result.result);
+                        if (!_.get(req, 'options.fullResult')) {
+                            result = result.result;
+                        }
+
+                        req.resolve(result);
                     } else {
                         // not a response to a request so pass it on
                         this.emit('data-notification', result);
@@ -322,7 +329,7 @@ class SocketManager {
      */
     get (id, type) {
         if (!this._sockets[id]) {
-            log.debug('Create socket', id, type);
+            log.debug(`Create socket, id=${id}, type=${type}`);
 
             switch (type) {
                 case TYPES.WEB3_IPC:
@@ -355,7 +362,7 @@ class SocketManager {
      * Usually called by `Socket` instances when they're destroyed.
      */
     _remove (id) {
-        log.debug('Remove socket', id);
+        log.debug(`Remove socket, id=${id}`);
 
         delete this._sockets[id];
     }

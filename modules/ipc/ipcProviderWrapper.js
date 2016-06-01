@@ -85,7 +85,7 @@ ipcProviderWrapper = {
     write: function (payload) {
         console.debug('ipcProviderWrapper: write payload');
 
-        ipc.send('ipcProvider-write');
+        ipc.send('ipcProvider-write', payload);
     },
     /**
     Write synchronous to the IPC connection through the backend

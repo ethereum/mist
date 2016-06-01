@@ -1,4 +1,6 @@
-const GenericProcessor = require('./generic');
+"use strict";
+
+const BaseProcessor = require('./base');
 const Windows = require('../../windows');
 const Q = require('bluebird');
 
@@ -6,7 +8,7 @@ const Q = require('bluebird');
 /**
  * Process method: eth_sendTransaction
  */
-module.exports = class extends GenericProcessor {
+module.exports = class extends BaseProcessor {
     /**
      * @override
      */
@@ -34,7 +36,7 @@ module.exports = class extends GenericProcessor {
 
                         reject(this._ipcProviderBackend.ERRORS.METHOD_DENIED);
                     } else {
-                        this._log.info('Transaciton sent', result);
+                        this._log.info('Transaction sent', result);
 
                         resolve(result);
                     }
@@ -42,9 +44,6 @@ module.exports = class extends GenericProcessor {
                     modalWindow.close();
                 }
             });
-        })
-        .catch((err) => {
-            throw this._ipcProviderBackend._makeError(payload, err);
         });
     }
 }

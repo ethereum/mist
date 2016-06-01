@@ -47,12 +47,12 @@ class Window extends EventEmitter {
 
         this.webContents = this.window.webContents;
 
-        this.webContents.once('did-finish-load', () => {
-            this._log.debug(`Content loaded`);
+        this.id = this.webContents.getId();
 
+        this.webContents.once('did-finish-load', () => {
             this.isContentReady = true;
 
-            this.id = this.webContents.getId();
+            this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
                 this.send.apply(this, opts.sendData);
@@ -259,6 +259,8 @@ class Windows {
 
 
     getByType (type) {
+        log.trace('Get by type', type);
+
         return _.find(this._windows, (w) => {
             return w.type === type;
         });
@@ -266,13 +268,29 @@ class Windows {
 
 
     getById (id) {
+        log.trace('Get by id', id);
+
         return _.find(this._windows, (w) => {
             return (w.id === id);
         });
     }
 
 
+
+    getByWebContents (webContents) {
+        log.trace('Get by webContents');
+
+        let wnd = BrowserWindow.fromWebContents(webContents);
+
+        return _.find(this._windows, (w) => {
+            return (w.window === wnd);
+        });
+    }
+
+
     broadcast () {
+        log.debug('Broadcast');
+
         const data = arguments;
 
         _.each(this._windows, (wnd) => {

@@ -1,11 +1,13 @@
+"use strict";
+
 const _ = global._;
-const GenericProcessor = require('./generic');
+const BaseProcessor = require('./base');
 
 
 /**
  * Process method: eth_accounts
  */
-module.exports = class extends GenericProcessor {
+module.exports = class extends BaseProcessor {
     /**
      * @override
      */

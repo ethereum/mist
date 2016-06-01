@@ -279,10 +279,7 @@ class Web3IpcSocket extends Socket {
                     if (req) {
                         this._log.trace('Response', result.id, result.result);
 
-                        req.resolve({
-                            result: result.result,
-                            data: data,
-                        });
+                        req.resolve(result.result);
                     } else {
                         // not a response to a request so pass it on
                         this.emit('data-notification', result);

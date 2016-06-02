@@ -10,7 +10,7 @@ const Settings = require('../settings');
 
 
 module.exports = function() {
-    var ipcPath = Settings.get('ipcPath');
+    var ipcPath = Settings.ipcPath;
     if (ipcPath) {
         return ipcPath;
     }

@@ -425,7 +425,7 @@ class EthereumNode extends EventEmitter {
                     pw = null;
                 }
 
-                let nodeOptions = Settings.get('nodeOptions');
+                let nodeOptions = Settings.nodeOptions;
 
                 if (nodeOptions && nodeOptions.length) {
                     log.debug('Custom node options', nodeOptions);

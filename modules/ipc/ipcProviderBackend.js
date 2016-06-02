@@ -20,7 +20,6 @@ const ethereumNode = require('../ethereumNode');
 const Windows = require('../windows');
 
 
-
 const ERRORS = {
     INVALID_PAYLOAD: {"code": -32600, "message": "Payload invalid."},
     METHOD_DENIED: {"code": -32601, "message": "Method \'__method__\' not allowed."},
@@ -28,7 +27,6 @@ const ERRORS = {
     TX_DENIED: {"code": -32603, "message": "Transaction denied"},
     BATCH_TX_DENIED: {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."},
 };
-
 
 
 
@@ -70,25 +68,19 @@ class IpcProviderBackend {
      * @return {Promise}
      */
     _getOrCreateConnection (event) {
-        const eventSenderId = event.sender.getId();
-
-        // get the actual window instance for this sender
-        const wnd = Windows.getById(eventSenderId);
-
-        if (!wnd) {
-            return Q.reject(new Error(`Unable to find window associated with event sender ${eventSenderId}`));
-        }
+        const owner = event.sender,   
+            ownerId = owner.getId();
 
         let socket;
 
         return Q.try(() => {
             // already got?
-            if (this._connections[eventSenderId]) {
-                socket = this._connections[eventSenderId].socket;
+            if (this._connections[ownerId]) {
+                socket = this._connections[ownerId].socket;
             } else {
-                log.debug(`Get/create socket connection, id=${eventSenderId}`);
+                log.debug(`Get/create socket connection, id=${ownerId}`);
 
-                socket = Sockets.get(eventSenderId, Sockets.TYPES.WEB3_IPC);
+                socket = Sockets.get(ownerId, Sockets.TYPES.WEB3_IPC);
             }
         })
         .then(() => {
@@ -104,31 +96,32 @@ class IpcProviderBackend {
         })
         .then(() => {
             // set writeable
-            wnd.send('ipcProvider-setWritable', true);
+            owner.send('ipcProvider-setWritable', true);
 
-            if (!this._connections[eventSenderId]) {
+            if (!this._connections[ownerId]) {
                 // save to collection
-                this._connections[eventSenderId] = {
-                    owner: wnd,
+                this._connections[ownerId] = {
+                    id: ownerId,
+                    owner: owner,
                     socket: socket,
                 };
 
                 // if something goes wrong destroy the socket
                 ['error', 'timeout', 'end'].forEach((ev) => {
                     socket.on(ev, (data) => {
-                        log.debug(`Destroy socket connection due to event: ${ev}, id=${eventSenderId}`);
+                        log.debug(`Destroy socket connection due to event: ${ev}, id=${ownerId}`);
 
                         socket.destroy().finally(() => {
-                            delete this._connections[eventSenderId];
+                            delete this._connections[ownerId];
                             
-                            wnd.send(`ipcProvider-${ev}`, JSON.stringify(data));
+                            owner.send(`ipcProvider-${ev}`, JSON.stringify(data));
                         });
                     });                
                 });
 
                 // pass notifications back up the chain
                 socket.on('data-notification', (data) => {
-                    log.trace('Notification received', eventSenderId, data);
+                    log.trace('Notification received', ownerId, data);
 
                     if (data.error) {
                         data = this._makeError({}, data);
@@ -136,11 +129,11 @@ class IpcProviderBackend {
                         data = this._makeReturnValue({}, data);
                     }
 
-                    wnd.send('ipcProvider-data', JSON.stringify(data));
+                    owner.send('ipcProvider-data', JSON.stringify(data));
                 });                
             }
 
-            return this._connections[eventSenderId];
+            return this._connections[ownerId];
         });
     }
 
@@ -150,14 +143,16 @@ class IpcProviderBackend {
      * Handle IPC call to destroy a connection.
      */
     _destroyConnection (event) {
-        const eventSenderId = event.sender.getId();
+        const ownerId = event.sender.getId();
 
         return Q.try(() => {
-            if (this._connections[eventSenderId]) {
-                log.debug('Destroy socket connection', eventSenderId);
+            if (this._connections[ownerId]) {
+                log.debug('Destroy socket connection', ownerId);
 
-                return this._connections[eventSenderId].socket.destroy().finally(() => {
-                    delete this._connections[eventSenderId];
+                this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
+
+                return this._connections[ownerId].socket.destroy().finally(() => {
+                    delete this._connections[ownerId];
                 });
             }            
         });
@@ -181,7 +176,7 @@ class IpcProviderBackend {
                     if (item.socket.isConnected) {
                         return item.socket.disconnect()
                         .then(() => {
-                            log.debug(`Tell owner that socket is not currently writeable`);
+                            log.debug(`Tell owner ${item.id} that socket is not currently writeable`);
 
                             item.owner.send('ipcProvider-setWritable', false);                            
                         });
@@ -208,7 +203,7 @@ class IpcProviderBackend {
                             timeout: 5000
                         })
                         .then(() => {
-                            log.debug(`Tell owner that socket is again writeable`);
+                            log.debug(`Tell owner ${item.id} that socket is again writeable`);
 
                             item.owner.send('ipcProvider-setWritable', true);
                         });
@@ -229,9 +224,9 @@ class IpcProviderBackend {
      * @param  {String}  payload request payload.
      */
     _sendRequest (isSync, event, payload) {
-        const eventSenderId = event.sender.getId();
+        const ownerId = event.sender.getId();
 
-        log.trace('sendRequest', isSync ? 'sync' : 'async', eventSenderId, payload);
+        log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
 
         let jsonPayload = null;
 
@@ -253,9 +248,9 @@ class IpcProviderBackend {
         })
         .then((conn) => {
             if (!_.isArray(jsonPayload) && this._processors[jsonPayload.method]) {
-                return this._processors[jsonPayload.method].exec(eventSenderId, conn, jsonPayload);
+                return this._processors[jsonPayload.method].exec(conn, jsonPayload);
             } else {
-                return this._processors.base.exec(eventSenderId, conn, jsonPayload);                
+                return this._processors.base.exec(conn, jsonPayload);                
             }
         })
         .then((result) => {
@@ -276,7 +271,7 @@ class IpcProviderBackend {
         .then((returnValue) => {
             returnValue = JSON.stringify(returnValue);
 
-            log.trace('Return value', eventSenderId, returnValue);
+            log.trace('Return', ownerId, returnValue);
 
             if (isSync) {
                 event.returnValue = returnValue;
@@ -298,9 +293,9 @@ class IpcProviderBackend {
     _validateRequestPayload(conn, payload) {
         log.trace('Filter request payload', payload);
 
-        let wnd = conn.owner;
-
         // main window or popupwindows - always allow requests
+        let wnd = Windows.getById(conn.id);
+
         if ('main' === wnd.type || wnd.isPopup) {
             return payload;
         }

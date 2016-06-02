@@ -14,7 +14,7 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (eventSenderId, conn, payload) {
+    exec (conn, payload) {
         return new Q((resolve, reject) => {
             this._log.info('Ask user for password');
 

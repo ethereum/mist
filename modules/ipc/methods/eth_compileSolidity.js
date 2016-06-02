@@ -12,7 +12,7 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (eventSenderId, conn, payload) {
+    exec (conn, payload) {
         return Q.try(() => {
             this._log.info('Compile solidity');
 

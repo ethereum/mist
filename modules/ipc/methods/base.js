@@ -18,12 +18,11 @@ module.exports = class BaseProcessor {
 
     /**
      * Execute given request.
-     * @param  {Number} eventSenderId   Original event sender id.
      * @param  {Object} conn    IPCProviderBackend connection data.
      * @param  {Object} payload JSON payload object.
      * @return {Promise}
      */
-    exec (eventSenderId, conn, payload) {
+    exec (conn, payload) {
         this._log.trace('Execute request', payload);
  
         return conn.socket.send(payload, {

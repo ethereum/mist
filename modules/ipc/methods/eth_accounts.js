@@ -11,12 +11,12 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (eventSenderId, conn, payload) {
-        return super.exec(eventSenderId, conn, payload)
+    exec (conn, payload) {
+        return super.exec(conn, payload)
         .then((result) => {
             this._log.trace('Got account list', result);
 
-            let tab = Tabs.findOne({ webviewId: eventSenderId });
+            let tab = Tabs.findOne({ webviewId: conn.id });
 
             if(_.get(tab, 'permissions.accounts')) {
                 result = _.intersection(result, tab.permissions.accounts);

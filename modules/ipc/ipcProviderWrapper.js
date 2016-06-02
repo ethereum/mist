@@ -40,6 +40,8 @@ ipcProviderWrapper = {
     connect: function(path) {
         console.debug('ipcProviderWrapper: connect');
 
+        ipc.send('ipcProvider-create', path);
+
         return this;
     },
     /**

@@ -3,6 +3,8 @@
 const BaseProcessor = require('./base');
 const Windows = require('../../windows');
 const Q = require('bluebird');
+const electron = require('electron');
+const ipc = electron.ipcMain;
 
 
 /**
@@ -12,7 +14,7 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (conn, payload) {
+    exec (eventSenderId, conn, payload) {
         return new Q((resolve, reject) => {
             this._log.info('Ask user for password');
 
@@ -26,21 +28,27 @@ module.exports = class extends BaseProcessor {
             });
 
             modalWindow.on('closed', () => {
-                reject(this._ipcProviderBackend.ERRORS.METHOD_DENIED);
+                // user cancelled?
+                if (!modalWindow.processed) {
+                    reject(this._ipcProviderBackend.ERRORS.METHOD_DENIED);
+                }
             });
 
             ipc.once('backendAction_unlockedAccountAndSentTransaction', (ev, err, result) => {
-                if (ev.sender.getId() === modalWindow.id && !modalWindow.isClosed) {
+                if (Windows.getById(ev.sender.getId()) === modalWindow 
+                        && !modalWindow.isClosed) 
+                {
                     if(err || !result) {
                         this._log.debug('Confirmation error', err);
 
-                        reject(this._ipcProviderBackend.ERRORS.METHOD_DENIED);
+                        reject(err || this._ipcProviderBackend.ERRORS.METHOD_DENIED);
                     } else {
                         this._log.info('Transaction sent', result);
 
                         resolve(result);
                     }
 
+                    modalWindow.processed = true;
                     modalWindow.close();
                 }
             });

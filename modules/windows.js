@@ -4,7 +4,11 @@ const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
-const BrowserWindow = require('electron').BrowserWindow;
+
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
+
 
 
 
@@ -46,8 +50,6 @@ class Window extends EventEmitter {
         this.window = new BrowserWindow(electronOptions);
 
         this.webContents = this.window.webContents;
-
-        this.id = this.webContents.getId();
 
         this.webContents.once('did-finish-load', () => {
             this.isContentReady = true;
@@ -181,6 +183,25 @@ class Windows {
         this.loading.on('show', () => {
             this.loading.window.center();
         });
+
+        // when a window gets initalized it will us its id
+        ipc.on('backendAction_setWindowId', (event) => {
+            let id = event.sender.getId();
+
+            log.debug(`Set window id`, id);
+
+            let bwnd = BrowserWindow.fromWebContents(event.sender);
+
+            let wnd = _.find(this._windows, (w) => {
+                return (w.window === bwnd);
+            });
+
+            if (wnd) {
+                log.trace(`Set window id=${id}, type=${wnd.type}`);
+
+                wnd.id = id;
+            }
+        });
     }
 
 
@@ -275,17 +296,6 @@ class Windows {
         });
     }
 
-
-
-    getByWebContents (webContents) {
-        log.trace('Get by webContents');
-
-        let wnd = BrowserWindow.fromWebContents(webContents);
-
-        return _.find(this._windows, (w) => {
-            return (w.window === wnd);
-        });
-    }
 
 
     broadcast () {

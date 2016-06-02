@@ -1,7 +1,7 @@
 "use strict";
 
 const solc = require('solc');
-
+const Q = require('bluebird');
 const BaseProcessor = require('./base');
 
 
@@ -12,7 +12,7 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (conn, payload) {
+    exec (eventSenderId, conn, payload) {
         return Q.try(() => {
             this._log.info('Compile solidity');
 

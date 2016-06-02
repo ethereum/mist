@@ -5,10 +5,10 @@
 const electron = require('electron');
 const packageJson = require('./../package.json');
 const remote = electron.remote;
+const ipc = electron.ipcRenderer;
 
 module.exports = function(isWallet) {
 
-    const ipc = electron.ipcRenderer;
 
     var queue = [];
     var prefix = 'entry_';
@@ -36,7 +36,6 @@ module.exports = function(isWallet) {
             delete mist.callbacks[type];
         }
     });
-
 
     // work up queue every 500ms
     setInterval(function(){

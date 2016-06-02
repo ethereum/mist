@@ -3,192 +3,192 @@
         "applicationMenu": {
             "app": {
                 "label": "__app__",
-                "about": "About __app__",
-                "hide": "Hide __app__",
-                "hideOthers": "Hide Others",
-                "showAll": "Show All",
-                "quit": "Quit __app__"
+                "about": "Info su __app__",
+                "hide": "Nascondi __app__",
+                "hideOthers": "Nascondi il resto",
+                "showAll": "Mostra tutto",
+                "quit": "Esci da __app__"
             },
             "edit": {
-                "label": "Edit",
-                "undo": "Undo",
-                "redo": "Redo",
-                "cut": "Cut",
-                "copy": "Copy",
-                "paste": "Paste",
-                "selectAll": "Select all"
+                "label": "Modifica",
+                "undo": "Annulla",
+                "redo": "Ripristina",
+                "cut": "Taglia",
+                "copy": "Copia",
+                "paste": "Incolla",
+                "selectAll": "Seleziona tutto"
             },
             "view": {
-                "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "label": "Visualizza",
+                "fullscreen": "Schermo intero"
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
-                "newAccount": "New account",
+                "importPresale": "Importa Accounts pre-vendita",
+                "newAccount": "Nuovo account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
-                "backupMist": "Application Data"
+                "backupMist": "Dati applicativi"
             },
             "develop": {
-                "label": "Develop",
-                "devTools": "Toggle Developer Tools",
+                "label": "Sviluppo",
+                "devTools": "Strumenti di sviluppo",
                 "devToolsMistUI": "Mist UI",
-                "devToolsWalletUI": "Wallet UI",
+                "devToolsWalletUI": "Portafoglio UI",
                 "devToolsWebview": "__webview__",
-                "runTests": "Run tests",
-                "logFiles": "Show log file",
-                "ethereumNode": "Ethereum Node",
-                "network": "Network",
-                "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "runTests": "Esegui Test",
+                "logFiles": "Mostra file di log",
+                "ethereumNode": "Nodo Ethereum",
+                "network": "Rete",
+                "mainNetwork": "Rete principale",
+                "startMining": "⛏ Inizia mining (solo Testnet)",
+                "stopMining": "⛏ Ferma mining"
             },
             "window": {
-                "label": "Window",
-                "minimize": "Minimize",
-                "close": "Close",
-                "toFront": "Bring All to Front"
+                "label": "Finestra",
+                "minimize": "Minimizza",
+                "close": "Chiudi",
+                "toFront": "Tutte in primo piano"
             },
             "help": {
-                "label": "Help"
+                "label": "Aiuto"
             }
         },
         "errors": {
-            "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
+            "nodeConnect": "Impossibile connettersi al nodo. Controlla i log per dettagli:",
+            "nodeStartup": "Il nodo non puó essere avviato, ne hai giá uno in esecuzione? Il database é in fase di aggiornamento in questo momento?",
             "timeSync": {
-                "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
-                "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
-                "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
+                "title": "Il tuo orologio di sistema non é sincronizzato.",
+                "description": "E' necessario sincronizzare l'orologio di sistema con un time server per connettere correttamente il tuo nodo alla rete Ethereum.",
+                "win32": "Apri le impostazioni dell'orologio di sistema, seleziona Orario internet e metti un tick sul box. Segui questa guida (in inglese) per i dettagli: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "Per abilitare la sincronia con un time server installa \"ntp\" via \"apt-get install ntp\".",
+                "darwin": "Per abilitare la sincronia dell'ora, apri le preferenze di orario e spunta \"Setta ora e data automaticamente\"."
             }
         },
         "rightClick": {
-            "reload": "Reload",
-            "openDevTools": "Open Developer Tools",
-            "inspectElements": "Inspect Element"
+            "reload": "Ricarica",
+            "openDevTools": "Apri strumenti di sviluppo",
+            "inspectElements": "Ispeziona elemento"
         },
         "nodeInfo": {
-            "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "New Block Received",
-            "blockNumber": "Your latest block number",
-            "timeSinceBlock": "Elapsed time since last block",
-            "testnetExplain": "You are on a testnet, DO NOT SEND any real ether to these addresses",
-            "peers": "peers"
+            "nodeSyncing": "__blockDiff__ blocchi mancanti",
+            "blockReceived": "Nuovo blocco ricevuto",
+            "blockNumber": "Il tuo ultimo numero di blocco",
+            "timeSinceBlock": "Tempo trascorso dall'ultimo blocco",
+            "testnetExplain": "Sei connesso alla testnet, NON INVIARE alcun ether a questi indirizzi",
+            "peers": "nodi"
         },
         "sidebar": {
             "buttons": {
-                "browser": "Browse"
+                "browser": "Sfoglia"
             }
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "Nessun account impostato"
             }
         },
         "startScreen": {
-            "runningNodeFound": "Found running Ethereum node!",
-            "startingNode": "Starting Ethereum node...",
-            "startedNode": "Starting application...",
-            "nodeConnectionTimeout": "Couldn't start an Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
-            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
-            "nodeSyncing": "Ethereum node needs to sync, please wait...",
-            "nodeSyncInfo": "Downloading block __currentBlock__ of __highestBlock__.",
-            "nodeSyncConnecting": "Looking for peers...",
-            "nodeSyncProcessing": "Processing blocks, please wait...",
-            "privateChainTimeout": "Skip peer search"
+            "runningNodeFound": "Trovato nodo Ethereum in esecuzione!",
+            "startingNode": "Avvio nodo Ethereum ...",
+            "startedNode": "Avvio applicazione...",
+            "nodeConnectionTimeout": "Impossibile avviare un nodo Ethereum!<br><small>Se <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>hai installato Geth</a>, usa questo comando per eseguirlo:<br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> o riporta il problema </a></small>",
+            "nodeBinaryNotFound": "Impossibile trovare l'eseguibile del nodo Ethereum !<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Per favore avvialo manualmente prima. </a> </small>",
+            "nodeSyncing": "Il nodo Ethereum deve sincronizzarsi, attendere prego...",
+            "nodeSyncInfo": "Scaricamento blocco __currentBlock__ di __highestBlock__.",
+            "nodeSyncConnecting": "Alla ricerca di nodi...",
+            "nodeSyncProcessing": "Elaborazione blocchi, attendere prego...",
+            "privateChainTimeout": "Salta ricerca di nodi"
         },
         "popupWindows": {
             "requestAccount": {
-                "title": "Create account",
-                "enterPassword": "Enter password",
-                "repeatPassword": "Repeat password",
-                "creating": "Generating account...",
+                "title": "Crea account",
+                "enterPassword": "Immetti password",
+                "repeatPassword": "Ripeti password",
+                "creating": "Generazione account...",
                 "errors": {
-                    "passwordMismatch": "Your passwords don't match."
+                    "passwordMismatch": "Le due password non sono uguali."
                 }
             },
             "unlockMasterPassword": {
-                "title": "Enter master password",
-                "enterPassword": "Enter master password",
-                "unlocking": "Unlocking...",
+                "title": "Inserisci password master",
+                "enterPassword": "Inserisci password master",
+                "unlocking": "Sblocco in corso...",
                 "errors": {
-                    "wrongPassword": "Password is wrong, try again."
+                    "wrongPassword": "Password errata, riprova."
                 }
             },
             "sendTransactionConfirmation": {
                 "title": {
-                    "sendTransaction": "Send transaction",
-                    "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "sendTransaction": "Invia transazione",
+                    "contractExecution": "Esegui contratto",
+                    "createContract": "Crea contratto"  
                 },
-                "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
-                "contractCreationInfo": "You are about to create a contract from the provided data.",
-                "enterPassword": "Enter password to confirm the transaction",
-                "unlocking": "Confirming...",
-                "createContract": "Create contract",
-                "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Data can't be executed, so it will use all provided gas.",
-                "gasPrice": "Gas price",
-                "perMillionGas": "ether per million gas",
-                "gasLimit": "Provide maximum fee",
-                "data": "Data",
+                "contractExecutionInfo": "Stai per eseguire una funzione su di un contratto. Questo potrebbe comportare trasferimento di valuta.",
+                "contractCreationInfo": "Stai per creare un contratto con i dati forniti.",
+                "enterPassword": "Inserisci la password per confermare la transazione",
+                "unlocking": "Conferma in corso...",
+                "createContract": "Creazione contratto",
+                "estimatedFee": "Stima consumo (commissione)",
+                "estimatedGasError": "Dati non eseguibili, quindi verra' utilizzato tutto il gas fornito.",
+                "gasPrice": "Prezzo carburante (Gas)",
+                "perMillionGas": "ether per millioni di gas",
+                "gasLimit": "Imposta commissione massima",
+                "data": "Dati",
                 "buttons": {
-                    "sendTransaction": "Send transaction"
+                    "sendTransaction": "Invia transazione"
                 },
                 "errors": {
-                    "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
-                    "wrongPassword": "Wrong password"
+                    "connectionTimeout": "Impossibile connettersi al nodo, é forse terminato in modo inaspettato ?",
+                    "wrongPassword": "Password errata"
                 }
             },
             "onboarding": {
-                "description" : "Ethereum is a decentralized platform for building apps on a blockchain: tamper-proof software that can transfer value and property and lives forever",
-                "goToTestnet" : "Use the test network",
-                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
-                "gotoMainnet" : "Use the main network",
-                "gotoMainnetDescription" : " You’ll need some Ether in order to create and execute contracts. Don't worry we'll help you get some...",
-                "doYouHaveAWalletFile" : "Do you have a wallet file?",
-                "walletFileDescription" : "<p>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
-                "dropFilesHere" : "Drop pre-sale file",
-                "creating": "Creating...",
-                "importing": "Importing...",
-                "skip" : "Skip this step",
-                "next" : "Next",
-                "protectTitle" : "Protect your account",
-                "protectDescription" : "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
-                "accountTitle" : "Load it up!",
-                "accountTitleTestnet" : "Mine some!",
-                "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
-                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
-                "you" : "YOU",
-                "etherbase" : "Main account (etherbase)",
-                "depositBitcoin" : "Deposit Bitcoin",
-                "learnIt" : "Learn while you wait",
-                "downloadingBlocks": "Downloading blocks",
-                "block": "Block",
-                "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
-                "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
-                "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can make the decisions. Let your backers take an active role on how the money is spent</p>",
+                "description" : "Ethereum é una piattaforma decentralizzata per costruire applicazioni sfruttando una blockchain: software a prova di manomissione che puó trasferire valore e proprietá vivendo per sempre",
+                "goToTestnet" : "Usa la rete di test",
+                "goToTestnetDescription" : "Prova la tecnologia liberamente utilizzando una testnet, senza l'utilizzo di vero ether.",
+                "gotoMainnet" : "Usa la rete principale",
+                "gotoMainnetDescription" : " Avrai bisogno di un po di Ether per creare ed eseguire contratti. Non ti preoccupare, ti aiuteremo ad ottenerne un pó...",
+                "doYouHaveAWalletFile" : "Hai un file per il wallet ?",
+                "walletFileDescription" : "<p>Se hai partecipato alla pre-vendita Ethereum nel 2014, dovresti avere un file nominato<code>ethereum_wallet_backup.json</code>. E' stato scaricato dopo la vendita e inoltre inviato al tuo indirizzo e-mail</p>",
+                "dropFilesHere" : "Trascina file pre-vendita",
+                "creating": "Creazione...",
+                "importing": "Importazione...",
+                "skip" : "Salta il passaggio",
+                "next" : "Successivo",
+                "protectTitle" : "Proteggi il tuo account",
+                "protectDescription" : "Scegli una password per il tuo nuovo account. Rendila piu complicata possibile come se dovesse proteggere le tue chiavi di casa!",
+                "accountTitle" : "Stra-caricalo!",
+                "accountTitleTestnet" : "Mina un pó!",
+                "etherDescription": "La rete ethereum é basata su di un token chiamato “Ether”. Avrai bisogno di una piccola quantitá di ether per fare qualsiasi cosa sulla rete Ethereum.",
+                "loadItDescription" : "Se possiedi giá Bitcoin, o qualunque altra cryptovaluta, puoi facilmente convertirla in eth usando shapeshift. <br><br> Raccomandiamo di depositare da <strong>0.25 a 1 ether</strong>.",
+                "mineItDescription": "<strong>Sulla rete di test (testnet) puoi minare ether in autonomia utilizzando il menu' <em>Sviluppo</em> e selezionando <em>Inizia Mining</em>. </strong> <br> <strong> NON TENTARE DI INVIARE ETHER REALE A QUESTO INDIRIZZO</strong>",
+                "you" : "TU",
+                "etherbase" : "Account principale (etherbase)",
+                "depositBitcoin" : "Deposita Bitcoin",
+                "learnIt" : "Impara mentre aspetti",
+                "downloadingBlocks": "Scaricamento blocchi ",
+                "block": "Blocco",
+                "tutorial1Description" : "<p> Ora l'ultima cosa rimasta e' aspettare che il download sia completato. Eccoti alcuni consigli di letture: </p> <h4>Conia la tua moneta </h4> <p> Conia una cryptovaluta con una offerta di mercato fissa, tokens che rappresentano beni nel mondo reale, etc </p>",
+                "tutorial2Description" : "<h4> Crea una crowdsale </h4> <p> Raccogli fondi per uno scopo comune, in piena fiducia e senza terze parti. Evita le difficoltá di un sistema tradizionale di raccolta fondi e raggiungi direttamente la fonte finanziando una organizzazione tramite la blockchain.</p>",
+                "tutorial3Description" : "<h4> Organizzazione su Blockchain </h4> <p> Crea una organizzazione autonoma con regole indissolubili riguardo a come i soldi possono essere spesi e da chi puó prendere le decisioni. Permetti ai tuoi sostenitori di partecipare attivamente riguardo a come i soldi vengono spesi</p>",
                 "buttons": {
-                    "showPassword": "Show password",
-                    "importAccount": "Import account",
-                    "launchApp": "Launch Application!",
-                    "learnReceipt": "Learn this recipe"
+                    "showPassword": "Mostra password",
+                    "importAccount": "Importa account",
+                    "launchApp": "Avvia Applicazione!",
+                    "learnReceipt": "Dettagli ricevuta"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
-                    "unknownFile": "File not recognised.",
-                    "passwordError": "Wrong password.",
-                    "importFailed": "Couldn't import the file got: __error__"
+                    "nodeNotStartedYet": "Attendi qualche secondo ancora finché il tuo nodo non é completamente avviato e riprova",
+                    "unknownFile": "File non riconosciuto.",
+                    "passwordError": "Password errata.",
+                    "importFailed": "Impossibile importare il file: __error__"
                 }
             }
         }
     },
     "elements": {
-        "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "checksumAlert":"Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
+        "identiconHelper": "Questa é un icona di sicurezza, se c'é qulasiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente"
     }
 }

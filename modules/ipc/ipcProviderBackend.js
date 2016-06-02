@@ -296,7 +296,7 @@ class IpcProviderBackend {
         // main window or popupwindows - always allow requests
         let wnd = Windows.getById(conn.id);
 
-        if ('main' === wnd.type || wnd.isPopup) {
+        if (wnd && ('main' === wnd.type || wnd.isPopup)) {
             return payload;
         }
 

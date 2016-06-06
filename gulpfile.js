@@ -3,6 +3,8 @@ var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
 var replace = require('gulp-replace');
+var runSequence = require('run-sequence');
+var mocha = require('gulp-spawn-mocha');
 var packager = require('electron-packager');
 var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
@@ -130,17 +132,14 @@ gulp.task('copy-files', ['clean:dist'], function() {
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
+
+
+gulp.task('bundling-interface', ['copy-files'], function(cb) {
     fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
         production: true,
         mode: type,
     }));
 
-    cb();
-});
-
-
-gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
     if(type === 'mist') {
         exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
             // console.log(stdout);
@@ -178,7 +177,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 
 
 // needs to be copied, so the backend can use it
-gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
+gulp.task('copy-i18n', ['bundling-interface'], function() {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n'
@@ -285,10 +284,6 @@ gulp.task('change-files', ['create-binaries'], function() {
 });
 
 
-//gulp.task('cleanup-files', ['change-files'], function (cb) {
-//  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
-//});
-
 
 gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
@@ -382,41 +377,41 @@ gulp.task('getChecksums', [], function(done) {
 
 
 
-gulp.task('taskQueue', [
-    'clean:dist',
-    'copy-files',
-    'copy-i18n',
-    'switch-production',
-    'bundling-interface',
-    'create-binaries',
-    'change-files',
-    //'cleanup-files',
-    'rename-folders',
-    // 'zip'
-]);
+gulp.task('taskQueue', ['rename-folders']);
 
 
 // MIST task
-gulp.task('mist', [
-    'set-variables-mist',
-    'taskQueue'
-]);
+gulp.task('mist', function(cb) {
+    runSequence('set-variables-mist','taskQueue', cb);
+});
+
+gulp.task('mist-checksums', function(cb) {
+    runSequence('set-variables-mist','getChecksums', cb);
+});
 
 // WALLET task
-gulp.task('wallet', [
-    'set-variables-wallet',
-    'taskQueue'
-]);
+gulp.task('wallet', function(cb) {
+    runSequence('set-variables-wallet','taskQueue', cb);
+});
 
-// WALLET task
-gulp.task('mist-checksums', [
-    'set-variables-mist',
-    'getChecksums'
-]);
-gulp.task('wallet-checksums', [
-    'set-variables-wallet',
-    'getChecksums'
-]);
+gulp.task('wallet-checksums', function(cb) {
+    runSequence('set-variables-wallet','getChecksums', cb);
+});
+
+
+
+gulp.task('test-wallet', function() {
+    return gulp.src([
+        './test/wallet/*.test.js'
+    ])
+    .pipe(mocha({
+        timeout: 20000,
+        ui: 'exports',
+        reporter: 'spec'
+    }));
+});
+
+
 
 gulp.task('default', ['mist']);
 

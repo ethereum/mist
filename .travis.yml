@@ -1,0 +1,25 @@
+sudo: required
+dist: trusty
+
+language: node_js
+
+branches:
+  only:
+    - ci
+
+node_js:
+  - "4"
+
+before_script:
+  - "npm install"
+  - "npm install -g electron-prebuilt@1.0.1"
+  - "npm install -g meteor-build-client"
+
+script:
+  - "npm test"
+
+notifications:
+  email:
+    - ram@hiddentao.com
+
+

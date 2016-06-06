@@ -110,11 +110,16 @@
         </div>
 
         <footer>
-            <progress value="{{#with TemplateVar.get "syncing"}}{{progress}}{{/with}}" max="100"></progress>
+            <progress value="{{#with TemplateVar.get 'syncing'}}{{progress}}{{/with}}" max="100"></progress>
 
             {{#with TemplateVar.get "syncing"}}
                 <div class="status"> {{i18n "mist.popupWindows.onboarding.downloadingBlocks"}} ({{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}})</div>
-                <div class="blocks"> {{i18n "mist.popupWindows.onboarding.block"}} {{dapp_formatNumber currentBlock}} of {{dapp_formatNumber highestBlock}}</div>
+                <div class="blocks"> 
+                    <!-- {{i18n "mist.popupWindows.onboarding.block"}} {{dapp_formatNumber currentBlock}} of {{dapp_formatNumber highestBlock}} -->
+                    
+                    {{ syncStatus }}
+
+                </div>
             {{else}}
                 {{#if TemplateVar.get 'readyToLaunch'}}
                     <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.buttons.launchApp"}} </button>

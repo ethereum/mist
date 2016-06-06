@@ -195,7 +195,7 @@
                 "depositBitcoin" : "Deposit Bitcoin",
                 "learnIt" : "Learn while you wait",
                 "downloadingBlocks": "Downloading blocks",
-                "block": "Block",
+                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
                 "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
                 "tutorial3Description" : "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can make the decisions. Let your backers take an active role on how the money is spent</p>",

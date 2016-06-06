@@ -40,11 +40,8 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 web3.reset(true);
 
             } else if(_.isObject(syncing)) {
-                
-                syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
-                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-
-                TemplateVar.set(template, 'syncing', syncing);
+                var oldData = TemplateVar.get(template, 'syncing');
+                TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
                 
             } else {
                 TemplateVar.set(template, 'syncing', false);
@@ -78,6 +75,42 @@ Template['popupWindows_onboardingScreen'].helpers({
     'newAccountLowerCase': function(){
         var account = TemplateVar.get('newAccount');
         return (account) ? account.toLowerCase() : '';
+    },
+    /**
+    Updates the Sync Message live
+
+    @method syncStatus
+    */
+    'syncStatus' : function() {
+
+        // This functions loops trhough numbers while waiting for the node to respond
+        var template = Template.instance();
+        Meteor.clearInterval(template._intervalId);
+
+        // Create an interval to quickly iterate trough the numbers
+        template._intervalId = Meteor.setInterval(function(){
+            
+            var syncing = TemplateVar.get(template, 'syncing');
+            
+            syncing._displayBlock = Math.floor( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 10 ) || 0;
+
+            syncing.progress = Math.floor(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
+
+
+            syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
+
+            syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
+            syncing.displayBlock = numeral(syncing._displayBlock).format('0,0');
+
+            console.log('syncing', syncing, syncing.progress);
+
+            TemplateVar.set(template, 'syncing', syncing);
+
+            TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+
+        }, 50);
+
+        return TemplateVar.get(template, "syncStatusMessageLive");
     }
 });
 

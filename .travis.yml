@@ -12,6 +12,8 @@ node_js:
 
 before_script:
   - "npm install"
+  - "npm install -g electron-prebuilt@1.0.1"
+  - "npm install -g meteor-build-client"
 
 script:
   - "npm test"

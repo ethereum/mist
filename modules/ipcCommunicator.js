@@ -65,9 +65,13 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
     if (senderWindow.ownerId) {
         let ownerWindow = Windows.getById(senderWindow.ownerId);
 
-        ownerWindow.send('windowMessage', senderWindow.type, error, value);
+        if (ownerWindow) {
+            ownerWindow.send('windowMessage', senderWindow.type, error, value);            
+        }
 
-        mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
+        if (mainWindow) {
+            mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
+        }
     }
 
 });

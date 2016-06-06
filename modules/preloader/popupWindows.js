@@ -14,6 +14,9 @@ const web3Admin = require('../web3Admin.js');
 
 require('./setBasePath')('interface');
 
+// register with window manager
+ipc.send('backendAction_setWindowId');
+
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
 

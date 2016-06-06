@@ -4,6 +4,7 @@
 
 require('./consoleLogCapture')('wallet');
 const electron = require('electron');
+const ipc = electron.ipcRenderer;
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
@@ -12,6 +13,9 @@ const web3Admin = require('../web3Admin.js');
 require('../openExternal.js');
 
 require('./setBasePath')('interface/wallet');
+
+// register with window manager
+ipc.send('backendAction_setWindowId');
 
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);

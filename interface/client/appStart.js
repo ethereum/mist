@@ -33,15 +33,16 @@ mistInit = function(){
         });
         
         // wait for accounts and blocks to be initialized below
-        // Meteor.setTimeout(function() {
-        //     Tabs.insert({
-        //         url: 'http://ethereum-dapp-wallet.meteor.com',
-        //         position: 0,
-        //         permissions: {
-        //             accounts: web3.eth.accounts
-        //         }
-        //     });
-        // }, 1500);
+        Meteor.setTimeout(function() {
+            Tabs.insert({
+                _id: 'wallet',
+                url: 'https://wallet.ethereum.org',
+                position: 1,
+                permissions: {
+                    accounts: web3.eth.accounts
+                }
+            });
+        }, 1500);
     }
 
     EthAccounts.init();

@@ -1,0 +1,23 @@
+sudo: required
+dist: trusty
+
+language: node_js
+
+branches:
+  only:
+    - ci
+
+node_js:
+  - "4"
+  - "5"
+
+before_script:
+  - "npm install"
+
+script:
+  - "npm test"
+
+notifications:
+  email:
+    - ram@hiddentao.com
+

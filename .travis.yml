@@ -9,7 +9,6 @@ branches:
 
 node_js:
   - "4"
-  - "5"
 
 before_script:
   - "npm install"

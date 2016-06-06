@@ -278,10 +278,6 @@ The onboardingScreen password template
 @constructor
 */
 
-Template['popupWindows_onboardingScreen_password'].onRendered(function(){
-});
-
-
 Template['popupWindows_onboardingScreen_password'].events({
     /**
     Clear the form
@@ -291,6 +287,19 @@ Template['popupWindows_onboardingScreen_password'].events({
    'click button[type="button"]': function(e, template){
         template.find('input.password').value = '';
         template.find('input.password-repeat').value = '';
+    },
+    /**
+    Password checks
+    
+    @event click button[type="button"]
+    */
+   'input input, change input': function(e, template){
+        var pw = template.find('input.password').value,
+            pwRepeat = template.find('input.password-repeat').value;
+
+        TemplateVar.set(template, 'passwordsEmpty', pw == '' && pwRepeat == '');
+        TemplateVar.set(template, 'passwordsMismatch', pw != pwRepeat);
+
     },
     /**
     Checks the password match and creates a new account

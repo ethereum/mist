@@ -170,14 +170,18 @@
                 <span class="dapp-identicon dapp-icon-loading"></span>
                 <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.creating"}}</h2>
             {{else}}
-                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
-                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class='password-repeat'>
+                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
+                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class="password-repeat {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
             {{/if}}
         </div>
 
         <div class="col col-12 footer-buttons">
             <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>                 
+            {{#if TemplateVar.get "passwordsEmpty"}}
+            <button class="goto-account right-align"> {{i18n "buttons.skip"}} </button>                 
+            {{else}}
             <button class="create-account right-align" type="submit"> {{i18n "buttons.next"}} </button>
+            {{/if}}
         </div>
     </form>
 </template>

@@ -131,7 +131,8 @@
                 "repeatPassword": "Repeat password",
                 "creating": "Generating account...",
                 "errors": {
-                    "passwordMismatch": "Your passwords don't match."
+                    "passwordMismatch": "Your passwords don't match.",
+                    "passwordTooShort": "Make a longer password"
                 }
             },
             "unlockMasterPassword": {

@@ -30,7 +30,7 @@ var getPeerCount = function(template) {
 Template['popupWindows_onboardingScreen'].onCreated(function(){
     var template = this;
     TemplateVar.set('readyToLaunch', false);
-
+    TemplateVar.set('newAccount', false);
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
@@ -297,8 +297,8 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        TemplateVar.set(template, 'passwordsEmpty', pw == '' && pwRepeat == '');
-        TemplateVar.set(template, 'passwordsMismatch', pw != pwRepeat);
+        TemplateVar.set(template, 'passwordsNotEmpty', pw != '' || pwRepeat != '');
+        TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw != pwRepeat);
 
     },
     /**
@@ -310,13 +310,17 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        if(!pw || pw !== pwRepeat) {
+        if( pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
             });
-
-        } else {
+        } else if (pw && pw.length > 1 && pw.length < 9) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        } else if (pw && pw.length >= 9) {
             TemplateVar.set('creatingPassword', true);
             web3.personal.newAccount(pw, function(e, res){
                 TemplateVar.set(template, 'creatingPassword', false);

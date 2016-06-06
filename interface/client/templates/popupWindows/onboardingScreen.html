@@ -53,17 +53,19 @@
                 </div>
 
                 <div class="col col-6 col-deposit">
-                    {{> dapp_identicon identity=(TemplateVar.get "newAccount")}}
-                    <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
-                    <input type="text" value="{{i18n 'mist.popupWindows.onboarding.etherbase'}}" class="name" disabled>
-                    <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
+                    {{#if TemplateVar.get "newAccount"}}
+                        {{> dapp_identicon identity=(TemplateVar.get "newAccount")}}
+                        <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
+                        <input type="text" value="{{i18n 'mist.popupWindows.onboarding.etherbase'}}" class="name" disabled>
+                        <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
 
-                    {{#unless TemplateVar.get "testnet"}}
-                        <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
-                    {{/unless}}
+                        {{#unless TemplateVar.get "testnet"}}
+                            <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
+                        {{/unless}}
+                    {{/if}}
                 </div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-password"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
                     <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
@@ -76,7 +78,7 @@
                 </div>
                 <div class="col col-6 tutorial-token"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-account"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
                     <button class="goto-tutorial-2 right-align">  {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
@@ -177,10 +179,10 @@
 
         <div class="col col-12 footer-buttons">
             <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>                 
-            {{#if TemplateVar.get "passwordsEmpty"}}
-            <button class="goto-account right-align"> {{i18n "buttons.skip"}} </button>                 
-            {{else}}
+            {{#if TemplateVar.get "passwordsNotEmpty"}}
             <button class="create-account right-align" type="submit"> {{i18n "buttons.next"}} </button>
+            {{else}}
+            <button class="goto-tutorial-1 right-align"> {{i18n "buttons.skip"}} </button>                 
             {{/if}}
         </div>
     </form>

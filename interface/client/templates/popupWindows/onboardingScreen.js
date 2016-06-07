@@ -40,6 +40,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 web3.reset(true);
 
             } else if(_.isObject(syncing)) {
+                // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
                 TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
                 
@@ -89,23 +90,16 @@ Template['popupWindows_onboardingScreen'].helpers({
 
         // Create an interval to quickly iterate trough the numbers
         template._intervalId = Meteor.setInterval(function(){
-            
-            var syncing = TemplateVar.get(template, 'syncing');
-            
+            // load the sync information
+            var syncing = TemplateVar.get(template, 'syncing'); 
+            // Calculates a block t display that is always getting 1% closer to target
             syncing._displayBlock = Math.floor( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 ) || 0;
-
             syncing.progress = Math.floor(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
-
-
             syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-
             syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
             syncing.displayBlock = numeral(syncing._displayBlock).format('0,0');
-
-            console.log('syncing', syncing, syncing.progress);
-
+            // saves data back
             TemplateVar.set(template, 'syncing', syncing);
-
             TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
 
         }, 50);

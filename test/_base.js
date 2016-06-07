@@ -1,7 +1,7 @@
 require('co-mocha');
 
 const path = require('path');
-
+const buildHelpers = require('../buildHelpers');
 const Application = require('spectron').Application;
 
 const chai = require('chai');
@@ -16,12 +16,19 @@ exports.mocha = function(_module, options) {
       this.assert = chai.assert;
       this.expect = chai.expect;
 
-      const appPath = ('wallet' === options.app)
-        ? path.join(__dirname, '..', 'dist_wallet')
-        : path.join(__dirname, '..', 'dist_mist');
+      const appNameVersion = buildHelpers.buildDistPkgName('darwin', options.app, {
+        replaceOs: true,
+        includeVersion: true,
+      });
+      const execName = buildHelpers.buildAppExecName(options.app);
+
+      const appPath = 
+        path.join(buildHelpers.buildDistPath(options.app, appNameVersion), execName + '.app', 'Contents', 'MacOS', execName);
+
+      console.log(appPath);
 
       this.app = new Application({
-        path: path.join(),
+        path: appPath,
       });
 
       yield this.app.start();

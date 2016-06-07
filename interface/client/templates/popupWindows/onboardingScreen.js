@@ -93,11 +93,11 @@ Template['popupWindows_onboardingScreen'].helpers({
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
             // Calculates a block t display that is always getting 1% closer to target
-            syncing._displayBlock = Math.floor( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 ) || 0;
+            syncing._displayBlock = ( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 )|| syncing.currentBlock;
             syncing.progress = Math.floor(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
             syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
             syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
-            syncing.displayBlock = numeral(syncing._displayBlock).format('0,0');
+            syncing.displayBlock = numeral(Math.floor(syncing._displayBlock)).format('0,0');
             // saves data back
             TemplateVar.set(template, 'syncing', syncing);
             TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));

@@ -115,7 +115,6 @@
             {{#with TemplateVar.get "syncing"}}
                 <div class="status"> {{i18n "mist.popupWindows.onboarding.downloadingBlocks"}} ({{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}})</div>
                 <div class="blocks"> 
-                    <!-- {{i18n "mist.popupWindows.onboarding.block"}} {{dapp_formatNumber currentBlock}} of {{dapp_formatNumber highestBlock}} -->
                     
                     {{ syncStatus }}
 

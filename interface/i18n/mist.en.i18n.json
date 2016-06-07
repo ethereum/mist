@@ -192,7 +192,7 @@
                 "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
-                "depositBitcoin" : "Deposit Bitcoin",
+                "depositBitcoin" : "Deposit using Bitcoin",
                 "learnIt" : "Learn while you wait",
                 "downloadingBlocks": "Downloading blocks",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",

@@ -11,7 +11,6 @@ const logRotate = require('log-rotate');
 const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
-const dechunker = require('./ipc/dechunker.js');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const getIpcPath = require('./ipc/getIpcPath.js')
@@ -43,10 +42,7 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        this._socket = Sockets.get('node-ipc');
-        this._socket.on('data', _.bind(this._handleSocketResponse, this));
-
-        this._sendRequests = {};
+        this._socket = Sockets.get('node-ipc', Sockets.TYPES.WEB3_IPC);
 
         this.on('data', _.bind(this._logNodeData, this));
     }
@@ -224,7 +220,6 @@ class EthereumNode extends EventEmitter {
             })
                 .then(() => {
                     this.state = STATES.STOPPED;
-                    this._sendRequests = {};
                     this._stopPromise = null;
                 });
         } else {
@@ -242,64 +237,15 @@ class EthereumNode extends EventEmitter {
 
 
     /** 
-     * Send command to socket.
-     * @param  {String} name
-     * @param  {Array} [params]
+     * Send Web3 command to socket.
+     * @param  {String} method Method name
+     * @param  {Array} [params] Method arguments
      * @return {Promise} resolves to result or error.
      */
-    send (name, params) {
-        return Q.try(() => {
-            if (!this.isIpcConnected) {
-                throw new Error('IPC socket not connected');
-            }
-
-            return new Q((resolve, reject) => {
-                let requestId = _.uuid();
-
-                log.trace('Request', requestId, name , params);
-
-                this._sendRequests[requestId] = {
-                    resolve: resolve,
-                    reject: reject,
-                };
-
-                this._socket.write(JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: requestId,
-                    method: name,
-                    params: params || []
-                }));
-            })
-        });
-    }
-
-
-
-    _handleSocketResponse (data) {
-        dechunker(data, (err, result) => {
-            try {
-                if (err) {
-                    log.error('Socket response error', err);
-
-                    _.each(this._sendRequests, (req) => {
-                        req.reject(err);
-                    });
-
-                    this._sendRequests = {};
-                } else {
-                    let req = this._sendRequests[result.id];
-
-                    if (req) {
-                        log.trace('Response', result.id, result.result);
-
-                        req.resolve(result.result);
-                    } else {
-                        log.debug(`Unable to find corresponding request for ${result.id}`, result);
-                    }
-                }
-            } catch (err) {
-                log.error('Error handling socket response', err);
-            }
+    send (method, params) {
+        return this._socket.send({
+            method: method, 
+            params: params
         });
     }
 

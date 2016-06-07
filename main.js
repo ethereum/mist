@@ -143,14 +143,6 @@ app.on('before-quit', function(event){
             log.error('Error shutting down sockets');
         });
 
-    // CLEAR open IPC sockets to geth
-    _.each(global.sockets || {}, function(socket){
-        if (socket) {
-            log.info('Closing socket', socket.id);
-            socket.destroy();
-        }
-    });
-
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
@@ -180,8 +172,8 @@ app.on('ready', function() {
     // check for update
     require('./modules/updateChecker').run();
 
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
     require('./customProtocols.js');

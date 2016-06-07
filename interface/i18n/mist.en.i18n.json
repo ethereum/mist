@@ -193,6 +193,7 @@
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit using Bitcoin",
+                "viaShapeshift" : "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "learnIt" : "Learn while you wait",
                 "downloadingBlocks": "Downloading blocks",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",

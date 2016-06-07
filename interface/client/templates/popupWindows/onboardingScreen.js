@@ -92,7 +92,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             
             var syncing = TemplateVar.get(template, 'syncing');
             
-            syncing._displayBlock = Math.floor( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 10 ) || 0;
+            syncing._displayBlock = Math.floor( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 ) || 0;
 
             syncing.progress = Math.floor(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
 

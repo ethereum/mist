@@ -68,11 +68,11 @@ class EthereumNode extends EventEmitter {
     }
 
     get isEth () {
-        return this.type === 'eth';
+        return this._type === 'eth';
     }
 
     get isGeth () {
-        return this.type === 'geth';
+        return this._type === 'geth';
     }
 
     get isMainNetwork () {
@@ -193,7 +193,7 @@ class EthereumNode extends EventEmitter {
 
                 this.state = STATES.STOPPING;
 
-                log.info(`Stopping existing node: ${this.type} ${this.network}`);
+                log.info(`Stopping existing node: ${this._type} ${this._network}`);
 
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');

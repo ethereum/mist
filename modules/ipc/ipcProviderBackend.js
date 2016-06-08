@@ -130,38 +130,38 @@ class IpcProviderBackend {
                     this._connectionPromise[ownerId] = Q.try(() => {
                         log.debug(`Connecting socket ${ownerId}`);
 
-                        return Q.try(() => {
-                            // wait for node to connect first.
-                            if (!ethereumNode.state !== ethereumNode.STATES.CONNECTED) {
-                                return new Q((resolve, reject) => {
-                                    let onStateChange = (newState) => {
-                                        if (ethereumNode.STATES.CONNECTED === newState) {
-                                            ethereumNode.removeListener('state', onStateChange);
+                        // wait for node to connect first.
+                        if (ethereumNode.state !== ethereumNode.STATES.CONNECTED) {
+                            return new Q((resolve, reject) => {
+                                let onStateChange = (newState) => {
+                                    if (ethereumNode.STATES.CONNECTED === newState) {
+                                        ethereumNode.removeListener('state', onStateChange);
 
-                                            log.debug(`Ethereum node connected, resume connecting socket ${ownerId}`);
+                                        log.debug(`Ethereum node connected, resume connecting socket ${ownerId}`);
 
-                                            resolve();
-                                        }
-                                    };
+                                        resolve();
+                                    }
+                                };
 
-                                    ethereumNode.on('state', onStateChange);
-                                });
-                            }                    
-                        })
-                        .then(() => {
-                            return socket.connect({
-                                path: ipcPath,
-                            }, {
-                                timeout: 5000,
+                                ethereumNode.on('state', onStateChange);
                             });
-                        })
-                        .then(() => {
-                            delete this._connectionPromise[ownerId];
-
-                            // set writeable
-                            owner.send('ipcProvider-setWritable', true);
-                        })
+                        }                    
                     })
+                    .then(() => {
+                        return socket.connect({
+                            path: ipcPath,
+                        }, {
+                            timeout: 5000,
+                        });
+                    })
+                    .then(() => {
+                        log.debug(`Socket connected, id=${ownerId}`);
+
+                        owner.send('ipcProvider-setWritable', true);
+                    })
+                    .finally(() => {
+                        delete this._connectionPromise[ownerId];
+                    });
                 }
 
                 return this._connectionPromise[ownerId];

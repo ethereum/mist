@@ -341,13 +341,13 @@ class IpcProviderBackend {
     /**
     Make the error response object.
 
-    @param {Object|Array} payload Original payload
+    @param {Object|Array} originalPayload Original payload
     @param {Object} error Error result
 
     @method makeError
     */
-    _makeError (payload, error) {
-        let e = ([].concat(payload)).map((item) => {
+    _makeError (originalPayload, error) {
+        let e = ([].concat(originalPayload)).map((item) => {
             let e = _.extend({
                 jsonrpc: '2.0'
             }, error);
@@ -365,22 +365,22 @@ class IpcProviderBackend {
             return e;
         });
 
-        return _.isArray(payload) ? e : e[0];
+        return _.isArray(originalPayload) ? e : e[0];
     }
 
 
     /**
     Make the retrun response object.
 
-    @param {Object|Array} payload Original payload
+    @param {Object|Array} originalPayload Original payload
     @param {Object|Array} value Response result.
 
     @method makeReturnValue
     */
-    _makeReturnValue (payload, value) {
+    _makeReturnValue (originalPayload, value) {
         value = [].concat(value);
 
-        let allResults = ([].concat(payload)).map((item, idx) => {
+        let allResults = ([].concat(originalPayload)).map((item, idx) => {
             let ret = {
                 jsonrpc: "2.0"
             };
@@ -394,7 +394,7 @@ class IpcProviderBackend {
             return ret;
         });
 
-        return _.isArray(payload) ? allResults : allResults[0];
+        return _.isArray(originalPayload) ? allResults : allResults[0];
     }
 
 }

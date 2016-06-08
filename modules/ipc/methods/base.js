@@ -28,23 +28,22 @@ module.exports = class BaseProcessor {
         return conn.socket.send(payload, {
             fullResult: true,
         })
-        .then((result) => {
+        .then((ret) => {
             /*
-            Result may be a single response or an array of responses.
+            Result may be a single response or an array of responses to a batch request.
              */
-            
-            let resultArray = [].concat(result);
-            let ret = [];
+            const resultArray = [].concat(ret.result);
+            const final = [];
 
             for (let r of resultArray) {
                 if (r.error) {
                     throw r.error;
                 } else {
-                    ret.push(r.result);
+                    final.push(r.result);
                 }
             }
 
-            return _.isArray(result) ? ret : ret[0];
+            return ret.isBatch ? final : final[0];
         });
     }
 };

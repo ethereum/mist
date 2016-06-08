@@ -92,15 +92,32 @@ Template['popupWindows_onboardingScreen'].helpers({
         template._intervalId = Meteor.setInterval(function(){
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
+            
             // Calculates a block t display that is always getting 1% closer to target
             syncing._displayBlock = ( syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 )|| syncing.currentBlock;
-            syncing.progress = Math.floor(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
+            syncing._displayState = ( syncing._displayState + (syncing.pulledStates - syncing._displayState) / 100 )|| syncing.pulledStates;
+            syncing._displayKnownStates = ( syncing._displayKnownStates + (syncing.knownStates - syncing._displayKnownStates) / 100 )|| syncing.knownStates;
+
+            // Calculates progress
+            syncing.progress = Math.round(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
+            
+            // Makes fancy strings
             syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
             syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
-            syncing.displayBlock = numeral(Math.floor(syncing._displayBlock)).format('0,0');
-            // saves data back
+            syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
+            syncing.displayState = numeral(Math.round(syncing._displayState)).format('0,0');
+            syncing.displayKnownStates = numeral(Math.round(syncing._displayKnownStates)).format('0,0');
+
+            // Saves the data back to the object
             TemplateVar.set(template, 'syncing', syncing);
-            TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+
+            // Only show states if they are less than 50% downloaded
+            if (syncing._displayState / syncing._displayKnownStates  > 0.5 ) {
+                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+            } else {
+                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
+            }
+
 
         }, 50);
 

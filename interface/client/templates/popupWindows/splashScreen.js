@@ -86,10 +86,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
         if (status == 'inProgress') {
             TemplateVar.set(template, 'showStartAppButton', true);
+            TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
             if (data != false) {
                 // if state is "in progress" and we have data
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
                 showNodeLog = false;
                 var translationString = '';                    
 

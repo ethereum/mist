@@ -46,6 +46,8 @@ class IpcProviderBackend {
         ipc.on('ipcProvider-write', _.bind(this._sendRequest, this, false));
         ipc.on('ipcProvider-writeSync', _.bind(this._sendRequest, this, true));
 
+        this._connectionPromise = {};
+
         // dynamically load in method processors
         let processors = fs.readdirSync(path.join(__dirname, 'methods'));
 
@@ -84,20 +86,6 @@ class IpcProviderBackend {
             }
         })
         .then(() => {
-            if (!socket.isConnected) {
-                log.trace('Reconnecting socket...');
-
-                return socket.connect({
-                    path: ipcPath,
-                }, {
-                    timeout: 5000,
-                });
-            }
-        })
-        .then(() => {
-            // set writeable
-            owner.send('ipcProvider-setWritable', true);
-
             if (!this._connections[ownerId]) {
                 // save to collection
                 this._connections[ownerId] = {
@@ -132,7 +120,54 @@ class IpcProviderBackend {
                     owner.send('ipcProvider-data', JSON.stringify(data));
                 });                
             }
+        })
+        .then(() => {
+            if (!socket.isConnected) {
+                // since we may enter this function multiple times for the same
+                // event source's IPC we don't want to repeat the connection 
+                // process each time - so let's track things in a promise
+                if (!this._connectionPromise[ownerId]) {
+                    this._connectionPromise[ownerId] = Q.try(() => {
+                        log.debug(`Connecting socket ${ownerId}`);
 
+                        return Q.try(() => {
+                            // wait for node to connect first.
+                            if (!ethereumNode.state !== ethereumNode.STATES.CONNECTED) {
+                                return new Q((resolve, reject) => {
+                                    let onStateChange = (newState) => {
+                                        if (ethereumNode.STATES.CONNECTED === newState) {
+                                            ethereumNode.removeListener('state', onStateChange);
+
+                                            log.debug(`Ethereum node connected, resume connecting socket ${ownerId}`);
+
+                                            resolve();
+                                        }
+                                    };
+
+                                    ethereumNode.on('state', onStateChange);
+                                });
+                            }                    
+                        })
+                        .then(() => {
+                            return socket.connect({
+                                path: ipcPath,
+                            }, {
+                                timeout: 5000,
+                            });
+                        })
+                        .then(() => {
+                            delete this._connectionPromise[ownerId];
+
+                            // set writeable
+                            owner.send('ipcProvider-setWritable', true);
+                        })
+                    })
+                }
+
+                return this._connectionPromise[ownerId];
+            }
+        })
+        .then(() => {
             return this._connections[ownerId];
         });
     }
@@ -186,31 +221,6 @@ class IpcProviderBackend {
                 }))
                 .catch((err) => {
                     log.error('Error disconnecting sockets', err);
-                });
-
-                break;
-            // auto-sync whenever node gets connected
-            case ethereumNode.STATES.CONNECTED:
-                log.info('Ethereum node connected, re-connect sockets');
-
-                Q.all(_.map(this._connections, (item) => {
-                    if (item.socket.isConnected) {
-                        return Q.resolve();
-                    } else {
-                        return item.socket.connect({ 
-                            path: ipcPath
-                        }, {
-                            timeout: 5000
-                        })
-                        .then(() => {
-                            log.debug(`Tell owner ${item.id} that socket is again writeable`);
-
-                            item.owner.send('ipcProvider-setWritable', true);
-                        });
-                    }
-                }))
-                .catch((err) => {
-                    log.error('Error re-connecting sockets', err);
                 });
 
                 break;

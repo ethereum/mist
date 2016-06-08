@@ -521,7 +521,7 @@ class EthereumNode extends EventEmitter {
                                 popupCallback();
                             }
 
-                            resolve();                        
+                            resolve(proc);                        
                         }
                     }, 4000);
                 })

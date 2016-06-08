@@ -299,9 +299,9 @@ class Windows {
 
 
     broadcast () {
-        log.debug('Broadcast');
-
         const data = arguments;
+
+        log.trace('Broadcast', data);
 
         _.each(this._windows, (wnd) => {
             wnd.send.apply(wnd, data);

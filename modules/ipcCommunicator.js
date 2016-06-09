@@ -152,6 +152,17 @@ ipc.on('mistAPI_requestAccount', function(e){
 });
 
 
+ipc.on('uiAction_connectAccountPopupWindow', function(e) {
+    Windows.createPopup('connectAccount', {
+        ownerId: e.sender.getId(),
+        electronOptions: {
+            width: 460,
+            height: 460,
+            alwaysOnTop: true,
+        },
+    });
+});
+
 
 const uiLoggers = {};
 

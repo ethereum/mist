@@ -86,10 +86,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
         if (status == 'inProgress') {
             TemplateVar.set(template, 'showStartAppButton', true);
+            TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
             if (data != false) {
                 // if state is "in progress" and we have data
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
                 showNodeLog = false;
                 var translationString = '';                    
 
@@ -190,17 +190,17 @@ Template['popupWindows_splashScreen'].helpers({
 
             } else {
                 // Increment each them slowly to match target number
-                syncData._displayBlock =  Math.floor(syncData._displayBlock + (Number(syncData.currentBlock) - syncData._displayBlock) / 10);
+                syncData._displayBlock =  syncData._displayBlock + (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
 
-                syncData._displayState =  Math.floor(syncData._displayState + (Number(syncData.pulledStates) - syncData._displayState) / 10);
+                syncData._displayState =  syncData._displayState + (Number(syncData.pulledStates) - syncData._displayState) / 10;
 
-                syncData._displayKnownStates =  Math.floor(syncData._displayKnownStates + (Number(syncData.knownStates) - syncData._displayKnownStates) / 10);
+                syncData._displayKnownStates =  syncData._displayKnownStates + (Number(syncData.knownStates) - syncData._displayKnownStates) / 10;
             };            
 
             // Create the fancy strings
-            lastSyncData.displayBlock = numeral(lastSyncData._displayBlock).format('0,0');
-            lastSyncData.displayState = numeral(lastSyncData._displayState).format('0,0');
-            lastSyncData.displayKnownStates = numeral(lastSyncData._displayKnownStates).format('0,0');
+            lastSyncData.displayBlock = numeral(Math.floor(lastSyncData._displayBlock)).format('0,0');
+            lastSyncData.displayState = numeral(Math.floor(lastSyncData._displayState)).format('0,0');
+            lastSyncData.displayKnownStates = numeral(Math.floor(lastSyncData._displayKnownStates)).format('0,0');
 
             // Translate it
             var translatedMessage = TAPi18n.__(translationString, syncData);

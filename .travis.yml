@@ -20,9 +20,7 @@ script:
 
 notifications:
   email:
-    - ram@hiddentao.com
-    - avsa@ethdev.com
-    - fabian@ethdev.com
+    - mist@ethereum.org
 
 
 

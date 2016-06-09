@@ -378,16 +378,14 @@ class IpcProviderBackend {
     @method makeReturnValue
     */
     _makeReturnValue (originalPayload, value) {
-        value = [].concat(value);
+        let finalValue = _.isArray(originalPayload) ? value : [value];
 
         let allResults = ([].concat(originalPayload)).map((item, idx) => {
             let ret = {
                 jsonrpc: "2.0"
             };
 
-            if (value) {
-                ret.result = value[idx];
-            }
+            ret.result = finalValue[idx];
 
             ret.id = item.id;
             

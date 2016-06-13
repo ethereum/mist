@@ -102,7 +102,7 @@ To run a private network you will need to set the `networkdid`, `ipcpath` and
 `datadir` flags:
 
 ```bash
-$ electron . -- --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+$ electron . -- --networkid 1234 --ipcpath ~/Library/Ethereum/geth.ipc --datadir ~/Library/Ethereum/privatenet
 ```
 
 You can also run `geth` separately yourself with the same options prior to start 

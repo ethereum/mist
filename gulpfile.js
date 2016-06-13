@@ -33,7 +33,7 @@ else
 var type = 'mist';
 var applicationName = 'Mist'; 
 
-var electronVersion = '1.0.1';
+var electronVersion = '1.2.2';
 var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;

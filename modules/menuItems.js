@@ -372,10 +372,10 @@ var menuTempl = function(webviews) {
         click: function(){
             if(!global.mining) {
                 ethereumNode.send('miner_start', [1])
-                    .then((result) => {
-                        log.info('miner_start', result);
+                    .then((ret) => {
+                        log.info('miner_start', ret.result);
 
-                        if (result) {
+                        if (ret.result) {
                             global.mining = true;
                             createMenu(webviews);
                         }                        
@@ -385,10 +385,10 @@ var menuTempl = function(webviews) {
                     });
             } else {
                 ethereumNode.send('miner_stop', [1])
-                    .then((result) => {
-                        log.info('miner_stop', result);
+                    .then((ret) => {
+                        log.info('miner_stop', ret.result);
 
-                        if (result) {
+                        if (ret.result) {
                             global.mining = false;
                             createMenu(webviews);
                         }                        

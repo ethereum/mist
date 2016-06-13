@@ -2,7 +2,7 @@
 @module preloader MistUI
 */
 
-require('./consoleLogCapture')('mist');
+require('./include/common')('mist');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 const syncMinimongo = require('../syncMinimongo.js');
@@ -16,7 +16,7 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

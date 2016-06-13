@@ -2,7 +2,7 @@
 @module preloader PopupWindows
 */
 
-require('./consoleLogCapture')('popup');
+require('./include/common')('popup');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 require('../openExternal.js');
@@ -12,7 +12,7 @@ const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const web3Admin = require('../web3Admin.js');
 
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

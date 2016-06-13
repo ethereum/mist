@@ -1,3 +1,4 @@
+.DS_Store
 node_modules/
 packages/
 interface_build/

@@ -1,12 +1,19 @@
 "use strict";
 
-const tests = require('../_base').mocha(module, {
+const test = require('../_base').mocha(module, {
   app: 'wallet'
 });
 
 
-tests['it opens a window'] = function*() {
-  const win = this.app.browserWindow;
-
-  (yield this.app.client.getWindowCount()).should.eql(1);
+test.beforeEach = function*() {
+  if (!this.app.webContents) {
+    throw new Error('Unable to get active window');
+  }
 };
+
+
+test['url'] = function*() {
+  console.log(this.app.webContents.getURL());
+};
+
+

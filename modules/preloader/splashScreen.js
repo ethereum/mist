@@ -1,4 +1,4 @@
-require('./consoleLogCapture')('splash');
+require('./include/common')('splash');
 const mist = require('../mistAPI.js');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
@@ -6,7 +6,7 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const Web3 = require('web3');
 require('../openExternal.js');
 
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

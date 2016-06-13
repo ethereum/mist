@@ -129,8 +129,6 @@ class Settings {
     logger.setup(argv);
 
     this._log = logger.create('Settings');    
-
-    this._log.info(argv);
   }
 
   get cli () {

@@ -1,7 +1,7 @@
 /**
 @module preloader dapps
 */
-require('./consoleLogCapture')('dapps');
+require('./include/common')('dapps');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 const shell = electron.shell;
@@ -13,7 +13,7 @@ require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');
 
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

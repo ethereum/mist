@@ -44,11 +44,23 @@ exports.mocha = function(_module, options) {
       yield this.geth.start();
 
       this.app = new Application({
+        requireName: 'electronRequire',
+        startTimeout: 5000,
+        waitTimeout: 5000,
+        quitTimeout: 10000,
         path: appPath,
-        args: ['--mode', options.app, '--loglevel', 'debug', '--logfile', logFilePath, '--node-datadir', this.geth.dataDir],
+        args: [
+          '--mode', options.app, 
+          '--loglevel', 'debug', 
+          '--logfile', logFilePath, 
+          '--node-datadir', this.geth.dataDir,
+          '--ipcpath', path.join(this.geth.dataDir, 'geth.ipc')
+        ],
       });
 
       yield this.app.start();
+
+      yield this.app.client.waitUntilWindowLoaded();
 
       yield Q.delay(5000);
     },

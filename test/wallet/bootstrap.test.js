@@ -1,6 +1,8 @@
 "use strict";
 
-const Q = require('bluebird');
+const Q = require('bluebird'),
+  fs = require('fs'),
+  path = require('path');
 
 
 const test = require('../_base').mocha(module, {
@@ -15,10 +17,10 @@ test.beforeEach = function*() {
 };
 
 
-test['url'] = function*() {
-  yield Q.delay(10000);
-
-  console.log(this.app.webContents.getId(), this.app.webContents.getURL(), this.app.webContents.getTitle());
+test['title'] = function*() {
+  console.log(yield this.app.browserWindow.getTitle());
+  console.log(yield this.app.browserWindow.getId());
+  console.log(yield this.app.browserWindow.getURL());
 };
 
 

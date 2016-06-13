@@ -1,6 +1,7 @@
 require('co-mocha');
 
 const Q = require('bluebird');
+const fs = require('fs');
 const shell = require('shelljs');
 const path = require('path');
 const buildHelpers = require('../buildHelpers');
@@ -9,6 +10,8 @@ const Application = require('spectron').Application;
 
 const chai = require('chai');
 chai.should();
+
+process.env.NODE_ENV = 'test';
 
 
 exports.mocha = function(_module, options) {
@@ -44,7 +47,6 @@ exports.mocha = function(_module, options) {
       yield this.geth.start();
 
       this.app = new Application({
-        requireName: 'electronRequire',
         startTimeout: 5000,
         waitTimeout: 5000,
         quitTimeout: 10000,
@@ -62,13 +64,19 @@ exports.mocha = function(_module, options) {
 
       yield this.app.client.waitUntilWindowLoaded();
 
-      yield Q.delay(5000);
+      yield Q.delay(10000);
+
+      fs.writeFileSync(
+        path.join(__dirname, 'mist.png'), 
+        yield this.app.browserWindow.capturePage()
+      );
     },
 
     after: function*() {
-      if (this.app && this.app.isRunning()) {
-        yield this.app.stop();
-      }
+      // QUITTING APP DOES NOT WORK
+      // if (this.app && this.app.isRunning()) {
+      //   yield this.app.stop();
+      // }
 
       if (this.geth && this.geth.isRunning) {
         yield this.geth.stop();

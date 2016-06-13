@@ -158,8 +158,6 @@ app.on('before-quit', function(event){
 });
 
 
-
-
 const NODE_TYPE = 'geth';
 
 

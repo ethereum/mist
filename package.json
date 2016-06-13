@@ -46,7 +46,7 @@
     "rcedit": "^0.3.0",
     "run-sequence": "^1.2.1",
     "shelljs": "^0.7.0",
-    "spectron": "^3.2.2"
+    "spectron": "^3.0.0"
   },
   "engines": {
     "node": ">4.3.0",

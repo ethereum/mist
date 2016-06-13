@@ -35,7 +35,7 @@ class Window extends EventEmitter {
             acceptFirstMouse: true,
             darkTheme: true,
             webPreferences: {
-                nodeIntegration: false,
+                nodeIntegration: (process.env.NODE_ENV === 'test'),
                 webaudio: true,
                 webgl: false,
                 webSecurity: false, // necessary to make routing work on file:// protocol

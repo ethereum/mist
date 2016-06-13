@@ -38,10 +38,6 @@ var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
 
-console.log('You can select a platform like: --platform (all or darwin or win32 or linux)');
-
-console.log('Mist version:', version);
-console.log('Electron version:', electronVersion);
 
 if(_.contains(options.platform, 'win32')) {
     osVersions.push('win32-ia32');
@@ -67,7 +63,7 @@ if(_.contains(options.platform, 'all')) {
         'win32-x64'
     ];
 }
-console.log('Bundling platforms: ', osVersions);
+
 
 
 
@@ -75,12 +71,21 @@ console.log('Bundling platforms: ', osVersions);
 
 /// --------------------------------------------------------------
 
+gulp.task('log-build-info', function(cb) {
+    console.log('You can select a platform like: --platform (all or darwin or win32 or linux)');
+    console.log('Mist version:', version);
+    console.log('Electron version:', electronVersion);
+    console.log('Bundling platforms: ', osVersions);
+    cb();
+});
+
+
 // TASKS
-gulp.task('set-variables-mist', function () {
+gulp.task('set-variables-mist', ['log-build-info'], function () {
     type = 'mist';
     applicationName = 'Mist';
 });
-gulp.task('set-variables-wallet', function () {
+gulp.task('set-variables-wallet', ['log-build-info'], function () {
     type = 'wallet';
     applicationName = 'Ethereum Wallet';
 });

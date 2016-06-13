@@ -105,9 +105,10 @@ const argv = require('yargs')
 
 argv.nodeOptions = [];
 
-for (let optIdx in argv._) {
-    if ('-' === argv._[optIdx].charAt(0)) {
-        argv.nodeOptions = argv._.slice(optIdx);
+for (let optIdx in argv) {
+    if (0 === optIdx.indexOf('node-')) {
+        argv.nodeOptions.push('--' + optIdx.substr(5));
+        argv.nodeOptions.push(argv[optIdx]);
 
         break;
     }
@@ -128,6 +129,8 @@ class Settings {
     logger.setup(argv);
 
     this._log = logger.create('Settings');    
+
+    this._log.info(argv);
   }
 
   get cli () {

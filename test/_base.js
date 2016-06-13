@@ -1,5 +1,7 @@
 require('co-mocha');
 
+const Q = require('bluebird');
+const shell = require('shelljs');
 const path = require('path');
 const buildHelpers = require('../buildHelpers');
 const gethPrivate = require('geth-private');
@@ -16,6 +18,9 @@ exports.mocha = function(_module, options) {
     before: function*() {
       this.assert = chai.assert;
       this.expect = chai.expect;
+
+      const logFilePath = path.join(__dirname, 'mist.log');
+      shell.rm('-rf', logFilePath);
 
       const appNameVersion = buildHelpers.buildDistPkgName('darwin', 'wallet', {
         replaceOs: true,
@@ -38,15 +43,14 @@ exports.mocha = function(_module, options) {
 
       yield this.geth.start();
 
-
       this.app = new Application({
         path: appPath,
-        args: ['--mode', options.app, '--', '--datadir', this.geth.dataDir],
+        args: ['--mode', options.app, '--loglevel', 'debug', '--logfile', logFilePath, '--node-datadir', this.geth.dataDir],
       });
 
       yield this.app.start();
 
-      yield this.app.client.waitUntilWindowLoaded();
+      yield Q.delay(5000);
     },
 
     after: function*() {
@@ -54,7 +58,9 @@ exports.mocha = function(_module, options) {
         yield this.app.stop();
       }
 
-      yield this.geth.stop();
+      if (this.geth && this.geth.isRunning) {
+        yield this.geth.stop();
+      }
     },
 
     tests: tests,

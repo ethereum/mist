@@ -112,9 +112,9 @@ class IpcProviderBackend {
                     log.trace('Notification received', ownerId, data);
 
                     if (data.error) {
-                        data = this._makeError({}, data);
+                        data = this._makeErrorResponsePayload({}, data);
                     } else {
-                        data = this._makeReturnValue({}, data);
+                        data = this._makeResponsePayload({}, data);
                     }
 
                     owner.send('ipcProvider-data', JSON.stringify(data));
@@ -238,12 +238,13 @@ class IpcProviderBackend {
 
         log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
 
-        let jsonPayload = null;
+        const originalPayloadStr = payload;
 
-        Q.try(() => {
-            jsonPayload = JSON.parse(payload);
+        return Q.try(() => {
+            // overwrite playload var with parsed version
+            payload = JSON.parse(originalPayloadStr);
 
-            return this._getOrCreateConnection(event);
+            return this._getOrCreateConnection(event)
         })
         .then((conn) => {
             if (!conn.socket.isConnected) {
@@ -252,29 +253,34 @@ class IpcProviderBackend {
                 throw this.ERRORS.METHOD_TIMEOUT;
             }
 
-            this._validateRequestPayload(conn, jsonPayload);
+            // reparse original string (so that we don't modify input payload)
+            let finalPayload = JSON.parse(originalPayloadStr);
 
-            return conn;
-        })
-        .then((conn) => {
-            if (!_.isArray(jsonPayload) && this._processors[jsonPayload.method]) {
-                return this._processors[jsonPayload.method].exec(conn, jsonPayload);
+            this._sanitizeRequestPayload(conn, finalPayload);
+
+            // if a single payload and has an erro then throw it
+            if (!_.isArray(finalPayload) && finalPayload.error) {
+                throw finalPayload.error;
+            }
+
+            if (this._processors[finalPayload.method]) {
+                return this._processors[finalPayload.method].exec(conn, finalPayload);
             } else {
-                return this._processors.base.exec(conn, jsonPayload);                
+                return this._processors.base.exec(conn, finalPayload);                
             }
         })
         .then((result) => {
             log.trace('Got result', result);
 
-            return this._makeReturnValue(jsonPayload, result);
+            return this._makeResponsePayload(payload, result);
         })
         .catch((err) => {
-            err = this._makeError(jsonPayload || {}, {
+            log.error('Send request failed', err);
+
+            err = this._makeErrorResponsePayload(payload || {}, {
                 message: (typeof err === 'string' ? err : err.message),
                 code: err.code,
             });
-
-            log.error('Send request failed', err);
 
             return err;
         })
@@ -288,66 +294,43 @@ class IpcProviderBackend {
             } else {
                 event.sender.send('ipcProvider-data', returnValue);
             }
-        })
+        });        
     }
 
 
-    /**
-    Validate a request payload.
 
-    @method _validateRequestPayload
+    /**
+    Sanitize a single or batch request payload.
+
+    This will modify the passed-in payload.
+
     @param {Object} conn The connection.
-    @param {Object} payload The request payload.
-    @throw {Error} if request invalid.
+    @param {Object|Array} payload The request payload.
     */
-    _validateRequestPayload(conn, payload) {
-        log.trace('Filter request payload', payload);
-
-        // main window or popupwindows - always allow requests
-        let wnd = Windows.getById(conn.id);
-
-        if (wnd && ('main' === wnd.type || wnd.isPopup)) {
-            return payload;
-        }
-
-        let __check = (p) => {
-            if (!_.isObject(p)) {
-                throw ERRORS.INVALID_PAYLOAD;
-            }
-
-            // prevent dapps from acccesing admin endpoints
-            if(!/^eth_|^shh_|^net_|^web3_|^db_/.test(p.method)){
-                throw ERRORS.METHOD_DENIED;
-            }
-        }
-
-
+    _sanitizeRequestPayload (conn, payload) {
         if (_.isArray(payload)) {
-            for (let p of payload) {
+            _.each(payload, (p) => {
                 if ('eth_sendTransaction' === p.method) {
-                    throw ERRORS.BATCH_TX_DENIED;                    
+                    p.error = ERRORS.BATCH_TX_DENIED;
+                } else {
+                    this._processors.base.sanitizePayload(conn, p);
                 }
-
-                __check(p);
-            }
+            });
         } else {
-            __check(payload);
+            this._processors.base.sanitizePayload(conn, payload);
         }
-
-        return payload;
     }
 
 
+
     /**
-    Make the error response object.
+    Make an error response payload
 
-    @param {Object|Array} payload Original payload
+    @param {Object|Array} originalPayload Original payload
     @param {Object} error Error result
-
-    @method makeError
     */
-    _makeError (payload, error) {
-        let e = ([].concat(payload)).map((item) => {
+    _makeErrorResponsePayload (originalPayload, error) {
+        let e = ([].concat(originalPayload)).map((item) => {
             let e = _.extend({
                 jsonrpc: '2.0'
             }, error);
@@ -365,36 +348,44 @@ class IpcProviderBackend {
             return e;
         });
 
-        return _.isArray(payload) ? e : e[0];
+        return _.isArray(originalPayload) ? e : e[0];
     }
 
 
-    /**
-    Make the retrun response object.
 
-    @param {Object|Array} payload Original payload
-    @param {Object|Array} value Response result.
+
+
+    /**
+    Make a response payload.
+
+    @param {Object|Array} originalPayload Original payload
+    @param {Object|Array} value Response results.
 
     @method makeReturnValue
     */
-    _makeReturnValue (payload, value) {
-        value = [].concat(value);
+    _makeResponsePayload (originalPayload, value) {
+        let finalValue = _.isArray(originalPayload) ? value : [value];
 
-        let allResults = ([].concat(payload)).map((item, idx) => {
-            let ret = {
-                jsonrpc: "2.0"
-            };
+        let allResults = ([].concat(originalPayload)).map((item, idx) => {
+            let finalResult = finalValue[idx];
 
-            if (value) {
-                ret.result = value[idx];
+            let ret;
+
+            // handle error result
+            if (finalResult.error) {
+                ret = this._makeErrorResponsePayload(item, finalResult.error);
+            } else {
+                ret = _.extend({}, item, {
+                    result: finalResult.result,
+                });
             }
 
-            ret.id = item.id;
-            
+            ret.jsonrpc = '2.0';
+
             return ret;
         });
 
-        return _.isArray(payload) ? allResults : allResults[0];
+        return _.isArray(originalPayload) ? allResults : allResults[0];
     }
 
 }

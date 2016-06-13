@@ -13,18 +13,21 @@ module.exports = class extends BaseProcessor {
      */
     exec (conn, payload) {
         return super.exec(conn, payload)
-        .then((result) => {
-            this._log.trace('Got account list', result);
+        .then((ret) => {
+            this._log.trace('Got account list', ret.result);
 
-            let tab = Tabs.findOne({ webviewId: conn.id });
+            // if not an admin connection then do a check
+            if (!this._isAdminConnection(conn)) {
+                let tab = Tabs.findOne({ webviewId: conn.id });
 
-            if(_.get(tab, 'permissions.accounts')) {
-                result = _.intersection(result, tab.permissions.accounts);
-            } else {
-                result = [];
-            }
+                if(_.get(tab, 'permissions.accounts')) {
+                    ret.result = _.intersection(ret.result, tab.permissions.accounts);
+                } else {
+                    ret.result = [];
+                }                
+            }                
 
-            return result;
+            return ret;
         });
     }
 }

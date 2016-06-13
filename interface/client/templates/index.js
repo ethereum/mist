@@ -25,6 +25,9 @@ Template.body.helpers({
         if(~location.hash.indexOf('#loadingWindow')) {
             return 'popupWindows_loadingWindow';
         }
+        if(~location.hash.indexOf('#updateAvailable')) {
+            return 'popupWindows_updateAvailable';
+        }
         if(~location.hash.indexOf('#splashScreen')) {
             return 'popupWindows_splashScreen';
         }

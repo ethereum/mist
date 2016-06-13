@@ -21,33 +21,21 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 
-// CLI options
-const argv = require('yargs')
-    .usage('Usage: $0 [options]')
-    .describe('version', 'Display app version')
-    .describe('mode', 'App mode: wallet, mist (default)')
-    .describe('gethpath', 'Path to geth executable to use instead of default')
-    .describe('ethpath', 'Path to eth executable to use instead of default')
-    .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
-    .describe('reset-tabs', 'Reset Mist tabs to their default settings')
-    .describe('logfile', 'Logs will be written to this file')
-    .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
-    .alias('m', 'mode')
-    .help('h')
-    .alias('h', 'help')
-    .parse(process.argv.slice(1));
+const Settings = require('./modules/settings');
+Settings.init();
 
-if (argv.version) {
-    console.log(packageJson.version);
+
+if (Settings.cli.version) {
+    console.log(Settings.appVersion);
+
     process.exit(0);
 }
 
-if (argv.ignoreGpuBlacklist) {
+if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
 // logging setup
-logger.setup(argv);
 const log = logger.create('main');
 
 // GLOBAL Variables
@@ -57,18 +45,19 @@ global.path = {
     USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
-global.appName = 'Mist';
 
-global.production = false;
+global.dirname  = __dirname;
 
-global.mode = (argv.mode ? argv.mode : 'mist');
-global.paths = {
-    geth: argv.gethpath,
-    eth: argv.ethpath,
-};
+global.version = Settings.appVersion;
+global.license = Settings.appLicense;
 
-global.version = packageJson.version;
-global.license = packageJson.license;
+global.production = Settings.inProductionMode;
+log.info(`Running in production mode: ${global.production}`);
+
+global.mode = Settings.uiMode;
+
+global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
+
 
 
 require('./modules/ipcCommunicator.js');
@@ -112,7 +101,7 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
-    if (argv.resetTabs) {
+    if (Settings.cli.resetTabs) {
         url += '?reset-tabs=true'
     }
 
@@ -154,14 +143,6 @@ app.on('before-quit', function(event){
             log.error('Error shutting down sockets');
         });
 
-    // CLEAR open IPC sockets to geth
-    _.each(global.sockets || {}, function(socket){
-        if (socket) {
-            log.info('Closing socket', socket.id);
-            socket.destroy();
-        }
-    });
-
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
@@ -188,8 +169,11 @@ app.on('ready', function() {
     // Initialise window mgr
     Windows.init();
 
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
+    // check for update
+    require('./modules/updateChecker').run();
+
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
     require('./customProtocols.js');
@@ -208,7 +192,7 @@ app.on('ready', function() {
                 webPreferences: {
                     preload: __dirname +'/modules/preloader/mistUI.js',
                     'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
+                    'overlay-scrollbars': true
                 }
             }
         });
@@ -224,7 +208,7 @@ app.on('ready', function() {
                 webPreferences: {
                     preload: __dirname +'/modules/preloader/wallet.js',
                     'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
+                    'overlay-scrollbars': true
                 }
             }
         });

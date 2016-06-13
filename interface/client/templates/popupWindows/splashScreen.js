@@ -24,17 +24,20 @@ var lastSyncData = {},
 
 Template['popupWindows_splashScreen'].onCreated(function(){
     var template = this;
+    template._intervalId = null;
 
     ipc.on('uiAction_nodeLogText', function(e, text, data) {
         if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
+            TemplateVar.set(template, 'syncStatusMessage', false);
+
             return;
         }
     });
 
 
     ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
-        console.trace('Node status', status);
+        console.trace('Node status', status, errorTag);
 
         switch (status) {
             case 'starting':
@@ -77,58 +80,65 @@ Template['popupWindows_splashScreen'].onCreated(function(){
     });
 
     ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
-        console.trace('Node sync status', status);
+        console.trace('Node sync status', status, data);
 
         TemplateVar.set(template, 'smallClass', 'small');
 
-        switch (status) {
-            case 'inProgress':
-                TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
-                TemplateVar.set(template, 'showStartAppButton', true);
+        if (status == 'inProgress') {
+            TemplateVar.set(template, 'showStartAppButton', true);
+            TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
+            if (data != false) {
+                // if state is "in progress" and we have data
                 showNodeLog = false;
+                var translationString = '';                    
 
+                // add the data received to the object lastSyncData
                 lastSyncData = _.extend(lastSyncData, data || {});
-                var progress = ((lastSyncData.currentBlock - lastSyncData.startingBlock) / (lastSyncData.highestBlock - lastSyncData.startingBlock)) * 100;
+                
+                // Select the appropriate message
+                if(web3.net.peerCount > 0) {
+                    // Check which state we are
+                    if (lastSyncData.knownStates > lastSyncData.lastKnownStates 
+                        || (lastSyncData.pulledStates / lastSyncData.knownStates) < 0.9  ) {
+                        // Mostly downloading new states
+                        translationString = 'mist.startScreen.nodeSyncInfoStates';
 
-                lastSyncData._currentBlock = lastSyncData.currentBlock;
-                lastSyncData._highestBlock = lastSyncData.highestBlock;
-                lastSyncData.currentBlock = numeral(lastSyncData.currentBlock).format('0,0');
-                lastSyncData.highestBlock = numeral(lastSyncData.highestBlock).format('0,0');
-
-                if (progress === 0) {
-                    progress = 1;
-                }
-
-                var translatedText = '';                    
-
-                // show node info text
-                if(lastSyncData.startingBlock) {
-                    // show progress bar
-                    TemplateVar.set(template, 'showProgressBar', true);
-
-                    if(lastSyncData._highestBlock - lastSyncData._currentBlock < 3000) {
-                        translatedText = TAPi18n.__('mist.startScreen.nodeSyncProcessing');
                     } else {
-                        translatedText = TAPi18n.__('mist.startScreen.nodeSyncInfo', lastSyncData);
+                        // Mostly downloading blocks
+                        translationString = 'mist.startScreen.nodeSyncInfo';
+
                     }
                 } else {
-                    translatedText = TAPi18n.__('mist.startScreen.nodeSyncConnecting');                    
-                }
-                
-                TemplateVar.set(template, 'logText', false);
-                TemplateVar.set(template, 'text', 
-                    TAPi18n.__('mist.startScreen.nodeSyncing') + 
-                    '<br /><small>' + translatedText + '</small>'
-                );
+                    // Not online
+                    translationString = 'mist.startScreen.nodeSyncConnecting';                    
+                } 
 
-                // set progress value
-                if(_.isFinite(progress)) {
-                    TemplateVar.set(template, 'showProgressBar', true);
-                    TemplateVar.set(template, 'progress', progress);
+                // Saves data as numbers (hex)
+                lastSyncData._highestBlock = lastSyncData.highestBlock;
+                lastSyncData.lastKnownStates = lastSyncData.knownStates;
+
+                // saves data as pretty strings
+                lastSyncData.highestBlock = numeral(lastSyncData.highestBlock).format('0,0');
+
+                // saves to template
+                TemplateVar.set(template, 'lastSyncData', lastSyncData);
+
+            } else {
+                // It's not connected anymore
+                if (web3.net.peerCount > 1) {
+                    translationString = 'mist.startScreen.nodeSyncFoundPeers';                    
+                } else {
+                    translationString = 'mist.startScreen.nodeSyncConnecting';                    
                 }
 
-                break;
+                TemplateVar.set(template, 'lastSyncData', {'peers': web3.net.peerCount});
+
+            }
+
+            TemplateVar.set(template, 'logText', false);
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeSyncing'));
+            TemplateVar.set(template, 'syncStatusMessage', translationString);
         }
     });
 
@@ -141,7 +151,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method mode
     */
     'mode': function(){
-        return mode;
+        return window.mist.mode;
     },
     /**
     Returns the icon path
@@ -149,7 +159,67 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ dirname +'icons/'+ mode +'/icon2x.png';
+        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+    },
+    /**
+    Updates the Sync Message live
+
+    @method syncStatus
+    */
+    'syncStatus' : function() {
+
+        // This functions loops trhough numbers while waiting for the node to respond
+        var template = Template.instance();
+        Meteor.clearInterval(template._intervalId);
+
+        // Create an interval to quickly iterate trough the numbers
+        template._intervalId = Meteor.setInterval(function(){
+            // loads data from templates
+            var syncData = TemplateVar.get(template, 'lastSyncData', lastSyncData);
+            var translationString = TemplateVar.get(template, "syncStatusMessage");
+
+            if (!(syncData._displayBlock > -1)) {
+                // initialize the display numbers
+                syncData._displayBlock = Number(syncData.currentBlock);
+                syncData._displayState = Number(syncData.pulledStates);
+                syncData._displayKnownStates = Number(syncData.knownStates);
+
+            } else {
+                // Increment each them slowly to match target number
+                syncData._displayBlock =  syncData._displayBlock + (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
+
+                syncData._displayState =  syncData._displayState + (Number(syncData.pulledStates) - syncData._displayState) / 10;
+
+                syncData._displayKnownStates =  syncData._displayKnownStates + (Number(syncData.knownStates) - syncData._displayKnownStates) / 10;
+            };            
+
+            // Create the fancy strings
+            lastSyncData.displayBlock = numeral(Math.round(lastSyncData._displayBlock)).format('0,0');
+            lastSyncData.displayState = numeral(Math.round(lastSyncData._displayState)).format('0,0');
+            lastSyncData.displayKnownStates = numeral(Math.round(lastSyncData._displayKnownStates)).format('0,0');
+
+            // Translate it
+            var translatedMessage = TAPi18n.__(translationString, syncData);
+
+            // Calculates both progress bars
+            var stateProgress = (lastSyncData._displayState / lastSyncData._displayKnownStates) * 100;
+
+            var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100 ;
+                    
+            // Saves data back to templates
+            TemplateVar.set(template, "syncStatusMessageLive", translatedMessage);
+            TemplateVar.set(template, 'lastSyncData', syncData);
+            
+            // set progress value
+            if(_.isFinite(progress)) {
+                TemplateVar.set(template, 'showProgressBar', true);
+                TemplateVar.set(template, 'progress', progress);
+                TemplateVar.set(template, 'stateProgress', stateProgress);
+            }
+
+        }, 100);
+
+        return TemplateVar.get(template, "syncStatusMessageLive");
     }
 });
 

@@ -11,11 +11,11 @@ const logRotate = require('log-rotate');
 const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
-const dechunker = require('./ipc/dechunker.js');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const getIpcPath = require('./ipc/getIpcPath.js')
 const Sockets = require('./sockets');
+const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
@@ -42,10 +42,7 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        this._socket = Sockets.get('node-ipc');
-        this._socket.on('data', _.bind(this._handleSocketResponse, this));
-
-        this._sendRequests = {};
+        this._socket = Sockets.get('node-ipc', Sockets.TYPES.WEB3_IPC);
 
         this.on('data', _.bind(this._logNodeData, this));
     }
@@ -71,11 +68,11 @@ class EthereumNode extends EventEmitter {
     }
 
     get isEth () {
-        return this.type === 'eth';
+        return this._type === 'eth';
     }
 
     get isGeth () {
-        return this.type === 'geth';
+        return this._type === 'geth';
     }
 
     get isMainNetwork () {
@@ -196,7 +193,7 @@ class EthereumNode extends EventEmitter {
 
                 this.state = STATES.STOPPING;
 
-                log.info(`Stopping existing node: ${this.type} ${this.network}`);
+                log.info(`Stopping existing node: ${this._type} ${this._network}`);
 
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');
@@ -223,7 +220,6 @@ class EthereumNode extends EventEmitter {
             })
                 .then(() => {
                     this.state = STATES.STOPPED;
-                    this._sendRequests = {};
                     this._stopPromise = null;
                 });
         } else {
@@ -241,64 +237,15 @@ class EthereumNode extends EventEmitter {
 
 
     /** 
-     * Send command to socket.
-     * @param  {String} name
-     * @param  {Array} [params]
+     * Send Web3 command to socket.
+     * @param  {String} method Method name
+     * @param  {Array} [params] Method arguments
      * @return {Promise} resolves to result or error.
      */
-    send (name, params) {
-        return Q.try(() => {
-            if (!this.isIpcConnected) {
-                throw new Error('IPC socket not connected');
-            }
-
-            return new Q((resolve, reject) => {
-                let requestId = _.uuid();
-
-                log.trace('Request', requestId, name , params);
-
-                this._sendRequests[requestId] = {
-                    resolve: resolve,
-                    reject: reject,
-                };
-
-                this._socket.write(JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: requestId,
-                    method: name,
-                    params: params || []
-                }));
-            })
-        });
-    }
-
-
-
-    _handleSocketResponse (data) {
-        dechunker(data, (err, result) => {
-            try {
-                if (err) {
-                    log.error('Socket response error', err);
-
-                    _.each(this._sendRequests, (req) => {
-                        req.reject(err);
-                    });
-
-                    this._sendRequests = {};
-                } else {
-                    let req = this._sendRequests[result.id];
-
-                    if (req) {
-                        log.trace('Response', result.id, result.result);
-
-                        req.resolve(result.result);
-                    } else {
-                        log.debug(`Unable to find corresponding request for ${result.id}`, result);
-                    }
-                }
-            } catch (err) {
-                log.error('Error handling socket response', err);
-            }
+    send (method, params) {
+        return this._socket.send({
+            method: method, 
+            params: params
         });
     }
 
@@ -478,11 +425,13 @@ class EthereumNode extends EventEmitter {
                     pw = null;
                 }
 
-                // if ('geth' == nodeType) {
-                //     args.push('--rpc')
-                //     args.push('--rpcapi')
-                //     args.push('admin,db,eth,debug,miner,net,shh,txpool,personal,web3')
-                // }
+                let nodeOptions = Settings.nodeOptions;
+
+                if (nodeOptions && nodeOptions.length) {
+                    log.debug('Custom node options', nodeOptions);
+
+                    args = args.concat(nodeOptions);
+                }
 
                 log.trace('Spawn', binPath, args);
 
@@ -496,6 +445,8 @@ class EthereumNode extends EventEmitter {
                         if (popupCallback) {
                             popupCallback(UNABLE_TO_SPAWN_ERROR);
                         }
+
+                        log.info('Node startup error');
 
                         // TODO: detect this properly
                         // this.emit('nodeBinaryNotFound');
@@ -526,17 +477,11 @@ class EthereumNode extends EventEmitter {
 
                     this.emit('data', data);
 
+                    // check for startup errors
                     if (STATES.STARTING === this.state) {
                         let dataStr = data.toString().toLowerCase();
 
-                        if ('eth' === nodeType) {
-                            // (eth) prevent started until str appears
-                            if (-1 === dataStr.indexOf('jsonrpc')) {
-                                log.trace('Running eth so wait until we see JSONRPC message');
-
-                                return;
-                            }
-                        } else if ('geth' === nodeType) {
+                        if ('geth' === nodeType) {
                             if (0 <= dataStr.indexOf('fatal: error')) {
                                 let err = new Error(`Geth error: ${dataStr}`);
 
@@ -549,14 +494,6 @@ class EthereumNode extends EventEmitter {
                                 return reject(err);
                             }
                         }
-
-                        if (popupCallback) {
-                            popupCallback();
-                        }
-
-                        log.trace('Process successfully started');
-
-                        resolve(proc);
                     }
                 });
 
@@ -565,30 +502,29 @@ class EthereumNode extends EventEmitter {
                     log.trace('Got stderr data');
 
                     this.emit('data', data);
-
-                    if ('eth' === nodeType) {
-                        return;
-                    }
-
-                    if (STATES.STARTING === this.state) {
-                        if ('geth' === nodeType) {
-                            let dataStr = data.toString().toLowerCase();
-
-                            if (0 > dataStr.indexOf('ipc endpoint opened')) 
-                            {
-                                log.trace('Running geth so wait until we see IPC service start msg');
-
-                                return;
-                            }
-                        }
-
-                        log.trace('Process successfully started');
-
-                        resolve(proc);
-                    }
                 });
 
+
                 this.on('data', _.bind(this._logNodeData, this));
+
+                // when data is first received
+                this.once('data', () => {
+                    /*
+                        Assume startup succeeded after 5 seconds. At this point 
+                        IPC connections are usually possible.
+                    */
+                    setTimeout(() => {
+                        if (STATES.STARTING === this.state) {
+                            log.info('4s elapsed, assuming node started up successfully');
+
+                            if (popupCallback) {
+                                popupCallback();
+                            }
+
+                            resolve(proc);                        
+                        }
+                    }, 4000);
+                })
             });
         });
     }

@@ -1,12 +1,15 @@
 require('./consoleLogCapture')('splash');
+const mist = require('../mistAPI.js');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
-const basePath = require('./setBasePath');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const Web3 = require('web3');
 require('../openExternal.js');
 
-basePath('interface');
+require('./setBasePath')('interface');
+
+// register with window manager
+ipc.send('backendAction_setWindowId');
 
 // get and set language
 ipc.send('backendAction_setLanguage', navigator.language);
@@ -15,7 +18,5 @@ ipc.send('backendAction_setLanguage', navigator.language);
 electron.webFrame.setZoomLevelLimits(1, 1);
 
 window.ipc = ipc;
-window.mode = location.hash.replace('#splashScreen_','');
-window.dirname = __dirname.replace('modules/preloader','').replace('modules\\preloader','');
-
+window.mist = mist();
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

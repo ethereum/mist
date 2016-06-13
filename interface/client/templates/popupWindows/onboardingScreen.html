@@ -53,17 +53,20 @@
                 </div>
 
                 <div class="col col-6 col-deposit">
-                    {{> dapp_identicon identity=(TemplateVar.get "newAccount")}}
-                    <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
-                    <input type="text" value="{{i18n 'mist.popupWindows.onboarding.etherbase'}}" class="name" disabled>
-                    <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
+                    {{#if TemplateVar.get "newAccount"}}
+                        {{> dapp_identicon identity=(TemplateVar.get "newAccount")}}
+                        <div class="you"> {{i18n "mist.popupWindows.onboarding.you"}}  </div>
+                        <input type="text" value="{{i18n 'mist.popupWindows.onboarding.etherbase'}}" class="name" disabled>
+                        <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
 
-                    {{#unless TemplateVar.get "testnet"}}
-                        <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8&amp;amount=1" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
-                    {{/unless}}
+                        {{#unless TemplateVar.get "testnet"}}
+                            <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
+                            <h6> {{{i18n "mist.popupWindows.onboarding.viaShapeshift"}}} </h6>
+                        {{/unless}}
+                    {{/if}}
                 </div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-password"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
                     <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
@@ -76,7 +79,7 @@
                 </div>
                 <div class="col col-6 tutorial-token"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-account"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
                     <button class="goto-tutorial-2 right-align">  {{i18n "buttons.next"}} </button>                 
                 </div>
             </div>
@@ -108,11 +111,16 @@
         </div>
 
         <footer>
-            <progress value="{{#with TemplateVar.get "syncing"}}{{progress}}{{/with}}" max="100"></progress>
+            <progress value="{{#with TemplateVar.get 'syncing'}}{{progress}}{{/with}}" max="100"></progress>
+            <progress class='stateBar' value="{{#with TemplateVar.get 'syncing'}}{{_displayStatesDownload}}{{/with}}" max="1"></progress>
 
             {{#with TemplateVar.get "syncing"}}
                 <div class="status"> {{i18n "mist.popupWindows.onboarding.downloadingBlocks"}} ({{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}})</div>
-                <div class="blocks"> {{i18n "mist.popupWindows.onboarding.block"}} {{dapp_formatNumber currentBlock}} of {{dapp_formatNumber highestBlock}}</div>
+                <div class="blocks"> 
+                    
+                    {{ syncStatus }}
+
+                </div>
             {{else}}
                 {{#if TemplateVar.get 'readyToLaunch'}}
                     <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.buttons.launchApp"}} </button>
@@ -121,7 +129,7 @@
                     {{#if TemplateVar.get "peerCount"}}
                         {{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}}
                     {{else}}
-                        Looking for peers...
+                        {{i18n 'mist.startScreen.nodeSyncConnecting'}}
                     {{/if}}
                     </div>
                 {{/if}}
@@ -170,14 +178,18 @@
                 <span class="dapp-identicon dapp-icon-loading"></span>
                 <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.creating"}}</h2>
             {{else}}
-                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
-                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class='password-repeat'>
+                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
+                <input type="password" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class="password-repeat {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
             {{/if}}
         </div>
 
         <div class="col col-12 footer-buttons">
             <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>                 
+            {{#if TemplateVar.get "passwordsNotEmpty"}}
             <button class="create-account right-align" type="submit"> {{i18n "buttons.next"}} </button>
+            {{else}}
+            <button class="goto-tutorial-1 right-align"> {{i18n "buttons.skip"}} </button>                 
+            {{/if}}
         </div>
     </form>
 </template>

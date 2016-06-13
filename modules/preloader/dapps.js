@@ -9,12 +9,14 @@ const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 var Web3 = require('web3');
-const basePath = require('./setBasePath');
 require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');
 
-basePath('interface');
+require('./setBasePath')('interface');
+
+// register with window manager
+ipc.send('backendAction_setWindowId');
 
 // notifiy the tab to store the webview id
 ipc.sendToHost('setWebviewId');

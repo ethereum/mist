@@ -19,8 +19,12 @@ Gets the writable property.
 @method on('ipcProvider-setWritable')
 */
 ipc.on('ipcProvider-setWritable', function(e, writable){
+    // console.debug('ipcProvider-setWritable', writable);
+
     ipcProviderWrapper.writable = writable;
 });
+
+
 
 ipcProviderWrapper = {
     writable: false,
@@ -34,9 +38,9 @@ ipcProviderWrapper = {
     @method connect
     */
     connect: function(path) {
-        // console.log('CONNECT SYNC');
-        this.writable = ipc.sendSync('ipcProvider-create'); // path is set in the backend
-        // ipc.send('ipcProvider-create'); // path is set in the backend
+        // console.debug('ipcProviderWrapper: connect');
+
+        ipc.send('ipcProvider-create', path);
 
         return this;
     },
@@ -48,6 +52,8 @@ ipcProviderWrapper = {
     @param  {Funciton} callback
     */
     on: function(name, callback) {
+        // console.debug('ipcProviderWrapper: add listener', name);
+
         ipc.on('ipcProvider-'+ name, function(e, result){
             callback(result);
         });
@@ -57,8 +63,10 @@ ipcProviderWrapper = {
 
     @method removeListener
     */
-    removeListener: function(type, callback){
-        ipc.removeListener('ipcProvider-'+ type, callback);
+    removeListener: function(name, callback){
+        // console.debug('ipcProviderWrapper: remove listener', name);
+
+        ipc.removeListener('ipcProvider-'+ name, callback);
     },
 
     /**
@@ -66,8 +74,10 @@ ipcProviderWrapper = {
 
     @method removeAllListeners
     */
-    removeAllListeners: function(type){
-        ipc.removeAllListeners('ipcProvider-'+ type);
+    removeAllListeners: function(name){
+        // console.debug('ipcProviderWrapper: remove all listeners', name);
+
+        ipc.removeAllListeners('ipcProvider-'+ name);
     },
     /**
     Write to the IPC connection through the backend
@@ -75,6 +85,8 @@ ipcProviderWrapper = {
     @method write
     */
     write: function (payload) {
+        // console.debug('ipcProviderWrapper: write payload');
+
         ipc.send('ipcProvider-write', payload);
     },
     /**
@@ -83,7 +95,8 @@ ipcProviderWrapper = {
     @method writeSync
     */
     writeSync: function (payload) {
-        // console.log('SEND SYNC', payload);
+        // console.debug('ipcProviderWrapper: write payload (sync)');
+
         return ipc.sendSync('ipcProvider-writeSync', payload);
     }
 

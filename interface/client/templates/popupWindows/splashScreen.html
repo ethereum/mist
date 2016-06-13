@@ -9,6 +9,11 @@
         <img id="image" src="{{iconPath}}">
         <h1>
             {{{TemplateVar.get "text"}}}
+            
+            {{#if TemplateVar.get "syncStatusMessage"}}
+                <br><small> {{{syncStatus}}} </small>
+            {{/if}}
+
             {{#if TemplateVar.get "logText"}}
                 <br><small style="font-size: 0.7em">{{TemplateVar.get "logText"}}</small>
             {{/if}}
@@ -16,6 +21,7 @@
 
         {{#if TemplateVar.get "showProgressBar"}}
             <progress class="{{mode}}" max="100" value="{{TemplateVar.get 'progress'}}"></progress>
+            <progress class="state {{mode}}" max="100" value="{{TemplateVar.get 'stateProgress'}}"></progress>
         {{/if}}
     </div>
 </template>

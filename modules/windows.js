@@ -4,7 +4,11 @@ const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
-const BrowserWindow = require('electron').BrowserWindow;
+
+const electron = require('electron');
+const BrowserWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
+
 
 
 
@@ -17,6 +21,7 @@ class Window extends EventEmitter {
         this._mgr = mgr;
         this._log = log.create(type);
         this.type = type;
+        this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId;
 
         let electronOptions = {
@@ -47,11 +52,9 @@ class Window extends EventEmitter {
         this.webContents = this.window.webContents;
 
         this.webContents.once('did-finish-load', () => {
-            this._log.debug(`Content loaded`);
-
             this.isContentReady = true;
 
-            this.id = this.webContents.getId();
+            this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
                 this.send.apply(this, opts.sendData);
@@ -180,6 +183,25 @@ class Windows {
         this.loading.on('show', () => {
             this.loading.window.center();
         });
+
+        // when a window gets initalized it will us its id
+        ipc.on('backendAction_setWindowId', (event) => {
+            let id = event.sender.getId();
+
+            log.debug(`Set window id`, id);
+
+            let bwnd = BrowserWindow.fromWebContents(event.sender);
+
+            let wnd = _.find(this._windows, (w) => {
+                return (w.window === bwnd);
+            });
+
+            if (wnd) {
+                log.trace(`Set window id=${id}, type=${wnd.type}`);
+
+                wnd.id = id;
+            }
+        });
     }
 
 
@@ -231,6 +253,12 @@ class Windows {
         opts.electronOptions.resizable = 
             options.resizable || opts.electronOptions.alwaysOnTop;
 
+        // mark it as a pop-up window
+        opts.isPopup = true;
+
+        opts.electronOptions.resizable = 
+            options.resizable || opts.electronOptions.alwaysOnTop;
+
         if (opts.useWeb3) {
             opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';
         } else {
@@ -252,6 +280,8 @@ class Windows {
 
 
     getByType (type) {
+        log.trace('Get by type', type);
+
         return _.find(this._windows, (w) => {
             return w.type === type;
         });
@@ -259,14 +289,19 @@ class Windows {
 
 
     getById (id) {
+        log.trace('Get by id', id);
+
         return _.find(this._windows, (w) => {
             return (w.id === id);
         });
     }
 
 
+
     broadcast () {
         const data = arguments;
+
+        log.trace('Broadcast', data);
 
         _.each(this._windows, (wnd) => {
             wnd.send.apply(wnd, data);

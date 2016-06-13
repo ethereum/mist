@@ -160,6 +160,7 @@ Template['layout_browserBar'].events({
     @event click .app-bar > button.accounts'
     */
     'click .app-bar > button.accounts': function(e, template) {
+        console.log('Connect account popup');
         ipc.send('uiAction_connectAccountPopupWindow');
     },
 
@@ -210,7 +211,7 @@ Template['layout_browserBar'].events({
     */
     'submit': function(e, template){     
         var tabs = Tabs.find().fetch(),
-            url = Helpers.formatUrl(template.$('.url-input').value);
+            url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
         template.$('.url-input').blur();

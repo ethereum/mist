@@ -30,7 +30,7 @@ var getPeerCount = function(template) {
 Template['popupWindows_onboardingScreen'].onCreated(function(){
     var template = this;
     TemplateVar.set('readyToLaunch', false);
-
+    TemplateVar.set('newAccount', false);
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
@@ -40,11 +40,9 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 web3.reset(true);
 
             } else if(_.isObject(syncing)) {
-                
-                syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
-                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-
-                TemplateVar.set(template, 'syncing', syncing);
+                // loads syncing data and adds it to old by using 'extend'
+                var oldData = TemplateVar.get(template, 'syncing');
+                TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
                 
             } else {
                 TemplateVar.set(template, 'syncing', false);
@@ -78,6 +76,54 @@ Template['popupWindows_onboardingScreen'].helpers({
     'newAccountLowerCase': function(){
         var account = TemplateVar.get('newAccount');
         return (account) ? account.toLowerCase() : '';
+    },
+    /**
+    Updates the Sync Message live
+
+    @method syncStatus
+    */
+    'syncStatus' : function() {
+
+        // This functions loops trhough numbers while waiting for the node to respond
+        var template = Template.instance();
+        Meteor.clearInterval(template._intervalId);
+
+        // Create an interval to quickly iterate trough the numbers
+        template._intervalId = Meteor.setInterval(function(){
+            // load the sync information
+            var syncing = TemplateVar.get(template, 'syncing'); 
+            
+            // Calculates a block t display that is always getting 1% closer to target
+            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 )|| syncing.currentBlock;            
+
+            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/syncing.knownStates - syncing._displayStatesDownload) / 10 ) || syncing.pulledStates/syncing.knownStates;
+
+
+            // Calculates progress
+            syncing.progress = Math.round(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
+            
+            // Makes fancy strings
+            syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
+            syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
+            syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
+            syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+
+            // Saves the data back to the object
+            TemplateVar.set(template, 'syncing', syncing);
+
+            console.log('number', Number(syncing.statesPercent), Number(syncing.statesPercent) < 90)
+
+            // Only show states if they are less than 50% downloaded
+            if (Number(syncing.statesPercent)  > 0 && Number(syncing.statesPercent) < 90) {
+                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
+            } else {
+                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+            }
+
+
+        }, 50);
+
+        return TemplateVar.get(template, "syncStatusMessageLive");
     }
 });
 
@@ -278,10 +324,6 @@ The onboardingScreen password template
 @constructor
 */
 
-Template['popupWindows_onboardingScreen_password'].onRendered(function(){
-});
-
-
 Template['popupWindows_onboardingScreen_password'].events({
     /**
     Clear the form
@@ -293,6 +335,19 @@ Template['popupWindows_onboardingScreen_password'].events({
         template.find('input.password-repeat').value = '';
     },
     /**
+    Password checks
+    
+    @event click button[type="button"]
+    */
+   'input input, change input': function(e, template){
+        var pw = template.find('input.password').value,
+            pwRepeat = template.find('input.password-repeat').value;
+
+        TemplateVar.set(template, 'passwordsNotEmpty', pw != '' || pwRepeat != '');
+        TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw != pwRepeat);
+
+    },
+    /**
     Checks the password match and creates a new account
     
     @event submit form
@@ -301,13 +356,17 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        if(!pw || pw !== pwRepeat) {
+        if( pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
             });
-
-        } else {
+        } else if (pw && pw.length > 1 && pw.length < 9) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        } else if (pw && pw.length >= 9) {
             TemplateVar.set('creatingPassword', true);
             web3.personal.newAccount(pw, function(e, res){
                 TemplateVar.set(template, 'creatingPassword', false);

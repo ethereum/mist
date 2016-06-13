@@ -9,7 +9,8 @@ Template['popupWindows_connectAccount'].onCreated(function() {
 
     //     TemplateVar.set('accounts', accounts);
     // });
-}); 
+});
+
 
 Template['popupWindows_connectAccount'].helpers({
     /**
@@ -32,8 +33,11 @@ Template['popupWindows_connectAccount'].helpers({
 
 });
 
-Template['popupWindows_connectAccount'].events({
+Template['popupWindows_connectAccount'].helpers({
 
+});
+
+Template['popupWindows_connectAccount'].events({
 	'click .cancel': function(){
 		console.log('Cancel button');
 		ipc.send('backendAction_closePopupWindow');

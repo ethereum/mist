@@ -15,9 +15,11 @@ const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
-const basePath = require('./setBasePath');
 
-basePath('interface');
+require('./setBasePath')('interface');
+
+// register with window manager
+ipc.send('backendAction_setWindowId');
 
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
@@ -31,11 +33,9 @@ setTimeout(function(){
     web3Admin.extend(window.web3);
 }, 1000);
 
-window.dirname = __dirname;
 window.mist = mist();
 window.syncMinimongo = syncMinimongo;
 window.ipc = ipc;
-window.platform = process.platform;
 
 
 // prevent overwriting the Dapps Web3

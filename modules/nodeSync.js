@@ -119,7 +119,9 @@ class NodeSync extends EventEmitter {
             log.trace('Check sync status');
 
             ethereumNode.send('eth_syncing', [])
-                .then((result) => {
+                .then((ret) => {
+                    let result = ret.result;
+
                     // got a result, check for error
                     if (result) {
                         log.trace('Sync status', result);
@@ -146,7 +148,9 @@ class NodeSync extends EventEmitter {
                         log.debug('Check latest block number');
 
                         return ethereumNode.send('eth_getBlockByNumber', ['latest', false])
-                            .then((blockResult) => {
+                            .then((ret) => {
+                                let blockResult = ret.result;
+
                                 const now = Math.floor(new Date().getTime() / 1000);
 
                                 const diff = now - +blockResult.timestamp;

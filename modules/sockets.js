@@ -343,7 +343,7 @@ class Web3IpcSocket extends Socket {
                             firstItem.id, result
                         );
                         
-                        // if we don't want full JSOn result, send just the result
+                        // if we don't want full JSON result, send just the result
                         if (!_.get(req, 'options.fullResult')) {
                             if (isBatch) {
                                 result = _.map(result, (r) => r.result);
@@ -363,7 +363,10 @@ class Web3IpcSocket extends Socket {
                             }
                         }
 
-                        req.resolve(result);
+                        req.resolve({
+                            isBatch: isBatch,
+                            result: result
+                        });
                     } else {
                         // not a response to a request so pass it on as a notification
                         this.emit('data-notification', result);

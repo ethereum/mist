@@ -16,16 +16,20 @@ module.exports = class extends BaseProcessor {
         return Q.try(() => {
             this._log.info('Compile solidity');
 
-            var output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
+            let output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
+
+            let finalResult = _.extend({}, payload);
 
             if (!output || output.errors) {
-                throw {
+                finalResult.error = {
                     code: -32700, 
-                    message: (output ? output.errors : 'Compile error')
+                    message: (output ? output.errors : 'Compile error')                        
                 };
             } else {
-                return output.contracts;
+                finalResult.result = output.contracts;
             }            
+
+            return finalResult;
         });
     }
 }

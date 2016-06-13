@@ -49,6 +49,9 @@ Template.body.helpers({
             // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
             return 'popupWindows_sendTransactionConfirmation';
         }
+        if (location.hash === '#connectAccount') {
+            return 'popupWindows_connectAccount';
+        }
     }
 });
 

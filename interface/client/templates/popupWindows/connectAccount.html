@@ -1,0 +1,79 @@
+<template name="popupWindows_connectAccount">
+	<div class="popup-windows connect-account">
+		<form action="#">
+			<div class="account-dapp-user-container">
+	      <span class="account-address">0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
+
+				<div class="account-dapp-user">
+		      {{#if dapp.icon}}
+		          {{> elements_img src=dapp.icon class="app-icon" }}
+		      {{else}}
+		      	<span class="app-icon is-empty"></span>
+		      {{/if}}
+
+	      	<span class="app-icon is-empty"></span>
+				</div>
+				
+				<span class="dapp-url">{{dapp.url}}</span>
+			</div>
+
+			<p>
+				<strong>You are sharing your identity with <em>{{dapp.name}}</em>.</strong>
+			</p>
+
+			<p>
+				Accepting this will provide them proof that you own the <strong>XXXXX (<a href="#">switch</a>)</strong> account at this time, and allow them to see any public information (including balances) connected to it.
+			</p>
+
+			<div>
+				<input type="checkbox" id="pin-to-sidebar" checked> 
+				<label for="pin-to-sidebar">Pin app to the sidebar</label>
+			</div>
+
+			<div>
+				<input type="password" placeholder="Type your password">
+			</div>
+
+			<div class="dapp-modal-buttons">
+        <button class="cancel" type="button">{{i18n "buttons.stayAnonymous"}}</button>
+        <button class="ok dapp-primary-button" type="submit">{{i18n "buttons.authorize"}}</button>
+			</div>
+		</form>
+	</div>
+
+	<style>
+		.connect-account {
+			text-align: left;
+			width: calc(100% - 120px);
+			margin: 0 auto;
+		}
+
+		.connect-account input[type=password] {
+			width: 100%;
+		}
+
+		.account-dapp-user-container {
+			display: -webkit-flex;
+			display: -moz-flex;
+			display: -ms-flex;
+			display: -o-flex;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 30px 0;
+		}
+
+		.account-dapp-user {
+		}
+
+		span.account-address, span.dapp-url {
+			display: inline-block;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			width: 100px;
+			font-size: 14px;
+			color: #AEAEAE;
+		}
+	</style>
+</template>

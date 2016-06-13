@@ -146,13 +146,23 @@ Template['layout_browserBar'].events({
 
     @event click app-bar > button, click .app-bar > form
     */
-    'click .app-bar > button, click .app-bar > form': function(e, template){
+    'click .app-bar > button.dapp-info, click .app-bar > form': function(e, template){
+        console.log('App bar open', e.target);
         // prevent the slide in, when the url is clicked
         if($(e.target).hasClass('url-input'))
             return;
 
         template.$('.app-bar').toggleClass('show-bar');
     },
+    /**
+    Show connect account popup
+
+    @event click .app-bar > button.accounts'
+    */
+    'click .app-bar > button.accounts': function(e, template) {
+        ipc.send('uiAction_connectAccountPopupWindow');
+    },
+
     /*
     Hide the app bar
 

@@ -30,7 +30,7 @@ module.exports = class extends BaseProcessor {
             modalWindow.on('closed', () => {
                 // user cancelled?
                 if (!modalWindow.processed) {
-                    reject(this._ipcProviderBackend.ERRORS.METHOD_DENIED);
+                    reject(this.ERRORS.METHOD_DENIED);
                 }
             });
 
@@ -41,7 +41,7 @@ module.exports = class extends BaseProcessor {
                     if(err || !result) {
                         this._log.debug('Confirmation error', err);
 
-                        reject(err || this._ipcProviderBackend.ERRORS.METHOD_DENIED);
+                        reject(err || this.ERRORS.METHOD_DENIED);
                     } else {
                         this._log.info('Transaction sent', result);
 
@@ -51,6 +51,11 @@ module.exports = class extends BaseProcessor {
                     modalWindow.processed = true;
                     modalWindow.close();
                 }
+            });
+        })
+        .then((result) => {
+            return _.extend({}, payload, {
+                result: result
             });
         });
     }

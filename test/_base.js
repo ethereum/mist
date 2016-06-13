@@ -31,7 +31,7 @@ exports.mocha = function(_module, options) {
       const appPath = 
         path.join(buildHelpers.buildDistPath('wallet', appNameVersion), execName + '.app', 'Contents', 'MacOS', execName);
 
-      console.log(appPath);
+      // console.log(appPath);
 
       this.geth = gethPrivate({
         balance: 5,

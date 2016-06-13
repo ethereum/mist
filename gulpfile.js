@@ -370,7 +370,7 @@ gulp.task('test-wallet', function() {
         './test/wallet/*.test.js'
     ])
     .pipe(mocha({
-        timeout: 20000,
+        timeout: 30000,
         ui: 'exports',
         reporter: 'spec'
     }));

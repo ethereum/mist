@@ -130,27 +130,31 @@ app.on('open-url', function (e, url) {
 });
 
 
-var killedSockets = false;
+var killedSocketsAndNodes = false;
 
 app.on('before-quit', function(event){
-    if(!killedSockets) {
+    if(!killedSocketsAndNodes) {
+        log.info('Defer quitting until sockets and node are shut down');
+
         event.preventDefault();
+
+        // sockets manager
+        Sockets.destroyAll()
+            .catch((err) => {
+                log.error('Error shutting down sockets');
+            });
+
+        // delay quit, so the sockets can close
+        setTimeout(function(){
+            ethereumNode.stop().then(function() {
+                killedSocketsAndNodes = true;
+
+                app.quit(); 
+            });
+        }, 500);
+    } else {
+        log.info('About to quit...');
     }
-
-    // sockets manager
-    Sockets.destroyAll()
-        .catch((err) => {
-            log.error('Error shutting down sockets');
-        });
-
-    // delay quit, so the sockets can close
-    setTimeout(function(){
-        killedSockets = true;
-
-        ethereumNode.stop().then(function() {
-            app.quit(); 
-        });
-    }, 500);
 });
 
 

@@ -100,13 +100,9 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 if(web3.net.peerCount > 0) {
                     // Check which state we are
                     if (lastSyncData.knownStates > lastSyncData.lastKnownStates 
-                        || (lastSyncData.pulledStates / lastSyncData.knownStates) > (lastSyncData.currentBlock - lastSyncData.startingBlock)  ) {
+                        || (lastSyncData.pulledStates / lastSyncData.knownStates) < 0.9  ) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
-
-                    } else if(lastSyncData._highestBlock - lastSyncData.currentBlock < 3000) {
-                        // Almost finished processing
-                        translationString = 'mist.startScreen.nodeSyncProcessing';
 
                     } else {
                         // Mostly downloading blocks
@@ -198,9 +194,9 @@ Template['popupWindows_splashScreen'].helpers({
             };            
 
             // Create the fancy strings
-            lastSyncData.displayBlock = numeral(Math.floor(lastSyncData._displayBlock)).format('0,0');
-            lastSyncData.displayState = numeral(Math.floor(lastSyncData._displayState)).format('0,0');
-            lastSyncData.displayKnownStates = numeral(Math.floor(lastSyncData._displayKnownStates)).format('0,0');
+            lastSyncData.displayBlock = numeral(Math.round(lastSyncData._displayBlock)).format('0,0');
+            lastSyncData.displayState = numeral(Math.round(lastSyncData._displayState)).format('0,0');
+            lastSyncData.displayKnownStates = numeral(Math.round(lastSyncData._displayKnownStates)).format('0,0');
 
             // Translate it
             var translatedMessage = TAPi18n.__(translationString, syncData);

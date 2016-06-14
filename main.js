@@ -309,8 +309,8 @@ app.on('ready', function() {
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
             })
-            .then(function onboarding(result) {
-                if (ethereumNode.isGeth && result && result.length === 0) {
+            .then(function onboarding(resultData) {
+                if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {

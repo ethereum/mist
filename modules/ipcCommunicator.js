@@ -89,18 +89,6 @@ ipc.on('backendAction_setLanguage', function(e, lang){
 });
 
 
-ipc.on('uiAction_connectAccountPopupWindow', function(e) {
-    Windows.createPopup('connectAccount', {
-        ownerId: e.sender.getId(),
-        electronOptions: {
-            width: 460,
-            height: 460,
-            maximizable: false,
-            minimizable: false,
-        },
-    });
-});
-
 // import presale file
 ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
     const spawn = require('child_process').spawn;
@@ -171,10 +159,14 @@ ipc.on('uiAction_connectAccountPopupWindow', function(e) {
         electronOptions: {
             width: 460,
             height: 460,
+            maximizable: false,
+            minimizable: false,
             alwaysOnTop: true,
         },
     });
 });
+
+
 
 
 const uiLoggers = {};

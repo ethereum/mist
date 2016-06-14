@@ -175,4 +175,66 @@
         }
 
     }
+
+    &.connect-account {
+        text-align: left;
+        padding: 0 60px;
+        box-sizing: border-box;
+        margin: 0 auto;
+
+        .connect-account input[type=password] {
+            width: 100%;
+        }
+
+        .account-dapp-user-container {
+            display: -webkit-flex;
+            display: flex;
+            height: 65px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            .account-dapp-user {
+                margin: 0 15px;
+                position: relative;
+                width: 120px;
+                height: 65px;
+                & > * {
+                    position: absolute;
+                    top: 0;
+                    display: inline-block;
+                    width: 65px;
+                    height: 65px;
+                    border-radius: 50%;
+                    &.is-empty {
+                        background-color: #6E6C6F;
+                        content: '?';
+                        border-radius: 50%;
+                        color: #fff;
+                    }
+                }
+                .user-icon {
+                    z-index: 2;
+                    left: 0;
+                }
+                .app-icon {
+                    z-index: 1;
+                    left: 55px;
+                }
+            }
+        }
+        
+        .dapp-modal-buttons,
+        .dapp-modal-buttons button:last-of-type
+         { margin-right: 0; }
+
+        span.account-address, span.dapp-url {
+            display: inline-block;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100px;
+            font-size: 14px;
+            color: #AEAEAE;
+        }
+    }
 }

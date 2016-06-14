@@ -432,20 +432,20 @@ var menuTempl = function(webviews) {
         ]
     })
 
-    let languageMenu = _.map(i18n.options.resources,
-        (_, lang)=>{
-            menuItem = {
-                label: lang,
-                click: function(){
-                    let mainWindow = Windows.getByType('main');
-                    mainWindow.webContents.executeJavaScript(
-                        'TAPi18n.setLanguage("' + lang + '");'
-                    );
-                }
+    let languageMenu =
+    Object.keys(i18n.options.resources).map(lang_code => {
+        menuItem = {
+            label: lang_code,
+            click: function(){
+                let mainWindow = Windows.getByType('main');
+                mainWindow.webContents.executeJavaScript(
+                    `TAPi18n.setLanguage("${lang_code}");`
+                );
             }
-            return menuItem
         }
-        )
+        return menuItem
+    }
+    )
 
     // SETTINGS
     menu.push({

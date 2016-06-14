@@ -343,6 +343,10 @@ class IpcProviderBackend {
                 delete e.message;
             }
 
+            // delete stuff leftover from request
+            delete e.params;
+            delete e.method;
+
             e.id = item.id;
 
             return e;

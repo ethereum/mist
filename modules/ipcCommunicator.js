@@ -161,7 +161,7 @@ ipc.on('uiAction_connectAccountPopupWindow', function(e) {
             height: 460,
             maximizable: false,
             minimizable: false,
-            alwaysOnTop: true,
+            // alwaysOnTop: true,
         },
     });
 });

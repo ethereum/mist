@@ -1,14 +1,26 @@
 <template name="popupWindows_connectAccount">
-	<div class="popup-windows connect-account active-{{TemplateVar.get 'currentActive'}}">
+	<div class="popup-windows connect-account">
 		<form action="#">
 			<div class="account-dapp-user-container">
-				<span class="account-address">0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
+				<span class="account-address">
+					{{#if accounts.length}}
+						{{accounts[0].address}}
+					{{else}}
+						Choose account
+					{{/if}}
+				</span>
 
 				<div class="account-dapp-user">
-					<span class="user-icon is-empty"></span>
+					{{#each accounts}}
+						<span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
+							{{> dapp_identicon identity=address class="dapp-large"}}
+						</span>
+					{{else}}
+						<span class="user-icon is-empty"></span>
+					{{/each}}
 
 					{{#if dapp.icon}}
-							{{> elements_img src=dapp.icon class="app-icon" }}
+						{{> elements_img src=dapp.icon class="app-icon" }}
 					{{else}}
 						<span class="app-icon is-empty"></span>
 					{{/if}}
@@ -17,13 +29,44 @@
 				<span class="dapp-url">{{dappFriendlyURL}}</span>
 			</div>
 
-			<p>
-				<strong>You are sharing your identity with <em>{{dapp.name}}</em>.</strong>
-			</p>
+			<div class="cards-container active-{{TemplateVar.get 'currentActive'}}">
+				<div class="connect-card">
+					<p>
+						<strong>You are sharing your identity with <em>{{dapp.name}}</em>.</strong>
+					</p>
+					<p>
+						Accepting this will provide them proof that you own the
+						<strong>
+							{{accounts}} (<a class="switch-account">switch</a>)
+						</strong>
+						account at this time, and allow them to see any public information, including balances, connected to it.
+					</p>
 
-			<p>
-				Accepting this will provide them proof that you own the <strong>XXXXX (<a href="#">switch</a>)</strong> account at this time, and allow them to see any public information, including balances, connected to it.
-			</p>
+				</div>
+				<div class="switch-card">
+					<p>
+						<strong>Select the accounts to share with <em>{{dapp.name}}</em>.</strong>
+					</p>
+
+			    <ul class="dapp-account-list">
+						<li>
+							<button class="create-account">
+								<span class="dapp-identicon dapp-small create-account-icon"></span>
+								<h3>Create new account</h3>
+							</button>         
+						</li>
+						{{#each accounts}}
+							<li>
+								<button class="{{selected}}">
+									{{> dapp_identicon identity=address class="dapp-small"}}
+									<h3>{{name}}</h3>
+									<span>{{address}}</span>
+								</button>        
+							</li>
+						{{/each}}
+			    </ul>
+				</div>
+			</div>
 
 			<div class="checkbox-container">
 				<input type="checkbox" id="pin-to-sidebar" checked> 
@@ -36,4 +79,5 @@
 			</div>
 		</form>
 	</div>
+
 </template>

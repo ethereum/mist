@@ -178,12 +178,117 @@
 
     &.connect-account {
         text-align: left;
-        padding: 0 60px;
         box-sizing: border-box;
         margin: 0 auto;
+        padding: 0 60px;
 
-        .connect-account input[type=password] {
-            width: 100%;
+        .account-dapp-user-container {
+            display: -webkit-flex;
+            display: flex;
+            height: 64px;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0 15px;
+            .account-dapp-user {
+                margin: 0 10px;
+                position: relative;
+                width: 120px;
+                height: 64px;
+                & > * {
+                    position: absolute;
+                    top: 0;
+                    display: inline-block;
+                    width: 64px;
+                    height: 64px;
+                    border-radius: 50%;
+                    &.is-empty {
+                        background-color: #6E6C6F;
+                        border-radius: 50%;
+                        &::after {
+                            color: #fff;
+                            content: '?';
+                            display: block;
+                            text-align: center;
+                            line-height: 64px;
+                            font-size: 2.5em;
+                        }
+                    }
+                }
+                .user-icon, .simptip-position-left {
+                    z-index: 2;
+                    left: 0;
+                }
+                .app-icon {
+                    z-index: 1;
+                    left: 55px;
+                }
+            }
+        }
+        
+        .cards-container {
+            position: relative;
+            height: 230px;
+            margin-bottom: 16px;
+            > .connect-card, > .switch-card {
+                opacity: 0;
+                position: absolute;
+                top: 20px;
+                transition: 200ms all ease-out;
+                z-index: 0;
+                width: 340px;
+                transform: scale(0.95);
+                pointer-events: none;
+            }
+
+            &.active-connect > .connect-card,
+            &.active-switch > .switch-card {
+                top: 0;
+                opacity: 1;
+                z-index: 1;
+                transform: scale(1);
+                pointer-events: initial;
+                height: 230px;
+            }
+
+            .switch-card {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .switch-card ul {
+                overflow: hidden;
+                height: 48px *3.5;
+                overflow: scroll;
+                &::after {
+                    position: absolute;
+                    content: '';
+                    display: block;
+                    bottom: 0;
+                    width: 100%;
+                    height: 15px;
+                    pointer-events: none;
+                    background: -webkit-linear-gradient(top, rgba(246,246,246,0), rgba(246,246,246,1));
+                }
+                li {
+                    background-color: #fff;
+                }
+                li:last-child {
+                    margin-bottom: 15px;
+                }
+            }
+            .create-account-icon {
+                background-color: @colorLinkActive;
+                box-shadow: none;
+                &:after {
+                    color: #fff;
+                    content: '+';
+                    display: block;
+                    text-align: center;
+                    line-height: 32px;
+                    font-size: 1.7em;
+                    font-weight: 400;
+                }
+            }
         }
 
         .checkbox-container {
@@ -197,43 +302,6 @@
             }
         }
 
-        .account-dapp-user-container {
-            display: -webkit-flex;
-            display: flex;
-            height: 65px;
-            justify-content: center;
-            align-items: center;
-            margin: 30px 0;
-            .account-dapp-user {
-                margin: 0 15px;
-                position: relative;
-                width: 120px;
-                height: 65px;
-                & > * {
-                    position: absolute;
-                    top: 0;
-                    display: inline-block;
-                    width: 65px;
-                    height: 65px;
-                    border-radius: 50%;
-                    &.is-empty {
-                        background-color: #6E6C6F;
-                        content: '?';
-                        border-radius: 50%;
-                        color: #fff;
-                    }
-                }
-                .user-icon {
-                    z-index: 2;
-                    left: 0;
-                }
-                .app-icon {
-                    z-index: 1;
-                    left: 55px;
-                }
-            }
-        }
-        
         .dapp-modal-buttons,
         .dapp-modal-buttons button:last-of-type
          { margin-right: 0; }

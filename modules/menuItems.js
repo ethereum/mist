@@ -449,10 +449,10 @@ var menuTempl = function(webviews) {
 
     // SETTINGS
     menu.push({
-        label: 'settings',
+        label: i18n.t('mist.applicationMenu.settings.label'),
         submenu: [
             {
-                label: 'language',
+                label: i18n.t('mist.applicationMenu.settings.languages'),
                 submenu: languageMenu
             }
         ]

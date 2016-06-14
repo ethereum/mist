@@ -51,6 +51,10 @@
                 "close": "Close",
                 "toFront": "Bring All to Front"
             },
+            "settings": {
+                "label": "Settings",
+                "languages": "Languages"
+            },
             "help": {
                 "label": "Help"
             }
@@ -148,7 +152,7 @@
                 "title": {
                     "sendTransaction": "Send transaction",
                     "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "createContract": "Create contract"
                 },
                 "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
                 "contractCreationInfo": "You are about to create a contract from the provided data.",

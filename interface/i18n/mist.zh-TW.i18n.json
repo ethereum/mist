@@ -47,6 +47,10 @@
                 "close": "關閉",
                 "toFront": "全部前置"
             },
+            "settings": {
+                "label": "設定",
+                "languages": "語言"
+            },
             "help": {
                 "label": "幫助"
             }

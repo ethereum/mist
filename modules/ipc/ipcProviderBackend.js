@@ -156,8 +156,6 @@ class IpcProviderBackend {
                     })
                     .then(() => {
                         log.debug(`Socket connected, id=${ownerId}`);
-
-                        owner.send('ipcProvider-setWritable', true);
                     })
                     .finally(() => {
                         delete this._connectionPromise[ownerId];
@@ -168,6 +166,8 @@ class IpcProviderBackend {
             }
         })
         .then(() => {
+            owner.send('ipcProvider-setWritable', true);
+
             return this._connections[ownerId];
         });
     }
@@ -383,6 +383,9 @@ class IpcProviderBackend {
                     result: finalResult.result,
                 });
             }
+
+            delete ret.params;
+            delete ret.method;
 
             ret.jsonrpc = '2.0';
 

@@ -39,7 +39,6 @@
     "gulp-tap": "^0.1.3",
     "merge-stream": "^1.0.0",
     "minimist": "^1.1.3",
-    "orchestrator": "^0.3.7",
     "rcedit": "^0.3.0"
   },
   "engines": {

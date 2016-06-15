@@ -21,7 +21,8 @@
             },
             "view": {
                 "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "fullscreen": "Toggle Fullscreen",
+                "languages": "Languages"
             },
             "accounts": {
                 "label": "Accounts",
@@ -50,10 +51,6 @@
                 "minimize": "Minimize",
                 "close": "Close",
                 "toFront": "Bring All to Front"
-            },
-            "settings": {
-                "label": "Settings",
-                "languages": "Languages"
             },
             "help": {
                 "label": "Help"

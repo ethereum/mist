@@ -51,7 +51,6 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes
 
 To update Mist in the future, run:
 

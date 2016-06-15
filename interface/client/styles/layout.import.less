@@ -40,7 +40,7 @@
         }
 
         aside {
-            top: @gridHeight * 1.5;
+            top: @gridHeight * 2;
         }
         
         div.browser-bar {
@@ -123,6 +123,16 @@ main {
 
         }
     }
+}
+
+.drag-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
 }
 
 .tab-view {

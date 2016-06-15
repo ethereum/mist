@@ -477,7 +477,7 @@ gulp.task('getChecksums', [], function(done) {
         var fileName = path.replace('./dist_'+ type +'/', '');
         var sha = spawn('shasum', [path]);
         sha.stdout.on('data', function(data){
-            console.log('SHASUM -a 256'+ fileName +': '+ data.toString().replace(path, ''));
+            console.log('shasum '+ fileName +': '+ data.toString().replace(path, ''));
         });
 
 

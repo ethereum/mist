@@ -9,6 +9,28 @@
         color: @colorLinkFocus;
     }
 
+    img.left-overlay {
+        position: relative;
+        top: -40px;
+        left: -132%;
+        width: 255%;
+    }
+
+    &.update-available {
+        .text {
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 200%;
+            margin-bottom: 20px;
+
+            &.no-upate {
+                font-size: 180%;
+            }
+        }
+    }
+
     &.tx-info {
 
         .transaction-parties {

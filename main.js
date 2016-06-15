@@ -1,45 +1,41 @@
+"use strict";
+
 global._ = require('./modules/utils/underscore');
+
+const Q = require('bluebird');
+Q.config({
+    cancellation: true,
+});
 
 const fs = require('fs');
 const electron = require('electron');
-const app = require('app');  // Module to control application life.
+const app = electron.app;
+const dialog = electron.dialog;
 const timesync = require("os-timesync");
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
 const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
-const dialog = require('dialog');
 const packageJson = require('./package.json');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
+const Sockets = require('./modules/sockets');
+const Windows = require('./modules/windows');
 
-// CLI options
-const argv = require('yargs')
-    .usage('Usage: $0 [options]')
-    .describe('version', 'Display app version')
-    .describe('mode', 'App mode: wallet, mist (default)')
-    .describe('gethpath', 'Path to geth executable to use instead of default')
-    .describe('ethpath', 'Path to eth executable to use instead of default')
-    .describe('ignore-gpu-blacklist', 'Ignores GPU blacklist (needed for some Linux installations)')
-    .describe('reset-tabs', 'Reset Mist tabs to their default settings')
-    .describe('logfile', 'Logs will be written to this file')
-    .describe('loglevel', 'Minimum logging threshold: trace (all logs), debug, info (default), warn, error')
-    .alias('m', 'mode')
-    .help('h')
-    .alias('h', 'help')
-    .parse(process.argv.slice(1));
+const Settings = require('./modules/settings');
+Settings.init();
 
-if (argv.version) {
-    console.log(packageJson.version);
+
+if (Settings.cli.version) {
+    console.log(Settings.appVersion);
+
     process.exit(0);
 }
 
-if (argv.ignoreGpuBlacklist) {
+if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
 // logging setup
-logger.setup(argv);
 const log = logger.create('main');
 
 // GLOBAL Variables
@@ -49,38 +45,29 @@ global.path = {
     USERDATA: app.getPath('userData') // Application Aupport/Mist
 };
 
-global.appName = 'Mist';
 
-global.production = false;
+global.dirname  = __dirname;
 
-global.mode = (argv.mode ? argv.mode : 'mist');
-global.paths = {
-    geth: argv.gethpath,
-    eth: argv.ethpath,
-};
+global.version = Settings.appVersion;
+global.license = Settings.appLicense;
 
-global.version = packageJson.version;
-global.license = packageJson.license;
+global.production = Settings.inProductionMode;
+log.info(`Running in production mode: ${global.production}`);
+
+global.mode = Settings.uiMode;
+
+global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
+
 
 
 require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const NodeConnector = require('./modules/ipc/nodeConnector.js');
-const popupWindow = require('./modules/popupWindow.js');
-const ethereumNodes = require('./modules/ethereumNodes.js');
-const getIpcPath = require('./modules/ipc/getIpcPath.js');
-var ipcPath = getIpcPath();
+const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/nodeSync.js');
 
-global.mainWindow = null;
-global.windows = {};
 global.webviews = [];
 
-global.nodes = {
-    geth: null,
-    eth: null
-};
-global.network = 'main'; // or 'test', will be set by the file later
 global.mining = false;
 
 global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
@@ -89,7 +76,6 @@ global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
 global.Tabs = Minimongo('tabs');
-global.nodeConnector = new NodeConnector(ipcPath);
 
 
 // INTERFACE PATHS
@@ -115,7 +101,7 @@ if(global.mode === 'wallet') {
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
-    if (argv.resetTabs) {
+    if (Settings.cli.resetTabs) {
         url += '?reset-tabs=true'
     }
 
@@ -123,30 +109,9 @@ if(global.mode === 'wallet') {
 }
 
 
-// const getCurrentKeyboardLayout = require('keyboard-layout');
-// const etcKeyboard = require('etc-keyboard');
-// console.log(getCurrentKeyboardLayout());
-// etcKeyboard(function (err, layout) {
-//     console.log('KEYBOARD:', layout);
-// });
-
-
-// const Menu = require('menu');
-// const Tray = require('tray');
-// var appIcon = null;
-
-
-
-// const processRef = global.process;
-// process.nextTick(function() { global.process = processRef; });
-
-
 // prevent crashed and close gracefully
 process.on('uncaughtException', function(error){
     log.error('UNCAUGHT EXCEPTION', error);
-
-    // var stack = new Error().stack;
-    // console.log(stack);
 
     app.quit();
 });
@@ -155,7 +120,6 @@ process.on('uncaughtException', function(error){
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    // if (process.platform != 'darwin')
     app.quit();
 });
 
@@ -165,78 +129,50 @@ app.on('open-url', function (e, url) {
 });
 
 
-// app.on('will-quit', function(event){
-//     event.preventDefault()
-// });
-
 var killedSockets = false;
+
 app.on('before-quit', function(event){
-    if(!killedSockets)
+    if(!killedSockets) {
         event.preventDefault();
+    }
 
-    // CLEAR open IPC sockets to geth
-    _.each(global.sockets, function(socket){
-        if(socket) {
-            log.info('Closing socket', socket.id);
-            socket.destroy();
-        }
-    });
-
+    // sockets manager
+    Sockets.destroyAll()
+        .catch((err) => {
+            log.error('Error shutting down sockets');
+        });
 
     // delay quit, so the sockets can close
     setTimeout(function(){
         killedSockets = true;
-        ethereumNodes.stopNodes(function(){
-            app.quit();
+
+        ethereumNode.stop().then(function() {
+            app.quit(); 
         });
     }, 500);
 });
 
 
-// Emitted when the application is activated while there is no opened windows.
-// It usually happens when a user has closed all of application's windows and then
-// click on the application's dock icon.
-// app.on('activate-with-no-open-windows', function () {
-//     if (global.mainWindow) {
-//         global.mainWindow.show();
-//     }
-// });
 
 
-// append ignore GPU blacklist on linux
-// if(process.platform === 'freebsd' ||
-//    process.platform === 'linux' ||
-//    process.platform === 'sunos') {
-//     app.commandLine.appendSwitch('ignore-cpu-blacklist');
-// }
+const NODE_TYPE = 'geth';
 
-var appStartWindow;
-var nodeType = 'geth';
-var logFunction = function(data) {
-    data = data.toString().replace(/[\r\n]+/,'');
-    log.trace('NODE LOG:', data);
 
-    // if(~data.indexOf('Block synchronisation started') && global.nodes[nodeType]) {
-    //     global.nodes[nodeType].stdout.removeListener('data', logFunction);
-    //     global.nodes[nodeType].stderr.removeListener('data', logFunction);
-    // }
+var mainWindow;
+var splashWindow;
 
-    // show line if its not empty or "------"
-    if(appStartWindow && !/^\-*$/.test(data) && !_.isEmpty(data)) {
-        log.trace('"'+ data +'"');
-        appStartWindow.webContents.send('startScreenText', 'logText', data.replace(/^.*[0-9]\]/,''));
-    }
-};
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    // Initialise window mgr
+    Windows.init();
 
-    // init prepared popup window
-    popupWindow.loadingWindow.init();
+    // check for update
+    require('./modules/updateChecker').run();
 
-    // initialize the IPC provider on the main window
-    ipcProviderBackend();
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
     require('./customProtocols.js');
@@ -244,89 +180,54 @@ app.on('ready', function() {
     // add menu already here, so we have copy and past functionality
     appMenu();
 
-
-    // appIcon = new Tray('./icons/icon-tray.png');
-    // var contextMenu = Menu.buildFromTemplate([
-    //     { label: 'Item1', type: 'radio' },
-    //     { label: 'Item2', type: 'radio' },
-    //     { label: 'Item3', type: 'radio', checked: true },
-    //     { label: 'Item4', type: 'radio' },
-    // ]);
-    // appIcon.setToolTip('This is my application.');
-    // appIcon.setContextMenu(contextMenu);
-
-
     // Create the browser window.
 
     // MIST
     if(global.mode === 'mist') {
-        global.mainWindow = new BrowserWindow({
-            title: global.appName,
-            show: false,
-            width: 1024 + 208,
-            height: 720,
-            icon: global.icon,
-            titleBarStyle: 'hidden-inset', //hidden-inset: more space
-            backgroundColor: '#D2D2D2',
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/mistUI.js',
-                nodeIntegration: false,
-                'overlay-scrollbars': true,
-                webaudio: true,
-                webgl: false,
-                textAreasAreResizable: true,
-                webSecurity: false // necessary to make routing work on file:// protocol
+        mainWindow = Windows.create('main', {
+            electronOptions: {
+                width: 1024 + 208,
+                height: 720,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/mistUI.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true
+                }
             }
         });
 
-        syncMinimongo(Tabs, global.mainWindow.webContents);
-
+        syncMinimongo(Tabs, mainWindow.webContents);
 
     // WALLET
     } else {
-
-        global.mainWindow = new BrowserWindow({
-            title: global.appName,
-            show: false,
-            width: 1100,
-            height: 720,
-            icon: global.icon,
-            titleBarStyle: 'hidden-inset', //hidden-inset: more space
-            backgroundColor: '#F6F6F6',
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/wallet.js',
-                nodeIntegration: false,
-                'overlay-fullscreen-video': true,
-                'overlay-scrollbars': true,
-                webaudio: true,
-                webgl: false,
-                textAreasAreResizable: true,
-                webSecurity: false // necessary to make routing work on file:// protocol
+        mainWindow = Windows.create('main', {
+            electronOptions: {
+                width: 1100,
+                height: 720,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/wallet.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true
+                }
             }
         });
     }
 
-    appStartWindow = new BrowserWindow({
-            title: global.appName,
+    splashWindow = Windows.create('splash', {
+        url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
+        show: true,
+        electronOptions: {
             width: 400,
             height: 230,
-            icon: global.icon,
             resizable: false,
             backgroundColor: '#F6F6F6',
             useContentSize: true,
             frame: false,
             webPreferences: {
                 preload: __dirname +'/modules/preloader/splashScreen.js',
-                nodeIntegration: false,
-                webSecurity: false // necessary to make routing work on file:// protocol
             }
-        });
-    appStartWindow.loadURL(global.interfacePopupsUrl + '#splashScreen_'+ global.mode);//'file://' + __dirname + '/interface/startScreen/'+ global.mode +'.html');
-
+        }
+    });
 
     // check time sync
     // var ntpClient = require('ntp-client');
@@ -349,198 +250,132 @@ app.on('ready', function() {
     });
 
 
-
-    appStartWindow.webContents.on('did-finish-load', function() {
-
-
-        // START GETH
-        const checkNodeSync = require('./modules/checkNodeSync.js');
-        const net = require('net');
-        const socket = new net.Socket();
-        var intervalId = errorTimeout = null;
-        var count = 0;
-
-
-        // TRY to CONNECT
-        setTimeout(function(){
-            socket.connect({path: ipcPath});
-        }, 1);
-
-        // try to connect
-        socket.on('error', function(e){
-            log.debug('Geth connection REFUSED', count);
-
-            // if no geth is running, try starting your own
-            if(count === 0) {
-                count++;
-
-                // STARTING NODE
-                if(appStartWindow)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startingNode');
-
-
-                // read which node is used on this machine
-                try {
-                    nodeType = fs.readFileSync(global.path.USERDATA + '/node', {encoding: 'utf8'});
-                } catch(e){
-                }
-                try {
-                    global.network = fs.readFileSync(global.path.USERDATA + '/network', {encoding: 'utf8'});
-                } catch(e){
-                }
-
-                log.info('Node type: ', nodeType);
-                log.info('Network: ', global.network);
-
-
-                // If nothing else happens, show an error message in 120 seconds, with the node log text
-                errorTimeout = setTimeout(function(){
-                    if(appStartWindow)
-                        appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeConnectionTimeout', ipcPath);
-
-                    var log = '';
-                    try {
-                        log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
-                        log = '...'+ log.slice(-1000);
-                    } catch(e){
-                        log = global.i18n.t('mist.errors.nodeStartup');
-                    };
-
-                    // add node type
-                    log = 'Node type: '+ nodeType + "\n" +
-                        'Network: '+ global.network + "\n" +
-                        'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-                        log;
-
-                    dialog.showMessageBox({
-                        type: "error",
-                        buttons: ['OK'],
-                        message: global.i18n.t('mist.errors.nodeConnect'),
-                        detail: log
-                    }, function(){
-                    });
-
-                }, 120 * 1000);
-
-
-                // -> START NODE
-                ethereumNodes.startNode(nodeType, (global.network === 'test'), function(e){
-                    // TRY TO CONNECT EVERY 500MS
-                    if(!e) {
-                        intervalId = setInterval(function(){
-                            if(socket)
-                                socket.connect({path: ipcPath});
-                        }, 500);
-
-                        // log data to the splash screen
-                        if(global.nodes[nodeType]) {
-                            global.nodes[nodeType].stdout.on('data', logFunction);
-                            global.nodes[nodeType].stderr.on('data', logFunction);
-                        }
-
-                    // NO Binary
-                    } else {
-
-                        if(appStartWindow) {
-                            appStartWindow.webContents.send('startScreenText', 'mist.startScreen.nodeBinaryNotFound');
-                        }
-
-                        clearTimeout(errorTimeout);
-                        clearSocket(socket, true);
-                    }
-                });
-
-            }
+    splashWindow.on('ready', function() {
+        // node connection stuff
+        ethereumNode.on('nodeConnectionTimeout', function() {
+            Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
         });
-        socket.on('connect', function(data){
-            log.info('Geth connection FOUND');
 
-            if(appStartWindow) {
-                if(count === 0)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.runningNodeFound');
-                else
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-            }
+        ethereumNode.on('nodeLog', function(data) {
+            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]\]/,''));
+        });
 
-            clearInterval(intervalId);
-            clearTimeout(errorTimeout);
+        // state change
+        ethereumNode.on('state', function(state, stateAsText) {
+            Windows.broadcast('uiAction_nodeStatus', stateAsText,
+                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+            );
+        });
 
 
-            // update menu, to show node switching possibilities
-            appMenu();
+        // capture sync results
+        const syncResultPromise = new Q((resolve, reject) => {
+            nodeSync.on('nodeSyncing', function(result) {
+                Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+            });
 
-            checkNodeSync(appStartWindow,
-            // -> callback splash screen finished
-            function(e){
+            nodeSync.on('stopped', function() {
+                Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+            });
 
-                if(appStartWindow)
-                    appStartWindow.webContents.send('startScreenText', 'mist.startScreen.startedNode');
-                clearSocket(socket);
-                startMainWindow(appStartWindow);
+            nodeSync.on('error', function(err) {
+                log.error('Error syncing node', err);
 
-            // -> callback onboarding
-            }, function(){
+                reject(err);
+            });
 
-                if(appStartWindow)
-                    appStartWindow.close();
-                appStartWindow = null;
+            nodeSync.on('finished', function() {
+                nodeSync.removeAllListeners('error');
+                nodeSync.removeAllListeners('finished');
 
-                var onboardingWindow = popupWindow.show('onboardingScreen', {width: 576, height: 442});
-                // onboardingWindow.openDevTools();
-                onboardingWindow.on('close', function(){
-                    app.quit();
-                });
-
-                // change network types (mainnet, testnet)
-                ipc.on('onBoarding_changeNet', function(e, testnet) {
-                    var geth = !!global.nodes.geth;
-
-                    ethereumNodes.stopNodes(function(){
-                        ethereumNodes.startNode(geth ? 'geth' : 'eth', testnet, function(){
-                            log.info('Changed to ', (testnet ? 'testnet' : 'mainnet'));
-                            appMenu();
-                        });
-                    });
-                });
-                // launch app
-                ipc.on('onBoarding_launchApp', function(e) {
-                    clearSocket(socket);
-
-                    // prevent that it closes the app
-                    onboardingWindow.removeAllListeners('close');
-                    onboardingWindow.close();
-                    onboardingWindow = null;
-
-                    popupWindow.loadingWindow.show();
-
-                    ipc.removeAllListeners('onBoarding_changeNet');
-                    ipc.removeAllListeners('onBoarding_importPresaleFile');
-                    ipc.removeAllListeners('onBoarding_launchApp');
-
-                    startMainWindow(appStartWindow);
-                });
-
+                resolve();
             });
         });
-    });
 
-});
+        // go!
+        ethereumNode.init()
+            .then(function sanityCheck() {
+                if (!ethereumNode.isIpcConnected) {
+                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
+                }
+
+                /* At this point Geth is running and the socket is connected. */
+                log.info('Connected via IPC to node.');
+
+                // update menu, to show node switching possibilities
+                appMenu();
+            })
+            .then(function getAccounts() {
+                return ethereumNode.send('eth_accounts', []);
+            })
+            .then(function onboarding(resultData) {
+                if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+                    log.info('No accounts setup yet, lets do onboarding first.');
+
+                    return new Q((resolve, reject) => {
+                        splashWindow.hide();
+
+                        var onboardingWindow = Windows.createPopup('onboardingScreen', {
+                            electronOptions: {
+                                width: 576,
+                                height: 442,
+                            },
+                        });
+
+                        onboardingWindow.on('close', function(){
+                            app.quit();
+                        });
+
+                        // change network types (mainnet, testnet)
+                        ipc.on('onBoarding_changeNet', function(e, testnet) {
+                            let newType = ethereumNode.type;
+                            let newNetwork = testnet ? 'test' : 'main';
+
+                            log.debug('Onboarding change network', newNetwork);
+                            
+                            ethereumNode.restart(newType, newNetwork)
+                                .then(function nodeRestarted() {
+                                    appMenu();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+
+                        // launch app
+                        ipc.on('onBoarding_launchApp', function(e) {
+                            // prevent that it closes the app
+                            onboardingWindow.removeAllListeners('close');
+                            onboardingWindow.close();
+
+                            ipc.removeAllListeners('onBoarding_changeNet');
+                            ipc.removeAllListeners('onBoarding_launchApp');
+
+                            resolve();
+                        });
+                    });
+                }
+            })
+            .then(function doSync() {
+                // we're going to do the sync - so show splash
+                splashWindow.show();
+
+                return syncResultPromise;
+            })
+            .then(function allDone() {
+                startMainWindow();
+            })
+            .catch((err) => {
+                log.error('Error starting up node and/or syncing', err);
+            }); /* socket connected to geth */;
+
+    }); /* on splash screen loaded */
+
+}); /* on app ready */
 
 
-/**
-Clears the socket
-
-@method clearSocket
-*/
-var clearSocket = function(socket, timeout){
-    if(timeout) {
-        ethereumNodes.stopNodes();
-    }
-
-    socket.removeAllListeners();
-    socket.destroy();
-    socket = null;
-}
 
 
 /**
@@ -548,42 +383,23 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-var startMainWindow = function(appStartWindow){
-
-    // remove the splash screen logger
-    if(global.nodes[nodeType]) {
-        global.nodes[nodeType].stdout.removeListener('data', logFunction);
-        global.nodes[nodeType].stderr.removeListener('data', logFunction);
-    }
-
-    // and load the index.html of the app.
+var startMainWindow = function() {
     log.info('Loading Interface at '+ global.interfaceAppUrl);
-    global.mainWindow.loadURL(global.interfaceAppUrl);
 
-    global.mainWindow.webContents.on('did-finish-load', function() {
-        popupWindow.loadingWindow.hide();
+    mainWindow.on('ready', function() {
+        splashWindow.close();
 
-        global.mainWindow.show();
-        // global.mainWindow.center();
-
-        if(appStartWindow)
-            appStartWindow.close();
-        appStartWindow = null;
+        mainWindow.show();
     });
 
-    // close app, when the main window is closed
-    global.mainWindow.on('closed', function() {
-        global.mainWindow = null;
+    mainWindow.load(global.interfaceAppUrl);
 
+    // close app, when the main window is closed
+    mainWindow.on('closed', function() {
         app.quit();
     });
 
-
-    // STARTUP PROCESSES
-
-
     // instantiate the application menu
-    // ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
     Tracker.autorun(function(){
         global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
         appMenu(global.webviews);

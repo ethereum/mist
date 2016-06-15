@@ -1,0 +1,27 @@
+sudo: required
+dist: trusty
+
+language: node_js
+
+branches:
+  only:
+    - develop
+
+node_js:
+  - "4"
+
+before_script:
+  - "npm install"
+  - "npm install -g electron-prebuilt@1.0.1"
+  - "npm install -g meteor-build-client"
+  - "gulp update-nodes"
+
+script:
+  - "npm test"
+
+notifications:
+  email:
+    - mist@ethereum.org
+
+
+

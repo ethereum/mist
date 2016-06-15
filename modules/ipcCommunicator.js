@@ -4,11 +4,13 @@ Window communication
 @module ipcCommunicator
 */
 
-const app = require('app');  // Module to control application life.
+const electron = require('electron');
+
+const app = electron.app;  // Module to control application life.
 const appMenu = require('./menuItems');
-const popupWindow = require('./popupWindow.js');
 const logger = require('./utils/logger');
-const ipc = require('electron').ipcMain;
+const Windows = require('./windows');
+const ipc = electron.ipcMain;
 
 const _ = global._;
 
@@ -38,18 +40,17 @@ ipc.on('backendAction_closeApp', function() {
 });
 ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    if(senderWindow) {
-        senderWindow.window.close();
-        delete global.windows[windowId];
+    if (senderWindow) {
+        senderWindow.close();
     }
 });
 ipc.on('backendAction_setWindowSize', function(e, width, height) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    if(senderWindow) {
+    if (senderWindow) {
         senderWindow.window.setSize(width, height);
         senderWindow.window.center(); // ?
     }
@@ -57,15 +58,19 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
     var windowId = e.sender.getId(),
-        senderWindow = global.windows[windowId];
+        senderWindow = Windows.getById(windowId);
 
-    var mainWindow = global.mainWindow;
+    var mainWindow = Windows.getByType('main');
 
-    if (_.get(senderWindow, 'owner')) {
-        senderWindow.owner.send('windowMessage', senderWindow.type, error, value);
+    if (senderWindow.ownerId) {
+        let ownerWindow = Windows.getById(senderWindow.ownerId);
 
-        if(mainWindow && mainWindow.webContents && !mainWindow.webContents.isDestroyed()) {
-            mainWindow.webContents.send('mistUI_windowMessage', senderWindow.type, senderWindow.owner.getId(), error, value);
+        if (ownerWindow) {
+            ownerWindow.send('windowMessage', senderWindow.type, error, value);            
+        }
+
+        if (mainWindow) {
+            mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
         }
     }
 
@@ -136,7 +141,14 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
 // MIST API
 ipc.on('mistAPI_requestAccount', function(e){
-    popupWindow.show('requestAccount', {width: 400, height: 230, alwaysOnTop: true}, null, e);
+    Windows.createPopup('requestAccount', {
+        ownerId: e.sender.getId(),
+        electronOptions: {
+            width: 400, 
+            height: 230, 
+            alwaysOnTop: true,
+        },
+    });
 });
 
 

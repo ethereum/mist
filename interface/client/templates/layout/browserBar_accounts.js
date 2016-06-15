@@ -74,10 +74,14 @@ Template['layout_browserBar_accounts'].events({
     */
     'click button.create-account': function(e, template){
         mist.requestAccount(function(e, address){
+            console.debug('Got new account', address);
+
             var tabId = LocalStore.get('selectedTab'),
             accounts = TemplateVar.get(template, 'accounts');
 
             accounts.push(address);
+
+            TemplateVar.set(template, 'accounts', accounts);
 
             // set new permissions
             Tabs.update(tabId, {$set: {

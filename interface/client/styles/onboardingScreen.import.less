@@ -8,14 +8,6 @@
     height: 100%;
     position: relative;
     // background: lighten(@colorOSBackgroundFocus, 10%);
-
-    .testnet-indicator {
-        position: absolute;
-        top: @gridWidth/2;
-        right: @gridHeight;
-        font-weight: 600;
-        opacity: 0.3;
-    }
     
     .main-content {
         z-index: 1;
@@ -84,7 +76,7 @@
 
         input {
             background-color: transparent;
-            border-bottom: dashed 1px @colorLinkActive;
+            border-bottom: dashed 1px;
         }
 
         input.name {
@@ -139,6 +131,20 @@
         progress {
             width: 100%;
             height: 2px;
+            background: transparent;
+
+            &.stateBar {
+                position: absolute;
+                left: 8px;
+                right: 8px;
+                bottom: 45px;
+                width: auto;
+                opacity: 0.15;
+
+                &::-webkit-progress-value {
+                    background:#000;
+                }
+            }
         }
 
         button {

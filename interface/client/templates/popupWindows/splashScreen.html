@@ -1,6 +1,7 @@
 <template name="popupWindows_splashScreen">
     <div class="splash-screen {{mode}} {{TemplateVar.get 'smallClass'}}">
-        <button class="close">×</button>
+        {{> elements_networkIndicator}}
+
         {{#if TemplateVar.get "showStartAppButton"}}
             <button class="start-app">{{{TemplateVar.get "startAppButtonText"}}}</button>
         {{/if}}
@@ -8,6 +9,11 @@
         <img id="image" src="{{iconPath}}">
         <h1>
             {{{TemplateVar.get "text"}}}
+            
+            {{#if TemplateVar.get "syncStatusMessage"}}
+                <br><small> {{{syncStatus}}} </small>
+            {{/if}}
+
             {{#if TemplateVar.get "logText"}}
                 <br><small style="font-size: 0.7em">{{TemplateVar.get "logText"}}</small>
             {{/if}}
@@ -15,6 +21,7 @@
 
         {{#if TemplateVar.get "showProgressBar"}}
             <progress class="{{mode}}" max="100" value="{{TemplateVar.get 'progress'}}"></progress>
+            <progress class="state {{mode}}" max="100" value="{{TemplateVar.get 'stateProgress'}}"></progress>
         {{/if}}
     </div>
 </template>

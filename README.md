@@ -20,7 +20,7 @@ you can simply run the executeable after download.
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 The data folder for Mist is stored in other places:
 
-- Windows `%APPDATA%\Roaming\Mist`
+- Windows `%APPDATA%\Mist`
 - MacOSX `~/Library/Application Support/Mist`
 - Linux `~/.config/Mist`
 
@@ -32,12 +32,16 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 ### Dependencies
 
-Requires electron version 0.37.2 and Node.js version 4.3.0 or above.
+Requirements: 
+
+* Electron v1.2.2
+* Node v4.3.0 or above
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@0.37.2
+    $ npm install -g electron-prebuilt@1.2.2
+    $ npm install -g gulp
 
 ### Installation
 
@@ -47,11 +51,13 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
+    $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
+    $ gulp update-nodes
 
 
 ### Run Mist
@@ -83,11 +89,27 @@ In the original window you can then start Mist using wallet mode:
     $ electron . --mode wallet
 
 
+### Passing options to Geth
+
+You can pass command-line options directly to Geth by placing them after `--` in 
+the command-line invocation:
+
+```bash
+$ electron . --mode mist -- --rpcport 19343 --networkid 2 
+```
+
+
 ### Using Mist with a privatenet
 
-To run a privatenet you need to have `geth` installed separately and run it with the `ipcpath` flag:
+To run a private network you will need to set the `networkdid`, `ipcpath` and 
+`datadir` flags:
 
-    $ geth --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+```bash
+$ electron . -- --networkid 1234 --ipcpath ~/Library/Ethereum/geth.ipc --datadir ~/Library/Ethereum/privatenet
+```
+
+You can also run `geth` separately yourself with the same options prior to start 
+Mist normally.
 
 
 ### Deployment
@@ -108,6 +130,9 @@ To create a binaries you need to install the following tools:
 To generate the binaries simply run:
 
     $ cd mist
+    $ gulp update-nodes
+
+    // to generate mist
     $ gulp mist
 
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)

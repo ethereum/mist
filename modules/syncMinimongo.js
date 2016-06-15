@@ -5,10 +5,12 @@
 
 const log = require('./utils/logger').create('syncMinimongo');
 
+const electron = require('electron');
+
 
 module.exports = function(db, webContents){
 
-    var ipc = (webContents) ? require('electron').ipcMain : require('electron').ipcRenderer;
+    var ipc = (webContents) ? electron.ipcMain : electron.ipcRenderer;
 
 
     // ONLY syncs from Mist UI to backend, not down again.

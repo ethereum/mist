@@ -328,7 +328,7 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.2.4 (C++) [experimental!]',
+                label: 'Eth 1.2.9 (C++) [experimental!]',
                 checked: ethereumNode.isOwnNode && ethereumNode.isEth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',

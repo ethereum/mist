@@ -507,6 +507,7 @@ gulp.task('taskQueue', [
 gulp.task('update-nodes', [
     'renameNodesDeleteOld'
 ]);
+gulp.task('download-nodes', ['update-nodes']);
 
 // MIST task
 gulp.task('mist', [

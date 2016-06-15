@@ -218,6 +218,21 @@ var menuTempl = function(webviews) {
         ]
     })
 
+    let languageMenu =
+    Object.keys(i18n.options.resources).map(lang_code => {
+        menuItem = {
+            label: lang_code,
+            click: function(){
+                let mainWindow = Windows.getByType('main');
+                mainWindow.webContents.executeJavaScript(
+                    `TAPi18n.setLanguage("${lang_code}");`
+                );
+            }
+        }
+        return menuItem
+    }
+    )
+
     // VIEW
     menu.push({
         label: i18n.t('mist.applicationMenu.view.label'),
@@ -230,6 +245,10 @@ var menuTempl = function(webviews) {
 
                     mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
                 }
+            },
+            {
+                label: i18n.t('mist.applicationMenu.view.languages'),
+                submenu: languageMenu
             }
         ]
     })
@@ -429,32 +448,6 @@ var menuTempl = function(webviews) {
                 role: 'arrangeInFront:',
                 role: 'front'
             },
-        ]
-    })
-
-    let languageMenu =
-    Object.keys(i18n.options.resources).map(lang_code => {
-        menuItem = {
-            label: lang_code,
-            click: function(){
-                let mainWindow = Windows.getByType('main');
-                mainWindow.webContents.executeJavaScript(
-                    `TAPi18n.setLanguage("${lang_code}");`
-                );
-            }
-        }
-        return menuItem
-    }
-    )
-
-    // SETTINGS
-    menu.push({
-        label: i18n.t('mist.applicationMenu.settings.label'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.settings.languages'),
-                submenu: languageMenu
-            }
         ]
     })
 

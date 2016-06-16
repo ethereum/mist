@@ -172,11 +172,12 @@ class Windows {
                 alwaysOnTop: true,
                 resizable: false,
                 width: 100,
-                height: 50,
+                height: 80,
                 center: true,
                 frame: false,
                 useContentSize: true,
                 titleBarStyle: 'hidden', //hidden-inset: more space
+                skipTaskbar: true
             },
         });
 

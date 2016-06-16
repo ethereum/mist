@@ -51,6 +51,8 @@ class Socket extends EventEmitter {
 
         return this._resetSocket()
             .then(() => {
+                let timeoutId = null;
+                let intervalId = null;
                 this._log.debug('Connecting...');
 
                 this._state = STATE.CONNECTING;
@@ -60,33 +62,45 @@ class Socket extends EventEmitter {
                         this._log.info('Connected!');
 
                         this._state = STATE.CONNECTED;
+                        clearTimeout(timeoutId);
+                        clearInterval(intervalId);
 
                         this.emit('connect');
 
                         resolve();
                     });
 
-                    this._socket.once('error', (err) => {
-                        if (STATE.CONNECTING === this._state) {
+                    this._socket.on('error', (err) => {
+                        // reject after the timeout is over
+                        if (!options.timeout || STATE.CONNECTION_TIMEOUT === this._state) {
                             this._log.error('Connection error', err);
+
+                            clearTimeout(timeoutId);
+                            clearInterval(intervalId);
 
                             this._state = STATE.ERROR;
 
+                            this._socket.removeAllListeners('error');
                             return reject(new Error(`Unable to connect to socket: ${err.message}`));
                         }
                     });
 
+                    // add timeout
                     if (options.timeout) {
                         this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
 
-                        setTimeout(() => {
-                            if (STATE.CONNECTING === this._state) {
-                                this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
+                        timeoutId = setTimeout(() => {
+                            if (STATE.CONNECTED !== this._state) {
+                                this._state = STATE.CONNECTION_TIMEOUT;
+                                // this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
                             }
                         }, options.timeout);
                     }
 
-                    this._socket.connect(connectConfig);
+                    // try connecting
+                    intervalId = setInterval(() => {
+                        this._socket.connect(connectConfig);
+                    }, 200);
                 });            
             });
     } 
@@ -388,6 +402,7 @@ const STATE = Socket.STATE = {
     DISCONNECTED: 4,
     ERROR: -1,
     DISCONNECTION_TIMEOUT: -2,
+    CONNECTION_TIMEOUT: -3,
 };
 
 

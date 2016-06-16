@@ -143,7 +143,7 @@ class EthereumNode extends EventEmitter {
                 return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
-                            
+
                         throw err;
                     });
             });
@@ -289,8 +289,8 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('network', this._network);
 
                 return this._socket.connect({ path: ipcPath }, {
-                    timeout: 30000 /* 30s */
-                })  
+                        timeout: 10000 /* 30s */
+                    })  
                     .then(() => {
                         this.state = STATES.CONNECTED;
                     })
@@ -523,7 +523,7 @@ class EthereumNode extends EventEmitter {
 
                             resolve(proc);                        
                         }
-                    }, 4000);
+                    }, 1000);
                 })
             });
         });

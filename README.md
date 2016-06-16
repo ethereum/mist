@@ -34,13 +34,14 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements: 
 
-* Electron v1.0.1
+* Electron v1.2.2
 * Node v4.3.0 or above
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@1.0.1
+    $ npm install -g electron-prebuilt@1.2.2
+    $ npm install -g gulp
 
 ### Installation
 
@@ -55,6 +56,7 @@ To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
+    $ gulp update-nodes
 
 
 ### Run Mist
@@ -127,6 +129,9 @@ To create a binaries you need to install the following tools:
 To generate the binaries simply run:
 
     $ cd mist
+    $ gulp update-nodes
+
+    // to generate mist
     $ gulp mist
 
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)

@@ -1,3 +1,5 @@
+"use strict";
+
 require('co-mocha');
 
 const Q = require('bluebird');
@@ -22,6 +24,16 @@ exports.mocha = function(_module, options) {
       this.assert = chai.assert;
       this.expect = chai.expect;
 
+      this.geth = gethPrivate({
+        balance: 5,
+        genesisBlock: {
+          difficulty: '0x1',
+          extraData: '0x1',
+        },
+      });
+
+      yield this.geth.start();
+
       const logFilePath = path.join(__dirname, 'mist.log');
       shell.rm('-rf', logFilePath);
 
@@ -36,17 +48,8 @@ exports.mocha = function(_module, options) {
 
       // console.log(appPath);
 
-      this.geth = gethPrivate({
-        balance: 5,
-        genesisBlock: {
-          difficulty: '0x1',
-          extraData: '0x1',
-        },
-      });
-
-      yield this.geth.start();
-
       this.app = new Application({
+        requireName: 'require',
         startTimeout: 5000,
         waitTimeout: 5000,
         quitTimeout: 10000,
@@ -66,10 +69,21 @@ exports.mocha = function(_module, options) {
 
       yield Q.delay(10000);
 
-      fs.writeFileSync(
-        path.join(__dirname, 'mist.png'), 
-        yield this.app.browserWindow.capturePage()
-      );
+      console.log(this.app.chromeDriver.logLines);
+
+      let windowTitle = yield this.app.client.executeAsync(function(done) {
+        done();
+      });
+
+      console.log('title', '[' + windowTitle + ']');
+
+      let pageImage = yield this.app.browserWindow.capturePage();
+
+      if (!pageImage) {
+        throw new Error('Page capture failed');
+      }
+
+      fs.writeFileSync(path.join(__dirname, 'mist.png'), pageImage);
     },
 
     after: function*() {

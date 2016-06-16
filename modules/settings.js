@@ -14,6 +14,8 @@ try {
 
 
 
+
+
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] -- [Node options]')
     .option({
@@ -101,6 +103,7 @@ const argv = require('yargs')
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
+
 
 
 argv.nodeOptions = [];

@@ -19,30 +19,26 @@ mistInit = function(){
 
     if (0 <= location.search.indexOf('reset-tabs')) {
         console.info('Resetting UI tabs');
-        
         Tabs.remove({});
     }
 
     if(!Tabs.findOne('browser')) {
-        console.debug('Insert tabs');
-
         Tabs.insert({
             _id: 'browser',
             url: 'https://ethereum.org',
             position: 0
         });
-        
-        // wait for accounts and blocks to be initialized below
-        Meteor.setTimeout(function() {
-            Tabs.insert({
-                _id: 'wallet',
-                url: 'https://wallet.ethereum.org',
-                position: 1,
-                permissions: {
-                    accounts: web3.eth.accounts
-                }
-            });
-        }, 1500);
+    }
+    
+    if(!Tabs.findOne('wallet')) {
+        Tabs.insert({
+            _id: 'wallet',
+            url: 'https://wallet.ethereum.org',
+            position: 1,
+            permissions: {
+                admin: true
+            }
+        });
     }
 
     EthAccounts.init();

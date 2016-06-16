@@ -76,11 +76,18 @@ module.exports = class BaseProcessor {
     }
 
 
-    _isAdminConnection (conn) {
-        // main window or popupwindows - always allow requests
-        let wnd = Windows.getById(conn.id);
+    /**
+    Will check if the connection is an admin
 
-        return (wnd && ('main' === wnd.type || wnd.isPopup));
+    @method _isAdminConnection
+    @param {Object} conn The connection.
+    */
+    _isAdminConnection (conn) {
+        let wnd = Windows.getById(conn.id);
+        let tab = Tabs.findOne({ webviewId: conn.id });
+
+        return ((wnd && ('main' === wnd.type || wnd.isPopup)) || // main window or popupwindows - always allow requests
+                (_.get(tab, 'permissions.admin') && tab.permissions.admin === true)); // tabs with permission admin: true area allowed
     }
 
 
@@ -89,6 +96,7 @@ module.exports = class BaseProcessor {
 
     This will modify the input payload object.
 
+    @method sanitizePayload
     @param {Object} conn The connection.
     @param {Object} payload The request payload.
     */

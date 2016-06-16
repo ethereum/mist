@@ -130,7 +130,6 @@ app.on('open-url', function (e, url) {
 
 
 var killedSockets = false;
-
 app.on('before-quit', function(event){
     if(!killedSockets) {
         event.preventDefault();
@@ -147,7 +146,7 @@ app.on('before-quit', function(event){
         killedSockets = true;
 
         ethereumNode.stop().then(function() {
-            app.quit(); 
+            app.quit();
         });
     }, 500);
 });

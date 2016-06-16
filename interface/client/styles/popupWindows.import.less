@@ -189,39 +189,39 @@
             justify-content: center;
             align-items: center;
             margin: 30px 0 15px;
-            .account-dapp-user {
-                margin: 0 10px;
-                position: relative;
-                width: 120px;
+        }
+        .account-dapp-user {
+            margin: 0 10px;
+            position: relative;
+            width: 120px;
+            height: 64px;
+            & > * {
+                position: absolute;
+                top: 0;
+                display: inline-block;
+                width: 64px;
                 height: 64px;
-                & > * {
-                    position: absolute;
-                    top: 0;
-                    display: inline-block;
-                    width: 64px;
-                    height: 64px;
+                border-radius: 50%;
+                &.is-empty {
+                    background-color: #6E6C6F;
                     border-radius: 50%;
-                    &.is-empty {
-                        background-color: #6E6C6F;
-                        border-radius: 50%;
-                        &::after {
-                            color: #fff;
-                            content: '?';
-                            display: block;
-                            text-align: center;
-                            line-height: 64px;
-                            font-size: 2.5em;
-                        }
+                    &::after {
+                        color: #fff;
+                        content: '?';
+                        display: block;
+                        text-align: center;
+                        line-height: 64px;
+                        font-size: 2.5em;
                     }
                 }
-                .user-icon, .simptip-position-left {
-                    z-index: 2;
-                    left: 0;
-                }
-                .app-icon {
-                    z-index: 1;
-                    left: 55px;
-                }
+            }
+            .user-icon, .simptip-position-left {
+                z-index: 2;
+                left: 0;
+            }
+            .app-icon {
+                z-index: 1;
+                left: 55px;
             }
         }
         
@@ -258,7 +258,7 @@
             .switch-card ul {
                 overflow: hidden;
                 height: 48px *3.5;
-                overflow: scroll;
+                overflow: auto;
                 &::after {
                     position: absolute;
                     content: '';

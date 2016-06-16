@@ -3,8 +3,8 @@
 		<form action="#">
 			<div class="account-dapp-user-container">
 				<span class="account-address">
-					{{#if accounts.length}}
-						{{accounts[0].address}}
+					{{#if currentAccount}}
+						{{currentAccount}}
 					{{else}}
 						Choose account
 					{{/if}}
@@ -37,7 +37,7 @@
 					<p>
 						Accepting this will provide them proof that you own the
 						<strong>
-							{{accounts}} (<a class="switch-account">switch</a>)
+							{{accountNameOrAddress currentAccount}} (<a class="switch-account">switch</a>)
 						</strong>
 						account at this time, and allow them to see any public information, including balances, connected to it.
 					</p>

@@ -17,7 +17,8 @@
             },
             "view": {
                 "label": "檢視",
-                "fullscreen": "全螢幕"
+                "fullscreen": "全螢幕",
+                "languages": "語言"
             },
             "accounts": {
                 "label": "帳號",

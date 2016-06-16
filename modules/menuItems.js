@@ -56,7 +56,7 @@ var menuTempl = function(webviews) {
                 click: function(){
                     Windows.createPopup('about', {
                         electronOptions: {
-                            width: 420, 
+                            width: 420,
                             height: 230,
                             alwaysOnTop: true,
                         }
@@ -124,7 +124,7 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.accounts.importPresale'),
                 accelerator: 'CommandOrControl+I',
-                enabled: ethereumNode.isMainNetwork,            
+                enabled: ethereumNode.isMainNetwork,
                 click: function(){
                     Windows.createPopup('importAccount', {
                         electronOptions: {
@@ -132,7 +132,7 @@ var menuTempl = function(webviews) {
                         }
                     });
                 }
-            }, 
+            },
             {
                 type: 'separator'
             },
@@ -150,7 +150,7 @@ var menuTempl = function(webviews) {
                                     path = global.path.APPDATA + '\\Web3\\keys';
                                 else
                                     path += '/.web3/keys';
-                            
+
                             // geth
                             } else {
                                 if(process.platform === 'darwin')
@@ -218,6 +218,21 @@ var menuTempl = function(webviews) {
         ]
     })
 
+    let languageMenu =
+    Object.keys(i18n.options.resources).map(lang_code => {
+        menuItem = {
+            label: lang_code,
+            click: function(){
+                let mainWindow = Windows.getByType('main');
+                mainWindow.webContents.executeJavaScript(
+                    `TAPi18n.setLanguage("${lang_code}");`
+                );
+            }
+        }
+        return menuItem
+    }
+    )
+
     // VIEW
     menu.push({
         label: i18n.t('mist.applicationMenu.view.label'),
@@ -230,6 +245,10 @@ var menuTempl = function(webviews) {
 
                     mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
                 }
+            },
+            {
+                label: i18n.t('mist.applicationMenu.view.languages'),
+                submenu: languageMenu
             }
         ]
     })
@@ -307,7 +326,7 @@ var menuTempl = function(webviews) {
 
 
 
-                   
+
 
     // add node switching menu
     devToolsMenu.push({
@@ -355,7 +374,7 @@ var menuTempl = function(webviews) {
           },
           {
             label: 'Testnet (Morden)',
-            accelerator: 'CommandOrControl+Shift+2',                
+            accelerator: 'CommandOrControl+Shift+2',
             checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
             enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
             type: 'checkbox',
@@ -378,7 +397,7 @@ var menuTempl = function(webviews) {
                         if (ret.result) {
                             global.mining = true;
                             createMenu(webviews);
-                        }                        
+                        }
                     })
                     .catch((err) => {
                         log.error('miner_start', err);
@@ -391,7 +410,7 @@ var menuTempl = function(webviews) {
                         if (ret.result) {
                             global.mining = false;
                             createMenu(webviews);
-                        }                        
+                        }
                     })
                     .catch((err) => {
                         log.error('miner_stop', err);

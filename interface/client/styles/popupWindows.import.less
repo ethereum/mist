@@ -1,3 +1,40 @@
+
+@-webkit-keyframes slideInLeft {
+  from {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  to {
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@-webkit-keyframes slideInRight {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(50%, 0, 0);
+  }
+
+  to {
+    -webkit-transform: none;
+    transform: none;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+
 .popup-windows {
     text-align: center;
 
@@ -182,6 +219,9 @@
         margin: 0 auto;
         padding: 0 60px;
 
+        p strong {
+            font-weight: 500;
+        }
         .account-dapp-user-container {
             display: -webkit-flex;
             display: flex;
@@ -218,13 +258,15 @@
             .user-icon, .simptip-position-left {
                 z-index: 2;
                 left: 0;
+                animation: .9s ease-out slideInRight;
             }
             .app-icon {
                 z-index: 1;
                 left: 55px;
+                animation: .9s ease-out slideInLeft;
             }
         }
-        
+
         .cards-container {
             position: relative;
             height: 230px;
@@ -306,6 +348,15 @@
         .dapp-modal-buttons button:last-of-type
          { margin-right: 0; }
 
+
+        span.account-address {
+            animation: .9s ease-out fadeIn;    
+        }
+
+        span.dapp-url {
+            animation: .9s ease-out fadeIn;    
+        }
+
         span.account-address, span.dapp-url {
             display: inline-block;
             text-overflow: ellipsis;
@@ -321,3 +372,5 @@
 body.app-blur .popup-windows.connect-account .cards-container .switch-card ul::after {
     background: -webkit-linear-gradient(top, rgba(246,246,246,0), rgba(246,246,246,1));
 }
+
+

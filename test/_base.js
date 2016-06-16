@@ -13,7 +13,7 @@ const Application = require('spectron').Application;
 const chai = require('chai');
 chai.should();
 
-process.env.NODE_ENV = 'test';
+process.env.TEST_MODE = 'true';
 
 
 exports.mocha = function(_module, options) {
@@ -21,6 +21,8 @@ exports.mocha = function(_module, options) {
 
   _module.exports[options.name || path.basename(_module.filename)] = {
     before: function*() {
+      this.timeout(10000000);
+
       this.assert = chai.assert;
       this.expect = chai.expect;
 

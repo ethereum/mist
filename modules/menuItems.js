@@ -319,7 +319,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.4.5 (Go)',
+                label: 'Geth 1.4.7 (Go)',
                 checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
@@ -328,7 +328,7 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.2.4 (C++) [experimental!]',
+                label: 'Eth 1.2.9 (C++) [experimental!]',
                 checked: ethereumNode.isOwnNode && ethereumNode.isEth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',

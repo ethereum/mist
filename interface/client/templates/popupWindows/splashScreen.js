@@ -99,8 +99,9 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 // Select the appropriate message
                 if(web3.net.peerCount > 0) {
                     // Check which state we are
-                    if (lastSyncData.knownStates > lastSyncData.lastKnownStates 
-                        || (lastSyncData.pulledStates / lastSyncData.knownStates) < 0.9  ) {
+
+                    if  (   lastSyncData.pulledStates != Math.round(lastSyncData._displayState) 
+                        ||  lastSyncData.knownStates != Math.round(lastSyncData._displayKnownStates)) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
 
@@ -116,7 +117,6 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
                 // Saves data as numbers (hex)
                 lastSyncData._highestBlock = lastSyncData.highestBlock;
-                lastSyncData.lastKnownStates = lastSyncData.knownStates;
 
                 // saves data as pretty strings
                 lastSyncData.highestBlock = numeral(lastSyncData.highestBlock).format('0,0');

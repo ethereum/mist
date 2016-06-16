@@ -428,38 +428,34 @@ gulp.task('rename-folders', ['change-files'], function(done) {
 
 
 
-// gulp.task('getChecksums', [], function(done) {
-//     var count = 0;
-//     osVersions.forEach(function(os){
+gulp.task('getChecksums', [], function(done) {
+    var count = 0;
 
-//         var path = createNewFileName(os) + '.zip';
+    osVersions.forEach(function(os){
 
-//         // spit out shasum and md5
-//         var fileName = path.replace('./dist_'+ type +'/', '');
-//         var sha = spawn('shasum', [path]);
-//         sha.stdout.on('data', function(data){
-//             console.log('SHASUM '+ fileName +': '+ data.toString().replace(path, ''));
-//         });
-//         var md5 = spawn('md5', [path]);
-//         md5.stdout.on('data', function(data){
-//             console.log('MD5 '+ fileName +': '+ data.toString().replace('MD5 ('+ path +') = ', ''));
-//         });
+        var path = buildHelpers.buildDistPath(
+            type,
+            buildHelpers.buildDistPkgName(os, type, {
+                includeVersion: true,
+                replaceOs: true,
+            })
+        );
+
+        // spit out shasum and md5
+        var fileName = path.replace('./dist_'+ type +'/', '');
+        var sha = spawn('shasum', [path]);
+        sha.stdout.on('data', function(data){
+            console.log('SHA256 '+ fileName +': '+ data.toString().replace(path, ''));
+        });
+
+        count++;
+        if(osVersions.length === count) {
+            done();
+        }
+    });
+});
 
 
-//         count++;
-//         if(osVersions.length === count) {
-//             done();
-//         }
-//     });
-// });
-
-
-        // // spit out shasum and md5
-        // var fileName = path.replace('./dist_'+ type +'/', '');
-        // var sha = spawn('shasum', [path]);
-        // sha.stdout.on('data', function(data){
-        //     console.log('SHASUM -a 256'+ fileName +': '+ data.toString().replace(path, ''));
-        // });
 
 gulp.task('taskQueue', ['rename-folders']);
 
@@ -469,18 +465,18 @@ gulp.task('mist', function(cb) {
     runSequence('set-variables-mist','taskQueue', cb);
 });
 
-// gulp.task('mist-checksums', function(cb) {
-//     runSequence('set-variables-mist','getChecksums', cb);
-// });
+gulp.task('mist-checksums', function(cb) {
+    runSequence('set-variables-mist','getChecksums', cb);
+});
 
 // WALLET task
 gulp.task('wallet', function(cb) {
     runSequence('set-variables-wallet','taskQueue', cb);
 });
 
-// gulp.task('wallet-checksums', function(cb) {
-//     runSequence('set-variables-wallet','getChecksums', cb);
-// });
+gulp.task('wallet-checksums', function(cb) {
+    runSequence('set-variables-wallet','getChecksums', cb);
+});
 
 // DOWNLOAD nodes
 gulp.task('update-nodes', [

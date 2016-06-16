@@ -60,7 +60,6 @@ body, html {
     margin: 0;
     overflow: hidden;
     background: @colorWinBackgroundFocus;
-    -webkit-app-region: drag;
 
     &.app-blur {
         background: @colorWinBackgroundBlur;
@@ -93,11 +92,7 @@ aside {
     bottom: 0;
     // padding-top: @gridHeight/2;
     width: @widthSideBar;
-    -webkit-app-region: drag;
 
-    nav {
-        -webkit-app-region: no-drag;
-    }
 
     &:before {
         content: " ";
@@ -174,5 +169,4 @@ webview {
     overflow: hidden;
     margin-top: @gridHeight*2;
     border-top: solid 1px rgba(0, 0, 0, 0.1);
-    -webkit-app-region: no-drag;
 }

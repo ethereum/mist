@@ -21,7 +21,9 @@
 
         {{#if TemplateVar.get "showProgressBar"}}
             <progress class="{{mode}}" max="100" value="{{TemplateVar.get 'progress'}}"></progress>
-            <progress class="state {{mode}}" max="100" value="{{TemplateVar.get 'stateProgress'}}"></progress>
+            {{#if TemplateVar.get "showStateProgressBar"}}
+                <progress class="state {{mode}}" max="100" value="{{TemplateVar.get 'stateProgress'}}"></progress>
+            {{/if}}
         {{/if}}
     </div>
 </template>

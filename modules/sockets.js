@@ -10,6 +10,9 @@ const dechunker = require('./ipc/dechunker.js');
 
 
 
+const CONNECT_INTERVAL_MS = 1000;
+const CONNECT_TIMEOUT_MS = 3000;
+
 
 /**
  * Socket connecting to Ethereum Node.
@@ -41,66 +44,67 @@ class Socket extends EventEmitter {
      * Connect to host.
      * @param  {Object} connectConfig
      * @param  {Object} [options]
-     * @param  {Number} [options.timeout] Milliseconds to wait before timeout.
+     * @param  {Number} [options.timeout] Milliseconds to wait before timeout (default is 5000).
      * @return {Promise}
      */
     connect (connectConfig, options) {
         this._log.info(`Connect to ${JSON.stringify(connectConfig)}`);
 
-        options = options || {};
+        options = _.extend({
+            timeout: CONNECT_TIMEOUT_MS,
+        }, options);
 
         return this._resetSocket()
             .then(() => {
-                let timeoutId = null;
-                let intervalId = null;
+                let connectTimerId = null;
+                let timeoutTimerId = null;
+
                 this._log.debug('Connecting...');
+
+                this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
 
                 this._state = STATE.CONNECTING;
 
                 return new Q((resolve, reject) => {
                     this._socket.once('connect', () => {
-                        this._log.info('Connected!');
+                        if (STATE.CONNECTING === this._state) {
+                            this._log.info('Connected!');
 
-                        this._state = STATE.CONNECTED;
-                        clearTimeout(timeoutId);
-                        clearInterval(intervalId);
+                            this._state = STATE.CONNECTED;
 
-                        this.emit('connect');
+                            clearTimeout(connectTimerId);
+                            clearTimeout(timeoutTimerId);
 
-                        resolve();
-                    });
+                            this.emit('connect');
 
-                    this._socket.on('error', (err) => {
-                        // reject after the timeout is over
-                        if (!options.timeout || STATE.CONNECTION_TIMEOUT === this._state) {
-                            this._log.error('Connection error', err);
-
-                            clearTimeout(timeoutId);
-                            clearInterval(intervalId);
-
-                            this._state = STATE.ERROR;
-
-                            this._socket.removeAllListeners('error');
-                            return reject(new Error(`Unable to connect to socket: ${err.message}`));
+                            resolve();                            
                         }
                     });
 
-                    // add timeout
-                    if (options.timeout) {
-                        this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
+                    this._socket.on('error', (err) => {
+                        if (STATE.CONNECTING === this._state) {
+                            this._log.warn(`Connection failed, retrying after ${CONNECT_INTERVAL_MS}ms...`);
 
-                        timeoutId = setTimeout(() => {
-                            if (STATE.CONNECTED !== this._state) {
-                                this._state = STATE.CONNECTION_TIMEOUT;
-                                // this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
-                            }
-                        }, options.timeout);
-                    }
+                            connectTimerId = setTimeout(() => {
+                                this._socket.connect(connectConfig);
+                            }, CONNECT_INTERVAL_MS);
+                        }
+                    });
 
-                    // try connecting
-                    intervalId = setInterval(() => {
-                        this._socket.connect(connectConfig);
-                    }, 200);
+                    timeoutTimerId = setTimeout(() => {
+                        if (STATE.CONNECTING === this._state) {
+                            this._log.error(`Connection failed (${options.timeout}ms elapsed)`);
+
+                            this._state = STATE.CONNECTION_TIMEOUT;
+
+                            clearTimeout(connectTimerId);
+
+                            return reject(new Error(`Unable to connect to socket: timeout`));
+                        }
+                    }, options.timeout);
+
+                    // initial kick-off
+                    this._socket.connect(connectConfig);
                 });            
             });
     } 

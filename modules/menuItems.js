@@ -218,20 +218,27 @@ var menuTempl = function(webviews) {
         ]
     })
 
+    let genSwitchLanguageFunc = (lang_code) => function(){
+        let mainWindow = Windows.getByType('main');
+        mainWindow.webContents.executeJavaScript(
+            `TAPi18n.setLanguage("${lang_code}");`
+        );
+    }
+
     let languageMenu =
-    Object.keys(i18n.options.resources).map(lang_code => {
+    Object.keys(i18n.options.resources)
+    .filter(lang_code => lang_code != 'dev')
+    .map(lang_code => {
         menuItem = {
             label: lang_code,
-            click: function(){
-                let mainWindow = Windows.getByType('main');
-                mainWindow.webContents.executeJavaScript(
-                    `TAPi18n.setLanguage("${lang_code}");`
-                );
-            }
+            click: genSwitchLanguageFunc(lang_code)
         }
         return menuItem
-    }
-    )
+    });
+    languageMenu.unshift({
+        label: "Default Language",
+        click: genSwitchLanguageFunc(global.language)
+    });
 
     // VIEW
     menu.push({

@@ -218,11 +218,11 @@ var menuTempl = function(webviews) {
         ]
     })
 
-    let genSwitchLanguageFunc = (lang_code) => function(){
-        let mainWindow = Windows.getByType('main');
-        mainWindow.webContents.executeJavaScript(
+    let genSwitchLanguageFunc = (lang_code) => function(menuItem, browserWindow){
+        browserWindow.webContents.executeJavaScript(
             `TAPi18n.setLanguage("${lang_code}");`
         );
+        ipc.emit("backendAction_setLanguage", {}, lang_code);
     }
 
     let languageMenu =

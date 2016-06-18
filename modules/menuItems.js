@@ -236,8 +236,10 @@ var menuTempl = function(webviews) {
         return menuItem
     });
     languageMenu.unshift({
-        label: "Default Language",
+        label: "auto",
         click: genSwitchLanguageFunc(global.language)
+    }, {
+        type: 'separator'
     });
 
     // VIEW

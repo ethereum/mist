@@ -111,7 +111,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             // Saves the data back to the object
             TemplateVar.set(template, 'syncing', syncing);
 
-            console.log('number', Number(syncing.statesPercent), Number(syncing.statesPercent) < 90)
+            console.trace('number', Number(syncing.statesPercent), Number(syncing.statesPercent) < 90)
 
             // Only show states if they are less than 50% downloaded
             if (Number(syncing.statesPercent)  > 0 && Number(syncing.statesPercent) < 90) {

@@ -10,6 +10,9 @@ const dechunker = require('./ipc/dechunker.js');
 
 
 
+const CONNECT_INTERVAL_MS = 1000;
+const CONNECT_TIMEOUT_MS = 3000;
+
 
 /**
  * Socket connecting to Ethereum Node.
@@ -41,51 +44,66 @@ class Socket extends EventEmitter {
      * Connect to host.
      * @param  {Object} connectConfig
      * @param  {Object} [options]
-     * @param  {Number} [options.timeout] Milliseconds to wait before timeout.
+     * @param  {Number} [options.timeout] Milliseconds to wait before timeout (default is 5000).
      * @return {Promise}
      */
     connect (connectConfig, options) {
         this._log.info(`Connect to ${JSON.stringify(connectConfig)}`);
 
-        options = options || {};
+        options = _.extend({
+            timeout: CONNECT_TIMEOUT_MS,
+        }, options);
 
         return this._resetSocket()
             .then(() => {
+                let connectTimerId = null;
+                let timeoutTimerId = null;
+
                 this._log.debug('Connecting...');
+
+                this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
 
                 this._state = STATE.CONNECTING;
 
                 return new Q((resolve, reject) => {
                     this._socket.once('connect', () => {
-                        this._log.info('Connected!');
-
-                        this._state = STATE.CONNECTED;
-
-                        this.emit('connect');
-
-                        resolve();
-                    });
-
-                    this._socket.once('error', (err) => {
                         if (STATE.CONNECTING === this._state) {
-                            this._log.error('Connection error', err);
+                            this._log.info('Connected!');
 
-                            this._state = STATE.ERROR;
+                            this._state = STATE.CONNECTED;
 
-                            return reject(new Error(`Unable to connect to socket: ${err.message}`));
+                            clearTimeout(connectTimerId);
+                            clearTimeout(timeoutTimerId);
+
+                            this.emit('connect');
+
+                            resolve();                            
                         }
                     });
 
-                    if (options.timeout) {
-                        this._log.debug(`Will wait ${options.timeout}ms for connection to happen.`);
+                    this._socket.on('error', (err) => {
+                        if (STATE.CONNECTING === this._state) {
+                            this._log.warn(`Connection failed, retrying after ${CONNECT_INTERVAL_MS}ms...`);
 
-                        setTimeout(() => {
-                            if (STATE.CONNECTING === this._state) {
-                                this._socket.emit('error', `Connection timeout (took longer than ${options.timeout} ms)`);
-                            }
-                        }, options.timeout);
-                    }
+                            connectTimerId = setTimeout(() => {
+                                this._socket.connect(connectConfig);
+                            }, CONNECT_INTERVAL_MS);
+                        }
+                    });
 
+                    timeoutTimerId = setTimeout(() => {
+                        if (STATE.CONNECTING === this._state) {
+                            this._log.error(`Connection failed (${options.timeout}ms elapsed)`);
+
+                            this._state = STATE.CONNECTION_TIMEOUT;
+
+                            clearTimeout(connectTimerId);
+
+                            return reject(new Error(`Unable to connect to socket: timeout`));
+                        }
+                    }, options.timeout);
+
+                    // initial kick-off
                     this._socket.connect(connectConfig);
                 });            
             });
@@ -388,6 +406,7 @@ const STATE = Socket.STATE = {
     DISCONNECTED: 4,
     ERROR: -1,
     DISCONNECTION_TIMEOUT: -2,
+    CONNECTION_TIMEOUT: -3,
 };
 
 

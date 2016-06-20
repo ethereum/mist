@@ -29,6 +29,24 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        node: {
+            demand: false,
+            default: null,
+            describe: 'Node to use: geth, eth',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
+        network: {
+            demand: false,
+            default: null,
+            describe: 'Network to connect to: main, test',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         ipcpath: {
             demand: false,
             describe: 'Path to node IPC socket file (this will automatically get passed as an option to Geth).',
@@ -164,6 +182,14 @@ class Settings {
 
   get ipcPath () {
     return argv.ipcpath;
+  }
+
+  get nodeType () {
+    return argv.node;
+  }
+
+  get network () {
+    return argv.network;
   }
 
   get nodeOptions () {

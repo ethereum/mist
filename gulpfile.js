@@ -2,6 +2,7 @@ var _ = require("underscore");
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
+var nodePath = require('path');
 var replace = require('gulp-replace');
 var runSequence = require('run-sequence');
 var mocha = require('gulp-spawn-mocha');
@@ -16,6 +17,10 @@ var tap = require("gulp-tap");
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
+
+
+const meteorBuildBin = nodePath.join(__dirname, 'node_modules', 'meteor-build-client', 'main.js');
+
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -248,8 +253,8 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
 
         if(options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
-            exec(`cd interface/ && meteor-build-client ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
-                 cd ../../meteor-dapp-wallet/app && meteor-build-client ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p ""`, function (err, stdout, stderr) {
+            exec(`cd interface/ && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
+                 cd ../../meteor-dapp-wallet/app && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p ""`, function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -258,8 +263,8 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
 
         } else {
             console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/'+ options.walletSource +' "'+ options.walletSource +'" branch...');
-            exec( `cd interface/ && meteor-build-client ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
-                 cd ${buildHelpers.buildDistPath(type)} && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, function (err, stdout, stderr) {
+            exec( `cd interface/ && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
+                 cd ${buildHelpers.buildDistPath(type)} && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -268,6 +273,8 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
         }
     }
 });
+
+
 
 
 // needs to be copied, so the backend can use it

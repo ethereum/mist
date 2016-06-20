@@ -123,10 +123,7 @@ To create a binaries you need to install the following tools:
     $ brew install Caskroom/cask/xquartz
     $ brew install wine
 
-    // install meteor-build-client
-    $ npm install -g meteor-build-client
-
-    // install gulp
+\    // install gulp
     $ npm install -g gulp
 
 To generate the binaries simply run:

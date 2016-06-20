@@ -51,7 +51,7 @@ exports.mocha = function(_module, options) {
       // console.log(appPath);
 
       this.app = new Application({
-        requireName: 'require',
+        requireName: 'electronRequire',
         startTimeout: 5000,
         waitTimeout: 5000,
         quitTimeout: 10000,

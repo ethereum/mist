@@ -443,7 +443,7 @@ gulp.task('getChecksums', [], function(done) {
 
         // spit out shasum and md5
         var fileName = path.replace('./dist_'+ type +'/', '');
-        var sha = spawn('shasum', [path]);
+        var sha = spawn('shasum -a 256', [path]);
         sha.stdout.on('data', function(data){
             console.log('SHA256 '+ fileName +': '+ data.toString().replace(path, ''));
         });

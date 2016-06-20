@@ -7,7 +7,8 @@
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
-    "test": "gulp"
+    "test": "gulp",
+    "postinstall": "gulp update-nodes"
   },
   "main": "main.js",
   "dependencies": {

@@ -289,7 +289,7 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('network', this._network);
 
                 return this._socket.connect({ path: ipcPath }, {
-                        timeout: 10000 /* 30s */
+                        timeout: 30000 /* 30s */
                     })  
                     .then(() => {
                         this.state = STATES.CONNECTED;
@@ -336,60 +336,8 @@ class EthereumNode extends EventEmitter {
         log.debug(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
-            // if ('eth' === nodeType) {
-            //     let modalWindow = Windows.createPopup('unlockMasterPassword', {
-            //         electronOptions: {
-            //             width: 400, 
-            //             height: 220, 
-            //         },
-            //         useWeb3: false,
-            //     });
-
-            //     let called = false;
-
-            //     modalWindow.on('closed', () => {
-            //         if (!called) {
-            //             app.quit();
-            //         }
-            //     });
-
-            //     let popupCallback = function(err) {
-            //         if (err && _.get(modalWindow,'webContents')) {
-            //             log.error('unlockMasterPassword error', err);
-
-            //             if(UNABLE_TO_SPAWN_ERROR === err) {
-            //                 modalWindow.close();
-            //                 modalWindow = null;
-            //             } else {
-            //                 modalWindow.webContents.send('data', {
-            //                     masterPasswordWrong: true
-            //                 });
-            //             }
-            //         } else {
-            //             called = true;
-            //             modalWindow.close();
-            //             modalWindow = null;
-            //             ipc.removeAllListeners('backendAction_unlockedMasterPassword');
-            //         }
-            //     };
-
-            //     ipc.on('backendAction_unlockedMasterPassword', (ev, err, pw) => {
-            //         if (_.get(modalWindow, 'webContents') && ev.sender.getId() === modalWindow.webContents.getId()) {
-            //             if (!err) {
-            //                 this.__startProcess(nodeType, network, binPath, pw, popupCallback)
-            //                     .then(resolve, reject);
-            //             } else {
-            //                 app.quit();
-            //             }
-
-            //             return;
-            //         }
-            //     });
-            // } else {
-                this.__startProcess(nodeType, network, binPath)
-                    .then(resolve, reject);
-            // }
-            
+            this.__startProcess(nodeType, network, binPath)
+                .then(resolve, reject);
         });
     }
 
@@ -397,7 +345,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startProcess (nodeType, network, binPath, pw, popupCallback) {
+    __startProcess (nodeType, network, binPath) {
         return new Q((resolve, reject) => {
             log.trace('Rotate log file');
 
@@ -421,8 +369,7 @@ class EthereumNode extends EventEmitter {
                 else {
                     args = (nodeType === 'geth') 
                         ? ['--fast', '--cache', '512'] 
-                        : ['--unsafe-transactions'/*, '--master', pw*/];
-                    pw = null;
+                        : ['--unsafe-transactions'];
                 }
 
                 let nodeOptions = Settings.nodeOptions;
@@ -442,27 +389,12 @@ class EthereumNode extends EventEmitter {
                     if (STATES.STARTING === this.state) {
                         this.state = STATES.ERROR;
                         
-                        if (popupCallback) {
-                            popupCallback(UNABLE_TO_SPAWN_ERROR);
-                        }
-
                         log.info('Node startup error');
 
                         // TODO: detect this properly
                         // this.emit('nodeBinaryNotFound');
 
                         reject(err);
-                    }
-                });
-
-                // node quit, e.g. master pw wrong
-                proc.once('exit', () => {
-                    if ('eth' === nodeType) {
-                        log.warn('Password wrong!');
-
-                        if (popupCallback) {
-                            popupCallback(PASSWORD_WRONG_ERROR);
-                        }
                     }
                 });
 
@@ -517,10 +449,6 @@ class EthereumNode extends EventEmitter {
                     setTimeout(() => {
                         if (STATES.STARTING === this.state) {
                             log.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`);
-
-                            if (popupCallback) {
-                                popupCallback();
-                            }
 
                             resolve(proc);                        
                         }

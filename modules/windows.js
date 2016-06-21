@@ -6,6 +6,7 @@ const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
 
 const electron = require('electron');
+const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipc = electron.ipcMain;
 
@@ -20,6 +21,7 @@ class Window extends EventEmitter {
 
         this._mgr = mgr;
         this._log = log.create(type);
+        this.isPrimary = !!opts.primary;
         this.type = type;
         this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId;
@@ -61,7 +63,7 @@ class Window extends EventEmitter {
             }
 
             if (opts.show) {
-                this.window.show();
+                this.show();
             }
 
             this.emit('ready');
@@ -70,10 +72,9 @@ class Window extends EventEmitter {
         this.window.once('closed', () => {
             this._log.debug(`Closed`);
 
+            this.isShown = false;
             this.isClosed = true;
             this.isContentReady = false;
-
-            delete this._mgr._windows[this.type];
 
             this.emit('closed');
         });
@@ -127,6 +128,8 @@ class Window extends EventEmitter {
         this._log.debug(`Hide`);
 
         this.window.hide();
+
+        this.isShown = false;
     }
 
 
@@ -138,6 +141,8 @@ class Window extends EventEmitter {
         this._log.debug(`Show`);
 
         this.window.show();
+
+        this.isShown = true;
     }
 
 
@@ -217,9 +222,13 @@ class Windows {
             return existing;
         }
 
-        log.info(`Create window: ${type}, owner: ${options.ownerId || 'notset'}`);
+        let category = options.primary ? 'primary' : 'secondary';
+
+        log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
         let wnd = this._windows[type] = new Window(this, type, options);
+
+        wnd.on('closed', this._onWindowClosed.bind(this, wnd));
 
         return wnd;
     }
@@ -307,6 +316,39 @@ class Windows {
         _.each(this._windows, (wnd) => {
             wnd.send.apply(wnd, data);
         });
+    }
+
+
+    /**
+     * Handle a window being closed.
+     *
+     * This will remove the window from the internal list.
+     *
+     * This also checks to see if any primary windows are still visible 
+     * (even if hidden). If none found then it quits the app.
+     *
+     * @param {Window} wnd
+     */
+    _onWindowClosed (wnd) {
+        log.debug(`Removing window from list: ${wnd.type}`);
+
+        for (let t in this._windows) {
+            if (this._windows[t] === wnd) {
+                delete this._windows[t];
+
+                break;
+            }
+        }
+
+        let anyOpen = _.find(this._windows, (wnd) => {
+            return wnd.isPrimary && !wnd.isClosed && wnd.isShown;
+        });
+
+        if (!anyOpen) {
+            log.info('All primary windows closed/invisible, so quitting app...');
+
+            app.quit();
+        }
     }
 }
 

@@ -96,7 +96,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             // Calculates a block t display that is always getting 1% closer to target
             syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 )|| syncing.currentBlock;            
 
-            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/syncing.knownStates - syncing._displayStatesDownload) / 10 ) || syncing.pulledStates/syncing.knownStates;
+            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/syncing.knownStates - syncing._displayStatesDownload) / 100 ) || syncing.pulledStates/syncing.knownStates;
 
 
             // Calculates progress
@@ -111,10 +111,8 @@ Template['popupWindows_onboardingScreen'].helpers({
             // Saves the data back to the object
             TemplateVar.set(template, 'syncing', syncing);
 
-            console.trace('number', Number(syncing.statesPercent), Number(syncing.statesPercent) < 90)
-
             // Only show states if they are less than 50% downloaded
-            if (Number(syncing.statesPercent)  > 0 && Number(syncing.statesPercent) < 90) {
+            if (Math.round(1000*Number(syncing._displayStatesDownload)) != Math.round(1000*Number(syncing.pulledStates/syncing.knownStates))) {
                 TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
             } else {
                 TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));

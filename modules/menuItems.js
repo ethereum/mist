@@ -230,13 +230,15 @@ var menuTempl = function(webviews) {
     .filter(lang_code => lang_code != 'dev')
     .map(lang_code => {
         menuItem = {
-            label: i18n.t('mist.applicationMenu.view.' + lang_code),
+            label: i18n.t('mist.applicationMenu.view.langCodes.' + lang_code),
+            type: 'checkbox',
+            checked: (global.language.substr(0,2) === lang_code),
             click: genSwitchLanguageFunc(lang_code)
         }
         return menuItem
     });
     languageMenu.unshift({
-        label: "auto",
+        label:  i18n.t('mist.applicationMenu.view.default'),
         click: genSwitchLanguageFunc(global.language)
     }, {
         type: 'separator'

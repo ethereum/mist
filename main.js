@@ -25,6 +25,7 @@ const Settings = require('./modules/settings');
 Settings.init();
 
 
+
 if (Settings.cli.version) {
     console.log(Settings.appVersion);
 
@@ -37,6 +38,10 @@ if (Settings.cli.ignoreGpuBlacklist) {
 
 // logging setup
 const log = logger.create('main');
+
+if ('http' === Settings.rpcMode) {
+    log.warn('Connecting to a node via HTTP instead of IPC. This is less secure!!!!'.toUpperCase());
+}
 
 // GLOBAL Variables
 global.path = {

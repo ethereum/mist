@@ -86,23 +86,46 @@ In the original window you can then start Mist using wallet mode:
     $ electron . --mode wallet
 
 
-### Passing options to Geth
+### Connecting to node via HTTP instead of IPC
 
-You can pass command-line options directly to Geth by placing them after `--` in 
-the command-line invocation:
+This is useful if you have a node running on another machine, though note that 
+it's less secure than using the default IPC method.
 
 ```bash
-$ electron . --mode mist -- --rpcport 19343 --networkid 2 
+$ electron . --rpc http://localhost:8545
 ```
 
 
-### Using Mist with a privatenet
+### Passing options to Geth
 
-To run a private network you will need to set the `networkdid`, `ipcpath` and 
-`datadir` flags:
+You can pass command-line options directly to Geth by prefixing them with `--node-` in 
+the command-line invocation:
 
 ```bash
-$ electron . -- --networkid 1234 --ipcpath ~/Library/Ethereum/geth.ipc --datadir ~/Library/Ethereum/privatenet
+$ electron . --mode mist --node-rpcport 19343 --node-networkid 2 
+```
+
+The `--rpc` Mist option is a special case. If you set this to an IPC socket file 
+path then the `--ipcpath` option automatically gets set, i.e.:
+
+```bash
+$ electron . --rpc /my/geth.ipc
+```
+
+...is the same as doing...
+
+
+```bash
+$ electron . --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
+```
+
+### Using Mist with a privatenet
+
+To run a private network you will need to set the IPC path, network id and data 
+folder:
+
+```bash
+$ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
 ```
 
 You can also run `geth` separately yourself with the same options prior to start 

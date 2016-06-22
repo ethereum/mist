@@ -1,3 +1,4 @@
+const path = require('path');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 
@@ -15,7 +16,7 @@ try {
 
 
 const argv = require('yargs')
-    .usage('Usage: $0 [Mist options] -- [Node options]')
+    .usage('Usage: $0 [Mist options] [Node options]')
     .option({
         mode: {
             alias: 'm',
@@ -27,9 +28,9 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
-        ipcpath: {
+        rpc: {
             demand: false,
-            describe: 'Path to node IPC socket file (this will automatically get passed as an option to Geth).',
+            describe: 'Path to node IPC socket file OR HTTP RPC hostport (if IPC socket file then --node-ipcpath will be set with this value).',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -94,7 +95,7 @@ const argv = require('yargs')
             type: 'boolean',
         },
         '': {
-            describe: 'All options will be passed onto the node (e.g. Geth).',
+            describe: 'To pass options to the underlying node (e.g. Geth) use the --node- prefix, e.g. --node-datadir',
             group: 'Node options:',
         }
     })
@@ -105,17 +106,18 @@ const argv = require('yargs')
 
 argv.nodeOptions = [];
 
-for (let optIdx in argv._) {
-    if ('-' === argv._[optIdx].charAt(0)) {
-        argv.nodeOptions = argv._.slice(optIdx);
+for (let optIdx in argv) {
+    if (0 === optIdx.indexOf('node-')) {
+        argv.nodeOptions.push('--' + optIdx.substr(5));
+        argv.nodeOptions.push(argv[optIdx]);
 
         break;
     }
 }
 
 // some options are shared
-if (argv.ipcpath) {
-    argv.nodeOptions.push('--ipcpcath', argv.ipcpath);
+if (argv.rpc && 0 < argv.rpc.indexOf('.ipc')) {
+    argv.nodeOptions.push('--ipcpcath', argv.rpc);
 }
 
 
@@ -158,8 +160,48 @@ class Settings {
     return argv.ethpath;
   }
 
-  get ipcPath () {
-    return argv.ipcpath;
+  get rpcMode () {
+    return (argv.rpc && 0 > argv.rpc.indexOf('.ipc')) ? 'http' : 'ipc';
+  }
+
+  get rpcConnectConfig () {
+    if ('ipc' ===  this.rpcMode) {
+        return {
+            path: this.rpcIpcPath,
+        };
+    } else {
+        return {
+            hostPort: this.rpcHttpPath,
+        };        
+    }
+  }
+
+  get rpcHttpPath () {
+    return ('http' === this.rpcMode) ? argv.rpc : null;
+  }
+
+  get rpcIpcPath () {
+    let ipcPath = ('ipc' === this.rpcMode) ? argv.rpc : null;
+
+    if (ipcPath) {
+        return ipcPath;
+    }
+    
+    ipcPath = global.path.HOME;
+
+    if (process.platform === 'darwin') {
+        ipcPath += '/Library/Ethereum/geth.ipc';
+    } else if (process.platform === 'freebsd' ||
+       process.platform === 'linux' ||
+       process.platform === 'sunos') {
+        ipcPath += '/.ethereum/geth.ipc';
+    } else if (process.platform === 'win32') {
+        ipcPath = '\\\\.\\pipe\\geth.ipc';
+    }
+    
+    this._log.debug(`IPC path: ${ipcPath}`);
+
+    return ipcPath;
   }
 
   get nodeOptions () {

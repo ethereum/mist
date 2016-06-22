@@ -1,5 +1,6 @@
 "use strict";
 
+const _ = global._;
 const solc = require('solc');
 const Q = require('bluebird');
 const BaseProcessor = require('./base');
@@ -21,9 +22,15 @@ module.exports = class extends BaseProcessor {
             let finalResult = _.extend({}, payload);
 
             if (!output || output.errors) {
+                let msg = (output ? output.errors : 'Compile error');
+
+                if (_.isArray(msg)) {
+                    msg = msg.join(', ');
+                }
+
                 finalResult.error = {
                     code: -32700, 
-                    message: (output ? output.errors : 'Compile error')                        
+                    message: msg,
                 };
             } else {
                 finalResult.result = output.contracts;

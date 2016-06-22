@@ -144,18 +144,12 @@ app.on('before-quit', function(event){
 
     // delay quit, so the sockets can close
     setTimeout(function(){
-        killedSockets = true;
-
         ethereumNode.stop().then(function() {
+            killedSockets = true;
             app.quit(); 
         });
     }, 500);
 });
-
-
-
-
-const NODE_TYPE = 'geth';
 
 
 var mainWindow;

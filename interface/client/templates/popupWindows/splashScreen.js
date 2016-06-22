@@ -100,8 +100,10 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 if(web3.net.peerCount > 0) {
                     // Check which state we are
 
-                    if  (   lastSyncData.pulledStates != Math.round(lastSyncData._displayState) 
-                        ||  lastSyncData.knownStates != Math.round(lastSyncData._displayKnownStates)) {
+                    if  (   0 < lastSyncData._displayKnownStates && (
+                            lastSyncData.pulledStates != Math.round(lastSyncData._displayState) 
+                        ||  lastSyncData.knownStates != Math.round(lastSyncData._displayKnownStates)) 
+                    ) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
 
@@ -181,16 +183,13 @@ Template['popupWindows_splashScreen'].helpers({
             if (!(syncData._displayBlock > -1)) {
                 // initialize the display numbers
                 syncData._displayBlock = Number(syncData.currentBlock);
-                syncData._displayState = Number(syncData.pulledStates);
-                syncData._displayKnownStates = Number(syncData.knownStates);
-
+                syncData._displayState = Number(syncData.pulledStates || 0);
+                syncData._displayKnownStates = Number(syncData.knownStates || 0);                    
             } else {
                 // Increment each them slowly to match target number
-                syncData._displayBlock =  syncData._displayBlock + (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
-
-                syncData._displayState =  syncData._displayState + (Number(syncData.pulledStates) - syncData._displayState) / 10;
-
-                syncData._displayKnownStates =  syncData._displayKnownStates + (Number(syncData.knownStates) - syncData._displayKnownStates) / 10;
+                syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
+                syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / 10;
+                syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / 10;
             };            
 
             // Create the fancy strings
@@ -202,7 +201,10 @@ Template['popupWindows_splashScreen'].helpers({
             var translatedMessage = TAPi18n.__(translationString, syncData);
 
             // Calculates both progress bars
-            var stateProgress = (lastSyncData._displayState / lastSyncData._displayKnownStates) * 100;
+            var stateProgress = null;
+            if (0 < lastSyncData._displayKnownStates) {
+                stateProgress = (lastSyncData._displayState / lastSyncData._displayKnownStates) * 100;
+            }
 
             var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100 ;
                     
@@ -214,7 +216,10 @@ Template['popupWindows_splashScreen'].helpers({
             if(_.isFinite(progress)) {
                 TemplateVar.set(template, 'showProgressBar', true);
                 TemplateVar.set(template, 'progress', progress);
-                TemplateVar.set(template, 'stateProgress', stateProgress);
+                if (null !== stateProgress) {
+                    TemplateVar.set(template, 'showStateProgressBar', true);
+                    TemplateVar.set(template, 'stateProgress', stateProgress);
+                }
             }
 
         }, 100);

@@ -28,6 +28,24 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        node: {
+            demand: false,
+            default: null,
+            describe: 'Node to use: geth, eth',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
+        network: {
+            demand: false,
+            default: null,
+            describe: 'Network to connect to: main, test',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         rpc: {
             demand: false,
             describe: 'Path to node IPC socket file OR HTTP RPC hostport (if IPC socket file then --node-ipcpath will be set with this value).',
@@ -202,6 +220,14 @@ class Settings {
     this._log.debug(`IPC path: ${ipcPath}`);
 
     return ipcPath;
+  }
+
+  get nodeType () {
+    return argv.node;
+  }
+
+  get network () {
+    return argv.network;
   }
 
   get nodeOptions () {

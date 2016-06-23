@@ -1,5 +1,5 @@
 module.exports = function(windowId) {
-  if ('true' === process.env.TEST_MODE) {
+  if (process.env.TEST_MODE) {
     window.electronRequire = require;
   }
 

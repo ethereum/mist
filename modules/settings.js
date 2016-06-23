@@ -172,6 +172,10 @@ class Settings {
     return defaultConfig.production;
   }
 
+  get inTestMode () {
+    return !!process.env.TEST_MODE;
+  }
+
   get gethPath () {
     return argv.gethpath;
   }

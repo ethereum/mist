@@ -2,11 +2,14 @@
 
 require('co-mocha');
 
+const _ = require('underscore');
+const genomatic = require('genomatic');
 const Q = require('bluebird');
 const fs = require('fs');
+const Web3 = require('web3');
 const shell = require('shelljs');
 const path = require('path');
-const buildHelpers = require('../buildHelpers');
+const packageJson = require('../package.json');
 const gethPrivate = require('geth-private');
 const Application = require('spectron').Application;
 
@@ -18,6 +21,10 @@ process.env.TEST_MODE = 'true';
 
 exports.mocha = function(_module, options) {
   const tests = {};
+
+  options = _.extend({
+    app: 'mist'
+  }, options);
 
   _module.exports[options.name || path.basename(_module.filename)] = {
     before: function*() {
@@ -32,23 +39,52 @@ exports.mocha = function(_module, options) {
           difficulty: '0x1',
           extraData: '0x1',
         },
+        gethOptions: {
+          rpcport: 58545
+        },
       });
 
       yield this.geth.start();
 
+      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:58545"));
+
       const logFilePath = path.join(__dirname, 'mist.log');
       shell.rm('-rf', logFilePath);
 
-      const appNameVersion = buildHelpers.buildDistPkgName('darwin', 'wallet', {
-        replaceOs: true,
-        includeVersion: true,
-      });
-      const execName = buildHelpers.buildAppExecName('wallet');
+      const appFileName = ('wallet' === options.app) ? 'Ethereum-Wallet' : 'Mist',
+        appVers = packageJson.version.replace(/\./ig, '-'),
+        platformArch = `${process.platform}-${process.arch}`;
 
-      const appPath = 
-        path.join(buildHelpers.buildDistPath('wallet', appNameVersion), execName + '.app', 'Contents', 'MacOS', execName);
+      let appPath;
 
-      // console.log(appPath);
+      switch (platformArch) {
+        case 'darwin-x64':
+          appPath = path.join(
+            process.cwd(), 
+            `dist_${options.app}`, 
+            `${appFileName}-macosx-${appVers}`,
+            `${appFileName}.app`,
+            'Contents',
+            'MacOS',
+            appFileName
+          );
+          break;
+        case 'linux-x64':
+          appPath = path.join(
+            process.cwd(), 
+            `dist_${options.app}`, 
+            `${appFileName}-linux64-${appVers}`,
+            appFileName
+          );
+          break;
+        default:
+          throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`)
+      }
+
+      // check that appPath exists
+      if (!shell.test('-f', appPath)) {
+        throw new Error('Cannot find binary: ' + appPath);
+      }
 
       this.app = new Application({
         requireName: 'electronRequire',
@@ -69,30 +105,23 @@ exports.mocha = function(_module, options) {
 
       yield this.app.client.waitUntilWindowLoaded();
 
-      yield Q.delay(10000);
+      // wait a small amount of time to ensure main app window is ready with data
+      yield Q.delay(5000);
 
-      console.log(this.app.chromeDriver.logLines);
+      // console.log(this.app.chromeDriver.logLines);
 
-      let windowTitle = yield this.app.client.executeAsync(function(done) {
-        done();
-      });
-
-      console.log('title', '[' + windowTitle + ']');
-
-      let pageImage = yield this.app.browserWindow.capturePage();
-
-      if (!pageImage) {
-        throw new Error('Page capture failed');
+      /*
+      Utility methods
+       */
+      for (let key in Utils) {
+        this[key] = genomatic.bind(Utils[key], this);
       }
-
-      fs.writeFileSync(path.join(__dirname, 'mist.png'), pageImage);
     },
 
     after: function*() {
-      // QUITTING APP DOES NOT WORK
-      // if (this.app && this.app.isRunning()) {
-      //   yield this.app.stop();
-      // }
+      if (this.app && this.app.isRunning()) {
+        yield this.app.stop();
+      }
 
       if (this.geth && this.geth.isRunning) {
         yield this.geth.stop();
@@ -104,4 +133,28 @@ exports.mocha = function(_module, options) {
 
   return tests;
 };
+
+
+
+const Utils = {
+  execElemMethod: function*(clientElementIdMethod, selector) {
+    const elems = yield this.app.client.elements(selector);
+
+    const values = yield elems.value.map(
+      (e) => this.app.client[clientElementIdMethod](e.ELEMENT)
+    );
+
+    return values.map(r => r.value);
+  },
+  capturePage: function*() {
+    let pageImage = yield this.app.browserWindow.capturePage();
+
+    if (!pageImage) {
+      throw new Error('Page capture failed');
+    }
+
+    fs.writeFileSync(path.join(__dirname, 'mist.png'), pageImage);
+  },
+}
+
 

@@ -2,25 +2,22 @@ var _ = require("underscore");
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
-var nodePath = require('path');
 var replace = require('gulp-replace');
-var runSequence = require('run-sequence');
-var mocha = require('gulp-spawn-mocha');
 var packager = require('electron-packager');
 var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
-var buildHelpers = require('./buildHelpers');
-var download = require('gulp-download-stream');
+var download = require('gulp-download');
 var decompress = require('gulp-decompress');
 var tap = require("gulp-tap");
+const mocha = require('gulp-spawn-mocha');
+// const zip = require('gulp-zip');
+// var zip = require('gulp-zip');
+// var zip = require('gulp-jszip');
+// var EasyZip = require('easy-zip').EasyZip;
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
-
-
-const meteorBuildBin = nodePath.join(__dirname, 'node_modules', 'meteor-build-client', 'main.js');
-
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -39,6 +36,8 @@ else
 
 // CONFIG
 var type = 'mist';
+var filenameLowercase = 'mist';
+var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = '1.2.2';
 var gethVersion = '1.4.7';
@@ -54,6 +53,10 @@ var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
 
+console.log('You can select a platform like: --platform (all or darwin or win32 or linux)');
+
+console.log('Mist version:', version);
+console.log('Electron version:', electronVersion);
 
 if(_.contains(options.platform, 'win32')) {
     osVersions.push('win32-ia32');
@@ -79,37 +82,46 @@ if(_.contains(options.platform, 'all')) {
         'win32-x64'
     ];
 }
+console.log('Bundling platforms: ', osVersions);
 
 
-
+// Helpers
+var createNewFileName = function(os) {
+    var newOs;
+    if(os.indexOf('win32') !== -1) {
+        newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
+    }
+    if(os.indexOf('darwin') !== -1) {
+        newOs = 'macosx';
+    }
+    if(os.indexOf('linux') !== -1) {
+        newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
+    }
+    return './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
+};
 
 
 
 /// --------------------------------------------------------------
 
-gulp.task('log-build-info', function(cb) {
-    console.log('You can select a platform like: --platform (all or darwin or win32 or linux)');
-    console.log('Mist version:', version);
-    console.log('Electron version:', electronVersion);
-    console.log('Bundling platforms: ', osVersions);
-    cb();
-});
-
-
 // TASKS
-gulp.task('set-variables-mist', ['log-build-info'], function () {
+gulp.task('set-variables-mist', function () {
     type = 'mist';
+    filenameLowercase = 'mist';
+    filenameUppercase = 'Mist';
     applicationName = 'Mist';
 });
-gulp.task('set-variables-wallet', ['log-build-info'], function () {
+gulp.task('set-variables-wallet', function () {
     type = 'wallet';
+    filenameLowercase = 'ethereum-wallet';
+    filenameUppercase = 'Ethereum-Wallet';
     applicationName = 'Ethereum Wallet';
 });
 
 
 gulp.task('clean:dist', function (cb) {
   return del([
-    buildHelpers.buildDistPath(type, '**/*'),
+    './dist_'+ type +'/**/*',
     './meteor-dapp-wallet',
   ], cb);
 });
@@ -228,19 +240,22 @@ gulp.task('copy-files', ['checkNodes', 'clean:dist'], function() {
         '!./geth.exe',
         '!./Wallet-README.txt'
         ], { base: './' })
-        .pipe(gulp.dest(buildHelpers.buildDistPath(type, 'app')));
+        .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-
-
-gulp.task('bundling-interface', ['copy-files'], function(cb) {
-    fs.writeFileSync(buildHelpers.buildDistPath(type, 'app/config.json'), JSON.stringify({
+gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
+    fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
         production: true,
         mode: type,
     }));
 
+    cb();
+});
+
+
+gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
     if(type === 'mist') {
-        exec(`cd interface && meteor-build-client ${buildHelpers.buildDistPath(type, 'app/interface')} -p ""`, function (err, stdout, stderr) {
+        exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
             // console.log(stdout);
             console.log(stderr);
 
@@ -253,8 +268,8 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
 
         if(options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
-            exec(`cd interface/ && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
-                 cd ../../meteor-dapp-wallet/app && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p ""`, function (err, stdout, stderr) {
+            exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
+                 'cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_'+ type +'/app/interface/wallet -p ""', function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -263,8 +278,8 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
 
         } else {
             console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/'+ options.walletSource +' "'+ options.walletSource +'" branch...');
-            exec( `cd interface/ && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface')} -p "" && 
-                 cd ${buildHelpers.buildDistPath(type)} && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && ${meteorBuildBin} ${buildHelpers.buildDistPath(type, 'app/interface/wallet')} -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, function (err, stdout, stderr) {
+            exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
+                 'cd ../dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -275,22 +290,20 @@ gulp.task('bundling-interface', ['copy-files'], function(cb) {
 });
 
 
-
-
 // needs to be copied, so the backend can use it
-gulp.task('copy-i18n', ['bundling-interface'], function() {
+gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n'
         ], { base: './' })
-        .pipe(gulp.dest(buildHelpers.buildDistPath(type, 'app')));
+        .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
 gulp.task('create-binaries', ['copy-i18n'], function(cb) {
     packager({
-        dir: buildHelpers.buildDistPath(type, 'app'),
-        out: buildHelpers.buildDistPath(type),
-        name: buildHelpers.buildAppExecName(type),
+        dir: './dist_'+ type +'/app/',
+        out: './dist_'+ type +'/',
+        name: filenameUppercase,
         platform: options.platform.join(','),
         arch: 'all',
         icon: './icons/'+ type +'/icon.icns',
@@ -329,11 +342,7 @@ gulp.task('change-files', ['create-binaries'], function() {
     var streams = [];
 
     osVersions.map(function(os){
-        var stream,
-            path = buildHelpers.buildDistPath(
-                type,
-                buildHelpers.buildDistPkgName(os, type)
-            )
+        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
 
         // change version file
         streams.push(gulp.src([
@@ -365,7 +374,7 @@ gulp.task('change-files', ['create-binaries'], function() {
             .pipe(gulp.dest(path + '/')));
 
         var destPath = (os === 'darwin-x64')
-            ? path +'/'+ buildHelpers.buildAppExecName(type) +'.app/Contents/Frameworks/node'
+            ? path +'/'+ filenameUppercase +'.app/Contents/Frameworks/node'
             : path +'/resources/node';
 
 
@@ -389,28 +398,23 @@ gulp.task('change-files', ['create-binaries'], function() {
 });
 
 
+//gulp.task('cleanup-files', ['change-files'], function (cb) {
+//  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
+//});
+
 
 gulp.task('rename-folders', ['change-files'], function(done) {
     var count = 0;
     var called = false;
     osVersions.forEach(function(os){
 
-        var path = buildHelpers.buildDistPath(
-            type,
-            buildHelpers.buildDistPkgName(os, type, {
-                includeVersion: true,
-                replaceOs: true,
-            })
-        );
+        var path = createNewFileName(os);
 
-        fs.renameSync(buildHelpers.buildDistPath(
-            type,
-            buildHelpers.buildDistPkgName(os, type)
-        ), path);
+        fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
 
         // change icon on windows
         if(os.indexOf('win32') !== -1) {
-            rcedit(path +'/'+ buildHelpers.buildAppExecName(type) +'.exe', {
+            rcedit(path +'/'+ filenameUppercase +'.exe', {
                 'file-version': version,
                 'product-version': version,
                 'icon': './icons/'+ type +'/icon.ico'
@@ -423,6 +427,12 @@ gulp.task('rename-folders', ['change-files'], function(done) {
         }
 
 
+        //var zip5 = new EasyZip();
+        //zip5.zipFolder(path, function(){
+        //    zip5.writeToFile(path +'.zip'); 
+        //});
+
+
         count++;
 
         if(!called && osVersions.length === count) {
@@ -433,20 +443,36 @@ gulp.task('rename-folders', ['change-files'], function(done) {
 });
 
 
+gulp.task('zip', ['rename-folders'], function () {
+    var streams = osVersions.map(function(os){
+        var stream,
+            name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
+
+        // TODO doesnt work!!!!!
+        stream = gulp.src([
+            './dist_'+ type +'/'+ name + '/**/*'
+            ])
+            .pipe(zip({
+                name: name + ".zip",
+                outpath: './dist_'+ type +'/'
+            }));
+            // .pipe(zip(name +'.zip'))
+            // .pipe(gulp.dest('./dist_'+ type +'/'));
+
+        return stream;
+    });
+
+
+    return merge.apply(null, streams);
+});
+
 
 
 gulp.task('getChecksums', [], function(done) {
     var count = 0;
-
     osVersions.forEach(function(os){
 
-        var path = buildHelpers.buildDistPath(
-            type,
-            buildHelpers.buildDistPkgName(os, type, {
-                includeVersion: true,
-                replaceOs: true,
-            })
-        );
+        var path = createNewFileName(os) + '.zip';
 
         // spit out sha256 checksums
         var fileName = path.replace('./dist_'+ type +'/', '');
@@ -454,6 +480,7 @@ gulp.task('getChecksums', [], function(done) {
         sha.stdout.on('data', function(data){
             console.log('SHA256 '+ fileName +': '+ data.toString().replace(path, ''));
         });
+
 
         count++;
         if(osVersions.length === count) {
@@ -464,32 +491,47 @@ gulp.task('getChecksums', [], function(done) {
 
 
 
-gulp.task('taskQueue', ['rename-folders']);
-
-
-// MIST task
-gulp.task('mist', function(cb) {
-    runSequence('set-variables-mist','taskQueue', cb);
-});
-
-gulp.task('mist-checksums', function(cb) {
-    runSequence('set-variables-mist','getChecksums', cb);
-});
-
-// WALLET task
-gulp.task('wallet', function(cb) {
-    runSequence('set-variables-wallet','taskQueue', cb);
-});
-
-gulp.task('wallet-checksums', function(cb) {
-    runSequence('set-variables-wallet','getChecksums', cb);
-});
+gulp.task('taskQueue', [
+    'clean:dist',
+    'copy-files',
+    'copy-i18n',
+    'switch-production',
+    'bundling-interface',
+    'create-binaries',
+    'change-files',
+    //'cleanup-files',
+    'rename-folders',
+    // 'zip'
+]);
 
 // DOWNLOAD nodes
 gulp.task('update-nodes', [
     'renameNodesDeleteOld'
 ]);
 gulp.task('download-nodes', ['update-nodes']);
+
+// MIST task
+gulp.task('mist', [
+    'set-variables-mist',
+    'taskQueue'
+]);
+
+// WALLET task
+gulp.task('wallet', [
+    'set-variables-wallet',
+    'taskQueue'
+]);
+
+// WALLET task
+gulp.task('mist-checksums', [
+    'set-variables-mist',
+    'getChecksums'
+]);
+gulp.task('wallet-checksums', [
+    'set-variables-wallet',
+    'getChecksums'
+]);
+
 
 
 gulp.task('test-wallet', function() {
@@ -506,5 +548,4 @@ gulp.task('test-wallet', function() {
 
 
 gulp.task('default', ['mist']);
-
 

@@ -11,10 +11,12 @@ node_js:
   - "4"
 
 before_script:
-  - "npm install"
-  - "npm install -g electron-prebuilt@1.0.1"
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - "sleep 3" # give xvfb some time to start
+  - "npm install -g electron-prebuilt@1.2.2"
   - "npm install -g meteor-build-client"
-  - "gulp update-nodes"
+  - "npm install"
 
 script:
   - "npm test"

@@ -73,6 +73,7 @@ function showWindow(options) {
             width: 420, 
             height: 230 ,
             alwaysOnTop: true,
+            maximizable: false,
         },
     }, options));
 }

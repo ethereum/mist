@@ -113,7 +113,7 @@ gulp.task('set-variables-mist', function () {
 gulp.task('set-variables-wallet', function () {
     type = 'wallet';
     filenameLowercase = 'ethereum-wallet';
-    filenameUppercase = 'Ethereum-Wallet';
+    filenameUppercase = 'Ethereum Wallet';
     applicationName = 'Ethereum Wallet';
 });
 

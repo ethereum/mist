@@ -119,7 +119,7 @@ To create a binaries you need to install the following tools:
     // tools for the windows binaries
     $ brew install Caskroom/cask/xquartz
     $ brew install wine
-    $ npm install meteor-build-client
+    $ npm install -g meteor-build-client
 
 To generate the binaries simply run:
 

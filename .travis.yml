@@ -20,7 +20,7 @@ before_script:
   - "npm install"
 
 script:
-  - "npm ci"
+  - "npm run ci"
 
 notifications:
   email:

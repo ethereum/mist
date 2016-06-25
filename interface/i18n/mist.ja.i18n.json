@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__ について",
+                "services": "サービス",
                 "hide": "__app__ を隠す",
                 "hideOthers": "ほかを隠す",
                 "showAll": "すべてを表示",

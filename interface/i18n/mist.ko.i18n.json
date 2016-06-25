@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
+                "services": "서비스",
                 "quit": "__app__ 종료"
             },
             "edit": {

@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "Sobre __app__",
+                "services": "Serviços",
                 "hide": "Ocultar o __app__",
                 "hideOthers": "Ocultar Outros",
                 "showAll": "Mostrar Todos",

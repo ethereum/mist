@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "關於__app__",
+                "services": "服務",
                 "quit": "退出__app__"
             },
             "edit": {

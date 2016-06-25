@@ -5,6 +5,7 @@
                 "checkForUpdates": "Check for updates...",
                 "label": "__app__",
                 "about": "About __app__",
+                "services": "Services",
                 "hide": "Hide __app__",
                 "hideOthers": "Hide Others",
                 "showAll": "Show All",

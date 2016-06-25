@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "Over __app__",
+                "services": "Diensten",
                 "quit": "__app__ afsluiten"
             },
             "edit": {

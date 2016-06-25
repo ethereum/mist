@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "Sobre __app__",
+                "checkForUpdates": "Buscar actualización...",
                 "services": "Servicios",
                 "hide": "Ocultar __app__",
                 "hideOthers": "Ocultar otros",

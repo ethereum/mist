@@ -174,7 +174,9 @@ app.on('ready', function() {
     Windows.init();
 
     // check for update
-    require('./modules/updateChecker').run();
+    if (!Settings.inTestMode) {
+        require('./modules/updateChecker').run();
+    }
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();

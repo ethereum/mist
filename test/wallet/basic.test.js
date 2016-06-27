@@ -27,7 +27,7 @@ test['title'] = function*() {
 
 test['account balances'] = function*() {
   const web3 = this.web3;
-  const client = this.app.client;
+  const client = this.client;
 
   let accounts = web3.eth.accounts;
 
@@ -55,4 +55,30 @@ test['account balances'] = function*() {
 
   appBalances.should.eql(realBalances);
 };
+
+
+test['create account'] = function*() {
+  const web3 = this.web3;
+  const client = this.client;
+
+  const existingHandles = yield client.windowHandles();
+
+  yield client.click('button.create.account');
+  
+  yield client.waitUntil(function checkForAddWindow() {
+    return client.windowHandles().then((handles) => {
+      return handles.length === existingHandles.length + 1;
+    });
+  }, 10000, 'expected new passwd entry window to be visible', 500);
+
+  const newHandles = yield client.windowHandles();
+
+  // focus on new window
+  yield client.window(newHandles.pop());
+
+  
+
+
+};
+
 

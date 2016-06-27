@@ -40,7 +40,8 @@ exports.mocha = function(_module, options) {
           extraData: '0x1',
         },
         gethOptions: {
-          rpcport: 58545
+          port: 58546,
+          rpcport: 58545,
         },
       });
 
@@ -103,7 +104,9 @@ exports.mocha = function(_module, options) {
 
       yield this.app.start();
 
-      yield this.app.client.waitUntilWindowLoaded();
+      this.client = this.app.client;
+
+      yield this.client.waitUntilWindowLoaded();
 
       // wait a small amount of time to ensure main app window is ready with data
       yield Q.delay(5000);
@@ -138,10 +141,10 @@ exports.mocha = function(_module, options) {
 
 const Utils = {
   execElemMethod: function*(clientElementIdMethod, selector) {
-    const elems = yield this.app.client.elements(selector);
+    const elems = yield this.client.elements(selector);
 
     const values = yield elems.value.map(
-      (e) => this.app.client[clientElementIdMethod](e.ELEMENT)
+      (e) => this.client[clientElementIdMethod](e.ELEMENT)
     );
 
     return values.map(r => r.value);

@@ -322,6 +322,18 @@ The onboardingScreen password template
 @constructor
 */
 
+Template['popupWindows_onboardingScreen_password'].helpers({
+    /**
+    Show password
+
+    @method showPassword
+    */
+    'showPassword': function() {
+        return TemplateVar.get('showPassword')? 'text' : 'password' ;
+    }
+})
+
+
 Template['popupWindows_onboardingScreen_password'].events({
     /**
     Clear the form
@@ -331,6 +343,14 @@ Template['popupWindows_onboardingScreen_password'].events({
    'click button[type="button"]': function(e, template){
         template.find('input.password').value = '';
         template.find('input.password-repeat').value = '';
+    },
+    /**
+    On show password
+
+    @event click #show-password
+    */
+   'click #show-password': function(e){
+        TemplateVar.set('showPassword', e.currentTarget.checked)
     },
     /**
     Password checks

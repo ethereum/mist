@@ -473,7 +473,7 @@ gulp.task('getChecksums', [], function(done) {
 
         var path = createNewFileName(os) + '.zip';
 
-        // spit out shasum and md5
+        // spit out sha256 checksums
         var fileName = path.replace('./dist_'+ type +'/', '');
         var sha = spawn('shasum -a 256', [path]);
         sha.stdout.on('data', function(data){

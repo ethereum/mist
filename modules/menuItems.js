@@ -237,7 +237,7 @@ var menuTempl = function(webviews) {
         }
         return menuItem
     });
-    let defaultLang = app.getLocale();
+    let defaultLang = app.getLocale().substr(0,2);    
     languageMenu.unshift({
         label:  i18n.t('mist.applicationMenu.view.default'),
         click: genSwitchLanguageFunc(defaultLang)

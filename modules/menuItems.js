@@ -237,9 +237,10 @@ var menuTempl = function(webviews) {
         }
         return menuItem
     });
+    let defaultLang = app.getLocale();
     languageMenu.unshift({
         label:  i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(global.language)
+        click: genSwitchLanguageFunc(defaultLang)
     }, {
         type: 'separator'
     });

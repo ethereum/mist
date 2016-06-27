@@ -381,7 +381,6 @@ app.on('ready', function() {
 
 
 
-
 /**
 Start the main window and all its processes
 

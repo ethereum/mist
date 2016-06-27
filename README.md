@@ -53,7 +53,7 @@ To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
-    $ npm update
+    $ npm install
     $ gulp update-nodes
 
 

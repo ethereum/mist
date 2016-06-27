@@ -1,0 +1,34 @@
+{
+    "app": {
+        "loading": "Laden...",
+        "offline": "Verbinden niet mogelijk, bent u offline?",
+        "logginIn": "Inloggen..."
+    },
+    "error": {
+        "insufficientRights": "U heeft onvoldoende rechten voor deze actie."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Annuleren",
+        "save": "Opslaan",
+        "edit": "bijwerken",
+        "send": "Versturen",
+        "next": "Volgende",
+        "previous": "Vorige",
+        "back": "Terug",
+        "skip": "Overslaan",
+        "sending": "Verzenden...",
+        "create": "Aanmaken",
+        "tryToReconnect": "Probeer te verbinden"
+    },
+    "commonWords": {
+        "you": "u",
+        "send": "Verstuur",
+        "or": "of",
+        "of": "van",
+        "with": "met",
+        "and": "en",
+        "on": "op",
+        "per": "per"
+    }
+}

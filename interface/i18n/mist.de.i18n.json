@@ -20,7 +20,20 @@
             },
             "view": {
                 "label": "Ansicht",
-                "fullscreen": "Vollbildmodus"
+                "fullscreen": "Vollbildmodus",
+                "languages": "Change language",
+                "langCodes" : {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fr": "Français",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "accounts": {
                 "label": "Konten",
@@ -95,7 +108,7 @@
             "nodeConnectionTimeout": "Ethereum Node konnte nicht gestartet werden!<br><small>Wenn Sie <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert haben,</a>, verwenden Sie bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder senden Sie einen Fehlerreport</a></small>",
             "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Node gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starten Sie den Ethereum Node manuell. </a> </small>",
             "nodeSyncing": "Ethereum Node muss synchronisiert werden, bitte warten...",
-            "nodeSyncInfo": "Block __currentBlock__ von __highestBlock__ wird heruntergeladen.",
+            "nodeSyncInfo": "Block __displayBlock__ von __highestBlock__ wird heruntergeladen.",
             "nodeSyncConnecting": "Suche nach Peers...",
             "nodeSyncProcessing": "Blöcke werden verarbeitet, bitte warten...",
             "peerSearchTimeout": "Peer-Suche überspringen"

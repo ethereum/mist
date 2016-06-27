@@ -20,7 +20,20 @@
             },
             "view": {
                 "label": "ビュー",
-                "fullscreen": "フルスクリーンをトグルする"
+                "fullscreen": "フルスクリーンをトグルする",
+                "languages": "Change language",
+                "langCodes" : {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fr": "Français",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "accounts": {
                 "label": "アカウント",
@@ -93,7 +106,7 @@
             "nodeConnectionTimeout": "Ethereum nodeをスタート出来ませんでした!<br><small>もし<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a>をインストールしているならば,このコマンドを使ってみてください: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>もしくは問題を報告して下さい。 </a></small>",
             "nodeBinaryNotFound": "Ethereum node バイナリーが見つかりませんでした。<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 手動でスタートして下さい。 </a> </small>",
             "nodeSyncing": "Ethereum node は同期中です...",
-            "nodeSyncInfo": "blockをダウンロードしています。 __currentBlock__ of __highestBlock__.",
+            "nodeSyncInfo": "blockをダウンロードしています。 __displayBlock__ of __highestBlock__.",
             "nodeSyncConnecting": "ピアーを探しています。...",
             "nodeSyncProcessing": "ブロックを処理しています...",
             "peerSearchTimeout": "ピアーの検索を中止しています"

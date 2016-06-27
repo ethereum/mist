@@ -21,7 +21,21 @@
             },
             "view": {
                 "label": "View",
-                "fullscreen": "Toggle Fullscreen"
+                "fullscreen": "Toggle Fullscreen",
+                "languages": "Change language",
+                "default": "Default",
+                "langCodes" : {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fr": "Français",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "accounts": {
                 "label": "Accounts",
@@ -148,7 +162,7 @@
                 "title": {
                     "sendTransaction": "Send transaction",
                     "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "createContract": "Create contract"
                 },
                 "contractExecutionInfo": "You are about to execute a function on a contract. This might involve transfer of value.",
                 "contractCreationInfo": "You are about to create a contract from the provided data.",

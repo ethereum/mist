@@ -17,20 +17,7 @@
             },
             "view": {
                 "label": "보기",
-                "fullscreen": "전체화면으로",
-                "languages": "Change language",
-                "langCodes" : {
-                    "de": "Deutsch",
-                    "en": "English",
-                    "es": "Español",
-                    "fr": "Français",
-                    "ja": "日本語",
-                    "ko": "한국어 ",
-                    "nb": "Norsk",
-                    "pt": "Português",
-                    "zh": "普通話",
-                    "zh-TW": "國語"
-                }
+                "fullscreen": "전체화면으로"
             },
             "accounts": {
                 "label": "계정",

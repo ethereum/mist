@@ -17,7 +17,21 @@
             },
             "view": {
                 "label": "檢視",
-                "fullscreen": "全螢幕"
+                "fullscreen": "全螢幕",
+                "languages": "語言",
+                "languages": "Change language",
+                "langCodes" : {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fr": "Français",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "accounts": {
                 "label": "帳號",
@@ -92,7 +106,7 @@
             "nodeConnectionTimeout": "無法開啓以太坊節點！<br><small>如果您已經<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>安裝Geth</a>，使用此命令運行： <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 或者上報此問題 </a></small>",
             "nodeBinaryNotFound": "找不到以太坊節點安裝文件！<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 請事先手動開啓一個節點 </a> </small>",
             "nodeSyncing": "需要同步以太坊節點，請等待……",
-            "nodeSyncInfo": "正在下載第__currentBlock__塊，共__highestBlock__。",
+            "nodeSyncInfo": "正在下載第__displayBlock__塊，共__highestBlock__。",
             "nodeSyncConnecting": "正在查找節點……",
             "nodeSyncProcessing": "正在處理區塊，請等待……",
             "peerSearchTimeout": "跳過節點搜索"

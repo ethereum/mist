@@ -20,7 +20,20 @@
             },
             "view": {
                 "label": "Ver",
-                "fullscreen": "Modo de tela cheia"
+                "fullscreen": "Modo de tela cheia",
+                "languages": "Change language",
+                "langCodes" : {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fr": "Français",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "accounts": {
                 "label": "Contas",
@@ -95,7 +108,8 @@
             "nodeConnectionTimeout": "Não pode inicializar um Node!<br><small> Instale <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>um manualmente</a>, e use esse comando para executa-lo: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Caso não consiga, entre em contato </a></small>",
             "nodeBinaryNotFound": "Nó não encontrado!<br><small><a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Instale um manualmente</a></small>",
             "nodeSyncing": "Sincronizando, favor aguarde...",
-            "nodeSyncInfo": "Carregando bloco  __currentBlock__ de __highestBlock__.",
+            "nodeSyncInfoStates": "Carregando bloco __displayBlock__ de __highestBlock__, <br> Lendo estrutura __displayState__ de __displayKnownStates__",            
+            "nodeSyncInfo": "Carregando bloco  __displayBlock__ de __highestBlock__.",
             "nodeSyncConnecting": "Procurando outros nós...",
             "nodeSyncProcessing": "Processando blocos recebidos, favor aguarde...",
             "peerSearchTimeout": "Não procure nós agora",

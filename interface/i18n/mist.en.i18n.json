@@ -2,9 +2,10 @@
     "mist": {
         "applicationMenu": {
             "app": {
-                "checkForUpdates": "Check for updates...",
                 "label": "__app__",
                 "about": "About __app__",
+                "checkForUpdates": "Check for updates...",
+                "services": "Services",
                 "hide": "Hide __app__",
                 "hideOthers": "Hide Others",
                 "showAll": "Show All",

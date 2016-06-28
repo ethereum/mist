@@ -17,7 +17,6 @@ before_script:
   - "curl https://install.meteor.com/ | sh"
   - "npm install -g electron-prebuilt@1.2.2"
   - "npm install -g meteor-build-client"
-  - "npm install"
 
 script:
   - "npm run ci"

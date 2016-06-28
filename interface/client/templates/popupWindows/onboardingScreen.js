@@ -328,8 +328,8 @@ Template['popupWindows_onboardingScreen_password'].helpers({
 
     @method showPassword
     */
-    'showPassword': function() {
-        return TemplateVar.get('showPassword')? 'text' : 'password' ;
+    'passwordInputType': function() {
+        return TemplateVar.get('passwordInputType')? 'text' : 'password' ;
     }
 })
 
@@ -350,7 +350,7 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event click #show-password
     */
    'click #show-password': function(e){
-        TemplateVar.set('showPassword', e.currentTarget.checked)
+        TemplateVar.set('passwordInputType', e.currentTarget.checked)
     },
     /**
     Password checks

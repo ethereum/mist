@@ -4,6 +4,11 @@
             "app": {
                 "label": "__app__",
                 "about": "關於__app__",
+                "checkForUpdates": "檢查更新...",
+                "services": "服務",
+                "hide": "隱藏 __app__",
+                "hideOthers": "隱藏其他",
+                "showAll": "顯示全部",
                 "quit": "退出__app__"
             },
             "edit": {

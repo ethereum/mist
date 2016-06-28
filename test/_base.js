@@ -109,7 +109,7 @@ exports.mocha = function(_module, options) {
       yield this.client.waitUntilWindowLoaded();
 
       // wait a small amount of time to ensure main app window is ready with data
-      yield Q.delay(5000);
+      yield Q.delay(8000);
 
       // console.log(this.app.chromeDriver.logLines);
 
@@ -119,6 +119,8 @@ exports.mocha = function(_module, options) {
       for (let key in Utils) {
         this[key] = genomatic.bind(Utils[key], this);
       }
+
+      this.mainWindowHandle = (yield this.client.windowHandle()).value;
     },
 
     after: function*() {
@@ -140,6 +142,12 @@ exports.mocha = function(_module, options) {
 
 
 const Utils = {
+  waitUntil: function*(msg, promiseFn) {
+    yield this.client.waitUntil(promiseFn, 
+      10000, 
+      msg, 
+      500);
+  },
   execElemMethod: function*(clientElementIdMethod, selector) {
     const elems = yield this.client.elements(selector);
 
@@ -158,6 +166,28 @@ const Utils = {
 
     fs.writeFileSync(path.join(__dirname, 'mist.png'), pageImage);
   },
+  getRealAccountBalances: function*() {
+    let accounts = this.web3.eth.accounts;
+
+    let balances = accounts.map((acc) => 
+      this.web3.fromWei(this.web3.eth.getBalance(acc), 'ether') + ''
+    );
+
+    accounts = accounts.map(a => a.toLowerCase());
+    balances = balances.map(b => parseInt(b));
+
+    return _.object(accounts, balances);
+  },
+  getUiAccountBalances: function*() {
+    // check balances on the pgetUiAccountsBalancesage
+    let _accounts = yield this.execElemMethod('elementIdText', '.wallet-box .account-id');
+    let _balances = yield this.execElemMethod('elementIdText', '.wallet-box .account-balance');
+
+    _accounts = _accounts.map(a => a.toLowerCase());
+    _balances = _balances.map(b => parseInt(b));
+
+    return _.object(_accounts, _balances);
+  }
 }
 
 

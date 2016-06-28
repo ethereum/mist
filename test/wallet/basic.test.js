@@ -12,15 +12,12 @@ const test = require('../_base').mocha(module, {
 });
 
 
-test.beforeEach = function*() {
-  if (!this.app.webContents) {
-    throw new Error('Unable to get active window');
-  }
-};
 
 
 test['title'] = function*() {
-  (yield this.app.browserWindow.getTitle()).should.eql('Ethereum Wallet');
+  yield this.client.window(this.mainWindowHandle);
+
+  (yield this.client.getTitle()).should.eql('Ethereum Wallet');
 };
 
 
@@ -29,29 +26,8 @@ test['account balances'] = function*() {
   const web3 = this.web3;
   const client = this.client;
 
-  let accounts = web3.eth.accounts;
-
-  accounts.length.should.be.gt(0);
-
-  let balances = accounts.map((acc) => 
-    web3.fromWei(web3.eth.getBalance(acc), 'ether') + ''
-  );
-
-  accounts = accounts.map(a => a.toLowerCase());
-  balances = balances.map(b => parseInt(b));
-
-  const realBalances = _.object(accounts, balances);
-
-  // check balances on the page
-  let _accounts = yield this.execElemMethod('elementIdText', '.wallet-box .account-id');
-  _accounts.length.should.be.gt(0);
-
-  let _balances = yield this.execElemMethod('elementIdText', '.wallet-box .account-balance');
-
-  _accounts = _accounts.map(a => a.toLowerCase());
-  _balances = _balances.map(b => parseInt(b));
-
-  const appBalances = _.object(_accounts, _balances);
+  const realBalances = this.getRealAccountBalances();
+  const appBalances = this.getUiAccountBalances();
 
   appBalances.should.eql(realBalances);
 };
@@ -61,22 +37,43 @@ test['create account'] = function*() {
   const web3 = this.web3;
   const client = this.client;
 
-  const existingHandles = yield client.windowHandles();
+  const originalBalances = yield this.getRealAccountBalances();
+
+  const existingHandles = (yield client.windowHandles()).value;
 
   yield client.click('button.create.account');
   
-  yield client.waitUntil(function checkForAddWindow() {
+  yield this.waitUntil('new passwd window visible', function checkForAddWindow() {
     return client.windowHandles().then((handles) => {
-      return handles.length === existingHandles.length + 1;
+      return handles.value.length === existingHandles.length + 1;
     });
-  }, 10000, 'expected new passwd entry window to be visible', 500);
+  });
 
-  const newHandles = yield client.windowHandles();
+  const newHandles = (yield client.windowHandles()).value;
 
   // focus on new window
   yield client.window(newHandles.pop());
 
-  
-};
+  // enter password
+  yield client.setValue('form .password', '1234');
+  yield client.click('form button.ok');
 
+  // re-enter password
+  yield client.setValue('form .password-repeat', '1234');
+  yield client.click('form button.ok');
+
+  yield Q.delay(10000);
+
+  /*
+  Check that new account got created
+   */
+
+  yield client.window(this.mainWindowHandle);
+
+  const realBalances = yield this.getRealAccountBalances();
+  const appBalances = yield this.getUiAccountBalances();
+
+  _.keys(realBalances).length.should.eql(_.keys(originalBalances).length + 1);
+  appBalances.should.eql(realBalances);
+};
 

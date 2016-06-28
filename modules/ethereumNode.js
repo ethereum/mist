@@ -218,12 +218,12 @@ class EthereumNode extends EventEmitter {
                     resolve();
                 }); 
             })
-                .then(() => {
-                    this.state = STATES.STOPPED;
-                    this._stopPromise = null;
-                });
+            .then(() => {
+                this.state = STATES.STOPPED;
+                this._stopPromise = null;
+            });
         } else {
-            log.debug('Disconnection already in progress, returning Promise.');
+            log.debug('Closing already in progress, returning Promise.');
         }
 
         return this._stopPromise;

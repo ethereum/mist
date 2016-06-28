@@ -164,6 +164,17 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    // if using HTTP RPC then inform user
+    if ('http' === Settings.rpcMode) {
+        dialog.showErrorBox('Insecure RPC connection', `
+WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
+
+This is less secure than using IPC - your passwords will be sent over the wire as plaintext. 
+
+I hope you know what you are doing!
+`);
+    }
+
     // Initialise window mgr
     Windows.init();
 

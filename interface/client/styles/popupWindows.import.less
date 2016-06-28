@@ -258,12 +258,12 @@
             .user-icon, .simptip-position-left {
                 z-index: 2;
                 left: 0;
-                animation: .9s ease-out slideInRight;
+                animation: .9s cubic-bezier(0, 0, 0.13, 1) slideInRight;
             }
             .app-icon {
                 z-index: 1;
                 left: 55px;
-                animation: .9s ease-out slideInLeft;
+                animation: .9s cubic-bezier(0, 0, 0.13, 1) slideInLeft;
             }
         }
 
@@ -349,15 +349,8 @@
          { margin-right: 0; }
 
 
-        span.account-address {
-            animation: .9s ease-out fadeIn;    
-        }
-
-        span.dapp-url {
-            animation: .9s ease-out fadeIn;    
-        }
-
         span.account-address, span.dapp-url {
+            animation: .9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
             display: inline-block;
             text-overflow: ellipsis;
             white-space: nowrap;

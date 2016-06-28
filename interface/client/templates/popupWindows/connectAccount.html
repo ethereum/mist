@@ -77,8 +77,12 @@
 			</div>
 
 			<div class="dapp-modal-buttons">
-				<button class="cancel" type="button">{{i18n "buttons.stayAnonymous"}}</button>
-				<button class="ok dapp-primary-button" type="submit">{{i18n "buttons.authorize"}}</button>
+				<button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
+				{{# if accountNumber }}
+					<button class="ok dapp-primary-button" type="submit">{{i18n "buttons.authorize"}}</button>
+				{{else}}
+					<button class="stay-anonymous dapp-primary-button" type="button">{{i18n "buttons.stayAnonymous"}}</button>
+				{{/if}}
 			</div>
 		</form>
 	</div>

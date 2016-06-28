@@ -77,8 +77,6 @@ test['create account'] = function*() {
   yield client.window(newHandles.pop());
 
   
-
-
 };
 
 

@@ -145,19 +145,6 @@ Template['layout_browserBar'].events({
         Tabs.remove(tabId);
         LocalStore.set('selectedTab', 'browser');
     },
-    /*
-    Show the app bar
-
-    @event click app-bar > button, click .app-bar > form
-    */
-    'click .app-bar > button.dapp-info, click .app-bar > form': function(e, template){
-        console.log('App bar open', e.target);
-        // prevent the slide in, when the url is clicked
-        if($(e.target).hasClass('url-input'))
-            return;
-
-        template.$('.app-bar').toggleClass('show-bar');
-    },
     /**
     Show connect account popup
 
@@ -167,17 +154,13 @@ Template['layout_browserBar'].events({
         console.log('Connect account popup');
         ipc.send('uiAction_connectAccountPopupWindow');
     },
-
-    /*
-    Hide the app bar
-
-    @event mouseleave .app-bar
+    /* 
+    Hide the app bar on input blur
+    
+    @event blur 
     */
-    'mouseleave .app-bar': function(e, template){
-        var timeoutId = setTimeout(function(){
-            template.$('.app-bar').removeClass('show-bar');
-        }, 1000);
-        TemplateVar.set('timeoutId', timeoutId);
+    'blur .app-bar > form.url .url-input': function(e, template) {
+        template.$('.app-bar').removeClass('show-bar');
     },
     /*
     Stop hiding the app bar
@@ -186,19 +169,6 @@ Template['layout_browserBar'].events({
     */
     'mouseenter .app-bar': function(e, template){
         clearTimeout(TemplateVar.get('timeoutId'));
-    },
-    /*
-    Show the sections
-
-    @event click button.accounts, click button.dapp-info, click form.url
-    */
-    'click button.accounts, click button.dapp-info, click form.url': function(e, template){
-        var className = $(e.currentTarget).attr('class');
-
-        if(TemplateVar.get('browserBarTab') !== className)
-            template.$('.app-bar').addClass('show-bar');
-
-        TemplateVar.set('browserBarTab', className);
     },
     /*
     Focus the input
@@ -240,8 +210,5 @@ Template['layout_browserBar'].events({
             redirect: url
         }});
         LocalStore.set('selectedTab', foundTab);
-
-        // hide the app-bar
-        template.$('.app-bar').removeClass('show-bar');
     }
 });

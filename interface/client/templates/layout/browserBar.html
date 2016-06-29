@@ -5,15 +5,15 @@
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
             <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
-                <button class="dapp-info {{#if icon}}has-icon{{/if}}">
+                <label for="url-input" class="dapp-info {{#if icon}}has-icon{{/if}}">
                     {{#if icon}}
                         {{> elements_img src=icon class="app-icon" }}
                     {{/if}}
                     {{name}}
-                </button>
+                </label>
 
                 <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
-                    <input class="url-input" type="text" value="{{url}}">
+                    <input class="url-input" id="url-input" type="text" value="{{url}}">
                     <div class="url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
 

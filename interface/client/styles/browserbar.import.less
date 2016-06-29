@@ -33,9 +33,6 @@
         transition: height 0.25s, box-shadow 0.5s;
 
         &.show-bar {
-            height: @gridHeight * 20;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
-            
             .url-input {
                 opacity: 0.9;
                 transition-duration: 0.3s;
@@ -50,21 +47,6 @@
                 transition-delay: 0.1s; 
                 transform: translateX(20px) translateZ(0);
                 word-spacing: -5px;
-            }
-
-            &:after {
-                display: block;
-                position: absolute;
-                left: 5%;
-                top: 28px;
-                width: 20px;
-                height: 20px;
-                margin-left: -10px;
-                content: "◢◣";
-                color: @colorGrayDark;
-                font-size: 50%;
-                letter-spacing: -2px;
-                transition: left .5s ease-in-out;
             }
         }
 
@@ -104,7 +86,8 @@
             }
         }
 
-        > button {
+        > .dapp-info, > button {
+            color: #6691c2;
             position: relative;
             padding-left: 0;
             margin-top: 1px;
@@ -203,7 +186,6 @@
                     color: @colorLinkBlur;
                 }            
             }
-
         }
 
         div.dapp-info,

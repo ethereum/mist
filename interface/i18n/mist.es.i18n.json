@@ -23,19 +23,7 @@
             "view": {
                 "label": "Ver",
                 "fullscreen": "Pantalla Completa",
-                "languages": "Change language",
-                "langCodes" : {
-                    "de": "Deutsch",
-                    "en": "English",
-                    "es": "Español",
-                    "fr": "Français",
-                    "ja": "日本語",
-                    "ko": "한국어 ",
-                    "nb": "Norsk",
-                    "pt": "Português",
-                    "zh": "普通話",
-                    "zh-TW": "國語"
-                }
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "Cuentas",

@@ -26,7 +26,7 @@ Template['layout_browserBar'].helpers({
         if(!this || !this.url)
             return;
 
-        var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/
+        var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/;
         var search = this.url.match(pattern);
 
         if(!search)
@@ -35,11 +35,10 @@ Template['layout_browserBar'].helpers({
         var urlObject = {
             url: search[0],
             protocol: search[1],
-            domain: search[2].split("."),
-            folders: search[3].split("/"),
-        }
-
-        var breadcrumb = "<span>" + urlObject.domain.join(".") + " </span> ▸ " + urlObject.folders.join(" ▸ ");
+            domain: search[2],
+            folders: search[3].replace(/\/$/g, '').split("/"),
+        };
+        var breadcrumb = "<span>" + urlObject.domain + " </span> ▸ " + urlObject.folders.join(" ▸ ");
 
         return new Spacebars.SafeString(breadcrumb);
     },

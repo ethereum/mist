@@ -24,7 +24,7 @@ const DEFAULT_NETWORK = 'main';
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
 const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
 const PASSWORD_WRONG_ERROR = 'badPassword';
-
+const NODE_START_WAIT_MS = 3000;
 
 
 /**
@@ -143,7 +143,7 @@ class EthereumNode extends EventEmitter {
                 return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
-                            
+
                         throw err;
                     });
             });
@@ -289,8 +289,8 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('network', this._network);
 
                 return this._socket.connect({ path: ipcPath }, {
-                    timeout: 30000 /* 30s */
-                })  
+                        timeout: 30000 /* 30s */
+                    })  
                     .then(() => {
                         this.state = STATES.CONNECTED;
                     })
@@ -336,60 +336,8 @@ class EthereumNode extends EventEmitter {
         log.debug(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
-            if ('eth' === nodeType) {
-                let modalWindow = Windows.createPopup('unlockMasterPassword', {
-                    electronOptions: {
-                        width: 400, 
-                        height: 220, 
-                    },
-                    useWeb3: false,
-                });
-
-                let called = false;
-
-                modalWindow.on('closed', () => {
-                    if (!called) {
-                        app.quit();
-                    }
-                });
-
-                let popupCallback = function(err) {
-                    if (err && _.get(modalWindow,'webContents')) {
-                        log.error('unlockMasterPassword error', err);
-
-                        if(UNABLE_TO_SPAWN_ERROR === err) {
-                            modalWindow.close();
-                            modalWindow = null;
-                        } else {
-                            modalWindow.webContents.send('data', {
-                                masterPasswordWrong: true
-                            });
-                        }
-                    } else {
-                        called = true;
-                        modalWindow.close();
-                        modalWindow = null;
-                        ipc.removeAllListeners('backendAction_unlockedMasterPassword');
-                    }
-                };
-
-                ipc.on('backendAction_unlockedMasterPassword', (ev, err, pw) => {
-                    if (_.get(modalWindow, 'webContents') && ev.sender.getId() === modalWindow.webContents.getId()) {
-                        if (!err) {
-                            this.__startProcess(nodeType, network, binPath, pw, popupCallback)
-                                .then(resolve, reject);
-                        } else {
-                            app.quit();
-                        }
-
-                        return;
-                    }
-                });
-            } else {
-                this.__startProcess(nodeType, network, binPath)
-                    .then(resolve, reject);
-            }
-            
+            this.__startProcess(nodeType, network, binPath)
+                .then(resolve, reject);
         });
     }
 
@@ -397,7 +345,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startProcess (nodeType, network, binPath, pw, popupCallback) {
+    __startProcess (nodeType, network, binPath) {
         return new Q((resolve, reject) => {
             log.trace('Rotate log file');
 
@@ -421,8 +369,7 @@ class EthereumNode extends EventEmitter {
                 else {
                     args = (nodeType === 'geth') 
                         ? ['--fast', '--cache', '512'] 
-                        : ['--unsafe-transactions', '--master', pw];
-                    pw = null;
+                        : ['--unsafe-transactions'];
                 }
 
                 let nodeOptions = Settings.nodeOptions;
@@ -442,27 +389,12 @@ class EthereumNode extends EventEmitter {
                     if (STATES.STARTING === this.state) {
                         this.state = STATES.ERROR;
                         
-                        if (popupCallback) {
-                            popupCallback(UNABLE_TO_SPAWN_ERROR);
-                        }
-
                         log.info('Node startup error');
 
                         // TODO: detect this properly
                         // this.emit('nodeBinaryNotFound');
 
                         reject(err);
-                    }
-                });
-
-                // node quit, e.g. master pw wrong
-                proc.once('exit', () => {
-                    if ('eth' === nodeType) {
-                        log.warn('Password wrong!');
-
-                        if (popupCallback) {
-                            popupCallback(PASSWORD_WRONG_ERROR);
-                        }
                     }
                 });
 
@@ -510,20 +442,17 @@ class EthereumNode extends EventEmitter {
                 // when data is first received
                 this.once('data', () => {
                     /*
-                        Assume startup succeeded after 5 seconds. At this point 
-                        IPC connections are usually possible.
+                        We wait a short while before marking startup as successful 
+                        because we may want to parse the initial node output for 
+                        errors, etc (see geth port-binding error above)
                     */
                     setTimeout(() => {
                         if (STATES.STARTING === this.state) {
-                            log.info('4s elapsed, assuming node started up successfully');
-
-                            if (popupCallback) {
-                                popupCallback();
-                            }
+                            log.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`);
 
                             resolve(proc);                        
                         }
-                    }, 4000);
+                    }, NODE_START_WAIT_MS);
                 })
             });
         });
@@ -571,8 +500,8 @@ class EthereumNode extends EventEmitter {
     _loadDefaults () {
         log.trace('Load defaults');
 
-        this.defaultNodeType = this._loadUserData('node') || DEFAULT_NODE_TYPE;
-        this.defaultNetwork = this._loadUserData('network') || DEFAULT_NETWORK;
+        this.defaultNodeType = Settings.nodeType || this._loadUserData('node') || DEFAULT_NODE_TYPE;
+        this.defaultNetwork = Settings.network || this._loadUserData('network') || DEFAULT_NETWORK;
     }
 
 

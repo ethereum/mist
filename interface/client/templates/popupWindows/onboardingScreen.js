@@ -254,9 +254,9 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     /**
     On show password
 
-    @event click #show-password
+    @event click .show-password
     */
-   'click #show-password': function(e){
+   'click .show-password': function(e){
         TemplateVar.set('showPassword', e.currentTarget.checked)
     },
     /**

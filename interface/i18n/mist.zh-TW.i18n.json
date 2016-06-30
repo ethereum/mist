@@ -4,6 +4,11 @@
             "app": {
                 "label": "__app__",
                 "about": "關於__app__",
+                "checkForUpdates": "檢查更新...",
+                "services": "服務",
+                "hide": "隱藏 __app__",
+                "hideOthers": "隱藏其他",
+                "showAll": "顯示全部",
                 "quit": "退出__app__"
             },
             "edit": {
@@ -19,19 +24,7 @@
                 "label": "檢視",
                 "fullscreen": "全螢幕",
                 "languages": "語言",
-                "languages": "Change language",
-                "langCodes" : {
-                    "de": "Deutsch",
-                    "en": "English",
-                    "es": "Español",
-                    "fr": "Français",
-                    "ja": "日本語",
-                    "ko": "한국어 ",
-                    "nb": "Norsk",
-                    "pt": "Português",
-                    "zh": "普通話",
-                    "zh-TW": "國語"
-                }
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "帳號",

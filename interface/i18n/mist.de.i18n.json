@@ -4,6 +4,8 @@
             "app": {
                 "label": "__app__",
                 "about": "Über __app__",
+                "checkForUpdates": "Nach Aktualisierungen suchen...",
+                "services": "Dienste",
                 "hide": "__app__ ausblenden",
                 "hideOthers": "Andere ausblenden",
                 "showAll": "Alle einblenden",
@@ -21,19 +23,7 @@
             "view": {
                 "label": "Ansicht",
                 "fullscreen": "Vollbildmodus",
-                "languages": "Change language",
-                "langCodes" : {
-                    "de": "Deutsch",
-                    "en": "English",
-                    "es": "Español",
-                    "fr": "Français",
-                    "ja": "日本語",
-                    "ko": "한국어 ",
-                    "nb": "Norsk",
-                    "pt": "Português",
-                    "zh": "普通話",
-                    "zh-TW": "國語"
-                }
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "Konten",

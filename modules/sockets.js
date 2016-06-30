@@ -13,6 +13,7 @@ const Web3HttpSocket = require('./sockets/web3Http');
 
 
 
+
 /**
  * `Socket` manager.
  */

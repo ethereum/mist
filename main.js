@@ -200,6 +200,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
+                    nodeIntegration: true,
                     preload: __dirname +'/modules/preloader/mistUI.js',
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true

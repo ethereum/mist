@@ -1,94 +1,405 @@
-const app = require('app');  // Module to control application life.
-const BrowserWindow = require('browser-window');  // Module to create native browser window.
-const ipc = require('ipc');
+"use strict";
 
-// const Menu = require('menu');
-// const Tray = require('tray');
-const menuItems = require('./menuItems');
-var appIcon = null;
+global._ = require('./modules/utils/underscore');
 
-// const processRef = global.process;
-// process.nextTick(function() { global.process = processRef; });
+const Q = require('bluebird');
+Q.config({
+    cancellation: true,
+});
 
-// Report crashes to our server.
-require('crash-reporter').start();
+const fs = require('fs');
+const electron = require('electron');
+const app = electron.app;
+const dialog = electron.dialog;
+const timesync = require("os-timesync");
+const Minimongo = require('./modules/minimongoDb.js');
+const syncMinimongo = require('./modules/syncMinimongo.js');
+const ipc = electron.ipcMain;
+const packageJson = require('./package.json');
+const i18n = require('./modules/i18n.js');
+const logger = require('./modules/utils/logger');
+const Sockets = require('./modules/sockets');
+const Windows = require('./modules/windows');
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the javascript object is GCed.
-var mainWindow = null;
+const Settings = require('./modules/settings');
+Settings.init();
+
+
+if (Settings.cli.version) {
+    console.log(Settings.appVersion);
+
+    process.exit(0);
+}
+
+if (Settings.cli.ignoreGpuBlacklist) {
+    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
+}
+
+// logging setup
+const log = logger.create('main');
+
+// GLOBAL Variables
+global.path = {
+    HOME: app.getPath('home'),
+    APPDATA: app.getPath('appData'), // Application Support/
+    USERDATA: app.getPath('userData') // Application Aupport/Mist
+};
+
+
+global.dirname  = __dirname;
+
+global.version = Settings.appVersion;
+global.license = Settings.appLicense;
+
+global.production = Settings.inProductionMode;
+log.info(`Running in production mode: ${global.production}`);
+
+global.mode = Settings.uiMode;
+
+global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
+
+
+
+require('./modules/ipcCommunicator.js');
+const appMenu = require('./modules/menuItems');
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/nodeSync.js');
+
+global.webviews = [];
+
+global.mining = false;
+
+global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
+
+global.language = 'en';
+global.i18n = i18n; // TODO: detect language switches somehow
+
+global.Tabs = Minimongo('tabs');
+
+
+// INTERFACE PATHS
+global.interfaceAppUrl;
+global.interfacePopupsUrl;
+
+// WALLET
+if(global.mode === 'wallet') {
+    log.info('Starting in Wallet mode');
+
+    global.interfaceAppUrl = (global.production)
+        ? 'file://' + __dirname + '/interface/wallet/index.html'
+        : 'http://localhost:3050';
+    global.interfacePopupsUrl = (global.production)
+        ? 'file://' + __dirname + '/interface/index.html'
+        : 'http://localhost:3000';
+
+// MIST
+} else {
+    log.info('Starting in Mist mode');
+
+    let url = (global.production)
+        ? 'file://' + __dirname + '/interface/index.html'
+        : 'http://localhost:3000';
+
+    if (Settings.cli.resetTabs) {
+        url += '?reset-tabs=true'
+    }
+
+    global.interfaceAppUrl = global.interfacePopupsUrl = url;
+}
+
+
+// prevent crashed and close gracefully
+process.on('uncaughtException', function(error){
+    log.error('UNCAUGHT EXCEPTION', error);
+
+    app.quit();
+});
+
+
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
-    if (process.platform != 'darwin')
-        app.quit();
+    app.quit();
 });
 
-// Emitted when the application is activated while there is no opened windows.
-// It usually happens when a user has closed all of application's windows and then
-// click on the application's dock icon.
-app.on('activate-with-no-open-windows', function () {
-    if (mainWindow) {
-        mainWindow.show();
+// Listen to custom protocole incoming messages, needs registering of URL schemes
+app.on('open-url', function (e, url) {
+    log.info('Open URL', url);
+});
+
+
+var killedSockets = false;
+
+app.on('before-quit', function(event){
+    if(!killedSockets) {
+        event.preventDefault();
     }
-    return false;
+
+    // sockets manager
+    Sockets.destroyAll()
+        .catch((err) => {
+            log.error('Error shutting down sockets');
+        });
+
+    // delay quit, so the sockets can close
+    setTimeout(function(){
+        ethereumNode.stop().then(function() {
+            killedSockets = true;
+            app.quit(); 
+        });
+    }, 500);
 });
 
-// SETUP custom protocols
-// app.commandLine.appendSwitch('register-standard-schemes', 'library,test,atom');
-// app.commandLine.appendSwitch('host-rules', 'MAP *.google.com meteor.com');
+
+var mainWindow;
+var splashWindow;
 
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    // Initialise window mgr
+    Windows.init();
+
+    // check for update
+    require('./modules/updateChecker').run();
+
+    // initialize the web3 IPC provider backend
+    ipcProviderBackend.init();
 
     // instantiate custom protocols
-    // require('./customProtocols.js');
+    require('./customProtocols.js');
 
-
-
-    // appIcon = new Tray('./icons/icon-tray.png');
-    // var contextMenu = Menu.buildFromTemplate([
-    //     { label: 'Item1', type: 'radio' },
-    //     { label: 'Item2', type: 'radio' },
-    //     { label: 'Item3', type: 'radio', checked: true },
-    //     { label: 'Item4', type: 'radio' },
-    // ]);
-    // appIcon.setToolTip('This is my application.');
-    // appIcon.setContextMenu(contextMenu);
-
+    // add menu already here, so we have copy and past functionality
+    appMenu();
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        'standard-window': false,
-        icon: './icons/icon_128x128.png',
-        'node-integration': false,
-        preload: __dirname +'/preloader.js'
-        // frame: false
-        // 'use-content-size': true,
+
+    // MIST
+    if(global.mode === 'mist') {
+        mainWindow = Windows.create('main', {
+            primary: true,
+            electronOptions: {
+                width: 1024 + 208,
+                height: 720,
+                webPreferences: {
+                    nodeIntegration: true,
+                    preload: __dirname +'/modules/preloader/mistUI.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true
+                }
+            }
+        });
+
+        syncMinimongo(Tabs, mainWindow.webContents);
+
+    // WALLET
+    } else {
+        mainWindow = Windows.create('main', {
+            primary: true,
+            electronOptions: {
+                width: 1100,
+                height: 720,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/wallet.js',
+                    'overlay-fullscreen-video': true,
+                    'overlay-scrollbars': true
+                }
+            }
+        });
+    }
+
+    splashWindow = Windows.create('splash', {
+        primary: true,
+        url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
+        show: true,
+        electronOptions: {
+            width: 400,
+            height: 230,
+            resizable: false,
+            backgroundColor: '#F6F6F6',
+            useContentSize: true,
+            frame: false,
+            webPreferences: {
+                preload: __dirname +'/modules/preloader/splashScreen.js',
+            }
+        }
     });
 
-    // and load the index.html of the app.
-    // if() 'file://' + __dirname + '/interface/index.html
-    mainWindow.loadUrl('http://localhost:3000');
+    // check time sync
+    // var ntpClient = require('ntp-client');
+    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+    timesync.checkEnabled(function (err, enabled) {
+        if(err) {
+            log.error('Couldn\'t get time from NTP time sync server.', err);
+            return;
+        }
 
-    // Open the devtools.
-    // mainWindow.openDevTools();
+        if(!enabled) {
+            dialog.showMessageBox({
+                type: "warning",
+                buttons: ['OK'],
+                message: global.i18n.t('mist.errors.timeSync.title'),
+                detail: global.i18n.t('mist.errors.timeSync.description') +"\n\n"+ global.i18n.t('mist.errors.timeSync.'+ process.platform)
+            }, function(){
+            });
+        }
+    });
 
-    // Emitted when the window is closed.
+
+    splashWindow.on('ready', function() {
+        // node connection stuff
+        ethereumNode.on('nodeConnectionTimeout', function() {
+            Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
+        });
+
+        ethereumNode.on('nodeLog', function(data) {
+            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]\]/,''));
+        });
+
+        // state change
+        ethereumNode.on('state', function(state, stateAsText) {
+            Windows.broadcast('uiAction_nodeStatus', stateAsText,
+                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+            );
+        });
+
+
+        // capture sync results
+        const syncResultPromise = new Q((resolve, reject) => {
+            nodeSync.on('nodeSyncing', function(result) {
+                Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+            });
+
+            nodeSync.on('stopped', function() {
+                Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+            });
+
+            nodeSync.on('error', function(err) {
+                log.error('Error syncing node', err);
+
+                reject(err);
+            });
+
+            nodeSync.on('finished', function() {
+                nodeSync.removeAllListeners('error');
+                nodeSync.removeAllListeners('finished');
+
+                resolve();
+            });
+        });
+
+        // go!
+        ethereumNode.init()
+            .then(function sanityCheck() {
+                if (!ethereumNode.isIpcConnected) {
+                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
+                }
+
+                /* At this point Geth is running and the socket is connected. */
+                log.info('Connected via IPC to node.');
+
+                // update menu, to show node switching possibilities
+                appMenu();
+            })
+            .then(function getAccounts() {
+                return ethereumNode.send('eth_accounts', []);
+            })
+            .then(function onboarding(resultData) {
+                if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+                    log.info('No accounts setup yet, lets do onboarding first.');
+
+                    return new Q((resolve, reject) => {
+                        var onboardingWindow = Windows.createPopup('onboardingScreen', {
+                            primary: true,
+                            electronOptions: {
+                                width: 576,
+                                height: 442,
+                            },
+                        });
+
+                        onboardingWindow.on('close', function(){
+                            app.quit();
+                        });
+
+                        // change network types (mainnet, testnet)
+                        ipc.on('onBoarding_changeNet', function(e, testnet) {
+                            let newType = ethereumNode.type;
+                            let newNetwork = testnet ? 'test' : 'main';
+
+                            log.debug('Onboarding change network', newNetwork);
+                            
+                            ethereumNode.restart(newType, newNetwork)
+                                .then(function nodeRestarted() {
+                                    appMenu();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+
+                        // launch app
+                        ipc.on('onBoarding_launchApp', function(e) {
+                            // prevent that it closes the app
+                            onboardingWindow.removeAllListeners('close');
+                            onboardingWindow.close();
+
+                            ipc.removeAllListeners('onBoarding_changeNet');
+                            ipc.removeAllListeners('onBoarding_launchApp');
+
+                            resolve();
+                        });
+
+                        splashWindow.hide();
+                    });
+                }
+            })
+            .then(function doSync() {
+                // we're going to do the sync - so show splash
+                splashWindow.show();
+
+                return syncResultPromise;
+            })
+            .then(function allDone() {
+                startMainWindow();
+            })
+            .catch((err) => {
+                log.error('Error starting up node and/or syncing', err);
+            }); /* socket connected to geth */;
+
+    }); /* on splash screen loaded */
+
+}); /* on app ready */
+
+
+
+/**
+Start the main window and all its processes
+
+@method startMainWindow
+*/
+var startMainWindow = function() {
+    log.info('Loading Interface at '+ global.interfaceAppUrl);
+
+    mainWindow.on('ready', function() {
+        splashWindow.close();
+
+        mainWindow.show();
+    });
+
+    mainWindow.load(global.interfaceAppUrl);
+
+    // close app, when the main window is closed
     mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
-        mainWindow = null;
+        app.quit();
     });
-
 
     // instantiate the application menu
-    ipc.on('setupWebviewDevToolsMenu', function(e, webviews){
-        menuItems(mainWindow, webviews || []);
+    Tracker.autorun(function(){
+        global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
+        appMenu(global.webviews);
     });
-
-});
+};

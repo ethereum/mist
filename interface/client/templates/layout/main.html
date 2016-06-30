@@ -1,9 +1,8 @@
 <template name="layout_main">
-    <main>
 
-        {{#each tabs}}
-            {{> views_tab}}
-        {{/each}}
+    {{> layout_sidebar}}
 
-    </main>
+    {{> layout_browserBar}}
+
+    {{> layout_webviews}}
 </template>

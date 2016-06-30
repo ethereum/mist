@@ -1,0 +1,16 @@
+<template name="popupWindows_about">
+    <div class="row popup-windows about">
+        <div class="col col-4 ">
+            <img class="left-overlay {{mode}}" src="{{appIconPath}}" style="position: relative;top: -40px;left: -132%;width: 255%;">
+        </div>
+        <div class="col col-8 ">
+            <h1>{{appName}}</h1>
+            <p>
+                Version {{mist.version}}<br>
+                License {{mist.license}}<br>
+                GitHub <a href="https://github.com/ethereum/mist" target="_blank">github.com/ethereum/mist</a>
+            </p>
+            <small>Copyright 2016 Ethereum Foundation</small>
+        </div>
+    </div>
+</template>

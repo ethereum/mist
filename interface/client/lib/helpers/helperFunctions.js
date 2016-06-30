@@ -21,7 +21,8 @@ Reruns functions reactively, based on an interval. Use it like so:
 @method rerun
 **/
 Helpers.rerun = {
-    '10s': new ReactiveTimer(10)
+    '10s': new ReactiveTimer(10),
+    '1s': new ReactiveTimer(1)
 };
 
 /**
@@ -40,7 +41,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){
+Helpers.formatUrl = function(url){    
     // add http:// if no protocol is present
     if(url && url.indexOf('://') === -1)
         url = 'http://'+ url;

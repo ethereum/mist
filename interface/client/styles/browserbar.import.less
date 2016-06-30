@@ -1,11 +1,11 @@
-.browser-area {
+.browser-bar {
+    .display(flex);
     position: absolute;
-    top: 10px;
+    top: @gridHeight * 1.5;
     left: @widthSideBar;
     right: 0;
     z-index: 100;
     height: @gridHeight * 2;
-    display: flex;
     font-family: @sourceSansPro;
     
     button.icon {
@@ -15,33 +15,130 @@
             border: 0;
             color: @colorLinkFocus;
         }
-    }
+    }   
 
     .app-bar {
         position: relative;
+        .display(flex);
         flex-grow: 1;
-        display: flex;
         margin: @gridHeight/4 @gridWidth/4;
         padding: @gridHeight/4 @gridWidth/4;
-        background: #F6F6F6;
-        border-radius: 3px;
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
-        height: @gridHeight * 1.5; 
+        background: #fff;//#F6F6F6;
+        // border-radius: 3px;
+        // box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+        height: @gridHeight*1.7; 
         overflow: hidden;
 
+        // ANIMATION
         transition: height 0.25s, box-shadow 0.5s;
-        
-        button {
+
+        &.show-bar {
+            height: @gridHeight * 20;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+            
+            .url-input {
+                opacity: 0.9;
+                transition-duration: 0.3s;
+                transition-delay: 0.1s;        
+                transform: translateX(0) translateZ(0);
+            }
+
+            .url-breadcrumb {
+                opacity: 0;
+                visibility: hidden;
+                transition-duration: 0.3s;                
+                transition-delay: 0.1s; 
+                transform: translateX(20px) translateZ(0);
+                word-spacing: -5px;
+            }
+
+            &:after {
+                display: block;
+                position: absolute;
+                left: 5%;
+                top: 28px;
+                width: 20px;
+                height: 20px;
+                margin-left: -10px;
+                content: "◢◣";
+                color: @colorGrayDark;
+                font-size: 50%;
+                letter-spacing: -2px;
+                transition: left .5s ease-in-out;
+            }
+        }
+
+        &.dapp-info {
+            button.dapp-info {
+                color: @colorGrayDark;
+            }
+
+            div.dapp-info {
+                display: flex;
+            }
+        }
+
+        &.accounts {
+            button.accounts {
+                color: @colorGrayDark;
+            }
+            button.dapp-info {
+                color: @colorLink;
+            }
+
+            div.accounts {
+                display: flex;
+            }
+
+            &:after {
+                left: 95%;
+            }
+        }
+
+        &.url {
+            &:after {
+                left: 50%;
+            }
+            div.url {
+                display: flex;
+            }
+        }
+
+        > button {
+            position: relative;
+            padding-left: 0;
+            margin-top: 1px;
+            max-width: 33%;
+            height: @gridHeight;
             font-family: @sourceSansPro;
             font-size: @fontSizeSmall;
             font-weight: 500;
-            height: @gridHeight;
+            line-height: @gridHeight;
+            white-space: nowrap;
+            
+            &.has-icon {
+                padding-left: @gridWidth*0.75;
+            }
 
+            &:focus {
+                border-bottom: 0;
+            }
+
+            &.dapp-info {
+                .dapp-shorten-text;
+            }
+
+            .dapp-identicon {
+                margin-top: -2px;
+            }
+    
             .app-icon {
-                position: relative;
-                top: 2px;
+                position: absolute;
+                top: 1px;
+                left: 0;
                 width: 16px;
                 height: 16px;
+                border-radius: 8px;
             }
 
             .icon-key {
@@ -54,14 +151,14 @@
 
         }
 
-        form {
+        > form {
             position: relative;
             flex-grow: 1;
             height: @gridHeight;
 
             .url-input {
                 position: absolute;
-                top: 3px;
+                top: 0;
                 left: 0;
                 bottom: 0;
                 right: 0;
@@ -74,10 +171,12 @@
                 text-align: center;
                 color: @colorLinkBlur;
                 opacity: 0;
+                transform: translateX(-20px) translateZ(0);
                 font-size: 80%;
                 font-family: @sourceSansPro;
                 font-weight: 400;
-                transition: opacity 0.1s;
+                transition: opacity 0.2s, transform 0.2s;
+                line-height: @gridHeight;
 
                 &:focus {
                     color: @colorLinkActive;
@@ -95,8 +194,10 @@
                 font-size: 80%;
                 text-align: center;
                 font-weight: 400;
-                padding-top: 3px;         
-                transition: opacity 0.1s, visibility 015s;
+                transition: opacity 0.2s, visibility 0.2s, transform 0.2s, word-spacing 0.2s;
+                line-height: @gridHeight;
+                height: @gridHeight;
+                overflow: hidden;
 
                 span {
                     color: @colorLinkBlur;
@@ -105,17 +206,21 @@
 
         }
 
-        .app-info {
+        div.dapp-info,
+        div.accounts,
+        div.url {
             display: none;
             position: absolute;
             top: @gridHeight * 2;
             left: 0;
             right: 0;
             bottom: 0;
-            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 2;
+            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 3;
             margin: 0 @gridWidth/4  0;
             border-top: solid 1px #BDB6B6;
+        }
 
+        div.accounts {
             .message {
                 flex-grow: 1;
                 padding: @gridHeight/2 @gridWidth/2 0 0;
@@ -132,46 +237,8 @@
                 }
             }
 
-            .key-list {
-                // flex-grow: 2;
-                width: @gridWidth*24;
-                list-style-type: none;
-                overflow: auto;
-                padding-left: 0;
-
-                li {
-                    padding: @gridHeight/4 @gridWidth * 1.5;
-                    position: relative;
-                    overflow: hidden;
-
-                    .dapp-identicon {
-                        position: absolute;
-                        top: 50%;
-                        left: 0;
-                        width: 32px;
-                        height: 32px;
-                        margin-top: -16px;
-                        background-size: 32px 32px;
-                        display: inline-block;
-                        border-radius: 16px;
-                    }
-
-                    h3 {
-                        padding: 0;
-                        margin: 0;
-                    }
-
-                    .account-id {
-                        font-size: 70%;
-                        opacity: 0.5;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        padding-top: 0;
-                    }
-
-
-                }
+            .dapp-account-list {
+                min-width: @gridWidth * 10;
             }
 
             .bar-actions {
@@ -181,49 +248,42 @@
                 bottom: 0;
                 left: 0;
                 right: 0;
-                height: @gridHeight * 2;
-
-                button.cancel {
-                    font-weight: 300;
-                }
+                height: @gridHeight * 3;
+                padding-top: @gridHeight;
 
                 button {
                     display: inline-block;
                     font-size: 100%;
-                    font-weight: 600;
+                    font-weight: 500;
                     text-transform: uppercase;
                     font-family: @sourceSansPro;
                     padding: @gridHeight/4 @gridWidth/2;
+                    line-height: @gridHeight
                 }
+
+                button.cancel {
+                    font-weight: 300;
+                }            
             }
         }
-
-        &:hover, &.show-bar {
-            height: @gridHeight * 16;
-            box-shadow: @shadowStandard;
-            transition-delay: 0.4s; 
-            
-            .url-input {
-                opacity: 0.9;
-                transition-duration: 0.3s;
-                transition-delay: 0.1s;        
-            }
-
-            .url-breadcrumb {
-                opacity: 0;
-                visibility: hidden;
-                transition-duration: 0.3s;                
-                transition-delay: 0.1s; 
-            }
-            
-            .app-info {
-                display: flex;
-            }
-        }
-
     }
 
+    &.url-bar-transparent {
+        button.reload, button.back {
+            display: none;
+        }
 
+        button.icon-close {
+            width: @gridWidth;
+            padding: 0;
+        }
+
+        .app-bar {
+            margin-left: @gridWidth * 1;
+            margin-right: 0;
+        }
+        
+    }
 }
 
 
@@ -248,28 +308,65 @@
     animation-iteration-count: infinite;
     animation-timing-function: linear;    
     background: linear-gradient(to left, 
-        darken(@colorLinkActive, 30%) 0, 
+        darken(@colorLinkActive, 30%) 0,
         saturate(@colorLinkActive, 100%),  
         darken(@colorLinkActive, 30%)) !important;
-    background-size: 300px 50px;
+    background-size: 200px !important;
+    background-repeat: repeat-x;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
 }
 
 @keyframes color-pulse {
     0% {
-        transform: scale(0.992);
+        transform: scale(0.992) translateZ(0);
         opacity: 0.7;       
         background-position-x:0px;
     }
     50% {
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
         opacity: 1; 
     }     
     100% {
-        transform: scale(0.992);
+        transform: scale(0.992) translateZ(0);
         opacity: 0.7;       
-        background-position-x:-300px;
+        background-position-x:-200px;
+    }           
+}
+
+@colorBlockchain: #c3d825;
+
+.color-ping {
+    animation-name: color-ping;
+    animation-duration: 12s;   
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;    
+    background-image: linear-gradient(to top, 
+        saturate(@colorLinkActive, 100%),  
+        @colorGrayDark) !important;
+    background-size: 150px 150px;
+    background-position-y:0;
+    
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent;
+
+}
+
+@keyframes color-ping {
+    0% {       
+        transform: scale(1) translateZ(0);  
+        background-position-y:0;
+
+    }
+    5% {    
+        transform: scale(0.95) translateZ(0);   
+        background-position-y:30px;
+    }
+    100% {
+        background-color: @colorGrayDark;
+        transform: scale(1) translateZ(0); 
+        background-position-y:150px;
+
     }           
 }
 
@@ -289,4 +386,19 @@
     100% {
         transform: rotate(-180deg) translate3d(0, 1px, 0);
     }           
+}
+
+@media screen and (max-width: 960px ) {
+    .browser-bar .accounts {
+      width: 0;
+      text-overflow: clip;
+      padding-left: @gridWidth * 0.5;
+    }    
+}
+
+@media screen and (max-width: 800px ) {
+    .browser-bar div.dapp-info {
+      width: 0;
+      text-overflow: clip;
+    }   
 }

@@ -3,7 +3,7 @@
 // fired by "did-stop-loading"
 webviewLoadStop = function(e){
     var webview = this;
-        url = webview.getUrl(),
+        url = webview.getURL(),
         title = webview.getTitle(),
         tabId = $(webview).data('id');
         // tabs = Tabs.find().fetch();
@@ -11,7 +11,7 @@ webviewLoadStop = function(e){
     if(!url || url === 'about:blank' || url === location.toString())
         return;
 
-    console.log('Stop loading '+ url);
+    // console.log('Stop loading '+ url);
 
 
     // IS BROWSER
@@ -55,15 +55,17 @@ webviewLoadStop = function(e){
 // TODO does this makes sense? use another
 // fired by "did-get-redirect-request"
 webviewLoadStart = function(e){
+    console.log('webviewLoadStart', e, e.isMainFrame);
+
     if(!e.isMainFrame)
-        return;
+        return;   
 
     var tabs = Tabs.find().fetch(),
         tabId = $(this).data('id'),
-        url = e.newUrl,
+        url = e.newURL,
         foundTab = _.find(tabs, function(tab){
             var tabOrigin = new URL(tab.url).origin;
-            return (url.indexOf(tabOrigin) !== -1);
+            return (url && url.indexOf(tabOrigin) !== -1);
         });
 
 
@@ -73,7 +75,7 @@ webviewLoadStart = function(e){
     else
         foundTab = 'browser';
 
-    console.log('Intercept request, switching to correct tab: '+ foundTab.name + ' -> '+ url);
+    console.log('Intercept request, switching to correct tab: '+ (foundTab.name || 'Browser') + ' -> '+ url);
 
     // stop this action
     this.stop();

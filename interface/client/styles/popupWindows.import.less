@@ -1,0 +1,178 @@
+.popup-windows {
+    text-align: center;
+
+    a, button {
+        color: @colorLinkActive;
+    }
+
+    a:focus {
+        color: @colorLinkFocus;
+    }
+
+    img.left-overlay {
+        position: relative;
+        top: -40px;
+        left: -132%;
+        width: 255%;
+    }
+
+    &.update-available {
+        .text {
+            text-align: left;
+        }
+
+        h1 {
+            font-size: 200%;
+            margin-bottom: 20px;
+
+            &.no-upate {
+                font-size: 180%;
+            }
+        }
+    }
+
+    &.tx-info {
+
+        .transaction-parties {
+            display : flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            > div {
+                // flex: 1 1 auto;
+                color: @colorTextSecondary;
+            }
+
+            // addresses
+            > div:nth-child(odd) {
+                position: relative;
+                padding: 0 @defaultMargin*3;
+                font-weight: 400;
+            }
+            > div:nth-child(1) {
+                .overlap-icon {
+                    right: 32px;
+                }
+            }
+            > div:nth-child(3) {
+                .overlap-icon {
+                    left: 32px;
+                }
+            }
+            // amount
+            > div.amount {
+                position: relative;
+                margin-top: -30px;
+                height: 40px;
+                font-size: 1.5em;
+                color: darken(@colorTextSecondary, 8%);
+                border-bottom: 1px solid @colorTextSecondary;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    right: 0;
+                    border: 5px solid @colorTextSecondary;
+                    border-color: transparent @colorTextSecondary @colorTextSecondary transparent;
+                    .rotate(-45deg);
+                }
+
+                .unit {
+                    font-size: 0.6em;
+                    font-weight: 400;
+                }
+                .execute-function {
+                    display: block;
+                    position: absolute;
+                    bottom: -30px;
+                    left: 0;
+                    right: 0;
+                    font-size: 0.6em;
+                    text-align: center;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        table,
+        .data,
+        .info {
+            width: 420px;
+            margin: @defaultMargin*2 auto;
+        }
+        table {
+
+            td:nth-child(1) {
+                text-align: left;
+            }
+            td:nth-child(2) {
+                text-align: right;
+                font-weight: 400;
+            }
+        }
+
+        .overlap-icon {
+            position: absolute;
+            top: 20px;
+            font-size: 20px;
+        }
+        .circle-icon {
+            display: inline-block;
+            background-color: @colorGrayLight;
+            .border-radius(50%);
+            font-size: 33px;
+            padding: @defaultMargin;
+
+            // + span {
+            //     display: inline-block;
+            // }
+        }
+
+        .provided-gas {
+            display: inline;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            color: @colorLink;
+            background-color: transparent;
+            border: 0;
+            text-align: right;
+            border-bottom: 1px dotted @colorLink;
+
+            &:focus {
+                outline: 0;
+            }
+        }
+
+        input[type="password"] {
+            width: @gridWidth * 12;
+        }
+
+        .data,
+        .info {
+            text-align: left;
+            padding: 0 @defaultMargin/2;
+        }
+        .data {
+            font-size: 0.9em;
+            
+            pre {
+                margin: 0 -@defaultMargin;
+                overflow: auto;
+                height: 90px;
+                background-color: @colorGrayLight;//lighten(@colorGray, 10%);
+                color: @colorTextPrimary;
+
+                span.zero {
+                    color: fadeout(@colorTextSecondary, 30%);
+                }
+                span.function {
+                    font-weight: 600;
+                }
+            }
+        }
+
+    }
+}

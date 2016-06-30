@@ -12,6 +12,11 @@ The browserBar template
 */
 
 
+Template['layout_browserBar'].onRendered(function(){
+    var template = this;
+});
+
+
 Template['layout_browserBar'].helpers({
     /**
     Break the URL in protocol, domain and folders
@@ -35,7 +40,7 @@ Template['layout_browserBar'].helpers({
             folders: search[3].split("/"),
         }
 
-        var breadcrumb = "<span>" + urlObject.domain.reverse().join(" » ") + " </span> » " + urlObject.folders.join(" » ");
+        var breadcrumb = "<span>" + urlObject.domain.join(".") + " </span> ▸ " + urlObject.folders.join(" ▸ ");
 
         return new Spacebars.SafeString(breadcrumb);
     },
@@ -46,6 +51,15 @@ Template['layout_browserBar'].helpers({
     */
     'dapp': function(){
         return Tabs.findOne(LocalStore.get('selectedTab'));
+    },
+    /**
+    Returns dapps current accounts
+
+    @method (dappAccounts)
+    */
+    'dappAccounts': function(){
+        if(this.permissions)
+            return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -98,11 +112,18 @@ Template['layout_browserBar'].events({
 
         if(webview) {
             var id = Tabs.insert({
-                url: webview.getUrl(),
+                url: webview.getURL(),
                 name: webview.getTitle(),
                 menu: {},
                 menuVisible: false,
                 position: Tabs.find().count() + 1
+            });
+
+            // move the current browser tab to the last visited page
+            var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
+            Tabs.update('browser', {
+                url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
+                redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
             });
 
             LocalStore.set('selectedTab', id);
@@ -122,19 +143,75 @@ Template['layout_browserBar'].events({
         LocalStore.set('selectedTab', 'browser');
     },
     /*
+    Show the app bar
+
+    @event click app-bar > button, click .app-bar > form
+    */
+    'click .app-bar > button, click .app-bar > form': function(e, template){
+        // prevent the slide in, when the url is clicked
+        if($(e.target).hasClass('url-input'))
+            return;
+
+        template.$('.app-bar').toggleClass('show-bar');
+    },
+    /*
+    Hide the app bar
+
+    @event mouseleave .app-bar
+    */
+    'mouseleave .app-bar': function(e, template){
+        var timeoutId = setTimeout(function(){
+            template.$('.app-bar').removeClass('show-bar');
+        }, 1000);
+        TemplateVar.set('timeoutId', timeoutId);
+    },
+    /*
+    Stop hiding the app bar
+
+    @event mouseenter .app-bar
+    */
+    'mouseenter .app-bar': function(e, template){
+        clearTimeout(TemplateVar.get('timeoutId'));
+    },
+    /*
+    Show the sections
+
+    @event click button.accounts, click button.dapp-info, click form.url
+    */
+    'click button.accounts, click button.dapp-info, click form.url': function(e, template){
+        var className = $(e.currentTarget).attr('class');
+
+        if(TemplateVar.get('browserBarTab') !== className)
+            template.$('.app-bar').addClass('show-bar');
+
+        TemplateVar.set('browserBarTab', className);
+    },
+    /*
+    Focus the input
+
+    @event click form.url
+    */
+    'click form.url': function(e, template){
+        template.$('.url-input').select();
+    },
+    /*
     Send the domain
 
     @event submit
     */
     'submit': function(e, template){     
         var tabs = Tabs.find().fetch(),
-            url = Helpers.formatUrl(template.find('input').value);
+            url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
+        // remove focus from url input
+        template.$('.url-input').blur();
 
         // look in tabs
         var foundTab = _.find(tabs, function(tab){
-                var tabOrigin = new URL(tab.url).origin;
-                return (url.indexOf(tabOrigin) !== -1);
+                if(tab.url && tab.url.indexOf('about:blank') === -1) {
+                    var tabOrigin = new URL(tab.url).origin;
+                    return (tabOrigin && url.indexOf(tabOrigin) !== -1);
+                }
             });
 
         // switch tab to browser
@@ -143,12 +220,14 @@ Template['layout_browserBar'].events({
         else
             foundTab = 'browser';
 
-
         // update current tab url
         Tabs.update(foundTab, {$set: {
             url: url,
             redirect: url
         }});
         LocalStore.set('selectedTab', foundTab);
+
+        // hide the app-bar
+        template.$('.app-bar').removeClass('show-bar');
     }
 });

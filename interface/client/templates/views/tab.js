@@ -4,19 +4,6 @@ Template Controllers
 @module Templates
 */
 
-/**
-Filters a id the id to only contain a-z A-Z 0-9 _ -.
-
-@method filterId
-*/
-var filterId = function(str) {
-    var newStr = '';
-    for (var i = 0; i < str.length; i++) {
-        if(/[a-zA-Z0-9_-]/.test(str.charAt(i)))
-            newStr += str.charAt(i);
-    };
-    return newStr;
-};
 
 /**
 The tab template
@@ -34,6 +21,19 @@ Template['views_tab'].onRendered(function(){
     var template = this,
         webview = this.find('webview'),
         timeoutId;
+
+    // Send updated TEST DATA
+    if(template.data._id === 'tests') {
+        this.autorun(function(c){
+            var tab = Tabs.findOne('tests');
+
+            if(!c.firstRun)
+                webview.send('sendData', tab);
+
+            // ADD SWITCHUNG USING webview.loadURL();
+        });
+    }
+
 
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
@@ -59,61 +59,11 @@ Template['views_tab'].onRendered(function(){
 
 
     // MIST API for installed tabs/dapps
-    webview.addEventListener('ipc-message', function(event) {
-        var arg = event.args[0];
-
-        // SET FAVICON
-        if(event.channel === 'favicon') {
-            Tabs.update(template.data._id, {$set:{
-                icon: arg
-            }});
-        }
-
-        // stop here, if browser
-        if(template.data._id === 'browser')
-            return;
-
-        // filter ID
-        if(arg && arg.id)
-            arg.id = filterId(arg.id);
-
-        if(event.channel === 'setBadge') {
-            Tabs.update(template.data._id, {$set:{
-                badge: arg
-            }});
-        }
-
-        if(event.channel === 'addMenu') {
-            var query = {'$set': {}};
-
-            if(arg.id)
-                query['$set']['menu.'+ arg.id +'.id'] = arg.id;
-            query['$set']['menu.'+ arg.id +'.selected'] = arg.selected;
-
-            if(!_.isUndefined(arg.position))
-                query['$set']['menu.'+ arg.id +'.position'] = arg.position;
-            if(!_.isUndefined(arg.name))
-                query['$set']['menu.'+ arg.id +'.name'] = arg.name;
-            if(!_.isUndefined(arg.badge))
-                query['$set']['menu.'+ arg.id +'.badge'] = arg.badge;
-
-            Tabs.update(template.data._id, query);
-        }
-
-        if(event.channel === 'removeMenu') {
-            var query = {'$unset': {}};
-
-            query['$unset']['menu.'+ arg] = '';
-
-            Tabs.update(template.data._id, query);
-        }
-
-        if(event.channel === 'clearMenu') {
-            Tabs.update(template.data._id, {$set: {menu: {}}});
-        }
-    });
+    webview.addEventListener('ipc-message', mistAPIBackend.bind({
+        template: template,
+        webview: webview
+    }));
 });
-
 
 Template['views_tab'].helpers({
     /**

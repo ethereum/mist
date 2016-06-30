@@ -1,0 +1,179 @@
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url('fonts/SourceSansPro.otf');
+  font-weight: 500;
+  font-style: normal;
+}
+
+.splash-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    color: #fff;
+    text-align: center;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
+    overflow: hidden;
+
+    background-size: cover;
+    background-position: 50% 50%;
+    -webkit-app-region: drag;
+
+    &.wallet {
+        background-image: url('/images/bg-homestead.jpg');
+
+        h1 {
+            color: #fff;
+        }
+        button.start-app {
+            color: #BCD3E6;
+            &:hover {
+                color: darken(#BCD3E6, 5%);
+            }
+        }
+        button.close {
+            color: rgba(0,0,0, 0.3);
+
+            &:hover {
+                color: rgba(0,0,0, 0.8);
+            }
+        }
+    }
+    &.mist {
+        background-image: url('/images/bg-metropolis.jpg');
+
+        h1 {
+            color: #152f58;
+            text-shadow: 0 1px 5px rgba(255,255,255,0.75);
+        }
+
+        .network-indicator {
+            color: #FFF;
+            opacity: 0.9;
+            .unknown {
+                color: #152f58;
+                text-shadow: 0 1px 5px rgba(255,255,255,0.75);        
+            }
+        }
+    }
+
+    h1, small {
+        cursor: default;
+    }
+
+    button {
+        -webkit-app-region: no-drag;
+        z-index: 3;
+        position: absolute;
+        color: #fff;
+        background: none;
+        border: 0;
+        outline: 0;
+        padding: @defaultMargin/2;
+        font-size: 0.8em;
+    }
+    button:active {
+        transform: scale(0.95);
+    }
+
+    /* Close button */
+    button.close {
+        top: 0;
+        right: 3px;
+        font-size: 20px;
+        color: rgba(255,255,255, 0.3);
+    }
+    button.close:hover {
+        color: rgba(255,255,255, 0.8);
+    }
+    /* start app button */
+    button.start-app {
+        bottom: 10px;
+        right: 0;
+        left: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        color: #4A90E2;
+        text-transform: uppercase;
+        font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
+        font-size: 1em;
+        font-weight: bold;
+    }
+    button.start-app:hover {
+        color: #2A6ED0;
+    }
+
+    img {
+        margin-top: 7px;
+        width: 110px;
+        transition: width 0.5s  ease-in-out;
+    }
+    &.small img {
+        width: 80px;
+    }
+    img.shadow {
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        border-radius: 50%;
+    }
+    h1 {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: 400;
+        /*text-shadow: 0 1px 5px rgba(0,0,0,0.6);*/
+        -webkit-user-select: none;
+    }
+    &.small h1 {
+        margin-top: 20px;
+    }
+    small {
+        display: inline-block;
+        margin-top: 2px;
+        opacity: 0.6;
+        line-height: 1.3em;
+        cursor: text;
+        -webkit-app-region: no-drag;
+        -webkit-user-select: initial;
+    }
+
+    /* PROGRESSBAR */
+    progress {
+        position: absolute;
+        bottom: 35px;
+        left: 10px;
+        right: 10px;
+        -webkit-appearance: none;
+        appearance: none;
+        width: auto;
+        height: 10px;
+        opacity: 0.8;
+    }
+
+    progress[value]::-webkit-progress-bar {
+        background-color: rgba(255,255,255, 0.2);
+        border-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+    }
+
+    progress.wallet::-webkit-progress-value {
+        background-image: -webkit-linear-gradient(left, #DCCAB6, #fff);
+    }
+    progress.mist::-webkit-progress-value {
+        background-image: -webkit-linear-gradient(left, #3185CC, #ADA1E2);
+    }
+    progress::-webkit-progress-value {
+        opacity: 0.7;
+        border-radius: 2px;
+        box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+
+    progress.state {
+        opacity: 0.3;
+    }
+
+    progress.state[value]::-webkit-progress-bar {
+        background: transparent;
+    }
+}

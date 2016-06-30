@@ -1,0 +1,196 @@
+{
+    "mist": {
+        "applicationMenu": {
+            "app": {
+                "label": "__app__",
+                "about": "Over __app__",
+                "checkForUpdates": "Op updates controleren...",
+                "services": "Diensten",
+                "hide": "__app__ verbergen",
+                "hideOthers": "Andere verbergen",
+                "showAll": "Alles weergeven",
+                "quit": "__app__ afsluiten"
+            },
+            "edit": {
+                "label": "Bewerken",
+                "undo": "Ongedaan maken",
+                "redo": "Overdoen",
+                "cut": "Knippen",
+                "copy": "Kopieren",
+                "paste": "Plakken",
+                "selectAll": "Alles selecteren"
+            },
+            "view": {
+                "label": "Bekijken",
+                "fullscreen": "Volledig Scherm Inschakelen"
+            },
+            "accounts": {
+                "label": "Accounts",
+                "importPresale": "Importeer voorverkoop Accounts",
+                "newAccount": "Nieuw account",
+                "backup": "Backup",
+                "backupKeyStore": "Accounts",
+                "backupMist": "Applicatie Data"
+            },
+            "develop": {
+                "label": "Ontwikkelen",
+                "devTools": "Ontwikkelaars Opties Inschakelen",
+                "devToolsMistUI": "Mist UI",
+                "devToolsWalletUI": "Wallet UI",
+                "devToolsWebview": "__webview__",
+                "runTests": "Tests uitvoeren",
+                "logFiles": "Toon log bestand",
+                "ethereumNode": "Ethereum Node",
+                "network": "Netwerk",
+                "mainNetwork": "Hoofdnetwerk",
+                "startMining": "⛏ Start Mining (Alleen testnet)",
+                "stopMining": "⛏ Stop Mining"
+            },
+            "window": {
+                "label": "Scherm",
+                "minimize": "Minimaliseer",
+                "close": "Sluiten",
+                "toFront": "Alles op voorgrond"
+            },
+            "help": {
+                "label": "Help"
+            }
+        },
+        "errors": {
+            "nodeConnect": "Verbinden naar node niet mogelijk? Zie de logboek bestanden voor meer informatie:",
+            "nodeStartup": "Het lijkt erop dat de node niet kan worden opgestart, heeft u er al een aan staan? Is deze de database aan het upgraden?",
+            "timeSync": {
+                "title": "Uw computer's klok is niet gesynchroniseerd.",
+                "description": "Om succesvol met het Ethereum netwerk te verbinden moet u uw computer's klok synchroniseren met een tijdssynchronisatie server.",
+                "win32": "Ga naat uw Internet Tijd Instellingen in uw configuratiescherm en selecteer de optie. Zie deze uitleg voor details: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "linux": "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
+                "darwin": "Om tijdssynchronisatie aan de zetten opent u uw instellingen en activeert u \"Tijd en datum automatisch instellen\"."
+            }
+        },
+        "rightClick": {
+            "reload": "Herladen",
+            "openDevTools": "Open Ontwikkelaarstools",
+            "inspectElements": "Element Inspecteren"
+        },
+        "nodeInfo": {
+            "nodeSyncing": "__blockDiff__ blokken te gaan",
+            "blockReceived": "Nieuw blok ontvangen",
+            "blockNumber": "Uw laatste bloknummer",
+            "timeSinceBlock": "Verstreken tijd sinds laatste blok",
+            "testnetExplain": "U best actief op een testnet, VERSTUUR GEEN echte ether naar deze adressen",
+            "peers": "peers"
+        },
+        "sidebar": {
+            "buttons": {
+                "browser": "Verkennen"
+            }
+        },
+        "browserBar": {
+            "buttons": {
+                "noAccounts": "Geen accounts ingesteld"
+            }
+        },
+        "startScreen": {
+            "runningNodeFound": "Lopende Ethereum node gevonden!",
+            "startingNode": "Ethereum node starten...",
+            "startedNode": "Applicatie starten...",
+            "nodeConnectionTimeout": "Ethereum node opstarten niet mogelijk!<br><small>Als u <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth geinstalleerd heeft</a>, gebruik dan dit commando om het op te starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Of meld een fout </a></small>",
+            "nodeBinaryNotFound": "Geen Ethereun node uitvoerbaar bestand gevonden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Start er a.u.b. handmatig een. </a> </small>",
+            "nodeSyncing": "Ethereum node moet synchroniseren, even gedult alstublieft...",
+            "nodeSyncInfo": "Blok __currentBlock__ van __highestBlock__ aan het downloaden.",
+            "nodeSyncConnecting": "Zoeken naar peers...",
+            "nodeSyncProcessing": "Blokken aan het verwerken, even gedult alstublieft...",
+            "privateChainTimeout": "Sta zoeken naar peers over"
+        },
+        "popupWindows": {
+            "requestAccount": {
+                "title": "Account aanmaken",
+                "enterPassword": "Wachtwoord invoeren",
+                "repeatPassword": "Wachtwoord herhalen",
+                "creating": "Account genereren...",
+                "errors": {
+                    "passwordMismatch": "Uw wachtwoorden komen niet overeen."
+                }
+            },
+            "unlockMasterPassword": {
+                "title": "Voer meesterwachtwoord in",
+                "enterPassword": "Voer meesterwachtwoord in",
+                "unlocking": "Ontgrendelen...",
+                "errors": {
+                    "wrongPassword": "Wachtwoord is niet correct, probeer het nog eens."
+                }
+            },
+            "sendTransactionConfirmation": {
+                "title": {
+                    "sendTransaction": "Send transaction",
+                    "contractExecution": "Execute contract",
+                    "createContract": "Create contract"  
+                },
+                "contractExecutionInfo": "U staat op het punt een functie uit te voeren op een contract. Dit kan overdrachten van waarde tot gevolg hebben.",
+                "contractCreationInfo": "U staat op het punt een contract aan te maken met de gegeven gevevens.",
+                "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
+                "unlocking": "Bevestigen...",
+                "createContract": "Contract aanmaken",
+                "estimatedFee": "Ingeschatte kosten",
+                "estimatedGasError": "Data kon niet worden uitgevoerd, dus het zal alle mogelijke gas gebruiken.",
+                "gasPrice": "Gas prijs",
+                "perMillionGas": "ether per millioen gas",
+                "gasLimit": "Geef maximum kosten aan",
+                "data": "Data",
+                "buttons": {
+                    "sendTransaction": "Verstuur transactie"
+                },
+                "errors": {
+                    "connectionTimeout": "Kon niet verbinden naar de node, is het in de achtergrond uitgevallen?",
+                    "wrongPassword": "Onjuist wachtwoord"
+                }
+            },
+            "onboarding": {
+                "description" : "Ethereum is een decentraal platform voor het bouwen van applicaties op een blockchain: software die immuun is voor fruide en levenslang waarde en eigendom over kan brengen",
+                "goToTestnet" : "Gebruik het test netwerk",
+                "goToTestnetDescription" : "Test de technologie vrij in een testongeving, zonder echte ether te gebruiken.",
+                "gotoMainnet" : "Gebruik hoofdnetwerk",
+                "gotoMainnetDescription" : "U zal een beetje Ether nodig hebben om contracten uit te voeren. Geen zorgen, we helpen u met het verkrijgen...",
+                "doYouHaveAWalletFile" : "Heeft u een wallet bestand?",
+                "walletFileDescription" : "<p>Als u mee heeft gedaan met de Ethereum voorverkoop van 2014 zou u een bestand met de naam <code>ethereum_wallet_backup.json</code> ontvangen moeten hebben. U kon deze downloaden na uw contributie en is ook per email verstuurd</p>",
+                "dropFilesHere" : "Sleep voorverkoop bestand hier",
+                "creating": "Aanmaken...",
+                "importing": "Importeren...",
+                "skip" : "Sla deze stap over",
+                "next" : "Volgende",
+                "protectTitle" : "Bescherm uw account",
+                "protectDescription" : "Kies een wachtwoord voor uw nieuwe account. Maak het even veilig alsof het uw huissleutels zijn!",
+                "accountTitle" : "Opladen!",
+                "accountTitleTestnet" : "Mine wat!",
+                "etherDescription": "Het ethereum netwerk is gebaseerd op het “Ether” token. U zal een kleine hoeveelheid nodig hebben om dingen op het netwerk te doen.",
+                "loadItDescription" : "Als u al Bitcoins of een andere cryptocurrency heeft kan u deze makkelijk omzetten in ether met Shapeshift.<br><br> Wij raden aan een hoeveelheid van tussen de <strong>0.25 en 1 ether</strong> om te zetten.",
+                "mineItDescription": "<strong>Op het testnetwerk kan u zelf ether minen door te gaan naar het <em>Ontwikkelaars</em> menu en te kiezen voor <em>Begin Mining</em>. </strong> <br> <strong> PROBEER GEEN ECHTE ETHER NAAR DIT ADRES TE VERSTUREN </strong>",
+                "you" : "U",
+                "etherbase" : "Centrale account (etherbase)",
+                "depositBitcoin" : "Bitcoin Storten",
+                "learnIt" : "Leer terwijl u wacht",
+                "downloadingBlocks": "Blokken downloaden",
+                "block": "blok",
+                "tutorial1Description" : "<p> Het enige wat er nog moet gebeuren is wachten tot de download compleet is. Hier zijn een aantal leessuggesties: </p> <h4>Maak uw eigen geld </h4> <p> Maak een cryptocurrency met een vaste uitgeveven hoeveelheid, tokens die vermogen uit de echte wereld voorstellen, etc </p>",
+                "tutorial2Description" : "<h4> Start een crowdsale </h4> <p> Haal geld op voor een gemeenschappelijk doel, volledig betrouwbaar zonder derde partij. Ga om het traditionele systeem heen en haal geld direct bij de bron op door een organisatie te crowdfunden via de blockchain</p>",
+                "tutorial3Description" : "<h4> Blockchain Organisatie </h4> <p> Maak een autonome organisatie aan met onbreekbare regels over het uitgeven van geld en wie beslissingen kan maken. Laat uw investeerders een actieve rol nemen in het besluiten hoe geld wordt uitgegeven</p>",
+                "buttons": {
+                    "showPassword": "Toon wachtwoord",
+                    "importAccount": "Importeer account",
+                    "launchApp": "Start Applicatie!",
+                    "learnReceipt": "Leer dit recept"
+                },
+                "errors": {
+                    "nodeNotStartedYet": "Wacht nog een aantal seconden tot uw node volledig is opgestart en probeer het nog een keer",
+                    "unknownFile": "Bestand niet herkent.",
+                    "passwordError": "Incorrect wachtwoord.",
+                    "importFailed": "Kon bestand niet inporteren en kreeg: __error__"
+                }
+            }
+        }
+    },
+    "elements": {
+        "checksumAlert":"Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die u zullen beschermen teken typfouten, dus ga graag even na of dit de goede is. Als aangeveven, ga na of het beveiligingsicoon klopt.",
+        "identiconHelper": "Dit is een beveilliginsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan"
+    }
+}

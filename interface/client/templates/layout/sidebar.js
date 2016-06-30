@@ -33,7 +33,7 @@ Template['layout_sidebar'].onRendered(function(){
             $ul.find('> li').each(function(index, test){
                 var id = $(this).data('tab-id');
                 if(id)
-                    Tabs.update(id, {$set: {position: index}});
+                    Tabs.update(id, {$set: {position: index+1}});
             });
         }
     });
@@ -47,13 +47,6 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function() {
-
-        // UPADATE MAIN APPLICATION MENU
-        Tracker.afterFlush(function(){
-            updateApplicationMenuDevTools($('webview'));
-        });
-
-
         return Tabs.find({}, {sort: {position: 1}}).fetch();
     },
     /**
@@ -147,7 +140,7 @@ Template['layout_sidebar'].events({
 
         // dapp tab
         } else if(webview) {
-            webview.send('callFunction', this.id);
+            webview.send('mistAPI_callMenuFunction', this.id);
             LocalStore.set('selectedTab', tabId);
         }
     },

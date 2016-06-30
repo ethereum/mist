@@ -1,7 +1,7 @@
 {
     "app": {
         "loading": "Loading...",
-        "offline": "Can't connect are you offline?",
+        "offline": "Can't connect, are you offline?",
         "logginIn": "Logging in..."
     },
     "error": {
@@ -13,6 +13,10 @@
         "save": "Save",
         "edit": "edit",
         "send": "Send",
+        "next": "Next",
+        "previous": "Previous",
+        "back": "Back",
+        "skip": "Skip",
         "sending": "Sending...",
         "create": "Create",
         "tryToReconnect": "Try to reconnect"

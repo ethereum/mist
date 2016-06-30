@@ -1,13 +1,22 @@
-// disable pinch zoom gesture
-document.addEventListener('mousewheel', function(e) {
-    if(e.deltaY % 1 !== 0) {
-        e.preventDefault();
+
+// add the platform to the HTML tag
+setTimeout(function(){
+    document.getElementsByTagName('html')[0].className =  window.mist.platform;
+
+    if (window.basePathHref) {
+      var base = document.createElement('base');
+
+      base.href = window.basePathHref;
+      
+      document.getElementsByTagName('head')[0].appendChild(base);      
     }
-});
+
+}, 100);
+
 
 $(window).on('blur', function(e){ 
-    $('body').addClass('blur');
+    $('body').addClass('app-blur');
 });
 $(window).on('focus', function(e){ 
-    $('body').removeClass('blur');
+    $('body').removeClass('app-blur');
 });

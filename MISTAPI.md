@@ -4,7 +4,7 @@ Mist provides an API for dapp developers to use special features only available 
 
 ## Note for dapp developers
 
-To make you dapp compatible with other browsers, its recommended that you check the `mist` object before you use it:
+To make your dapp compatible with other browsers, it is recommended that you check the `mist` object before you use it:
 
 ```js
 if(typeof mist !== 'undefined') {
@@ -12,17 +12,27 @@ if(typeof mist !== 'undefined') {
 }
 ```
 
-Additionally mist provides the `web3` object, to make sure you use the mist connection, check the providor before you set your own:
+You have three different possibilities to use `web3`:
 
 ```js
-// set providor
-if(!web3.currentProvidor)
-    web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+// 1. simply use it: web3 comes already defined
+web3
+
+// 2. optionally use web3 from Mist or load if outside of Mist
+if(typeof web3 === 'undefined')
+  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+
+// 3. always use web3 provided by the dapp ("Web3" won't be supplied by Mist), but the provider from Mist
+if(typeof web3 !== 'undefined')
+  web3 = new Web3(web3.currentProvider);
+else
+  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 ```
 
 ## API
 
 
+- [mist.platform](#mistmenuupdateid-options-callback)
 - [mist.menu](#mistmenuupdateid-options-callback)
 - [mist.menu.setBadge](#mistmenusetbadgetext)(text)
 - [mist.menu.add](#mistmenuaddid-options-callback)(id, options, callback)
@@ -30,6 +40,35 @@ if(!web3.currentProvidor)
 - [mist.menu.remove](#mistmenuremoveid)(id)
 - [mist.menu.clear](#mistmenuclear)()
 
+
+### mist.platform
+
+Returns the current platform, mist is running on:
+
+- `darwin` (Mac OSX)
+- `win32` (Windows)
+- `linux` (Linux)
+
+
+***
+
+### mist.requestAccount(callback)
+
+Asks the user to provide, or create a new account.
+
+#### Parameters
+
+1. `Function` The callback to be called with the new address as the second param
+
+#### Example
+
+```js
+mist.requestAccount(function(e, address){
+    console.log('Added new account', address);
+});
+```
+
+***
 
 ### mist.menu
 
@@ -120,6 +159,23 @@ Removes a sub menu entry.
 
 Removes all sub menu entries. You can use this when you reload your app,
 to clear up wrong menu entries, which might got lost since the last session.
+
+#### Parameters
+
+None
+
+***
+
+
+### mist.sounds
+
+Provides a list of sounds.
+
+***
+
+### mist.sounds.bip()
+
+Makes a bip sound.
 
 #### Parameters
 

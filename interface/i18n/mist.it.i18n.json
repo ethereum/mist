@@ -4,6 +4,8 @@
             "app": {
                 "label": "__app__",
                 "about": "Info su __app__",
+                "checkForUpdates": "Controlla aggiornamenti...",
+                "services": "Servizi",
                 "hide": "Nascondi __app__",
                 "hideOthers": "Nascondi il resto",
                 "showAll": "Mostra tutto",
@@ -20,7 +22,8 @@
             },
             "view": {
                 "label": "Visualizza",
-                "fullscreen": "Schermo intero"
+                "fullscreen": "Schermo intero",
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "Accounts",
@@ -95,7 +98,7 @@
             "nodeConnectionTimeout": "Impossibile avviare un nodo Ethereum!<br><small>Se <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>hai installato Geth</a>, usa questo comando per eseguirlo:<br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> o riporta il problema </a></small>",
             "nodeBinaryNotFound": "Impossibile trovare l'eseguibile del nodo Ethereum !<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Per favore avvialo manualmente prima. </a> </small>",
             "nodeSyncing": "Il nodo Ethereum deve sincronizzarsi, attendere prego...",
-            "nodeSyncInfo": "Scaricamento blocco __currentBlock__ di __highestBlock__.",
+            "nodeSyncInfo": "Scaricamento blocco __displayBlock__ di __highestBlock__.",
             "nodeSyncConnecting": "Alla ricerca di nodi...",
             "nodeSyncProcessing": "Elaborazione blocchi, attendere prego...",
             "privateChainTimeout": "Salta ricerca di nodi"

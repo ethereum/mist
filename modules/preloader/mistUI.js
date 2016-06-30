@@ -38,6 +38,12 @@ window.syncMinimongo = syncMinimongo;
 window.ipc = ipc;
 
 
+// remove require and modules, when node-integration is on
+delete window.module;
+delete window.require;
+
+
+
 // prevent overwriting the Dapps Web3
 delete global.Web3;
 delete window.Web3;

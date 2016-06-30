@@ -7,7 +7,7 @@ var packager = require('electron-packager');
 var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
-var download = require('gulp-download');
+var download = require('gulp-download-stream');
 var decompress = require('gulp-decompress');
 var tap = require("gulp-tap");
 // const zip = require('gulp-zip');
@@ -38,7 +38,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
-var electronVersion = '1.2.2';
+var electronVersion = '1.2.5';
 var gethVersion = '1.4.7';
 var nodeUrls = {
     'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/geth-OSX-2016061509421-1.4.7-667a386.zip',

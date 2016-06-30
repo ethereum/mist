@@ -4,6 +4,11 @@
             "app": {
                 "label": "__app__",
                 "about": "Over __app__",
+                "checkForUpdates": "Op updates controleren...",
+                "services": "Diensten",
+                "hide": "__app__ verbergen",
+                "hideOthers": "Andere verbergen",
+                "showAll": "Alles weergeven",
                 "quit": "__app__ afsluiten"
             },
             "edit": {

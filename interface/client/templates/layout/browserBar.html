@@ -9,7 +9,7 @@
                     {{#if icon}}
                         {{> elements_img src=icon class="app-icon" }}
                     {{/if}}
-                    {{name}}
+                    <span>{{name}}</span>
                 </label>
 
                 <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
@@ -23,32 +23,13 @@
                             {{> dapp_identicon identity=address class="dapp-tiny"}}
                         </span>
                     {{else}}
-                        {{i18n "mist.browserBar.buttons.noAccounts"}}
+                        <span class="connect-button">
+                            {{i18n 'mist.browserBar.buttons.connect'}}
+                        </span>
+                        <span class="simptip-position-left simptip-movable no-accounts" data-tooltip="{{i18n 'mist.browserBar.buttons.noAccounts'}}"></span>
                     {{/each}}
-                    <i class="icon-key"></i>
                 </button>
-                
-                <!-- sections -->
-
-                <div class="dapp-info">
-                    {{> layout_browserBar_dappInfo}}
-                </div>
-
-                <div class="url">
-                    {{> layout_browserBar_network}}
-                </div>
-
-                <div class="accounts">
-                    {{> layout_browserBar_accounts}}
-                </div>
             </div>
-        
-        {{#if isBrowser}}
-            <button title="Add as app" class="add-tab icon icon-plus"></button>
-        {{else}}
-            <button title="Remove app" class="remove-tab icon icon-close"></button>
-        {{/if}}
-
     </div>
     {{/with}}    
 </template>

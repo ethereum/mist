@@ -32,75 +32,22 @@
         // ANIMATION
         transition: height 0.25s, box-shadow 0.5s;
 
-        &.show-bar {
-            .url-input {
-                opacity: 0.9;
-                transition-duration: 0.3s;
-                transition-delay: 0.1s;        
-                transform: translateX(0) translateZ(0);
-            }
-
-            .url-breadcrumb {
-                opacity: 0;
-                visibility: hidden;
-                transition-duration: 0.3s;                
-                transition-delay: 0.1s; 
-                transform: translateX(20px) translateZ(0);
-                word-spacing: -5px;
-            }
-        }
-
-        &.dapp-info {
-            button.dapp-info {
-                color: @colorGrayDark;
-            }
-
-            div.dapp-info {
-                display: flex;
-            }
-        }
-
-        &.accounts {
-            button.accounts {
-                color: @colorGrayDark;
-            }
-            button.dapp-info {
-                color: @colorLink;
-            }
-
-            div.accounts {
-                display: flex;
-            }
-
-            &:after {
-                left: 95%;
-            }
-        }
-
-        &.url {
-            &:after {
-                left: 50%;
-            }
-            div.url {
-                display: flex;
-            }
-        }
-
         > .dapp-info, > button {
             color: #6691c2;
             position: relative;
             padding-left: 0;
             margin-top: 1px;
             max-width: 33%;
-            height: @gridHeight;
+            height: 21px;
             font-family: @sourceSansPro;
             font-size: @fontSizeSmall;
             font-weight: 500;
-            line-height: @gridHeight;
+            line-height: 21px;
             white-space: nowrap;
+            margin-top: -1px;
             
             &.has-icon {
-                padding-left: @gridWidth*0.75;
+                padding-left: @gridWidth * 0.84;
             }
 
             &:focus {
@@ -117,21 +64,32 @@
     
             .app-icon {
                 position: absolute;
-                top: 1px;
+                top: 0;
                 left: 0;
-                width: 16px;
-                height: 16px;
-                border-radius: 8px;
+                width: 21px;
+                height: 21px;
+                border-radius: 50%;
             }
 
-            .icon-key {
-              display: block;
-              float: right;
-              top: 3px;
-              margin-left: 4px;
-              position: relative;
+            .connect-button {
+                float: left;
+                margin-right: 8px;
+            }            
+            .connect-button, .dapp-info span {
+                line-height: 21px;
+                display: inline-block;
             }
 
+            span.no-accounts {
+                background-image: url(/images/anonymous-icon.png);
+                background-size: cover;
+                background-position: 50%;
+                width: 21px;
+                height: 21px;
+                display: inline-block;
+                border-radius: 50%;
+                box-shadow: 0 0 2px rgba(0,0,0,0.3);
+            }
         }
 
         > form {
@@ -261,8 +219,8 @@
         }
 
         .app-bar {
-            margin-left: @gridWidth * 1;
-            margin-right: 0;
+            margin-left: @gridWidth /2;
+            margin-right: @gridWidth /2;
         }
         
     }
@@ -374,7 +332,7 @@
     .browser-bar .accounts {
       width: 0;
       text-overflow: clip;
-      padding-left: @gridWidth * 0.5;
+      padding-left: @gridWidth * 0.75;
     }    
 }
 

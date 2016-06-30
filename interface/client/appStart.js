@@ -33,15 +33,12 @@ mistInit = function(){
         });
     }
     
-    // wait for accounts and blocks to be initialized below
-    web3.eth.getAccounts(function(err, accounts) {
-        Tabs.upsert(_id: 'wallet', {
-            url: 'https://wallet.ethereum.org',
-            position: 1,
-            permissions: {
-                accounts: accounts
-            }
-        });
+    Tabs.upsert({_id: 'wallet'}, {
+        url: 'https://wallet.ethereum.org',
+        position: 1,
+        permissions: {
+            admin: true
+        }
     });
 
     EthAccounts.init();

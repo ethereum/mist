@@ -23,23 +23,25 @@ mistInit = function(){
         Tabs.remove({});
     }
 
-    if(!Tabs.findOne('browser')) {
-        console.debug('Insert tabs');
+    setInterval(function(){
+        if(!Tabs.findOne('browser')) {
+            console.debug('Insert tabs');
 
-        Tabs.insert({
-            _id: 'browser',
-            url: 'https://ethereum.org',
-            position: 0
-        });
-    }
-    
-    Tabs.upsert({_id: 'wallet'}, {
-        url: 'https://wallet.ethereum.org',
-        position: 1,
-        permissions: {
-            admin: true
+            Tabs.insert({
+                _id: 'browser',
+                url: 'https://ethereum.org',
+                position: 0
+            });
         }
-    });
+        
+        Tabs.upsert({_id: 'wallet'}, {
+            url: 'https://wallet.ethereum.org',
+            position: 1,
+            permissions: {
+                admin: true
+            }
+        });
+    }, 1000);
 
     EthAccounts.init();
     EthBlocks.init();

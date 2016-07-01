@@ -11,6 +11,7 @@ The browserBar template
 @constructor
 */
 
+
 Template['layout_browserBar'].onRendered(function(){
     var template = this;
 });

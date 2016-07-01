@@ -29,7 +29,7 @@ module.exports = function(windowId) {
 
     // send console logging to IPC backend
     ['trace', 'debug', 'info', 'warn', 'error', 'log'].forEach(function(method) {
-        console['orig_' + method] = console[method];
+        console['_' + method] = console[method];
         console[method] = (function(origMethod) {
             return function() {
                 let args = Array.from(arguments);
@@ -51,7 +51,7 @@ module.exports = function(windowId) {
                         JSON.stringify(args)
                     );                    
                 } catch (err) {
-                    console.orig_error('Unable to stringify arguments to log to backend', err.stack);
+                    console._warn('Unable to stringify arguments to log to backend', err.stack);
                 }
             };
         })(console[method]);

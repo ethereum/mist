@@ -43,6 +43,7 @@ mistInit = function(){
         });
     }, 1000);
 
+
     EthAccounts.init();
     EthBlocks.init();
 };

@@ -72,7 +72,7 @@ var menuTempl = function(webviews) {
                 type: 'separator'
             },
             {
-                label: 'Services',
+                label: i18n.t('mist.applicationMenu.app.services', {app: global.appName}),
                 role: 'services',
                 submenu: []
             },

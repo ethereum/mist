@@ -2,9 +2,10 @@
     "mist": {
         "applicationMenu": {
             "app": {
-                "checkForUpdates": "Check for updates...",
                 "label": "__app__",
                 "about": "About __app__",
+                "checkForUpdates": "Check for updates...",
+                "services": "Services",
                 "hide": "Hide __app__",
                 "hideOthers": "Hide Others",
                 "showAll": "Show All",
@@ -28,11 +29,15 @@
                     "de": "Deutsch",
                     "en": "English",
                     "es": "Español",
+                    "fa": "فارسى",
                     "fr": "Français",
+                    "it": "Italiano",
                     "ja": "日本語",
                     "ko": "한국어 ",
+                    "nl": "Nederlands",
                     "nb": "Norsk",
                     "pt": "Português",
+                    "sq": "Shqip",
                     "zh": "普通話",
                     "zh-TW": "國語"
                 }

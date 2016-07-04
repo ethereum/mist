@@ -163,6 +163,7 @@ app.on('before-quit', function(event){
 
 
 
+
 var mainWindow;
 var splashWindow;
 
@@ -197,6 +198,7 @@ app.on('ready', function() {
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
+                    nodeIntegration: true,
                     preload: __dirname +'/modules/preloader/mistUI.js',
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true

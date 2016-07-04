@@ -39,7 +39,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
-var electronVersion = '1.2.2';
+var electronVersion = '1.2.5';
 var gethVersion = '1.4.7';
 var nodeUrls = {
     'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/geth-OSX-2016061509421-1.4.7-667a386.zip',

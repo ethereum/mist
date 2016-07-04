@@ -7,7 +7,7 @@
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
-    "ci": "gulp wallet --platform=linux && gulp test-wallet",
+    "ci": "gulp --platform=linux",
     "postinstall": "gulp update-nodes"
   },
   "main": "main.js",

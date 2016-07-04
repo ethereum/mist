@@ -33,26 +33,63 @@ test['account balances'] = function*() {
 };
 
 
-test['create account'] = function*() {
+// test['create account'] = function*() {
+//   const web3 = this.web3;
+//   const client = this.client;
+
+//   const originalBalances = yield this.getRealAccountBalances();
+
+//   yield _createNewAccount.call(this);
+
+//   const realBalances = yield this.getRealAccountBalances();
+//   const appBalances = yield this.getUiAccountBalances();
+
+//   _.keys(realBalances).length.should.eql(_.keys(originalBalances).length + 1);
+//   appBalances.should.eql(realBalances);
+// };
+
+
+
+test['deposit into account'] = function*() {
   const web3 = this.web3;
   const client = this.client;
 
-  const originalBalances = yield this.getRealAccountBalances();
+  let accounts = web3.eth.accounts;
 
-  const existingHandles = (yield client.windowHandles()).value;
+  yield _createNewAccount.call(this);
 
-  yield client.click('button.create.account');
-  
-  yield this.waitUntil('new passwd window visible', function checkForAddWindow() {
-    return client.windowHandles().then((handles) => {
-      return handles.value.length === existingHandles.length + 1;
-    });
+  let newAccount = _.difference(web3.eth.accounts, accounts)[0];
+
+  yield this.openAccountInUi(newAccount);
+
+  // links
+  const accLinks = yield this.getUiElements('.dapp-actionbar li');
+  yield client.elementIdClick(accLinks[0].ELEMENT);
+
+  // fill in send form and submit
+  yield _completeSendForm.call(this, 1);
+
+  // do some mining
+  yield this.startMining();
+  yield Q.delay(10000);
+  yield this.stopMining();
+
+  // check balances
+  let realBalances = yield this.getRealAccountBalances();
+
+  realBalances[newAccount].should.eql(1);
+};
+
+
+
+
+const _createNewAccount = function*() {
+  const client = this.client;
+
+  // open password window
+  yield this.openAndFocusNewWindow(() => {
+    return client.click('button.create.account');
   });
-
-  const newHandles = (yield client.windowHandles()).value;
-
-  // focus on new window
-  yield client.window(newHandles.pop());
 
   // enter password
   yield client.setValue('form .password', '1234');
@@ -64,16 +101,25 @@ test['create account'] = function*() {
 
   yield Q.delay(10000);
 
-  /*
-  Check that new account got created
-   */
-
   yield client.window(this.mainWindowHandle);
-
-  const realBalances = yield this.getRealAccountBalances();
-  const appBalances = yield this.getUiAccountBalances();
-
-  _.keys(realBalances).length.should.eql(_.keys(originalBalances).length + 1);
-  appBalances.should.eql(realBalances);
 };
 
+
+
+const _completeSendForm = function*(amt) {
+  const client = this.client;
+
+  // enter password
+  yield client.setValue('form input[name=amount]', '' + amt);
+  
+  // open password window
+  yield this.openAndFocusNewWindow(() => {
+    return client.click('form button[type=submit]');
+  });
+
+  // fill in password and submit
+  yield client.setValue('form input[type=password]', '1234');
+  yield client.click('form button.ok');
+
+  yield Q.delay(5000);
+};

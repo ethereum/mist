@@ -148,7 +148,35 @@ const Utils = {
       msg, 
       500);
   },
-  execElemMethod: function*(clientElementIdMethod, selector) {
+  getUiElements: function*(selector) {
+    const elems = yield this.client.elements(selector);     
+
+    return elems.value;
+  },
+  getUiElement: function*(selector) {
+    const elem = yield this.client.element(selector);     
+
+    return elem.value;
+  },
+  openAndFocusNewWindow: function*(fnPromise) {
+    const client = this.client;
+
+    const existingHandles = (yield client.windowHandles()).value;
+
+    yield fnPromise();
+    
+    yield this.waitUntil('new window visible', function checkForAddWindow() {
+      return client.windowHandles().then((handles) => {
+        return handles.value.length === existingHandles.length + 1;
+      });
+    });
+
+    const newHandles = (yield client.windowHandles()).value;
+
+    // focus on new window
+    yield client.window(newHandles.pop());
+  },
+  execElemsMethod: function*(clientElementIdMethod, selector) {
     const elems = yield this.client.elements(selector);
 
     const values = yield elems.value.map(
@@ -156,6 +184,15 @@ const Utils = {
     );
 
     return values.map(r => r.value);
+  },
+  execElemMethod: function*(clientElementIdMethod, selector) {
+    const e = yield this.client.element(selector);
+
+    console.log(e);
+
+    const value = yield this.client[clientElementIdMethod](e.ELEMENT);
+
+    return value.value;
   },
   capturePage: function*() {
     let pageImage = yield this.app.browserWindow.capturePage();
@@ -180,14 +217,43 @@ const Utils = {
   },
   getUiAccountBalances: function*() {
     // check balances on the pgetUiAccountsBalancesage
-    let _accounts = yield this.execElemMethod('elementIdText', '.wallet-box .account-id');
-    let _balances = yield this.execElemMethod('elementIdText', '.wallet-box .account-balance');
+    let _accounts = yield this.execElemsMethod('elementIdText', '.wallet-box .account-id');
+    let _balances = yield this.execElemsMethod('elementIdText', '.wallet-box .account-balance');
 
     _accounts = _accounts.map(a => a.toLowerCase());
     _balances = _balances.map(b => parseInt(b));
 
     return _.object(_accounts, _balances);
-  }
+  },
+  openAccountInUi: function*(accId) {
+    let _accounts = yield this.execElemsMethod('elementIdText', '.wallet-box .account-id');
+
+    let idx = -1;
+
+    accId = accId.toLowerCase();
+
+    for (let i in _accounts) {
+      if (_accounts[i].toLowerCase() === accId) {
+        idx = i;
+      }
+    }
+
+    if (0 > idx) {
+      throw new Error('Unable to find account in UI');
+    }
+
+    const accLinks = yield this.client.elements('.wallet-box');
+
+    yield this.client.elementIdClick(accLinks.value[idx].ELEMENT);
+
+    yield Q.delay(1000);
+  },
+  startMining: function*() {
+    yield this.geth.consoleExec('miner.start();');
+  },
+  stopMining: function*() {
+    yield this.geth.consoleExec('miner.stop();');
+  },
 }
 
 

@@ -16,7 +16,7 @@
 							{{> dapp_identicon identity=address class="dapp-large"}}
 						</span>
 					{{else}}
-						<span class="user-icon is-empty"></span>
+						<span class="user-icon no-account"></span>
 					{{/each}}
 
 					{{#if dapp.icon}}
@@ -29,47 +29,27 @@
 				<span class="dapp-url">{{dappFriendlyURL}}</span>
 			</div>
 
-			<div class="cards-container active-{{TemplateVar.get 'currentActive'}}">
-				<div class="connect-card">
-					<p>
-						<strong>You are sharing your identity with <em>{{dapp.name}}</em>.</strong>
-					</p>
-					<p>
-						Accepting this will provide them proof that you own the
-						<strong class="simptip-position-top simptip-movable" data-tooltip="{{currentAccount}}">
-							{{accountNameOrAddress currentAccount}}
-						</strong>
-						<strong>
-						(<a class="switch-account">switch</a>)
-						</strong>
-						account at this time, and allow them to see any public information, including balances, connected to it.
-					</p>
-
-				</div>
-				<div class="switch-card">
-					<p>
-						<strong>Select the accounts to share with <em>{{dapp.name}}</em>.</strong>
-					</p>
-
-			    <ul class="dapp-account-list">
-						<li>
-							<button class="create-account">
-								<span class="dapp-identicon dapp-small create-account-icon"></span>
-								<h3>Create new account</h3>
-							</button>         
-						</li>
-						{{#each accounts}}
-							<li>
-								<button class="{{selected}}">
-									{{> dapp_identicon identity=address class="dapp-small"}}
-									<h3>{{name}}</h3>
-									<span>{{address}}</span>
-								</button>        
-							</li>
-						{{/each}}
-			    </ul>
-				</div>
-			</div>
+			<p>
+				You are sharing your identity with <strong>{{dapp.name}}</strong>. This allows the app to see any public information, including balances connected to it.
+			</p>
+	    
+			<ul class="dapp-account-list">
+				<li>
+					<button class="create-account">
+						<span class="dapp-identicon dapp-small create-account-icon"></span>
+						<h3>Create new account</h3>
+					</button>         
+				</li>
+				{{#each accounts}}
+					<li>
+						<button class="{{selected}}">
+							{{> dapp_identicon identity=address class="dapp-small"}}
+							<h3>{{name}}</h3>
+							<span>{{address}}</span>
+						</button>
+					</li>
+				{{/each}}
+			</ul>
 
 			<div class="checkbox-container">
 				<input type="checkbox" id="pin-to-sidebar" checked> 

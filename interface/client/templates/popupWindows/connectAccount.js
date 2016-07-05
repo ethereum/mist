@@ -1,9 +1,34 @@
 
 
 var pinToSidebar = function() {
-    
+    var webview = $('webview[data-id="browser"]')[0];
+
+    if(webview) {
+        var id = Tabs.insert({
+            url: webview.getURL(),
+            name: webview.getTitle(),
+            menu: {},
+            menuVisible: false,
+            position: Tabs.find().count() + 1
+        });
+
+        // move the current browser tab to the last visited page
+        var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
+        Tabs.update('browser', {
+            url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
+            redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
+        });
+
+        LocalStore.set('selectedTab', id);
+    }
 };
 
+var updateSelectedTabAccounts = function(accounts){
+    var tabId = LocalStore.get('selectedTab');
+    Tabs.update(tabId, {$set: {
+        'permissions.accounts': accounts
+    }});
+};
 
 Template['popupWindows_connectAccount'].onCreated(function() {
 
@@ -12,9 +37,6 @@ Template['popupWindows_connectAccount'].onCreated(function() {
     this.autorun(function(){
         var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}});
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
-
-        console.info('accounts', accounts);
-        console.info(typeof accounts);
         TemplateVar.set('accounts', accounts);
     });
 });
@@ -57,9 +79,8 @@ Template['popupWindows_connectAccount'].helpers({
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
     },
 
-    'accountList': function() {
+    'selectedAccounts': function() {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
-
         return _.intersection(accounts, TemplateVar.get('accounts'));
     },
     /**
@@ -91,23 +112,23 @@ Template['popupWindows_connectAccount'].events({
         TemplateVar.set(template, 'accounts', accounts);
     },
 
-	'click .cancel': function(){
+	'click .cancel': function(e) {
 		ipc.send('backendAction_closePopupWindow');
 	},
 
-    'click .stay-anonymous': function() {
+    'click .stay-anonymous': function(e) {
+        e.preventDefault();
+
         var tabId = LocalStore.get('selectedTab');
 
         // removes permissions
-        Tabs.update(tabId, {$set: {
-            'permissions.accounts': []
-        }});
+        updateSelectedTabAccounts([]);
 
         // reload the webview
-        console.info(LocalStore.get('selectedTab'));
-        console.log(typeof Helpers.getWebview(tabId));
-        console.info(Helpers.getWebview(tabId));
-        Helpers.getWebview(tabId).reload();
+        // ipc.send('backendAction_sendToOwner', null, 'reload');
+        // ipc.send('uiAction_reloadSelectedTab');
+        ipc.send('backendAction_reloadSelectedTab');
+        ipc.send('backendAction_closePopupWindow');
     },
     /**
     Confirm or cancel the accounts available for this dapp and reload the dapp.
@@ -115,20 +136,25 @@ Template['popupWindows_connectAccount'].events({
     @event click button.confirm, click button.cancel
     */
     'click .ok': function(e) {
+        e.preventDefault();
+
         var tabId = LocalStore.get('selectedTab'),
-            accounts = ($(e.currentTarget).hasClass('confirm')) ? TemplateVar.get('accounts') : [],
-            tab = Tabs.findOne(tabId, {fields: {'permissions.accounts': 1}});
+            accounts = ($(e.currentTarget).hasClass('confirm')) ? TemplateVar.get('accounts') : [];
 
         // set new permissions
         Tabs.update(tabId, {$set: {
             'permissions.accounts': accounts
         }});
 
-        // reload the webview
-        Helpers.getWebview(tabId).reload();
+        // Pin to sidebar, if needed
+        if ($('#pin-to-sidebar')[0].checked) {
+            // pinToSidebar();
+        }
 
-        // hide the sidebar
-        $('.app-bar').removeClass('show-bar');
+        // reload the webview
+        ipc.send('backendAction_reloadSelectedTab');
+        // ipc.send('uiAction_reloadSelectedTab');
+        ipc.send('backendAction_closePopupWindow');
     },
 
     /**
@@ -137,20 +163,22 @@ Template['popupWindows_connectAccount'].events({
     @event click button.create-account
     */
     'click button.create-account': function(e, template){
-        mist.requestAccount(function(e, address){
-            console.debug('Got new account', address);
+        ipc.send('mistAPI_createAccount');
+        // mist.requestAccount(function(e, address){
+        //     console.debug('Got new account', address);
 
-            var tabId = LocalStore.get('selectedTab'),
-            accounts = TemplateVar.get(template, 'accounts');
+        //     var tabId = LocalStore.get('selectedTab'),
+        //     accounts = TemplateVar.get(template, 'accounts');
 
-            accounts.push(address);
+        //     accounts.push(address);
 
-            TemplateVar.set(template, 'accounts', accounts);
+        //     TemplateVar.set(template, 'accounts', accounts);
 
-            // set new permissions
-            Tabs.update(tabId, {$set: {
-                'permissions.accounts': accounts
-            }});
-        });
+        //     updateSelectedTabAccounts(tabId, accounts);
+        //     // set new permissions
+        //     Tabs.update(tabId, {$set: {
+        //         'permissions.accounts': accounts
+        //     }});
+        // });
     },
 });

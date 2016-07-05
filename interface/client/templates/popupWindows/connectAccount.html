@@ -3,17 +3,17 @@
 		<form action="#">
 			<div class="account-dapp-user-container">
 				<span class="account-address">
-					{{#if currentAccount}}
-						{{currentAccount}}
+					{{#if selectedAccounts}}
+						{{selectedAccounts.[0]}}
 					{{else}}
 						Choose account
 					{{/if}}
 				</span>
 
 				<div class="account-dapp-user">
-					{{#each accounts}}
+					{{#each selectedAccounts}}
 						<span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
-							{{> dapp_identicon identity=address class="dapp-large"}}
+							{{> dapp_identicon identity=this class="dapp-large"}}
 						</span>
 					{{else}}
 						<span class="user-icon no-account"></span>

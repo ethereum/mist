@@ -1,22 +1,22 @@
 @-webkit-keyframes slideInLeft {
 	from {
-		-webkit-transform: translate3d(-100%, 0, 0);
-		transform: translate3d(-50%, 0, 0);
+		transform: translate3d(50%, 0, 0) rotate(45deg);
+		opacity: 0;
 	}
 	to {
-		-webkit-transform: none;
-		transform: none;
+		transform: translate3d(0, 0, 0);
+		opacity: 1;
 	}
 }
 
 @-webkit-keyframes slideInRight {
 	from {
-		-webkit-transform: translate3d(100%, 0, 0);
-		transform: translate3d(50%, 0, 0);
+		transform: translate3d(-50%, 0, 0) rotate(-45deg);
+		opacity: 0;
 	}
 	to {
-		-webkit-transform: none;
 		transform: none;
+		opacity: 1;
 	}
 }
 
@@ -213,7 +213,7 @@
 			flex: 0 64px;
 		}
 		.account-dapp-user {
-			margin: 0 10px;
+			margin: 0 5px;
 			position: relative;
 			width: 120px;
 			height: 64px;
@@ -246,12 +246,18 @@
 			.simptip-position-left {
 				z-index: 2;
 				left: 0;
-				animation: .9s cubic-bezier(0, 0, 0.13, 1) slideInRight;
+				animation: .7s cubic-bezier(0, 0, 0.13, 1) slideInLeft;
+				&:first-child {left: 0px;}
+				&:nth-of-type(2) { left: 5px; }
+				&:nth-of-type(3) { left: 10px; }
+				&:nth-of-type(4) { left: 15px; }
+				&:nth-of-type(5) { left: 20px; }
+				&:nth-of-type(6) { left: 25px; }
 			}
 			.app-icon {
 				z-index: 1;
 				left: 55px;
-				animation: .9s cubic-bezier(0, 0, 0.13, 1) slideInLeft;
+				animation: .7s cubic-bezier(0, 0, 0.13, 1) slideInRight;
 			}
 		}
 		.dapp-account-list {
@@ -262,7 +268,7 @@
 			margin: 0;
 			&::after {
 				position: absolute;
-				content: '';
+				// content: '';
 				display: block;
 				bottom: 0;
 				width: 100%;

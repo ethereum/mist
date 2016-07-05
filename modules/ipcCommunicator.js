@@ -57,6 +57,7 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 });
 
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
+    console.log('IPC backendAction_sendToOwner: ', arguments);
     var windowId = e.sender.getId(),
         senderWindow = Windows.getById(windowId);
 
@@ -139,9 +140,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
 
 
-
-// MIST API
-ipc.on('mistAPI_requestAccount', function(e){
+var createAccountPopup = function(e){
     Windows.createPopup('requestAccount', {
         ownerId: e.sender.getId(),
         electronOptions: {
@@ -150,24 +149,29 @@ ipc.on('mistAPI_requestAccount', function(e){
             alwaysOnTop: true,
         },
     });
+};
+
+// MIST API
+ipc.on('mistAPI_createAccount', createAccountPopup);
+
+ipc.on('mistAPI_requestAccount', function(e) {
+    if (global.mode == 'wallet') {
+        createAccountPopup(e);
+    }
+    // Mist
+    else {
+        Windows.createPopup('connectAccount', {
+            ownerId: e.sender.getId(),
+            electronOptions: {
+                width: 460,
+                height: 550,
+                maximizable: false,
+                minimizable: false,
+                alwaysOnTop: false,
+            },
+        });
+    }
 });
-
-
-ipc.on('uiAction_connectAccountPopupWindow', function(e) {
-    Windows.createPopup('connectAccount', {
-        ownerId: e.sender.getId(),
-        electronOptions: {
-            width: 460,
-            height: 460,
-            maximizable: false,
-            minimizable: false,
-            // alwaysOnTop: true,
-        },
-    });
-});
-
-
-
 
 const uiLoggers = {};
 
@@ -185,6 +189,10 @@ ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
     } catch (err) {
         log.error(err);
     }
+});
+
+ipc.on('backendAction_reloadSelectedTab', function(event) {
+    event.sender.send('uiAction_reloadSelectedTab');
 });
 
 

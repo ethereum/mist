@@ -153,7 +153,7 @@ Template['layout_browserBar'].events({
     */
     'click .app-bar > button.accounts': function(e, template) {
         console.log('Connect account popup');
-        ipc.send('uiAction_connectAccountPopupWindow');
+        ipc.send('mistAPI_requestAccount');
     },
     /* 
     Hide the app bar on input blur

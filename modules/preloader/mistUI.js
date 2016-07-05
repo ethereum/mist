@@ -55,11 +55,15 @@ delete window.Web3;
 
 // A message will be send to a webview/window
 ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
-
+    console.log('mistUI_windowMessage: ', arguments);
     if(type === 'requestAccount' && !error) {
         Tabs.update({webviewId: id}, {$addToSet: {
             'permissions.accounts': value
-        }})
+        }});
+    } 
+    else if(type === 'connectAccount' && value === 'reload' && !error){
+        var tabId = LocalStore.get('selectedTab');
+        Helpers.getWebview(tabId).reload();
     }
 });
 

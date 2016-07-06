@@ -2,7 +2,7 @@
 @module preloader wallet
 */
 
-require('./consoleLogCapture')('wallet');
+require('./include/common')('wallet');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 const mist = require('../mistAPI.js');
@@ -12,7 +12,7 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 require('../openExternal.js');
 
-require('./setBasePath')('interface/wallet');
+require('./include/setBasePath')('interface/wallet');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

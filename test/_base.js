@@ -33,22 +33,6 @@ exports.mocha = function(_module, options) {
       this.assert = chai.assert;
       this.expect = chai.expect;
 
-      this.geth = gethPrivate({
-        balance: 5,
-        genesisBlock: {
-          difficulty: '0x1',
-          extraData: '0x1',
-        },
-        gethOptions: {
-          port: 58546,
-          rpcport: 58545,
-        },
-      });
-
-      yield this.geth.start();
-
-      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:58545"));
-
       const logFilePath = path.join(__dirname, 'mist.log');
       shell.rm('-rf', logFilePath);
 
@@ -56,7 +40,7 @@ exports.mocha = function(_module, options) {
         appVers = packageJson.version.replace(/\./ig, '-'),
         platformArch = `${process.platform}-${process.arch}`;
 
-      let appPath;
+      let appPath, gethPath;
 
       switch (platformArch) {
         case 'darwin-x64':
@@ -86,6 +70,24 @@ exports.mocha = function(_module, options) {
       if (!shell.test('-f', appPath)) {
         throw new Error('Cannot find binary: ' + appPath);
       }
+
+      this.geth = gethPrivate({
+        gethPath: path.join(process.cwd(), 'nodes', 'geth', platformArch, 'geth'),
+        balance: 5,
+        genesisBlock: {
+          difficulty: '0x1',
+          extraData: '0x1',
+        },
+        gethOptions: {
+          port: 58546,
+          rpcport: 58545,
+        },
+      });
+
+      yield this.geth.start();
+
+      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:58545"));
+
 
       this.app = new Application({
         requireName: 'electronRequire',

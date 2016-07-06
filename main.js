@@ -21,6 +21,7 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 
+
 const Settings = require('./modules/settings');
 Settings.init();
 
@@ -37,6 +38,10 @@ if (Settings.cli.ignoreGpuBlacklist) {
 
 // logging setup
 const log = logger.create('main');
+
+if (Settings.inTestMode) {
+    log.info('TEST MODE');
+}
 
 // GLOBAL Variables
 global.path = {
@@ -129,27 +134,34 @@ app.on('open-url', function (e, url) {
 });
 
 
-var killedSockets = false;
+var killedSocketsAndNodes = false;
 
 app.on('before-quit', function(event){
-    if(!killedSockets) {
+    if(!killedSocketsAndNodes) {
+        log.info('Defer quitting until sockets and node are shut down');
+
         event.preventDefault();
+
+        // sockets manager
+        Sockets.destroyAll()
+            .catch((err) => {
+                log.error('Error shutting down sockets');
+            });
+
+        // delay quit, so the sockets can close
+        setTimeout(function(){
+            ethereumNode.stop().then(function() {
+                killedSocketsAndNodes = true;
+
+                app.quit(); 
+            });
+        }, 500);
+    } else {
+        log.info('About to quit...');
     }
-
-    // sockets manager
-    Sockets.destroyAll()
-        .catch((err) => {
-            log.error('Error shutting down sockets');
-        });
-
-    // delay quit, so the sockets can close
-    setTimeout(function(){
-        ethereumNode.stop().then(function() {
-            killedSockets = true;
-            app.quit(); 
-        });
-    }, 500);
 });
+
+
 
 
 var mainWindow;
@@ -163,7 +175,9 @@ app.on('ready', function() {
     Windows.init();
 
     // check for update
-    require('./modules/updateChecker').run();
+    if (!Settings.inTestMode) {
+        require('./modules/updateChecker').run();
+    }
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
@@ -210,22 +224,24 @@ app.on('ready', function() {
         });
     }
 
-    splashWindow = Windows.create('splash', {
-        primary: true,
-        url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
-        show: true,
-        electronOptions: {
-            width: 400,
-            height: 230,
-            resizable: false,
-            backgroundColor: '#F6F6F6',
-            useContentSize: true,
-            frame: false,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/splashScreen.js',
+    if (!Settings.inTestMode) {
+        splashWindow = Windows.create('splash', {
+            primary: true,
+            url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
+            show: true,
+            electronOptions: {
+                width: 400,
+                height: 230,
+                resizable: false,
+                backgroundColor: '#F6F6F6',
+                useContentSize: true,
+                frame: false,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/splashScreen.js',
+                }
             }
-        }
-    });
+        });
+    }
 
     // check time sync
     // var ntpClient = require('ntp-client');
@@ -248,7 +264,7 @@ app.on('ready', function() {
     });
 
 
-    splashWindow.on('ready', function() {
+    const kickStart = function() {
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
             Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
@@ -353,15 +369,21 @@ app.on('ready', function() {
                             resolve();
                         });
 
-                        splashWindow.hide();
+                        if (splashWindow) {
+                            splashWindow.hide();
+                        }
                     });
                 }
             })
             .then(function doSync() {
                 // we're going to do the sync - so show splash
-                splashWindow.show();
+                if (splashWindow) {
+                    splashWindow.show();
+                }
 
-                return syncResultPromise;
+                if (!Settings.inTestMode) {
+                    return syncResultPromise;
+                }
             })
             .then(function allDone() {
                 startMainWindow();
@@ -370,7 +392,14 @@ app.on('ready', function() {
                 log.error('Error starting up node and/or syncing', err);
             }); /* socket connected to geth */;
 
-    }); /* on splash screen loaded */
+    }; /* kick start */
+
+
+    if (splashWindow) {
+        splashWindow.on('ready', kickStart);
+    } else {
+        kickStart();
+    }
 
 }); /* on app ready */
 
@@ -385,7 +414,9 @@ var startMainWindow = function() {
     log.info('Loading Interface at '+ global.interfaceAppUrl);
 
     mainWindow.on('ready', function() {
-        splashWindow.close();
+        if (splashWindow) {
+            splashWindow.close();
+        }
 
         mainWindow.show();
     });

@@ -14,6 +14,8 @@ try {
 
 
 
+
+
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] -- [Node options]')
     .option({
@@ -121,11 +123,13 @@ const argv = require('yargs')
     .parse(process.argv.slice(1));
 
 
+
 argv.nodeOptions = [];
 
-for (let optIdx in argv._) {
-    if ('-' === argv._[optIdx].charAt(0)) {
-        argv.nodeOptions = argv._.slice(optIdx);
+for (let optIdx in argv) {
+    if (0 === optIdx.indexOf('node-')) {
+        argv.nodeOptions.push('--' + optIdx.substr(5));
+        argv.nodeOptions.push(argv[optIdx]);
 
         break;
     }
@@ -166,6 +170,10 @@ class Settings {
 
   get inProductionMode () {
     return defaultConfig.production;
+  }
+
+  get inTestMode () {
+    return !!process.env.TEST_MODE;
   }
 
   get gethPath () {

@@ -32,8 +32,8 @@ ecmascript-runtime@0.2.10
 ejson@1.0.11
 ethereum:accounts@0.3.10
 ethereum:blocks@0.3.1
-ethereum:dapp-styles@0.5.1
-ethereum:elements@0.7.0
+ethereum:dapp-styles@0.5.5
+ethereum:elements@0.7.1
 ethereum:tools@0.5.2
 ethereum:web3@0.15.3
 fastclick@1.0.11
@@ -90,7 +90,7 @@ spacebars-compiler@1.0.11
 standard-minifier-css@1.0.6
 standard-minifier-js@1.0.6
 standard-minifiers@1.0.6
-tap:i18n@1.8.0
+tap:i18n@1.8.2
 tap:i18n-bundler@0.3.0
 templating@1.1.9
 templating-tools@1.0.4

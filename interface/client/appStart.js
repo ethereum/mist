@@ -7,7 +7,7 @@ if(location.hash)
 
 // set browser as default tab
 if(!LocalStore.get('selectedTab'))
-    LocalStore.set('selectedTab', 'browser');
+    LocalStore.set('selectedTab', 'wallet');
 
 /**
 The init function of Mist
@@ -32,7 +32,7 @@ mistInit = function(){
             position: 0
         });
     }
-    
+
     Tabs.upsert({_id: 'wallet'}, {
         url: 'https://wallet.ethereum.org',
         position: 1,

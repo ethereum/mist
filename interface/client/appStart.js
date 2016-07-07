@@ -33,15 +33,13 @@ mistInit = function(){
         });
     }
 
-    if(!Tabs.findOne('wallet')) {
-        Tabs.upsert({_id: 'wallet'}, {
-            url: 'https://wallet.ethereum.org',
-            position: 1,
-            permissions: {
-                admin: true
-            }
-        });
-    }
+    Tabs.upsert({_id: 'wallet'}, {
+        url: 'https://wallet.ethereum.org',
+        position: 1,
+        permissions: {
+            admin: true
+        }
+    });
 
     EthAccounts.init();
     EthBlocks.init();

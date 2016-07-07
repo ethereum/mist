@@ -501,8 +501,8 @@ gulp.task('taskQueue', [
     'create-binaries',
     'change-files',
     //'cleanup-files',
-    'rename-folders',
-    // 'zip'
+    'rename-folders'
+    // 'zip',
 ]);
 
 // DOWNLOAD nodes

@@ -81,6 +81,7 @@ module.exports = function(isWallet) {
                 if(!this.callbacks['requestAccount'])
                     this.callbacks['requestAccount'] = [];
                 this.callbacks['requestAccount'].push(callback);
+                console.log('mistAPI callbacks', this.callbacks);
             }
 
             ipc.send('mistAPI_requestAccount');

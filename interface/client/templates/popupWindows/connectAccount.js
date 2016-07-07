@@ -58,9 +58,10 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dappFriendlyURL)
     */
     dappFriendlyURL: function(){
-        return Tabs.findOne(LocalStore.get('selectedTab')).url.
-        replace(/^https?:\/\/(www\.)?/, '').
-        replace(/\/$/, '');
+        return Tabs.findOne(LocalStore.get('selectedTab'))
+        // .url.
+        // replace(/^https?:\/\/(www\.)?/, '').
+        // replace(/\/$/, '');
     },
 
     currentAccount: function(){
@@ -125,9 +126,8 @@ Template['popupWindows_connectAccount'].events({
         updateSelectedTabAccounts([]);
 
         // reload the webview
-        // ipc.send('backendAction_sendToOwner', null, 'reload');
-        // ipc.send('uiAction_reloadSelectedTab');
-        ipc.send('backendAction_reloadSelectedTab');
+        // ipc.send('backendAction_reloadSelectedTab');
+        ipc.send('backendAction_sendToOwner', null, null);
         ipc.send('backendAction_closePopupWindow');
     },
     /**
@@ -139,7 +139,7 @@ Template['popupWindows_connectAccount'].events({
         e.preventDefault();
 
         var tabId = LocalStore.get('selectedTab'),
-            accounts = ($(e.currentTarget).hasClass('confirm')) ? TemplateVar.get('accounts') : [];
+            accounts = TemplateVar.get('accounts');
 
         // set new permissions
         Tabs.update(tabId, {$set: {
@@ -152,8 +152,9 @@ Template['popupWindows_connectAccount'].events({
         }
 
         // reload the webview
-        ipc.send('backendAction_reloadSelectedTab');
+        // ipc.send('backendAction_reloadSelectedTab');
         // ipc.send('uiAction_reloadSelectedTab');
+        ipc.send('backendAction_sendToOwner', null, null);
         ipc.send('backendAction_closePopupWindow');
     },
 

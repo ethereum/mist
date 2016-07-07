@@ -153,7 +153,12 @@ Template['layout_browserBar'].events({
     */
     'click .app-bar > button.accounts': function(e, template) {
         console.log('Connect account popup');
-        ipc.send('mistAPI_requestAccount');
+        // ipc.send('mistAPI_requestAccount');
+        mist.requestAccount(function(e, address){
+            console.log('Connect account ', address);
+            var tabId = LocalStore.get('selectedTab');
+            Helpers.getWebview(tabId).reload();
+        });
     },
     /* 
     Hide the app bar on input blur

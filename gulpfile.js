@@ -502,7 +502,7 @@ gulp.task('taskQueue', [
     'change-files',
     //'cleanup-files',
     'rename-folders',
-    // 'zip'
+    // 'zip',
 ]);
 
 // DOWNLOAD nodes

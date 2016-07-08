@@ -8,8 +8,6 @@ const remote = electron.remote;
 const ipc = electron.ipcRenderer;
 
 module.exports = function(isWallet) {
-
-
     var queue = [];
     var prefix = 'entry_';
 

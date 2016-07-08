@@ -54,11 +54,10 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dappFriendlyURL)
     */
     dappFriendlyURL: function(){
-        return Tabs.findOne(LocalStore.get('selectedTab')).url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
-    },
-
-    currentAccount: function(){
-        return TemplateVar.get('accounts')[0];
+        var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
+        if (currentTab.url){
+            return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+        }
     },
     /**
     Return the number of accounts this tab has permission for.

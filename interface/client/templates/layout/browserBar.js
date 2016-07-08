@@ -26,28 +26,19 @@ Template['layout_browserBar'].helpers({
     'breadcrumb': function(){
         if(!this || !this.url)
             return;
-
-        var pattern  = /([^\:]*)\:\/\/([^\/]*)\/([^\?\.]*)/;
-        var search = this.url.match(pattern);
-
-        if(!search)
+        try {
+            var url = new URL(this.url);
+        }
+        catch(e){
             return;
-
-        var urlObject = {
-            url: search[0],
-            protocol: search[1],
-            domain: search[2],
-            folders: search[3].replace(/\/$/g, '').split("/"),
-        };
-
-        urlObject.folders = _.reject(urlObject.folders, function(el) {
-        	return el == '';
+        }
+        var pathname = _.reject(url.pathname.replace(/\/$/g, '').split("/"), function(el) {
+            return el == '';
         });
-
-        var breadcrumb = _.flatten(["<span>" + urlObject.domain + " </span>", urlObject.folders]).join(" ▸ ");
-
+        var breadcrumb = _.flatten(["<span>" + url.host + " </span>", pathname]).join(" ▸ ");
         return new Spacebars.SafeString(breadcrumb);
     },
+
     /**
     Returns the current dapp
 

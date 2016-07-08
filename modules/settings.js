@@ -152,6 +152,10 @@ class Settings {
     this._log = logger.create('Settings');    
   }
 
+  get userDataPath() {
+    return global.path.USERDATA;
+  }
+
   get cli () {
     return argv;
   }

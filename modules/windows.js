@@ -107,7 +107,7 @@ class Window extends EventEmitter {
     }
 
     send () {
-        if (!this.isContentReady) { 
+        if (this.isClosed || !this.isContentReady) { 
             return;
         }
 

@@ -57,7 +57,6 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
 });
 
 ipc.on('backendAction_sendToOwner', function(e, error, value) {
-    console.log('IPC backendAction_sendToOwner: ', arguments);
     var windowId = e.sender.getId(),
         senderWindow = Windows.getById(windowId);
 
@@ -167,7 +166,7 @@ ipc.on('mistAPI_requestAccount', function(e) {
                 height: 550,
                 maximizable: false,
                 minimizable: false,
-                alwaysOnTop: false,
+                alwaysOnTop: true,
             },
         });
     }

@@ -152,11 +152,14 @@ Template['layout_browserBar'].events({
     @event click .app-bar > button.accounts'
     */
     'click .app-bar > button.accounts': function(e, template) {
-        console.log('Connect account popup');
-        // ipc.send('mistAPI_requestAccount');
-        mist.requestAccount(function(e, address){
-            console.log('Connect account ', address);
+        mist.requestAccount(function(e, addresses){
             var tabId = LocalStore.get('selectedTab');
+
+            // set new permissions
+            Tabs.update(tabId, {$set: {
+                'permissions.accounts': addresses
+            }});
+
             Helpers.getWebview(tabId).reload();
         });
     },

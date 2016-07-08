@@ -31,9 +31,6 @@ var updateSelectedTabAccounts = function(accounts){
 };
 
 Template['popupWindows_connectAccount'].onCreated(function() {
-
-    TemplateVar.set('currentActive', 'connect');
-
     this.autorun(function(){
         var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}});
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
@@ -51,23 +48,18 @@ Template['popupWindows_connectAccount'].helpers({
     dapp: function(){
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
-
     /**
     Returns a cleaner version of URL
 
     @method (dappFriendlyURL)
     */
     dappFriendlyURL: function(){
-        return Tabs.findOne(LocalStore.get('selectedTab'))
-        // .url.
-        // replace(/^https?:\/\/(www\.)?/, '').
-        // replace(/\/$/, '');
+        return Tabs.findOne(LocalStore.get('selectedTab')).url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
     },
 
     currentAccount: function(){
         return TemplateVar.get('accounts')[0];
     },
-
     /**
     Return the number of accounts this tab has permission for.
 
@@ -79,7 +71,12 @@ Template['popupWindows_connectAccount'].helpers({
 
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
     },
+    /**
+    Return an array with the selected accounts.
 
+    @method selectedAccounts
+    @return {Array}
+    */
     'selectedAccounts': function() {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
         return _.intersection(accounts, TemplateVar.get('accounts'));
@@ -92,15 +89,15 @@ Template['popupWindows_connectAccount'].helpers({
     */
     'selected': function(){
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
-        // return hasPermission(this.address) ? 'selected' : '';
     },
 });
 
 Template['popupWindows_connectAccount'].events({
-    'click .switch-account': function(){
-        TemplateVar.set('currentActive', 'switch');
-    },
+    /**
+    Toggles dapp account list selection.
 
+    @event click .dapp-account-list button
+    */
     'click .dapp-account-list button': function(e, template) {
         e.preventDefault();
         var accounts = TemplateVar.get('accounts');
@@ -112,22 +109,28 @@ Template['popupWindows_connectAccount'].events({
 
         TemplateVar.set(template, 'accounts', accounts);
     },
+    /** 
+    Closes the popup.
 
+    @event click .cancel
+    */
 	'click .cancel': function(e) {
 		ipc.send('backendAction_closePopupWindow');
 	},
+    /**
+    Stay Anonymous. Unassign all accounts for current tab.
 
+    @event click .stay-anonymous
+    */
     'click .stay-anonymous': function(e) {
         e.preventDefault();
 
         var tabId = LocalStore.get('selectedTab');
 
-        // removes permissions
         updateSelectedTabAccounts([]);
 
         // reload the webview
-        // ipc.send('backendAction_reloadSelectedTab');
-        ipc.send('backendAction_sendToOwner', null, null);
+        ipc.send('backendAction_sendToOwner');
         ipc.send('backendAction_closePopupWindow');
     },
     /**
@@ -138,26 +141,17 @@ Template['popupWindows_connectAccount'].events({
     'click .ok': function(e) {
         e.preventDefault();
 
-        var tabId = LocalStore.get('selectedTab'),
-            accounts = TemplateVar.get('accounts');
-
-        // set new permissions
-        Tabs.update(tabId, {$set: {
-            'permissions.accounts': accounts
-        }});
-
+        var accounts = TemplateVar.get('accounts');
+        
         // Pin to sidebar, if needed
         if ($('#pin-to-sidebar')[0].checked) {
             // pinToSidebar();
         }
 
         // reload the webview
-        // ipc.send('backendAction_reloadSelectedTab');
-        // ipc.send('uiAction_reloadSelectedTab');
-        ipc.send('backendAction_sendToOwner', null, null);
+        ipc.send('backendAction_sendToOwner', null, accounts);
         ipc.send('backendAction_closePopupWindow');
     },
-
     /**
     Create account
 
@@ -165,21 +159,5 @@ Template['popupWindows_connectAccount'].events({
     */
     'click button.create-account': function(e, template){
         ipc.send('mistAPI_createAccount');
-        // mist.requestAccount(function(e, address){
-        //     console.debug('Got new account', address);
-
-        //     var tabId = LocalStore.get('selectedTab'),
-        //     accounts = TemplateVar.get(template, 'accounts');
-
-        //     accounts.push(address);
-
-        //     TemplateVar.set(template, 'accounts', accounts);
-
-        //     updateSelectedTabAccounts(tabId, accounts);
-        //     // set new permissions
-        //     Tabs.update(tabId, {$set: {
-        //         'permissions.accounts': accounts
-        //     }});
-        // });
     },
 });

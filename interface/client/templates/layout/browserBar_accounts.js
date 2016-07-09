@@ -62,6 +62,17 @@ Template['layout_browserBar_accounts'].helpers({
         // return (tab &&
         //     tab.permissions &&
         //     tab.permissions.accounts) ? tab.permissions.accounts.length : 0;
+    },
+    /**
+    Return the name of the current tab.
+
+    @method appName
+    @return {String}
+    */
+    'appName': function(){
+        var tabId = LocalStore.get('selectedTab'),
+            tab = Tabs.findOne(tabId);
+        return tab.name || 'This app';
     }
 });
 

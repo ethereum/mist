@@ -201,7 +201,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Vent noen sekunder til noden er fullt i gang og prøv igjen",
                     "unknownFile": "Fil ikke gjenkjent.",
-                    "passwordError": "Feil passord.",
+                    "wrongPassword": "Feil passord.",
                     "importFailed": "Kunne ikke importere filen, fikk: __error__"
                 }
             }

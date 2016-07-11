@@ -5,7 +5,7 @@ const got = require('got');
 const semver = require('semver');
 const Windows = require('./windows');
 const log = require('./utils/logger').create('updateChecker');
-
+const Settings = require('./settings');
 
 
 /**
@@ -17,7 +17,7 @@ const check = exports.check = function() {
 
     let str = null;
 
-    switch (global.mode) {
+    switch (Settings.uiMode) {
         case 'mist':
             str = 'mist';
             break;
@@ -46,8 +46,8 @@ const check = exports.check = function() {
 
         let latest = releases[0];
 
-        if (semver.gt(latest.tag_name, global.version)) {
-            log.info(`App (v${global.version}) is out of date. New v${latest.tag_name} found.`);
+        if (semver.gt(latest.tag_name, Settings.appVersion)) {
+            log.info(`App (v${Settings.appVersion}) is out of date. New v${latest.tag_name} found.`);
 
             return {
                 name: latest.name,

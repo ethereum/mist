@@ -10,7 +10,7 @@
 Tabs = new Mongo.Collection('tabs', {connection: null});
 
 if (typeof syncMinimongo !== 'undefined')
-    syncMinimongo(Tabs);
+    syncMinimongo.frontendSync(Tabs);
 
 
 // Contains the address book

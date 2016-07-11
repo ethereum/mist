@@ -112,9 +112,9 @@ class IpcProviderBackend {
                     log.trace('Notification received', ownerId, data);
 
                     if (data.error) {
-                        data = this._makeErrorResponsePayload({}, data);
+                        data = this._makeErrorResponsePayload(data, data);
                     } else {
-                        data = this._makeResponsePayload({}, data);
+                        data = this._makeResponsePayload(data, data);
                     }
 
                     owner.send('ipcProvider-data', JSON.stringify(data));
@@ -382,8 +382,10 @@ class IpcProviderBackend {
                 });
             }
 
-            delete ret.params;
-            delete ret.method;
+            if(item.id) {
+                delete ret.params;
+                delete ret.method;
+            }
 
             ret.jsonrpc = '2.0';
 

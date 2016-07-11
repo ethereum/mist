@@ -1,7 +1,7 @@
 /**
 @module preloader browser
 */
-require('./consoleLogCapture')('browser');
+require('./include/common')('browser');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 const shell = electron.shell;
@@ -13,7 +13,7 @@ var Web3 = require('web3');
 require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

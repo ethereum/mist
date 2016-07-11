@@ -2,13 +2,13 @@
 @module preloader PopupWindows
 */
 
-require('./consoleLogCapture')('popup-no-web3');
+require('./include/common')('popup-no-web3');
 const electron = require('electron');
 const mist = require('../mistAPI.js');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 
-require('./setBasePath')('interface');
+require('./include/setBasePath')('interface');
 
 // register with window manager
 ipc.send('backendAction_setWindowId');

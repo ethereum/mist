@@ -125,8 +125,15 @@ To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
+<<<<<<< HEAD
 $ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
+=======
+$ electron . --ipcpath ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
+>>>>>>> develop
 ```
+
+_NOTE: since `ipcpath` is also a Mist option you do not need to also include a 
+`--node-ipcpath` option._
 
 You can also run `geth` separately yourself with the same options prior to start 
 Mist normally.
@@ -140,12 +147,7 @@ To create a binaries you need to install the following tools:
     // tools for the windows binaries
     $ brew install Caskroom/cask/xquartz
     $ brew install wine
-
-    // install meteor-build-client
     $ npm install -g meteor-build-client
-
-    // install gulp
-    $ npm install -g gulp
 
 To generate the binaries simply run:
 

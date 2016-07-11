@@ -7,7 +7,7 @@ if(location.hash)
 
 // set browser as default tab
 if(!LocalStore.get('selectedTab'))
-    LocalStore.set('selectedTab', 'browser');
+    LocalStore.set('selectedTab', 'wallet');
 
 /**
 The init function of Mist
@@ -31,19 +31,15 @@ mistInit = function(){
             url: 'https://ethereum.org',
             position: 0
         });
-        
-        // wait for accounts and blocks to be initialized below
-        Meteor.setTimeout(function() {
-            Tabs.insert({
-                _id: 'wallet',
-                url: 'https://wallet.ethereum.org',
-                position: 1,
-                permissions: {
-                    accounts: web3.eth.accounts
-                }
-            });
-        }, 1500);
     }
+
+    Tabs.upsert({_id: 'wallet'}, {
+        url: 'https://wallet.ethereum.org',
+        position: 1,
+        permissions: {
+            admin: true
+        }
+    });
 
     EthAccounts.init();
     EthBlocks.init();

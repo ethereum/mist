@@ -15,6 +15,8 @@ try {
 
 
 
+
+
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] [Node options]')
     .option({
@@ -122,6 +124,7 @@ const argv = require('yargs')
     .parse(process.argv.slice(1));
 
 
+
 argv.nodeOptions = [];
 
 for (let optIdx in argv) {
@@ -134,8 +137,13 @@ for (let optIdx in argv) {
 }
 
 // some options are shared
+<<<<<<< HEAD
 if (argv.rpc && 0 < argv.rpc.indexOf('.ipc')) {
     argv.nodeOptions.push('--ipcpcath', argv.rpc);
+=======
+if (argv.ipcpath) {
+    argv.nodeOptions.push('--ipcpath', argv.ipcpath);
+>>>>>>> develop
 }
 
 
@@ -168,6 +176,10 @@ class Settings {
 
   get inProductionMode () {
     return defaultConfig.production;
+  }
+
+  get inTestMode () {
+    return !!process.env.TEST_MODE;
   }
 
   get gethPath () {

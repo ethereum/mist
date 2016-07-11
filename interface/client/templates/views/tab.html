@@ -1,14 +1,14 @@
 <template name="views_tab">
     <div class="tab-view {{isVisible}} {{#if appBar}}app-bar-{{appBar}}{{/if}}">
         {{#if $eq _id "browser"}}
-            {{debug url}}
             <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/browser.js" autosize="on"></webview> 
-        {{/if}}
-        {{#if $eq _id "tests"}}
-            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/tests.js" autosize="on" nodeintegration></webview> 
         {{else}}
-            <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/dapps.js" autosize="on"></webview> 
+            {{#if $eq _id "tests"}}
+                <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/tests.js" autosize="on" nodeintegration></webview> 
+            {{else}}
+                <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/dapps.js" autosize="on"></webview> 
+            {{/if}}
+            <!-- preload="./test.js" allowtransparency="on" -->
         {{/if}}
-        <!-- preload="./test.js" allowtransparency="on" -->
     </div>
 </template>

@@ -4,6 +4,11 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
+                "checkForUpdates": "업데이트 확인...",
+                "services": "서비스",
+                "hide": "__app__ 숨기기",
+                "hideOthers": "다른 창 숨기기",
+                "showAll": "모두 보기",
                 "quit": "__app__ 종료"
             },
             "edit": {
@@ -17,7 +22,8 @@
             },
             "view": {
                 "label": "보기",
-                "fullscreen": "전체화면으로"
+                "fullscreen": "전체화면으로",
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "계정",

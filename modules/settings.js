@@ -14,6 +14,8 @@ try {
 
 
 
+
+
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] -- [Node options]')
     .option({
@@ -22,6 +24,24 @@ const argv = require('yargs')
             demand: false,
             default: defaultConfig.mode,
             describe: 'App UI mode: wallet, mist.',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
+        node: {
+            demand: false,
+            default: null,
+            describe: 'Node to use: geth, eth',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
+        network: {
+            demand: false,
+            default: null,
+            describe: 'Network to connect to: main, test',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -103,11 +123,13 @@ const argv = require('yargs')
     .parse(process.argv.slice(1));
 
 
+
 argv.nodeOptions = [];
 
-for (let optIdx in argv._) {
-    if ('-' === argv._[optIdx].charAt(0)) {
-        argv.nodeOptions = argv._.slice(optIdx);
+for (let optIdx in argv) {
+    if (0 === optIdx.indexOf('node-')) {
+        argv.nodeOptions.push('--' + optIdx.substr(5));
+        argv.nodeOptions.push(argv[optIdx]);
 
         break;
     }
@@ -115,7 +137,7 @@ for (let optIdx in argv._) {
 
 // some options are shared
 if (argv.ipcpath) {
-    argv.nodeOptions.push('--ipcpcath', argv.ipcpath);
+    argv.nodeOptions.push('--ipcpath', argv.ipcpath);
 }
 
 
@@ -150,6 +172,10 @@ class Settings {
     return defaultConfig.production;
   }
 
+  get inTestMode () {
+    return !!process.env.TEST_MODE;
+  }
+
   get gethPath () {
     return argv.gethpath;
   }
@@ -160,6 +186,14 @@ class Settings {
 
   get ipcPath () {
     return argv.ipcpath;
+  }
+
+  get nodeType () {
+    return argv.node;
+  }
+
+  get network () {
+    return argv.network;
   }
 
   get nodeOptions () {

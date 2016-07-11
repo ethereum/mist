@@ -4,6 +4,8 @@
             "app": {
                 "label": "__app__",
                 "about": "À propos de __app__",
+                "checkForUpdates": "Chercher des mises à jour...",
+                "services": "Services",
                 "hide": "Masquer __app__",
                 "hideOthers": "Masquer les autres",
                 "showAll": "Afficher tout",
@@ -20,7 +22,8 @@
             },
             "view": {
                 "label": "Voir",
-                "fullscreen": "Basculer en mode plein écran"
+                "fullscreen": "Basculer en mode plein écran",
+                "languages": "Change language"
             },
             "accounts": {
                 "label": "Comptes",
@@ -93,7 +96,7 @@
             "nodeConnectionTimeout": "Echec du démarrage du nœud Ethereum !<br><small>Si vous <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>avez installé Geth</a>, utilisez cette commande pour le lancer : <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ou signalez le problème </a></small>",
             "nodeBinaryNotFound": "Pas de binaire du nœud Ethereum trouvé !<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Veuillez en lancer d'abord un manuellement. </a> </small>",
             "nodeSyncing": "Le nœud Ethereum se synchronise, veuillez patienter...",
-            "nodeSyncInfo": "Télechargement du bloc __currentBlock__ depuis le bloc __highestBlock__.",
+            "nodeSyncInfo": "Télechargement du bloc __displayBlock__ depuis le bloc __highestBlock__.",
             "nodeSyncConnecting": "À la recherche de pairs...",
             "nodeSyncProcessing": "Traitement de bloc, veuillez patienter...",
             "peerSearchTimeout": "Recherche de pairs ignorée"

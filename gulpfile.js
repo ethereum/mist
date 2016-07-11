@@ -7,9 +7,10 @@ var packager = require('electron-packager');
 var spawn = require('child_process').spawn;
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
-var download = require('gulp-download');
+var download = require('gulp-download-stream');
 var decompress = require('gulp-decompress');
 var tap = require("gulp-tap");
+const mocha = require('gulp-spawn-mocha');
 // const zip = require('gulp-zip');
 // var zip = require('gulp-zip');
 // var zip = require('gulp-jszip');
@@ -38,7 +39,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
-var electronVersion = '1.2.2';
+var electronVersion = '1.2.5';
 var gethVersion = '1.4.7';
 var nodeUrls = {
     'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/geth-OSX-2016061509421-1.4.7-667a386.zip',
@@ -81,7 +82,6 @@ if(_.contains(options.platform, 'all')) {
         'win32-x64'
     ];
 }
-console.log('Bundling platforms: ', osVersions);
 
 
 // Helpers
@@ -278,7 +278,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
         } else {
             console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/'+ options.walletSource +' "'+ options.walletSource +'" branch...');
             exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
-                 'cd ../dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
+                 'cd ../dist_'+ type +'/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -299,6 +299,8 @@ gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
 });
 
 gulp.task('create-binaries', ['copy-i18n'], function(cb) {
+    console.log('Bundling platforms: ', osVersions);
+
     packager({
         dir: './dist_'+ type +'/app/',
         out: './dist_'+ type +'/',
@@ -499,8 +501,8 @@ gulp.task('taskQueue', [
     'create-binaries',
     'change-files',
     //'cleanup-files',
-    'rename-folders',
-    // 'zip'
+    'rename-folders'
+    // 'zip',
 ]);
 
 // DOWNLOAD nodes
@@ -531,6 +533,20 @@ gulp.task('wallet-checksums', [
     'getChecksums'
 ]);
 
-gulp.task('default', ['mist']);
 
+
+gulp.task('test-wallet', function() {
+    return gulp.src([
+        './test/wallet/*.test.js'
+    ])
+    .pipe(mocha({
+        timeout: 60000,
+        ui: 'exports',
+        reporter: 'spec'
+    }));
+});
+
+
+
+gulp.task('default', ['mist']);
 

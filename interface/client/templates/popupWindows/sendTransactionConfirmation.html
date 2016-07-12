@@ -27,8 +27,8 @@
                     <div class="amount">
                         {{{totalAmount}}} <span class="unit">ETHER</span>
 
-                        {{#if executionFunction}}
-                            <span class="execute-function">{{executionFunction}}</span>
+                        {{#if TemplateVar.get "executionFunction" }}
+                            <span class="execute-function">{{TemplateVar.get "executionFunction"}}</span>
                         {{/if}}
                     </div>
                     <div>

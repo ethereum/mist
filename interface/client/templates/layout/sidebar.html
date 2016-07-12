@@ -3,7 +3,7 @@
         <nav>
             <ul>
                 {{#each tabs}}
-                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
                         <header>
                             {{#if $neq _id 'browser'}}
                                 <button class="remove-tab">

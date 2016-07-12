@@ -1,12 +1,12 @@
 
 
 var pinToSidebar = function() {
-    var webview = $('webview[data-id="browser"]')[0];
+    var selectedTab = Tabs.findOne(LocalStore.get('selectedTab'));
 
-    if(webview) {
+    if(selectedTab) {
         var id = Tabs.insert({
-            url: webview.getURL(),
-            name: webview.getTitle(),
+            url: selectedTab.url,
+            name: selectedTab.name,
             menu: {},
             menuVisible: false,
             position: Tabs.find().count() + 1
@@ -144,7 +144,7 @@ Template['popupWindows_connectAccount'].events({
         
         // Pin to sidebar, if needed
         if ($('#pin-to-sidebar')[0].checked) {
-            // pinToSidebar();
+            pinToSidebar();
         }
 
         // reload the webview

@@ -74,7 +74,7 @@ Template['layout_sidebar'].helpers({
         var template = Template.instance();
 
         if(this._id === 'browser') {
-            return Tabs.find({},{sort: {timestamp: -1}, limit: 25});
+            return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
 
         } else if(this.menu) {
             var menu = _.toArray(this.menu);

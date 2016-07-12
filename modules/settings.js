@@ -137,13 +137,8 @@ for (let optIdx in argv) {
 }
 
 // some options are shared
-<<<<<<< HEAD
-if (argv.rpc && 0 < argv.rpc.indexOf('.ipc')) {
-    argv.nodeOptions.push('--ipcpcath', argv.rpc);
-=======
 if (argv.ipcpath) {
     argv.nodeOptions.push('--ipcpath', argv.ipcpath);
->>>>>>> develop
 }
 
 

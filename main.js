@@ -432,11 +432,15 @@ var startMainWindow = function() {
     sortedTabs.applySimpleSort('position', false);
 
     let refreshMenu = function() {
-        log.debug('Refresh menu with tabs');
+        clearTimeout(global._refreshMenuFromTabsTimer);
 
-        global.webviews = sortedTabs.data();
+        global._refreshMenuFromTabsTimer = setTimeout(function() {
+            log.debug('Refresh menu with tabs');
 
-        appMenu(global.webviews);
+            global.webviews = sortedTabs.data();
+
+            appMenu(global.webviews);            
+        }, 200);
     };
 
     global.db.Tabs.on('insert', refreshMenu);

@@ -90,7 +90,7 @@ exports.frontendSync = function(coll) {
     let dataStr = ipc.sendSync('minimongo-reloadSync');
 
     if (dataStr) {
-        console.debug('Repopulate collection with backend data', coll._name);
+        console.debug('Repopulate collection with backend data: ', coll._name);
 
         coll.remove({});
 

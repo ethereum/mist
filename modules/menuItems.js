@@ -9,6 +9,7 @@ const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
 const Windows = require('./windows');
 const updateChecker = require('./updateChecker');
+const Settings = require('./settings');
 const fs = require('fs');
 const dialog = electron.dialog;
 
@@ -49,10 +50,10 @@ var menuTempl = function(webviews) {
 
     // APP
     menu.push({
-        label: i18n.t('mist.applicationMenu.app.label', {app: global.appName}),
+        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.app.about', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
                 click: function(){
                     Windows.createPopup('about', {
                         electronOptions: {
@@ -72,7 +73,7 @@ var menuTempl = function(webviews) {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.services', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.services', {app: Settings.appName}),
                 role: 'services',
                 submenu: []
             },
@@ -80,24 +81,24 @@ var menuTempl = function(webviews) {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hide', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.hide', {app: Settings.appName}),
                 accelerator: 'Command+H',
                 role: 'hide'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: Settings.appName}),
                 accelerator: 'Command+Alt+H',
                 role: 'hideothers'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.showAll', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.showAll', {app: Settings.appName}),
                 role: 'unhide'
             },
             {
                 type: 'separator'
             },
             {
-                label: i18n.t('mist.applicationMenu.app.quit', {app: global.appName}),
+                label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
                 accelerator: 'CommandOrControl+Q',
                 click: function(){
                     app.quit();
@@ -142,12 +143,12 @@ var menuTempl = function(webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
                         click: function(){
-                            var path = global.path.HOME;
+                            var path = Settings.userHomePath;
 
                             // eth
                             if(ethereumNode.isEth) {
                                 if(process.platform === 'win32')
-                                    path = global.path.APPDATA + '\\Web3\\keys';
+                                    path = Settings.appDataPath + '\\Web3\\keys';
                                 else
                                     path += '/.web3/keys';
 
@@ -162,7 +163,7 @@ var menuTempl = function(webviews) {
                                     path += '/.ethereum/keystore';
 
                                 if(process.platform === 'win32')
-                                    path = global.path.APPDATA + '\\Ethereum\\keystore';
+                                    path = Settings.appDataPath + '\\Ethereum\\keystore';
                             }
 
                             shell.showItemInFolder(path);
@@ -170,7 +171,7 @@ var menuTempl = function(webviews) {
                     },{
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
                         click: function(){
-                            shell.showItemInFolder(global.path.USERDATA);
+                            shell.showItemInFolder(Settings.userDataPath);
                         }
                     }
                 ]
@@ -270,7 +271,7 @@ var menuTempl = function(webviews) {
     var devToolsMenu = [];
 
     // change for wallet
-    if(global.mode === 'mist') {
+    if(Settings.uiMode === 'mist') {
         devtToolsSubMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
@@ -309,7 +310,7 @@ var menuTempl = function(webviews) {
             submenu: devtToolsSubMenu
         },{
             label: i18n.t('mist.applicationMenu.develop.runTests'),
-            enabled: (global.mode === 'mist'),
+            enabled: (Settings.uiMode === 'mist'),
             click: function(){
                 Windows.getByType('main').send('runTests', 'webview');
             }
@@ -318,7 +319,7 @@ var menuTempl = function(webviews) {
             click: function(){
                 var log = '';
                 try {
-                    log = fs.readFileSync(global.path.USERDATA + '/node.log', {encoding: 'utf8'});
+                    log = fs.readFileSync(Settings.userDataPath + '/node.log', {encoding: 'utf8'});
                     log = '...'+ log.slice(-1000);
                 } catch(e){
                     log.info(e);

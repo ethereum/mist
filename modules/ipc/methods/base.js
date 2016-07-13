@@ -79,7 +79,7 @@ module.exports = class BaseProcessor {
     _isAdminConnection (conn) {
         // main window or popupwindows - always allow requests
         let wnd = Windows.getById(conn.id);
-        let tab = Tabs.findOne({ webviewId: conn.id });
+        let tab = global.db.Tabs.findOne({ webviewId: conn.id });
 
         return ((wnd && ('main' === wnd.type || wnd.isPopup)) ||
                 (tab && _.get(tab, 'permissions.admin') === true));

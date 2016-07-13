@@ -1,5 +1,3 @@
-
-
 // set spinner options
 Meteor.Spinner.options = {
     lines: 12, // The number of lines to draw

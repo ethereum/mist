@@ -3,59 +3,113 @@
 */
 
 
-const log = require('./utils/logger').create('syncMinimongo');
-
-const electron = require('electron');
+var electron = require('electron');
 
 
-module.exports = function(db, webContents){
+/**
+ * Sync IPC calls received from given window into given db table.
+ * @param  {Object} coll Db collection to save to.
+ * @param  {Window} wnd     Window to listen to.
+ */
+exports.backendSync = function(coll, wnd) {
+    var log = require('./utils/logger').create('syncMinimongo/' + coll.name);
 
-    var ipc = (webContents) ? electron.ipcMain : electron.ipcRenderer;
+    var ipc = electron.ipcMain;
 
-
-    // ONLY syncs from Mist UI to backend, not down again.
-
-    // send
-    db.find().observeChanges({
-        'added': function(id, fields){
-            // if(webContents && !webContents.isDestroyed())
-            //     webContents.send('minimongo-add', {id: id, fields: fields});
-            // else
-            if(!webContents)
-                ipc.send('minimongo-add', {id: id, fields: fields});
-        },
-        'changed': function(id, fields){
-            // if(webContents && !webContents.isDestroyed())
-            //     webContents.send('minimongo-changed', {id: id, fields: fields});
-            // else
-            if(!webContents)
-                ipc.send('minimongo-changed', {id: id, fields: fields});
-        },
-        removed: function(id) {
-            // if(webContents && !webContents.isDestroyed())
-            //     webContents.send('minimongo-removed', id);
-            // else
-            if(!webContents)
-                ipc.send('minimongo-removed', id);
-        }
-    });
-
-    // receive
     ipc.on('minimongo-add', function(event, args) {
+        log.trace('minimongo-add', args._id);
 
-        if(!db.findOne(args.id)) {
-            // log.info('add', args.id);
-            args.fields._id = args.id;
-            db.insert(args.fields);
+        var _id = args._id;
+
+        if (!coll.findOne({_id: _id})) {
+            args.fields._id = _id;
+
+            coll.insert(args.fields);
         }
     });
+
     ipc.on('minimongo-changed', function(event, args) {
+        log.trace('minimongo-changed', args._id);
 
-        // log.info('updated', args.id, args.fields);
-        db.update(args.id, {$set: args.fields});
+        var _id = args._id;
+
+        var item = coll.findOne({_id: _id});
+
+        if (item) {
+            for (var k in args.fields) {
+                item[k] = args.fields[k];
+            }
+
+            coll.update(item);
+        } else {
+            log.error('Item not found in db', _id);
+        }
     });
-    ipc.on('minimongo-removed', function(event, id) {
 
-        db.remove(id.toString());
+    ipc.on('minimongo-removed', function(event, args) {
+        log.trace('minimongo-removed', _id);
+
+        var _id = args._id;
+
+        var item = coll.findOne({_id: _id});
+
+        if (item) {
+            coll.remove(item);
+        } else {
+            log.error('Item not found in db', _id);
+        }
+    });
+
+    // get all data (synchronous)
+    ipc.on('minimongo-reloadSync', function(event) {
+        var docs = coll.find();
+
+        log.debug('minimongo-reloadSync, no. of docs:', docs.length);
+
+        docs = docs.map(function(doc) {
+            var ret = {};
+
+            for (var k in doc) {
+                if ('meta' !== k && '$loki' !== k) {
+                    ret[k] = doc[k];
+                }
+            }
+
+            return ret;
+        });
+
+        event.returnValue = JSON.stringify(docs);
     });
 };
+
+
+
+exports.frontendSync = function(coll) {
+    var ipc = electron.ipcRenderer;
+
+    let dataStr = ipc.sendSync('minimongo-reloadSync');
+
+    if (dataStr) {
+        console.debug('Repopulate collection with backend data: ', coll._name);
+
+        coll.remove({});
+
+        JSON.parse(dataStr).forEach(function(record) {
+            coll.insert(record);
+        });
+    }
+
+    coll.find().observeChanges({
+        'added': function(id, fields){            
+            ipc.send('minimongo-add', {_id: id, fields: fields});
+        },
+        'changed': function(id, fields){
+            ipc.send('minimongo-changed', {_id: id, fields: fields});
+        },
+        removed: function(id) {
+            ipc.send('minimongo-removed', {_id: id});
+        }
+    });
+};
+
+

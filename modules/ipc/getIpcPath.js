@@ -16,7 +16,7 @@ module.exports = function() {
     }
     
     var p = require('path');
-    var path = global.path.HOME;
+    var path = Settings.userHomePath;
 
     if(process.platform === 'darwin') {
         path += '/Library/Ethereum/geth.ipc';

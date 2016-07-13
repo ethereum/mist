@@ -4,13 +4,13 @@
 */
 
 
+
 // BROWSER RELATED
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
-pers = new PersistentMinimongo2(Tabs, 'Mist');
 
-if(typeof syncMinimongo !== 'undefined')
-    syncMinimongo(Tabs);
+if (typeof syncMinimongo !== 'undefined')
+    syncMinimongo.frontendSync(Tabs);
 
 
 // Contains the address book

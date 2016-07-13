@@ -1,3 +1,6 @@
+const electron = require('electron');
+const app = electron.app;
+
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 
@@ -137,7 +140,7 @@ for (let optIdx in argv) {
 
 // some options are shared
 if (argv.ipcpath) {
-    argv.nodeOptions.push('--ipcpcath', argv.ipcpath);
+    argv.nodeOptions.push('--ipcpath', argv.ipcpath);
 }
 
 
@@ -152,12 +155,30 @@ class Settings {
     this._log = logger.create('Settings');    
   }
 
+  get userDataPath() {
+    // Application Aupport/Mist
+    return app.getPath('userData');
+  }
+
+  get appDataPath() {
+    // Application Support/
+    return app.getPath('appData');
+  }
+
+  get userHomePath() {
+    return app.getPath('home');
+  }
+
   get cli () {
     return argv;
   }
 
   get appVersion () {
     return packageJson.version;
+  }
+
+  get appName () {
+    return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
   }
 
   get appLicense () {
@@ -172,7 +193,7 @@ class Settings {
     return defaultConfig.production;
   }
 
-  get inTestMode () {
+  get inAutoTestMode () {
     return !!process.env.TEST_MODE;
   }
 

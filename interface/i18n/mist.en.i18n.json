@@ -237,13 +237,14 @@
             "forkChoice" : {
                 "title": "Important decision affecting your wallet",
                 "overview": "Overview: On july XX a new community created blockchain will be activated, in which all the balance of all DAOs affected by the june 17 rapid unplanned withdrawal event is moved to a refund contract. We need you to make a decision on which of these two blockchains you will want to use.",
-                "choice" : "<strong> This is not a vote, but a settings choice: you are selecting a configuration on your application about which blockchain to connect.  </strong> When the date comes, you will be taken to the chain of your choice, regardless of what the majority does. You will own assets on both and will be able to switch back later. 'Be the change you want to see in the world'.  ",
+                "choice" : "<strong> This is not a vote, but a settings choice: you are selecting a configuration on your application about which blockchain to connect.  </strong> When the date comes, you will be taken to the chain of your choice, regardless of what the majority does. You will own assets on both and will be able to switch back later. 'Be the change you want to see in the world'.   ",
                 "question": "Do you want to move to a new chain in which the DAO funds are refunded to the DAO token holders?",
                 "learnMore": "Learn more about the issue",
                 "yes": "yes",
                 "yesWhy": "Social consensus should be final. Humans can always unplug the machines.",
                 "no": "no",
-                "noWhy": "Code should be final. Human subjectivity should not rule over contracts." 
+                "noWhy": "Code should be final. Human subjectivity should not rule over contracts.", 
+                "whatever": "I will follow whatever the majority wants" 
             }
 
         }

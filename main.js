@@ -323,6 +323,17 @@ app.on('ready', function() {
                 return ethereumNode.send('eth_accounts', []);
             })
             .then(function onboarding(resultData) {
+                // open the fork popup
+                if (ethereumNode.isMainNetwork) {
+                    var forkChoice = Windows.createPopup('forkChoice', {
+                            primary: true,
+                            electronOptions: {
+                                width: 640,
+                                height: 600,
+                            },
+                        });
+                }
+
                 if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 

@@ -46,7 +46,7 @@ exports.backendSync = function(coll) {
     });
 
     ipc.on('minimongo-removed', function(event, args) {
-        log.trace('minimongo-removed', _id);
+        log.trace('minimongo-removed', args._id);
 
         var _id = args._id;
 
@@ -86,6 +86,26 @@ exports.backendSync = function(coll) {
 exports.frontendSync = function(coll) {
     var ipc = electron.ipcRenderer;
 
+    var repopulating = true;
+
+    coll.find().observeChanges({
+        'added': function(id, fields){            
+            if (!repopulating) {
+                ipc.send('minimongo-add', {_id: id, fields: fields});
+            }
+        },
+        'changed': function(id, fields){
+            if (!repopulating) {
+                ipc.send('minimongo-changed', {_id: id, fields: fields});
+            }
+        },
+        removed: function(id) {
+            if (!repopulating) {
+                ipc.send('minimongo-removed', {_id: id});
+            }
+        }
+    });
+
     let dataStr = ipc.sendSync('minimongo-reloadSync');
 
     if (dataStr) {
@@ -96,19 +116,9 @@ exports.frontendSync = function(coll) {
         JSON.parse(dataStr).forEach(function(record) {
             coll.insert(record);
         });
-    }
 
-    coll.find().observeChanges({
-        'added': function(id, fields){            
-            ipc.send('minimongo-add', {_id: id, fields: fields});
-        },
-        'changed': function(id, fields){
-            ipc.send('minimongo-changed', {_id: id, fields: fields});
-        },
-        removed: function(id) {
-            ipc.send('minimongo-removed', {_id: id});
-        }
-    });
+        repopulating = false;
+    }
 };
 
 

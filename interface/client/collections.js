@@ -9,8 +9,9 @@
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
 
-if (typeof syncMinimongo !== 'undefined')
-    syncMinimongo.frontendSync(Tabs);
+if (typeof window.mist.syncMinimongo !== 'undefined') {
+    window.mist.syncMinimongo.frontendSync(Tabs);
+}
 
 
 // Contains the address book

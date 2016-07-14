@@ -9,9 +9,8 @@ var electron = require('electron');
 /**
  * Sync IPC calls received from given window into given db table.
  * @param  {Object} coll Db collection to save to.
- * @param  {Window} wnd     Window to listen to.
  */
-exports.backendSync = function(coll, wnd) {
+exports.backendSync = function(coll) {
     var log = require('./utils/logger').create('syncMinimongo/' + coll.name);
 
     var ipc = electron.ipcMain;

@@ -235,16 +235,16 @@
                 }
             },
             "forkChoice" : {
-                "title": "Important decision affecting your wallet",
-                "overview": "Overview: On july XX a new community created blockchain will be activated, in which all the balance of all DAOs affected by the june 17 rapid unplanned withdrawal event is moved to a refund contract. We need you to make a decision on which of these two blockchains you will want to use.",
-                "choice" : "<strong> This is not a vote, but a settings choice: you are selecting a configuration on your application about which blockchain to connect.  </strong> When the date comes, you will be taken to the chain of your choice, regardless of what the majority does. You will own assets on both and will be able to switch back later. 'Be the change you want to see in the world'.   ",
-                "question": "Do you want to move to a new chain in which the DAO funds are refunded to the DAO token holders?",
+                "title": "Important decision affecting your app",
+                "overview": "A new community created blockchain will be available for activation at block #1920000, which is expected to arrive on July 20th 2016, in which the Ether balance of contract 0xbb9bc244d798123fde783fcc1c72d3bb8c189413 (commonly referred to as \"The DAO\") and all of its descendants will be moved to a refund contract due to an exploited bug in the original contract. This should reclaim funds from all contracts linked to the exploit and allow authenticated holders of \"The DAO\" tokens to claim a refund.",
+                "choice" : "<strong> This is a settings configuration, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choosing regardless of any other users choice. Your ether and assets will exist in both chains and you will be able to switch back in a later date by resyncing your wallet. 'Be the change you want to see in the world'.   ",
+                "question": "Do you want to activate the chain in which funds linked to the exploit are reclaimed to a refund contract where they can be claimed by \"The DAO\" token holders?
+
+",
                 "learnMore": "Learn more about the issue",
                 "yes": "yes",
-                "yesWhy": "Social consensus should be final. Humans can always unplug the machines.",
                 "no": "no",
-                "noWhy": "Code should be final. Human subjectivity should not rule over contracts.", 
-                "whatever": "I will follow whatever the majority wants" 
+                "whatever": "I will follow the default (\"xxx\", selected by a vote on july 15)" 
             }
 
         }

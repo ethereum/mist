@@ -115,11 +115,13 @@ Mist normally.
 ### Deployment
 
 
-To create a binaries you need to install the following tools:
+To create a binaries you need to install [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#macos):
 
     // tools for the windows binaries
-    $ brew install Caskroom/cask/xquartz
-    $ brew install wine
+    $ brew install Caskroom/cask/xquartz wine mono
+    // tools for the Linux binaries
+    $ brew install gnu-tar libicns graphicsmagick xz
+    // general dependencies
     $ npm install -g meteor-build-client
 
 To generate the binaries simply run:

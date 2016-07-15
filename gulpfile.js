@@ -1,14 +1,17 @@
 var _ = require("underscore");
+var path = require('path');
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
 var replace = require('gulp-replace');
+var runSeq = require('run-sequence');
 var packager = require('electron-packager');
-var spawn = require('child_process').spawn;
+var shell = require('shelljs');
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
 var decompress = require('gulp-decompress');
+var flatten = require('gulp-flatten');
 var tap = require("gulp-tap");
 const mocha = require('gulp-spawn-mocha');
 // const zip = require('gulp-zip');
@@ -18,6 +21,9 @@ const mocha = require('gulp-spawn-mocha');
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
+
+var builder = require("electron-builder");
+
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -219,30 +225,69 @@ gulp.task('checkNodes', function() {
 
 // BUNLDE PROCESS
 
-gulp.task('copy-files', ['checkNodes', 'clean:dist'], function() {
+gulp.task('copy-app-folder-files', ['clean:dist'], function() {
 
+    return gulp.src([
+        './tests/**/*.*',
+        './icons/'+ type +'/*.*',
+        './modules/**/*.*',
+        './node_modules/**/*.*',
+        './sounds/*.*',
+        './*.js',
+        '!gulpfile.js'
+        ], { base: './' })
+        .pipe(gulp.dest('./dist_'+ type +'/app'));
+});
+
+
+gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], function() {
+    return gulp.src([
+        './icons/'+ type +'/*.*',
+        './interface/public/images/bg-homestead.jpg',
+        ], { base: './' })
+        .pipe(flatten())
+        .pipe(gulp.dest('./dist_'+ type +'/build'));
+});
+
+
+gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function() {
     // check if nodes are there
     if(updatedNeeded){
         console.error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
         throw new Error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
     }
 
-    return gulp.src([
-        './tests/**/*.*',
-        './modules/**/*.*',
-        './node_modules/**/*.*',
-        './sounds/*.*',
-        './icons/'+ type +'/*.*',
-        './*.*',
-        '!./interface/**/*.*',
-        '!./geth',
-        '!./geth.exe',
-        '!./Wallet-README.txt'
-        ], { base: './' })
-        .pipe(gulp.dest('./dist_'+ type +'/app'));
+    var streams = [];
+
+    osVersions.map(function(os){
+        // copy eth node binaries
+        streams.push(gulp.src([
+            './nodes/eth/'+ os + '/*'
+            ])
+            .pipe(gulp.dest('./dist_'+ type +'/app/node/eth')));
+
+        // copy geth node binaries
+        streams.push(gulp.src([
+            './nodes/geth/'+ os + '/*'
+            ])
+            .pipe(gulp.dest('./dist_'+ type +'/app/node/geth')));
+    });
+
+    return merge.apply(null, streams);
 });
 
-gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
+
+gulp.task('copy-files', [
+    'clean:dist', 
+    'copy-app-folder-files',
+    'copy-build-folder-files',
+    'copy-node-folder-files',
+]);
+
+
+
+
+gulp.task('switch-production', ['copy-files'], function(cb) {
     fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
         production: true,
         mode: type,
@@ -252,7 +297,7 @@ gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
 });
 
 
-gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
+gulp.task('bundling-interface', ['switch-production'], function(cb) {
     if(type === 'mist') {
         exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
             // console.log(stdout);
@@ -290,13 +335,94 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 
 
 // needs to be copied, so the backend can use it
-gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
+gulp.task('copy-i18n', ['bundling-interface'], function() {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
+
+
+
+gulp.task('build-distributables', ['copy-i18n'], function(cb) {
+    var Platform = builder.Platform;
+
+    var appPackageJson = _.extend({}, packJson, {
+        productName: applicationName,
+        description: applicationName,
+        homepage: "https://github.com/ethereum/mist",       
+        build: {
+            appId: "com.ethereum.mist." + type,
+            "app-category-type": "public.app-category.productivity",
+            asar: true,
+            files: [
+              "**/*",
+              "!node"
+            ],
+            extraFiles: [
+              "node"
+            ],
+            dmg: {
+                background: "../build/bg-homestead.jpg"
+            }
+        },
+        directories: {
+            buildResources: "../build",
+            app: ".",
+            output: "../dist",
+        },
+    });
+
+    fs.writeFileSync(
+        path.join(__dirname, 'dist_' + type, 'app', 'package.json'),
+        JSON.stringify(appPackageJson, null, 2),
+        'utf-8'
+    );
+
+    var ret = shell.exec(path.join(__dirname, 'node_modules/.bin/build -o'), {
+        cwd: path.join(__dirname, 'dist_' + type, 'app'),
+    });
+
+    if (0 !== ret.code) {
+        console.error(ret.stdout);
+        console.error(ret.stderr);
+
+        return cb(new Error('Error building distributables'));
+    } else {
+        console.log(ret.stdout);
+
+        cb();
+    }
+
+    // builder.build({
+    //     targets: Platform.MAC.createTarget(),
+    //     devMetadata: {
+    //         build: {
+    //             appId: "com.ethereum.mist." + type,
+    //             "app-category-type": "public.app-category.productivity",
+    //             asar: true,
+    //             extraResources: [
+    //                 "./dist_" + type + "/node/**/*"
+    //             ],
+    //             dmg: {
+    //                 background: "./dist_" + type + "/build/bg-homestead.jpg"
+    //             }
+    //         },
+    //         directories: {
+    //             buildResources: "./dist_" + type + "/build",
+    //             app: "./dist_" + type + "/app",
+    //             output: "./dist_" + type + "/dist",
+    //         },
+    //     },
+    // })
+    //   .then(() => {
+    //     cb();
+    //   })
+    //   .catch(cb);
+});
+
+
 
 gulp.task('create-binaries', ['copy-i18n'], function(cb) {
     console.log('Bundling platforms: ', osVersions);
@@ -477,10 +603,14 @@ gulp.task('getChecksums', [], function(done) {
 
         // spit out sha256 checksums
         var fileName = path.replace('./dist_'+ type +'/', '');
-        var sha = spawn('shasum', ['-a','256',path]);
-        sha.stdout.on('data', function(data){
-            console.log('SHA256 '+ fileName +': '+ data.toString().replace(path, ''));
-        });
+
+        var sha = shell.exec('shasum -a 256 ' + path);
+
+        if (0 !== sha.code) {
+            throw new Error('Error executing shasum');
+        }
+
+        console.log('SHA256 '+ fileName +': '+ sha.stdout.replace(path, ''));
 
 
         count++;
@@ -493,14 +623,6 @@ gulp.task('getChecksums', [], function(done) {
 
 
 gulp.task('taskQueue', [
-    'clean:dist',
-    'copy-files',
-    'copy-i18n',
-    'switch-production',
-    'bundling-interface',
-    'create-binaries',
-    'change-files',
-    //'cleanup-files',
     'rename-folders'
     // 'zip',
 ]);
@@ -512,26 +634,22 @@ gulp.task('update-nodes', [
 gulp.task('download-nodes', ['update-nodes']);
 
 // MIST task
-gulp.task('mist', [
-    'set-variables-mist',
-    'taskQueue'
-]);
+gulp.task('mist', function(cb) {
+    runSeq('set-variables-mist', 'taskQueue', cb);
+});
 
 // WALLET task
-gulp.task('wallet', [
-    'set-variables-wallet',
-    'taskQueue'
-]);
+gulp.task('wallet', function(cb) {
+    runSeq('set-variables-wallet', 'taskQueue', cb);
+});
 
 // WALLET task
-gulp.task('mist-checksums', [
-    'set-variables-mist',
-    'getChecksums'
-]);
-gulp.task('wallet-checksums', [
-    'set-variables-wallet',
-    'getChecksums'
-]);
+gulp.task('mist-checksums', function(cb) {
+    runSeq('set-variables-mist', 'getChecksums', cb);
+});
+gulp.task('wallet-checksums', function(cb) {
+    runSeq('set-variables-wallet', 'getChecksums', cb);
+});
 
 
 

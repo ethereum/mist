@@ -37,7 +37,7 @@ module.exports = function(type) {
             binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
             
             if(process.platform === 'darwin') {
-                binPath = path.resolve(binPath.replace('/node/', '/../Frameworks/node/'));
+                binPath = path.resolve(binPath.replace('/node/', '/../node/'));
             }
         }
 

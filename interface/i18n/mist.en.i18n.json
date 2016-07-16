@@ -236,11 +236,9 @@
             },
             "forkChoice" : {
                 "title": "Important decision affecting your app",
-                "overview": "A new community created blockchain will be available for activation at block #1920000, which is expected to arrive on July 20th 2016, in which the Ether balance of contract 0xbb9bc244d798123fde783fcc1c72d3bb8c189413 (commonly referred to as \"The DAO\") and all of its descendants will be moved to a refund contract due to an exploited bug in the original contract. This should reclaim funds from all contracts linked to the exploit and allow authenticated holders of \"The DAO\" tokens to claim a refund.",
-                "choice" : "<strong> This is a settings configuration, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choosing regardless of any other users choice. Your ether and assets will exist in both chains and you will be able to switch back in a later date by resyncing your wallet. 'Be the change you want to see in the world'.   ",
-                "question": "Do you want to activate the chain in which funds linked to the exploit are reclaimed to a refund contract where they can be claimed by \"The DAO\" token holders?
-
-",
+                "overview": "A new community created blockchain will be available for activation at block #1920000, which is expected to arrive on July 20th 2016, in which the Ether balance of contract 0xbb9bc244d798123fde783fcc1c72d3bb8c189413 (commonly referred to as \"The DAO\") and all of its descendants will be moved to a withdraw contract due to an exploited bug in the original contract. This should reclaim funds from all contracts linked to the exploit and allow authenticated holders of \"The DAO\" tokens to redeem it for ether.",
+                "choice" : "<strong> This is a settings configuration, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choosing regardless of any other users choice. Your ether and assets will exist in both chains and you will be able to switch back in a later date by resyncing your wallet.   ",
+                "question": "Do you want to activate the chain in which funds linked to the exploit are reclaimed to a contract where they can be claimed by \"The DAO\" token holders?",
                 "learnMore": "Learn more about the issue",
                 "yes": "yes",
                 "no": "no",

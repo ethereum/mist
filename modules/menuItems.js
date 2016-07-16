@@ -364,17 +364,8 @@ var menuTempl = function(webviews) {
                 enabled: ethereumNode.isOwnNode,*/
                 enabled: false,
                 type: 'checkbox',
-                /*click: function(){
-                    restartNode('eth');
-                }*/ 
                 click: function(){
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        }
-                    });
+                    restartNode('eth');
                 }
               }
         ]});

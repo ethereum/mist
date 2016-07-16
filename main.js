@@ -322,17 +322,54 @@ app.on('ready', function() {
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
             })
-            .then(function onboarding(resultData) {
+            // FORK RELATED
+            .then(function hardForkOption() {
                 // open the fork popup
-                if (ethereumNode.isMainNetwork) {
-                    var forkChoice = Windows.createPopup('forkChoice', {
+                if (ethereumNode.isMainNetwork && !ethereumNode.forkSide) {
+
+                    return new Q((resolve, reject) => {
+                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
                             primary: true,
                             electronOptions: {
                                 width: 640,
                                 height: 600,
                             },
                         });
+
+                        forkChoiceWindow.on('close', function(){
+                            app.quit();
+                        });
+
+                        // choose the fork side
+                        ipc.on('forkChoice_choosen', function(e, forkSide) {
+
+                            log.debug('Fork side choice: ', forkSide);
+
+                            // set forkside
+                            ethereumNode.forkSide = forkSide;
+                            
+                            ethereumNode.restart(ethereumNode.type, 'main')
+                                .then(function nodeRestarted() {
+                                    appMenu();
+
+                                    // prevent that it closes the app
+                                    forkChoiceWindow.removeAllListeners('close');
+                                    forkChoiceWindow.close();
+
+                                    ipc.removeAllListeners('forkChoice_choosen');
+
+                                    resolve();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+                    });
                 }
+            })
+            .then(function onboarding(resultData) {
 
                 if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');

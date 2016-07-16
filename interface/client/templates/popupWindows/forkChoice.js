@@ -12,7 +12,7 @@ Template['popupWindows_forkChoice'].events({
     @events
     */
     'click .fork-yes button': function(){
-        ipc.send('forkChoice_choosen', 'fork');
+        ipc.send('forkChoice_choosen', 'true');
     },
     /**
     Reject DAO fork
@@ -20,6 +20,15 @@ Template['popupWindows_forkChoice'].events({
     @events
     */
     'click .fork-no button': function(){
-        ipc.send('forkChoice_choosen', 'no-fork');
+        ipc.send('forkChoice_choosen', 'false');
+    },
+    /**
+    Follow default
+
+    @events
+    */
+    'click .fork-whatever a': function(e){
+        e.preventDefault();
+        ipc.send('forkChoice_choosen', null);
     }
 });

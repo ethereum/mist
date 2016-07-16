@@ -319,13 +319,10 @@ app.on('ready', function() {
                 // update menu, to show node switching possibilities
                 appMenu();
             })
-            .then(function getAccounts() {
-                return ethereumNode.send('eth_accounts', []);
-            })
             // FORK RELATED
             .then(function hardForkOption() {
                 // open the fork popup
-                if (ethereumNode.isMainNetwork && !ethereumNode.forkSide) {
+                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
 
                     return new Q((resolve, reject) => {
                         var forkChoiceWindow = Windows.createPopup('forkChoice', {
@@ -341,22 +338,26 @@ app.on('ready', function() {
                         });
 
                         // choose the fork side
-                        ipc.on('forkChoice_choosen', function(e, forkSide) {
+                        ipc.on('forkChoice_choosen', function(e, daoFork) {
+                            // prevent that it closes the app
+                            forkChoiceWindow.removeAllListeners('close');
+                            forkChoiceWindow.close();
 
-                            log.debug('Fork side choice: ', forkSide);
+                            ipc.removeAllListeners('forkChoice_choosen');
+
+                            log.debug('Enable DAO Fork? ', daoFork);
+
+                            // no need to restart
+                            if(!daoFork)
+                                return resolve();
 
                             // set forkside
-                            ethereumNode.forkSide = forkSide;
+                            ethereumNode.daoFork = daoFork;
                             
+                            // start node
                             ethereumNode.restart(ethereumNode.type, 'main')
                                 .then(function nodeRestarted() {
                                     appMenu();
-
-                                    // prevent that it closes the app
-                                    forkChoiceWindow.removeAllListeners('close');
-                                    forkChoiceWindow.close();
-
-                                    ipc.removeAllListeners('forkChoice_choosen');
 
                                     resolve();
                                 })
@@ -368,6 +369,9 @@ app.on('ready', function() {
                         });
                     });
                 }
+            })
+            .then(function getAccounts() {
+                return ethereumNode.send('eth_accounts', []);
             })
             .then(function onboarding(resultData) {
 

@@ -524,7 +524,7 @@ class EthereumNode extends EventEmitter {
 
 
     _buildFilePath (path) {
-        return global.path.USERDATA + '/' + path;   
+        return Settings.userDataPath + '/' + path;   
     }
 
 }

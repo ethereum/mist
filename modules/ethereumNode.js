@@ -123,11 +123,14 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init () {
+
+
         const ipcPath = getIpcPath();
 
         // TODO: if connection to external node is successful then query it to
         // determine node and network type
 
+        // check if the node is already running
         return this._socket.connect({path: ipcPath})
             .then(()=> {
                 this.state = STATES.CONNECTED;
@@ -140,6 +143,7 @@ class EthereumNode extends EventEmitter {
                 log.info(`Node type: ${this.defaultNodeType}`);
                 log.info(`Network: ${this.defaultNetwork}`);
 
+                // if not, start node yourself
                 return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
@@ -288,6 +292,9 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('node', this._type);
                 this._saveUserData('network', this._network);
 
+                // FORK RELATED
+                this._saveUserData('daoFork', this.daoFork);
+
                 return this._socket.connect({ path: ipcPath }, {
                         timeout: 30000 /* 30s */
                     })  
@@ -370,6 +377,10 @@ class EthereumNode extends EventEmitter {
                     args = (nodeType === 'geth') 
                         ? ['--fast', '--cache', '512'] 
                         : ['--unsafe-transactions'];
+
+                    // FORK RELATED
+                    if(nodeType === 'geth' && this.daoFork)
+                        args.push((this.daoFork === 'true') ? '--support-dao-fork' : '--oppose-dao-fork');
                 }
 
                 let nodeOptions = Settings.nodeOptions;
@@ -502,6 +513,9 @@ class EthereumNode extends EventEmitter {
 
         this.defaultNodeType = Settings.nodeType || this._loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || this._loadUserData('network') || DEFAULT_NETWORK;
+        
+        // FORK RELATED
+        this.daoFork = this._loadUserData('daoFork');
     }
 
 
@@ -521,6 +535,8 @@ class EthereumNode extends EventEmitter {
 
 
     _saveUserData (path, data) {
+        if(!data) return; // return so we dont write null, or other invalid data
+
         const fullPath = this._buildFilePath(path);
 
         try {

@@ -24,8 +24,12 @@ var createMenu = function(webviews) {
 };
 
 
-const restartNode = function(newType, newNetwork) {
+const restartNode = function(newType, newNetwork, daoFork) { // FORK RELATED
     newNetwork = newNetwork || ethereumNode.network;
+
+    // FORK RELATED
+    if(daoFork)
+        ethereumNode.daoFork = daoFork;
 
     log.info('Switch node', newType, newNetwork);
 
@@ -351,7 +355,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: [
               {
-                label: 'Geth 1.4.7 (Go)',
+                label: 'Geth 1.4.10 (Go)',
                 checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
@@ -396,6 +400,31 @@ var menuTempl = function(webviews) {
             }
           }
     ]});
+
+    // add fork support
+    devToolsMenu.push({
+        label: i18n.t('"The DAO" Fork'),
+        submenu: [
+          {
+            label: 'Support DAO Fork',//i18n.t('mist.applicationMenu.develop.mainNetwork'),
+            checked: ethereumNode.isOwnNode && (ethereumNode.daoFork !== 'false'),
+            enabled: ethereumNode.isOwnNode && (ethereumNode.daoFork === 'false'),
+            type: 'checkbox',
+            click: function(){
+                restartNode(ethereumNode.type, ethereumNode.network, 'true');
+            }
+          },
+          {
+            label: 'Don\'t Support DAO Fork',
+            checked: ethereumNode.isOwnNode && (ethereumNode.daoFork === 'false'),
+            enabled: ethereumNode.isOwnNode && (ethereumNode.daoFork !== 'false'),
+            type: 'checkbox',
+            click: function(){
+                restartNode(ethereumNode.type, ethereumNode.network, 'false');
+            }
+          }
+    ]});
+
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),

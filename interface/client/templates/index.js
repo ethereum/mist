@@ -24,47 +24,11 @@ Template.body.helpers({
         } else {
             var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
-            console.log('renderWindow', renderWindow, renderWindow.length, 'popupWindows_' + renderWindow[1]);
-
             if (renderWindow.length>0)
                 return 'popupWindows_' + renderWindow[1];
             else 
-                return true;
+                return false;
         }
-        // if(~location.hash.indexOf('#loadingWindow')) {
-        //     return 'popupWindows_loadingWindow';
-        // }
-        // if(~location.hash.indexOf('#updateAvailable')) {
-        //     return 'popupWindows_updateAvailable';
-        // }
-        // if(~location.hash.indexOf('#splashScreen')) {
-        //     return 'popupWindows_splashScreen';
-        // }
-        // if(~location.hash.indexOf('#onboardingScreen')) {
-        //     return 'popupWindows_onboardingScreen';
-        // }
-        // if(~location.hash.indexOf('#importAccount')) {
-        //     return 'popupWindows_importAccount';
-        // }
-        // if(~location.hash.indexOf('#about')) {
-        //     return 'popupWindows_about';
-        // }
-        // if(location.hash === '#requestAccount') {
-        //     // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-        //     return 'popupWindows_requestAccount';
-        // }
-        // if(location.hash === '#unlockMasterPassword') {
-        //     // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-        //     return 'popupWindows_unlockMasterPassword';
-        // }
-        // if(location.hash === '#sendTransactionConfirmation') {
-        //     // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-        //     return 'popupWindows_sendTransactionConfirmation';
-        // }        
-        // if(location.hash === '#forkChoice') {
-        //     // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-        //     return 'popupWindows_forkChoice';
-        // }
     }
 });
 

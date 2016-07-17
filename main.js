@@ -20,6 +20,7 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 
+
 const Settings = require('./modules/settings');
 Settings.init();
 
@@ -445,7 +446,6 @@ var onReady = function() {
             }); /* socket connected to geth */;
 
     }; /* kick start */
-
 
     if (splashWindow) {
         splashWindow.on('ready', kickStart);

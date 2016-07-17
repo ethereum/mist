@@ -329,7 +329,7 @@ var onReady = function() {
                             primary: true,
                             electronOptions: {
                                 width: 640,
-                                height: 600,
+                                height: 580,
                             },
                         });
 

@@ -364,9 +364,10 @@ var menuTempl = function(webviews) {
                 }
               },
               {
-                label: 'Eth 1.2.9 (C++) [experimental!]',
-                checked: ethereumNode.isOwnNode && ethereumNode.isEth,
-                enabled: ethereumNode.isOwnNode,
+                label: 'Eth 1.2.9 (C++) [no hardfork support!]',
+                /*checked: ethereumNode.isOwnNode && ethereumNode.isEth,
+                enabled: ethereumNode.isOwnNode,*/
+                enabled: false,
                 type: 'checkbox',
                 click: function(){
                     restartNode('eth');

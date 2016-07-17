@@ -167,7 +167,6 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
-<<<<<<< HEAD
     // if using HTTP RPC then inform user
     if ('http' === Settings.rpcMode) {
         dialog.showErrorBox('Insecure RPC connection', `
@@ -178,7 +177,7 @@ This is less secure than using local IPC - your passwords will be sent over the 
 Only do this if you have secured your HTTP connection or you know what you are doing.
 `);
     }
-=======
+
     // initialise the db
     global.db.init().then(onReady).catch((err) => {
         log.error(err);
@@ -192,7 +191,6 @@ Only do this if you have secured your HTTP connection or you know what you are d
 var onReady = function() {
     // sync minimongo
     syncMinimongo.backendSync(global.db.Tabs);
->>>>>>> develop
 
     // Initialise window mgr
     Windows.init();

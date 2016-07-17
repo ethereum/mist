@@ -397,8 +397,13 @@ var menuTempl = function(webviews) {
             click: function(){
                 restartNode(ethereumNode.type, 'test');
             }
-          },
-          // FORK RELATED
+          }
+    ]});
+
+    // add fork support
+    devToolsMenu.push({
+        label: i18n.t('"The DAO" Fork'),
+        submenu: [
           {
             label: 'Support DAO Fork',//i18n.t('mist.applicationMenu.develop.mainNetwork'),
             checked: ethereumNode.isOwnNode && (ethereumNode.daoFork !== 'false'),
@@ -418,6 +423,7 @@ var menuTempl = function(webviews) {
             }
           }
     ]});
+
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),

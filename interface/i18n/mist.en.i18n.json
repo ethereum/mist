@@ -235,14 +235,13 @@
                 }
             },
             "daoFork" : {
-                "title": "The DAO Hard Fork option",
-                "overview": "A Hard Fork will happen on <strong>block #1920000</strong>, which will be around <strong>July 20th 2016</strong>.<br>At this point the network will split and on the Fork chain the Ether balance of contract <strong>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</strong> (commonly referred to as \"The DAO\") and all of its descendants will be moved to a withdraw contract due to an exploited bug in the original contract. This will allow authenticated holders of \"The DAO\" tokens to redeem their ether.",
-                "choice" : "<strong> This is a setting, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choice, regardless of any other users choices. Your ether and assets will exist in both chains and you will be able to switch back later date, if you resync Mist.<br>(Note: Transfers on the chain you choose will not be existing on the other chain, after block 1920000).",
-                "question": "Do you want to activate the chain in where funds from \"The DAO's\" will be moved to a withdraw contract?",
-                "learnMore": "Learn more about the issue",
+                "title": "Important decision affecting your app",
+                "overview": "A new community-created blockchain will be available for activation at block #1920000, which is expected to arrive on July 20th 2016, in which the Ether balance of contract 0xbb9bc244d798123fde783fcc1c72d3bb8c189413 (commonly referred to as \"The DAO\") and all of its descendants will be moved to a withdraw contract due to an exploited bug in the original contract. This should restore funds from all contracts linked to the exploit and allow authenticated holders of \"The DAO\" tokens to redeem it for ether.",
+                "choice" : "<strong> This is a settings configuration, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choosing regardless of any other user's choice. Your ether and assets will exist in both chains and you will be able to switch back at a later date by resyncing your wallet.",
+                "question": "Do you want to activate the chain in which funds linked to the exploit are restored to a contract where they can be withdrawn by \"The DAO\" token holders?",
+                "disclaimer": "DISCLAIMER: READ BEFORE PROCEEDING",
                 "yes": "yes",
-                "no": "no",
-                "whatever": "I want to choose later and follow now the default for now<br>(\"The DAO\" fork, selected by a vote on carbonvote.com on july 15)" 
+                "no": "no"
             }
 
         }

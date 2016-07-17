@@ -4,7 +4,7 @@
             <h1> {{i18n "mist.popupWindows.daoFork.title"}} </h1>
             <p> {{{i18n "mist.popupWindows.daoFork.overview"}}} </p>
             <p>  {{{i18n "mist.popupWindows.daoFork.choice"}}} </p>
-            <p> <a href="" target="_blank">{{i18n "mist.popupWindows.daoFork.learnMore"}} </a>   </p>
+            <p> <a href="https://www.ethereum.org/agreement" target="_blank">{{i18n "mist.popupWindows.daoFork.disclaimer"}} </a>   </p>
             <h3> {{i18n "mist.popupWindows.daoFork.question"}}   </h3>
         </div>        
         
@@ -16,9 +16,6 @@
             <div class="col col-6 fork-yes">
                 <button class="dapp-block-button"> {{{i18n "mist.popupWindows.daoFork.yes"}}} </button>
             </div>
-            <div class="col col-12 fork-whatever">
-                <a href=""> {{{i18n "mist.popupWindows.daoFork.whatever"}}} </a>
-            </div>
         </div> 
         {{else}}
         <div class="row clear">
@@ -27,9 +24,6 @@
             </div>
             <div class="col col-6 fork-no">
                 <button class="dapp-block-button"> {{{i18n "mist.popupWindows.daoFork.no"}}} </button>
-            </div>
-            <div class="col col-12 fork-whatever">
-                <a href="#"> {{{i18n "mist.popupWindows.daoFork.whatever"}}} </a>
             </div>
         </div> 
         {{/if}} 

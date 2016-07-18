@@ -184,7 +184,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Warten Sie noch einige Sekunden, bis der Node gestartet ist, und versuchen Sie es dann noch einmal",
                     "unknownFile": "Datei nicht erkannt.",
-                    "passwordError": "Falsches Passwort.",
+                    "wrongPassword": "Falsches Passwort.",
                     "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
                 }
             }

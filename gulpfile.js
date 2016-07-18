@@ -10,6 +10,7 @@ var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
 var decompress = require('gulp-decompress');
 var tap = require("gulp-tap");
+const mocha = require('gulp-spawn-mocha');
 // const zip = require('gulp-zip');
 // var zip = require('gulp-zip');
 // var zip = require('gulp-jszip');
@@ -39,13 +40,13 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = '1.2.5';
-var gethVersion = '1.4.7';
+var gethVersion = '1.4.10';
 var nodeUrls = {
-    'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/geth-OSX-2016061509421-1.4.7-667a386.zip',
-    'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/geth-Linux64-20160615125500-1.4.7-667a386.tar.bz2',
-    'win32-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.7/Geth-Win64-20160615094032-1.4.7-667a386.zip',
-    'linux-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.7-stable-667a386-linux-386.tar.bz2',
-    'win32-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.7-stable-667a386-windows-4.0-386.exe.zip'
+    'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
+    'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
+    'win32-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
+    'linux-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
+    'win32-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip'
 };
 
 var osVersions = [];
@@ -81,7 +82,6 @@ if(_.contains(options.platform, 'all')) {
         'win32-x64'
     ];
 }
-console.log('Bundling platforms: ', osVersions);
 
 
 // Helpers
@@ -278,7 +278,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
         } else {
             console.log('Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/'+ options.walletSource +' "'+ options.walletSource +'" branch...');
             exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
-                 'cd ../dist_'+ type +'/ && git clone https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
+                 'cd ../dist_'+ type +'/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
                 console.log(stdout);
                 console.log(stderr);
 
@@ -299,6 +299,8 @@ gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
 });
 
 gulp.task('create-binaries', ['copy-i18n'], function(cb) {
+    console.log('Bundling platforms: ', osVersions);
+
     packager({
         dir: './dist_'+ type +'/app/',
         out: './dist_'+ type +'/',
@@ -499,8 +501,8 @@ gulp.task('taskQueue', [
     'create-binaries',
     'change-files',
     //'cleanup-files',
-    'rename-folders',
-    // 'zip'
+    'rename-folders'
+    // 'zip',
 ]);
 
 // DOWNLOAD nodes
@@ -531,6 +533,20 @@ gulp.task('wallet-checksums', [
     'getChecksums'
 ]);
 
-gulp.task('default', ['mist']);
 
+
+gulp.task('test-wallet', function() {
+    return gulp.src([
+        './test/wallet/*.test.js'
+    ])
+    .pipe(mocha({
+        timeout: 60000,
+        ui: 'exports',
+        reporter: 'spec'
+    }));
+});
+
+
+
+gulp.task('default', ['mist']);
 

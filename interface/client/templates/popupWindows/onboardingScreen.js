@@ -295,7 +295,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
                 if(error === 'Decryption Failed') {
                     GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.passwordError'),
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.wrongPassword'),
                         duration: 4
                     });
                 } else {

@@ -7,7 +7,7 @@ if(location.hash)
 
 // set browser as default tab
 if(!LocalStore.get('selectedTab'))
-    LocalStore.set('selectedTab', 'browser');
+    LocalStore.set('selectedTab', 'wallet');
 
 /**
 The init function of Mist
@@ -23,25 +23,24 @@ mistInit = function(){
         Tabs.remove({});
     }
 
-    setInterval(function(){
-        if(!Tabs.findOne('browser')) {
-            console.debug('Insert tabs');
 
-            Tabs.insert({
-                _id: 'browser',
-                url: 'https://ethereum.org',
-                position: 0
-            });
-        }
-        
-        Tabs.upsert({_id: 'wallet'}, {
-            url: 'https://wallet.ethereum.org',
-            position: 1,
-            permissions: {
-                admin: true
-            }
+    if(!Tabs.findOne('browser')) {
+        console.debug('Insert tabs');
+
+        Tabs.insert({
+            _id: 'browser',
+            url: 'https://ethereum.org',
+            position: 0
         });
-    }, 1000);
+    }
+
+    Tabs.upsert({_id: 'wallet'}, {
+        url: 'https://wallet.ethereum.org',
+        position: 1,
+        permissions: {
+            admin: true
+        }
+    });
 
 
     EthAccounts.init();

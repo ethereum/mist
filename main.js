@@ -12,7 +12,6 @@ const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
 const timesync = require("os-timesync");
-const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
 const packageJson = require('./package.json');
@@ -20,6 +19,7 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
+
 
 const Settings = require('./modules/settings');
 Settings.init();
@@ -35,29 +35,19 @@ if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
+
 // logging setup
 const log = logger.create('main');
 
-// GLOBAL Variables
-global.path = {
-    HOME: app.getPath('home'),
-    APPDATA: app.getPath('appData'), // Application Support/
-    USERDATA: app.getPath('userData') // Application Aupport/Mist
-};
+if (Settings.inAutoTestMode) {
+    log.info('AUTOMATED TESTING');
+}
+
+log.info(`Running in production mode: ${Settings.inProductionMode}`);
 
 
-global.dirname  = __dirname;
-
-global.version = Settings.appVersion;
-global.license = Settings.appLicense;
-
-global.production = Settings.inProductionMode;
-log.info(`Running in production mode: ${global.production}`);
-
-global.mode = Settings.uiMode;
-
-global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
-
+// db
+const db = global.db = require('./modules/db');
 
 
 require('./modules/ipcCommunicator.js');
@@ -70,12 +60,13 @@ global.webviews = [];
 
 global.mining = false;
 
-global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
+global.icon = __dirname +'/icons/'+ Settings.uiMode +'/icon.png';
+global.mode = Settings.uiMode;
+global.dirname = __dirname;
 
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
-global.Tabs = Minimongo('tabs');
 
 
 // INTERFACE PATHS
@@ -83,13 +74,13 @@ global.interfaceAppUrl;
 global.interfacePopupsUrl;
 
 // WALLET
-if(global.mode === 'wallet') {
+if(Settings.uiMode === 'wallet') {
     log.info('Starting in Wallet mode');
 
-    global.interfaceAppUrl = (global.production)
+    global.interfaceAppUrl = (Settings.inProductionMode)
         ? 'file://' + __dirname + '/interface/wallet/index.html'
         : 'http://localhost:3050';
-    global.interfacePopupsUrl = (global.production)
+    global.interfacePopupsUrl = (Settings.inProductionMode)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
@@ -97,7 +88,7 @@ if(global.mode === 'wallet') {
 } else {
     log.info('Starting in Mist mode');
 
-    let url = (global.production)
+    let url = (Settings.inProductionMode)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
@@ -129,26 +120,36 @@ app.on('open-url', function (e, url) {
 });
 
 
-var killedSockets = false;
+var killedSocketsAndNodes = false;
 
 app.on('before-quit', function(event){
-    if(!killedSockets) {
+    if(!killedSocketsAndNodes) {
+        log.info('Defer quitting until sockets and node are shut down');
+
         event.preventDefault();
+
+        // sockets manager
+        Sockets.destroyAll()
+            .catch((err) => {
+                log.error('Error shutting down sockets');
+            });
+
+        // delay quit, so the sockets can close
+        setTimeout(function(){
+            ethereumNode.stop()
+            .then(function() {
+                killedSocketsAndNodes = true;
+
+                return db.close();
+            })
+            .then(function() {
+                app.quit(); 
+            });
+
+        }, 500);
+    } else {
+        log.info('About to quit...');
     }
-
-    // sockets manager
-    Sockets.destroyAll()
-        .catch((err) => {
-            log.error('Error shutting down sockets');
-        });
-
-    // delay quit, so the sockets can close
-    setTimeout(function(){
-        ethereumNode.stop().then(function() {
-            killedSockets = true;
-            app.quit(); 
-        });
-    }, 500);
 });
 
 
@@ -159,11 +160,27 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    // initialise the db
+    global.db.init().then(onReady).catch((err) => {
+        log.error(err);
+
+        app.quit();
+    });
+});
+
+
+
+var onReady = function() {
+    // sync minimongo
+    syncMinimongo.backendSync(global.db.Tabs);
+
     // Initialise window mgr
     Windows.init();
 
     // check for update
-    require('./modules/updateChecker').run();
+    if (!Settings.inAutoTestMode) {
+        require('./modules/updateChecker').run();
+    }
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
@@ -177,7 +194,7 @@ app.on('ready', function() {
     // Create the browser window.
 
     // MIST
-    if(global.mode === 'mist') {
+    if(Settings.uiMode === 'mist') {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
@@ -191,8 +208,6 @@ app.on('ready', function() {
                 }
             }
         });
-
-        syncMinimongo(Tabs, mainWindow.webContents);
 
     // WALLET
     } else {
@@ -210,22 +225,24 @@ app.on('ready', function() {
         });
     }
 
-    splashWindow = Windows.create('splash', {
-        primary: true,
-        url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
-        show: true,
-        electronOptions: {
-            width: 400,
-            height: 230,
-            resizable: false,
-            backgroundColor: '#F6F6F6',
-            useContentSize: true,
-            frame: false,
-            webPreferences: {
-                preload: __dirname +'/modules/preloader/splashScreen.js',
+    if (!Settings.inAutoTestMode) {
+        splashWindow = Windows.create('splash', {
+            primary: true,
+            url: global.interfacePopupsUrl + '#splashScreen_'+ Settings.uiMode,
+            show: true,
+            electronOptions: {
+                width: 400,
+                height: 230,
+                resizable: false,
+                backgroundColor: '#F6F6F6',
+                useContentSize: true,
+                frame: false,
+                webPreferences: {
+                    preload: __dirname +'/modules/preloader/splashScreen.js',
+                }
             }
-        }
-    });
+        });
+    }
 
     // check time sync
     // var ntpClient = require('ntp-client');
@@ -248,7 +265,7 @@ app.on('ready', function() {
     });
 
 
-    splashWindow.on('ready', function() {
+    const kickStart = function() {
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
             Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
@@ -303,10 +320,62 @@ app.on('ready', function() {
                 // update menu, to show node switching possibilities
                 appMenu();
             })
+            // FORK RELATED
+            .then(function hardForkOption() {
+                // open the fork popup
+                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
+
+                    return new Q((resolve, reject) => {
+                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
+                            primary: true,
+                            electronOptions: {
+                                width: 640,
+                                height: 580,
+                            },
+                        });
+
+                        forkChoiceWindow.on('close', function(){
+                            app.quit();
+                        });
+
+                        // choose the fork side
+                        ipc.on('forkChoice_choosen', function(e, daoFork) {
+                            // prevent that it closes the app
+                            forkChoiceWindow.removeAllListeners('close');
+                            forkChoiceWindow.close();
+
+                            ipc.removeAllListeners('forkChoice_choosen');
+
+                            log.debug('Enable DAO Fork? ', daoFork);
+
+                            // no need to restart
+                            if(!daoFork)
+                                return resolve();
+
+                            // set forkside
+                            ethereumNode.daoFork = daoFork;
+                            
+                            // start node
+                            ethereumNode.restart(ethereumNode.type, 'main')
+                                .then(function nodeRestarted() {
+                                    appMenu();
+
+                                    resolve();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+                    });
+                }
+            })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
             })
             .then(function onboarding(resultData) {
+
                 if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
@@ -353,15 +422,21 @@ app.on('ready', function() {
                             resolve();
                         });
 
-                        splashWindow.hide();
+                        if (splashWindow) {
+                            splashWindow.hide();
+                        }
                     });
                 }
             })
             .then(function doSync() {
                 // we're going to do the sync - so show splash
-                splashWindow.show();
+                if (splashWindow) {
+                    splashWindow.show();
+                }
 
-                return syncResultPromise;
+                if (!Settings.inAutoTestMode) {
+                    return syncResultPromise;
+                }
             })
             .then(function allDone() {
                 startMainWindow();
@@ -370,9 +445,15 @@ app.on('ready', function() {
                 log.error('Error starting up node and/or syncing', err);
             }); /* socket connected to geth */;
 
-    }); /* on splash screen loaded */
+    }; /* kick start */
 
-}); /* on app ready */
+    if (splashWindow) {
+        splashWindow.on('ready', kickStart);
+    } else {
+        kickStart();
+    }
+
+}; /* onReady() */
 
 
 
@@ -385,7 +466,9 @@ var startMainWindow = function() {
     log.info('Loading Interface at '+ global.interfaceAppUrl);
 
     mainWindow.on('ready', function() {
-        splashWindow.close();
+        if (splashWindow) {
+            splashWindow.close();
+        }
 
         mainWindow.show();
     });
@@ -397,9 +480,23 @@ var startMainWindow = function() {
         app.quit();
     });
 
-    // instantiate the application menu
-    Tracker.autorun(function(){
-        global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
-        appMenu(global.webviews);
-    });
+    // observe Tabs for changes and refresh menu
+    let sortedTabs = global.db.Tabs.addDynamicView('sorted_tabs');
+    sortedTabs.applySimpleSort('position', false);
+
+    let refreshMenu = function() {
+        clearTimeout(global._refreshMenuFromTabsTimer);
+
+        global._refreshMenuFromTabsTimer = setTimeout(function() {
+            log.debug('Refresh menu with tabs');
+
+            global.webviews = sortedTabs.data();
+
+            appMenu(global.webviews);            
+        }, 200);
+    };
+
+    global.db.Tabs.on('insert', refreshMenu);
+    global.db.Tabs.on('update', refreshMenu);
+    global.db.Tabs.on('delete', refreshMenu);
 };

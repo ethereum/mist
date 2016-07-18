@@ -20,7 +20,7 @@ try {
 
 
 const argv = require('yargs')
-    .usage('Usage: $0 [Mist options] -- [Node options]')
+    .usage('Usage: $0 [Mist options] [Node options]')
     .option({
         mode: {
             alias: 'm',
@@ -117,7 +117,7 @@ const argv = require('yargs')
             type: 'boolean',
         },
         '': {
-            describe: 'All options will be passed onto the node (e.g. Geth).',
+            describe: 'All options prefixed with --node- (e.g. "--node-datadir") will be passed onto the client (e.g. Geth).',
             group: 'Node options:',
         }
     })

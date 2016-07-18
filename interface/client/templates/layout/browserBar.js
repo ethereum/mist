@@ -144,14 +144,18 @@ Template['layout_browserBar'].events({
     */
     'click .app-bar > button.accounts': function(e, template) {
         mist.requestAccount(function(e, addresses){
-            var tabId = LocalStore.get('selectedTab');
+            var tabId;
+
+            mist.syncMinimongo.frontendSync(Tabs);
+            
+            tabId = LocalStore.get('selectedTab');
 
             // set new permissions
             Tabs.update(tabId, {$set: {
                 'permissions.accounts': addresses
             }});
 
-            Helpers.getWebview(tabId).reload();
+            // Helpers.getWebview(tabId).reload();
         });
     },
     /* 

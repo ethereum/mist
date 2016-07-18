@@ -12,13 +12,14 @@ var pinToSidebar = function() {
             position: Tabs.find().count() + 1
         });
 
-        // move the current browser tab to the last visited page
-        var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
-        Tabs.update('browser', {
-            url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
-            redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
-        });
-
+        if (selectedTab == 'browser') {
+            // move the current browser tab to the last visited page
+            var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
+            Tabs.update('browser', {
+                url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
+                redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
+            });
+        }
         LocalStore.set('selectedTab', id);
     }
 };

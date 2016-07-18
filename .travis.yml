@@ -17,10 +17,10 @@ before_script:
   - "curl https://install.meteor.com/ | sh"
   - "npm install -g electron-prebuilt@1.2.2"
   - "npm install -g meteor-build-client"
+  - "gulp update-nodes"
 
 script:
   - "npm run ci"
-  - "gulp update-nodes"
 
 notifications:
   email:

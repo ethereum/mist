@@ -5,7 +5,6 @@
 require('./include/common')('mist');
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
-const syncMinimongo = require('../syncMinimongo.js');
 const remote = electron.remote;
 const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
@@ -34,7 +33,6 @@ setTimeout(function(){
 }, 1000);
 
 window.mist = mist();
-window.syncMinimongo = syncMinimongo;
 window.ipc = ipc;
 
 

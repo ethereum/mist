@@ -9,9 +9,8 @@ var electron = require('electron');
 /**
  * Sync IPC calls received from given window into given db table.
  * @param  {Object} coll Db collection to save to.
- * @param  {Window} wnd     Window to listen to.
  */
-exports.backendSync = function(coll, wnd) {
+exports.backendSync = function(coll) {
     var log = require('./utils/logger').create('syncMinimongo/' + coll.name);
 
     var ipc = electron.ipcMain;
@@ -47,7 +46,7 @@ exports.backendSync = function(coll, wnd) {
     });
 
     ipc.on('minimongo-removed', function(event, args) {
-        log.trace('minimongo-removed', _id);
+        log.trace('minimongo-removed', args._id);
 
         var _id = args._id;
 
@@ -87,6 +86,26 @@ exports.backendSync = function(coll, wnd) {
 exports.frontendSync = function(coll) {
     var ipc = electron.ipcRenderer;
 
+    var repopulating = true;
+
+    coll.find().observeChanges({
+        'added': function(id, fields){            
+            if (!repopulating) {
+                ipc.send('minimongo-add', {_id: id, fields: fields});
+            }
+        },
+        'changed': function(id, fields){
+            if (!repopulating) {
+                ipc.send('minimongo-changed', {_id: id, fields: fields});
+            }
+        },
+        removed: function(id) {
+            if (!repopulating) {
+                ipc.send('minimongo-removed', {_id: id});
+            }
+        }
+    });
+
     let dataStr = ipc.sendSync('minimongo-reloadSync');
 
     if (dataStr) {
@@ -97,19 +116,9 @@ exports.frontendSync = function(coll) {
         JSON.parse(dataStr).forEach(function(record) {
             coll.insert(record);
         });
-    }
 
-    coll.find().observeChanges({
-        'added': function(id, fields){            
-            ipc.send('minimongo-add', {_id: id, fields: fields});
-        },
-        'changed': function(id, fields){
-            ipc.send('minimongo-changed', {_id: id, fields: fields});
-        },
-        removed: function(id) {
-            ipc.send('minimongo-removed', {_id: id});
-        }
-    });
+        repopulating = false;
+    }
 };
 
 

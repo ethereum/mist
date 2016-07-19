@@ -6,17 +6,23 @@
 var electron = require('electron');
 
 
+
 /**
  * Sync IPC calls received from given window into given db table.
  * @param  {Object} coll Db collection to save to.
  */
-exports.backendSync = function(coll) {
-    var log = require('./utils/logger').create('syncMinimongo/' + coll.name);
+exports.backendSync = function() {
+    var log = require('./utils/logger').create('syncMinimongo');
+
+    var db = require('./db');
 
     var ipc = electron.ipcMain;
 
     ipc.on('minimongo-add', function(event, args) {
-        log.trace('minimongo-add', args._id);
+        var collName = args.collName,
+            coll = db.getCollection(collName);
+
+        log.trace('minimongo-add', collName, args._id);
 
         var _id = args._id;
 
@@ -28,7 +34,10 @@ exports.backendSync = function(coll) {
     });
 
     ipc.on('minimongo-changed', function(event, args) {
-        log.trace('minimongo-changed', args._id);
+        var collName = args.collName,
+            coll = db.getCollection(collName);
+
+        log.trace('minimongo-changed', collName, args._id);
 
         var _id = args._id;
 
@@ -46,7 +55,10 @@ exports.backendSync = function(coll) {
     });
 
     ipc.on('minimongo-removed', function(event, args) {
-        log.trace('minimongo-removed', args._id);
+        var collName = args.collName,
+            coll = db.getCollection(collName);
+
+        log.trace('minimongo-removed', collName, args._id);
 
         var _id = args._id;
 
@@ -60,10 +72,13 @@ exports.backendSync = function(coll) {
     });
 
     // get all data (synchronous)
-    ipc.on('minimongo-reloadSync', function(event) {
+    ipc.on('minimongo-reloadSync', function(event, args) {
+        var collName = args.collName,
+            coll = db.getCollection(collName);
+
         var docs = coll.find();
 
-        log.debug('minimongo-reloadSync, no. of docs:', docs.length);
+        log.debug('minimongo-reloadSync, no. of docs:', collName, docs.length);
 
         docs = docs.map(function(doc) {
             var ret = {};
@@ -83,10 +98,13 @@ exports.backendSync = function(coll) {
 
 
 
+
 exports.frontendSync = function(coll) {
     var ipc = electron.ipcRenderer;
 
-    console.debug('Reload collection from backend: ', coll._name);
+    var collName = coll._name;
+
+    console.debug('Reload collection from backend: ', collName);
 
     var syncDoneResolver = null;
     coll.onceSynced = new Promise(function(resolve, reject) {
@@ -95,7 +113,9 @@ exports.frontendSync = function(coll) {
 
 
     (new Promise(function(resolve, reject) {
-        var dataStr = ipc.sendSync('minimongo-reloadSync');
+        var dataStr = ipc.sendSync('minimongo-reloadSync', {
+            collName: collName
+        });
 
         if (!dataStr) {
             return resolve();
@@ -136,17 +156,28 @@ exports.frontendSync = function(coll) {
         // start watching for changes
         coll.find().observeChanges({
             'added': function(id, fields){            
-                ipc.send('minimongo-add', {_id: id, fields: fields});
+                ipc.send('minimongo-add', {
+                    collName: collName,
+                    _id: id, 
+                    fields: fields,
+                });
             },
             'changed': function(id, fields){
-                ipc.send('minimongo-changed', {_id: id, fields: fields});
+                ipc.send('minimongo-changed', {
+                    collName: collName,
+                    _id: id, 
+                    fields: fields,
+                });
             },
             removed: function(id) {
-                ipc.send('minimongo-removed', {_id: id});
+                ipc.send('minimongo-removed', {
+                    collName: collName,
+                    _id: id,
+                });
             }
         });
         
-        console.debug('Finished reloading collection from backend: ', coll._name);
+        console.debug('Finished reloading collection from backend: ', collName);
 
         syncDoneResolver();
     });

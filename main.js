@@ -172,7 +172,7 @@ app.on('ready', function() {
 
 var onReady = function() {
     // sync minimongo
-    syncMinimongo.backendSync(global.db.Tabs);
+    syncMinimongo.backendSync();
 
     // Initialise window mgr
     Windows.init();
@@ -481,7 +481,9 @@ var startMainWindow = function() {
     });
 
     // observe Tabs for changes and refresh menu
-    let sortedTabs = global.db.Tabs.addDynamicView('sorted_tabs');
+    const Tabs = global.db.getCollection('tabs');
+
+    let sortedTabs = Tabs.addDynamicView('sorted_tabs');
     sortedTabs.applySimpleSort('position', false);
 
     let refreshMenu = function() {
@@ -496,7 +498,7 @@ var startMainWindow = function() {
         }, 200);
     };
 
-    global.db.Tabs.on('insert', refreshMenu);
-    global.db.Tabs.on('update', refreshMenu);
-    global.db.Tabs.on('delete', refreshMenu);
+    Tabs.on('insert', refreshMenu);
+    Tabs.on('update', refreshMenu);
+    Tabs.on('delete', refreshMenu);
 };

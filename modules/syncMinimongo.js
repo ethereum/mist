@@ -113,10 +113,8 @@ exports.frontendSync = function(coll) {
 
         coll.remove({});
 
-        Tracker.afterFlush(function(){
-            JSON.parse(dataStr).forEach(function(record) {
-                coll.insert(record);
-            });
+        JSON.parse(dataStr).forEach(function(record) {
+            coll.insert(record);
         });
 
         repopulating = false;

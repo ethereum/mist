@@ -4,15 +4,23 @@ var pinToSidebar = function() {
     var selectedTab = Tabs.findOne(LocalStore.get('selectedTab'));
 
     if(selectedTab) {
-        var id = Tabs.insert({
-            url: selectedTab.url,
-            name: selectedTab.name,
-            menu: {},
-            menuVisible: false,
-            position: Tabs.find().count() + 1
+        var existingUserTab = _.find(Tabs.find().fetch(), function(tab){
+          return tab._id !== 'browser' && tab.url == selectedTab.url;
         });
 
-        if (selectedTab == 'browser') {
+        if (!existingUserTab) {
+            var newTabId = Tabs.insert({
+                url: selectedTab.url,
+                name: selectedTab.name,
+                menu: {},
+                menuVisible: false,
+                position: Tabs.find().count() + 1
+            });
+            LocalStore.set('selectedTab', newTabId);
+        }
+
+        console.log('tab info', selectedTab);
+        if (selectedTab._id == 'browser') {
             // move the current browser tab to the last visited page
             var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
             Tabs.update('browser', {
@@ -20,7 +28,6 @@ var pinToSidebar = function() {
                 redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
             });
         }
-        LocalStore.set('selectedTab', id);
     }
 };
 
@@ -110,7 +117,7 @@ Template['popupWindows_connectAccount'].events({
         TemplateVar.set(template, 'accounts', accounts);
     },
     /** 
-    Closes the popup.
+    Closes the popup
 
     @event click .cancel
     */
@@ -118,27 +125,11 @@ Template['popupWindows_connectAccount'].events({
 		ipc.send('backendAction_closePopupWindow');
 	},
     /**
-    Stay Anonymous. Unassign all accounts for current tab.
-
-    @event click .stay-anonymous
-    */
-    'click .stay-anonymous': function(e) {
-        e.preventDefault();
-
-        var tabId = LocalStore.get('selectedTab');
-
-        updateSelectedTabAccounts([]);
-
-        // reload the webview
-        ipc.send('backendAction_sendToOwner');
-        ipc.send('backendAction_closePopupWindow');
-    },
-    /**
-    Confirm or cancel the accounts available for this dapp and reload the dapp.
+    - Confirm or cancel the accounts available for this dapp and reload the dapp.
 
     @event click button.confirm, click button.cancel
     */
-    'click .ok': function(e) {
+    'click .ok, click .stay-anonymous': function(e) {
         e.preventDefault();
 
         var accounts = TemplateVar.get('accounts');

@@ -5,6 +5,7 @@ const Q = require('bluebird');
 
 const log = require('../../utils/logger').create('method');
 const Windows = require('../../windows');
+const db = require('../../db');
 
 
 /**
@@ -79,7 +80,7 @@ module.exports = class BaseProcessor {
     _isAdminConnection (conn) {
         // main window or popupwindows - always allow requests
         let wnd = Windows.getById(conn.id);
-        let tab = global.db.Tabs.findOne({ webviewId: conn.id });
+        let tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
 
         return ((wnd && ('main' === wnd.type || wnd.isPopup)) ||
                 (tab && _.get(tab, 'permissions.admin') === true));

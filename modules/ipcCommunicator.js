@@ -8,6 +8,7 @@ const _ = global._;
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
+const fs = require('fs');
 const appMenu = require('./menuItems');
 
 const log = logger.create('ipcCommunicator');
@@ -119,7 +120,27 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
     const binPath = ClientBinaryManager.getClient('geth').binPath;
 
     // start import process
-    const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
+    fs.readFile(path, 'utf8', function (e, data) {
+        if(!e) {
+            try {
+                var wallet = JSON.parse(data); 
+            } catch (err) {
+                log.error("Wallet import: Cannot read file");
+                log.error(err);
+            }
+            if(data.indexOf('"ethaddr"') !== -1) {  // Presale wallet
+                console.info("presale");
+            } else if(data.indexOf('"address"') !== -1) {  // web3 secret storage wallet
+                console.info("myether");
+            } else {
+                log.warn("Wallet import: Cannot recognize format");
+            }
+        }
+    });
+
+    return false;  // temporary stopper
+
+    var nodeProcess = spawn(getNodePath('geth'), ['wallet', 'import', path]);
 
     nodeProcess.once('error', () => {
         error = true;

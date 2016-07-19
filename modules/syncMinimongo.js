@@ -86,39 +86,70 @@ exports.backendSync = function(coll) {
 exports.frontendSync = function(coll) {
     var ipc = electron.ipcRenderer;
 
-    var repopulating = true;
+    console.debug('Reload collection from backend: ', coll._name);
 
-    coll.find().observeChanges({
-        'added': function(id, fields){            
-            if (!repopulating) {
-                ipc.send('minimongo-add', {_id: id, fields: fields});
-            }
-        },
-        'changed': function(id, fields){
-            if (!repopulating) {
-                ipc.send('minimongo-changed', {_id: id, fields: fields});
-            }
-        },
-        removed: function(id) {
-            if (!repopulating) {
-                ipc.send('minimongo-removed', {_id: id});
-            }
-        }
+    var syncDoneResolver = null;
+    coll.onceSynced = new Promise(function(resolve, reject) {
+        syncDoneResolver = resolve;
     });
 
-    let dataStr = ipc.sendSync('minimongo-reloadSync');
 
-    if (dataStr) {
-        console.debug('Repopulate collection with backend data: ', coll._name);
+    (new Promise(function(resolve, reject) {
+        var dataStr = ipc.sendSync('minimongo-reloadSync');
 
-        coll.remove({});
+        if (!dataStr) {
+            return resolve();
+        }
 
-        JSON.parse(dataStr).forEach(function(record) {
-            coll.insert(record);
+        try {
+            coll.remove({});
+
+            var dataJson = JSON.parse(dataStr);
+
+            var done = 0;
+
+            // we do inserts slowly, to avoid race conditions when it comes
+            // to updating the UI
+            dataJson.forEach(function(record) {
+                Meteor.defer(function() {
+                    try {
+                        coll.insert(record);                
+                    } catch (err) {
+                        console.error(err.toString());                        
+                    }
+
+                    done++;
+
+                    if (done >= dataJson.length) {
+                        resolve();
+                    }
+                });
+            });                
+        } catch (err) {
+            reject(err);
+        }        
+    }))
+    .catch(function(err) {
+        console.error(err.toString());
+    })
+    .then(function() {
+        // start watching for changes
+        coll.find().observeChanges({
+            'added': function(id, fields){            
+                ipc.send('minimongo-add', {_id: id, fields: fields});
+            },
+            'changed': function(id, fields){
+                ipc.send('minimongo-changed', {_id: id, fields: fields});
+            },
+            removed: function(id) {
+                ipc.send('minimongo-removed', {_id: id});
+            }
         });
+        
+        console.debug('Finished reloading collection from backend: ', coll._name);
 
-        repopulating = false;
-    }
+        syncDoneResolver();
+    });
 };
 
 

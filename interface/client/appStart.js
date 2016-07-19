@@ -17,14 +17,6 @@ The init function of Mist
 mistInit = function(){
     console.info('Initialise Mist');
 
-    // check that it is not syncing before
-    web3.eth.getSyncing(function(e, sync) {
-        if(e || !sync) {
-            EthAccounts.init();
-            EthBlocks.init();
-        }
-    });
-
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {
             console.info('Resetting UI tabs');
@@ -49,12 +41,18 @@ mistInit = function(){
                 admin: true
             }
         });        
+    })
+    .then(function() {
+        window.trigger('mist-ready');
     });
 };
 
 
 Meteor.startup(function(){
     console.info('Meteor starting up...');
+
+    EthAccounts.init();
+    EthBlocks.init();
 
     mistInit();
 

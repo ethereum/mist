@@ -111,7 +111,7 @@ exports.frontendSync = function(coll) {
             // we do inserts slowly, to avoid race conditions when it comes
             // to updating the UI
             dataJson.forEach(function(record) {
-                Meteor.defer(function() {
+                Tracker.afterFlush(function() {
                     try {
                         coll.insert(record);                
                     } catch (err) {
@@ -150,6 +150,8 @@ exports.frontendSync = function(coll) {
 
         syncDoneResolver();
     });
+
+    return coll;
 };
 
 

@@ -20,6 +20,7 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 
+
 const Settings = require('./modules/settings');
 Settings.init();
 
@@ -338,10 +339,62 @@ var onReady = function() {
                 // update menu, to show node switching possibilities
                 appMenu();
             })
+            // FORK RELATED
+            .then(function hardForkOption() {
+                // open the fork popup
+                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
+
+                    return new Q((resolve, reject) => {
+                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
+                            primary: true,
+                            electronOptions: {
+                                width: 640,
+                                height: 580,
+                            },
+                        });
+
+                        forkChoiceWindow.on('close', function(){
+                            app.quit();
+                        });
+
+                        // choose the fork side
+                        ipc.on('forkChoice_choosen', function(e, daoFork) {
+                            // prevent that it closes the app
+                            forkChoiceWindow.removeAllListeners('close');
+                            forkChoiceWindow.close();
+
+                            ipc.removeAllListeners('forkChoice_choosen');
+
+                            log.debug('Enable DAO Fork? ', daoFork);
+
+                            // no need to restart
+                            if(!daoFork)
+                                return resolve();
+
+                            // set forkside
+                            ethereumNode.daoFork = daoFork;
+                            
+                            // start node
+                            ethereumNode.restart(ethereumNode.type, 'main')
+                                .then(function nodeRestarted() {
+                                    appMenu();
+
+                                    resolve();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+                    });
+                }
+            })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
             })
             .then(function onboarding(resultData) {
+
                 if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
@@ -412,7 +465,6 @@ var onReady = function() {
             }); /* socket connected to geth */;
 
     }; /* kick start */
-
 
     if (splashWindow) {
         splashWindow.on('ready', kickStart);

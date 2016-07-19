@@ -229,6 +229,7 @@ var menuTempl = function(webviews) {
         );
         ipc.emit("backendAction_setLanguage", {}, lang_code);
     }
+    let currentLanguage = i18n.getBestMatchedLangCode(global.language);
 
     let languageMenu =
     Object.keys(i18n.options.resources)
@@ -237,12 +238,12 @@ var menuTempl = function(webviews) {
         menuItem = {
             label: i18n.t('mist.applicationMenu.view.langCodes.' + lang_code),
             type: 'checkbox',
-            checked: (global.language.substr(0,2) === lang_code),
+            checked: (currentLanguage === lang_code),
             click: genSwitchLanguageFunc(lang_code)
         }
         return menuItem
     });
-    let defaultLang = app.getLocale().substr(0,2);    
+    let defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
     languageMenu.unshift({
         label:  i18n.t('mist.applicationMenu.view.default'),
         click: genSwitchLanguageFunc(defaultLang)

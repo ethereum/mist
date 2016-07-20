@@ -29,25 +29,33 @@ module.exports = function(type) {
     if (globallySetType) {
         resolvedPaths[type] = globallySetType;
     } else {
-        var binPath = (Settings.inProductionMode)
-            ? binaryPath.replace('nodes','node') + '/'+ type +'/'+ type
-            : binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type;
+        let binPath = path.join(
+            __dirname, 
+            '..', 
+            'nodes',
+            type,
+            `${process.platform}-${process.arch}`
+        );
 
-        if(Settings.inProductionMode) {
-            binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
-            
-            if(process.platform === 'darwin') {
-                binPath = path.resolve(binPath.replace('/node/', '/../node/'));
+        if (Settings.inProductionMode) {
+            if ('darwin' === process.platform) {
+                binPath = binPath.replace(
+                    'nodes', path.join('..', 'nodes')
+                );
             }
         }
 
+        binPath = path.resolve(binPath);
 
-        if(process.platform === 'win32') {
-            binPath = binPath.replace(/\/+/,'\\');
+        binPath = path.join(binPath, type);
+
+        if (process.platform === 'win32') {
             binPath += '.exe';
         }
 
         resolvedPaths[type] = binPath;
+
+        console.error(binPath);
     }
 
     log.debug(`Resolved path for ${type}: ${resolvedPaths[type]}`);

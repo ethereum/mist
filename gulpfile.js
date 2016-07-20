@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require("underscore");
 var path = require('path');
 var gulp = require('gulp');
@@ -21,6 +23,7 @@ const mocha = require('gulp-spawn-mocha');
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
+
 
 
 var options = minimist(process.argv.slice(2), {
@@ -260,17 +263,19 @@ gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function() {
     var streams = [];
 
     nodeVersions.map(function(os){
+        let destOs = os.replace('darwin', 'mac');
+
         // copy eth node binaries
         streams.push(gulp.src([
-            './nodes/eth/'+ os + '/*'
-            ])
-            .pipe(gulp.dest('./dist_'+ type +'/app')));
+            './nodes/eth/'+ os + '/eth*'
+        ])
+            .pipe(gulp.dest('./dist_'+ type +'/app/nodes/eth/' + destOs)));
 
         // copy geth node binaries
         streams.push(gulp.src([
-            './nodes/geth/'+ os + '/*'
-            ])
-            .pipe(gulp.dest('./dist_'+ type +'/app')));
+            './nodes/geth/'+ os + '/geth*'
+        ])
+            .pipe(gulp.dest('./dist_'+ type +'/app/nodes/geth/' + destOs)));
     });
 
     return merge.apply(null, streams);

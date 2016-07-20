@@ -1,3 +1,6 @@
+const electron = require('electron');
+const app = electron.app;
+
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 
@@ -17,7 +20,7 @@ try {
 
 
 const argv = require('yargs')
-    .usage('Usage: $0 [Mist options] -- [Node options]')
+    .usage('Usage: $0 [Mist options] [Node options]')
     .option({
         mode: {
             alias: 'm',
@@ -114,7 +117,7 @@ const argv = require('yargs')
             type: 'boolean',
         },
         '': {
-            describe: 'All options will be passed onto the node (e.g. Geth).',
+            describe: 'All options prefixed with --node- (e.g. "--node-datadir") will be passed onto the client (e.g. Geth).',
             group: 'Node options:',
         }
     })
@@ -152,12 +155,30 @@ class Settings {
     this._log = logger.create('Settings');    
   }
 
+  get userDataPath() {
+    // Application Aupport/Mist
+    return app.getPath('userData');
+  }
+
+  get appDataPath() {
+    // Application Support/
+    return app.getPath('appData');
+  }
+
+  get userHomePath() {
+    return app.getPath('home');
+  }
+
   get cli () {
     return argv;
   }
 
   get appVersion () {
     return packageJson.version;
+  }
+
+  get appName () {
+    return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
   }
 
   get appLicense () {
@@ -172,7 +193,7 @@ class Settings {
     return defaultConfig.production;
   }
 
-  get inTestMode () {
+  get inAutoTestMode () {
     return !!process.env.TEST_MODE;
   }
 

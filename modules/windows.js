@@ -5,6 +5,8 @@ const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Windows');
 
+const Settings = require('./settings');
+
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -27,7 +29,7 @@ class Window extends EventEmitter {
         this.ownerId = opts.ownerId;
 
         let electronOptions = {
-            title: global.appName,
+            title: Settings.appName,
             show: false,
             width: 1100,
             height: 720,
@@ -107,7 +109,7 @@ class Window extends EventEmitter {
     }
 
     send () {
-        if (!this.isContentReady) { 
+        if (this.isClosed || !this.isContentReady) { 
             return;
         }
 

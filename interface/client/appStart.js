@@ -23,6 +23,7 @@ mistInit = function(){
         Tabs.remove({});
     }
 
+
     if(!Tabs.findOne('browser')) {
         console.debug('Insert tabs');
 
@@ -40,6 +41,7 @@ mistInit = function(){
             admin: true
         }
     });
+
 
     EthAccounts.init();
     EthBlocks.init();

@@ -812,9 +812,9 @@
       "resolved": "https://registry.npmjs.org/electron-osx-sign/-/electron-osx-sign-0.3.1.tgz"
     },
     "electron-prebuilt": {
-      "version": "1.2.7",
+      "version": "1.2.5",
       "from": "electron-prebuilt@>=1.2.5 <2.0.0",
-      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-1.2.7.tgz"
+      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-1.2.5.tgz"
     },
     "electron-winstaller-fixed": {
       "version": "2.11.7",

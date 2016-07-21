@@ -49,7 +49,7 @@ module.exports = function(type) {
 
         binPath = path.join(binPath, type);
 
-        if (process.platform === 'win32') {
+        if ('win32' === process.platform) {
             binPath += '.exe';
         }
 

@@ -24,6 +24,7 @@ var fs = require('fs');
 var rcedit = require('rcedit');
 
 
+var builder = require('electron-builder');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -217,13 +218,12 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
 
 // CHECK FOR NODES
 
-var updatedNeeded = true;
+var nodeUpdateNeeded = false;
 gulp.task('checkNodes', function() {
-    return gulp.src('./nodes/geth/*.{zip,tar.bz2}' { read: false })
+    return gulp.src('./nodes/geth/*.{zip,tar.bz2}', { read: false })
     .pipe(tap(function(file, t) {
-        if(!!~file.path.indexOf('-'+ gethVersion +'-')) {
-            updatedNeeded = false;
-        }
+        nodeUpdateNeeded = 
+            nodeUpdateNeeded || (0 > file.path.indexOf(gethVersion));
     }))
     .pipe(gulp.dest('./nodes/geth/'));
 });
@@ -256,11 +256,14 @@ gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], fu
 });
 
 
-gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function() {
+gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done) {
     // check if nodes are there
-    if(updatedNeeded){
+    if(nodeUpdateNeeded){
         console.error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
-        throw new Error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
+
+        done(new Error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes'));
+
+        return;
     }
 
     var streams = [];
@@ -366,7 +369,8 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
             asar: true,
             files: [
               "**/*",
-              "!nodes"
+              "!nodes",
+              "build-dist.js",
             ],
             extraFiles: [
               "nodes/eth/${os}-${arch}",
@@ -389,9 +393,16 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
         'utf-8'
     );
 
+    // Copy build script
+    shell.cp(
+        path.join(__dirname, 'scripts', 'build-dist.js'), 
+        path.join(__dirname, 'dist_' + type, 'app')
+    );
+
+    // run build script
     var oses = '--' + options.platform.join(' --');
 
-    var ret = shell.exec(path.join(__dirname, 'node_modules/.bin/build ' + oses), {
+    var ret = shell.exec(`./build-dist.js --type ${type} ${oses}`, {
         cwd: path.join(__dirname, 'dist_' + type, 'app'),
     });
 
@@ -405,74 +416,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
 
         cb();
     }
-
-    // builder.build({
-    //     targets: Platform.MAC.createTarget(),
-    //     devMetadata: {
-    //         build: {
-    //             appId: "com.ethereum.mist." + type,
-    //             "app-category-type": "public.app-category.productivity",
-    //             asar: true,
-    //             extraResources: [
-    //                 "./dist_" + type + "/node/**/*"
-    //             ],
-    //             dmg: {
-    //                 background: "./dist_" + type + "/build/bg-homestead.jpg"
-    //             }
-    //         },
-    //         directories: {
-    //             buildResources: "./dist_" + type + "/build",
-    //             app: "./dist_" + type + "/app",
-    //             output: "./dist_" + type + "/dist",
-    //         },
-    //     },
-    // })
-    //   .then(() => {
-    //     cb();
-    //   })
-    //   .catch(cb);
 });
-
-
-
-// gulp.task('create-binaries', ['copy-i18n'], function(cb) {
-//     console.log('Bundling platforms: ', nodeVersions);
-
-//     packager({
-//         dir: './dist_'+ type +'/app/',
-//         out: './dist_'+ type +'/',
-//         name: filenameUppercase,
-//         platform: options.platform.join(','),
-//         arch: 'all',
-//         icon: './icons/'+ type +'/icon.icns',
-//         version: electronVersion,
-//         'app-version': version,
-//         'build-version': electronVersion,
-//         // DO AFTER: codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
-//         //'sign': '3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)',
-//         'app-bundle-id': 'com.ethereum.'+ type,
-//         'helper-bundle-id': 'com.ethereum.'+ type + '.helper',
-//         //'helper-bundle-id': 'com.github.electron.helper',
-//         // cache: './dist_'+ type +'/', // directory of cached electron downloads. Defaults to '$HOME/.electron'
-//         ignore: '', //do not copy files into App whose filenames regex .match this string
-//         prune: true,
-//         overwrite: true,
-//         asar: true,
-//         // sign: '',
-//         'version-string': {
-//             CompanyName: 'Stiftung Ethereum',
-//             // LegalCopyright
-//             // FileDescription
-//             // OriginalFilename
-//             ProductName: applicationName
-//             // InternalName: 
-//         }
-//     }, function(){
-//         setTimeout(function(){
-//             cb();
-//         }, 1000)
-//     });
-// });
 
 // FILE RENAMING
 
@@ -522,68 +466,68 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
 //});
 
 
-gulp.task('rename-folders', ['change-files'], function(done) {
-    var count = 0;
-    var called = false;
-    nodeVersions.forEach(function(os){
+// gulp.task('rename-folders', ['change-files'], function(done) {
+//     var count = 0;
+//     var called = false;
+//     nodeVersions.forEach(function(os){
 
-        var path = createNewFileName(os);
+//         var path = createNewFileName(os);
 
-        fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
+//         fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
 
-        // change icon on windows
-        if(os.indexOf('win32') !== -1) {
-            rcedit(path +'/'+ filenameUppercase +'.exe', {
-                'file-version': version,
-                'product-version': version,
-                'icon': './icons/'+ type +'/icon.ico'
-            }, function(){
-                if(!called && nodeVersions.length === count) {
-                    done();
-                    called = true;
-                }
-            });
-        }
-
-
-        //var zip5 = new EasyZip();
-        //zip5.zipFolder(path, function(){
-        //    zip5.writeToFile(path +'.zip'); 
-        //});
+//         // change icon on windows
+//         if(os.indexOf('win32') !== -1) {
+//             rcedit(path +'/'+ filenameUppercase +'.exe', {
+//                 'file-version': version,
+//                 'product-version': version,
+//                 'icon': './icons/'+ type +'/icon.ico'
+//             }, function(){
+//                 if(!called && nodeVersions.length === count) {
+//                     done();
+//                     called = true;
+//                 }
+//             });
+//         }
 
 
-        count++;
-
-        if(!called && nodeVersions.length === count) {
-            done();
-            called = true;
-        }
-    });
-});
+//         //var zip5 = new EasyZip();
+//         //zip5.zipFolder(path, function(){
+//         //    zip5.writeToFile(path +'.zip'); 
+//         //});
 
 
-gulp.task('zip', ['rename-folders'], function () {
-    var streams = nodeVersions.map(function(os){
-        var stream,
-            name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
+//         count++;
 
-        // TODO doesnt work!!!!!
-        stream = gulp.src([
-            './dist_'+ type +'/'+ name + '/**/*'
-            ])
-            .pipe(zip({
-                name: name + ".zip",
-                outpath: './dist_'+ type +'/'
-            }));
-            // .pipe(zip(name +'.zip'))
-            // .pipe(gulp.dest('./dist_'+ type +'/'));
-
-        return stream;
-    });
+//         if(!called && nodeVersions.length === count) {
+//             done();
+//             called = true;
+//         }
+//     });
+// });
 
 
-    return merge.apply(null, streams);
-});
+// gulp.task('zip', ['rename-folders'], function () {
+//     var streams = nodeVersions.map(function(os){
+//         var stream,
+//             name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
+
+//         // TODO doesnt work!!!!!
+//         stream = gulp.src([
+//             './dist_'+ type +'/'+ name + '/**/*'
+//             ])
+//             .pipe(zip({
+//                 name: name + ".zip",
+//                 outpath: './dist_'+ type +'/'
+//             }));
+//             // .pipe(zip(name +'.zip'))
+//             // .pipe(gulp.dest('./dist_'+ type +'/'));
+
+//         return stream;
+//     });
+
+
+//     return merge.apply(null, streams);
+// });
 
 
 

@@ -39,6 +39,12 @@ To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteo
     $ npm install -g electron-prebuilt@1.2.5
     $ npm install -g gulp
 
+And some futher tools to help with downloading and unzipping client nodes:
+
+_Linux:_
+
+    $ apt-get install unzip
+
 ### Installation
 
 Now you're ready to install Mist:
@@ -128,9 +134,7 @@ To generate the binaries simply run:
 
     $ cd mist
     $ gulp update-nodes
-
-    // to generate mist
-    $ gulp mist
+    $ gulp
 
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
     $ gulp wallet

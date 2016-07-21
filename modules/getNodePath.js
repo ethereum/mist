@@ -38,11 +38,12 @@ module.exports = function(type) {
         );
 
         if (Settings.inProductionMode) {
+            // get out of the ASAR
+            binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
+
             if ('darwin' === process.platform) {
-                binPath = binPath
-                    .replace('nodes', path.join('..', '..', 'nodes'))
-                    .replace('darwin', 'mac') /* gulp script calls it mac, for electron-builder */
-                ;
+                /* gulp script calls it mac, for electron-builder */
+                binPath = binPath.replace('darwin', 'mac');
             }
         }
 

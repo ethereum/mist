@@ -12,7 +12,6 @@ var shell = require('shelljs');
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
-var decompress = require('gulp-decompress');
 var flatten = require('gulp-flatten');
 var tap = require("gulp-tap");
 const mocha = require('gulp-spawn-mocha');

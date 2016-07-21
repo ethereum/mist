@@ -39,9 +39,10 @@ module.exports = function(type) {
 
         if (Settings.inProductionMode) {
             if ('darwin' === process.platform) {
-                binPath = binPath.replace(
-                    'nodes', path.join('..', 'nodes')
-                );
+                binPath = binPath
+                    .replace('nodes', path.join('..', '..', 'nodes'))
+                    .replace('darwin', 'mac') /* gulp script calls it mac, for electron-builder */
+                ;
             }
         }
 

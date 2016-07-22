@@ -34,6 +34,14 @@ Template['views_tab'].onRendered(function(){
         });
     }
 
+    ipc.on('uiAction_reloadSelectedTab', function(e) {
+        console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
+        if(LocalStore.get('selectedTab') === this._id){
+            var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+            console.log(webview);
+            webview.reload();        
+        }
+    });
 
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);

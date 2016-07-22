@@ -29,6 +29,9 @@ Template.body.helpers({
             else 
                 return false;
         }
+        if (location.hash === '#connectAccount') {
+            return 'popupWindows_connectAccount';
+        }
     }
 });
 

@@ -112,7 +112,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "No accounts set",
+                "connect": "Connect"
             }
         },
         "startScreen": {

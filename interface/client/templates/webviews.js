@@ -58,7 +58,7 @@ webviewLoadStart = function(e){
     console.log('webviewLoadStart', e, e.isMainFrame);
 
     if(!e.isMainFrame)
-        return;   
+        return;
 
     var tabs = Tabs.find().fetch(),
         tabId = $(this).data('id'),

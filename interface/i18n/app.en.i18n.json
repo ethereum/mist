@@ -19,7 +19,9 @@
         "skip": "Skip",
         "sending": "Sending...",
         "create": "Create",
-        "tryToReconnect": "Try to reconnect"
+        "tryToReconnect": "Try to reconnect",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "You",

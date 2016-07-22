@@ -129,10 +129,43 @@ aside.sidebar {
                 //     text-align: left;
                 // }
             }
+
+
+            // Remove tab button
+            button.main {
+                img {
+                    transition: 180ms linear opacity;    
+                }
+            }
+
+            &:not(.browser):not(.wallet) header:hover {
+                button.main img {
+                    opacity: 0;
+                }
+                button.remove-tab {
+                    opacity: 1;
+                }
+            }
+            button.remove-tab {
+                box-sizing: border-box;
+                position: absolute;
+                padding: 6px 8px 0px 2px;
+                transition: 180ms linear opacity;
+                left: 8px;
+                opacity: 0;
+                top: 0;
+                color: @colorLinkBlur;
+                height: @gridHeight*2;
+                z-index: 2;
+                &:focus {
+                    border: none;
+                }
+            }
+
             button.slide-out {
                 position: absolute;
                 right: @gridHeight/2;
-                top: @gridHeight/1.5;
+                top: @gridHeight/1.75;
                 width: 30px;
                 height: 20px;
                 background: url('icons/expand-icon.png') no-repeat center;
@@ -290,3 +323,9 @@ aside.sidebar {
         }
     }
 }
+
+// Remove tab button related code
+aside.full-tabs button.remove-tab {
+    display: none;
+}
+

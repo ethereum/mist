@@ -152,11 +152,11 @@ main {
     &.hidden {
         // visibility: hidden;
         z-index: 1;
-
-        // Temporary fix. See https://github.com/electron/electron/issues/5110
-        height: 0;
-        width: 0;
-        flex: 0 1;
+        webview { 
+            // Temporary fix. See https://github.com/electron/electron/issues/5110
+            height: 0;
+            flex: 0 1;
+        }
     }
 
     &.app-bar-transparent webview {

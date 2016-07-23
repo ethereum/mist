@@ -1,16 +1,20 @@
-Node type: geth/eth
-OS: linux/windows/osx
-Network type: main/test
-Mist version: 0.0.0
+#### System information
+``````
+Version: `0.0.0`
+OS & Version: windows/linux/osx
+Node type: `eth/geth(default)`
+``````
 
-Please check the already existing issues, before creating an issue. We would like to keep duplicates at a minumim.
-Read the https://github.com/ethereum/wiki/wiki/Mist-Troubleshooting-Guide first, where we summarized a few of the known issues.
+#### Please check the **already existing** issues to keep duplicates at a minimum.
+Furthermore several **work-arounds** have been collected in the [Mist-Troubleshooting-Guide](https://github.com/ethereum/wiki/wiki/Mist-Troubleshooting-Guide).
 
-Add the following to issue, when possible:
+If possible add the following to your report:
 
 - Screenshots
-- Check the console, of Mist (CTRL/CMD + ALT + i) and take a screenshot.
-- Log files (as ZIP archive)
--   osx: ~/Library/Application Support/Mist/node.log (Open Home folder > Show View Options > Show Library Folder)
--   windows: %APPDATA%/Roaming/Mist/node.log
--   linux: ~/.config/Mist/node.log
+
+- Check the console, of Mist (`CTRL/CMD + ALT + i`) and take a screenshot
+
+- Log files (Go to `menu -> accounts -> backup -> application data` and upload as zip-archive):
+  -   osx: `~/Library/Application Support/Mist/node.log` 
+  -   windows: `%APPDATA%/Roaming/Mist/node.log`
+  -   linux: `~/.config/Mist/node.log`

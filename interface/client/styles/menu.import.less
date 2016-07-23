@@ -93,7 +93,7 @@ aside.sidebar {
                     color: @colorLinkFocus;
                 }
 
-                img {
+                img, .icon-globe {
                     position: absolute;
                     top: 12px;
                     left: 2px;
@@ -102,6 +102,10 @@ aside.sidebar {
                     border-radius: 10px;
                 }
 
+                .icon-globe {
+                    top: 13px;
+                }
+                
                 span, .badge {
                     .dapp-shorten-text;
                     display: block;
@@ -127,17 +131,19 @@ aside.sidebar {
 
             // Remove tab button
             button.main {
-                img {
+                img, .icon-globe {
                     transition: 0.25s ease-in-out transform;
-                    transform: rotateY(0deg) translate3d(0px, 0px, 0);                    
+                    transform: rotateY(0deg) translate3d(0, 0, 0);                    
                     backface-visibility: hidden;
+                    color: @colorGray;
                 }
             }
 
             &:not(.browser):not(.wallet) header:hover {
-                button.main img {
-                    transform: rotateY(-180deg) translate3d(0px, 0px, 0);                         
+                button.main img, button.main .icon-globe {
+                    transform: rotateY(-180deg) translate3d(0, 0, 0);    
                 }
+
                 button.remove-tab {
                     transform: rotateY(0deg) translate3d(0px, 0px, 0);  
                     &:hover {
@@ -153,7 +159,7 @@ aside.sidebar {
                 padding: 6px 8px 0px 2px;
                 transition: 0.25s ease-in-out transform;
                 left: 8px;
-                top: 12px;
+                top: 11px;
                 color: @colorLink;
                 height: @gridHeight - 1px;
                 width: @gridHeight;

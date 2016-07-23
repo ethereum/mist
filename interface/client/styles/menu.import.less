@@ -95,9 +95,10 @@ aside.sidebar {
 
                 img {
                     position: absolute;
-                    top: 10px;
-                    width: 20px;
-                    height: 20px;
+                    top: 12px;
+                    left: 2px;
+                    height: @gridHeight;
+                    width: @gridHeight;
                     border-radius: 10px;
                 }
 
@@ -122,41 +123,45 @@ aside.sidebar {
                     font-weight: 200;
                     text-transform: none;
                 }
-
-                // &.history {
-                //     padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
-                //     font-size: 0.7em;
-                //     text-align: left;
-                // }
             }
-
 
             // Remove tab button
             button.main {
                 img {
-                    transition: 180ms linear opacity;    
+                    transition: 0.25s ease-in-out transform;
+                    transform: rotateY(0deg) translate3d(0px, 0px, 0);                    
+                    backface-visibility: hidden;
                 }
             }
 
             &:not(.browser):not(.wallet) header:hover {
                 button.main img {
-                    opacity: 0;
+                    transform: rotateY(-180deg) translate3d(0px, 0px, 0);                         
                 }
                 button.remove-tab {
-                    opacity: 1;
+                    transform: rotateY(0deg) translate3d(0px, 0px, 0);  
+                    &:hover {
+                        background: @colorLink;
+                        color: @colorWhite;  
+                    }                  
                 }
             }
+            
             button.remove-tab {
                 box-sizing: border-box;
                 position: absolute;
                 padding: 6px 8px 0px 2px;
-                transition: 180ms linear opacity;
+                transition: 0.25s ease-in-out transform;
                 left: 8px;
-                opacity: 0;
-                top: 0;
-                color: @colorLinkBlur;
-                height: @gridHeight*2;
+                top: 12px;
+                color: @colorLink;
+                height: @gridHeight - 1px;
+                width: @gridHeight;
+                border-radius: 50%;
+                padding: 0;
                 z-index: 2;
+                backface-visibility: hidden;
+                transform: rotateY(180deg) translate3d(0px, 0px, 0);                         
                 &:focus {
                     border: none;
                 }

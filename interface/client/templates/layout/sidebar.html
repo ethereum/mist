@@ -3,22 +3,30 @@
         <nav>
             <ul>
                 {{#each tabs}}
-                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
-
-                        <button class="main {{#if badge}}has-badge{{/if}}">
-                            {{#if icon}}
-                                {{> elements_img src=icon}}
+                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+                        <header>
+                            {{#if $neq _id 'browser'}}
+                                <button class="remove-tab">
+                                    <i class="icon-close"></i>
+                                </button>
                             {{/if}}
-                            <span>{{name}}</span>
-                            {{#if badge}}
-                                <div class="badge">{{badge}}</div>
+
+                            <button class="main {{#if badge}}has-badge{{/if}}">
+                                {{#if icon}}
+                                    {{> elements_img src=icon}}
+                                {{else}}
+                                    <i class="icon-globe"></i>
+                                {{/if}}
+                                <span>{{name}}</span>
+                                {{#if badge}}
+                                    <div class="badge">{{badge}}</div>
+                                {{/if}}
+                            </button>
+
+                            {{#if subMenu}}
+                                <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
                             {{/if}}
-                        </button>
-
-                        {{#if subMenu}}
-                            <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
-                        {{/if}}
-
+                        </header>
                         <ul class="sub-menu">
                             {{#each subMenu}}
                                 <li>

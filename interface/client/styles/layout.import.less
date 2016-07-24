@@ -150,8 +150,13 @@ main {
     border-top-left-radius: 3px;
 
     &.hidden {
-        visibility: hidden;
+        // visibility: hidden;
         z-index: 1;
+        webview { 
+            // Temporary fix. See https://github.com/electron/electron/issues/5110
+            height: 0;
+            flex: 0 1;
+        }
     }
 
     &.app-bar-transparent webview {

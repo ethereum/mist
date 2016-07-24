@@ -10,7 +10,7 @@
 Tabs = new Mongo.Collection('tabs', {connection: null});
 
 if (typeof window.mist.syncMinimongo !== 'undefined') {
-    window.mist.syncMinimongo.frontendSync(Tabs);
+    Tabs = window.mist.syncMinimongo.frontendSync(Tabs);
 }
 
 

@@ -133,6 +133,14 @@ exports.frontendSync = function(coll) {
             dataJson.forEach(function(record) {
                 Tracker.afterFlush(function() {
                     try {
+
+                        // On Meteor startup if a record contains a redirect to about:blank
+                        // page, the application process crashes.
+                        if(typeof(record.redirect) !== 'undefined' 
+                            && record.redirect.indexOf('//about:blank') > -1) {
+                            record.redirect = null;
+                        }
+
                         coll.insert(record);                
                     } catch (err) {
                         console.error(err.toString());                        

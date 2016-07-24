@@ -91,7 +91,6 @@ standard-minifier-css@1.0.7
 standard-minifier-js@1.0.7
 standard-minifiers@1.0.6
 tap:i18n@1.8.2
-tap:i18n-bundler@0.3.0
 templating@1.1.10
 templating-tools@1.0.4
 tracker@1.0.14

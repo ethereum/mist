@@ -142,10 +142,11 @@ gulp.task('downloadNodes', ['clean:nodes'], function(done) {
           //  ? path +'/'+ filenameUppercase +'.app/Contents/Frameworks/node'
             //: path +'/resources/node';
 
-
+            
         // donwload nodes
-        streams.push(download(nodeUrl)
-            .pipe(gulp.dest('./nodes/geth/')));
+        if (os.indexOf(options.platform) !== -1)
+            streams.push(download(nodeUrl)
+                .pipe(gulp.dest('./nodes/geth/')));
 
     });
 

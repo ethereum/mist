@@ -183,7 +183,7 @@ class Windows {
                 center: true,
                 frame: false,
                 useContentSize: true,
-                titleBarStyle: 'hidden', //hidden-inset: more space
+                titleBarStyle: '', //hidden-inset: more space
                 skipTaskbar: true
             },
         });

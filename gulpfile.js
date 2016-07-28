@@ -149,11 +149,6 @@ gulp.task('downloadNodes', ['clean:nodes'], function() {
                 url: url,
             });
         }
-
-        toDownload.push({
-            file: `geth-${gethVersion}_${osArch}_${ext}`,
-            url: url,
-        });
     });
 
     return download(toDownload)

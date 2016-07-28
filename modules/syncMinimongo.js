@@ -104,6 +104,11 @@ exports.frontendSync = function(coll) {
 
     var collName = coll._name;
 
+    // if already setup to sync then return
+    if (coll.onceSynced) {
+        return coll;
+    }
+
     console.debug('Reload collection from backend: ', collName);
 
     var syncDoneResolver = null;

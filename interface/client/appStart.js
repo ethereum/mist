@@ -1,13 +1,18 @@
 
 
 // STOP here if not MAIN WINDOW
-if(location.hash)
+if(location.hash) {
     return;
+}
 
 
 // set browser as default tab
-if(!LocalStore.get('selectedTab'))
+if (!LocalStore.get('selectedTab')) {
     LocalStore.set('selectedTab', 'wallet');
+}
+
+
+
 
 /**
 The init function of Mist
@@ -53,8 +58,15 @@ mistInit = function(){
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    EthAccounts.init();
-    EthBlocks.init();
+    OnceNetworkInfoLoaded.then(function(info) {
+        EthAccounts.init({
+            network: info.uniqueId
+        });
+        
+        EthBlocks.init({
+            network: info.uniqueId
+        });
+    });
 
     mistInit();
 

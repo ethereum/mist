@@ -21,33 +21,15 @@ Check network type.
 var checkNetworkType = function(template) {
     console.trace('Check network type...');
 
-    try {
-        web3.eth.getBlock(0, function(e, res) {
-            console.trace('Get block 0', e, res);
-            
-            if (e) {
-                console.error('Got error fetching block 0', e);
-            } else {
-                
-                switch (res.hash) {
-                    case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
-                        console.log('network is mainnet')
-                        TemplateVar.set(template, 'network', 'mainnet' );
-                        break;
+    OneNetworkInfoLoaded.then(function(info) {
+        try {
+            console.log('network is ' + info.type);
 
-                    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
-                        console.log('network is testnet')
-                        TemplateVar.set(template, 'network', 'testnet' );
-                        break;
-                    default:
-                        console.log('network is privatenet')
-                        TemplateVar.set(template, 'network', 'privatenet' );
-                }                
-            }
-        });        
-    } catch (err) {
-        console.error('Unable to get block 0', err);
-    }
+            TemplateVar.set(template, 'network', info.type + 'net');
+        } catch (err) {
+            console.error('Error setting network var', err);
+        }
+    });
 };
 
 

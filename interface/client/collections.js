@@ -18,7 +18,6 @@ if (typeof window.mist.syncMinimongo !== 'undefined') {
 AddressBook = new Mongo.Collection('address-book', {connection: null});
 new PersistentMinimongo2(AddressBook, 'Mist');
 
-
 // Contains the accounts
 DoogleLastVisitedPages = new Mongo.Collection('doogle-last-visted-pages', {connection: null});
 new PersistentMinimongo2(DoogleLastVisitedPages, 'Mist');

@@ -54,7 +54,9 @@ Template['layout_browserBar'].helpers({
     */
     'dappAccounts': function(){
         if(this.permissions)
-            return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
+            return EthAccounts.find({
+                address: {$in: this.permissions.accounts || []}
+            });
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -146,8 +148,6 @@ Template['layout_browserBar'].events({
         mist.requestAccount(function(e, addresses){
             var tabId;
 
-            mist.syncMinimongo.frontendSync(Tabs);
-            
             tabId = LocalStore.get('selectedTab');
 
             // set new permissions

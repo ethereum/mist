@@ -128,7 +128,9 @@ Get the account name or display the address
 @param {String} address
 */
 Template.registerHelper('accountNameOrAddress', function(address){
-    if(account = EthAccounts.findOne({address: address}))
+    if(account = EthAccounts.findOne({
+        address: address,
+    }))
         return account.name;
     else
         return address;

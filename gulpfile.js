@@ -198,7 +198,13 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
     var streams = [];
 
     for (let osArch in nodeUrls) {
-        const file = fs.readdirSync('./nodes/geth/' + osArch).pop();
+        let file;
+        try {
+            file = fs.readdirSync('./nodes/geth/' + osArch).pop();
+        } catch (err) {
+            console.warn(`Skipping ${osArch} node: ${err.message}`);
+            continue;
+        }
 
         const finalName = (0 <= osArch.indexOf('win32') ? 'geth.exe' : 'geth');
 

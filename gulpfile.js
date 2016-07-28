@@ -148,6 +148,14 @@ gulp.task('downloadNodes', ['clean:nodes'], function() {
     _.each(nodeUrls, function(url, osArch) {
         let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
 
+        // donwload nodes
+        if (osArch.indexOf(options.platform) !== -1 || options.platform == 'all') {
+            toDownload.push({
+                file: `geth-${gethVersion}_${osArch}_${ext}`,
+                url: url,
+            });
+        }
+
         toDownload.push({
             file: `geth-${gethVersion}_${osArch}_${ext}`,
             url: url,

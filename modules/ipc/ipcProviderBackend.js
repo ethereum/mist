@@ -107,6 +107,10 @@ class IpcProviderBackend {
                     });                
                 });
 
+                socket.on('connect', (data) => {
+                    owner.send(`ipcProvider-connect`, JSON.stringify(data));
+                });
+
                 // pass notifications back up the chain
                 socket.on('data-notification', (data) => {
                     log.trace('Notification received', ownerId, data);
@@ -336,6 +340,10 @@ class IpcProviderBackend {
             }, error);
 
             if (e.message) {
+                if (_.isArray(e.message)) {
+                    e.message = e.message.pop();
+                }
+                
                 e.error = {
                     message: e.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'")
                 };

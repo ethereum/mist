@@ -193,6 +193,16 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             pw = template.find('input[type="password"]').value,
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
+        // check if account is about to send to itself
+        if (data.from == data.to.toLowerCase()) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.sameAccount'),
+                duration: 5
+            });
+
+            return false;
+        }
+
         console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
         if(!gas || !_.isFinite(gas))

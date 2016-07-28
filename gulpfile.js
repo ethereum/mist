@@ -144,7 +144,7 @@ gulp.task('downloadNodes', ['clean:nodes'], function(done) {
 
             
         // donwload nodes
-        if (os.indexOf(options.platform) !== -1)
+        if (os.indexOf(options.platform) !== -1 || options.platform == 'all')
             streams.push(download(nodeUrl)
                 .pipe(gulp.dest('./nodes/geth/')));
 

@@ -324,7 +324,7 @@ var onReady = function() {
             .then(function checkLegacyChain() {
 
                 // open the legacy chain message
-                if (ethereumNode.daoFork === 'false') {
+                if (ethereumNode._loadUserData('daoFork') === 'false') {
 
                     dialog.showMessageBox({
                         type: "warning",

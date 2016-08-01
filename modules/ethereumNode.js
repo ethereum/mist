@@ -506,9 +506,6 @@ class EthereumNode extends EventEmitter {
 
         this.defaultNodeType = Settings.nodeType || this._loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || this._loadUserData('network') || DEFAULT_NETWORK;
-        
-        // FORK RELATED
-        this.daoFork = this._loadUserData('daoFork');
     }
 
 
@@ -520,7 +517,7 @@ class EthereumNode extends EventEmitter {
         try {
             return fs.readFileSync(fullPath, {encoding: 'utf8'});
         } catch (err){
-            log.error(`Unable to read from ${fullPath}`, err);
+            log.error(`Unable to read from ${fullPath}`);
         }
 
         return null;

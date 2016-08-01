@@ -8,12 +8,12 @@ var del = require('del');
 var replace = require('gulp-replace');
 var runSeq = require('run-sequence');
 var packager = require('electron-packager');
-var shell = require('shelljs');
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
 var flatten = require('gulp-flatten');
 var tap = require("gulp-tap");
+const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
 // const zip = require('gulp-zip');
 // var zip = require('gulp-zip');
@@ -51,9 +51,9 @@ var gethVersion = '1.4.10';
 var nodeUrls = {
     'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
     'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
-    'win32-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
+    'win-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
     'linux-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
-    'win32-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip'
+    'win-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip'
 };
 
 var nodeVersions = [];
@@ -66,8 +66,8 @@ console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
 if(_.contains(options.platform, 'win')) {
-    nodeVersions.push('win32-ia32');
-    nodeVersions.push('win32-x64');
+    nodeVersions.push('win-ia32');
+    nodeVersions.push('win-x64');
 }
 
 if(_.contains(options.platform, 'linux')) {
@@ -87,26 +87,10 @@ if(_.contains(options.platform, 'all')) {
         // 'linux-arm',
         'linux-ia32',
         'linux-x64',
-        'win32-ia32',
-        'win32-x64'
+        'win-ia32',
+        'win-x64'
     ];
 }
-
-
-// Helpers
-var createNewFileName = function(os) {
-    var newOs;
-    if(os.indexOf('win32') !== -1) {
-        newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
-    }
-    if(os.indexOf('darwin') !== -1) {
-        newOs = 'macosx';
-    }
-    if(os.indexOf('linux') !== -1) {
-        newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
-    }
-    return './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
-};
 
 
 
@@ -155,16 +139,13 @@ gulp.task('downloadNodes', ['clean:nodes'], function() {
                 url: url,
             });
         }
-
-        toDownload.push({
-            file: `geth-${gethVersion}_${osArch}_${ext}`,
-            url: url,
-        });
     });
 
     return download(toDownload)
         .pipe(gulp.dest('./nodes/geth/'));
 });
+
+
 
 gulp.task('unzipNodes', ['downloadNodes'], function(done) {
     let nodeZips = fs.readdirSync('./nodes/geth');
@@ -207,14 +188,31 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
     var streams = [];
 
     for (let osArch in nodeUrls) {
-        var file = fs.readdirSync('./nodes/geth/' + osArch).pop();
+        let file;
+        try {
+            file = fs.readdirSync('./nodes/geth/' + osArch).pop();
+        } catch (err) {
+            console.warn(`Skipping ${osArch} node: ${err.message}`);
+            continue;
+        }
 
-        var finalName = (0 <= osArch.indexOf('win32') ? 'geth.exe' : 'geth');
+        const finalName = (0 <= osArch.indexOf('win') ? 'geth.exe' : 'geth');
 
-        let ret = shell.mv(`./nodes/geth/${osArch}/${file}`, `./nodes/geth/${osArch}/${finalName}`);
+        const originalPath = `./nodes/geth/${osArch}/${file}`,
+            finalPath = `./nodes/geth/${osArch}/${finalName}`;
+
+        let ret = shell.mv(originalPath, finalPath);
 
         if (0 !== ret.code) {
-            console.error(`Error renaming ${file}`);
+            console.error(`Error renaming ${originalPath}`);
+
+            return done(ret.stderr);
+        }
+
+        ret = shell.exec(`chmod +x ${finalPath}`);
+
+        if (0 !== ret.code) {
+            console.error(`Error setting executable permission: ${finalPath}`);
 
             return done(ret.stderr);
         }
@@ -224,22 +222,41 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
 });
 
 
+
+
 // CHECK FOR NODES
 
 var nodeUpdateNeeded = false;
-gulp.task('checkNodes', function() {
-    return gulp.src('./nodes/geth/*.{zip,tar.bz2}', { read: false })
-    .pipe(tap(function(file, t) {
-        nodeUpdateNeeded = 
-            nodeUpdateNeeded || (0 > file.path.indexOf(gethVersion));
-    }))
-    .pipe(gulp.dest('./nodes/geth/'));
+gulp.task('checkNodes', function(cb) {
+    for (let osArch in nodeUrls) {
+        let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
+
+        // check for zip file
+        if (osArch.indexOf(options.platform) !== -1 || options.platform == 'all') {
+            const fileName = `geth-${gethVersion}_${osArch}_${ext}`;
+
+            try {
+                fs.accessSync(`./nodes/geth/${fileName}`, fs.R_OK);
+            } catch (err) {
+                nodeUpdateNeeded = true;
+            }
+        }
+    }
+
+    cb();
 });
+
 
 
 // BUNLDE PROCESS
 
-gulp.task('copy-app-folder-files', ['clean:dist'], function() {
+gulp.task('copy-app-folder-files', ['checkNodes', 'clean:dist'], function() {
+
+    // check if nodes are there
+    if(nodeUpdateNeeded){
+        console.error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
+        throw new Error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
+    }
 
     return gulp.src([
         './tests/**/*.*',

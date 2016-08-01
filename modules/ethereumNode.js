@@ -292,9 +292,6 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('node', this._type);
                 this._saveUserData('network', this._network);
 
-                // FORK RELATED
-                this._saveUserData('daoFork', this.daoFork);
-
                 return this._socket.connect({ path: ipcPath }, {
                         timeout: 30000 /* 30s */
                     })  
@@ -375,12 +372,8 @@ class EthereumNode extends EventEmitter {
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth') 
-                        ? ['--fast', '--cache', '512'] 
-                        : ['--unsafe-transactions'];
-
-                    // FORK RELATED
-                    if(nodeType === 'geth' && this.daoFork)
-                        args.push((this.daoFork === 'true') ? '--support-dao-fork' : '--oppose-dao-fork');
+                        ? ['--fast', '--cache', '512', '--support-dao-fork']
+                        : ['--unsafe-transactions', '--support-dao-fork'];
                 }
 
                 let nodeOptions = Settings.nodeOptions;

@@ -320,54 +320,19 @@ var onReady = function() {
                 // update menu, to show node switching possibilities
                 appMenu();
             })
-            // FORK RELATED
-            .then(function hardForkOption() {
-                // open the fork popup
-                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
+            // CHECK for legacy chain (FORK RELATED)
+            .then(function checkLegacyChain() {
 
-                    return new Q((resolve, reject) => {
-                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
-                            primary: true,
-                            electronOptions: {
-                                width: 640,
-                                height: 580,
-                            },
-                        });
+                // open the legacy chain message
+                if (ethereumNode.daoFork === 'false') {
 
-                        forkChoiceWindow.on('close', function(){
-                            app.quit();
-                        });
-
-                        // choose the fork side
-                        ipc.on('forkChoice_choosen', function(e, daoFork) {
-                            // prevent that it closes the app
-                            forkChoiceWindow.removeAllListeners('close');
-                            forkChoiceWindow.close();
-
-                            ipc.removeAllListeners('forkChoice_choosen');
-
-                            log.debug('Enable DAO Fork? ', daoFork);
-
-                            // no need to restart
-                            if(!daoFork)
-                                return resolve();
-
-                            // set forkside
-                            ethereumNode.daoFork = daoFork;
-                            
-                            // start node
-                            ethereumNode.restart(ethereumNode.type, 'main')
-                                .then(function nodeRestarted() {
-                                    appMenu();
-
-                                    resolve();
-                                })
-                                .catch((err) => {
-                                    log.error('Error restarting node', err);
-
-                                    reject(err);
-                                });
-                        });
+                    dialog.showMessageBox({
+                        type: "warning",
+                        buttons: ['OK'],
+                        message: global.i18n.t('mist.errors.legacyChain.title'),
+                        detail: global.i18n.t('mist.errors.legacyChain.description')
+                    }, function(){
+                        app.quit();
                     });
                 }
             })

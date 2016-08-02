@@ -30,9 +30,7 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.2",
     "web3": "^0.17.0-alpha",
-    "yargs": "^4.3.1"
-  },
-  "devDependencies": {
+    "yargs": "^4.3.1",
     "chai": "^3.5.0",
     "co-mocha": "^1.1.2",
     "del": "^1.2.1",

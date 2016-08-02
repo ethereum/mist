@@ -151,11 +151,11 @@ Template['layout_browserBar'].events({
             tabId = LocalStore.get('selectedTab');
 
             // set new permissions
-            Tabs.update(tabId, {$set: {
-                'permissions.accounts': addresses
-            }});
-
-            // Helpers.getWebview(tabId).reload();
+            Tabs.onceSynced.then(function(){
+                Tabs.update(tabId, {$set: {
+                    'permissions.accounts': addresses
+                }});
+            });
         });
     },
     /* 

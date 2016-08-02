@@ -80,8 +80,6 @@ if(_.contains(options.platform, 'mac')) {
 }
 
 if(_.contains(options.platform, 'all')) {
-    options.platform = ['win', 'mac', 'linux'];
-
     nodeVersions = [
         'darwin-x64',
         // 'linux-arm',
@@ -425,7 +423,9 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     );
 
     // run build script
-    var oses = '--' + options.platform.join(' --');
+    let platform = 
+        options.platform ? ['win', 'mac', 'linux'] : options.platform;
+    var oses = '--' + platform.join(' --');
 
     var ret = shell.exec(`./build-dist.js --type ${type} ${oses}`, {
         cwd: path.join(__dirname, 'dist_' + type, 'app'),
@@ -443,92 +443,6 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     }
 });
 
-// FILE RENAMING
-
-// gulp.task('change-files', ['create-binaries'], function() {
-//     var streams = [];
-
-//     nodeVersions.map(function(os){
-//         var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
-
-//         // change version file
-//         streams.push(gulp.src([
-//             path +'/version'
-//             ])
-//             .pipe(replace(electronVersion, version))
-//             .pipe(gulp.dest(path +'/')));
-
-//         // copy license file
-//         streams.push(gulp.src([
-//             './LICENSE'
-//             ])
-//             .pipe(gulp.dest(path +'/')));
-
-
-//         // copy authors file
-//         streams.push(gulp.src([
-//             './AUTHORS'
-//             ])
-//             .pipe(gulp.dest(path +'/')));
-
-//         // copy and rename readme
-//         streams.push(gulp.src([
-//             './Wallet-README.txt'
-//             ], { base: './' })
-//             .pipe(rename(function (path) {
-//                 path.basename = "README";
-//             }))
-//             .pipe(gulp.dest(path + '/')));
-//     });
-
-
-//     return merge.apply(null, streams);
-// });
-
-
-//gulp.task('cleanup-files', ['change-files'], function (cb) {
-//  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
-//});
-
-
-// gulp.task('rename-folders', ['change-files'], function(done) {
-//     var count = 0;
-//     var called = false;
-//     nodeVersions.forEach(function(os){
-
-//         var path = createNewFileName(os);
-
-//         fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
-
-//         // change icon on windows
-//         if(os.indexOf('win32') !== -1) {
-//             rcedit(path +'/'+ filenameUppercase +'.exe', {
-//                 'file-version': version,
-//                 'product-version': version,
-//                 'icon': './icons/'+ type +'/icon.ico'
-//             }, function(){
-//                 if(!called && nodeVersions.length === count) {
-//                     done();
-//                     called = true;
-//                 }
-//             });
-//         }
-
-
-//         //var zip5 = new EasyZip();
-//         //zip5.zipFolder(path, function(){
-//         //    zip5.writeToFile(path +'.zip'); 
-//         //});
-
-
-//         count++;
-
-//         if(!called && nodeVersions.length === count) {
-//             done();
-//             called = true;
-//         }
-//     });
-// });
 
 
 // gulp.task('zip', ['rename-folders'], function () {

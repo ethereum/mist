@@ -327,14 +327,16 @@ class EthereumNode extends EventEmitter {
         this._network = network;
         this._type = nodeType;
 
+log.warn('--- getNodePath ->');
         const binPath = getNodePath(nodeType);
 
+log.warn('--- getNodePath <-');
         log.debug(`Start node using ${binPath}`);
 
-        return new Q((resolve, reject) => {
-            this.__startProcess(nodeType, network, binPath)
-                .then(resolve, reject);
-        });
+    return new Q((resolve, reject) => {
+                this.__startProcess(nodeType, network, binPath)
+                    .then(resolve, reject);
+            });        
     }
 
 

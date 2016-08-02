@@ -29,19 +29,26 @@ module.exports = function(type) {
     if (globallySetType) {
         resolvedPaths[type] = globallySetType;
     } else {
+        let platform = process.platform;
+
+        // "win32" -> "win" (because nodes are bundled by electron-builder)
+        if (0 <= platform.indexOf('win')) {
+            platform = 'win';
+        }
+
         let binPath = path.join(
             __dirname, 
             '..', 
             'nodes',
             type,
-            `${process.platform}-${process.arch}`
+            `${platform}-${process.arch}`
         );
 
         if (Settings.inProductionMode) {
             // get out of the ASAR
             binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
 
-            if ('darwin' === process.platform) {
+            if ('darwin' === platform) {
                 /* gulp script calls it mac, for electron-builder */
                 binPath = binPath.replace('darwin', 'mac');
             }
@@ -51,13 +58,11 @@ module.exports = function(type) {
 
         binPath = path.join(binPath, type);
 
-        if ('win32' === process.platform) {
+        if ('win' === platform) {
             binPath += '.exe';
         }
 
         resolvedPaths[type] = binPath;
-
-        console.error(binPath);
     }
 
     log.debug(`Resolved path for ${type}: ${resolvedPaths[type]}`);

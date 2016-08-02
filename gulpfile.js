@@ -80,6 +80,8 @@ if(_.contains(options.platform, 'mac')) {
 }
 
 if(_.contains(options.platform, 'all')) {
+    options.platform = ['win', 'linux', 'mac'];
+
     nodeVersions = [
         'darwin-x64',
         // 'linux-arm',
@@ -90,6 +92,9 @@ if(_.contains(options.platform, 'all')) {
     ];
 }
 
+options.platformStr = options.platform.join(' ');
+
+console.log('Platform:', options.platform);
 
 
 /// --------------------------------------------------------------
@@ -131,7 +136,7 @@ gulp.task('downloadNodes', ['clean:nodes'], function() {
         let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
 
         // donwload nodes
-        if (osArch.indexOf(options.platform) !== -1 || options.platform == 'all') {
+        if (osArch.indexOf(options.platformStr) !== -1 || options.platformStr == 'all') {
             toDownload.push({
                 file: `geth-${gethVersion}_${osArch}_${ext}`,
                 url: url,
@@ -230,7 +235,7 @@ gulp.task('checkNodes', function(cb) {
         let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
 
         // check for zip file
-        if (osArch.indexOf(options.platform) !== -1 || options.platform == 'all') {
+        if (osArch.indexOf(options.platformStr) !== -1 || options.platformStr == 'all') {
             const fileName = `geth-${gethVersion}_${osArch}_${ext}`;
 
             try {
@@ -423,9 +428,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     );
 
     // run build script
-    let platform = 
-        options.platform ? ['win', 'mac', 'linux'] : options.platform;
-    var oses = '--' + platform.join(' --');
+    var oses = '--' + options.platform.join(' --');
 
     var ret = shell.exec(`./build-dist.js --type ${type} ${oses}`, {
         cwd: path.join(__dirname, 'dist_' + type, 'app'),

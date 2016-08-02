@@ -175,7 +175,7 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
         shell.mkdir('-p', `./nodes/geth/${osArch}`);
 
         if (0 <= osArch.indexOf('linux')) {            
-            ret = shell.exec(`tar -xzf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
+            ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
 
         } else {
             ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);

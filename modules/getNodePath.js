@@ -18,9 +18,6 @@ const Settings = require('./settings');
 // cache
 var paths = {},        // all versions (system + bundled):  { type: { path: version } }
     resolvedPaths = {};  // latest version:                   { type: path }
-    
-const resolvedPathsOld = {};  // latest version:                   { type: path }
-
 
 
 /**
@@ -31,7 +28,6 @@ const resolvedPathsOld = {};  // latest version:                   { type: path 
 function getSystemPath(type) {
     var proc = exec('type ' + type, (e, stdout, stderr) => {
         if (!e)
-            // create new entry for path without version
             paths[type][stdout.match(/(\/\w+)+/)[0]] = null;
     });
 }
@@ -88,54 +84,27 @@ function getVersion(type) {
 /**
  * Get paths of all nodes, returns system or bundled path depending on the latest version
  */
-/*
-function getNodePaths() {
-    getBundledNodes();
-    log.warn(paths);
-
-    for (var type in paths) {
-        getVersion(type, getSystemPath(type));
-    }
-
-    setTimeout(() => {
-        // console.log(paths);  // diplays all nodes, paths + versions
-        for (type in paths) {
-            var path = Object.keys(paths[type])[0];
-            if (Object.keys(paths[type]).length > 1) {
-                path = (cmpVer(Object.keys(paths[type])[0], Object.keys(paths[type])[1])) ? Object.keys(paths[type])[0] : Object.keys(paths[type])[1]
-            }
-            resolvedPaths[type] = path;
-        }
-        log.info(resolvedPaths);
-        return resolvedPaths;
-    }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro (for two calls)
-}*/
-
-
 module.exports = function(type) {   
-    if (resolvedPaths[type]) {
+    if (resolvedPaths[type])
         return resolvedPaths[type];
-    }
 
     getBundledNodes();
 
-    for (var type in paths) {
-        getVersion(type, getSystemPath(type));
-    }
+    if (process.platform === 'linux' || process.platform === 'darwin')
+        for (var type in paths)
+            getVersion(type, getSystemPath(type));
 
     setTimeout(() => {
-        // console.log(paths);  // diplays all nodes, paths + versions
         for (type in paths) {
             var path = Object.keys(paths[type])[0];
-            if (Object.keys(paths[type]).length > 1) {
+            if (Object.keys(paths[type]).length > 1)
                 path = (cmpVer(Object.keys(paths[type])[0], Object.keys(paths[type])[1])) ? Object.keys(paths[type])[0] : Object.keys(paths[type])[1]
-            }
             resolvedPaths[type] = path;
         }
 
         log.info('Available backends: %j', resolvedPaths);    
 
         return resolvedPaths[type];
-    }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro (for two calls)
+    }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro for two calls (bundled and system)
 }
 

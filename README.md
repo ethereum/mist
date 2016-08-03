@@ -125,11 +125,7 @@ To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
-<<<<<<< HEAD
 $ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
-=======
-$ electron . --ipcpath ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
->>>>>>> develop
 ```
 
 _NOTE: since `ipcpath` is also a Mist option you do not need to also include a 

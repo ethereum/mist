@@ -23,6 +23,7 @@
     "numeral": "^1.5.3",
     "os-timesync": "^1.0.6",
     "semver": "^5.1.0",
+    "semver-compare": "^1.0.0",
     "solc": "^0.3.1-1",
     "underscore": "^1.8.3",
     "uuid": "^2.0.2",

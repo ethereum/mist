@@ -16,7 +16,7 @@ const Settings = require('./settings');
 
 
 // cache
-var paths = {},        // all versions (system + bundled):  { type: { path: version } }
+const paths = {},        // all versions (system + bundled):  { type: { path: version } }
     resolvedPaths = {};  // latest version:                   { type: path }
 
 
@@ -40,22 +40,19 @@ function getSystemPath(type) {
  */
 function getVersion(type) {
     setTimeout(() => {
-        for (var path in paths[type]) {
+        for (let path in paths[type]) {
             switch (type) {
                 case 'geth':
-                    var command = 'echo ' + path + ' && ' + path + ' version';  // stupid, use echo to pass path variable)
+                    var command = path + ' version';
                     break;
                 case 'eth':
                 case 'parity':
-                    var command = 'echo ' + path + ' && ' + path + ' --version';
+                    var command = path + ' --version';
                     break;
             }
             var proc = exec(command, (e, stdout, stderr) => {
                 if (!e) {
-                    // add version to path entry
-                    var path = stdout.match(/(\/.+)+/)[0];
-                    var version = stdout.match(/[\d.]{3,}/)[0];
-                    paths[type][path] = version;
+                    paths[type][path] = stdout.match(/[\d.]+/)[0];
                 }
             });
         }
@@ -64,32 +61,52 @@ function getVersion(type) {
 
 
 /**
- * Scans for bundled nodes
+ * Get paths of all nodes, returns system or bundled path depending on the latest version
+ *
+ * @param  {String} type   the type of node (i.e. 'geth', 'eth')
  */
- function getBundledNodes() {
-    fs.readdirSync('nodes/').forEach((type) => {
-        if (fs.statSync('nodes/' + type).isDirectory()) // .DS_Store files... ??
-            fs.readdirSync('nodes/' + type).forEach((platform) => {
-            if (platform.indexOf(process.platform) !== -1) {
-                // this structure triggers the inculsion of a node type
-                var nodePath = path.resolve('nodes/' + type + '/' + platform + '/' + type);
+module.exports = function(type) {
+    // return path if already resolved
+    if (resolvedPaths[type]) {
+        return resolvedPaths[type];
+    }
+
+    // resolve base path of bundled nodes
+    var binPath = (Settings.inProductionMode)
+        ? binaryPath.replace('nodes','node')
+        : binaryPath
+
+    if(Settings.inProductionMode) {
+        binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
+        
+        if(process.platform === 'darwin') {
+            binPath = path.resolve(binPath.replace('/node', '/../Frameworks/node'));
+        }
+
+        if(process.platform === 'win32') {
+            binPath = binPath.replace(/\/+/,'\\');
+            binPath += '.exe';
+        }
+    }
+
+    // resolve node binary paths
+    if (Settings.inProductionMode) {
+        fs.readdirSync(binPath).forEach((type) => {
+            var nodePath = binPath + '/' + type + '/' + type;
+            paths[type] = {};
+            paths[type][nodePath] = null;
+        });
+    } else {
+        fs.readdirSync('nodes/').forEach((type) => {
+            if (fs.statSync('nodes/' + type).isDirectory()) {
+                var nodePath = path.resolve('nodes/' + type + '/' + process.platform +'-'+ process.arch + '/' + type);
                 paths[type] = {};
                 paths[type][nodePath] = null;
             }
         });
-    });
-}
+    }
 
-
-/**
- * Get paths of all nodes, returns system or bundled path depending on the latest version
- */
-module.exports = function(type) {   
-    if (resolvedPaths[type])
-        return resolvedPaths[type];
-
-    getBundledNodes();
-
+    // compare versions to system-wide installed nodes (only linux and mac)
     if (process.platform === 'linux' || process.platform === 'darwin')
         for (var type in paths)
             getVersion(type, getSystemPath(type));
@@ -97,14 +114,15 @@ module.exports = function(type) {
     setTimeout(() => {
         for (type in paths) {
             var path = Object.keys(paths[type])[0];
+
             if (Object.keys(paths[type]).length > 1)
                 path = (cmpVer(Object.keys(paths[type])[0], Object.keys(paths[type])[1])) ? Object.keys(paths[type])[0] : Object.keys(paths[type])[1]
+
             resolvedPaths[type] = path;
         }
 
-        log.info('Available backends: %j', resolvedPaths);    
+        log.info('Prefered backends: %j', resolvedPaths);    
 
         return resolvedPaths[type];
     }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro for two calls (bundled and system)
 }
-

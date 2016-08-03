@@ -49,14 +49,28 @@ var applicationName = 'Mist';
 var electronVersion = require('electron-prebuilt/package.json').version;
 var gethVersion = '1.4.10';
 var nodeUrls = {
-    'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
-    'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
-    'win-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
-    'linux-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
-    'win-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip'
+    'mac-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
+        ext: 'zip'
+    },
+    'linux-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
+        ext: 'tar',
+    },
+    'linux-ia32': {
+        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
+        ext: 'tar',
+    },
+    'win-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
+        ext: 'zip',
+    },
+    'win-ia32': {
+        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip',
+        ext: 'zip',
+    },
 };
 
-var nodeVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
 
@@ -65,36 +79,22 @@ console.log('You can select a platform like: --platform (all or mac or win or li
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
-if(_.contains(options.platform, 'win')) {
-    nodeVersions.push('win-ia32');
-    nodeVersions.push('win-x64');
-}
-
-if(_.contains(options.platform, 'linux')) {
-    nodeVersions.push('linux-ia32');
-    nodeVersions.push('linux-x64');
-}
-
-if(_.contains(options.platform, 'mac')) {
-    nodeVersions.push('darwin-x64');
-}
-
 if(_.contains(options.platform, 'all')) {
     options.platform = ['win', 'linux', 'mac'];
-
-    nodeVersions = [
-        'darwin-x64',
-        // 'linux-arm',
-        'linux-ia32',
-        'linux-x64',
-        'win-ia32',
-        'win-x64'
-    ];
 }
 
-options.platformStr = options.platform.join(' ');
-
 console.log('Platform:', options.platform);
+
+
+function platformIsActive(osArch) {
+    for (let p of options.platform) {
+        if (0 <= osArch.indexOf(p)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 
 /// --------------------------------------------------------------
@@ -132,14 +132,12 @@ gulp.task('clean:nodes', function (cb) {
 gulp.task('downloadNodes', ['clean:nodes'], function() {
     let toDownload = [];
 
-    _.each(nodeUrls, function(url, osArch) {
-        let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
-
+    _.each(nodeUrls, function(info, osArch) {
         // donwload nodes
-        if (osArch.indexOf(options.platformStr) !== -1 || options.platformStr == 'all') {
+        if (platformIsActive(osArch)) {
             toDownload.push({
-                file: `geth-${gethVersion}_${osArch}_${ext}`,
-                url: url,
+                file: `geth_${gethVersion}_${osArch}.${info.ext}`,
+                url: info.url,
             });
         }
     });
@@ -156,7 +154,7 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
     var streams = [];
 
     for (let zipFileName of nodeZips) {
-        let match = zipFileName.match(/_(\w+\-\w+)_/);
+        let match = zipFileName.match(/_(\w+\-\w+)\./);
         if (!match) {
             continue;
         }
@@ -167,11 +165,15 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
 
         shell.mkdir('-p', `./nodes/geth/${osArch}`);
 
-        if (0 <= osArch.indexOf('linux')) {            
-            ret = shell.exec(`tar -xzf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
-
-        } else {
-            ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);
+        switch (path.extname(zipFileName)) {
+            case '.zip':
+                ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);
+                break;
+            case '.tar':
+                ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
+                break;
+            default:
+                return done(new Error(`Don't know how to process: ${zipFileName}`));
         }
 
         if (0 !== ret.code) {
@@ -231,20 +233,18 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
 
 var nodeUpdateNeeded = false;
 gulp.task('checkNodes', function(cb) {
-    for (let osArch in nodeUrls) {
-        let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
-
+    _.each(nodeUrls, (info, osArch) => {
         // check for zip file
-        if (osArch.indexOf(options.platformStr) !== -1 || options.platformStr == 'all') {
-            const fileName = `geth-${gethVersion}_${osArch}_${ext}`;
+        if (platformIsActive(osArch)) {
+            const fileName = `geth_${gethVersion}_${osArch}.${info.ext}`;
 
             try {
                 fs.accessSync(`./nodes/geth/${fileName}`, fs.R_OK);
             } catch (err) {
                 nodeUpdateNeeded = true;
             }
-        }
-    }
+        }        
+    });
 
     cb();
 });
@@ -296,20 +296,20 @@ gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done)
 
     var streams = [];
 
-    nodeVersions.map(function(os){
-        let destOs = os.replace('darwin', 'mac');
+    _.each(nodeUrls, (info, osArch) => {
+        if (platformIsActive(osArch)) {
+            // copy eth node binaries
+            streams.push(gulp.src([
+                './nodes/eth/'+ osArch + '/eth*'
+            ])
+                .pipe(gulp.dest('./dist_'+ type +'/app/nodes/eth/' + osArch)));
 
-        // copy eth node binaries
-        streams.push(gulp.src([
-            './nodes/eth/'+ os + '/eth*'
-        ])
-            .pipe(gulp.dest('./dist_'+ type +'/app/nodes/eth/' + destOs)));
-
-        // copy geth node binaries
-        streams.push(gulp.src([
-            './nodes/geth/'+ os + '/geth*'
-        ])
-            .pipe(gulp.dest('./dist_'+ type +'/app/nodes/geth/' + destOs)));
+            // copy geth node binaries
+            streams.push(gulp.src([
+                './nodes/geth/'+ osArch + '/geth*'
+            ])
+                .pipe(gulp.dest('./dist_'+ type +'/app/nodes/geth/' + osArch)));
+        }
     });
 
     return merge.apply(null, streams);
@@ -473,30 +473,30 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
 
 
 
-gulp.task('getChecksums', [], function(done) {
-    var count = 0;
-    nodeVersions.forEach(function(os){
+// gulp.task('getChecksums', [], function(done) {
+//     var count = 0;
+//     nodeVersions.forEach(function(os){
 
-        var path = createNewFileName(os) + '.zip';
+//         var path = createNewFileName(os) + '.zip';
 
-        // spit out sha256 checksums
-        var fileName = path.replace('./dist_'+ type +'/', '');
+//         // spit out sha256 checksums
+//         var fileName = path.replace('./dist_'+ type +'/', '');
 
-        var sha = shell.exec('shasum -a 256 ' + path);
+//         var sha = shell.exec('shasum -a 256 ' + path);
 
-        if (0 !== sha.code) {
-            throw new Error('Error executing shasum');
-        }
+//         if (0 !== sha.code) {
+//             throw new Error('Error executing shasum');
+//         }
 
-        console.log('SHA256 '+ fileName +': '+ sha.stdout.replace(path, ''));
+//         console.log('SHA256 '+ fileName +': '+ sha.stdout.replace(path, ''));
 
 
-        count++;
-        if(nodeVersions.length === count) {
-            done();
-        }
-    });
-});
+//         count++;
+//         if(nodeVersions.length === count) {
+//             done();
+//         }
+//     });
+// });
 
 
 

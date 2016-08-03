@@ -16,8 +16,8 @@ const Settings = require('./settings');
 
 
 // cache
-const paths = {},        // all versions (system + bundled):  { type: { path: version } }
-    resolvedPaths = { /*geth:'/usr/local/bin/geth'*/};  // latest version:                   { type: path }
+var paths = {},        // all versions (system + bundled):  { type: { path: version } }
+    resolvedPaths = {};  // latest version:                   { type: path }
     
 const resolvedPathsOld = {};  // latest version:                   { type: path }
 
@@ -138,47 +138,4 @@ module.exports = function(type) {
         return resolvedPaths[type];
     }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro (for two calls)
 }
-    /*
-    module.exports = function(type) {
-
-    if (resolvedPathsOld[type]) {
-        return resolvedPathsOld[type];
-    }
-
-    //getNodePaths();
-
-    let ret = '';
-
-    // global override?
-    let globallySetType = Settings[`${type}Path`];
-    
-    if (globallySetType) {
-        resolvedPathsOld[type] = globallySetType;
-    } else {
-        var binPath = (Settings.inProductionMode)
-            ? binaryPath.replace('nodes','node') + '/'+ type +'/'+ type
-            : binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type;
-
-        if(Settings.inProductionMode) {
-            binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
-            
-            if(process.platform === 'darwin') {
-                binPath = path.resolve(binPath.replace('/node/', '/../Frameworks/node/'));
-            }
-        }
-
-
-        if(process.platform === 'win32') {
-            binPath = binPath.replace(/\/+/,'\\');
-            binPath += '.exe';
-        }
-
-        resolvedPathsOld[type] = binPath;
-    }
-
-    log.debug(`Resolved path for ${type}: ${resolvedPathsOld[type]}`);
-
-    return resolvedPathsOld[type];
-};*/
-
 

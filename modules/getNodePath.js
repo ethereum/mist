@@ -56,7 +56,7 @@ function getVersion(type) {
                 }
             });
         }
-    }, 50); // 3ms are sufficient on a SSD macbookpro for getSystemPath(type)
+    }, 200); 
 }
 
 
@@ -121,8 +121,8 @@ module.exports = function(type) {
             resolvedPaths[type] = path;
         }
 
-        log.info('Prefered backends: %j', resolvedPaths);    
+        log.debug('Available backends: %j', paths);
 
         return resolvedPaths[type];
-    }, 1500); // 100ms (geth) / 900ms (eth) are sufficient on a SSD macbookpro for two calls (bundled and system)
+    }, 3000); 
 }

@@ -514,10 +514,17 @@ class EthereumNode extends EventEmitter {
 
         log.trace('Load user data', fullPath);
 
+        // check if the file exists
+        try {
+            fs.accessSync(fullPath, fs.R_OK);
+        } catch (err){
+            return;
+        }
+
         try {
             return fs.readFileSync(fullPath, {encoding: 'utf8'});
         } catch (err){
-            log.error(`Unable to read from ${fullPath}`);
+            log.error(`Unable to read from ${fullPath}`, err);
         }
 
         return null;

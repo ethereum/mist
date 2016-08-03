@@ -11,6 +11,7 @@ const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
+const shell = electron.shell;
 const timesync = require("os-timesync");
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
@@ -332,6 +333,7 @@ var onReady = function() {
                         message: global.i18n.t('mist.errors.legacyChain.title'),
                         detail: global.i18n.t('mist.errors.legacyChain.description')
                     }, function(){
+                        shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
                         app.quit();
                     });
                 }

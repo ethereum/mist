@@ -74,7 +74,7 @@ var nodeUrls = {
 var packJson = require('./package.json');
 var version = packJson.version;
 
-console.log('You can select a platform like: --platform (all or mac or win or linux)');
+console.log('You can select a platform like: --platform <mac|win|linux|all>');
 
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
@@ -253,7 +253,7 @@ gulp.task('checkNodes', function(cb) {
 
 // BUNLDE PROCESS
 
-gulp.task('copy-app-folder-files', ['checkNodes', 'clean:dist'], function() {
+gulp.task('copy-app-source-files', ['checkNodes', 'clean:dist'], function() {
 
     // check if nodes are there
     if(nodeUpdateNeeded){
@@ -265,12 +265,26 @@ gulp.task('copy-app-folder-files', ['checkNodes', 'clean:dist'], function() {
         './tests/**/*.*',
         './icons/'+ type +'/*.*',
         './modules/**/*.*',
-        './node_modules/**/*.*',
         './sounds/*.*',
         './*.js',
         '!gulpfile.js'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
+});
+
+
+gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
+    let ret = shell.exec(
+        `cp -r ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules`
+    );
+
+    if (0 !== ret.code) {
+        console.error(`Error symlinking node_modules`);
+
+        return done(ret.stderr);
+    }
+
+    return done();
 });
 
 

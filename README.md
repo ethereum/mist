@@ -30,13 +30,13 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements: 
 
-* Electron v1.2.5
+* Electron v1.3.2
 * Node v4.3.0 or above
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@1.2.5
+    $ npm install -g electron-prebuilt@1.3.2
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:
@@ -131,11 +131,7 @@ To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
-<<<<<<< HEAD
 $ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
-=======
-$ electron . --ipcpath ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
->>>>>>> develop
 ```
 
 _NOTE: since `ipcpath` is also a Mist option you do not need to also include a 

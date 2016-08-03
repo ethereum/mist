@@ -34,12 +34,13 @@ class EthereumNode extends EventEmitter {
         super();
 
         this.STATES = STATES;
-
         this._loadDefaults();
 
         this._node = null;
         this._type = null;
         this._network = null;
+
+        getNodePath();
 
         this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
@@ -327,10 +328,8 @@ class EthereumNode extends EventEmitter {
         this._network = network;
         this._type = nodeType;
 
-log.warn('--- getNodePath ->');
         const binPath = getNodePath(nodeType);
 
-log.warn('--- getNodePath <-');
         log.debug(`Start node using ${binPath}`);
 
     return new Q((resolve, reject) => {

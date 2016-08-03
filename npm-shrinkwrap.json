@@ -968,9 +968,9 @@
       "resolved": "https://registry.npmjs.org/electron-osx-sign/-/electron-osx-sign-0.4.0-beta4.tgz"
     },
     "electron-prebuilt": {
-      "version": "1.3.2",
-      "from": "electron-prebuilt@>=1.2.5 <2.0.0",
-      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-1.3.2.tgz"
+      "version": "1.2.5",
+      "from": "electron-prebuilt@1.2.5",
+      "resolved": "https://registry.npmjs.org/electron-prebuilt/-/electron-prebuilt-1.2.5.tgz"
     },
     "electron-winstaller-fixed": {
       "version": "3.1.0",

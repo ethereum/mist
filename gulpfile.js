@@ -76,6 +76,7 @@ var version = packJson.version;
 
 console.log('You can select a platform like: --platform <mac|win|linux|all>');
 
+console.log('App type:', type);
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
@@ -462,61 +463,58 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
 
 
 
-// gulp.task('zip', ['rename-folders'], function () {
-//     var streams = nodeVersions.map(function(os){
-//         var stream,
-//             name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
+gulp.task('release-dist', ['build-dist'], function(done) {
+    const distPath = path.join(__dirname, `dist_${type}`, 'dist'),
+        releasePath = path.join(__dirname, `dist_${type}`, 'release');
 
-//         // TODO doesnt work!!!!!
-//         stream = gulp.src([
-//             './dist_'+ type +'/'+ name + '/**/*'
-//             ])
-//             .pipe(zip({
-//                 name: name + ".zip",
-//                 outpath: './dist_'+ type +'/'
-//             }));
-//             // .pipe(zip(name +'.zip'))
-//             // .pipe(gulp.dest('./dist_'+ type +'/'));
+    shell.rm('-rf', releasePath);
+    shell.mkdir('-p', releasePath);
 
-//         return stream;
-//     });
+    _.each(nodeUrls, (info, osArch) => {
+        if (platformIsActive(osArch)) {
+            switch (osArch) {
+                case 'win-ia32':
+                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`), releasePath);
+                    break;
+                case 'win-x64':
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), releasePath);
+                    break;
+                case 'mac-x64':
+                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), releasePath);
+                    break;
+                case 'linux-ia32':
+                    shell.cp(path.join(distPath, `${applicationName}-${version}-ia32.deb`), releasePath);
+                    break;
+                case 'linux-x64':
+                    shell.cp(path.join(distPath, `${applicationName}-${version}.deb`), releasePath);
+                    break;
+            }
+        }
+    });
 
-
-//     return merge.apply(null, streams);
-// });
-
-
-
-// gulp.task('getChecksums', [], function(done) {
-//     var count = 0;
-//     nodeVersions.forEach(function(os){
-
-//         var path = createNewFileName(os) + '.zip';
-
-//         // spit out sha256 checksums
-//         var fileName = path.replace('./dist_'+ type +'/', '');
-
-//         var sha = shell.exec('shasum -a 256 ' + path);
-
-//         if (0 !== sha.code) {
-//             throw new Error('Error executing shasum');
-//         }
-
-//         console.log('SHA256 '+ fileName +': '+ sha.stdout.replace(path, ''));
+    done();
+});
 
 
-//         count++;
-//         if(nodeVersions.length === count) {
-//             done();
-//         }
-//     });
-// });
+
+gulp.task('get-release-checksums', function(done) {
+    const releasePath = `./dist_${type}/release`;
+
+    let files = fs.readdirSync(releasePath);
+
+    for (let file of files) {
+        let sha = shell.exec(`shasum -a 256 "./dist_${type}/release/${file}"`);
+
+        if (0 !== sha.code) {
+            return done(new Error('Error executing shasum: ' + sha.stderr));
+        }
+    }
+});
 
 
 
 gulp.task('taskQueue', [
-    'build-dist'
-    // 'zip',
+    'release-dist'
 ]);
 
 // DOWNLOAD nodes
@@ -537,10 +535,10 @@ gulp.task('wallet', function(cb) {
 
 // WALLET task
 gulp.task('mist-checksums', function(cb) {
-    runSeq('set-variables-mist', 'getChecksums', cb);
+    runSeq('set-variables-mist', 'get-release-checksums', cb);
 });
 gulp.task('wallet-checksums', function(cb) {
-    runSeq('set-variables-wallet', 'getChecksums', cb);
+    runSeq('set-variables-wallet', 'get-release-checksums', cb);
 });
 
 

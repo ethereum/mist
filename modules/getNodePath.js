@@ -32,9 +32,13 @@ module.exports = function(type) {
         let platform = process.platform;
 
         // "win32" -> "win" (because nodes are bundled by electron-builder)
-        if (0 <= platform.indexOf('win')) {
+        if (0 === platform.indexOf('win')) {
             platform = 'win';
+        } else if (0 === platform.indexOf('darwin')) {
+            platform = 'mac';
         }
+
+        log.debug('Platform: ' + platform);
 
         let binPath = path.join(
             __dirname, 
@@ -47,16 +51,9 @@ module.exports = function(type) {
         if (Settings.inProductionMode) {
             // get out of the ASAR
             binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
-
-            if ('darwin' === platform) {
-                /* gulp script calls it mac, for electron-builder */
-                binPath = binPath.replace('darwin', 'mac');
-            }
         }
 
-        binPath = path.resolve(binPath);
-
-        binPath = path.join(binPath, type);
+        binPath = path.join(path.resolve(binPath), type);
 
         if ('win' === platform) {
             binPath += '.exe';

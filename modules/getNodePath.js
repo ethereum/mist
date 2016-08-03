@@ -66,33 +66,25 @@ function getVersion(type) {
  * @param  {String} type   the type of node (i.e. 'geth', 'eth')
  */
 module.exports = function(type) {
-    // return path if already resolved
     if (resolvedPaths[type]) {
         return resolvedPaths[type];
     }
 
-    // resolve base path of bundled nodes
-    var binPath = (Settings.inProductionMode)
-        ? binaryPath.replace('nodes','node')
-        : binaryPath
-
     if(Settings.inProductionMode) {
-        binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
+        binPath = binPath.replace('nodes','node').replace('app.asar/','').replace('app.asar\\','');
         
         if(process.platform === 'darwin') {
             binPath = path.resolve(binPath.replace('/node', '/../Frameworks/node'));
         }
 
-        if(process.platform === 'win32') {
-            binPath += '/' + type + '/' + type + '.exe';
-            binPath = binPath.replace(/\/+/,'\\');
-        }
-    }
-
-    // resolve node binary paths
-    if (Settings.inProductionMode) {
         fs.readdirSync(binPath).forEach((type) => {
             var nodePath = binPath + '/' + type + '/' + type;
+
+            if(process.platform === 'win32') {
+                binPath += '.exe';
+                binPath = binPath.replace(/\/+/,'\\');
+            }
+
             paths[type] = {};
             paths[type][nodePath] = null;
         });
@@ -106,10 +98,10 @@ module.exports = function(type) {
         });
     }
 
-    // compare versions to system-wide installed nodes (only linux and mac)
-    if (process.platform === 'linux' || process.platform === 'darwin')
+    if (process.platform === 'linux' || process.platform === 'darwin') {
         for (var type in paths)
             getVersion(type, getSystemPath(type));
+    }
 
     setTimeout(() => {
         for (type in paths) {

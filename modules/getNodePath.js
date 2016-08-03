@@ -84,8 +84,8 @@ module.exports = function(type) {
         }
 
         if(process.platform === 'win32') {
+            binPath += '/' + type + '/' + type + '.exe';
             binPath = binPath.replace(/\/+/,'\\');
-            binPath += '.exe';
         }
     }
 

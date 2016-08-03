@@ -42,7 +42,7 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = '1.2.5';
-var gethVersion = '1.4.10';
+module.exports.gethVersion = '1.4.10';
 var nodeUrls = {
     'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
     'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',

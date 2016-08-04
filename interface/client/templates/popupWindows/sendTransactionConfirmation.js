@@ -34,6 +34,10 @@ var lookupFunctionSignature = function(data) {
                 ? data.substr(0, 10)
                 : '0x'+ data.substr(0, 8);
 
+            if (_.first(window.SIGNATURES[bytesSignature])) {
+                resolve(_.first(window.SIGNATURES[bytesSignature]));
+            }
+
             https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
                 var body = '';
 
@@ -94,7 +98,8 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                         // TODO: better location for this.
                         if (data.data) {
                           lookupFunctionSignature(data.data).then((textSignature) => {
-                              TemplateVar.set(template, 'executionFunction', textSignature);
+                                // Clean version of function signature. Striping params
+                                TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
                           }).catch((bytesSignature) => {
                               TemplateVar.set(template, 'executionFunction', bytesSignature);
                           });

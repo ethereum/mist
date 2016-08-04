@@ -47,17 +47,17 @@
             // addresses
             > div:nth-child(odd) {
                 position: relative;
-                padding: 0 @defaultMargin*3;
+                padding: 0 @defaultMargin*2;
                 font-weight: 400;
             }
             > div:nth-child(1) {
                 .overlap-icon {
-                    right: 32px;
+                    right: @defaultMargin * 1.25;
                 }
             }
             > div:nth-child(3) {
                 .overlap-icon {
-                    left: 32px;
+                    left: @defaultMargin * 1;
                 }
             }
             // amount
@@ -65,6 +65,7 @@
                 position: relative;
                 margin-top: -30px;
                 height: 40px;
+                width: @defaultMargin * 10;
                 font-size: 1.5em;
                 color: darken(@colorTextSecondary, 8%);
                 border-bottom: 1px solid @colorTextSecondary;
@@ -86,12 +87,17 @@
                 .execute-function {
                     display: block;
                     position: absolute;
-                    bottom: -30px;
+                    bottom: -25px;
                     left: 0;
                     right: 0;
-                    font-size: 0.6em;
+                    font-size: 0.5em;
                     text-align: center;
                     font-weight: 600;
+                    text-transform: uppercase;
+                    
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
                 }
             }
         }

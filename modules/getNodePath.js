@@ -71,7 +71,7 @@ module.exports = function(type) {
     }
 
     if(Settings.inProductionMode) {
-        binPath = binPath.replace('nodes','node').replace('app.asar/','').replace('app.asar\\','');
+        var binPath = binaryPath.replace('nodes','node').replace('app.asar/','').replace('app.asar\\','');
         
         if(process.platform === 'darwin') {
             binPath = path.resolve(binPath.replace('/node', '/../Frameworks/node'));
@@ -81,8 +81,8 @@ module.exports = function(type) {
             var nodePath = binPath + '/' + type + '/' + type;
 
             if(process.platform === 'win32') {
-                binPath += '.exe';
-                binPath = binPath.replace(/\/+/,'\\');
+                nodePath = nodePath.replace(/\/+/,'\\');
+                nodePath += '.exe';
             }
 
             paths[type] = {};
@@ -114,7 +114,5 @@ module.exports = function(type) {
         }
 
         log.debug('Available backends: %j', paths);
-
-        return resolvedPaths[type];
     }, 3000); 
 }

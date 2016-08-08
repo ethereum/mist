@@ -7,6 +7,7 @@ const shell = electron.shell;
 const log = require('./utils/logger').create('menuItems');
 const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
+const getNodePath = require('./getNodePath.js');
 const Windows = require('./windows');
 const updateChecker = require('./updateChecker');
 const Settings = require('./settings');
@@ -342,39 +343,27 @@ var menuTempl = function(webviews) {
         }
     ];
 
-
-
-
-
     // add node switching menu
     devToolsMenu.push({
         type: 'separator'
     });
     // add node switch
     if(process.platform === 'darwin' || process.platform === 'win32') {
-        devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: [
-              {
-                label: 'Geth 1.4.10 (Go)',
-                checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+        var nodesMenu = [];
+        for (let type in getNodePath.query())
+            nodesMenu.push({
+                label: type.charAt(0).toUpperCase() + type.slice(1),
+                checked: ethereumNode.isOwnNode && ethereumNode.type === type,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click: function(){
-                    restartNode('geth');
+                    restartNode(type);
                 }
-              },
-              {
-                label: 'Eth 1.2.9 (C++) [no hardfork support!]',
-                /*checked: ethereumNode.isOwnNode && ethereumNode.isEth,
-                enabled: ethereumNode.isOwnNode,*/
-                enabled: false,
-                type: 'checkbox',
-                click: function(){
-                    restartNode('eth');
-                }
-              }
-        ]});
+            });
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
+            submenu: nodesMenu
+        });
     }
 
     // add network switch

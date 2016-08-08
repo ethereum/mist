@@ -80,18 +80,18 @@ module.exports = {
      *
      * @param  {String} type   the type of node (i.e. 'geth', 'eth')
      */
-    query: (type) => {
-      return resolvedPaths[type];
+    query: () => {
+        return resolvedPaths;
     },
     /**
      * Evaluates node paths
      *  - Enumerates bundled nodes
      * linux and mac only:
      *  - probes for system installation of nodes
-     *  - compares the versions of bundled and system nodes (preferes latest version)
+     *  - compares the versions of bundled and system nodes (preferres latest version)
      */
     probe: () => {    
-        return new Q((resolve, reject) => {
+        return new Q((resolve, reject) => {                        
             if(Settings.inProductionMode) {
                 var binPath = binaryPath.replace('nodes','node').replace('app.asar/','').replace('app.asar\\','');
                 

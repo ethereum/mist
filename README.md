@@ -162,7 +162,7 @@ To generate the binaries simply run:
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
     $ gulp wallet
 
-This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
+This will generate the binaries inside the `dist_mist/release` or `dist_wallet/release` folder.
 
 #### Options
 
@@ -201,24 +201,18 @@ Options are:
 
 ##### mist-checksums | wallet-checksums
 
-Spits out the SHA256 checksums of zip files. The zip files need to be generated manually for now!
-It expects zip files to be named as the generated folders e.g. `dist_wallet/Ethereum-Wallet-macosx-0-5-0.zip`
+Spits out the SHA256 checksums of distributables.
+
+It expects installer/zip files to be in the generated folders e.g. `dist_wallet/release`
 
     $ gulp mist-checksums
 
-    > SHA256 Ethereum-Wallet-linux32-0-5-0.zip: 983dc9f1bc14a17a46f1e34d46f1bfdc01dc0868
-    > SHA256 Ethereum-Wallet-win32-0-5-0.zip: 1f8e56c198545c235d47921888e5ede76ce42dcf
-    > SHA256 Ethereum-Wallet-macosx-0-5-0.zip: dba5a13d6114b2abf1d4beca8bde25f1869feb45
-    > SHA256 Ethereum-Wallet-linux64-0-5-0.zip: 2104b0fe75109681a70f9bf4e844d83a38796311
-    > SHA256 Ethereum-Wallet-win64-0-5-0.zip: fc20b746eb37686edb04aee3e442492956adb546
+    3f726fff186b85c600ea2459413d0bf5ada2dbc98877764efbefa545f96eb975  ./dist_wallet/release/Ethereum Wallet Setup 0.8.1-ia32.exe
+    ab4d26d5ebc66e9aba0fa610071266bacbb83faacbb7ed0dd2acb24386190bdb  ./dist_wallet/release/Ethereum Wallet Setup 0.8.1.exe
+    909b0fb4c7b09b731b2a442c457747e04ffdd9c03b6edc06079ae05a46200d13  ./dist_wallet/release/Ethereum Wallet-0.8.1-ia32.deb
+    e114d6188963dfdae0489abf4e8923da58b39ff9cdbaad26e803af27c7ce55d1  ./dist_wallet/release/Ethereum Wallet-0.8.1.deb
+    930787dd2f5ed6931068bff9244bccc01f397f552c48ded0f08e515e276dd080  ./dist_wallet/release/Ethereum Wallet-0.8.1.dmg
 
-### Code signing for production
+### Code signing for production 
 
-After the bundle run:
-
-    $ codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
-
-Verify
-
-    $ codesign --verify -vvvv Ethereum-Wallet.app
-    $ spctl -a -vvvv Ethereum-Wallet.app
+**As of #972 we've updated the build process and thus need to redo code-signing.**

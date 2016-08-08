@@ -81,7 +81,7 @@ module.exports = {
      * @param  {String} type   the type of node (i.e. 'geth', 'eth')
      */
     query: (type) => {
-      return resolvedPaths[type];   
+      return resolvedPaths[type];
     },
     /**
      * Evaluates node paths
@@ -149,6 +149,12 @@ module.exports = {
                     .then(resolve, reject);
                 })
             } else {
+                for (let type in paths) {
+                    for (let path in paths[type]) {
+                        resolvedPaths[type] = path;
+                    }
+                }
+                log.debug('Available backends: %j', paths);
                 resolve();
             }
         });

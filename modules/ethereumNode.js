@@ -282,7 +282,7 @@ class EthereumNode extends EventEmitter {
                 this._saveUserData('network', this._network);
 
 
-                return this._socket.connect({ path: Settings.rpcConnectConfig}, {
+                return this._socket.connect(Settings.rpcConnectConfig, {
                         timeout: 30000 /* 30s */
                     })
                     .then(() => {
@@ -356,7 +356,7 @@ class EthereumNode extends EventEmitter {
                 // START TESTNET
                 if ('test' == network) {
                     args = (nodeType === 'geth') 
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcConnectConfig] 
+                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath] 
                         : ['--morden', '--unsafe-transactions'];
                 } 
                 // START MAINNET

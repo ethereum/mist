@@ -349,9 +349,9 @@ var menuTempl = function(webviews) {
     });
     // add node switch
     if(process.platform === 'darwin' || process.platform === 'win32') {
-        var nodesMenu = [];
+        var nodes = [];
         for (let type in getNodePath.query())
-            nodesMenu.push({
+            nodes.push({
                 label: type.charAt(0).toUpperCase() + type.slice(1),
                 checked: ethereumNode.isOwnNode && ethereumNode.type === type,
                 enabled: ethereumNode.isOwnNode,
@@ -360,17 +360,29 @@ var menuTempl = function(webviews) {
                     restartNode(type);
                 }
             });
-        devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: nodesMenu
-        });
+        var submenu = { 'label': i18n.t('mist.applicationMenu.develop.ethereumNode') };
+        if (ethereumNode.state === undefined) {
+            submenu.label += ' (' + i18n.t('mist.applicationMenu.develop.starting') + ')';
+            submenu.enabled = false;
+        } else if (ethereumNode.isExternalNode) {
+            submenu.label += ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
+            submenu.enabled = false;
+        } else if (nodes.length > 0) {
+            submenu.submenu =  nodes;
+        }
+        devToolsMenu.push(submenu);
     }
 
     // add network switch
-    devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.network'),
-        submenu: [
-          {
+    var submenu = { label: i18n.t('mist.applicationMenu.develop.network') };
+    if (ethereumNode.state === undefined) {
+        submenu.label += ' (' + i18n.t('mist.applicationMenu.develop.starting') + ')';
+        submenu.enabled = false;
+    } else if (ethereumNode.isExternalNode) {
+        submenu.label += ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
+        submenu.enabled = false;
+    } else {
+        submenu.submenu = [{
             label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
             accelerator: 'CommandOrControl+Shift+1',
             checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
@@ -379,8 +391,8 @@ var menuTempl = function(webviews) {
             click: function(){
                 restartNode(ethereumNode.type, 'main');
             }
-          },
-          {
+        },
+        {
             label: 'Testnet (Morden)',
             accelerator: 'CommandOrControl+Shift+2',
             checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
@@ -389,8 +401,9 @@ var menuTempl = function(webviews) {
             click: function(){
                 restartNode(ethereumNode.type, 'test');
             }
-          }
-    ]});
+        }];
+    }
+    devToolsMenu.push(submenu);
 
     // add fork support
     devToolsMenu.push({

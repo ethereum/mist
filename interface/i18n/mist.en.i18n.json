@@ -59,6 +59,8 @@
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
                 "ethereumNode": "Ethereum Node",
+                "starting": "starting",
+                "externalNode": "using external node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",

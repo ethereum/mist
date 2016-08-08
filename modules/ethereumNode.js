@@ -41,8 +41,6 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        getNodePath.probe();
-
         this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
         this.on('data', _.bind(this._logNodeData, this));

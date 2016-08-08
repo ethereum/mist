@@ -7,7 +7,6 @@ var exec = require('child_process').exec;
 var del = require('del');
 var replace = require('gulp-replace');
 var runSeq = require('run-sequence');
-var packager = require('electron-packager');
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
@@ -84,7 +83,7 @@ if(_.contains(options.platform, 'all')) {
     options.platform = ['win', 'linux', 'mac'];
 }
 
-console.log('Platform:', options.platform);
+console.log('Selected platform:', options.platform);
 
 
 function platformIsActive(osArch) {
@@ -264,9 +263,9 @@ gulp.task('copy-app-source-files', ['checkNodes', 'clean:dist'], function() {
 
     return gulp.src([
         './tests/**/*.*',
-        './icons/'+ type +'/*.*',
-        './modules/**/*.*',
-        './sounds/*.*',
+        './icons/'+ type +'/*',
+        './modules/**/**/**/*',
+        './sounds/*',
         './*.js',
         '!gulpfile.js'
         ], { base: './' })
@@ -291,7 +290,7 @@ gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
 
 gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], function() {
     return gulp.src([
-        './icons/'+ type +'/*.*',
+        './icons/'+ type +'/*',
         './interface/public/images/bg-homestead.jpg',
         ], { base: './' })
         .pipe(flatten())
@@ -483,10 +482,10 @@ gulp.task('release-dist', ['build-dist'], function(done) {
                     shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), releasePath);
                     break;
                 case 'linux-ia32':
-                    shell.cp(path.join(distPath, `${applicationName}-${version}-ia32.deb`), releasePath);
+                    shell.cp(path.join(distPath, `Mist-${version}-ia32.deb`), path.join(releasePath, `${applicationName}-${version}-ia32.deb`) );
                     break;
                 case 'linux-x64':
-                    shell.cp(path.join(distPath, `${applicationName}-${version}.deb`), releasePath);
+                    shell.cp(path.join(distPath, `Mist-${version}.deb`), path.join(releasePath, `${applicationName}-${version}.deb`) );
                     break;
             }
         }

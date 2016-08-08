@@ -41,8 +41,6 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        getNodePath();
-
         this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
         this.on('data', _.bind(this._logNodeData, this));
@@ -329,13 +327,15 @@ class EthereumNode extends EventEmitter {
         this._network = network;
         this._type = nodeType;
 
-        const binPath = getNodePath(nodeType);
-
-        log.debug(`Start node using ${binPath}`);
-
         return new Q((resolve, reject) => {
-            this.__startProcess(nodeType, network, binPath)
-                .then(resolve, reject);
+            getNodePath.probe()
+            .then(() => {
+                const binPath = getNodePath.query(nodeType);
+                log.debug(`Start node using ${binPath}`);
+
+                this.__startProcess(nodeType, network, binPath)
+                    .then(resolve, reject);
+            });
         });
     }
 

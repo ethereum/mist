@@ -1,5 +1,6 @@
 const path = require('path');
 const electron = require('electron');
+const fs = require('fs');
 const app = electron.app;
 
 const logger = require('./utils/logger');
@@ -262,6 +263,45 @@ class Settings {
     return argv.nodeOptions;
   }
 
+  loadUserData (path) {
+      const fullPath = this.constructUserDataPath(path);
+
+      this._log.trace('Load user data', fullPath);
+
+      // check if the file exists
+      try {
+          fs.accessSync(fullPath, fs.R_OK);
+      } catch (err){
+          return null;
+      }
+
+      // try to read it
+      try {
+          return fs.readFileSync(fullPath, {encoding: 'utf8'});
+      } catch (err){
+          this._log.warn(`File not readable: ${fullPath}`, err);
+      }
+
+      return null;
+  }
+
+
+  saveUserData (path, data) {
+      if (!data) return; // return so we dont write null, or other invalid data
+
+      const fullPath = this.constructUserDataPath(path);
+
+      try {
+          fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
+      } catch (err){
+          this._log.warn(`Unable to write to ${fullPath}`, err);
+      }
+  }
+
+
+  constructUserDataPath (filePath) {
+      return path.join(this.userDataPath, filePath);   
+  }
 
 }
 

@@ -327,8 +327,29 @@ var onReady = function() {
             });
         });
 
-        // go!
-        ethereumNode.init()
+        // check legacy chain
+        // CHECK for legacy chain (FORK RELATED)
+        Q.try(() => {
+            // open the legacy chain message
+            console.log(Settings.loadUserData('daoFork'));
+            if (Settings.loadUserData('daoFork').trim() === 'false') {
+
+                dialog.showMessageBox({
+                    type: "warning",
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.legacyChain.title'),
+                    detail: global.i18n.t('mist.errors.legacyChain.description')
+                }, function(){
+                    shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
+                    app.quit();
+                });
+
+                throw new Error('Cant start client due to legacy non-Fork setting.');
+            }            
+        })
+            .then(() => {
+                return ethereumNode.init();
+            })
             .then(function sanityCheck() {
                 if (!ethereumNode.isIpcConnected) {
                     throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
@@ -339,25 +360,6 @@ var onReady = function() {
 
                 // update menu, to show node switching possibilities
                 appMenu();
-            })
-            // CHECK for legacy chain (FORK RELATED)
-            .then(function checkLegacyChain() {
-
-                // open the legacy chain message
-                if (ethereumNode._loadUserData('daoFork') === 'false') {
-
-                    dialog.showMessageBox({
-                        type: "warning",
-                        buttons: ['OK'],
-                        message: global.i18n.t('mist.errors.legacyChain.title'),
-                        detail: global.i18n.t('mist.errors.legacyChain.description')
-                    }, function(){
-                        shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
-                        app.quit();
-                    });
-
-                    throw new Error('Cant start client, due to legacy.');
-                }
             })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);

@@ -58,18 +58,13 @@ mistInit = function(){
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    OnceNetworkInfoLoaded.then(function(info) {
-        EthAccounts.init({
-            network: info.uniqueId
-        });
-        
-        EthBlocks.init({
-            network: info.uniqueId
-        });
+    NetworkInfoPromise.then(function(info) {
+        EthAccounts.init({ network: info.uniqueId });
+        EthBlocks.init();
     });
-
+    
     mistInit();
-
+    
     console.debug('Setting language');
 
     // SET default language

@@ -46,7 +46,7 @@ Template['elements_nodeInfo'].onCreated(function(){
     var template = this;
 
     // CHECK FOR NETWORK
-    OnceNetworkInfoLoaded.then(function(info) {
+    NetworkInfoPromise.then(function(info) {
         try {
             console.log('network is ' + info.type);
 

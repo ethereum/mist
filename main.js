@@ -11,6 +11,7 @@ const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
+const shell = electron.shell;
 const timesync = require("os-timesync");
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
@@ -326,8 +327,29 @@ var onReady = function() {
             });
         });
 
-        // go!
-        ethereumNode.init()
+        // check legacy chain
+        // CHECK for legacy chain (FORK RELATED)
+        Q.try(() => {
+            // open the legacy chain message
+            console.log(Settings.loadUserData('daoFork'));
+            if (Settings.loadUserData('daoFork').trim() === 'false') {
+
+                dialog.showMessageBox({
+                    type: "warning",
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.legacyChain.title'),
+                    detail: global.i18n.t('mist.errors.legacyChain.description')
+                }, function(){
+                    shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
+                    app.quit();
+                });
+
+                throw new Error('Cant start client due to legacy non-Fork setting.');
+            }            
+        })
+            .then(() => {
+                return ethereumNode.init();
+            })
             .then(function sanityCheck() {
                 if (!ethereumNode.isIpcConnected) {
                     throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
@@ -338,57 +360,6 @@ var onReady = function() {
 
                 // update menu, to show node switching possibilities
                 appMenu();
-            })
-            // FORK RELATED
-            .then(function hardForkOption() {
-                // open the fork popup
-                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
-
-                    return new Q((resolve, reject) => {
-                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
-                            primary: true,
-                            electronOptions: {
-                                width: 640,
-                                height: 580,
-                            },
-                        });
-
-                        forkChoiceWindow.on('close', function(){
-                            app.quit();
-                        });
-
-                        // choose the fork side
-                        ipc.on('forkChoice_choosen', function(e, daoFork) {
-                            // prevent that it closes the app
-                            forkChoiceWindow.removeAllListeners('close');
-                            forkChoiceWindow.close();
-
-                            ipc.removeAllListeners('forkChoice_choosen');
-
-                            log.debug('Enable DAO Fork? ', daoFork);
-
-                            // no need to restart
-                            if(!daoFork)
-                                return resolve();
-
-                            // set forkside
-                            ethereumNode.daoFork = daoFork;
-                            
-                            // start node
-                            ethereumNode.restart(ethereumNode.type, 'main')
-                                .then(function nodeRestarted() {
-                                    appMenu();
-
-                                    resolve();
-                                })
-                                .catch((err) => {
-                                    log.error('Error restarting node', err);
-
-                                    reject(err);
-                                });
-                        });
-                    });
-                }
             })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);

@@ -29,11 +29,11 @@ module.exports = function(type) {
     if (globallySetType) {
         resolvedPaths[type] = globallySetType;
     } else {
-        var binPath = (Settings.inProductionMode)
+        var binPath = (global.production)
             ? binaryPath.replace('nodes','node') + '/'+ type +'/'+ type
             : binaryPath + '/'+ type +'/'+ process.platform +'-'+ process.arch + '/'+ type;
 
-        if(Settings.inProductionMode) {
+        if(global.production) {
             binPath = binPath.replace('app.asar/','').replace('app.asar\\','');
             
             if(process.platform === 'darwin') {

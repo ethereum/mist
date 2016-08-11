@@ -185,7 +185,7 @@
                 "errors": {
                     "nodeNotStartedYet": "請等待片刻直到您的節點完全啓動再重新嘗試一次",
                     "unknownFile": "文件無法識別。",
-                    "wrongPassword": "密碼錯誤。",
+                    "passwordError": "密碼錯誤。",
                     "importFailed": "無法匯入該文件，錯誤：__error__"
                 }
             }

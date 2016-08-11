@@ -186,7 +186,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Espere alguns segundos e tente novamente",
                     "unknownFile": "Arquivo não reconhecido.",
-                    "wrongPassword": "Senha incorreta.",
+                    "passwordError": "Senha incorreta.",
                     "importFailed": "Não pode importar. Erro: __error__"
                 }
             }

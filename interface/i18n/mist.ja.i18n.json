@@ -182,7 +182,7 @@
                 "errors": {
                     "nodeNotStartedYet": "ノードが開始して再度起動する迄もう少し待つ",
                     "unknownFile": "ファイルが認識できませんでした.",
-                    "wrongPassword": "passwordが間違っています",
+                    "passwordError": "passwordが間違っています",
                     "importFailed": "ファイルが読み込めませんでした: __error__のエラーです"
                 }
             }

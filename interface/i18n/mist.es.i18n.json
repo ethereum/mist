@@ -184,7 +184,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Espere unos segundos más hasta que su nodo esté completamente iniciado y vuelva a intentarlo",
                     "unknownFile": "Archivo no reconocido.",
-                    "wrongPassword": "Contraseña incorrecta.",
+                    "passwordError": "Contraseña incorrecta.",
                     "importFailed": "No se pudo importar el archivo por el error: __error__"
                 }
             }

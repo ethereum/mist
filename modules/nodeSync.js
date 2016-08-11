@@ -100,8 +100,6 @@ class NodeSync extends EventEmitter {
 
 
     _clearState () {
-        ipc.removeAllListeners('backendAction_skipSync');
-
         this._syncInProgress 
             = this._syncPromise 
             = this._onSyncDone 

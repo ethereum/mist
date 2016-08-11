@@ -179,7 +179,7 @@
                 "errors": {
                     "nodeNotStartedYet": "노드가 완전히 구동될 때까지 몇초 기다렸다 다시 시도해 보세요.",
                     "unknownFile": "파일을 인식할 수 없습니다.",
-                    "wrongPassword": "암호가 틀렸습니다.",
+                    "passwordError": "암호가 틀렸습니다.",
                     "importFailed": "파일을 가져올 수 없습니다: __error__"
                 }
             }

@@ -12,6 +12,7 @@ const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
 const timesync = require("os-timesync");
+const Minimongo = require('./modules/minimongoDb.js');
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
 const packageJson = require('./package.json');
@@ -35,19 +36,33 @@ if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
-
 // logging setup
 const log = logger.create('main');
 
-if (Settings.inAutoTestMode) {
-    log.info('AUTOMATED TESTING');
+if (Settings.inTestMode) {
+    log.info('TEST MODE');
 }
 
-log.info(`Running in production mode: ${Settings.inProductionMode}`);
+// GLOBAL Variables
+global.path = {
+    HOME: app.getPath('home'),
+    APPDATA: app.getPath('appData'), // Application Support/
+    USERDATA: app.getPath('userData') // Application Aupport/Mist
+};
 
 
-// db
-const db = global.db = require('./modules/db');
+global.dirname  = __dirname;
+
+global.version = Settings.appVersion;
+global.license = Settings.appLicense;
+
+global.production = Settings.inProductionMode;
+log.info(`Running in production mode: ${global.production}`);
+
+global.mode = Settings.uiMode;
+
+global.appName = 'mist' === global.mode ? 'Mist' : 'Ethereum Wallet';
+
 
 
 require('./modules/ipcCommunicator.js');
@@ -60,13 +75,12 @@ global.webviews = [];
 
 global.mining = false;
 
-global.icon = __dirname +'/icons/'+ Settings.uiMode +'/icon.png';
-global.mode = Settings.uiMode;
-global.dirname = __dirname;
+global.icon = __dirname +'/icons/'+ global.mode +'/icon.png';
 
 global.language = 'en';
 global.i18n = i18n; // TODO: detect language switches somehow
 
+global.Tabs = Minimongo('tabs');
 
 
 // INTERFACE PATHS
@@ -74,13 +88,13 @@ global.interfaceAppUrl;
 global.interfacePopupsUrl;
 
 // WALLET
-if(Settings.uiMode === 'wallet') {
+if(global.mode === 'wallet') {
     log.info('Starting in Wallet mode');
 
-    global.interfaceAppUrl = (Settings.inProductionMode)
+    global.interfaceAppUrl = (global.production)
         ? 'file://' + __dirname + '/interface/wallet/index.html'
         : 'http://localhost:3050';
-    global.interfacePopupsUrl = (Settings.inProductionMode)
+    global.interfacePopupsUrl = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
@@ -88,7 +102,7 @@ if(Settings.uiMode === 'wallet') {
 } else {
     log.info('Starting in Mist mode');
 
-    let url = (Settings.inProductionMode)
+    let url = (global.production)
         ? 'file://' + __dirname + '/interface/index.html'
         : 'http://localhost:3000';
 
@@ -136,21 +150,18 @@ app.on('before-quit', function(event){
 
         // delay quit, so the sockets can close
         setTimeout(function(){
-            ethereumNode.stop()
-            .then(function() {
+            ethereumNode.stop().then(function() {
                 killedSocketsAndNodes = true;
 
-                return db.close();
-            })
-            .then(function() {
                 app.quit(); 
             });
-
         }, 500);
     } else {
         log.info('About to quit...');
     }
 });
+
+
 
 
 var mainWindow;
@@ -160,25 +171,11 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
-    // initialise the db
-    global.db.init().then(onReady).catch((err) => {
-        log.error(err);
-
-        app.quit();
-    });
-});
-
-
-
-var onReady = function() {
-    // sync minimongo
-    syncMinimongo.backendSync(global.db.Tabs);
-
     // Initialise window mgr
     Windows.init();
 
     // check for update
-    if (!Settings.inAutoTestMode) {
+    if (!Settings.inTestMode) {
         require('./modules/updateChecker').run();
     }
 
@@ -194,7 +191,7 @@ var onReady = function() {
     // Create the browser window.
 
     // MIST
-    if(Settings.uiMode === 'mist') {
+    if(global.mode === 'mist') {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
@@ -208,6 +205,8 @@ var onReady = function() {
                 }
             }
         });
+
+        syncMinimongo(Tabs, mainWindow.webContents);
 
     // WALLET
     } else {
@@ -225,10 +224,10 @@ var onReady = function() {
         });
     }
 
-    if (!Settings.inAutoTestMode) {
+    if (!Settings.inTestMode) {
         splashWindow = Windows.create('splash', {
             primary: true,
-            url: global.interfacePopupsUrl + '#splashScreen_'+ Settings.uiMode,
+            url: global.interfacePopupsUrl + '#splashScreen_'+ global.mode,
             show: true,
             electronOptions: {
                 width: 400,
@@ -320,62 +319,10 @@ var onReady = function() {
                 // update menu, to show node switching possibilities
                 appMenu();
             })
-            // FORK RELATED
-            .then(function hardForkOption() {
-                // open the fork popup
-                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
-
-                    return new Q((resolve, reject) => {
-                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
-                            primary: true,
-                            electronOptions: {
-                                width: 640,
-                                height: 580,
-                            },
-                        });
-
-                        forkChoiceWindow.on('close', function(){
-                            app.quit();
-                        });
-
-                        // choose the fork side
-                        ipc.on('forkChoice_choosen', function(e, daoFork) {
-                            // prevent that it closes the app
-                            forkChoiceWindow.removeAllListeners('close');
-                            forkChoiceWindow.close();
-
-                            ipc.removeAllListeners('forkChoice_choosen');
-
-                            log.debug('Enable DAO Fork? ', daoFork);
-
-                            // no need to restart
-                            if(!daoFork)
-                                return resolve();
-
-                            // set forkside
-                            ethereumNode.daoFork = daoFork;
-                            
-                            // start node
-                            ethereumNode.restart(ethereumNode.type, 'main')
-                                .then(function nodeRestarted() {
-                                    appMenu();
-
-                                    resolve();
-                                })
-                                .catch((err) => {
-                                    log.error('Error restarting node', err);
-
-                                    reject(err);
-                                });
-                        });
-                    });
-                }
-            })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
             })
             .then(function onboarding(resultData) {
-
                 if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
@@ -434,7 +381,7 @@ var onReady = function() {
                     splashWindow.show();
                 }
 
-                if (!Settings.inAutoTestMode) {
+                if (!Settings.inTestMode) {
                     return syncResultPromise;
                 }
             })
@@ -447,13 +394,14 @@ var onReady = function() {
 
     }; /* kick start */
 
+
     if (splashWindow) {
         splashWindow.on('ready', kickStart);
     } else {
         kickStart();
     }
 
-}; /* onReady() */
+}); /* on app ready */
 
 
 
@@ -480,23 +428,9 @@ var startMainWindow = function() {
         app.quit();
     });
 
-    // observe Tabs for changes and refresh menu
-    let sortedTabs = global.db.Tabs.addDynamicView('sorted_tabs');
-    sortedTabs.applySimpleSort('position', false);
-
-    let refreshMenu = function() {
-        clearTimeout(global._refreshMenuFromTabsTimer);
-
-        global._refreshMenuFromTabsTimer = setTimeout(function() {
-            log.debug('Refresh menu with tabs');
-
-            global.webviews = sortedTabs.data();
-
-            appMenu(global.webviews);            
-        }, 200);
-    };
-
-    global.db.Tabs.on('insert', refreshMenu);
-    global.db.Tabs.on('update', refreshMenu);
-    global.db.Tabs.on('delete', refreshMenu);
+    // instantiate the application menu
+    Tracker.autorun(function(){
+        global.webviews = Tabs.find({},{sort: {position: 1}, fields: {name: 1, _id: 1}}).fetch();
+        appMenu(global.webviews);
+    });
 };

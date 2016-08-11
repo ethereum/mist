@@ -183,7 +183,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Wacht nog een aantal seconden tot uw node volledig is opgestart en probeer het nog een keer",
                     "unknownFile": "Bestand niet herkent.",
-                    "wrongPassword": "Incorrect wachtwoord.",
+                    "passwordError": "Incorrect wachtwoord.",
                     "importFailed": "Kon bestand niet inporteren en kreeg: __error__"
                 }
             }

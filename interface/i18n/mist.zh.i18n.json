@@ -184,7 +184,7 @@
                 "errors": {
                     "nodeNotStartedYet": "请等待片刻直到你的节点完全启动再重新尝试一次",
                     "unknownFile": "文件无法识别。",
-                    "wrongPassword": "密码错误。",
+                    "passwordError": "密码错误。",
                     "importFailed": "无法导入该文件，错误：__error__"
                 }
             }

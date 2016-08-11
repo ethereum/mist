@@ -182,7 +182,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Attendez quelques secondes de plus avant que votre nœud soit initialisé et essayez de nouveau",
                     "unknownFile": "Fichier non reconnu.",
-                    "wrongPassword": "Mauvais mot de passe.",
+                    "passwordError": "Mauvais mot de passe.",
                     "importFailed": "Echec à l'importation du fichier avec l'erreur : __error__"
                 }
             }

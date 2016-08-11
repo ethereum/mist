@@ -1,6 +1,3 @@
-const electron = require('electron');
-const app = electron.app;
-
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 
@@ -155,30 +152,12 @@ class Settings {
     this._log = logger.create('Settings');    
   }
 
-  get userDataPath() {
-    // Application Aupport/Mist
-    return app.getPath('userData');
-  }
-
-  get appDataPath() {
-    // Application Support/
-    return app.getPath('appData');
-  }
-
-  get userHomePath() {
-    return app.getPath('home');
-  }
-
   get cli () {
     return argv;
   }
 
   get appVersion () {
     return packageJson.version;
-  }
-
-  get appName () {
-    return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
   }
 
   get appLicense () {
@@ -193,7 +172,7 @@ class Settings {
     return defaultConfig.production;
   }
 
-  get inAutoTestMode () {
+  get inTestMode () {
     return !!process.env.TEST_MODE;
   }
 

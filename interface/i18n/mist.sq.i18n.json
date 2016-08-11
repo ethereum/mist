@@ -178,7 +178,7 @@
                 "errors": {
                     "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
                     "unknownFile": "File not recognised.",
-                    "wrongPassword": "Wrong password.",
+                    "passwordError": "Wrong password.",
                     "importFailed": "Couldn't import the file got: __error__"
                 }
             }

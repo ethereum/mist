@@ -215,34 +215,19 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                     template.find('input[type="password"]').value = '';
                     template.$('input[type="password"]').focus();
                 });
-                if(e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
+
+                if(e.message.indexOf('CONNECTION ERROR') !== -1) {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
-                        duration: 5
-                    });
-                } else if(e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
                         duration: 3
-                    });
-                } else if(e.message.indexOf('multiple keys match address') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
-                        duration: 10
-                    });
-                } else if(e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
-                        duration: 5
                     });
                 } else {
                     GlobalNotification.warning({
-                        content: e.message,
-                        duration: 5
+                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+                        duration: 3
                     });
                 }
             }
         });
    } 
 });
-

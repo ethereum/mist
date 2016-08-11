@@ -348,11 +348,13 @@ var menuTempl = function(webviews) {
         type: 'separator'
     });
     // add node switch
-    if(process.platform === 'darwin' || process.platform === 'win32') {
+    var resolvedPaths = getNodePath.query();
+    if (Object.keys(resolvedPaths).length > 1) {
         var nodes = [];
-        for (let type in getNodePath.query())
+        for (let type in resolvedPaths)
             nodes.push({
-                label: type.charAt(0).toUpperCase() + type.slice(1),
+                label: type.charAt(0).toUpperCase() + type.slice(1) 
+                    + ' (' + resolvedPaths[type][Object.keys(resolvedPaths[type])[0]] + ')',
                 checked: ethereumNode.isOwnNode && ethereumNode.type === type,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',

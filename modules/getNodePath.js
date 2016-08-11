@@ -18,7 +18,7 @@ const Settings = require('./settings');
 
 // cache
 const paths = {},        // all versions (system + bundled):  { type: { path: version } }
-    resolvedPaths = {};  // latest version:                   { type: path }
+    resolvedPaths = {};  // only latest version per type
 
 
 /**
@@ -30,6 +30,7 @@ function getSystemPath(type) {
     return new Q((resolve, reject) => {
         var proc = exec('type ' + type);
         proc.stdout.on('data', resolve);
+        proc.stderr.on('data', reject);
     });
 }
 
@@ -63,11 +64,14 @@ function getVersion(type, path) {
 function compareNodes() {
     return new Q((resolve, reject) => {
         for (let type in paths) {
-            var path = Object.keys(paths[type])[0];
-            if (Object.keys(paths[type]).length > 1) {
-                path = (cmpVer(Object.keys(paths[type])[0], Object.keys(paths[type])[1])) ? Object.keys(paths[type])[0] : Object.keys(paths[type])[1]
-            }
-            resolvedPaths[type] = path;
+            var entries = Object.keys(paths[type]); 
+            var preferredPath = entries[0];
+            if (Object.keys(paths[type]).length > 1)
+                var preferredPath = (cmpVer(paths[type][entries[0]], paths[type][entries[1]])) 
+                    ? entries[1] : entries[0]
+            var version = paths[type][preferredPath];
+            resolvedPaths[type] = {};
+            resolvedPaths[type][preferredPath] = version;
         }
     });
 }
@@ -128,7 +132,11 @@ module.exports = {
                     getPathProms.push(getSystemPath(type)
                         .then((data) => {
                             paths[type][data.match(/(\/\w+)+/)[0]] = null;
-                    }));
+                        })
+                        .catch((data) => {
+                            log.trace(data);
+                        })
+                    );
                 }
 
                 Q.all(getPathProms).then(() => {

@@ -500,7 +500,12 @@ gulp.task('download-signatures', function(){
         if (res.statusCode == 200) {
             var responseData = JSON.parse(res.getBody('utf8'));
             _.map(responseData.results, function(e){
-                signatures[e.hex_signature] = e.text_signature;
+                if (!!signatures[e.hex_signature]) {
+                    signatures[e.hex_signature].push(e.text_signature);
+                }
+                else {
+                    signatures[e.hex_signature] = [e.text_signature];
+                }
             });
             responseData.next && getFrom4byteAPI(responseData.next);
         }

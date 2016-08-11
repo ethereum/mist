@@ -34,8 +34,8 @@ var lookupFunctionSignature = function(data) {
                 ? data.substr(0, 10)
                 : '0x'+ data.substr(0, 8);
 
-            if (window.SIGNATURES[bytesSignature]) {
-                resolve(window.SIGNATURES[bytesSignature]);
+            if (_.first(window.SIGNATURES[bytesSignature])) {
+                resolve(_.first(window.SIGNATURES[bytesSignature]));
             }
 
             https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {

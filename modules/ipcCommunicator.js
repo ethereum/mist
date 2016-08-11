@@ -5,6 +5,7 @@ Window communication
 */
 
 const electron = require('electron');
+const shell = electron.shell;
 
 const app = electron.app;  // Module to control application life.
 const appMenu = require('./menuItems');
@@ -38,6 +39,11 @@ windows = {
 ipc.on('backendAction_closeApp', function() {
     app.quit();
 });
+
+ipc.on('backendAction_openExternalUrl', function(e, url) {
+    shell.openExternal(url);
+});
+
 ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId(),
         senderWindow = Windows.getById(windowId);

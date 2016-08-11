@@ -13,7 +13,6 @@ const fs = require('fs');
 const Q = require('bluebird');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
-const getIpcPath = require('./ipc/getIpcPath.js')
 const Sockets = require('./sockets');
 const Settings = require('./settings');
 
@@ -42,7 +41,7 @@ class EthereumNode extends EventEmitter {
         this._type = null;
         this._network = null;
 
-        this._socket = Sockets.get('node-ipc', Sockets.TYPES.WEB3_IPC);
+        this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
         this.on('data', _.bind(this._logNodeData, this));
     }
@@ -123,15 +122,7 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init () {
-
-
-        const ipcPath = getIpcPath();
-
-        // TODO: if connection to external node is successful then query it to
-        // determine node and network type
-
-        // check if the node is already running
-        return this._socket.connect({path: ipcPath})
+        return this._socket.connect(Settings.rpcConnectConfig)
             .then(()=> {
                 this.state = STATES.CONNECTED;
 
@@ -235,7 +226,7 @@ class EthereumNode extends EventEmitter {
 
 
     getLog () {
-        return this._loadUserData('node.log');
+        return Settings.loadUserData('node.log');
     }
 
 
@@ -262,8 +253,6 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     _start (nodeType, network) {
-        const ipcPath = getIpcPath();
-
         log.info(`Start node: ${nodeType} ${network}`);
 
         const isTestNet = ('test' === network);
@@ -289,15 +278,13 @@ class EthereumNode extends EventEmitter {
                 this._node = proc;
                 this.state = STATES.STARTED;
 
-                this._saveUserData('node', this._type);
-                this._saveUserData('network', this._network);
+                Settings.saveUserData('node', this._type);
+                Settings.saveUserData('network', this._network);
 
-                // FORK RELATED
-                this._saveUserData('daoFork', this.daoFork);
 
-                return this._socket.connect({ path: ipcPath }, {
+                return this._socket.connect(Settings.rpcConnectConfig, {
                         timeout: 30000 /* 30s */
-                    })  
+                    })
                     .then(() => {
                         this.state = STATES.CONNECTED;
                     })
@@ -321,7 +308,7 @@ class EthereumNode extends EventEmitter {
 
                 // if unable to start eth node then write geth to defaults
                 if ('eth' === nodeType) {
-                    this._saveUserData('node', 'geth');
+                    Settings.saveUserData('node', 'geth');
                 }
 
                 throw err;
@@ -357,7 +344,7 @@ class EthereumNode extends EventEmitter {
             log.trace('Rotate log file');
 
             // rotate the log file
-            logRotate(this._buildFilePath('node.log'), {count: 5}, (err) => {
+            logRotate(Settings.constructUserDataPath('node.log'), {count: 5}, (err) => {
                 if (err) {
                     log.error('Log rotation problems', err);
 
@@ -369,18 +356,14 @@ class EthereumNode extends EventEmitter {
                 // START TESTNET
                 if ('test' == network) {
                     args = (nodeType === 'geth') 
-                        ? ['--testnet', '--fast', '--ipcpath', getIpcPath()] 
+                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath] 
                         : ['--morden', '--unsafe-transactions'];
                 } 
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth') 
-                        ? ['--fast', '--cache', '512'] 
-                        : ['--unsafe-transactions'];
-
-                    // FORK RELATED
-                    if(nodeType === 'geth' && this.daoFork)
-                        args.push((this.daoFork === 'true') ? '--support-dao-fork' : '--oppose-dao-fork');
+                        ? ['--fast', '--cache', '512', '--support-dao-fork'] // FORK RELATED
+                        : ['--unsafe-transactions', '--support-dao-fork'];
                 }
 
                 let nodeOptions = Settings.nodeOptions;
@@ -411,7 +394,7 @@ class EthereumNode extends EventEmitter {
 
                 // we need to read the buff to prevent node from not working
                 proc.stderr.pipe(
-                    fs.createWriteStream(this._buildFilePath('node.log'), { flags: 'a' })
+                    fs.createWriteStream(Settings.constructUserDataPath('node.log'), { flags: 'a' })
                 );
 
                 // when proc outputs data
@@ -511,45 +494,10 @@ class EthereumNode extends EventEmitter {
     _loadDefaults () {
         log.trace('Load defaults');
 
-        this.defaultNodeType = Settings.nodeType || this._loadUserData('node') || DEFAULT_NODE_TYPE;
-        this.defaultNetwork = Settings.network || this._loadUserData('network') || DEFAULT_NETWORK;
-        
-        // FORK RELATED
-        this.daoFork = this._loadUserData('daoFork');
+        this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
+        this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
     }
 
-
-    _loadUserData (path) {
-        const fullPath = this._buildFilePath(path);
-
-        log.trace('Load user data', fullPath);
-
-        try {
-            return fs.readFileSync(fullPath, {encoding: 'utf8'});
-        } catch (err){
-            log.error(`Unable to read from ${fullPath}`, err);
-        }
-
-        return null;
-    }
-
-
-    _saveUserData (path, data) {
-        if(!data) return; // return so we dont write null, or other invalid data
-
-        const fullPath = this._buildFilePath(path);
-
-        try {
-            fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
-        } catch (err){
-            log.error(`Unable to write to ${fullPath}`, err);
-        }
-    }
-
-
-    _buildFilePath (path) {
-        return Settings.userDataPath + '/' + path;   
-    }
 
 }
 

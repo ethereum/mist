@@ -14,8 +14,8 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('../utils/logger').create('ipcProviderBackend');
-const ipcPath = require('./getIpcPath')();
 const Sockets = require('../sockets');
+const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const Windows = require('../windows');
 
@@ -82,7 +82,7 @@ class IpcProviderBackend {
             } else {
                 log.debug(`Get/create socket connection, id=${ownerId}`);
 
-                socket = Sockets.get(ownerId, Sockets.TYPES.WEB3_IPC);
+                socket = Sockets.get(ownerId, Settings.rpcMode);
             }
         })
         .then(() => {
@@ -152,9 +152,7 @@ class IpcProviderBackend {
                         }                    
                     })
                     .then(() => {
-                        return socket.connect({
-                            path: ipcPath,
-                        }, {
+                        return socket.connect(Settings.rpcConnectConfig, {
                             timeout: 5000,
                         });
                     })

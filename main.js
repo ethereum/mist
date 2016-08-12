@@ -331,8 +331,7 @@ var onReady = function() {
         // CHECK for legacy chain (FORK RELATED)
         Q.try(() => {
             // open the legacy chain message
-            console.log(Settings.loadUserData('daoFork'));
-            if (Settings.loadUserData('daoFork').trim() === 'false') {
+            if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
 
                 dialog.showMessageBox({
                     type: "warning",

@@ -18,6 +18,14 @@ module.exports = class extends BaseProcessor {
         return new Q((resolve, reject) => {
             this._log.info('Ask user for password');
 
+            // sanatize data
+            _.each(payload.params[0], function(result, key) {
+                // remove everything expect valid HEX
+                if(_.isString(result)) {
+                    payload.params[0][key] = result.replace(/[^0-9a-fx]/igm, '');
+                }
+            });
+
             let modalWindow = Windows.createPopup('sendTransactionConfirmation', {
                 sendData: ['data', payload.params[0]],
                 electronOptions: {

@@ -27,6 +27,7 @@
     "underscore": "^1.8.3",
     "uuid": "^2.0.2",
     "web3": "^0.17.0-alpha",
+    "ethereumjs-abi": "^0.6.3",
     "yargs": "^4.3.1"
   },
   "devDependencies": {

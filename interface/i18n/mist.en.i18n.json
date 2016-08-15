@@ -180,13 +180,16 @@
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
                 "data": "Data",
+                "parameters": "Parameters",
                 "buttons": {
                     "sendTransaction": "Send transaction"
                 },
                 "errors": {
                     "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
                     "wrongPassword": "Wrong password"
-                }
+                },
+                "showRawBytecode": "show raw bytecode",
+                "showDecodedParameters": "show decoded parameters"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",

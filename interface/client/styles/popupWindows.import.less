@@ -104,6 +104,7 @@
 
         table,
         .data,
+        .parameters,
         .info {
             width: 420px;
             margin: @defaultMargin*2 auto;
@@ -157,9 +158,18 @@
         }
 
         .data,
+        .parameters,
         .info {
             text-align: left;
             padding: 0 @defaultMargin/2;
+            position: relative;
+            .toggle-panel {
+                position: absolute;
+                right: 0;
+                top: 0;
+                font-weight: 500;
+                font-size: 0.8em;
+            }
         }
         .data {
             font-size: 0.9em;
@@ -176,6 +186,28 @@
                 }
                 span.function {
                     font-weight: 600;
+                }
+            }
+        }
+        .parameters {
+            font-size: 0.9em;
+            ol {
+                counter-reset: item;
+                padding: 0;
+                list-style-type: none;
+                list-style-position: inside;
+                li {
+                    .allowSelection;
+                    margin-bottom: @defaultMargin/2;
+                    font-weight: 400;
+                    counter-increment: item;
+                    &::before {
+                        .disallowSelection;
+                        content: counter(item) '. ';
+                        font-weight: 200;
+                    }
+                    &.type-address {}
+                    &.type-bool {}
                 }
             }
         }

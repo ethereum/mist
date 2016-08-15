@@ -23,7 +23,7 @@ module.exports = class extends BaseProcessor {
                 electronOptions: {
                     width: 580, 
                     height: 550, 
-                    alwaysOnTop: true,
+                    alwaysOnTop: false,
                 },
             });
 

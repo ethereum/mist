@@ -89,10 +89,39 @@
                 </table>
 
                 {{#if data}}
-                    <div class="data">
-                        <p>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}</p>
-                        <pre>{{{formattedData}}}</pre>
-                    </div>
+                    {{#if showFormattedParams}}
+                        <div class="parameters">
+                            <p>{{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}}</p>
+                            <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}}</a>
+                            <ol>
+                            {{# each param in params}}
+                                {{#if $eq param.type 'bool'}}
+                                    <li>
+                                        {{#if $eq param.value 'true'}}
+                                            YES
+                                            <i class="icon-check"></i>
+                                        {{else}}
+                                            NO
+                                            <i class="icon-close"></i>
+                                        {{/if}}
+                                    </li>
+                                {{else}}
+                                    <li>{{param.value}}</li>
+                                {{/if}}
+                            {{/each}}
+                            </ol>
+                        </div>
+                    {{else}}
+                        <div class="data">
+                            <p>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}</p>
+                            
+                            {{# if params}}
+                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
+                            {{/if}}                            
+
+                            <pre>{{{formattedData}}}</pre>
+                        </div>
+                    {{/if}}
                 {{/if}}
 
             {{/with}}

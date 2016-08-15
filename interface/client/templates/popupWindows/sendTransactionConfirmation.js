@@ -66,7 +66,12 @@ var lookupFunctionSignature = function(data) {
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
+    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+        TemplateVar.set(template, 'params', params);
+    });
+
     this.autorun(function(){
+        TemplateVar.set(template, 'displayDecodedParams', true);
 
         var data = Session.get('data');
 
@@ -100,6 +105,13 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                           lookupFunctionSignature(data.data).then((textSignature) => {
                                 // Clean version of function signature. Striping params
                                 TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+
+                                let params = textSignature.match(/\((.+)\)/i);
+                                if (params) {
+                                    TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                                    ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+                                }
+
                           }).catch((bytesSignature) => {
                               TemplateVar.set(template, 'executionFunction', bytesSignature);
                           });
@@ -198,7 +210,15 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         return (TemplateVar.get('toIsContract'))
             ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
             : this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>');
-    }
+    },
+
+    'params': function() {
+        return TemplateVar.get('params');
+    },
+
+    'showFormattedParams': function() {
+        return TemplateVar.get('params') && TemplateVar.get('displayDecodedParams');
+    },
 });
 
 Template['popupWindows_sendTransactionConfirmation'].events({
@@ -269,5 +289,12 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 }
             }
         });
-   } 
+   },
+
+   'click .data .toggle-panel': function() {
+        TemplateVar.set('displayDecodedParams', true);
+   },
+   'click .parameters .toggle-panel': function() {
+        TemplateVar.set('displayDecodedParams', false);
+   },
 });

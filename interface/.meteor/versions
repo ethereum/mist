@@ -34,6 +34,7 @@ ethereum:accounts@0.3.10
 ethereum:blocks@0.3.1
 ethereum:dapp-styles@0.5.6
 ethereum:elements@0.7.1
+ethereum:networkinfo@0.1.1
 ethereum:tools@0.5.2
 ethereum:web3@0.15.3
 fastclick@1.0.12
@@ -45,7 +46,6 @@ frozeman:reactive-timer@0.1.7
 frozeman:storage@0.1.9
 frozeman:template-var@1.2.3
 geojson-utils@1.0.9
-hiddentao:ethereum-networkinfo@0.1.1
 hot-code-push@1.0.4
 html-tools@1.0.10
 htmljs@1.0.10

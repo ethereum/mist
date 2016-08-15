@@ -40,3 +40,4 @@ spacebars
 check
 standard-minifier-css
 standard-minifier-js
+tap:i18n-bundler

@@ -97,6 +97,8 @@
                             {{# each param in params}}
                                 {{#if $eq param.type 'bool'}}
                                     <li>
+                                        {{param.type}}: 
+                                        <strong>
                                         {{#if $eq param.value 'true'}}
                                             YES
                                             <i class="icon-check"></i>
@@ -104,9 +106,13 @@
                                             NO
                                             <i class="icon-close"></i>
                                         {{/if}}
+                                        </strong>
                                     </li>
                                 {{else}}
-                                    <li>{{param.value}}</li>
+                                    <li>
+                                        {{param.type}}: 
+                                        <strong>{{param.value}}</strong>
+                                    </li>
                                 {{/if}}
                             {{/each}}
                             </ol>

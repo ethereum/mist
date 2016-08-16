@@ -518,6 +518,7 @@ gulp.task('download-signatures', function(){
 
 gulp.task('taskQueue', [
     'clean:dist',
+    'download-signatures',
     'copy-files',
     'copy-i18n',
     'switch-production',

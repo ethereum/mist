@@ -199,13 +199,16 @@
                 li {
                     .allowSelection;
                     margin-bottom: @defaultMargin/2;
-                    font-weight: 400;
+                    font-weight: 200;
                     counter-increment: item;
-                    &::before {
-                        .disallowSelection;
-                        content: counter(item) '. ';
-                        font-weight: 200;
+                    strong {
+                        font-weight: 400;
                     }
+                    // &::before {
+                    //     .disallowSelection;
+                    //     content: counter(item) '. ';
+                    //     font-weight: 200;
+                    // }
                     &.type-address {}
                     &.type-bool {}
                 }

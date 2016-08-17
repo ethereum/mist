@@ -15,7 +15,9 @@ if (typeof window.mist.syncMinimongo !== 'undefined') {
 
 
 // Contains the address book
-AddressBook = new Mongo.Collection('address-book', {connection: null});
+AddressBook = new NetworkInfo.ProxyCollection(
+  new Mongo.Collection('address-book', {connection: null})
+);
 new PersistentMinimongo2(AddressBook, 'Mist');
 
 // Contains the accounts

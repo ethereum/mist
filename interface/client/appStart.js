@@ -58,7 +58,7 @@ mistInit = function(){
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    NetworkInfoPromise.then(function(info) {
+    NetworkInfo.promise.then(function(info) {
         EthAccounts.init({ network: info.uniqueId });
         EthBlocks.init();
     });

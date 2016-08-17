@@ -21,7 +21,7 @@ Check network type.
 var checkNetworkType = function(template) {
     console.trace('Check network type...');
 
-    NetworkInfoPromise.then(function(info) {
+    NetworkInfo.promise.then(function(info) {
         try {
             console.log('network is ' + info.type);
 

@@ -111,6 +111,7 @@ module.exports = class BaseProcessor {
             delete payload.result;
 
             payload.error = this.ERRORS.METHOD_DENIED;
+        
         }
     }
 

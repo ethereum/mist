@@ -9,11 +9,13 @@ const extractLineNumberFromStack = function (stack) {
 
     var line = stack.split('\n')[2];
     // fix for various display text
-    line = (line.indexOf(' (') >= 0
-        ? line.split(' (')[1].substring(0, line.length - 1)
-        : line.split('at ')[1]
-        );
-    return line;
+    if(line) {
+        line = (line.indexOf(' (') >= 0
+            ? line.split(' (')[1].substring(0, line.length - 1)
+            : line.split('at ')[1]
+            );
+        return line;
+    }
 };
 
 

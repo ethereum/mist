@@ -194,7 +194,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
         // check if account is about to send to itself
-        if (data.from == data.to.toLowerCase()) {
+        if (data.to && data.from == data.to.toLowerCase()) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.sameAccount'),
                 duration: 5

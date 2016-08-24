@@ -152,7 +152,14 @@ module.exports = {
                 }).then(() => {
                     Q.all(getVersionProms).then(() => {
                         compareNodes();
-                        log.debug('Available backends: %j', paths);
+                        log.debug('Available backends:');
+                        Object.keys(paths).forEach((type) => {
+                            let i = 0;
+                            for (let path in paths[type]) {
+                                var name = (0 === i++) ? type + ' -' : type.replace(/./g, ' ') + '  '
+                                log.debug(name, paths[type][path], '=>', path);
+                            }
+                        });
                     })                    
                     .then(resolve, reject);
                 })

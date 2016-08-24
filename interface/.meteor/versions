@@ -30,11 +30,11 @@ diff-sequence@1.0.6
 ecmascript@0.4.4
 ecmascript-runtime@0.2.11
 ejson@1.0.12
-ethereum:accounts@0.3.10
-ethereum:blocks@0.3.1
+ethereum:accounts@0.3.11
+ethereum:blocks@0.3.2
 ethereum:dapp-styles@0.5.6
 ethereum:elements@0.7.1
-ethereum:networkinfo@0.2.0
+ethereum:networkinfo@0.2.1
 ethereum:tools@0.5.2
 ethereum:web3@0.15.3
 fastclick@1.0.12

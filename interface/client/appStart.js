@@ -43,9 +43,6 @@ mistInit = function(){
                 admin: true
             }
         });        
-    })
-    .then(function() {
-        window.trigger('mist-ready');
     });
 };
 

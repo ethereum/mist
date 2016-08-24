@@ -107,11 +107,11 @@ exports.frontendSync = function(coll) {
             collName: collName
         });
 
-        if (!dataStr || (dataJson = JSON.parse(dataStr)).length == 0) {
-            return resolve();
-        }
-
         try {
+            if (!dataStr || (dataJson = JSON.parse(dataStr)).length == 0) {
+                return resolve();
+            }
+
             var done = 0;
 
             coll.remove({});

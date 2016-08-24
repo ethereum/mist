@@ -94,6 +94,8 @@ exports.frontendSync = function(coll) {
         collName = coll._name,
         syncDoneResolver;
 
+    console.debug('Reload collection from backend: ', collName);
+
     coll.onceSynced = new Promise(function(resolve, reject) {
         syncDoneResolver = resolve;
     });

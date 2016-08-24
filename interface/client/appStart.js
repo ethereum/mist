@@ -4,11 +4,6 @@
 if(location.hash)
     return;
 
-
-// set browser as default tab
-if(!LocalStore.get('selectedTab'))
-    LocalStore.set('selectedTab', 'wallet');
-
 /**
 The init function of Mist
 
@@ -16,7 +11,6 @@ The init function of Mist
 */
 mistInit = function(){
     console.info('Initialise Mist');
-
 
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {
@@ -35,17 +29,20 @@ mistInit = function(){
             });
         }
 
-
         Tabs.upsert({_id: 'wallet'}, {
             url: 'https://wallet.ethereum.org',
             position: 1,
             permissions: {
                 admin: true
             }
-        });        
-    })
-    .then(function() {
-        window.trigger('mist-ready');
+        });
+
+        // Sets browser as default tab if:
+        // 1) there's no record of selected tab
+        // 2) data is corrupted (no saved tab matches localstore)
+        if(!LocalStore.get('selectedTab') || !Tabs.findOne(LocalStore.get('selectedTab'))){
+            LocalStore.set('selectedTab', 'wallet');
+        }
     });
 };
 

@@ -5,6 +5,7 @@ const EventEmitter = require('events').EventEmitter;
 
 const _ = global._;
 const log = require('../utils/logger').create('Sockets');
+const getNodePath = require('../getNodePath.js');
 
 
 
@@ -82,6 +83,9 @@ class Socket extends EventEmitter {
                     this._socket.on('error', (err) => {
                         if (STATE.CONNECTING === this._state) {
                             this._log.warn(`Connection failed, retrying after ${CONNECT_INTERVAL_MS}ms...`);
+
+                            if (Object.keys(getNodePath.query()).length == 0)
+                                getNodePath.probe();
 
                             connectTimerId = setTimeout(() => {
                                 this._socket.connect(connectConfig);

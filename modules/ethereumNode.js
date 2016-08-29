@@ -14,6 +14,7 @@ const Q = require('bluebird');
 const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./sockets');
+const SocketsBase = require('./sockets/base.js');
 const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
@@ -328,7 +329,7 @@ class EthereumNode extends EventEmitter {
         this._type = nodeType;
 
         return new Q((resolve, reject) => {
-            getNodePath.probe()
+            Q.all(SocketsBase.getNodePathProm)
             .then(() => {
                 const binPath = Object.keys(getNodePath.query()[nodeType])[0];
                 log.debug(`Start node using ${binPath}`);

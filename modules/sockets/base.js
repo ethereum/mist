@@ -12,6 +12,7 @@ const getNodePath = require('../getNodePath.js');
 const CONNECT_INTERVAL_MS = 1000;
 const CONNECT_TIMEOUT_MS = 3000;
 
+var getNodePathProm = [];
 
 /**
  * Socket connecting to Ethereum Node.
@@ -85,7 +86,7 @@ class Socket extends EventEmitter {
                             this._log.warn(`Connection failed, retrying after ${CONNECT_INTERVAL_MS}ms...`);
 
                             if (Object.keys(getNodePath.query()).length == 0)
-                                getNodePath.probe();
+                                getNodePathProm.push(getNodePath.probe());
 
                             connectTimerId = setTimeout(() => {
                                 this._socket.connect(connectConfig);
@@ -200,6 +201,7 @@ class Socket extends EventEmitter {
 
 
 exports.Socket = Socket;
+exports.getNodePathProm = getNodePathProm; 
 
 
 const STATE = exports.STATE = Socket.STATE = {

@@ -143,7 +143,7 @@ module.exports = {
                     for (let type in paths) {
                         for (let path in paths[type]) {
                             getVersionProms.push(getVersion(type, path)
-                            .then((data)=>{
+                            .then((data) => {
                                 var version = data.match(/[\d.]+/)[0];
                                 paths[type][path] = version;
                             }));

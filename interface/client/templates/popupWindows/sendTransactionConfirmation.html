@@ -28,7 +28,20 @@
                         {{{totalAmount}}} <span class="unit">ETHER</span>
 
                         {{#if TemplateVar.get "executionFunction" }}
-                            <span class="execute-function">{{TemplateVar.get "executionFunction"}}</span>
+                            <span class="function-signature">
+                                {{#if TemplateVar.get "hasSignature"}}
+                                    <span class="function-signature-text has-signature">
+                                        {{TemplateVar.get "executionFunction"}}
+                                    </span>
+                                {{else}}
+                                    <span class="function-signature-text">
+                                        {{TemplateVar.get "executionFunction"}}
+                                    </span>
+                                    <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="Lookup function signature on 4byte.directory (3rd-party service)">
+                                        <i class="icon-magnifier"></i>
+                                    </a>
+                                {{/if}}
+                            </span>
                         {{/if}}
                     </div>
                     <div>
@@ -123,6 +136,10 @@
                             
                             {{# if params}}
                                 <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
+                            {{else}}
+                                <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="Lookup function signature on 4byte.directory (3rd-party service)">
+                                    <i class="icon-magnifier"></i>
+                                </a>
                             {{/if}}                            
 
                             <pre>{{{formattedData}}}</pre>

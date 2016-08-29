@@ -84,20 +84,26 @@
                     font-size: 0.6em;
                     font-weight: 400;
                 }
-                .execute-function {
+                .function-signature {
                     display: block;
                     position: absolute;
                     bottom: -25px;
                     left: 0;
                     right: 0;
-                    font-size: 0.5em;
                     text-align: center;
+                    font-size: 0.5em;
+                    i {
+                        font-size: 0.8em;
+                    }
+                }
+                .function-signature-text {
                     font-weight: 600;
-                    text-transform: uppercase;
-                    
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
+                    &.has-signature {
+                        text-transform: uppercase;
+                    }
                 }
             }
         }

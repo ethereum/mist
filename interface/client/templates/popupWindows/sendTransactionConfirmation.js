@@ -27,41 +27,67 @@ human readable text signature.
 
 @method (lookupFunctionSignature)
 */
-var lookupFunctionSignature = function(data) {
+var lookupFunctionSignature = function(data, remoteLookup) {
+    console.log('lookupFunctionSignature', arguments);
     return new Q((resolve, reject) => {
         if(data && data.length > 8) {
             var bytesSignature = (data.substr(0, 2) === '0x')
                 ? data.substr(0, 10)
                 : '0x'+ data.substr(0, 8);
 
-            if (_.first(window.SIGNATURES[bytesSignature])) {
-                resolve(_.first(window.SIGNATURES[bytesSignature]));
+            if (remoteLookup) {
+                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
+                    var body = '';
+
+                    response.on('data', function(chunk){
+                        body += chunk;
+                    });
+
+                    response.on('end', function(){
+                        var responseData = JSON.parse(body);
+                        if (responseData.results.length) {
+                            resolve(responseData.results[0].text_signature);
+                        } else {
+                            resolve(bytesSignature);
+                        }
+                    });
+                }).on('error', (error) => {
+                    console.warn('Error querying Function Signature Registry.', err);
+                    reject(bytesSignature);
+                });
+            } else {
+                if (_.first(window.SIGNATURES[bytesSignature])) {
+                    resolve(_.first(window.SIGNATURES[bytesSignature]));
+                }
+                else {
+                    reject(bytesSignature);
+                }
             }
-
-            https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
-                var body = '';
-
-                response.on('data', function(chunk){
-                    body += chunk;
-                });
-
-                response.on('end', function(){
-                    var responseData = JSON.parse(body);
-                    if (responseData.results.length) {
-                        resolve(responseData.results[0].text_signature);
-                    } else {
-                        resolve(bytesSignature);
-                    }
-                });
-            }).on('error', (error) => {
-                console.warn('Error querying Function Signature Registry.', err);
-                resolve(bytesSignature);
-            });
         } else {
-           resolve(undefined);
+           reject(undefined);
         }
     });
 }
+
+var localSignatureLookup = function(data){
+    return lookupFunctionSignature(data, false);
+};
+
+var remoteSignatureLookup = function(data){
+    return lookupFunctionSignature(data, true);
+};
+
+var signatureLookupCallback = function(textSignature) {
+    // Clean version of function signature. Striping params
+    TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+    TemplateVar.set(template, 'hasSignature', true);
+
+    let params = textSignature.match(/\((.+)\)/i);
+    if (params) {
+        TemplateVar.set(template, 'executionFunctionParamTypes', params);
+        ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+    }
+};
 
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
@@ -102,19 +128,20 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                         setWindowSize(template);
                         // TODO: better location for this.
                         if (data.data) {
-                          lookupFunctionSignature(data.data).then((textSignature) => {
+                            localSignatureLookup(data.data).then((textSignature) => {
                                 // Clean version of function signature. Striping params
                                 TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+                                TemplateVar.set(template, 'hasSignature', true);
 
                                 let params = textSignature.match(/\((.+)\)/i);
                                 if (params) {
                                     TemplateVar.set(template, 'executionFunctionParamTypes', params);
                                     ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
                                 }
-
-                          }).catch((bytesSignature) => {
-                              TemplateVar.set(template, 'executionFunction', bytesSignature);
-                          });
+                            }).catch((bytesSignature) => {
+                                TemplateVar.set(template, 'executionFunction', bytesSignature);
+                                TemplateVar.set(template, 'hasSignature', false);
+                            });
                         }
                     }
                 });
@@ -126,7 +153,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                     }
                 });
             }
-
 
             // esitmate gas usage
             var estimateData = _.clone(data);
@@ -297,4 +323,22 @@ Template['popupWindows_sendTransactionConfirmation'].events({
    'click .parameters .toggle-panel': function() {
         TemplateVar.set('displayDecodedParams', false);
    },
+   'click .lookup-function-signature': function(e, template) {
+        var data = Session.get('data');
+
+        remoteSignatureLookup(data.data).then((textSignature) => {
+            // Clean version of function signature. Striping params
+            TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+            TemplateVar.set(template, 'hasSignature', true);
+
+            let params = textSignature.match(/\((.+)\)/i);
+            if (params) {
+                TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+            }
+        }).catch((bytesSignature) => {
+            TemplateVar.set(template, 'executionFunction', bytesSignature);
+            TemplateVar.set(template, 'hasSignature', false);
+        });
+   }
 });

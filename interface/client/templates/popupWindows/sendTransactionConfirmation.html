@@ -27,8 +27,21 @@
                     <div class="amount">
                         {{{totalAmount}}} <span class="unit">ETHER</span>
 
-                        {{#if executionFunction}}
-                            <span class="execute-function">{{executionFunction}}</span>
+                        {{#if TemplateVar.get "executionFunction" }}
+                            <span class="function-signature">
+                                {{#if TemplateVar.get "hasSignature"}}
+                                    <span class="function-signature-text has-signature">
+                                        {{TemplateVar.get "executionFunction"}}
+                                    </span>
+                                {{else}}
+                                    <span class="function-signature-text">
+                                        {{TemplateVar.get "executionFunction"}}
+                                    </span>
+                                    <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="Lookup function signature on 4byte.directory (3rd-party service)">
+                                        <i class="icon-magnifier"></i>
+                                    </a>
+                                {{/if}}
+                            </span>
                         {{/if}}
                     </div>
                     <div>
@@ -89,10 +102,49 @@
                 </table>
 
                 {{#if data}}
-                    <div class="data">
-                        <p>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}</p>
-                        <pre>{{{formattedData}}}</pre>
-                    </div>
+                    {{#if showFormattedParams}}
+                        <div class="parameters">
+                            <p>{{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}}</p>
+                            <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}}</a>
+                            <ol>
+                            {{# each param in params}}
+                                {{#if $eq param.type 'bool'}}
+                                    <li>
+                                        {{param.type}}: 
+                                        <strong>
+                                        {{#if $eq param.value 'true'}}
+                                            YES
+                                            <i class="icon-check"></i>
+                                        {{else}}
+                                            NO
+                                            <i class="icon-close"></i>
+                                        {{/if}}
+                                        </strong>
+                                    </li>
+                                {{else}}
+                                    <li>
+                                        {{param.type}}: 
+                                        <strong>{{param.value}}</strong>
+                                    </li>
+                                {{/if}}
+                            {{/each}}
+                            </ol>
+                        </div>
+                    {{else}}
+                        <div class="data">
+                            <p>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}</p>
+                            
+                            {{# if params}}
+                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
+                            {{else}}
+                                <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="Lookup function signature on 4byte.directory (3rd-party service)">
+                                    <i class="icon-magnifier"></i>
+                                </a>
+                            {{/if}}                            
+
+                            <pre>{{{formattedData}}}</pre>
+                        </div>
+                    {{/if}}
                 {{/if}}
 
             {{/with}}

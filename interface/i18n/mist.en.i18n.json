@@ -185,6 +185,7 @@
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
                 "data": "Data",
+                "parameters": "Parameters",
                 "buttons": {
                     "sendTransaction": "Send transaction"
                 },
@@ -194,7 +195,9 @@
                     "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
-                }
+                },
+                "showRawBytecode": "show raw bytecode",
+                "showDecodedParameters": "show decoded parameters"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",

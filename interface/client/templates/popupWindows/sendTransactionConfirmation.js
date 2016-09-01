@@ -84,6 +84,7 @@ var signatureLookupCallback = function(textSignature) {
 
     let params = textSignature.match(/\((.+)\)/i);
     if (params) {
+        console.log('params sent', params);
         TemplateVar.set(template, 'executionFunctionParamTypes', params);
         ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
     }
@@ -93,6 +94,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
     ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+        console.log('params returned', params);
         TemplateVar.set(template, 'params', params);
     });
 
@@ -357,6 +359,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
             let params = textSignature.match(/\((.+)\)/i);
             if (params) {
+                console.log('params:', params);
                 TemplateVar.set(template, 'executionFunctionParamTypes', params);
                 ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
             }

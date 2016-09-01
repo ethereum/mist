@@ -184,7 +184,7 @@
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
-                "data": "Data",
+                "data": "Raw Data",
                 "parameters": "Parameters",
                 "buttons": {
                     "sendTransaction": "Send transaction"
@@ -196,8 +196,9 @@
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
                 },
-                "showRawBytecode": "show raw bytecode",
-                "showDecodedParameters": "show decoded parameters"
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
@@ -247,6 +248,14 @@
     },
     "elements": {
         "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one",
+        "type": {
+            "address" : "Address",
+            "bool" : "Boolean",
+            "int" : "Integer",
+            "uint" : "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

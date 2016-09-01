@@ -20,7 +20,6 @@
 	}
 }
 
-<<<<<<< HEAD
 @-webkit-keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -39,12 +38,29 @@
 	a:focus {
 		color: @colorLinkFocus;
 	}
+
+	h3 {
+		color: @colorGrayDark;
+		a {
+			float: right;
+			font-weight: 400;
+		}
+	}
 	img.left-overlay {
 		position: relative;
 		top: -40px;
 		left: -132%;
 		width: 255%;
 	}
+
+	footer {
+		position: fixed;
+		bottom: -90px;
+		left: 0;
+		right: 0;
+		background: linear-gradient(transparent 0%, @colorGrayLight 20%);
+	}
+
 	&.update-available {
 		.text {
 			text-align: left;
@@ -63,28 +79,24 @@
 			flex-direction: row;
 			align-items: center;
 			justify-content: center;
+			margin: 0 @gridWidth;
+
 			> div {
 				// flex: 1 1 auto;
 				color: @colorTextSecondary;
-			}
-			// addresses
-			> div:nth-child(odd) {
 				position: relative;
-				padding: 0 @defaultMargin*3;
-				font-weight: 400;
 			}
-			> div:nth-child(1) {
-				.overlap-icon {
-					right: 32px;
-				}
+
+			div.connection {
+				padding: @gridHeight @gridWidth/2;
 			}
-			> div:nth-child(3) {
-				.overlap-icon {
-					left: 32px;
-				}
+
+			div.amount, div.function-signature {
+				flex: 1 50%;
 			}
+
 			// amount
-			> div.amount {
+			div.amount {
 				position: relative;
 				margin-top: -30px;
 				height: 40px;
@@ -115,9 +127,24 @@
 					font-weight: 600;
 				}
 			}
+            .function-signature {
+                font-weight: 600;
+                padding-top: @gridHeight/2;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                text-transform: uppercase;
+                max-width: @gridWidth * 10;
+
+                &.has-signature {
+                    text-transform: none;
+                }
+            }
 		}
 		table,
 		.data,
+		.parameters,
+		.fees,
 		.info {
 			width: 420px;
 			margin: @defaultMargin*2 auto;
@@ -131,10 +158,68 @@
 				font-weight: 400;
 			}
 		}
+
+		// Parameters 
+		.fees,
+		.parameters {
+            font-size: 0.9em;
+            text-align: left;
+            ul, ol {
+                counter-reset: item;
+                padding: 0;
+                list-style-type: none;
+                list-style-position: inside;
+                li {
+                	display: flex;
+                	min-height: @gridHeight * 2;
+                	align-items: center;
+
+                    .allowSelection;
+                    font-weight: 200;
+                    transition: background 0.5s ease-out;
+
+                    &> div {
+                    	padding: 0 @gridWidth/4;
+                    }
+                    .value {
+                    	flex: 1;
+                    	overflow: hidden;
+					    text-overflow: ellipsis;
+					    .icon {
+					    	position: relative;
+					    	top: 1px;
+					    }
+                    }
+                    .type {
+                    	text-align: right;
+                    }
+
+                    &:hover {
+                    	background-color: #FFF;
+                    	transition: background 0.1s ease-in;
+                    }
+                }
+            }
+
+            ol li::before {
+            	counter-increment: item;
+				content: counter(item);
+				opacity: 0.5;
+				color: @colorGrayDark;
+				font-weight: 400;
+            }
+        }
+
 		.overlap-icon {
 			position: absolute;
-			top: 20px;
-			font-size: 20px;
+			top: 34px;
+			font-size: 18px;
+			text-align: center;
+			color: #FFF;
+		    width: @gridWidth*2;
+		    opacity: 0.75;
+		    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+
 		}
 		.circle-icon {
 			display: inline-block;
@@ -190,7 +275,6 @@
 			margin-bottom: 20px;
 		}
 		.fields-container {
-=======
             // addresses
             > div:nth-child(odd) {
                 position: relative;
@@ -231,33 +315,11 @@
                     font-size: 0.6em;
                     font-weight: 400;
                 }
-                .function-signature {
-                    display: block;
-                    position: absolute;
-                    bottom: -25px;
-                    left: 0;
-                    right: 0;
-                    text-align: center;
-                    font-size: 0.5em;
-                    i {
-                        font-size: 0.8em;
-                    }
-                }
-                .function-signature-text {
-                    font-weight: 600;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    &.has-signature {
-                        text-transform: uppercase;
-                    }
-                }
             }
         }
 
         table,
         .data,
-        .parameters,
         .info {
             width: 420px;
             margin: @defaultMargin*2 auto;
@@ -305,9 +367,7 @@
                 outline: 0;
             }
         }
->>>>>>> f3a1f8bb20b0f033ee5c692793026c96ad38a031
 
-		}
 		.show-password-container {
 			width: 300px;
 			margin: 0 auto 0;
@@ -466,7 +526,6 @@
 		}
 
 		.data,
-        .parameters,
         .info {
             text-align: left;
             padding: 0 @defaultMargin/2;
@@ -497,31 +556,7 @@
                 }
             }
         }
-        .parameters {
-            font-size: 0.9em;
-            ol {
-                counter-reset: item;
-                padding: 0;
-                list-style-type: none;
-                list-style-position: inside;
-                li {
-                    .allowSelection;
-                    margin-bottom: @defaultMargin/2;
-                    font-weight: 200;
-                    counter-increment: item;
-                    strong {
-                        font-weight: 400;
-                    }
-                    // &::before {
-                    //     .disallowSelection;
-                    //     content: counter(item) '. ';
-                    //     font-weight: 200;
-                    // }
-                    &.type-address {}
-                    &.type-bool {}
-                }
-            }
-        }
+
 	}
 }
 

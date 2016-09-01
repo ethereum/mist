@@ -34,6 +34,9 @@ module.exports = class extends BaseProcessor {
                 return reject(err);
             }
 
+            
+            // EthElements.Modal.show('popupWindows_sendTransactionConfirmation')
+
             let modalWindow = Windows.createPopup('sendTransactionConfirmation', {
                 sendData: ['data', payload.params[0]],
                 electronOptions: {

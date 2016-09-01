@@ -31,6 +31,8 @@
 
 .popup-windows {
 	text-align: center;
+	height: 100vh;
+
 	a,
 	button {
 		color: @colorLinkActive;
@@ -55,10 +57,11 @@
 
 	footer {
 		position: fixed;
-		bottom: -90px;
+		bottom: 0;
 		left: 0;
 		right: 0;
 		background: linear-gradient(transparent 0%, @colorGrayLight 20%);
+		padding-bottom: @gridHeight;
 	}
 
 	&.update-available {
@@ -74,6 +77,13 @@
 		}
 	}
 	&.tx-info {
+
+		.container {
+			overflow: auto;
+			height: 80vh;
+			padding-bottom: 160px;
+		}
+
 		.transaction-parties {
 			display: flex;
 			flex-direction: row;

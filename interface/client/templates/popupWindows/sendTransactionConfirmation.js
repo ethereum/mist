@@ -243,10 +243,25 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     'params': function() {
         return TemplateVar.get('params');
     },
+    /**
+    Formats parameters
 
+    @method (showFormattedParams)
+    */
     'showFormattedParams': function() {
         return TemplateVar.get('params') && TemplateVar.get('displayDecodedParams');
     },
+    /**
+    Checks if transaction will be invalid
+
+    @method (transactionInvalid)
+    */
+    'transactionInvalid': function() {
+        console.log('transactionInvalid?', TemplateVar.get('estimatedGas'), typeof TemplateVar.get('estimatedGas'));
+        return TemplateVar.get('estimatedGas') == 'invalid' 
+                || TemplateVar.get('estimatedGas') == 0
+                || typeof TemplateVar.get('estimatedGas') == 'undefined';
+    }
 });
 
 Template['popupWindows_sendTransactionConfirmation'].events({

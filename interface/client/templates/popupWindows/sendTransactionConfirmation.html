@@ -53,8 +53,8 @@
                     </div>
                 </div>
 
-                {{#if $eq (TemplateVar.get "estimatedGas") "invalid"}}
-                    <p class="info dapp-error"> {{{i18n "mist.popupWindows.sendTransactionConfirmation.transactionThrow"}}} </p>
+                {{#if transactionInvalid}}
+                    <p class="info dapp-error"> {{{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}} </p>
                 {{else}}
                     {{#if $and data (TemplateVar.get "toIsContract")}}
                         <p class="info">{{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}}</p>
@@ -107,9 +107,17 @@
                             </div>
                             <div class="type">
                                 {{#if $eq (TemplateVar.get "estimatedGas") "invalid"}}
-                                    <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}</span>
+                                    <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.transactionThrow"}}</span>
                                 {{else}}
-                                    {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
+
+                                    {{#if $eq (dapp_formatNumber (TemplateVar.get "estimatedGas") "0") "0"}}
+                                        <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.noEstimate"}}</span>
+                                    {{else}}
+                                        {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
+                                    {{/if}}
+
+
+
                                 {{/if}}
                             </div>
                         </li> 

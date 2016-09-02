@@ -182,7 +182,7 @@
                 "estimatedFee": "Estimated fee consumption",
                 "estimatedGasError": "Is seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
                 "transactionThrow": "The contract won't allow this transaction to be executed",
-                "noEstimate": "We couldn't estimate the gas. Maybe your node crashed?",
+                "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
@@ -200,7 +200,8 @@
                 },
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
-                "lookupData": "Try to decode data"
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",

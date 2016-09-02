@@ -28,7 +28,6 @@ human readable text signature.
 @method (lookupFunctionSignature)
 */
 var lookupFunctionSignature = function(data, remoteLookup) {
-    console.log('lookupFunctionSignature', arguments);
     return new Q((resolve, reject) => {
         if(data && data.length > 8) {
             var bytesSignature = (data.substr(0, 2) === '0x')
@@ -104,6 +103,22 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         var data = Session.get('data');
 
         if(data) {
+            if (data.data) {
+                localSignatureLookup(data.data).then((textSignature) => {
+                    // Clean version of function signature. Striping params
+                    TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+                    TemplateVar.set(template, 'hasSignature', true);
+
+                    let params = textSignature.match(/\((.+)\)/i);
+                    if (params) {
+                        TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                        ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+                    }
+                }).catch((bytesSignature) => {
+                    TemplateVar.set(template, 'executionFunction', bytesSignature);
+                    TemplateVar.set(template, 'hasSignature', false);
+                });
+            }
 
             // set window size
             setWindowSize(template);
@@ -127,24 +142,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 web3.eth.getCode(data.to, function(e, res){
                     if(!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
-                        setWindowSize(template);
-                        // TODO: better location for this.
-                        if (data.data) {
-                            localSignatureLookup(data.data).then((textSignature) => {
-                                // Clean version of function signature. Striping params
-                                TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
-                                TemplateVar.set(template, 'hasSignature', true);
-
-                                let params = textSignature.match(/\((.+)\)/i);
-                                if (params) {
-                                    TemplateVar.set(template, 'executionFunctionParamTypes', params);
-                                    ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
-                                }
-                            }).catch((bytesSignature) => {
-                                TemplateVar.set(template, 'executionFunction', bytesSignature);
-                                TemplateVar.set(template, 'hasSignature', false);
-                            });
-                        }
+                        setWindowSize(template);                        
                     }
                 });
             }
@@ -257,7 +255,6 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (transactionInvalid)
     */
     'transactionInvalid': function() {
-        console.log('transactionInvalid?', TemplateVar.get('estimatedGas'), typeof TemplateVar.get('estimatedGas'));
         return TemplateVar.get('estimatedGas') == 'invalid' 
                 || TemplateVar.get('estimatedGas') == 0
                 || typeof TemplateVar.get('estimatedGas') == 'undefined';

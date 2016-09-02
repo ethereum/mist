@@ -65,10 +65,6 @@
                     {{/unless}}
                 {{/if}}
 
-                
-
-
-
                 {{#if data}}
 
                     {{#if showFormattedParams}}
@@ -89,8 +85,10 @@
                             {{# if params}}
                                 <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
                             {{else}}
-                                <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="Lookup function signature on 4byte.directory (3rd-party service)"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
+                                {{#if to}}
+                                <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="{{i18n 'mist.popupWindows.sendTransactionConfirmation.lookupDataExplainer'}}"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
                                 </a>
+                                {{/if}}
                             {{/if}} 
                             </h3>                           
 

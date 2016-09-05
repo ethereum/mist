@@ -30,7 +30,7 @@ module.exports = class extends BaseProcessor {
     exec (conn, payload) {
         return new Q((resolve, reject) => {
             this._log.info('Ask user for password');
-
+            
             this._log.info(payload.params[0]);
 
             // validate data

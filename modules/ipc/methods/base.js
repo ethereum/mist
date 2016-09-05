@@ -31,7 +31,8 @@ module.exports = class BaseProcessor {
 
         return conn.socket.send(payload, {
             fullResult: true,
-        });
+        })
+        .then((ret) => ret.result);
     }
 
 

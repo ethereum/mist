@@ -289,7 +289,10 @@ class IpcProviderBackend {
                         ? this._processors[finalPayload.method]
                         : this._processors.base;
 
-                    return processor.exec(conn, nonErrorPayloads);
+                    return processor.exec(
+                        conn, 
+                        isBatch ? nonErrorPayloads : nonErrorPayloads[0]
+                    );
                 } else {
                     return [];
                 }
@@ -304,7 +307,7 @@ class IpcProviderBackend {
                     if (p.error) {
                         finalResult.push(p);
                     } else {
-                        p = _.extend({}, p, ret.result.shift());
+                        p = _.extend({}, p, isBatch ? ret.shift() : ret);
 
                         let processor = (this._processors[p.method])
                             ? this._processors[p.method]

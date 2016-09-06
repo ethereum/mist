@@ -15,7 +15,7 @@ module.exports = class extends BaseProcessor {
      */
     exec (conn, payload) {
         return Q.try(() => {
-            this._log.info('Compile solidity');
+            this._log.debug('Compile solidity');
 
             let output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
 
@@ -38,6 +38,17 @@ module.exports = class extends BaseProcessor {
 
             return finalResult;
         });
+    }
+    
+    /**
+     * @override
+     */
+    sanitizeRequestPayload (conn, payload, isPartOfABatch) {
+        if (isPartOfABatch) {
+            throw this.ERRORS.BATCH_COMPILE_DENIED;
+        }
+        
+        return super.sanitizeRequestPayload(conn, payload, isPartOfABatch);
     }
 }
 

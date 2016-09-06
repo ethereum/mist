@@ -7,6 +7,10 @@ const electron = require('electron');
 const ipc = electron.ipcMain;
 const abi = require('ethereumjs-abi');
 
+function isHexType(type) {
+	return _.includes(['address', 'bytes'], type) || type.match(/bytes\d+/g);
+}
+
 ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data){
 	var dataBuffer, paramTypes;
 	dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
@@ -23,13 +27,12 @@ ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data)
 		// Turns addresses into proper hex string
 		// Turns numbers into their decimal string version
 		paramTypes.forEach((type, index) => {
-			if (type == 'address') {
-				paramsResponse[index] = '0x' + paramsResponse[index].toString('hex');
-			}
-			else {
-				paramsResponse[index] = paramsResponse[index].toString();
-			}
-			paramsDictArr.push({type: type, value: paramsResponse[index]});
+			var conversionFlag = isHexType(type) ? 'hex' : null,
+				prefix = isHexType(type) ? '0x' : '';
+
+			paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
+
+			paramsDictArr.push({type: type, value: prefix + paramsResponse[index]});
 		});
 
 		event.sender.send('uiAction_decodedFunctionSignatures', paramsDictArr);

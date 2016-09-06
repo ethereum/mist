@@ -14,6 +14,17 @@ const fs = require('fs');
 const dialog = electron.dialog;
 
 
+// Make easier to return values for specific systems
+var switchForSystem = function(options){
+    if (process.platform in options) {
+        return options[process.platform];
+    }
+    else if ('default' in options) {
+        return options['default'];
+    }
+};
+
+
 // create menu
 // null -> null
 var createMenu = function(webviews) {
@@ -253,7 +264,10 @@ var menuTempl = function(webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
-                accelerator: 'CommandOrControl+F',
+                accelerator: switchForSystem({
+                    'darwin': 'Command+Control+F'
+                    'default': 'F11'
+                }),
                 click: function(){
                     let mainWindow = Windows.getByType('main');
 

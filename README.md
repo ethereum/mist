@@ -47,14 +47,14 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes
+    $ gulp update-nodes [--plataform all | darwin | win32 | linux]
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
     $ npm install
-    $ gulp update-nodes
+    $ gulp update-nodes [--plataform all | darwin | win32 | linux]
 
 
 ### Run Mist

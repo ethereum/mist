@@ -20,6 +20,45 @@ The sendTransaction confirmation popup window template
 @constructor
 */
 
+
+/**
+Takes a 4-byte function signature and does a best-effort conversion to a
+human readable text signature.
+
+@method (lookupFunctionSignature)
+*/
+var lookupFunctionSignature = function(data) {
+    return new Q((resolve, reject) => {
+        if(data && data.length > 8) {
+            var bytesSignature = (data.substr(0, 2) === '0x')
+                ? data.substr(0, 10)
+                : '0x'+ data.substr(0, 8);
+
+            https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
+                var body = '';
+
+                response.on('data', function(chunk){
+                    body += chunk;
+                });
+
+                response.on('end', function(){
+                    var responseData = JSON.parse(body);
+                    if (responseData.results.length) {
+                        resolve(responseData.results[0].text_signature);
+                    } else {
+                        resolve(bytesSignature);
+                    }
+                });
+            }).on('error', (error) => {
+                console.warn('Error querying Function Signature Registry.', err);
+                resolve(bytesSignature);
+            });
+        } else {
+           resolve(undefined);
+        }
+    });
+}
+
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
@@ -52,6 +91,14 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                     if(!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
                         setWindowSize(template);
+                        // TODO: better location for this.
+                        if (data.data) {
+                          lookupFunctionSignature(data.data).then((textSignature) => {
+                              TemplateVar.set(template, 'executionFunction', textSignature);
+                          }).catch((bytesSignature) => {
+                              TemplateVar.set(template, 'executionFunction', bytesSignature);
+                          });
+                        }
                     }
                 });
             }
@@ -135,18 +182,6 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     'shortenAddress': function(address){
         if(_.isString(address)) {
             return address.substr(0,6) +'...'+ address.substr(-4);
-        }
-    },
-    /**
-    Checks if its a contract execution and returns the execution function
-
-    @method (executionFunction)
-    */
-    'executionFunction': function(){
-        if(TemplateVar.get('toIsContract') && this.data && this.data.length > 8) {
-            return (this.data.substr(0,2) === '0x')
-                ? this.data.substr(0, 10)
-                : '0x'+ this.data.substr(0, 8);
         }
     },
     /**

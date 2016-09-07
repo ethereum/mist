@@ -1,21 +1,492 @@
 window.SIGNATURES = {
+	"0x9f2ce678": [
+		"vote(bytes32,bool)"
+	],
+	"0xc976bbbb": [
+		"_compare(int256,bytes2,int256)"
+	],
+	"0xcdda62ad": [
+		"FutureBlockCall(address,uint256,uint8,address,bytes4,bytes,uint256,uint256,uint16,uint256,uint256)"
+	],
+	"0x2812f8b8": [
+		"FutureCall(address,uint256,uint16,address,bytes4,bytes,uint256,uint256,uint256)"
+	],
+	"0x528eedcb": [
+		"sendSafe(address,address,uint256)"
+	],
+	"0x0ce46c43": [
+		"scheduleCall(address,bytes4,bytes,uint16,uint8,uint256[5])"
+	],
+	"0x938c4307": [
+		"scheduleCall(bytes4,bytes,uint16,uint8,uint256,uint256,uint256,uint256,uint256)"
+	],
+	"0x4c471cde": [
+		"scheduleCall(address,bytes4,bytes,uint256,uint256,uint8,uint256)"
+	],
+	"0x7b55c8b5": [
+		"scheduleCall(address,bytes4,bytes,uint8,uint256[4])"
+	],
+	"0xb549793d": [
+		"scheduleCall(bytes4,bytes,uint256,uint256,uint8,uint256)"
+	],
+	"0x03d22885": [
+		"scheduleCall(address,uint256,bytes4,uint256,uint256,uint8,uint256)"
+	],
+	"0xe29fb547": [
+		"scheduleCall(bytes4,uint256,uint256,uint8,uint256)"
+	],
+	"0xee77fe86": [
+		"scheduleCall(address,bytes4,bytes,uint256,uint256,uint8)"
+	],
+	"0x64ee49fe": [
+		"scheduleCall(address,uint256,bytes4,uint256,uint256,uint8)"
+	],
+	"0x3a9e7433": [
+		"scheduleCall(bytes4,uint256,uint256,uint8)"
+	],
+	"0x9772c982": [
+		"scheduleCall(address,bytes4,bytes,uint256,uint256)"
+	],
+	"0x5a9f2def": [
+		"scheduleCall(bytes4,bytes,uint256,uint256)"
+	],
+	"0x8c0e156d": [
+		"scheduleCall(bytes4,uint256,uint256)"
+	],
+	"0x346cabbc": [
+		"scheduleCall(address,bytes4,uint256,bytes,uint256)"
+	],
+	"0x48f05187": [
+		"scheduleCall(address,bytes4,bytes,uint256)"
+	],
+	"0x3d9ce89b": [
+		"scheduleCall(bytes4,bytes,uint256)"
+	],
+	"0xc43d0575": [
+		"scheduleCall(bytes4,uint256)"
+	],
+	"0x795b9a6f": [
+		"scheduleCall(address,bytes4,uint256,bytes)"
+	],
+	"0xa1c0539d": [
+		"scheduleCall(address,bytes4,bytes)"
+	],
+	"0x3c2c21a0": [
+		"scheduleCall(address,uint256,bytes4)"
+	],
+	"0x373a1bc3": [
+		"scheduleCall(address,bytes4)"
+	],
+	"0x4db3da83": [
+		"scheduleCall(bytes4)"
+	],
+	"0x0e850239": [
+		"scheduleCall(bytes4,bytes)"
+	],
+	"0xf2da67db": [
+		"setMany(uint256,int256,uint256,bytes20,address,bytes)"
+	],
+	"0xc2b12a73": [
+		"setBytes32(bytes32)"
+	],
+	"0x73b55eaf": [
+		"registerData(address,int256,bytes32,address)"
+	],
+	"0x741e2345": [
+		"registerMany(address,uint256,int256,uint256,bytes20,address,bytes)"
+	],
+	"0x30fd300f": [
+		"registerBytes32(address,bytes32)"
+	],
+	"0x8b676ae8": [
+		"scheduleCall(address,bytes4,uint256,uint256,uint8,uint256,uint256)"
+	],
+	"0x68402460": [
+		"scheduleCall(address,bytes4,uint256,uint256,uint8,uint256)"
+	],
+	"0x049ae734": [
+		"scheduleCall(address,bytes4,uint256,uint256,uint8)"
+	],
+	"0x480b70bd": [
+		"scheduleCall(address,bytes4,uint256,uint256)"
+	],
+	"0x01991313": [
+		"scheduleCall(address,bytes4,uint256)"
+	],
+	"0xfcf0f55b": [
+		"eventOracles(bytes32,uint256)"
+	],
+	"0xc71e48d6": [
+		"setOutcome(bytes32,bytes32[])"
+	],
+	"0xc25e6908": [
+		"ultimateOutcomes(bytes32)"
+	],
+	"0xa0ec4e09": [
+		"getUltimateOutcomes(bytes32[])"
+	],
+	"0x98f3b81a": [
+		"getShares(address,bytes32[],int256[])"
+	],
+	"0x8e19899e": [
+		"withdraw(bytes32)"
+	],
+	"0x8aa6f1b1": [
+		"setUltimateOutcome(bytes32)"
+	],
+	"0x7b395487": [
+		"voteForUltimateOutcome(bytes32,uint16)"
+	],
+	"0x6b1e564a": [
+		"challengeWinningOutcome(bytes32,uint16)"
+	],
+	"0x659fb968": [
+		"getOracleOutcomes(bytes32[],address[])"
+	],
+	"0x4ad07b0e": [
+		"oracleOutcomes(bytes32,address)"
+	],
+	"0x488b3538": [
+		"shares(address,bytes32,int256)"
+	],
+	"0x3ced516c": [
+		"descriptionHashes(bytes32)"
+	],
+	"0xc91d7e9c": [
+		"getFee(bytes32[])"
+	],
+	"0xc1b06513": [
+		"registerEvent(bytes32[])"
+	],
+	"0x5d1a3b82": [
+		"getOutcome(bytes32)"
+	],
+	"0x51017702": [
+		"isOutcomeSet(bytes32)"
+	],
+	"0x13fc6ac2": [
+		"getEventData(bytes32)"
+	],
+	"0xeff6be2f": [
+		"changeBaseFee(uint256)"
+	],
+	"0xc51cf179": [
+		"calcBaseFeeForShares(uint256)"
+	],
+	"0xc10dd4c6": [
+		"getEvents(bytes32[],address)"
+	],
+	"0xb11e3b82": [
+		"createEvent(bytes32,bool,int256,int256,uint8,address,address,bytes32[])"
+	],
+	"0xa4a7cf5c": [
+		"redeemWinnings(bytes32)"
+	],
+	"0x9ba5b4e9": [
+		"getEventHashes(bytes32[])"
+	],
+	"0x8c172fa2": [
+		"getEvent(bytes32)"
+	],
+	"0x57bcccb6": [
+		"revokePermanentApproval(address)"
+	],
+	"0x481b659d": [
+		"permitPermanentApproval(address)"
+	],
+	"0x428d64bd": [
+		"getShares(address,bytes32[])"
+	],
+	"0x4025b293": [
+		"redeemAllOutcomes(bytes32,uint256)"
+	],
+	"0x3983d5c4": [
+		"calcBaseFee(uint256)"
+	],
+	"0x1f0c1e0c": [
+		"getEventTokenAddress(bytes32,uint256)"
+	],
+	"0x1d007f5f": [
+		"changeDAO(address)"
+	],
+	"0x1934d55a": [
+		"isPermanentlyApproved(address,address)"
+	],
+	"0x15e812ad": [
+		"getBaseFee()"
+	],
+	"0x07d5b826": [
+		"buyAllOutcomes(bytes32,uint256)"
+	],
+	"0xebb71194": [
+		"withdrawFees(bytes32)"
+	],
+	"0xdb833e3a": [
+		"sellShares(bytes32,uint8,uint256,uint256)"
+	],
+	"0xc3c95c7b": [
+		"getMarket(bytes32)"
+	],
+	"0xc1fd4339": [
+		"createMarket(bytes32,uint256,uint256,address)"
+	],
+	"0xbbd4f854": [
+		"buyShares(bytes32,uint8,uint256,uint256)"
+	],
+	"0xa0bde7e8": [
+		"getShareDistributionWithTimestamp(bytes32)"
+	],
+	"0x929e626e": [
+		"getShareDistribution(bytes32)"
+	],
+	"0x6da84ec0": [
+		"calcMarketFee(bytes32,uint256)"
+	],
+	"0x674cc1f5": [
+		"getMarketHashes(bytes32[])"
+	],
+	"0x5aa97eeb": [
+		"getMarkets(bytes32[],address)"
+	],
+	"0x16181bb7": [
+		"shortSellShares(bytes32,uint8,uint256,uint256)"
+	],
+	"0x031d973e": [
+		"closeMarket(bytes32)"
+	],
+	"0x8f9df278": [
+		"newEntry(int256,bool,uint256,int256,string,bytes32,address,uint256[])"
+	],
+	"0x5829d310": [
+		"entries(int256)"
+	],
+	"0x063c1a0e": [
+		"transfer(address recipient, uint32 amount)"
+	],
+	"0x371ab6ae": [
+		"0x1234ABCD"
+	],
+	"0x1ad7d2ca": [
+		"uint256 public totalSupply"
+	],
+	"0x11da47df": [
+		"0x12345678"
+	],
+	"0xfcc11241": [
+		"addOrder(uint256,uint256,uint256,uint256,uint256,uint8)"
+	],
+	"0xd3f297d6": [
+		"claimLiquidityReward()"
+	],
+	"0xc67d376d": [
+		"getClosedCandidates()"
+	],
+	"0xa9eed530": [
+		"reduceOrderQty(uint256,uint256)"
+	],
+	"0x942b90d3": [
+		"getRewardTable()"
+	],
+	"0x27cca148": [
+		"lastClaimedBlock()"
+	],
+	"0x09a69f57": [
+		"getRewardAmount()"
+	],
+	"0x09405164": [
+		"getOpenCandidates()"
+	],
+	"0x070a888f": [
+		"updateRewardDuration(uint256)"
+	],
+	"0x069d6d1c": [
+		"closeOrder(uint256)"
+	],
+	"0xfe992c98": [
+		"balanceOfAll(address)"
+	],
+	"0xf1e4a540": [
+		"unsetCoordinator()"
+	],
+	"0xe71264fa": [
+		"addNewTokens(uint256)"
+	],
+	"0xb6ed0632": [
+		"cancelOrder(uint256,uint256)"
+	],
+	"0xa2f16d80": [
+		"dexWithdrawCollectedFees()"
+	],
+	"0x98ea5fca": [
+		"depositEther()"
+	],
+	"0x9824425a": [
+		"takeOrder(uint256,uint256,uint256,uint256)"
+	],
+	"0x8ea98117": [
+		"setCoordinator(address)"
+	],
+	"0x512f1e64": [
+		"orderBookLength()"
+	],
+	"0x50baa622": [
+		"withdrawToken(uint256)"
+	],
+	"0x3bed33ce": [
+		"withdrawEther(uint256)"
+	],
+	"0x29ef56b1": [
+		"getAskOrderBookStats()"
+	],
+	"0x0e97cfdf": [
+		"placeOrder(uint256,uint256,uint256)"
+	],
+	"0x0e0f55d0": [
+		"RewardOrder(uint256,uint256)"
+	],
+	"0x08bf2d0d": [
+		"getOrderBook(uint256,uint256)"
+	],
+	"0xaee7b69a": [
+		"buyShares(bytes,uint,uint,uint)"
+	],
+	"0x6ee64ad9": [
+		"buyShares(bytes,uint8,uint,uint)"
+	],
+	"0x3b522330": [
+		"buyShares(bytes32,uint8,uint,uint)"
+	],
+	"0x4765c332": [
+		"[{\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": false, \"type\": \"function\", \"name\": \"closeMarket\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"expectedEarnings\"}], \"constant\": false, \"type\": \"function\", \"name\": \"shortSellShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"marketHashes\"}, {\"type\": \"address\", \"name\": \"investorAddress\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarkets\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"eventHashes\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarketHashes\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint256\", \"name\": \"tokenCount\"}], \"constant\": true, \"type\": \"function\", \"name\": \"calcMarketFee\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getShareDistribution\", \"outputs\": [{\"type\": \"uint256[256]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getShareDistributionWithTimestamp\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"maxSpending\"}], \"constant\": false, \"type\": \"function\", \"name\": \"buyShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"fee\"}, {\"type\": \"uint256\", \"name\": \"initialFunding\"}, {\"type\": \"address\", \"name\": \"marketMakerAddress\"}], \"constant\": false, \"type\": \"function\", \"name\": \"createMarket\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarket\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"\"}, {\"type\": \"uint256\", \"name\": \"\"}, {\"type\": \"uint256\", \"name\": \"\"}, {\"type\": \"uint256\", \"name\": \"\"}, {\"type\": \"address\", \"name\": \"\"}, {\"type\": \"address\", \"name\": \"\"}, {\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"expectedEarnings\"}], \"constant\": false, \"type\": \"function\", \"name\": \"sellShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"getMinFunding\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": false, \"type\": \"function\", \"name\": \"withdrawFees\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}]"
+	],
+	"0x3c950bc3": [
+		"0xbbd4f854"
+	],
+	"0xffcf21a9": [
+		"eventOracles(bytes,uint256)"
+	],
+	"0x8204ecdd": [
+		"getFee(bytes)"
+	],
+	"0xc2038560": [
+		"setOutcome(bytes,bytes)"
+	],
+	"0xc0ae6a3a": [
+		"ultimateOutcomes(bytes)"
+	],
+	"0xc90d080a": [
+		"registerEvent(bytes)"
+	],
+	"0x45ee49b9": [
+		"getUltimateOutcomes(bytes)"
+	],
+	"0x1397fdbd": [
+		"getShares(address,bytes,int256[])"
+	],
+	"0x0968f264": [
+		"withdraw(bytes)"
+	],
+	"0x8f6f988c": [
+		"setUltimateOutcome(bytes)"
+	],
+	"0x41095b60": [
+		"voteForUltimateOutcome(bytes,uint16)"
+	],
+	"0x9ec32d45": [
+		"challengeWinningOutcome(bytes,uint16)"
+	],
+	"0xbbd8b602": [
+		"getOracleOutcomes(bytes,address[])"
+	],
+	"0xea4ba8eb": [
+		"getOutcome(bytes)"
+	],
+	"0x3d69b403": [
+		"isOutcomeSet(bytes)"
+	],
+	"0xdb5b4183": [
+		"oracleOutcomes(bytes,address)"
+	],
+	"0x5e58f141": [
+		"shares(address,bytes,int256)"
+	],
+	"0x632f0ba6": [
+		"descriptionHashes(bytes)"
+	],
+	"0x43703b0e": [
+		"getEventData(bytes)"
+	],
+	"0xb7cb8e87": [
+		"[{\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": false, \"type\": \"function\", \"name\": \"closeMarket\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"expectedEarnings\"}], \"constant\": false, \"type\": \"function\", \"name\": \"shortSellShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"marketHashes\"}, {\"type\": \"address\", \"name\": \"investorAddress\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarkets\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"eventHashes\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarketHashes\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint256\", \"name\": \"tokenCount\"}], \"constant\": true, \"type\": \"function\", \"name\": \"calcMarketFee\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getShareDistribution\", \"outputs\": [{\"type\": \"uint256[256]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getShareDistributionWithTimestamp\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"maxSpending\"}], \"constant\": false, \"type\": \"function\", \"name\": \"buyShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"fee\"}, {\"type\": \"uint256\", \"name\": \"initialFunding\"}, {\"type\": \"address\", \"name\": \"marketMakerAddress\"}], \"constant\": false, \"type\": \"function\", \"name\": \"createMarket\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getMarket\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"fee\"}, {\"type\": \"uint256\", \"name\": \"collectedFees\"}, {\"type\": \"uint256\", \"name\": \"initialFunding\"}, {\"type\": \"address\", \"name\": \"investorAddress\"}, {\"type\": \"address\", \"name\": \"marketMaker\"}, {\"type\": \"uint256\", \"name\": \"createdAtBlock\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}, {\"type\": \"uint8\", \"name\": \"outcomeIndex\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}, {\"type\": \"uint256\", \"name\": \"expectedEarnings\"}], \"constant\": false, \"type\": \"function\", \"name\": \"sellShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"getMinFunding\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"marketHash\"}], \"constant\": false, \"type\": \"function\", \"name\": \"withdrawFees\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}]"
+	],
+	"0xfb38cedf": [
+		"[{\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"tokenCount\"}], \"constant\": false, \"type\": \"function\", \"name\": \"buyAllOutcomes\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"getBaseFee\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"owner\"}, {\"type\": \"address\", \"name\": \"spender\"}], \"constant\": true, \"type\": \"function\", \"name\": \"isPermanentlyApproved\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_daoAddress\"}], \"constant\": false, \"type\": \"function\", \"name\": \"changeDAO\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"outcomeIndex\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getEventTokenAddress\", \"outputs\": [{\"type\": \"address\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"uint256\", \"name\": \"tokenCount\"}], \"constant\": true, \"type\": \"function\", \"name\": \"calcBaseFee\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}, {\"type\": \"uint256\", \"name\": \"shareCount\"}], \"constant\": false, \"type\": \"function\", \"name\": \"redeemAllOutcomes\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"owner\"}, {\"type\": \"bytes32[]\", \"name\": \"_eventHashes\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getShares\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"spender\"}], \"constant\": false, \"type\": \"function\", \"name\": \"permitPermanentApproval\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"spender\"}], \"constant\": false, \"type\": \"function\", \"name\": \"revokePermanentApproval\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getEvent\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"descriptionHash\"}, {\"type\": \"address\", \"name\": \"creatorAddress\"}, {\"type\": \"bool\", \"name\": \"isRanged\"}, {\"type\": \"int256\", \"name\": \"lowerBound\"}, {\"type\": \"int256\", \"name\": \"upperBound\"}, {\"type\": \"uint256\", \"name\": \"outcomeCount\"}, {\"type\": \"address\", \"name\": \"tokenAddress\"}, {\"type\": \"address\", \"name\": \"oracleAddress\"}, {\"type\": \"bytes32\", \"name\": \"oracleEventIdentifier\"}, {\"type\": \"bool\", \"name\": \"isWinningOutcomeSet\"}, {\"type\": \"int256\", \"name\": \"winningOutcome\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"descriptionHashes\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getEventHashes\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventHash\"}], \"constant\": false, \"type\": \"function\", \"name\": \"redeemWinnings\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"descriptionHash\"}, {\"type\": \"bool\", \"name\": \"isRanged\"}, {\"type\": \"int256\", \"name\": \"lowerBound\"}, {\"type\": \"int256\", \"name\": \"upperBound\"}, {\"type\": \"uint8\", \"name\": \"outcomeCount\"}, {\"type\": \"address\", \"name\": \"tokenAddress\"}, {\"type\": \"address\", \"name\": \"oracleAddress\"}, {\"type\": \"bytes32[]\", \"name\": \"data\"}], \"constant\": false, \"type\": \"function\", \"name\": \"createEvent\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"uint256\", \"name\": \"shareCount\"}], \"constant\": true, \"type\": \"function\", \"name\": \"calcBaseFeeForShares\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"_eventHashes\"}, {\"type\": \"address\", \"name\": \"oracleAddress\"}, {\"type\": \"address\", \"name\": \"tokenAddress\"}, {\"type\": \"address\", \"name\": \"creatorAddress\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getEvents\", \"outputs\": [{\"type\": \"uint256[]\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"uint256\", \"name\": \"_baseFee\"}], \"constant\": false, \"type\": \"function\", \"name\": \"changeBaseFee\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}]"
+	],
+	"0xeca9d1e9": [
+		"[{\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"name\", \"outputs\": [{\"type\": \"string\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_spender\"}, {\"type\": \"uint256\", \"name\": \"_value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"approve\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"totalSupply\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_from\"}, {\"type\": \"address\", \"name\": \"_to\"}, {\"type\": \"uint256\", \"name\": \"_value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"transferFrom\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"decimals\", \"outputs\": [{\"type\": \"uint8\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"uint256\", \"name\": \"count\"}], \"constant\": false, \"type\": \"function\", \"name\": \"sellTokens\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_owner\"}], \"constant\": true, \"type\": \"function\", \"name\": \"balanceOf\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"balance\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"symbol\", \"outputs\": [{\"type\": \"string\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_to\"}, {\"type\": \"uint256\", \"name\": \"_value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"transfer\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [], \"constant\": false, \"type\": \"function\", \"name\": \"buyTokens\", \"outputs\": [{\"type\": \"bool\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"_owner\"}, {\"type\": \"address\", \"name\": \"_spender\"}], \"constant\": true, \"type\": \"function\", \"name\": \"allowance\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"remaining\"}]}, {\"inputs\": [{\"indexed\": true, \"type\": \"address\", \"name\": \"from\"}, {\"indexed\": true, \"type\": \"address\", \"name\": \"to\"}, {\"indexed\": false, \"type\": \"uint256\", \"name\": \"value\"}], \"type\": \"event\", \"name\": \"Transfer\", \"anonymous\": false}, {\"inputs\": [{\"indexed\": true, \"type\": \"address\", \"name\": \"owner\"}, {\"indexed\": true, \"type\": \"address\", \"name\": \"spender\"}, {\"indexed\": false, \"type\": \"uint256\", \"name\": \"value\"}], \"type\": \"event\", \"name\": \"Approval\", \"anonymous\": false}]"
+	],
+	"0xdcb7844a": [
+		"[{\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"name\", \"outputs\": [{\"type\": \"string\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"spender\"}, {\"type\": \"uint256\", \"name\": \"value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"approve\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"totalSupply\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"supply\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"from\"}, {\"type\": \"address\", \"name\": \"to\"}, {\"type\": \"uint256\", \"name\": \"value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"transferFrom\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"decimals\", \"outputs\": [{\"type\": \"uint8\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"owner\"}], \"constant\": true, \"type\": \"function\", \"name\": \"balanceOf\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"balance\"}]}, {\"inputs\": [], \"constant\": true, \"type\": \"function\", \"name\": \"symbol\", \"outputs\": [{\"type\": \"string\", \"name\": \"\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"to\"}, {\"type\": \"uint256\", \"name\": \"value\"}], \"constant\": false, \"type\": \"function\", \"name\": \"transfer\", \"outputs\": [{\"type\": \"bool\", \"name\": \"success\"}]}, {\"inputs\": [{\"type\": \"address\", \"name\": \"owner\"}, {\"type\": \"address\", \"name\": \"spender\"}], \"constant\": true, \"type\": \"function\", \"name\": \"allowance\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"remaining\"}]}, {\"inputs\": [{\"indexed\": true, \"type\": \"address\", \"name\": \"from\"}, {\"indexed\": true, \"type\": \"address\", \"name\": \"to\"}, {\"indexed\": false, \"type\": \"uint256\", \"name\": \"value\"}], \"type\": \"event\", \"name\": \"Transfer\", \"anonymous\": false}, {\"inputs\": [{\"indexed\": true, \"type\": \"address\", \"name\": \"owner\"}, {\"indexed\": true, \"type\": \"address\", \"name\": \"spender\"}, {\"indexed\": false, \"type\": \"uint256\", \"name\": \"value\"}], \"type\": \"event\", \"name\": \"Approval\", \"anonymous\": false}]"
+	],
+	"0xcd34ad64": [
+		"[{\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventIdentifier\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getEventData\", \"outputs\": [{\"type\": \"bytes32[]\", \"name\": \"data\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventIdentifier\"}], \"constant\": true, \"type\": \"function\", \"name\": \"isOutcomeSet\", \"outputs\": [{\"type\": \"bool\", \"name\": \"isSet\"}]}, {\"inputs\": [{\"type\": \"bytes32\", \"name\": \"eventIdentifier\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getOutcome\", \"outputs\": [{\"type\": \"int256\", \"name\": \"outcome\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"data\"}], \"constant\": false, \"type\": \"function\", \"name\": \"registerEvent\", \"outputs\": [{\"type\": \"bytes32\", \"name\": \"eventIdentifier\"}]}, {\"inputs\": [{\"type\": \"bytes32[]\", \"name\": \"data\"}], \"constant\": true, \"type\": \"function\", \"name\": \"getFee\", \"outputs\": [{\"type\": \"uint256\", \"name\": \"fee\"}, {\"type\": \"address\", \"name\": \"token\"}]}]"
+	],
+	"0x9431f5f0": [
+		"withdrawFees(bytes)"
+	],
+	"0xdf6c13c3": [
+		"getMinFunding()"
+	],
+	"0x4401ff5c": [
+		"sellShares(bytes,uint8,uint256,uint256)"
+	],
+	"0x55ba343f": [
+		"getMarket(bytes)"
+	],
+	"0x86723215": [
+		"createMarket(bytes,uint256,uint256,address)"
+	],
+	"0xef04fdb7": [
+		"buyShares(bytes,uint8,uint256,uint256)"
+	],
+	"0xd0315658": [
+		"getShareDistributionWithTimestamp(bytes)"
+	],
+	"0xf7a0fa0a": [
+		"getShareDistribution(bytes)"
+	],
+	"0x9948e493": [
+		"calcMarketFee(bytes,uint256)"
+	],
+	"0x1c879c47": [
+		"getMarketHashes(bytes)"
+	],
+	"0x45c41478": [
+		"getMarkets(bytes,address)"
+	],
+	"0x4b031d0f": [
+		"shortSellShares(bytes,uint8,uint256,uint256)"
+	],
+	"0x46a1d95f": [
+		"closeMarket(bytes)"
+	],
+	"0x532e7e6a": [
+		"calcEarningsSelling(bytes,uint256,uint256[],uint8,uint256)"
+	],
+	"0x5323c6cf": [
+		"calcCostsBuying(bytes,uint256,uint256[],uint8,uint256)"
+	],
 	"0x92d282c1": [
 		"Send()"
 	],
 	"0xb46300ec": [
 		"send()"
 	],
-	"0x05dc43e6": [
-		"0x1df47aad"
-	],
 	"0x30ccebb5": [
 		"getStatus(address)"
 	],
 	"0x2c215998": [
 		"updateStatus(string)"
-	],
-	"0xb32f71c3": [
-		"0xa3912ec8"
 	],
 	"0x9f5f7c7f": [
 		"tokenSplit(address,address,address,uint256)"
@@ -25,9 +496,6 @@ window.SIGNATURES = {
 	],
 	"0x1df47aad": [
 		"ReplayProtection()"
-	],
-	"0xcf5c3c73": [
-		"etherSplit(address recipient, address altChainRecipient)"
 	],
 	"0x2ac9bf09": [
 		"bid(uint256,uint256,uint256)"
@@ -61,9 +529,6 @@ window.SIGNATURES = {
 	],
 	"0x4162169f": [
 		"dao()"
-	],
-	"0xfdcef04c": [
-		"0x4162169f"
 	],
 	"0x452d44dc": [
 		"checkBothNotNull()"
@@ -2332,9 +2797,6 @@ window.SIGNATURES = {
 	],
 	"0xfce59d0c": [
 		"MangoRepo()"
-	],
-	"0x16788892": [
-		"function return13()"
 	],
 	"0xb78bd4a5": [
 		"breakCookie(string)"

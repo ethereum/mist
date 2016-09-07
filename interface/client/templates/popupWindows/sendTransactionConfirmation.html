@@ -137,18 +137,20 @@
                 </div>
 
                 </div>
+                <footer>
                 {{#if TemplateVar.get "unlocking"}}
                     <h2>{{i18n "mist.popupWindows.sendTransactionConfirmation.unlocking"}}</h2>
                 {{else}}
-                <footer>
+                
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
 
                     <div class="dapp-modal-buttons">
                         <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
                         <button class="ok dapp-primary-button" type="submit">{{i18n "mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction"}}</button>
                     </div>
-                </footer>
+                
                 {{/if}}
+                </footer>
             {{/with}}
             
         </form>

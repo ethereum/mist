@@ -103,22 +103,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         var data = Session.get('data');
 
         if(data) {
-            if (data.data) {
-                localSignatureLookup(data.data).then((textSignature) => {
-                    // Clean version of function signature. Striping params
-                    TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
-                    TemplateVar.set(template, 'hasSignature', true);
-
-                    let params = textSignature.match(/\((.+)\)/i);
-                    if (params) {
-                        TemplateVar.set(template, 'executionFunctionParamTypes', params);
-                        ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
-                    }
-                }).catch((bytesSignature) => {
-                    TemplateVar.set(template, 'executionFunction', bytesSignature);
-                    TemplateVar.set(template, 'hasSignature', false);
-                });
-            }
+            
 
             // set window size
             setWindowSize(template);
@@ -145,6 +130,23 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                         setWindowSize(template);                        
                     }
                 });
+                
+                if (data.data) {
+                    localSignatureLookup(data.data).then((textSignature) => {
+                        // Clean version of function signature. Striping params
+                        TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+                        TemplateVar.set(template, 'hasSignature', true);
+
+                        let params = textSignature.match(/\((.+)\)/i);
+                        if (params) {
+                            TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                            ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+                        }
+                    }).catch((bytesSignature) => {
+                        TemplateVar.set(template, 'executionFunction', bytesSignature);
+                        TemplateVar.set(template, 'hasSignature', false);
+                    });
+                }
             }
             if(data.from) {
                 web3.eth.getCode(data.from, function(e, res){

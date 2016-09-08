@@ -1,7 +1,6 @@
 {
   "name": "Mist",
-  "private": true,
-  "version": "0.8.1",
+  "version": "0.8.2",
   "license": "GPL-3.0",
   "author": "Ethereum Mist Team <avsa@ethereum.org>",
   "repository": {
@@ -25,8 +24,7 @@
     "numeral": "^1.5.3",
     "os-timesync": "^1.0.6",
     "semver": "^5.1.0",
-    "solc": "^0.3.1-1",
-    "typescript": "^1.8.10",
+    "solc": "^0.3.6",
     "underscore": "^1.8.3",
     "uuid": "^2.0.2",
     "web3": "^0.17.0-alpha",

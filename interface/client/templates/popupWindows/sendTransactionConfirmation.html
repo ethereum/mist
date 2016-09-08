@@ -40,7 +40,7 @@
                             {{/if}}
                             {{> dapp_identicon identity=to class="dapp-large"}}
                             <br>
-                            <span class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}">{{shortenAddress to}}</span>
+                            <a href="http://etherscan.io/address/{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
                         {{else}}
                             <i class="circle-icon icon-doc"></i>
                             <br>

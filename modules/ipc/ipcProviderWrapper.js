@@ -26,7 +26,7 @@ ipc.on('ipcProvider-setWritable', function(e, writable){
 
 
 
-ipcProviderWrapper = {
+const ipcProviderWrapper = {
     writable: false,
 
     /**

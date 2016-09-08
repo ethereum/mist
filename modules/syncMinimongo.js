@@ -1,11 +1,7 @@
 /**
 @module syncMinimongo
 */
-
-
 var electron = require('electron');
-
-
 
 /**
  * Sync IPC calls received from given window into given db table.
@@ -13,9 +9,7 @@ var electron = require('electron');
  */
 exports.backendSync = function() {
     var log = require('./utils/logger').create('syncMinimongo');
-
     var db = require('./db');
-
     var ipc = electron.ipcMain;
 
     ipc.on('minimongo-add', function(event, args) {
@@ -28,7 +22,6 @@ exports.backendSync = function() {
 
         if (!coll.findOne({_id: _id})) {
             args.fields._id = _id;
-
             coll.insert(args.fields);
         }
     });
@@ -40,7 +33,6 @@ exports.backendSync = function() {
         log.trace('minimongo-changed', collName, args._id);
 
         var _id = args._id;
-
         var item = coll.findOne({_id: _id});
 
         if (item) {
@@ -61,7 +53,6 @@ exports.backendSync = function() {
         log.trace('minimongo-removed', collName, args._id);
 
         var _id = args._id;
-
         var item = coll.findOne({_id: _id});
 
         if (item) {
@@ -74,9 +65,8 @@ exports.backendSync = function() {
     // get all data (synchronous)
     ipc.on('minimongo-reloadSync', function(event, args) {
         var collName = args.collName,
-            coll = db.getCollection(collName);
-
-        var docs = coll.find();
+            coll = db.getCollection(collName),
+            docs = coll.find();
 
         log.debug('minimongo-reloadSync, no. of docs:', collName, docs.length);
 
@@ -100,9 +90,9 @@ exports.backendSync = function() {
 
 
 exports.frontendSync = function(coll) {
-    var ipc = electron.ipcRenderer;
-
-    var collName = coll._name;
+    var ipc = electron.ipcRenderer,
+        collName = coll._name,
+        syncDoneResolver;
 
     // if already setup to sync then return
     if (coll.onceSynced) {
@@ -111,27 +101,25 @@ exports.frontendSync = function(coll) {
 
     console.debug('Reload collection from backend: ', collName);
 
-    var syncDoneResolver = null;
     coll.onceSynced = new Promise(function(resolve, reject) {
         syncDoneResolver = resolve;
     });
 
-
     (new Promise(function(resolve, reject) {
-        var dataStr = ipc.sendSync('minimongo-reloadSync', {
+        var dataStr, dataJson;
+
+        dataStr = ipc.sendSync('minimongo-reloadSync', {
             collName: collName
         });
 
-        if (!dataStr) {
-            return resolve();
-        }
-
         try {
-            coll.remove({});
-
-            var dataJson = JSON.parse(dataStr);
+            if (!dataStr || (dataJson = JSON.parse(dataStr)).length == 0) {
+                return resolve();
+            }
 
             var done = 0;
+
+            coll.remove({});
 
             // we do inserts slowly, to avoid race conditions when it comes
             // to updating the UI
@@ -146,9 +134,9 @@ exports.frontendSync = function(coll) {
                             record.redirect = null;
                         }
 
-                        coll.insert(record);                
+                        coll.insert(record);
                     } catch (err) {
-                        console.error(err.toString());                        
+                        console.error(err.toString());
                     }
 
                     done++;
@@ -157,7 +145,7 @@ exports.frontendSync = function(coll) {
                         resolve();
                     }
                 });
-            });                
+            });
         } catch (err) {
             reject(err);
         }        
@@ -168,10 +156,10 @@ exports.frontendSync = function(coll) {
     .then(function() {
         // start watching for changes
         coll.find().observeChanges({
-            'added': function(id, fields){            
+            'added': function(id, fields){
                 ipc.send('minimongo-add', {
                     collName: collName,
-                    _id: id, 
+                    _id: id,
                     fields: fields,
                 });
             },

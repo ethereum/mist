@@ -15,10 +15,8 @@ exports.init = function() {
     return Q.try(() => {
         // if db file doesn't exist then create it
         try {
-            log.debug(`Check that db exists: ${filePath}`);
-
-            fs.accessSync(filePath, fs.R_OK);
-
+            log.debug(`Check that db exists and it\'s writeable: ${filePath}`);
+            fs.accessSync(filePath, fs.R_OK | fs.W_OK);
             return Q.resolve();
         } catch (err) {
             log.info(`Creating db: ${filePath}`);
@@ -43,10 +41,8 @@ exports.init = function() {
                 autoloadCallback: function(err) {
                     if (err) {
                         log.error(err);
-
                         reject(new Error('Error instantiating db'));
                     }
-
                     resolve();
                 }
             });      

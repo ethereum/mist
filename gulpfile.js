@@ -275,7 +275,7 @@ gulp.task('copy-app-source-files', ['checkNodes', 'clean:dist'], function() {
 
 gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
     let ret = shell.exec(
-        `cp -r ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules`
+        `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules`
     );
 
     if (0 !== ret.code) {
@@ -314,13 +314,13 @@ gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done)
         if (platformIsActive(osArch)) {
             // copy eth node binaries
             streams.push(gulp.src([
-                './nodes/eth/'+ osArch + '/eth*'
+                './nodes/eth/'+ osArch + '/*'
             ])
                 .pipe(gulp.dest('./dist_'+ type +'/app/nodes/eth/' + osArch)));
 
             // copy geth node binaries
             streams.push(gulp.src([
-                './nodes/geth/'+ osArch + '/geth*'
+                './nodes/geth/'+ osArch + '/*'
             ])
                 .pipe(gulp.dest('./dist_'+ type +'/app/nodes/geth/' + osArch)));
         }

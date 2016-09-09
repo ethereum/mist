@@ -46,11 +46,11 @@ Template['elements_nodeInfo'].onCreated(function(){
     var template = this;
 
     // CHECK FOR NETWORK
-    NetworkInfo.promise.then(function(info) {
+    NetworkInfo.promise.then(function() {
         try {
-            console.log('network is ' + info.type);
+            console.log('network is ' + NetworkInfo.type);
 
-            TemplateVar.set(template, 'network', info.type);
+            TemplateVar.set(template, 'network', NetworkInfo.type);
         } catch (err) {
             console.error('Error setting network var', err);
         }

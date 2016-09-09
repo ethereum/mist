@@ -21,11 +21,11 @@ Check network type.
 var checkNetworkType = function(template) {
     console.trace('Check network type...');
 
-    NetworkInfo.promise.then(function(info) {
+    NetworkInfo.promise.then(function() {
         try {
-            console.log('network is ' + info.type);
+            console.log('network is ' + NetworkInfo.type);
 
-            TemplateVar.set(template, 'network', info.type + 'net');
+            TemplateVar.set(template, 'network', NetworkInfo.type + 'net');
         } catch (err) {
             console.error('Error setting network var', err);
         }

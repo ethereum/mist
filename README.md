@@ -165,7 +165,7 @@ This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
 
 ##### platform
 
-Additional you can only build the windows, linux or mac binary by using the `platform` option:
+Additional you can only build the windows, linux, mac or all binary by using the `platform` option:
 
     $ gulp update-nodes --platform darwin
 

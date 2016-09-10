@@ -47,15 +47,18 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes --platform all
+    $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
     $ npm install
-    $ gulp update-nodes --platform all
+    $ gulp update-nodes
 
+
+#### Options
+it is possible to pass the platform will be installed, see more [here](#platform)
 
 ### Run Mist
 
@@ -178,7 +181,7 @@ Options are:
 - `darwin` (Mac OSX)
 - `win32` (Windows)
 - `linux` (Linux)
-
+- `all` (Mac OSX + Windows + Linux)
 
 ##### walletSource
 

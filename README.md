@@ -17,7 +17,7 @@ For updating simply download the new version and copy it over the old one (keep 
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
-- MacOSX `~/Library/Application Support/Mist`
+- macOS `~/Library/Application Support/Mist`
 - Linux `~/.config/Mist`
 
 
@@ -178,7 +178,7 @@ Additional you can only build the windows, linux, mac or all binary by using the
 
 Options are:
 
-- `darwin` (Mac OSX)
+- `darwin` (macOS)
 - `win32` (Windows)
 - `linux` (Linux)
 - `all` (default)

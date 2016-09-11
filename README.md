@@ -58,7 +58,7 @@ To update Mist in the future, run:
 
 
 #### Options
-it is possible to pass the platform will be installed, see more [here](#platform)
+It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
@@ -181,7 +181,7 @@ Options are:
 - `darwin` (Mac OSX)
 - `win32` (Windows)
 - `linux` (Linux)
-- `all` (Mac OSX + Windows + Linux)
+- `all` (default)
 
 ##### walletSource
 

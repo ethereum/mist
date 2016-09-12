@@ -24,7 +24,7 @@ mistInit = function(){
 
             Tabs.insert({
                 _id: 'browser',
-                url: 'https://ethereum.org',
+                url: 'http://dapps.ethercasts.com/',
                 position: 0
             });
         }

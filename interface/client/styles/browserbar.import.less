@@ -45,6 +45,8 @@
             line-height: 21px;
             white-space: nowrap;
             margin-top: -1px;
+            transition: opacity 2s;
+
             
             &.has-icon {
                 padding-left: @gridWidth * 0.84;
@@ -237,6 +239,11 @@
     }
     .reload {
         .rotating;
+    }
+
+    .app-bar > .dapp-info, .app-bar > button  {
+        opacity: 0;
+        transition: opacity 0.5s;
     }
 }
 

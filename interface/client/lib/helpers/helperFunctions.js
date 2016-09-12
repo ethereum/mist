@@ -43,8 +43,18 @@ Format Urls, e.g add a default protocol if on is missing.
 **/
 Helpers.formatUrl = function(url){    
     // add http:// if no protocol is present
-    if(url && url.indexOf('://') === -1)
+    if (!url) {
+        return;
+    } else if ( url.indexOf('bzz:') == 1) {
+        // is a bzz: address
+        url = 'http://localhost:32200/'+ url;
+    } else if (url.length == 64 && !!url.match(/^[0-9a-f]+$/)) {
+        // looks like a hash
+        url = 'http://localhost:32200/bzz:/'+ url;
+    } else if( url.indexOf('://') === -1) {
+        // looks like a normal address
         url = 'http://'+ url;
+    } 
 
     return url;
 };

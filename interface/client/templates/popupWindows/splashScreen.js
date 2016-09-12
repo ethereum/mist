@@ -182,12 +182,12 @@ Template['popupWindows_splashScreen'].helpers({
 
             if (!(syncData._displayBlock > -1)) {
                 // initialize the display numbers
-                syncData._displayBlock = Number(syncData.currentBlock);
+                syncData._displayBlock = Number(lastSyncData.startingBlock || 0);
                 syncData._displayState = Number(syncData.pulledStates || 0);
                 syncData._displayKnownStates = Number(syncData.knownStates || 0);                    
             } else {
                 // Increment each them slowly to match target number
-                syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
+                syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 100;
                 syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / 10;
                 syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / 10;
             };            
@@ -222,7 +222,7 @@ Template['popupWindows_splashScreen'].helpers({
                 }
             }
 
-        }, 100);
+        }, 10);
 
         return TemplateVar.get(template, "syncStatusMessageLive");
     }

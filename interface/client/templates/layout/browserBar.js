@@ -32,10 +32,24 @@ Template['layout_browserBar'].helpers({
         catch(e){
             return;
         }
-        var pathname = _.reject(url.pathname.replace(/\/$/g, '').split("/"), function(el) {
+
+        // clean pathname
+        var pathname = _.reject(url.pathname
+                .replace('http://localhost:32200/bzz:/', '')
+                .replace(/\/$/g, '')
+                .split("/"), function(el) {
             return el == '';
         });
-        var breadcrumb = _.flatten(["<span>" + url.host + " </span>", pathname]).join(" ▸ ");
+        pathname = pathname.concat(url.search.replace(/^\?/,'').split("&"));
+
+        // Check host
+        var host = url.host;
+        if(host == "localhost:32200") {
+            host = "bzz ▸  " + pathname[1].substr(0,5) + "..." + pathname[1].substr(59,64);
+            pathname.splice(0,2);
+        } 
+
+        var breadcrumb = _.flatten(["<span>" + host + " </span>", pathname]).join(" ▸ ");
         return new Spacebars.SafeString(breadcrumb);
     },
 
@@ -71,6 +85,14 @@ Template['layout_browserBar'].helpers({
     */
     'currentWebView': function(){
         return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+    },
+    /**
+    Clean URL
+
+    @method (cleanURL)
+    */
+    'cleanURL': function(){
+        return this.url.replace('http://localhost:32200/bzz:/', 'bzz://');
     }
 });
 

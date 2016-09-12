@@ -365,7 +365,8 @@ var onReady = function() {
             })
             .then(function onboarding(resultData) {
 
-                if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+                // if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+                if (resultData.result && resultData.result.length === 0) {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {

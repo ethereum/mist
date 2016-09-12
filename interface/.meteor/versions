@@ -30,10 +30,11 @@ diff-sequence@1.0.6
 ecmascript@0.4.4
 ecmascript-runtime@0.2.11
 ejson@1.0.12
-ethereum:accounts@0.3.10
-ethereum:blocks@0.3.1
+ethereum:accounts@0.3.11
+ethereum:blocks@0.3.2
 ethereum:dapp-styles@0.5.6
 ethereum:elements@0.7.1
+ethereum:networkinfo@0.4.1
 ethereum:tools@0.5.2
 ethereum:web3@0.15.3
 fastclick@1.0.12
@@ -52,6 +53,7 @@ http@1.1.6
 id-map@1.0.8
 jeeeyul:moment-with-langs@2.12.1
 jquery@1.11.9
+jrudio:bluebird@3.3.1_1
 launch-screen@1.0.12
 less@2.6.1
 livedata@1.0.18

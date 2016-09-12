@@ -40,4 +40,5 @@ spacebars
 check
 standard-minifier-css
 standard-minifier-js
+ethereum:networkinfo
 tap:i18n-bundler

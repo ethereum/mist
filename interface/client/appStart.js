@@ -1,8 +1,9 @@
 
 
 // STOP here if not MAIN WINDOW
-if(location.hash)
+if(location.hash) {
     return;
+}
 
 /**
 The init function of Mist
@@ -50,11 +51,13 @@ mistInit = function(){
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    EthAccounts.init();
-    EthBlocks.init();
-
+    NetworkInfo.promise.then(function() {
+        EthAccounts.init({ network: NetworkInfo.uniqueId });
+        EthBlocks.init();
+    });
+    
     mistInit();
-
+    
     console.debug('Setting language');
 
     // SET default language

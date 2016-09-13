@@ -60,6 +60,15 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        bzzhost: {
+            demand: false,
+            default: 'http://localhost:32200',
+            describe: 'HTTP base URL of Swarm host.',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',        
+        },
         gethpath: {
             demand: false,
             describe: 'Path to Geth executable to use instead of default.',
@@ -151,158 +160,166 @@ var log = null;
 
 
 class Settings {
-  init () {
-    logger.setup(argv);
-
-    this._log = logger.create('Settings');    
-  }
-
-  get userDataPath() {
-    // Application Aupport/Mist
-    return app.getPath('userData');
-  }
-
-  get appDataPath() {
-    // Application Support/
-    return app.getPath('appData');
-  }
-
-  get userHomePath() {
-    return app.getPath('home');
-  }
-
-  get cli () {
-    return argv;
-  }
-
-  get appVersion () {
-    return packageJson.version;
-  }
-
-  get appName () {
-    return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
-  }
-
-  get appLicense () {
-    return packageJson.license;
-  }
-
-  get uiMode () {
-    return argv.mode;
-  }
-
-  get inProductionMode () {
-    return defaultConfig.production;
-  }
-
-  get inAutoTestMode () {
-    return !!process.env.TEST_MODE;
-  }
-
-  get gethPath () {
-    return argv.gethpath;
-  }
-
-  get ethPath () {
-    return argv.ethpath;
-  }
-
-  get rpcMode () {
-    return (argv.rpc && 0 > argv.rpc.indexOf('.ipc')) ? 'http' : 'ipc';
-  }
-
-  get rpcConnectConfig () {
-    if ('ipc' ===  this.rpcMode) {
-        return {
-            path: this.rpcIpcPath,
-        };
-    } else {
-        return {
-            hostPort: this.rpcHttpPath,
-        };        
+    init () {
+        logger.setup(argv);
+        
+        this._log = logger.create('Settings');    
     }
-  }
-
-  get rpcHttpPath () {
-    return ('http' === this.rpcMode) ? argv.rpc : null;
-  }
-
-  get rpcIpcPath () {
-    let ipcPath = ('ipc' === this.rpcMode) ? argv.rpc : null;
-
-    if (ipcPath) {
+    
+    get userDataPath() {
+        // Application Aupport/Mist
+        return app.getPath('userData');
+    }
+    
+    get appDataPath() {
+        // Application Support/
+        return app.getPath('appData');
+    }
+    
+    get userHomePath() {
+        return app.getPath('home');
+    }
+    
+    get cli () {
+        return argv;
+    }
+    
+    get appVersion () {
+        return packageJson.version;
+    }
+    
+    get appName () {
+        return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
+    }
+    
+    get appLicense () {
+        return packageJson.license;
+    }
+    
+    get uiMode () {
+        return argv.mode;
+    }
+    
+    get inProductionMode () {
+        return defaultConfig.production;
+    }
+    
+    get inAutoTestMode () {
+        return !!process.env.TEST_MODE;
+    }
+    
+    get bzzHost() {
+        return argv.bzzhost;
+    }
+    
+    get gethPath () {
+        return argv.gethpath;
+    }
+    
+    get ethPath () {
+        return argv.ethpath;
+    }
+    
+    get rpcMode () {
+        return (argv.rpc && 0 > argv.rpc.indexOf('.ipc')) ? 'http' : 'ipc';
+    }
+    
+    get rpcConnectConfig () {
+        if ('ipc' ===  this.rpcMode) {
+            return {
+                path: this.rpcIpcPath,
+            };
+        } else {
+            return {
+                hostPort: this.rpcHttpPath,
+            };        
+        }
+    }
+    
+    get rpcHttpPath () {
+        return ('http' === this.rpcMode) ? argv.rpc : null;
+    }
+    
+    get rpcIpcPath () {
+        let ipcPath = ('ipc' === this.rpcMode) ? argv.rpc : null;
+        
+        if (ipcPath) {
+            return ipcPath;
+        }
+        
+        ipcPath = this.userHomePath;
+        
+        if (process.platform === 'darwin') {
+            ipcPath += '/Library/Ethereum/geth.ipc';
+        } 
+        else if (process.platform === 'freebsd' ||
+            process.platform === 'linux' ||
+            process.platform === 'sunos') 
+        {
+            ipcPath += '/.ethereum/geth.ipc';
+        } 
+        else if (process.platform === 'win32') 
+        {
+            ipcPath = '\\\\.\\pipe\\geth.ipc';
+        }
+        
+        this._log.debug(`IPC path: ${ipcPath}`);
+        
         return ipcPath;
     }
     
-    ipcPath = this.userHomePath;
-
-    if (process.platform === 'darwin') {
-        ipcPath += '/Library/Ethereum/geth.ipc';
-    } else if (process.platform === 'freebsd' ||
-       process.platform === 'linux' ||
-       process.platform === 'sunos') {
-        ipcPath += '/.ethereum/geth.ipc';
-    } else if (process.platform === 'win32') {
-        ipcPath = '\\\\.\\pipe\\geth.ipc';
+    get nodeType () {
+        return argv.node;
     }
     
-    this._log.debug(`IPC path: ${ipcPath}`);
-
-    return ipcPath;
-  }
-
-  get nodeType () {
-    return argv.node;
-  }
-
-  get network () {
-    return argv.network;
-  }
-
-  get nodeOptions () {
-    return argv.nodeOptions;
-  }
-
-  loadUserData (path) {
-      const fullPath = this.constructUserDataPath(path);
-
-      this._log.trace('Load user data', fullPath);
-
-      // check if the file exists
-      try {
-          fs.accessSync(fullPath, fs.R_OK);
-      } catch (err){
-          return null;
-      }
-
-      // try to read it
-      try {
-          return fs.readFileSync(fullPath, {encoding: 'utf8'});
-      } catch (err){
-          this._log.warn(`File not readable: ${fullPath}`, err);
-      }
-
-      return null;
-  }
-
-
-  saveUserData (path, data) {
-      if (!data) return; // return so we dont write null, or other invalid data
-
-      const fullPath = this.constructUserDataPath(path);
-
-      try {
-          fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
-      } catch (err){
-          this._log.warn(`Unable to write to ${fullPath}`, err);
-      }
-  }
-
-
-  constructUserDataPath (filePath) {
-      return path.join(this.userDataPath, filePath);   
-  }
-
+    get network () {
+        return argv.network;
+    }
+    
+    get nodeOptions () {
+        return argv.nodeOptions;
+    }
+    
+    loadUserData (path) {
+        const fullPath = this.constructUserDataPath(path);
+        
+        this._log.trace('Load user data', fullPath);
+        
+        // check if the file exists
+        try {
+            fs.accessSync(fullPath, fs.R_OK);
+        } catch (err){
+            return null;
+        }
+        
+        // try to read it
+        try {
+            return fs.readFileSync(fullPath, {encoding: 'utf8'});
+        } catch (err){
+            this._log.warn(`File not readable: ${fullPath}`, err);
+        }
+        
+        return null;
+    }
+    
+    
+    saveUserData (path, data) {
+        if (!data) return; // return so we dont write null, or other invalid data
+        
+        const fullPath = this.constructUserDataPath(path);
+        
+        try {
+            fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
+        } catch (err){
+            this._log.warn(`Unable to write to ${fullPath}`, err);
+        }
+    }
+    
+    
+    constructUserDataPath (filePath) {
+        return path.join(this.userDataPath, filePath);   
+    }
+    
 }
 
 module.exports = new Settings();

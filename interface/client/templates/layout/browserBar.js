@@ -92,7 +92,7 @@ Template['layout_browserBar'].helpers({
     @method (cleanURL)
     */
     'cleanURL': function(){
-        return this.url.replace('http://localhost:32200/bzz:/', 'bzz://');
+        return this.url;
     }
 });
 

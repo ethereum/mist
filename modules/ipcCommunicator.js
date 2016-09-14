@@ -12,11 +12,11 @@ const appMenu = require('./menuItems');
 const logger = require('./utils/logger');
 const Windows = require('./windows');
 const ipc = electron.ipcMain;
-
 const _ = global._;
 
 const log = logger.create('ipcCommunicator');
 
+require('./abi.js');
 /*
 
 // windows including webviews

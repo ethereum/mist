@@ -1,15 +1,16 @@
 "use strict";
 
 var _ = require("underscore");
+var path = require('path');
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
 var replace = require('gulp-replace');
-var packager = require('electron-packager');
-var spawn = require('child_process').spawn;
+var runSeq = require('run-sequence');
 var merge = require('merge-stream');
 var rename = require("gulp-rename");
 var download = require('gulp-download-stream');
+var flatten = require('gulp-flatten');
 var tap = require("gulp-tap");
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
@@ -20,6 +21,9 @@ const mocha = require('gulp-spawn-mocha');
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
+
+
+var builder = require('electron-builder');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -41,65 +45,55 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
-var electronVersion = '1.2.5';
+var electronVersion = require('electron-prebuilt/package.json').version;
 var gethVersion = '1.4.10';
 var nodeUrls = {
-    'darwin-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
-    'linux-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
-    'win32-x64': 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
-    'linux-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
-    'win32-ia32': 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip'
+    'mac-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
+        ext: 'zip'
+    },
+    'linux-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
+        ext: 'tar',
+    },
+    'linux-ia32': {
+        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
+        ext: 'tar',
+    },
+    'win-x64': {
+        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
+        ext: 'zip',
+    },
+    'win-ia32': {
+        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip',
+        ext: 'zip',
+    },
 };
 
-var osVersions = [];
 var packJson = require('./package.json');
 var version = packJson.version;
 
-console.log('You can select a platform like: --platform (all or darwin or win32 or linux)');
+console.log('You can select a platform like: --platform <mac|win|linux|all>');
 
+console.log('App type:', type);
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
-if(_.contains(options.platform, 'win32')) {
-    osVersions.push('win32-ia32');
-    osVersions.push('win32-x64');
-}
-
-if(_.contains(options.platform, 'linux')) {
-    osVersions.push('linux-ia32');
-    osVersions.push('linux-x64');
-}
-
-if(_.contains(options.platform, 'darwin')) {
-    osVersions.push('darwin-x64');
-}
-
 if(_.contains(options.platform, 'all')) {
-    osVersions = [
-        'darwin-x64',
-        // 'linux-arm',
-        'linux-ia32',
-        'linux-x64',
-        'win32-ia32',
-        'win32-x64'
-    ];
+    options.platform = ['win', 'linux', 'mac'];
 }
 
+console.log('Selected platform:', options.platform);
 
-// Helpers
-var createNewFileName = function(os) {
-    var newOs;
-    if(os.indexOf('win32') !== -1) {
-        newOs = os.replace('win32-ia32','win32').replace('win32-x64','win64');
+
+function platformIsActive(osArch) {
+    for (let p of options.platform) {
+        if (0 <= osArch.indexOf(p)) {
+            return true;
+        }
     }
-    if(os.indexOf('darwin') !== -1) {
-        newOs = 'macosx';
-    }
-    if(os.indexOf('linux') !== -1) {
-        newOs = os.replace('linux-x64','linux64').replace('linux-ia32','linux32');
-    }
-    return './dist_'+ type +'/'+ filenameUppercase +'-'+ newOs + '-'+ version.replace(/\./g,'-');
-};
+    return false;
+}
 
 
 
@@ -135,18 +129,15 @@ gulp.task('clean:nodes', function (cb) {
   ], cb);
 });
 
-
 gulp.task('downloadNodes', ['clean:nodes'], function() {
     let toDownload = [];
 
-    _.each(nodeUrls, function(url, osArch) {
-        let ext = (0 <= osArch.indexOf('linux') ? '.tar.bz2' : '.zip');
-
+    _.each(nodeUrls, function(info, osArch) {
         // donwload nodes
-        if (osArch.indexOf(options.platform) !== -1 || options.platform == 'all') {
+        if (platformIsActive(osArch)) {
             toDownload.push({
-                file: `geth-${gethVersion}_${osArch}_${ext}`,
-                url: url,
+                file: `geth_${gethVersion}_${osArch}.${info.ext}`,
+                url: info.url,
             });
         }
     });
@@ -163,7 +154,7 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
     var streams = [];
 
     for (let zipFileName of nodeZips) {
-        let match = zipFileName.match(/_(\w+\-\w+)_/);
+        let match = zipFileName.match(/_(\w+\-\w+)\./);
         if (!match) {
             continue;
         }
@@ -174,11 +165,15 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
 
         shell.mkdir('-p', `./nodes/geth/${osArch}`);
 
-        if (0 <= osArch.indexOf('linux')) {            
-            ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
-
-        } else {
-            ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);
+        switch (path.extname(zipFileName)) {
+            case '.zip':
+                ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);
+                break;
+            case '.tar':
+                ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
+                break;
+            default:
+                return done(new Error(`Don't know how to process: ${zipFileName}`));
         }
 
         if (0 !== ret.code) {
@@ -206,7 +201,7 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
             continue;
         }
 
-        const finalName = (0 <= osArch.indexOf('win32') ? 'geth.exe' : 'geth');
+        const finalName = (0 <= osArch.indexOf('win') ? 'geth.exe' : 'geth');
 
         const originalPath = `./nodes/geth/${osArch}/${file}`,
             finalPath = `./nodes/geth/${osArch}/${finalName}`;
@@ -236,21 +231,29 @@ gulp.task('renameNodes', ['unzipNodes'], function(done) {
 
 // CHECK FOR NODES
 
-
 var nodeUpdateNeeded = false;
 gulp.task('checkNodes', function(cb) {
-    return gulp.src('./nodes/geth/*.{zip,tar.bz2}', { read: false })
-        .pipe(tap(function(file, t) {
-            nodeUpdateNeeded = 
-                nodeUpdateNeeded || (0 > file.path.indexOf(gethVersion));
-        }))
-    .pipe(gulp.dest('./nodes/geth/'));
+    _.each(nodeUrls, (info, osArch) => {
+        // check for zip file
+        if (platformIsActive(osArch)) {
+            const fileName = `geth_${gethVersion}_${osArch}.${info.ext}`;
+
+            try {
+                fs.accessSync(`./nodes/geth/${fileName}`, fs.R_OK);
+            } catch (err) {
+                nodeUpdateNeeded = true;
+            }
+        }        
+    });
+
+    cb();
 });
+
 
 
 // BUNLDE PROCESS
 
-gulp.task('copy-files', ['checkNodes', 'clean:dist'], function() {
+gulp.task('copy-app-source-files', ['checkNodes', 'clean:dist'], function() {
 
     // check if nodes are there
     if(nodeUpdateNeeded){
@@ -260,20 +263,84 @@ gulp.task('copy-files', ['checkNodes', 'clean:dist'], function() {
 
     return gulp.src([
         './tests/**/*.*',
-        './modules/**/*.*',
-        './node_modules/**/*.*',
-        './sounds/*.*',
-        './icons/'+ type +'/*.*',
-        './*.*',
-        '!./interface/**/*.*',
-        '!./geth',
-        '!./geth.exe',
-        '!./Wallet-README.txt'
+        './icons/'+ type +'/*',
+        './modules/**/**/**/*',
+        './sounds/*',
+        './*.js',
+        '!gulpfile.js'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
+
+gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
+    let ret = shell.exec(
+        `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules`
+    );
+
+    if (0 !== ret.code) {
+        console.error(`Error symlinking node_modules`);
+
+        return done(ret.stderr);
+    }
+
+    return done();
+});
+
+
+gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], function() {
+    return gulp.src([
+        './icons/'+ type +'/*',
+        './interface/public/images/dmg-background.jpg',
+        ], { base: './' })
+        .pipe(flatten())
+        .pipe(gulp.dest('./dist_'+ type +'/build'));
+});
+
+
+gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done) {
+    // check if nodes are there
+    if(nodeUpdateNeeded){
+        console.error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes');
+
+        done(new Error('YOUR NODES NEED TO BE UPDATED run $ gulp update-nodes'));
+
+        return;
+    }
+
+    var streams = [];
+
+    _.each(nodeUrls, (info, osArch) => {
+        if (platformIsActive(osArch)) {
+            // copy eth node binaries
+            streams.push(gulp.src([
+                './nodes/eth/'+ osArch + '/*'
+            ])
+                .pipe(gulp.dest('./dist_'+ type +'/app/nodes/eth/' + osArch)));
+
+            // copy geth node binaries
+            streams.push(gulp.src([
+                './nodes/geth/'+ osArch + '/*'
+            ])
+                .pipe(gulp.dest('./dist_'+ type +'/app/nodes/geth/' + osArch)));
+        }
+    });
+
+    return merge.apply(null, streams);
+});
+
+
+gulp.task('copy-files', [
+    'clean:dist', 
+    'copy-app-folder-files',
+    'copy-build-folder-files',
+    'copy-node-folder-files',
+]);
+
+
+
+
+gulp.task('switch-production', ['copy-files'], function(cb) {
     fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
         production: true,
         mode: type,
@@ -283,7 +350,7 @@ gulp.task('switch-production', ['clean:dist', 'copy-files'], function(cb) {
 });
 
 
-gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
+gulp.task('bundling-interface', ['switch-production'], function(cb) {
     if(type === 'mist') {
         exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
             // console.log(stdout);
@@ -321,7 +388,7 @@ gulp.task('bundling-interface', ['clean:dist', 'copy-files'], function(cb) {
 
 
 // needs to be copied, so the backend can use it
-gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
+gulp.task('copy-i18n', ['bundling-interface'], function() {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n'
@@ -329,211 +396,136 @@ gulp.task('copy-i18n', ['copy-files', 'bundling-interface'], function() {
         .pipe(gulp.dest('./dist_'+ type +'/app'));
 });
 
-gulp.task('create-binaries', ['copy-i18n'], function(cb) {
-    console.log('Bundling platforms: ', osVersions);
-
-    packager({
-        dir: './dist_'+ type +'/app/',
-        out: './dist_'+ type +'/',
-        name: filenameUppercase,
-        platform: options.platform.join(','),
-        arch: 'all',
-        icon: './icons/'+ type +'/icon.icns',
-        version: electronVersion,
-        'app-version': version,
-        'build-version': electronVersion,
-        // DO AFTER: codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
-        //'sign': '3rd Party Mac Developer Application: Stiftung Ethereum (3W6577R383)',
-        'app-bundle-id': 'com.ethereum.'+ type,
-        'helper-bundle-id': 'com.ethereum.'+ type + '.helper',
-        //'helper-bundle-id': 'com.github.electron.helper',
-        // cache: './dist_'+ type +'/', // directory of cached electron downloads. Defaults to '$HOME/.electron'
-        ignore: '', //do not copy files into App whose filenames regex .match this string
-        prune: true,
-        overwrite: true,
-        asar: true,
-        // sign: '',
-        'version-string': {
-            CompanyName: 'Stiftung Ethereum',
-            // LegalCopyright
-            // FileDescription
-            // OriginalFilename
-            ProductName: applicationName
-            // InternalName: 
-        }
-    }, function(){
-        setTimeout(function(){
-            cb();
-        }, 1000)
-    });
-});
-
-// FILE RENAMING
-
-gulp.task('change-files', ['create-binaries'], function() {
-    var streams = [];
-
-    osVersions.map(function(os){
-        var path = './dist_'+ type +'/'+ filenameUppercase +'-'+ os;
-
-        // change version file
-        streams.push(gulp.src([
-            path +'/version'
-            ])
-            .pipe(replace(electronVersion, version))
-            .pipe(gulp.dest(path +'/')));
-
-        // copy license file
-        streams.push(gulp.src([
-            './LICENSE'
-            ])
-            .pipe(gulp.dest(path +'/')));
 
 
-        // copy authors file
-        streams.push(gulp.src([
-            './AUTHORS'
-            ])
-            .pipe(gulp.dest(path +'/')));
+gulp.task('build-dist', ['copy-i18n'], function(cb) {
+    console.log('Bundling platforms: ', options.platform);
 
-        // copy and rename readme
-        streams.push(gulp.src([
-            './Wallet-README.txt'
-            ], { base: './' })
-            .pipe(rename(function (path) {
-                path.basename = "README";
-            }))
-            .pipe(gulp.dest(path + '/')));
-
-        var destPath = (os === 'darwin-x64')
-            ? path +'/'+ filenameUppercase +'.app/Contents/Frameworks/node'
-            : path +'/resources/node';
-
-
-
-        // copy eth node binaries
-        streams.push(gulp.src([
-            './nodes/eth/'+ os + '/*'
-            ])
-            .pipe(gulp.dest(destPath +'/eth')));
-
-        // copy geth node binaries
-        streams.push(gulp.src([
-            './nodes/geth/'+ os + '/*'
-            ])
-            .pipe(gulp.dest(destPath +'/geth')));
-
+    var appPackageJson = _.extend({}, packJson, {
+        productName: applicationName,
+        description: applicationName,
+        homepage: "https://github.com/ethereum/mist",       
+        build: {
+            appId: "com.ethereum.mist." + type,
+            "category": "public.app-category.productivity",
+            asar: true,
+            files: [
+              "**/*",
+              "!nodes",
+              "build-dist.js",
+            ],
+            extraFiles: [
+              "nodes/eth/${os}-${arch}",
+              "nodes/geth/${os}-${arch}"
+            ],
+            dmg: {
+                background: "../build/dmg-background.jpg",
+                "icon-size": 128,
+                "contents": [{
+                    "x": 441,
+                    "y": 448,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 441,
+                    "y": 142,
+                    "type": "file"
+                }]
+            }
+        },
+        directories: {
+            buildResources: "../build",
+            app: ".",
+            output: "../dist",
+        },
     });
 
+    fs.writeFileSync(
+        path.join(__dirname, 'dist_' + type, 'app', 'package.json'),
+        JSON.stringify(appPackageJson, null, 2),
+        'utf-8'
+    );
 
-    return merge.apply(null, streams);
-});
+    // Copy build script
+    shell.cp(
+        path.join(__dirname, 'scripts', 'build-dist.js'), 
+        path.join(__dirname, 'dist_' + type, 'app')
+    );
 
+    // run build script
+    var oses = '--' + options.platform.join(' --');
 
-//gulp.task('cleanup-files', ['change-files'], function (cb) {
-//  return del(['./dist_'+ type +'/**/Wallet-README.txt'], cb);
-//});
-
-
-gulp.task('rename-folders', ['change-files'], function(done) {
-    var count = 0;
-    var called = false;
-    osVersions.forEach(function(os){
-
-        var path = createNewFileName(os);
-
-        fs.renameSync('./dist_'+ type +'/'+ filenameUppercase +'-'+ os, path);
-
-        // change icon on windows
-        if(os.indexOf('win32') !== -1) {
-            rcedit(path +'/'+ filenameUppercase +'.exe', {
-                'file-version': version,
-                'product-version': version,
-                'icon': './icons/'+ type +'/icon.ico'
-            }, function(){
-                if(!called && osVersions.length === count) {
-                    done();
-                    called = true;
-                }
-            });
-        }
-
-
-        //var zip5 = new EasyZip();
-        //zip5.zipFolder(path, function(){
-        //    zip5.writeToFile(path +'.zip'); 
-        //});
-
-
-        count++;
-
-        if(!called && osVersions.length === count) {
-            done();
-            called = true;
-        }
-    });
-});
-
-
-gulp.task('zip', ['rename-folders'], function () {
-    var streams = osVersions.map(function(os){
-        var stream,
-            name = filenameUppercase +'-'+ os +'-'+ version.replace(/\./g,'-');
-
-        // TODO doesnt work!!!!!
-        stream = gulp.src([
-            './dist_'+ type +'/'+ name + '/**/*'
-            ])
-            .pipe(zip({
-                name: name + ".zip",
-                outpath: './dist_'+ type +'/'
-            }));
-            // .pipe(zip(name +'.zip'))
-            // .pipe(gulp.dest('./dist_'+ type +'/'));
-
-        return stream;
+    var ret = shell.exec(`./build-dist.js --type ${type} ${oses}`, {
+        cwd: path.join(__dirname, 'dist_' + type, 'app'),
     });
 
+    if (0 !== ret.code) {
+        console.error(ret.stdout);
+        console.error(ret.stderr);
 
-    return merge.apply(null, streams);
+        return cb(new Error('Error building distributables'));
+    } else {
+        console.log(ret.stdout);
+
+        cb();
+    }
 });
 
 
 
-gulp.task('getChecksums', [], function(done) {
-    var count = 0;
-    osVersions.forEach(function(os){
+gulp.task('release-dist', ['build-dist'], function(done) {
+    const distPath = path.join(__dirname, `dist_${type}`, 'dist'),
+        releasePath = path.join(__dirname, `dist_${type}`, 'release');
 
-        var path = createNewFileName(os) + '.zip';
+    shell.rm('-rf', releasePath);
+    shell.mkdir('-p', releasePath);
 
-        // spit out sha256 checksums
-        var fileName = path.replace('./dist_'+ type +'/', '');
-        var sha = spawn('shasum', ['-a','256',path]);
-        sha.stdout.on('data', function(data){
-            console.log('SHA256 '+ fileName +': '+ data.toString().replace(path, ''));
-        });
-
-
-        count++;
-        if(osVersions.length === count) {
-            done();
+    _.each(nodeUrls, (info, osArch) => {
+        if (platformIsActive(osArch)) {
+            switch (osArch) {
+                case 'win-ia32':
+                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`), releasePath);
+                    break;
+                case 'win-x64':
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), releasePath);
+                    break;
+                case 'mac-x64':
+                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), releasePath);
+                    break;
+                case 'linux-ia32':
+                    shell.cp(path.join(distPath, `Mist-${version}-ia32.deb`), path.join(releasePath, `${applicationName}-${version}-ia32.deb`) );
+                    break;
+                case 'linux-x64':
+                    shell.cp(path.join(distPath, `Mist-${version}.deb`), path.join(releasePath, `${applicationName}-${version}.deb`) );
+                    break;
+            }
         }
     });
+
+    done();
+});
+
+
+
+gulp.task('get-release-checksums', function(done) {
+    const releasePath = `./dist_${type}/release`;
+
+    let files = fs.readdirSync(releasePath);
+
+    for (let file of files) {
+        let sha = shell.exec(`shasum -a 256 "./dist_${type}/release/${file}"`);
+
+        if (0 !== sha.code) {
+            return done(new Error('Error executing shasum: ' + sha.stderr));
+        }
+    }
 });
 
 
 
 gulp.task('taskQueue', [
-    'clean:dist',
-    'copy-files',
-    'copy-i18n',
-    'switch-production',
-    'bundling-interface',
-    'create-binaries',
-    'change-files',
-    //'cleanup-files',
-    'rename-folders'
-    // 'zip',
+    'release-dist'
 ]);
 
 // DOWNLOAD nodes
@@ -543,26 +535,22 @@ gulp.task('update-nodes', [
 gulp.task('download-nodes', ['update-nodes']);
 
 // MIST task
-gulp.task('mist', [
-    'set-variables-mist',
-    'taskQueue'
-]);
+gulp.task('mist', function(cb) {
+    runSeq('set-variables-mist', 'taskQueue', cb);
+});
 
 // WALLET task
-gulp.task('wallet', [
-    'set-variables-wallet',
-    'taskQueue'
-]);
+gulp.task('wallet', function(cb) {
+    runSeq('set-variables-wallet', 'taskQueue', cb);
+});
 
 // WALLET task
-gulp.task('mist-checksums', [
-    'set-variables-mist',
-    'getChecksums'
-]);
-gulp.task('wallet-checksums', [
-    'set-variables-wallet',
-    'getChecksums'
-]);
+gulp.task('mist-checksums', function(cb) {
+    runSeq('set-variables-mist', 'get-release-checksums', cb);
+});
+gulp.task('wallet-checksums', function(cb) {
+    runSeq('set-variables-wallet', 'get-release-checksums', cb);
+});
 
 
 

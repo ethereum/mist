@@ -17,7 +17,7 @@ For updating simply download the new version and copy it over the old one (keep 
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
-- MacOSX `~/Library/Application Support/Mist`
+- macOS `~/Library/Application Support/Mist`
 - Linux `~/.config/Mist`
 
 
@@ -62,6 +62,9 @@ To update Mist in the future, run:
     $ npm install
     $ gulp update-nodes
 
+
+#### Options
+It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
@@ -168,7 +171,7 @@ This will generate the binaries inside the `dist_mist/release` or `dist_wallet/r
 
 ##### platform
 
-Additional you can only build the windows, linux or mac binary by using the `platform` option:
+Additional you can only build the windows, linux, mac or all binary by using the `platform` option:
 
     $ gulp update-nodes --platform mac
 
@@ -184,7 +187,7 @@ Options are:
 - `mac` (Mac OSX)
 - `win` (Windows)
 - `linux` (Linux)
-
+- `all` (default)
 
 ##### walletSource
 

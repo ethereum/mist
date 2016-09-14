@@ -20,14 +20,90 @@ The sendTransaction confirmation popup window template
 @constructor
 */
 
+
+/**
+Takes a 4-byte function signature and does a best-effort conversion to a
+human readable text signature.
+
+@method (lookupFunctionSignature)
+*/
+var lookupFunctionSignature = function(data, remoteLookup) {
+    return new Q((resolve, reject) => {
+        if(data && data.length > 8) {
+            var bytesSignature = (data.substr(0, 2) === '0x')
+                ? data.substr(0, 10)
+                : '0x'+ data.substr(0, 8);
+
+            if (remoteLookup) {
+                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
+                    var body = '';
+
+                    response.on('data', function(chunk){
+                        body += chunk;
+                    });
+
+                    response.on('end', function(){
+                        var responseData = JSON.parse(body);
+                        if (responseData.results.length) {
+                            resolve(responseData.results[0].text_signature);
+                        } else {
+                            resolve(bytesSignature);
+                        }
+                    });
+                }).on('error', (error) => {
+                    console.warn('Error querying Function Signature Registry.', err);
+                    reject(bytesSignature);
+                });
+            } else {
+                if (_.first(window.SIGNATURES[bytesSignature])) {
+                    resolve(_.first(window.SIGNATURES[bytesSignature]));
+                }
+                else {
+                    reject(bytesSignature);
+                }
+            }
+        } else {
+           reject(undefined);
+        }
+    });
+}
+
+var localSignatureLookup = function(data){
+    return lookupFunctionSignature(data, false);
+};
+
+var remoteSignatureLookup = function(data){
+    return lookupFunctionSignature(data, true);
+};
+
+var signatureLookupCallback = function(textSignature) {
+    // Clean version of function signature. Striping params
+    TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+    TemplateVar.set(template, 'hasSignature', true);
+
+    let params = textSignature.match(/\((.+)\)/i);
+    if (params) {
+        console.log('params sent', params);
+        TemplateVar.set(template, 'executionFunctionParamTypes', params);
+        ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+    }
+};
+
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
+    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+        console.log('params returned', params);
+        TemplateVar.set(template, 'params', params);
+    });
+
     this.autorun(function(){
+        TemplateVar.set(template, 'displayDecodedParams', true);
 
         var data = Session.get('data');
 
         if(data) {
+            
 
             // set window size
             setWindowSize(template);
@@ -51,9 +127,26 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 web3.eth.getCode(data.to, function(e, res){
                     if(!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
-                        setWindowSize(template);
+                        setWindowSize(template);                        
                     }
                 });
+                
+                if (data.data) {
+                    localSignatureLookup(data.data).then((textSignature) => {
+                        // Clean version of function signature. Striping params
+                        TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+                        TemplateVar.set(template, 'hasSignature', true);
+
+                        let params = textSignature.match(/\((.+)\)/i);
+                        if (params) {
+                            TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                            ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+                        }
+                    }).catch((bytesSignature) => {
+                        TemplateVar.set(template, 'executionFunction', bytesSignature);
+                        TemplateVar.set(template, 'hasSignature', false);
+                    });
+                }
             }
             if(data.from) {
                 web3.eth.getCode(data.from, function(e, res){
@@ -62,7 +155,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                     }
                 });
             }
-
 
             // esitmate gas usage
             var estimateData = _.clone(data);
@@ -138,18 +230,6 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         }
     },
     /**
-    Checks if its a contract execution and returns the execution function
-
-    @method (executionFunction)
-    */
-    'executionFunction': function(){
-        if(TemplateVar.get('toIsContract') && this.data && this.data.length > 8) {
-            return (this.data.substr(0,2) === '0x')
-                ? this.data.substr(0, 10)
-                : '0x'+ this.data.substr(0, 8);
-        }
-    },
-    /**
     Formats the data so that all zeros are wrapped in span.zero
 
     @method (formattedData)
@@ -158,6 +238,28 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         return (TemplateVar.get('toIsContract'))
             ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
             : this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>');
+    },
+
+    'params': function() {
+        return TemplateVar.get('params');
+    },
+    /**
+    Formats parameters
+
+    @method (showFormattedParams)
+    */
+    'showFormattedParams': function() {
+        return TemplateVar.get('params') && TemplateVar.get('displayDecodedParams');
+    },
+    /**
+    Checks if transaction will be invalid
+
+    @method (transactionInvalid)
+    */
+    'transactionInvalid': function() {
+        return TemplateVar.get('estimatedGas') == 'invalid' 
+                || TemplateVar.get('estimatedGas') == 0
+                || typeof TemplateVar.get('estimatedGas') == 'undefined';
     }
 });
 
@@ -253,6 +355,32 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 }
             }
         });
-   } 
+   },
+
+   'click .data .toggle-panel': function() {
+        TemplateVar.set('displayDecodedParams', true);
+   },
+   'click .parameters .toggle-panel': function() {
+        TemplateVar.set('displayDecodedParams', false);
+   },
+   'click .lookup-function-signature': function(e, template) {
+        var data = Session.get('data');
+
+        remoteSignatureLookup(data.data).then((textSignature) => {
+            // Clean version of function signature. Striping params
+            TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
+            TemplateVar.set(template, 'hasSignature', true);
+
+            let params = textSignature.match(/\((.+)\)/i);
+            if (params) {
+                console.log('params:', params);
+                TemplateVar.set(template, 'executionFunctionParamTypes', params);
+                ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
+            }
+        }).catch((bytesSignature) => {
+            TemplateVar.set(template, 'executionFunction', bytesSignature);
+            TemplateVar.set(template, 'hasSignature', false);
+        });
+   }
 });
 

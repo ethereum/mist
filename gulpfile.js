@@ -291,7 +291,7 @@ gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
 gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], function() {
     return gulp.src([
         './icons/'+ type +'/*',
-        './interface/public/images/bg-homestead.jpg',
+        './interface/public/images/dmg-background.jpg',
         ], { base: './' })
         .pipe(flatten())
         .pipe(gulp.dest('./dist_'+ type +'/build'));
@@ -407,7 +407,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
         homepage: "https://github.com/ethereum/mist",       
         build: {
             appId: "com.ethereum.mist." + type,
-            "app-category-type": "public.app-category.productivity",
+            "category": "public.app-category.productivity",
             asar: true,
             files: [
               "**/*",
@@ -419,7 +419,19 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
               "nodes/geth/${os}-${arch}"
             ],
             dmg: {
-                background: "../build/bg-homestead.jpg"
+                background: "../build/dmg-background.jpg",
+                "icon-size": 128,
+                "contents": [{
+                    "x": 441,
+                    "y": 448,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 441,
+                    "y": 142,
+                    "type": "file"
+                }]
             }
         },
         directories: {

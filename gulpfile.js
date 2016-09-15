@@ -20,7 +20,7 @@ const mocha = require('gulp-spawn-mocha');
 var minimist = require('minimist');
 var fs = require('fs');
 var rcedit = require('rcedit');
-var syncRequest = require('sync-request');
+var got = require('got');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -523,27 +523,27 @@ gulp.task('getChecksums', [], function(done) {
 });
 
 
-gulp.task('download-signatures', function(){
-    var signatures = {},
-    getFrom4byteAPI = function(url){
-        console.log('Requesting ', url);
-        var res = syncRequest('GET', url);
-        if (res.statusCode == 200) {
-            var responseData = JSON.parse(res.getBody('utf8'));
-            _.map(responseData.results, function(e){
-                if (!!signatures[e.hex_signature]) {
-                    signatures[e.hex_signature].push(e.text_signature);
-                }
-                else {
-                    signatures[e.hex_signature] = [e.text_signature];
-                }
-            });
-            responseData.next && getFrom4byteAPI(responseData.next);
+gulp.task('download-signatures', function(cb) {
+    got('https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at', {
+        json: true
+    })
+    .then((res) => {
+        if (200 !== res.statusCode) {
+            throw new Error(res.statusText);
         }
-    };
-
-    getFrom4byteAPI('https://www.4byte.directory/api/v1/signatures/');
-    fs.writeFileSync('interface/client/lib/signatures.js', "window.SIGNATURES = " + JSON.stringify(signatures, null, '\t') + ";");
+        
+        let signatures = {};
+        
+        _.each(res.body.results, (e) => {
+            signatures[e.hex_signature] = signatures[e.hex_signature] || [];
+            signatures[e.hex_signature].push(e.text_signature);
+        });
+        
+        fs.writeFileSync('interface/client/lib/signatures.js', "window.SIGNATURES = " + JSON.stringify(signatures, null, '\t') + ";");
+        
+        cb();
+    })
+    .catch(cb);
 });
 
 

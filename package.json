@@ -55,10 +55,5 @@
     "shelljs": "^0.7.0",
     "spectron": "^3.2.2",
     "sync-request": "^3.0.1"
-  },
-  "engines": {
-    "node": ">4.3.0",
-    "electron": "1.0.1",
-    "atom-shell": "0.36.2"
   }
 }

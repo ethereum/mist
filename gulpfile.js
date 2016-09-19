@@ -357,8 +357,7 @@ gulp.task('switch-production', ['copy-files'], function(cb) {
 gulp.task('bundling-interface', ['switch-production'], function(cb) {
     if(type === 'mist') {
         exec('cd interface && meteor-build-client ../dist_'+ type +'/app/interface -p ""', function (err, stdout, stderr) {
-            // console.log(stdout);
-            console.log(stderr);
+            console.log(stdout);
 
             cb(err);
         });
@@ -372,7 +371,6 @@ gulp.task('bundling-interface', ['switch-production'], function(cb) {
             exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
                  'cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_'+ type +'/app/interface/wallet -p ""', function (err, stdout, stderr) {
                 console.log(stdout);
-                console.log(stderr);
 
                 cb(err);
             });
@@ -382,7 +380,6 @@ gulp.task('bundling-interface', ['switch-production'], function(cb) {
             exec('cd interface/ && meteor-build-client ../dist_'+ type +'/app/interface/ -p "" &&'+
                  'cd ../dist_'+ type +'/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet', function (err, stdout, stderr) {
                 console.log(stdout);
-                console.log(stderr);
 
                 cb(err);
             });

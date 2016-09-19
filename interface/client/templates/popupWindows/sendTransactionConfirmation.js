@@ -35,7 +35,7 @@ var lookupFunctionSignature = function(data, remoteLookup) {
                 : '0x'+ data.substr(0, 8);
 
             if (remoteLookup) {
-                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, function(response){
+                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, function(response) {
                     var body = '';
 
                     response.on('data', function(chunk){

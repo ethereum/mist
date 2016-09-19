@@ -47,26 +47,26 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = require('electron-prebuilt/package.json').version;
-var gethVersion = '1.4.10';
+var gethVersion = '1.4.12';
 var nodeUrls = {
     'mac-x64': {
-        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-OSX-20160716155225-1.4.10-5f55d95.zip',
-        ext: 'zip'
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.12-stable-421df86-darwin-10.6-amd64.tar.bz2',
+        ext: 'tar'
     },
     'linux-x64': {
-        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/geth-Linux64-20160716160600-1.4.10-5f55d95.tar.bz2',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.12-stable-421df86-linux-amd64.tar.bz2',
         ext: 'tar',
     },
     'linux-ia32': {
-        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-linux-386.tar.bz2',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.12-stable-421df86-linux-386.tar.bz2',
         ext: 'tar',
     },
     'win-x64': {
-        url: 'https://github.com/ethereum/go-ethereum/releases/download/v1.4.10/Geth-Win64-20160716155900-1.4.10-5f55d95.zip',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.12-stable-421df86-windows-4.0-amd64.exe.zip',
         ext: 'zip',
     },
     'win-ia32': {
-        url: 'https://bintray.com/karalabe/ethereum/download_file?file_path=geth-1.4.10-stable-5f55d95-windows-4.0-386.exe.zip',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.12-stable-421df86-windows-4.0-386.exe.zip',
         ext: 'zip',
     },
 };
@@ -171,6 +171,9 @@ gulp.task('unzipNodes', ['downloadNodes'], function(done) {
                 ret = shell.exec(`unzip -o ./nodes/geth/${zipFileName} -d ./nodes/geth/${osArch}`);
                 break;
             case '.tar':
+                ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
+                break;
+            case '.bz2':
                 ret = shell.exec(`tar -xf ./nodes/geth/${zipFileName} -C ./nodes/geth/${osArch}`);
                 break;
             default:

@@ -28,14 +28,14 @@ human readable text signature.
 @method (lookupFunctionSignature)
 */
 var lookupFunctionSignature = function(data, remoteLookup) {
-    return new Q((resolve, reject) => {
+    return new Q(function(resolve, reject) {
         if(data && data.length > 8) {
             var bytesSignature = (data.substr(0, 2) === '0x')
                 ? data.substr(0, 10)
                 : '0x'+ data.substr(0, 8);
 
             if (remoteLookup) {
-                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, (response) => {
+                https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, function(response){
                     var body = '';
 
                     response.on('data', function(chunk){
@@ -50,7 +50,7 @@ var lookupFunctionSignature = function(data, remoteLookup) {
                             resolve(bytesSignature);
                         }
                     });
-                }).on('error', (error) => {
+                }).on('error', function(error) {
                     console.warn('Error querying Function Signature Registry.', err);
                     reject(bytesSignature);
                 });
@@ -81,7 +81,7 @@ var signatureLookupCallback = function(textSignature) {
     TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
     TemplateVar.set(template, 'hasSignature', true);
 
-    let params = textSignature.match(/\((.+)\)/i);
+    var params = textSignature.match(/\((.+)\)/i);
     if (params) {
         console.log('params sent', params);
         TemplateVar.set(template, 'executionFunctionParamTypes', params);
@@ -92,7 +92,7 @@ var signatureLookupCallback = function(textSignature) {
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
-    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+    ipc.on('uiAction_decodedFunctionSignatures', function(event, params) {
         console.log('params returned', params);
         TemplateVar.set(template, 'params', params);
     });
@@ -132,17 +132,17 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 });
                 
                 if (data.data) {
-                    localSignatureLookup(data.data).then((textSignature) => {
+                    localSignatureLookup(data.data).then(function(textSignature) {
                         // Clean version of function signature. Striping params
                         TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
                         TemplateVar.set(template, 'hasSignature', true);
 
-                        let params = textSignature.match(/\((.+)\)/i);
+                        var params = textSignature.match(/\((.+)\)/i);
                         if (params) {
                             TemplateVar.set(template, 'executionFunctionParamTypes', params);
                             ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
                         }
-                    }).catch((bytesSignature) => {
+                    }).catch(function(bytesSignature) {
                         TemplateVar.set(template, 'executionFunction', bytesSignature);
                         TemplateVar.set(template, 'hasSignature', false);
                     });
@@ -366,18 +366,18 @@ Template['popupWindows_sendTransactionConfirmation'].events({
    'click .lookup-function-signature': function(e, template) {
         var data = Session.get('data');
 
-        remoteSignatureLookup(data.data).then((textSignature) => {
+        remoteSignatureLookup(data.data).then(function(textSignature) {
             // Clean version of function signature. Striping params
             TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
             TemplateVar.set(template, 'hasSignature', true);
 
-            let params = textSignature.match(/\((.+)\)/i);
+            var params = textSignature.match(/\((.+)\)/i);
             if (params) {
                 console.log('params:', params);
                 TemplateVar.set(template, 'executionFunctionParamTypes', params);
                 ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
             }
-        }).catch((bytesSignature) => {
+        }).catch(function(bytesSignature) {
             TemplateVar.set(template, 'executionFunction', bytesSignature);
             TemplateVar.set(template, 'hasSignature', false);
         });

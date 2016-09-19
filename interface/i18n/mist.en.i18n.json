@@ -180,11 +180,14 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Execution failed.  Consumed all provided gas.",
+                "estimatedGasError": "Is seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
-                "data": "Data",
+                "data": "Raw Data",
+                "parameters": "Parameters",
                 "buttons": {
                     "sendTransaction": "Send transaction"
                 },
@@ -194,7 +197,11 @@
                     "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
-                }
+                },
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
@@ -244,6 +251,14 @@
     },
     "elements": {
         "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one",
+        "type": {
+            "address" : "Address",
+            "bool" : "Boolean",
+            "int" : "Integer",
+            "uint" : "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

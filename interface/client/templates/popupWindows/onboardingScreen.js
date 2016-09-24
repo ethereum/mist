@@ -231,8 +231,20 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
         if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
             TemplateVar.set('filePath', e.originalEvent.dataTransfer.files[0].path);
-            Tracker.afterFlush(function(){
-                template.$('.password').focus();
+
+            ipc.send('backendAction_checkWalletFile', TemplateVar.get('filePath'));
+            
+            ipc.on('uiAction_checkedWalletFile', function(e, error, type){
+                if (type === "presale") {
+                    Tracker.afterFlush(function(){
+                        template.$('.password').focus();
+                    });
+                } else if (type === "web3") {
+                    TemplateVar.set(template, 'importing', true);
+                    setTimeout(() => {
+                        ipc.send('backendAction_closePopupWindow');
+                    }, 750);
+                }
             });
         } else {
             GlobalNotification.warning({

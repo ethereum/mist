@@ -110,9 +110,30 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     e.returnValue = true;
 });
 
+// check wallet file type
+ipc.on('backendAction_checkWalletFile', function(e, path, pw) {
+    fs.readFile(path, 'utf8', function (e, data) {
+        if(!e) {
+            try {
+                var wallet = JSON.parse(data); 
+            } catch (err) {
+                log.error("Wallet import: Cannot read file");
+                log.error(err);
+            }
+            if(data.indexOf('"ethaddr"') !== -1) {  // Presale wallet
+                console.info("presale");
+            } else if(data.indexOf('"address"') !== -1) {  // web3 secret storage wallet
+                console.info("myether");
+            } else {
+                log.warn("Wallet import: Cannot recognize format");
+            }
+        }
+    });
+});
 
-// import presale file
-ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
+
+// import wallet file
+ipc.on('backendAction_importWalletFile', function(e, path, pw) {
     const spawn = require('child_process').spawn;
     const ClientBinaryManager = require('./clientBinaryManager');
     let error = false;
@@ -144,7 +165,7 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
 
     nodeProcess.once('error', () => {
         error = true;
-        e.sender.send('uiAction_importedPresaleFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
+        e.sender.send('uiAction_importedWalletFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
     nodeProcess.stdout.on('data', (data) => {
         var data = data.toString();
@@ -152,17 +173,16 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
             log.info('Imported presale: ', data);
         }
 
-        if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
-            e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');
+        if(/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
+            e.sender.send('uiAction_importedWalletFile', 'Decryption Failed');
 
         // if imported, return the address
-        } else if (data.indexOf('Address:') !== -1) {
-            const find = data.match(/\{([a-f0-9]+)\}/i);
-            if (find.length && find[1]) {
-                e.sender.send('uiAction_importedPresaleFile', null, `0x${find[1]}`);
-            } else {
-                e.sender.send('uiAction_importedPresaleFile', data);
-            }
+        } else if(data.indexOf('Address:') !== -1) {
+            var find = data.match(/\{([a-f0-9]+)\}/i);
+            if(find.length && find[1])
+                e.sender.send('uiAction_importedWalletFile', null, '0x'+ find[1]);
+            else
+                e.sender.send('uiAction_importedWalletFile', data);
 
         // if not stop, so we don't kill the process
         } else {

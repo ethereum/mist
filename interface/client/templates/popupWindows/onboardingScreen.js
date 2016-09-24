@@ -268,15 +268,15 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         var pw = template.find('input.password').value;
 
 
-        ipc.send('backendAction_importPresaleFile', TemplateVar.get('filePath'), pw);
+        ipc.send('backendAction_importWalletFile', TemplateVar.get('filePath'), pw);
 
         TemplateVar.set('importing', true);
-        ipc.on('uiAction_importedPresaleFile', function(e, error, address){
+        ipc.on('uiAction_importedWalletFile', function(e, error, address){
             TemplateVar.set(template, 'importing', false);
             TemplateVar.set(template, 'filePath', false);
 
             if(address) {
-                ipc.removeAllListeners('uiAction_importedPresaleFile');
+                ipc.removeAllListeners('uiAction_importedWalletFile');
                 console.log('Imported account: ', address);
 
                 // move to add account screen, when in the onboarding window

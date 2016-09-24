@@ -37,8 +37,6 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
 
     ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
-        console.trace('Node status', status, errorTag);
-
         switch (status) {
             case 'starting':
                 TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarting'));

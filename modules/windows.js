@@ -249,6 +249,7 @@ class Windows {
                 alwaysOnTop: false,
                 width: 400,
                 height: 400,
+                resizable: false,
                 center: true,
                 useContentSize: true,
                 titleBarStyle: 'hidden', //hidden-inset: more space
@@ -260,16 +261,9 @@ class Windows {
         };
 
         _.extendDeep(opts, options);
-
-        // resizable on by default if alwaysOnTop
-        opts.electronOptions.resizable = 
-            options.resizable || opts.electronOptions.alwaysOnTop;
-
+       
         // mark it as a pop-up window
         opts.isPopup = true;
-
-        opts.electronOptions.resizable = 
-            options.resizable || opts.electronOptions.alwaysOnTop;
 
         if (opts.useWeb3) {
             opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';

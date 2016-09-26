@@ -72,7 +72,7 @@
             },
             "help": {
                 "label": "Help",
-                "reportBug": "Report a bug on Github"
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {

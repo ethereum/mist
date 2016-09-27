@@ -1,21 +1,21 @@
 osx_image: xcode7.3
 
-sudo: required
-dist: trusty
+#sudo: required
+#dist: trusty
 
 language: c
 
 matrix:
   include:
     - os: osx
-    - os: linux
+#    - os: linux
 
-addons:
-  apt:
-    packages:
-    - icnsutils
-    - graphicsmagick 
-    - xz-utils
+#addons:
+#  apt:
+#    packages:
+#    - icnsutils
+#    - graphicsmagick 
+#    - xz-utils
 
 #cache:
 #  directories:
@@ -33,12 +33,12 @@ addons:
 #    - develop
 
 before_install:
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew update" ; fi  
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew install wine --without-x11 mono" ; fi  # win dependencies
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew install gnu-tar graphicsmagick xz" ; fi  # linux dependencies
-- "export DISPLAY=:99.0" 
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "sh -e /etc/init.d/xvfb start" ; fi
-- sleep 3 # give xvfb some time to start
+#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew update" ; fi  
+#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew install wine --without-x11 mono" ; fi  # win dependencies
+#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew install gnu-tar graphicsmagick xz" ; fi  # linux dependencies
+#- "export DISPLAY=:99.0" 
+#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "sh -e /etc/init.d/xvfb start" ; fi
+#- sleep 3 # give xvfb some time to start
 
 install:
 - nvm install 4
@@ -48,12 +48,14 @@ before_script:
 - "curl https://install.meteor.com/ | sh"
 - npm install -g meteor-build-client
 - npm install -g gulp
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp update-nodes --platform linux" ; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp update-nodes --platform all" ; fi
+#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp update-nodes --platform linux" ; fi
+#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp update-nodes --platform all" ; fi
+- gulp update-nodes --platform all
 
 script:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
+#- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
+#- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
+- gulp --platform=all
 
 #notifications:
 #  email:

@@ -12,7 +12,7 @@ node_js:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y icnsutils
+  - sudo apt-get install -y icnsutils graphicsmagick xz-utils
 
 before_script:
   - "export DISPLAY=:99.0"

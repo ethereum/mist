@@ -35,6 +35,7 @@ before_script:
 #  - "sleep 3" # give xvfb some time to start
   - "curl https://install.meteor.com/ | sh"
   - "npm install -g meteor-build-client"
+  - "npm install -g gulp"
   - "gulp update-nodes --platform linux"
 
 script:

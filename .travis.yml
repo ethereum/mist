@@ -15,14 +15,14 @@ cache:
   - $HOME/.electron
   - $HOME/.cache
 
-#language: node_js
+language: node_js
 
 #branches:
 #  only:
 #    - develop
 
-node_js:
-- "4"
+#node_js:
+#- "4"
 
 #before_install:
 # win dependencies
@@ -31,13 +31,19 @@ node_js:
 # linux dependencies
 #- brew install gnu-tar graphicsmagick xz
 
+
+install:
+- nvm install 6
+- npm install meteor-build-client
+- npm install gulp
+- npm install
+- npm prune
+
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
 #  - "sleep 3" # give xvfb some time to start
   - "curl https://install.meteor.com/ | sh"
-  - "npm install -g meteor-build-client"
-  - "npm install -g gulp"
   - "gulp update-nodes --platform mac"
 
 script:

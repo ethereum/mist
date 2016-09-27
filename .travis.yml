@@ -10,6 +10,10 @@ branches:
 node_js:
   - "4"
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y icnsutils
+
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

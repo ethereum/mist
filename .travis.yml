@@ -13,14 +13,14 @@ cache:
   - $HOME/.electron
   - $HOME/.cache
 
-language: node_js
+#language: node_js
 
 #branches:
 #  only:
 #    - develop
 
-node_js:
-- "4"
+#node_js:
+#- "4"
 
 #before_install:
 # win dependencies

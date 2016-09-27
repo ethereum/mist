@@ -423,8 +423,15 @@
     },
     "optimist": {
       "version": "0.6.1",
-      "from": "optimist@>=0.6.0 <0.7.0",
-      "resolved": "https://registry.npmjs.org/optimist/-/optimist-0.6.1.tgz"
+      "from": "optimist@0.6.1",
+      "resolved": "https://registry.npmjs.org/optimist/-/optimist-0.6.1.tgz",
+      "dependencies": {
+        "minimist": {
+          "version": "0.0.10",
+          "from": "minimist@>=0.0.1 <0.1.0",
+          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.10.tgz"
+        }
+      }
     },
     "os-locale": {
       "version": "1.4.0",

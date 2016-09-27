@@ -24,6 +24,7 @@
     "lokijs": "^1.4.1",
     "minimongo-standalone": "0.0.9",
     "numeral": "^1.5.3",
+    "optimist": "^0.6.1",
     "os-timesync": "^1.0.6",
     "semver": "^5.1.0",
     "solc": "^0.3.6",

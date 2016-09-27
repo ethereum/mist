@@ -20,9 +20,9 @@ matrix:
 cache:
   directories:
   - node_modules
-  - $HOME/.electron
-  - $HOME/.meteor
-  - $HOME/.cache
+  #- $HOME/.electron
+  #- $HOME/.meteor
+  #- $HOME/.cache
 
 
 #language: node_js
@@ -56,7 +56,7 @@ before_script:
 script:
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
-- travis_wait 30 gulp --platform=mac
+- travis_wait 30 gulp wallet --platform=mac
 
 
 #notifications:

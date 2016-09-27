@@ -8,7 +8,7 @@
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
-    "ci": "gulp --platform=linux"
+    "ci": "gulp --platform=mac"
   },
   "main": "main.js",
   "dependencies": {

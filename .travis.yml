@@ -19,8 +19,8 @@ language: node_js
 #  only:
 #    - develop
 
-node_js:
-  - "4"
+#node_js:
+#- "4"
 
 #before_install:
 # win dependencies
@@ -36,7 +36,7 @@ before_script:
   - "curl https://install.meteor.com/ | sh"
   - "npm install -g meteor-build-client"
   - "npm install -g gulp"
-  - "gulp update-nodes --platform linux"
+  - "gulp update-nodes --platform mac"
 
 script:
 - "npm run ci"

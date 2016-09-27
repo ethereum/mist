@@ -1,10 +1,17 @@
-#sudo: required
-#dist: trusty
+osx_image: xcode7.3
 
-os:
-- osx
-  
-#language: node_js
+sudo: required
+dist: trusty
+
+matrix:
+  include:
+    - os: osx
+
+cache:
+  directories:
+  - node_modules
+  - $HOME/.electron
+  - $HOME/.cache
 
 language: node_js
 
@@ -12,8 +19,8 @@ language: node_js
 #  only:
 #    - develop
 
-#node_js:
-#  - "4"
+node_js:
+  - "4"
 
 #before_install:
 # win dependencies

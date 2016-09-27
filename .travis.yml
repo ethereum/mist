@@ -34,8 +34,8 @@ language: node_js
 
 install:
 - nvm install 6
-- npm install meteor-build-client
-- npm install gulp
+- npm install -g meteor-build-client
+- npm install -g gulp
 - npm install
 - npm prune
 

@@ -7,9 +7,6 @@
     "type": "git",
     "url": "https://github.com/ethereum/mist.git"
   },
-  "scripts": {
-    "ci": "gulp --platform=mac"
-  },
   "main": "main.js",
   "dependencies": {
     "bignumber.js": "^2.1.4",

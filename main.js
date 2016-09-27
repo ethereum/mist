@@ -1,5 +1,7 @@
 "use strict";
 
+if(require('electron-squirrel-startup')) return;
+
 global._ = require('./modules/utils/underscore');
 
 const Q = require('bluebird');

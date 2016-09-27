@@ -58,6 +58,7 @@ script:
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
 - travis_wait 30 gulp --platform=mac
 
+
 #notifications:
 #  email:
 #    - mist@ethereum.org

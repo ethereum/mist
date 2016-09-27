@@ -1,31 +1,38 @@
-sudo: required
-dist: trusty
+#sudo: required
+#dist: trusty
+
+os:
+- osx
+  
+#language: node_js
 
 language: node_js
 
-branches:
-  only:
-    - develop
+#branches:
+#  only:
+#    - develop
 
-node_js:
-  - "4"
+#node_js:
+#  - "4"
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y icnsutils
+#before_install:
+# win dependencies
+#- brew update
+#- brew install wine --without-x11 mono
+# linux dependencies
+#- brew install gnu-tar graphicsmagick xz
 
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "sleep 3" # give xvfb some time to start
-  - "curl https://install.meteor.com/ | sh"
-  - "npm install -g meteor-build-client"
-  - "gulp update-nodes --platform linux"
+#before_script:
+#  - "export DISPLAY=:99.0"
+#  - "sh -e /etc/init.d/xvfb start"
+#  - "sleep 3" # give xvfb some time to start
+#  - "curl https://install.meteor.com/ | sh"
+#  - "npm install -g meteor-build-client"
+#  - "gulp update-nodes --platform linux"
 
 script:
-  - "npm run ci"
+- "npm run ci"
 
-notifications:
-  email:
-    - mist@ethereum.org
-
+#notifications:
+#  email:
+#    - mist@ethereum.org

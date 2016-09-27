@@ -15,6 +15,7 @@
     "bignumber.js": "^2.1.4",
     "bluebird": "^3.3.5",
     "deep-extend": "^0.4.1",
+    "electron-squirrel-startup": "^1.0.0",
     "ethereumjs-abi": "^0.6.3",
     "got": "^6.3.0",
     "i18next": "^2.3.4",

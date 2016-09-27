@@ -8,7 +8,6 @@ language: objective-c
 matrix:
   include:
     - os: osx
-      env
 #    - os: linux
 
 #addons:
@@ -54,7 +53,7 @@ before_script:
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp update-nodes --platform all" ; fi
 - gulp update-nodes --platform all
 
-script:
+#script:
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
 #- travis_wait 60 gulp wallet --platform=mac

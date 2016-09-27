@@ -56,7 +56,7 @@ before_script:
 script:
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
-- gulp wallet --platform=mac
+- travis_wait 60 gulp wallet --platform=mac
 
 
 #notifications:

@@ -1,21 +1,13 @@
+os: osx
 osx_image: xcode7.3
+brew_packages:
+- gnu-tar
+- graphicsmagick
+- xz
 
-#sudo: required
-#dist: trusty
-
-language: objective-c
-
-matrix:
-  include:
-    - os: osx
-#    - os: linux
-
-#addons:
-#  apt:
-#    packages:
-#    - icnsutils
-#    - graphicsmagick 
-#    - xz-utils
+language: node_js
+node_js:
+- "4.3.x"
 
 cache:
   directories:
@@ -42,7 +34,6 @@ before_install:
 #- sleep 3 # give xvfb some time to start
 
 install:
-- nvm install 4
 - npm install
 
 before_script:

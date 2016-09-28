@@ -7,7 +7,7 @@ brew_packages:
 
 language: node_js
 node_js:
-- "4.3.x"
+- '4.3.0'
 
 cache:
   directories:
@@ -34,12 +34,12 @@ before_install:
 #- sleep 3 # give xvfb some time to start
 
 install:
+- npm install -g meteor-build-client
+- npm install -g gulp
 - npm install
 
 before_script:
 - "curl https://install.meteor.com/ | sh"
-- npm install -g meteor-build-client
-- npm install -g gulp
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp update-nodes --platform linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp update-nodes --platform all" ; fi
 - gulp update-nodes --platform all

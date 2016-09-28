@@ -10,6 +10,7 @@ node_js:
 - '4.3.0'
 
 cache:
+  timeout: 1000
   directories:
   - node_modules
   - $HOME/.electron

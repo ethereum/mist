@@ -332,22 +332,7 @@ var menuTempl = function(webviews) {
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles'),
             click: function(){
-                var log = '';
-                try {
-                    log = fs.readFileSync(Settings.userDataPath + '/node.log', {encoding: 'utf8'});
-                    log = '...'+ log.slice(-1000);
-                } catch(e){
-                    log.info(e);
-                    log = 'Couldn\'t load log file.';
-                };
-
-                dialog.showMessageBox({
-                    type: "info",
-                    buttons: ['OK'],
-                    message: 'Node log file',
-                    detail: log
-                }, function(){
-                });
+                shell.showItemInFolder(Settings.userDataPath + '/node.log');
             }
         }
     ];

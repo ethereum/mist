@@ -271,6 +271,7 @@ gulp.task('copy-app-source-files', ['checkNodes', 'clean:dist'], function() {
         './modules/**/**/**/*',
         './sounds/*',
         './*.js',
+        './clientBinaries.json',
         '!gulpfile.js'
         ], { base: './' })
         .pipe(gulp.dest('./dist_'+ type +'/app'));

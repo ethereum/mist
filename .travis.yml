@@ -15,6 +15,7 @@ cache:
   - node_modules
   - $HOME/.electron
   - $HOME/.meteor
+  - interface/.meteor/local
   - $HOME/.cache
 
 #language: node_js

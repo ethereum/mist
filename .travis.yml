@@ -29,7 +29,7 @@ cache:
 before_install:
 - brew update
 #- brew install wine --without-x11 mono  # windows dependencies 
-- brew install gnu-tar graphicsmagick xz  # linux dependencies
+- brew install gnu-tar graphicsmagick xz libicns  # linux dependencies
 
 install:
 - npm install -g meteor-build-client

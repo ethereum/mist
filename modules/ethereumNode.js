@@ -325,7 +325,7 @@ class EthereumNode extends EventEmitter {
         this._network = network;
         this._type = nodeType;
 
-        const binPath = ClientBinaryManager.getClientBinPath(nodeType);
+        const binPath = ClientBinaryManager.getClient(nodeType).binPath;
 
         log.debug(`Start node using ${binPath}`);
 

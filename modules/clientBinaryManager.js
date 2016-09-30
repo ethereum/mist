@@ -22,6 +22,8 @@ class Manager extends EventEmitter {
         log.info('Initializing...');
         
         this._availableClients = {};
+        
+        this._resolveEthBinPath();
 
         this._emit('progress', 'Fetching client config');
         
@@ -63,7 +65,7 @@ class Manager extends EventEmitter {
                 
                 if (!available.length) {
                     if (_.isEmpty(clients)) {
-                        throw new Error('No clients binaries available for this system!');
+                        throw new Error('No client binaries available for this system!');
                     }
                     
                     this._emit('progress', 'Downloading binaries');
@@ -80,8 +82,12 @@ class Manager extends EventEmitter {
                 
                 _.each(mgr.clients, (client) => {
                     if (client.state.available) {
-                        this._availableClients[client.id.toLowerCase()] 
-                            = client.activeCli.fullPath;
+                        const idlcase = client.id.toLowerCase();
+                        
+                        this._availableClients[idlcase] = {
+                            binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
+                            version: client.version,
+                        }
                     }
                 })
             })
@@ -97,20 +103,53 @@ class Manager extends EventEmitter {
         return this._availableClients[clientId.toLowerCase()];
     }
 
-    getClientBinPath (clientId) {
-        clientId = clientId.toLowerCase();
-        
-        if (!this._availableClients[clientId]) {
-            throw new Error(`No client binary available: ${clientId}`);
-        }
-        
-        return this._availableClients[clientId];
-    }
     
     _emit(status, msg) {
         log.debug(`Status: ${status} - ${msg}`);
         
         this.emit('status', status, msg);
+    }
+    
+    
+    _resolveEthBinPath () {
+        log.info('Resolving path to Eth client binary ...');
+        
+        let platform = process.platform;
+
+        // "win32" -> "win" (because nodes are bundled by electron-builder)
+        if (0 === platform.indexOf('win')) {
+            platform = 'win';
+        } else if (0 === platform.indexOf('darwin')) {
+            platform = 'mac';
+        }
+
+        log.debug('Platform: ' + platform);
+
+        let binPath = path.join(
+            __dirname, 
+            '..', 
+            'nodes',
+            'eth',
+            `${platform}-${process.arch}`
+        );
+
+        if (Settings.inProductionMode) {
+            // get out of the ASAR
+            binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
+        }
+
+        binPath = path.join(path.resolve(binPath), 'eth');
+
+        if ('win' === platform) {
+            binPath += '.exe';
+        }
+
+        log.info('Eth client binary path: ' + binPath);
+        
+        this._availableClients.eth = {
+            binPath: binPath,
+            version: '1.3.0',
+        };
     }
 }
 

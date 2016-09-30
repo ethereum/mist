@@ -101,7 +101,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
     const ClientBinaryManager = require('./clientBinaryManager');
     var error = false;
     
-    const binPath = ClientBinaryManager.getClientBinPath('geth');
+    const binPath = ClientBinaryManager.getClient('geth').binPath;
     
     // start import process
     var nodeProcess = spawn(binPath, ['wallet', 'import', path]);

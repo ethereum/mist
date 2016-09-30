@@ -1,9 +1,9 @@
 os: osx
 osx_image: xcode7.3
-brew_packages:
-- gnu-tar
-- graphicsmagick
-- xz
+#brew_packages:  # not working (yet)
+#- gnu-tar
+#- graphicsmagick
+#- xz
 
 language: node_js
 node_js:
@@ -28,7 +28,8 @@ cache:
 
 before_install:
 - brew update
-- brew install wine --without-x11 mono gnu-tar graphicsmagick xz
+#- brew install wine --without-x11 mono  # windows dependencies 
+- brew install gnu-tar graphicsmagick xz  # linux dependencies
 
 install:
 - npm install -g meteor-build-client
@@ -39,12 +40,12 @@ before_script:
 - "curl https://install.meteor.com/ | sh"
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp update-nodes --platform linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp update-nodes --platform all" ; fi
-- gulp update-nodes --platform all
+- gulp update-nodes --platform linux
 
 script:
 #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then "gulp --platform=linux" ; fi
 #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "gulp --platform=all" ; fi
-- travis_wait 100 gulp wallet --platform=mac
+- travis_wait 100 gulp wallet --platform=linux
 
 
 #notifications:

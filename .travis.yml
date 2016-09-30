@@ -1,9 +1,8 @@
+sudo: required
+dist: trusty
+
 os: osx
 osx_image: xcode8.0
-#brew_packages:  # not working (yet)
-#- gnu-tar
-#- graphicsmagick
-#- xz
 
 language: node_js
 node_js:
@@ -27,9 +26,8 @@ cache:
 #    - develop
 
 before_install:
-- brew update
-#- brew install wine --without-x11 mono  # windows dependencies 
-- brew install gnu-tar graphicsmagick xz libicns  # linux dependencies
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew update" ; fi  # windows dependencies
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then "brew install gnu-tar graphicsmagick xz libicns" ; fi  # linux dependencies
 
 install:
 - npm install -g meteor-build-client

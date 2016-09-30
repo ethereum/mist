@@ -25,7 +25,7 @@ class Manager extends EventEmitter {
         
         this._resolveEthBinPath();
 
-        this._emit('progress', 'Fetching client config');
+        this._emit('loadConfig', 'Fetching client config');
         
         // fetch config
         return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
@@ -42,7 +42,7 @@ class Manager extends EventEmitter {
         .catch((err) => {
             log.warn('Error fetching client binaries config from repo', err);
             
-            this._emit('progress', 'Loading local client config');
+            this._emit('loadConfig', 'Loading local client config');
 
             return require('../clientBinaries.json');
         })
@@ -50,12 +50,12 @@ class Manager extends EventEmitter {
             const mgr = new ClientBinaryManager(json);
             mgr.logger = log;
             
-            this._emit('progress', 'Scanning for binaries');
+            this._emit('scanning', 'Scanning for binaries');
 
             return mgr.init({
                 folders: [
-                    path.join(Settings.appDataPath, 'binaries', 'Geth', 'unpacked'),
-                    path.join(Settings.appDataPath, 'binaries', 'Eth', 'unpacked'),
+                    path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
+                    path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
                 ]
             })
             .then(() => {
@@ -68,17 +68,17 @@ class Manager extends EventEmitter {
                         throw new Error('No client binaries available for this system!');
                     }
                     
-                    this._emit('progress', 'Downloading binaries');
+                    this._emit('downloading', 'Downloading binaries');
                     
                     return Q.map(_.values(clients), (c) => {
                         return mgr.download(c.id, {
-                            downloadFolder: path.join(Settings.appDataPath, 'binaries'),
+                            downloadFolder: path.join(Settings.userDataPath, 'binaries'),
                         });
                     });
                 }
             })
             .then(() => {
-                this._emit('progress', 'Filtering available clients');
+                this._emit('filtering', 'Filtering available clients');
                 
                 _.each(mgr.clients, (client) => {
                     if (client.state.available) {
@@ -89,7 +89,9 @@ class Manager extends EventEmitter {
                             version: client.version,
                         }
                     }
-                })
+                });
+                
+                this._emit('done');                
             })
         })
         .catch((err) => {

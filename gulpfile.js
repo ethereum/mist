@@ -50,6 +50,15 @@ var electronVersion = require('electron-prebuilt/package.json').version;
 var packJson = require('./package.json');
 var version = packJson.version;
 
+const osArchList = [
+    'mac-x64',
+    'linux-x64',
+    'linux-ia32',
+    'win-x64',
+    'win-ia32'
+];
+
+
 console.log('You can select a platform like: --platform <mac|win|linux|all>');
 
 console.log('App type:', type);
@@ -139,10 +148,10 @@ gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], fu
 });
 
 
-gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done) {
+gulp.task('copy-node-folder-files', ['clean:dist'], function(done) {
     var streams = [];
 
-    _.each(nodeUrls, (info, osArch) => {
+    _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             // copy eth node binaries
             streams.push(gulp.src([
@@ -301,7 +310,7 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
-    _.each(nodeUrls, (info, osArch) => {
+    _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {
                 case 'win-ia32':

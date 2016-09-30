@@ -2430,11 +2430,6 @@
       "from": "meow@>=3.1.0 <4.0.0",
       "resolved": "https://registry.npmjs.org/meow/-/meow-3.7.0.tgz"
     },
-    "merge": {
-      "version": "1.2.0",
-      "from": "merge@>=1.2.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/merge/-/merge-1.2.0.tgz"
-    },
     "merge-stream": {
       "version": "1.0.0",
       "from": "merge-stream@>=1.0.0 <2.0.0",
@@ -3996,11 +3991,6 @@
       "version": "2.4.1",
       "from": "yauzl@2.4.1",
       "resolved": "https://registry.npmjs.org/yauzl/-/yauzl-2.4.1.tgz"
-    },
-    "yazl": {
-      "version": "2.4.1",
-      "from": "yazl@>=2.1.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/yazl/-/yazl-2.4.1.tgz"
     },
     "zip-stream": {
       "version": "1.1.0",

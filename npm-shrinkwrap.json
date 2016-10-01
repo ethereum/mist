@@ -554,9 +554,9 @@
       "resolved": "https://registry.npmjs.org/sha3/-/sha3-1.2.0.tgz"
     },
     "solc": {
-      "version": "0.3.6",
-      "from": "solc@>=0.3.6 <0.4.0",
-      "resolved": "https://registry.npmjs.org/solc/-/solc-0.3.6.tgz"
+      "version": "0.4.2",
+      "from": "solc@0.4.2",
+      "resolved": "https://registry.npmjs.org/solc/-/solc-0.4.2.tgz"
     },
     "spdx-correct": {
       "version": "1.0.2",

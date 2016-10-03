@@ -47,26 +47,26 @@ var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = require('electron-prebuilt/package.json').version;
-var gethVersion = '1.4.14';
+var gethVersion = '1.4.15';
 var nodeUrls = {
     'mac-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.14-prerelease-f88bca7-darwin-10.6-amd64.tar.bz2',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.15-stable-cb7d7d3-darwin-10.6-amd64.tar.bz2',
         ext: 'tar'
     },
     'linux-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.14-prerelease-f88bca7-linux-amd64.tar.bz2',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.15-stable-cb7d7d3-linux-amd64.tar.bz2',
         ext: 'tar',
     },
     'linux-ia32': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.14-prerelease-f88bca7-linux-386.tar.bz2',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.15-stable-cb7d7d3-linux-386.tar.bz2',
         ext: 'tar',
     },
     'win-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.14-prerelease-f88bca7-windows-4.0-amd64.exe.zip',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.15-stable-cb7d7d3-windows-4.0-amd64.exe.zip',
         ext: 'zip',
     },
     'win-ia32': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.14-prerelease-f88bca7-windows-4.0-386.exe.zip',
+        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.15-stable-cb7d7d3-windows-4.0-386.exe.zip',
         ext: 'zip',
     },
 };

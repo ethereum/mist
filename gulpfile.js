@@ -43,6 +43,7 @@ var filenameUppercase = 'Mist';
 var applicationName = 'Mist'; 
 var electronVersion = require('electron-prebuilt/package.json').version;
 
+
 var packJson = require('./package.json');
 var version = packJson.version;
 
@@ -228,6 +229,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     console.log('Bundling platforms: ', options.platform);
 
     var appPackageJson = _.extend({}, packJson, {
+        name: applicationName.replace(/\s/, ''),
         productName: applicationName,
         description: applicationName,
         homepage: "https://github.com/ethereum/mist",       

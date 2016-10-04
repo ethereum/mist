@@ -28,7 +28,7 @@
     "optimist": "^0.6.1",
     "os-timesync": "^1.0.6",
     "semver": "^5.1.0",
-    "solc": "^0.3.6",
+    "solc": "^0.4.2",
     "tslint": "^3.15.1",
     "typescript": "^1.7.3",
     "underscore": "^1.8.3",

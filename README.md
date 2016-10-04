@@ -150,7 +150,7 @@ Mist normally.
 To create a binaries you need to install [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#macos):
 
     // tools for the windows binaries
-    $ brew install Caskroom/cask/xquartz wine mono
+    $ brew install wine --without-x11 mono
     // tools for the Linux binaries
     $ brew install gnu-tar libicns graphicsmagick xz
     // general dependencies

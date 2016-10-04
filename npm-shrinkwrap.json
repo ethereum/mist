@@ -1828,9 +1828,9 @@
       "resolved": "https://registry.npmjs.org/is-gzip/-/is-gzip-1.0.0.tgz"
     },
     "is-my-json-valid": {
-      "version": "2.14.0",
+      "version": "2.15.0",
       "from": "is-my-json-valid@>=2.13.1 <3.0.0",
-      "resolved": "https://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.14.0.tgz"
+      "resolved": "https://registry.npmjs.org/is-my-json-valid/-/is-my-json-valid-2.15.0.tgz"
     },
     "is-natural-number": {
       "version": "2.1.1",
@@ -2076,9 +2076,9 @@
       "resolved": "https://registry.npmjs.org/jsonify/-/jsonify-0.0.0.tgz"
     },
     "jsonpointer": {
-      "version": "2.0.0",
-      "from": "jsonpointer@2.0.0",
-      "resolved": "https://registry.npmjs.org/jsonpointer/-/jsonpointer-2.0.0.tgz"
+      "version": "4.0.0",
+      "from": "jsonpointer@>=4.0.0 <5.0.0",
+      "resolved": "https://registry.npmjs.org/jsonpointer/-/jsonpointer-4.0.0.tgz"
     },
     "jsprim": {
       "version": "1.3.1",
@@ -2160,9 +2160,9 @@
       "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-1.1.0.tgz"
     },
     "lodash": {
-      "version": "4.16.2",
+      "version": "4.16.3",
       "from": "lodash@>=4.8.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.2.tgz"
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.3.tgz"
     },
     "lodash._basecopy": {
       "version": "3.0.1",
@@ -2401,9 +2401,9 @@
       "resolved": "https://registry.npmjs.org/macaddress/-/macaddress-0.2.8.tgz"
     },
     "macos-alias": {
-      "version": "0.2.9",
+      "version": "0.2.11",
       "from": "macos-alias@>=0.2.5 <0.3.0",
-      "resolved": "https://registry.npmjs.org/macos-alias/-/macos-alias-0.2.9.tgz"
+      "resolved": "https://registry.npmjs.org/macos-alias/-/macos-alias-0.2.11.tgz"
     },
     "map-cache": {
       "version": "0.2.2",
@@ -3077,9 +3077,9 @@
       "resolved": "https://registry.npmjs.org/require-directory/-/require-directory-2.1.1.tgz"
     },
     "require-from-string": {
-      "version": "1.2.0",
+      "version": "1.2.1",
       "from": "require-from-string@>=1.1.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-1.2.0.tgz"
+      "resolved": "https://registry.npmjs.org/require-from-string/-/require-from-string-1.2.1.tgz"
     },
     "require-main-filename": {
       "version": "1.0.1",
@@ -3225,7 +3225,7 @@
     },
     "solc": {
       "version": "0.4.2",
-      "from": "solc@0.4.2",
+      "from": "solc@>=0.4.2 <0.5.0",
       "resolved": "https://registry.npmjs.org/solc/-/solc-0.4.2.tgz"
     },
     "source-map": {

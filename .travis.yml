@@ -2,13 +2,19 @@ sudo: required
 dist: trusty
 
 language: node_js
+node_js:
+  - "4"
 
 branches:
   only:
     - develop
 
-node_js:
-  - "4"
+cache:
+  timeout: 1000
+  directories:
+    - node_modules
+    - $HOME/.electron
+    - $HOME/.meteor
 
 before_install:
   - sudo apt-get -qq update

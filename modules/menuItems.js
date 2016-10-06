@@ -330,7 +330,7 @@ var menuTempl = function(webviews) {
                 Windows.getByType('main').send('runTests', 'webview');
             }
         },{
-            label: i18n.t('mist.applicationMenu.develop.logFiles') + ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
+            label: i18n.t('mist.applicationMenu.develop.logFiles') + ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')',
             enabled: ethereumNode.isOwnNode, 
             click: function(){
                 try {

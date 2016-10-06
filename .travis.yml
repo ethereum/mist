@@ -14,7 +14,6 @@ cache:
   directories:
     - node_modules
     - $HOME/.electron
-    - $HOME/.meteor
 
 before_install:
   - sudo apt-get -qq update

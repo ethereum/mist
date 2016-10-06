@@ -332,7 +332,12 @@ var menuTempl = function(webviews) {
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles'),
             click: function(){
-                shell.showItemInFolder(Settings.userDataPath + '/node.log');
+                try {
+                    shell.showItemInFolder(Settings.userDataPath + '/node.log');
+                } catch(e){
+                    log.info(e);
+                    log = 'Couldn\'t load log file.';
+                };
             }
         }
     ];

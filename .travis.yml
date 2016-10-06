@@ -10,7 +10,6 @@ branches:
     - develop
 
 cache:
-  timeout: 1000
   directories:
     - node_modules
     - $HOME/.electron
@@ -33,4 +32,3 @@ script:
 notifications:
   email:
     - EMAIL
-    

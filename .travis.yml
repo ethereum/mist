@@ -33,3 +33,4 @@ script:
 notifications:
   email:
     - EMAIL
+    

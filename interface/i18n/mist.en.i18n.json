@@ -71,7 +71,8 @@
                 "toFront": "Bring All to Front"
             },
             "help": {
-                "label": "Help"
+                "label": "Help",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {

@@ -60,9 +60,10 @@ var menuTempl = function(webviews) {
     webviews = webviews || [];
 
     // APP
-    menu.push({
-        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
-        submenu: [
+    var fileMenu = [];
+    
+    if(process.platform === 'darwin') {
+        fileMenu.push(
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
                 click: function(){
@@ -107,15 +108,19 @@ var menuTempl = function(webviews) {
             },
             {
                 type: 'separator'
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
-                accelerator: 'CommandOrControl+Q',
-                click: function(){
-                    app.quit();
-                }
             }
-        ]
+        );
+    }
+    fileMenu.push(
+        {label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
+            accelerator: 'CommandOrControl+Q',
+            click: function(){
+                app.quit();
+            }
+        });
+    menu.push({
+        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
+        submenu: fileMenu
     });
 
     // ACCOUNTS
@@ -482,19 +487,45 @@ var menuTempl = function(webviews) {
     })
 
     // HELP
-    if(process.platform === 'darwin') {
-        menu.push({
-            label: i18n.t('mist.applicationMenu.help.label'),
-            role: 'help',
-            submenu: [{
-                label: 'Report a bug on Github',
+    var helpMenu = []; 
+
+    if (process.platform === 'freebsd' || process.platform === 'linux' ||
+            process.platform === 'sunos' || process.platform === 'win32') {
+        helpMenu.push(
+            {
+                label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
                 click: function(){
-                    shell.openExternal('https://github.com/ethereum/mist/issues');
+                    Windows.createPopup('about', {
+                        electronOptions: {
+                            width: 420,
+                            height: 230,
+                            alwaysOnTop: true,
+                        }
+                    });
                 }
-            }]
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
+                click: function() {
+                    updateChecker.runVisibly();
+                }
+            }
+        );
+    }
+    if(process.platform === 'darwin') {
+        helpMenu.push({
+            label: i18n.t('mist.applicationMenu.help.reportBug'),
+            click: function(){
+                shell.openExternal('https://github.com/ethereum/mist/issues');
+            }
         });
     }
 
+    menu.push({
+        label: i18n.t('mist.applicationMenu.help.label'),
+        role: 'help',
+        submenu: helpMenu
+    });
     return menu;
 };
 

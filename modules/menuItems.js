@@ -512,14 +512,12 @@ var menuTempl = function(webviews) {
             }
         );
     }
-    if(process.platform === 'darwin') {
-        helpMenu.push({
-            label: i18n.t('mist.applicationMenu.help.reportBug'),
-            click: function(){
-                shell.openExternal('https://github.com/ethereum/mist/issues');
-            }
-        });
-    }
+    helpMenu.push({
+        label: i18n.t('mist.applicationMenu.help.reportBug'),
+        click: function(){
+            shell.openExternal('https://github.com/ethereum/mist/issues');
+        }
+    });
 
     menu.push({
         label: i18n.t('mist.applicationMenu.help.label'),

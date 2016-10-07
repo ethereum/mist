@@ -58,6 +58,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
+                "externalNode": "using external node",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",

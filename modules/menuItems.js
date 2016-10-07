@@ -335,24 +335,15 @@ var menuTempl = function(webviews) {
                 Windows.getByType('main').send('runTests', 'webview');
             }
         },{
-            label: i18n.t('mist.applicationMenu.develop.logFiles'),
+            label: i18n.t('mist.applicationMenu.develop.logFiles') + ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')',
+            enabled: ethereumNode.isOwnNode, 
             click: function(){
-                var log = '';
                 try {
-                    log = fs.readFileSync(Settings.userDataPath + '/node.log', {encoding: 'utf8'});
-                    log = '...'+ log.slice(-1000);
+                    shell.showItemInFolder(Settings.userDataPath + '/node.log');
                 } catch(e){
                     log.info(e);
                     log = 'Couldn\'t load log file.';
                 };
-
-                dialog.showMessageBox({
-                    type: "info",
-                    buttons: ['OK'],
-                    message: 'Node log file',
-                    detail: log
-                }, function(){
-                });
             }
         }
     ];

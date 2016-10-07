@@ -1,4 +1,553 @@
 window.SIGNATURES = {
+	"0x85b73d3c": [
+		"testCreateNewRevision()"
+	],
+	"0xa5dfee67": [
+		"testThrowsCreateNewRevisionNotUpdatable()"
+	],
+	"0xd62d3115": [
+		"testCreate()"
+	],
+	"0x29e30910": [
+		"testThrowCreateExistingNonce()"
+	],
+	"0xfa3f1e99": [
+		"testBlobStoreRegistered()"
+	],
+	"0x59e2d30e": [
+		"testThrowBlobStoreNotRegistered()"
+	],
+	"0x741273d6": [
+		"testThrowRegisterContractAgain()"
+	],
+	"0x1ac61e8c": [
+		"testBlobCreate()"
+	],
+	"0xcd2cdd5b": [
+		"claimOwnershi()"
+	],
+	"0x043753ba": [
+		"makeDecision(uint256,bool)"
+	],
+	"0xac0fa1f1": [
+		"makeDecision(uint256, bool)"
+	],
+	"0xcf4c5246": [
+		"makeDecision(uint, bool)"
+	],
+	"0xb32a6896": [
+		"makeDecision(0, true)"
+	],
+	"0x97c09e93": [
+		"0x043753ba"
+	],
+	"0x6b9b1006": [
+		"TransactionRecorder()"
+	],
+	"0xba8661a2": [
+		"TimestampScheduler(address)"
+	],
+	"0x81baf820": [
+		"BlockScheduler(address)"
+	],
+	"0x27960c5f": [
+		"validateEndowment(uint256,uint256,uint256,uint256,uint256,uint256,uint256)"
+	],
+	"0x5ee345e4": [
+		"computeEndowment(uint256,uint256,uint256,uint256,uint256,uint256)"
+	],
+	"0xc7e67360": [
+		"GAS_BUFFER()"
+	],
+	"0x45104b16": [
+		"EXECUTION_GAS_OVERHEAD()"
+	],
+	"0xd96d7ea2": [
+		"PRE_EXECUTION_GAS()"
+	],
+	"0x316b08a0": [
+		"scheduleTransaction(address,bytes,uint256[7],uint256)"
+	],
+	"0x15abc160": [
+		"createValidatedRequest(address[3],address,uint256[11],uint256,bytes)"
+	],
+	"0x30aceb89": [
+		"validateRequestParams(address[3],address,uint256[11],uint256,bytes,uint256)"
+	],
+	"0xb69c0896": [
+		"BaseScheduler(address,address,uint256)"
+	],
+	"0x7b632c41": [
+		"TimestampScheduler(address,address)"
+	],
+	"0x51582ef3": [
+		"sendProxyTransaction(address,uint256,uint256,bytes)"
+	],
+	"0x40a3d246": [
+		"toggle()"
+	],
+	"0x6aaba012": [
+		"ErrorGenerator()"
+	],
+	"0x7cbcc254": [
+		"__reset__()"
+	],
+	"0x9a35f886": [
+		"__dig_then_proxy(uint256)"
+	],
+	"0xf10ae2ab": [
+		"__dig_then_proxy(uint256,address,bytes)"
+	],
+	"0x9af605cb": [
+		"__proxy(address,bytes,uint256)"
+	],
+	"0xad8ed335": [
+		"__proxy(address)"
+	],
+	"0xd2531590": [
+		"CANCEL_EXTRA_GAS()"
+	],
+	"0x1d49e081": [
+		"EXECUTE_EXTRA_GAS()"
+	],
+	"0x9341231c": [
+		"sendOrThrow(address,uint256)"
+	],
+	"0x433836dc": [
+		"scheduleTransaction(address,bytes,uint8,uint256[3],uint256)"
+	],
+	"0x144dd7f2": [
+		"908dcf7a7bd180be21846bc130f81f0babf431a04b314643aec4638317862238"
+	],
+	"0xe56c8552": [
+		"spinTheWheel(address)"
+	],
+	"0xc7144269": [
+		"changeSettings_only_Dev(uint256,uint256,uint256,uint256,uint16,uint256,uint256,uint256,uint8,uint8)"
+	],
+	"0xbb84d362": [
+		"splitProfitVIP_only_Dev()"
+	],
+	"0x7c9cd7df": [
+		"changeDeveloper_only_Dev(address)"
+	],
+	"0x750cae6a": [
+		"enableBetting_only_Dev()"
+	],
+	"0x6ad50ed4": [
+		"investmentEntryInfos()"
+	],
+	"0x580bdf3c": [
+		"disableBetting_only_Dev()"
+	],
+	"0x402e6230": [
+		"getTotalGambles()"
+	],
+	"0x33ce7787": [
+		"transferInvestorAccount(address,address)"
+	],
+	"0x2e0ef395": [
+		"voteOnNewEntryFees_only_VIP(uint8)"
+	],
+	"0x266710ca": [
+		"manualUpdateBalances_only_Dev()"
+	],
+	"0x58175f30": [
+		"0x314e0fb6"
+	],
+	"0xc5f310c0": [
+		"register(bytes12)"
+	],
+	"0x4ed4831a": [
+		"all(bool[7])"
+	],
+	"0x3c894475": [
+		"scheduleTransaction(address,bytes,uint8,uint256[6],uint256)"
+	],
+	"0xa42e36c6": [
+		"scheduleTransaction(address,bytes,uint8,uint256[5],uint256)"
+	],
+	"0xd4c2b6b1": [
+		"scheduleTransaction(address,bytes,uint256[5],uint256)"
+	],
+	"0xceba30b5": [
+		"scheduleTransaction(address,bytes,uint256[4],uint256)"
+	],
+	"0x314e0fb6": [
+		"scheduleTransaction(address,bytes,uint256[3],uint256)"
+	],
+	"0xc9296d14": [
+		"scheduleTransaction(address,uint256,uint256,uint256,bytes)"
+	],
+	"0xb67fabdf": [
+		"scheduleTransaction(address,uint256,uint256,bytes)"
+	],
+	"0x44dd4b5e": [
+		"scheduleTransaction(address,uint256,bytes)"
+	],
+	"0xd0549602": [
+		"scheduleTransaction(address,uint256,uint256,uint256)"
+	],
+	"0x02e8d8c0": [
+		"scheduleTransaction(address,uint256,uint256)"
+	],
+	"0x447cd682": [
+		"scheduleTransaction(address,uint256)"
+	],
+	"0x1099d3ec": [
+		"scheduleTransaction(uint256,uint256,uint256,bytes)"
+	],
+	"0xe33c7ae2": [
+		"scheduleTransaction(uint256,uint256,bytes)"
+	],
+	"0xf0a78538": [
+		"scheduleTransaction(uint256,bytes)"
+	],
+	"0xcf158fe9": [
+		"scheduleTransaction(uint256,uint256,uint256)"
+	],
+	"0x57e2880d": [
+		"scheduleTransaction(uint256,uint256)"
+	],
+	"0xed4b1d0d": [
+		"scheduleTransaction(uint256)"
+	],
+	"0xcf4a1612": [
+		"scheduleTransaction(uint256,address,bytes,uint256)"
+	],
+	"0xb03260be": [
+		"scheduleTransaction(uint256,address,bytes)"
+	],
+	"0x4d5b080c": [
+		"scheduleTransaction(uint256,address,uint256)"
+	],
+	"0xc0eb2325": [
+		"scheduleTransaction(address,bytes,uint256)"
+	],
+	"0x30c0f8d6": [
+		"scheduleTransaction(address,bytes)"
+	],
+	"0xb8f71f26": [
+		"scheduleTransaction(uint256,address)"
+	],
+	"0xb0bcc610": [
+		"scheduleTransaction(address)"
+	],
+	"0xc3fa5f93": [
+		"BlockScheduler(address,address)"
+	],
+	"0x2667f407": [
+		"__proxy(address,bytes)"
+	],
+	"0xf0586f0d": [
+		"doThrow(bool)"
+	],
+	"0xfff78f9c": [
+		"doThrow()"
+	],
+	"0x93c166ec": [
+		"computeEndowment(uint256,uint256,uint256,uint256)"
+	],
+	"0xbf8c50ff": [
+		"scheduleTransaction()"
+	],
+	"0x66671c71": [
+		"BaseScheduler(address,address)"
+	],
+	"0x6949a058": [
+		"sendOwnerEther()"
+	],
+	"0x6720ceb1": [
+		"sendPayment()"
+	],
+	"0x8dd8596c": [
+		"sendDonation()"
+	],
+	"0xb311ee0c": [
+		"refundClaimDeposit()"
+	],
+	"0xfb87d5ea": [
+		"TransactionRequest(address[4],address,uint256[11],uint256,bytes)"
+	],
+	"0x3f0ec70b": [
+		"RequestFactory(address)"
+	],
+	"0x8fbc3ecd": [
+		"BUFFER()"
+	],
+	"0x17e1b09b": [
+		"minimumDeposit(uint256)"
+	],
+	"0xb15dcc25": [
+		"query(address,bytes2,uint256)"
+	],
+	"0xac8d6030": [
+		"removeRequest(address)"
+	],
+	"0x09d33f1d": [
+		"addRequest(address,uint256)"
+	],
+	"0x1acb2719": [
+		"getNextRequest(address,address)"
+	],
+	"0xbf2e694f": [
+		"getPreviousRequest(address,address)"
+	],
+	"0x592685d5": [
+		"getWindowStart(address,address)"
+	],
+	"0x88102583": [
+		"safeCastSigned(uint256)"
+	],
+	"0x3dd297da": [
+		"safeMultiply(uint256,uint256)"
+	],
+	"0x09861b81": [
+		"flooredSub(uint256,uint256)"
+	],
+	"0x362af076": [
+		"createRequest(address[3],address,uint256[11],uint256,bytes)"
+	],
+	"0x9a89ad65": [
+		"within6Confirms(int256,int256)"
+	],
+	"0x05a5b8c6": [
+		"verifyTx(bytes,int256,int256[],int256,bytes,int256,int256[],int256)"
+	],
+	"0xfad9bf9e": [
+		"storeBlockWithFeeAndRecipient(bytes,int256,int256,bytes,int256,int256)"
+	],
+	"0x3af75ee1": [
+		"storeBlockWithFee(bytes,int256,bytes,int256)"
+	],
+	"0x6e173a7f": [
+		"storeBlockHeader(bytes,bytes)"
+	],
+	"0xfae8f9a2": [
+		"setInitialParent(int256,int256,int256,int256,int256,int256)"
+	],
+	"0xecb0256b": [
+		"relayTx(bytes,int256,int256[],int256,int256,bytes,int256,int256[],int256,int256)"
+	],
+	"0x3c2e7d54": [
+		"priv_inMainChain__(int256,int256)"
+	],
+	"0x11400d8e": [
+		"priv_fastGetBlockHash__(int256,int256)"
+	],
+	"0xace51abc": [
+		"helperVerifyHash__(uint256,int256,int256[],int256,uint256,int256,int256[],int256)"
+	],
+	"0x16e27349": [
+		"getFeeRecipient(int256,int256)"
+	],
+	"0xc018d0e6": [
+		"getFeeAmount(int256,int256)"
+	],
+	"0xfa14df6b": [
+		"getChangeRecipientFee()"
+	],
+	"0x2c181929": [
+		"getChainWork()"
+	],
+	"0x9a15f4f3": [
+		"getBlockHeader(int256,int256)"
+	],
+	"0x7ca823d5": [
+		"getAverageChainWork()"
+	],
+	"0x157f8f51": [
+		"feePaid(int256,int256,int256,int256)"
+	],
+	"0x752d349c": [
+		"depthCheck(int256,int256)"
+	],
+	"0xca0c1e62": [
+		"computeMerkle(int256,int256,int256[],int256,int256,int256[])"
+	],
+	"0x129484b6": [
+		"changeFeeRecipient(int256,int256,int256,int256,int256,int256)"
+	],
+	"0xf9909915": [
+		"bulkStoreHeader(bytes,int256,bytes,int256)"
+	],
+	"0x606deecd": [
+		"requestData()"
+	],
+	"0xf6bd5893": [
+		"getGas(uint256)"
+	],
+	"0xbd35d570": [
+		"GAS_TO_COMPLETE_EXECUTION()"
+	],
+	"0xa126c5df": [
+		"GAS_TO_AUTHORIZE_EXECUTION()"
+	],
+	"0x8f420866": [
+		"DEFAULT_SEND_GAS()"
+	],
+	"0xf42aa287": [
+		"getBlobStore(bytes12)"
+	],
+	"0x00a676f9": [
+		"getExists(bytes32)"
+	],
+	"0xf1fe42b8": [
+		"TransactionRequest(address[3],address,uint256[11],uint256,bytes)"
+	],
+	"0xcd9a3c98": [
+		"any(bool[7])"
+	],
+	"0x610d5de8": [
+		"validateEndowment(uint256,uint256,uint256,uint256,uint256)"
+	],
+	"0xd7504385": [
+		"validateToAddress(address)"
+	],
+	"0xf4c5ab7c": [
+		"validateCallGas(uint256,uint256)"
+	],
+	"0xb5f5962a": [
+		"CALL_GAS_CEILING(uint256)"
+	],
+	"0x3121369d": [
+		"validateRequiredStackDepth(uint256)"
+	],
+	"0x17a601b5": [
+		"MAX_STACK_DEPTH_REQUIREMENT()"
+	],
+	"0xf00e8651": [
+		"createRequest(address[2],address,uint256[11],uint256,bytes)"
+	],
+	"0xc45b415e": [
+		"createRequest(address[4],address,uint256[11],uint256,bytes)"
+	],
+	"0xb3aaa277": [
+		"validate(address[4],address,uint256[11],uint256,bytes,uint256)"
+	],
+	"0x2e898ddc": [
+		"validateTemporalUnit(uint256)"
+	],
+	"0x1a26ed1c": [
+		"validateReservedWindowSize(uint256,uint256)"
+	],
+	"0xeacc5b3b": [
+		"safeSend(address,uint256,uint256)"
+	],
+	"0x07ad9ecb": [
+		"safeSend(address,uint256)"
+	],
+	"0x7fee4ecb": [
+		"GAS_PER_DEPTH()"
+	],
+	"0xc262df45": [
+		"isKnownRequest(address,address)"
+	],
+	"0x964c836c": [
+		"receiveExecutionNotification()"
+	],
+	"0x1d82e9c7": [
+		"EXTRA_GAS()"
+	],
+	"0xf0da84f8": [
+		"getTransferable(bytes32)"
+	],
+	"0x331a72d1": [
+		"getRetractable(bytes32)"
+	],
+	"0x0b6fcdb0": [
+		"getEnforceRevisions(bytes32)"
+	],
+	"0x49437210": [
+		"getUpdatable(bytes32)"
+	],
+	"0xb7dd1d17": [
+		"getAllRevisionBlockNumbers(bytes32)"
+	],
+	"0xa95d017d": [
+		"getRevisionBlockNumber(bytes32,uint256)"
+	],
+	"0x64228857": [
+		"getRevisionCount(bytes32)"
+	],
+	"0xdeb931a2": [
+		"getOwner(bytes32)"
+	],
+	"0x7a02dc06": [
+		"getInfo(bytes32)"
+	],
+	"0x9070b18d": [
+		"_getAllRevisionBlockNumbers(bytes32)"
+	],
+	"0x737c8ea1": [
+		"_getRevisionBlockNumber(bytes32,uint256)"
+	],
+	"0x4788cabf": [
+		"getContractId()"
+	],
+	"0xb7d454a4": [
+		"setNotTransferable(bytes32)"
+	],
+	"0x0d244d68": [
+		"setNotRetractable(bytes32)"
+	],
+	"0xfe8b6642": [
+		"setEnforceRevisions(bytes32)"
+	],
+	"0x89ced196": [
+		"setNotUpdatable(bytes32)"
+	],
+	"0xd93e7573": [
+		"disown(bytes32)"
+	],
+	"0x79ce9fac": [
+		"transfer(bytes32,address)"
+	],
+	"0xaaac50bd": [
+		"transferDisable(bytes32)"
+	],
+	"0x0eb8ed07": [
+		"transferEnable(bytes32)"
+	],
+	"0x117b4705": [
+		"retract(bytes32)"
+	],
+	"0x2bf1f9da": [
+		"restart(bytes32,bytes)"
+	],
+	"0x9b619d3b": [
+		"_deleteAllPackedRevisionBlockNumbers(bytes32)"
+	],
+	"0x37664643": [
+		"retractLatestRevision(bytes32)"
+	],
+	"0xf0cb556c": [
+		"updateLatestRevision(bytes32,bytes)"
+	],
+	"0xf3e84cf3": [
+		"createNewRevision(bytes32,bytes)"
+	],
+	"0xf6469342": [
+		"_setPackedBlockNumber(bytes32,uint256)"
+	],
+	"0xeaa37394": [
+		"create(bytes,bytes32,bool,bool,bool,bool,bool)"
+	],
+	"0x938b5f32": [
+		"origin()"
+	],
+	"0x625cc465": [
+		"baseDonation()"
+	],
+	"0xc6502da8": [
+		"basePayment()"
+	],
+	"0xa06db7dc": [
+		"gracePeriod()"
+	],
+	"0x318a3fee": [
+		"relayTx(bytes,int256,int256[],int256,int256)"
+	],
 	"0x9f2ce678": [
 		"vote(bytes32,bool)"
 	],

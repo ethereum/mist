@@ -325,6 +325,7 @@ var menuTempl = function(webviews) {
         }];
     }
 
+    var externalNodeMsg = (ethereumNode.isOwnNode)? '' : ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
     devToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devTools'),
             submenu: devtToolsSubMenu
@@ -335,7 +336,7 @@ var menuTempl = function(webviews) {
                 Windows.getByType('main').send('runTests', 'webview');
             }
         },{
-            label: i18n.t('mist.applicationMenu.develop.logFiles') + ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')',
+            label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
             enabled: ethereumNode.isOwnNode, 
             click: function(){
                 try {

@@ -47,7 +47,7 @@ const check = exports.check = function() {
         let latest = releases[0];
 
         if (semver.gt(latest.tag_name, Settings.appVersion)) {
-            log.info(`App (${Settings.appVersion}) is out of date. New v${latest.tag_name} found.`);
+            log.info(`App (${Settings.appVersion}) is out of date. New ${latest.tag_name} found.`);
 
             return {
                 name: latest.name,

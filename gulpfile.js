@@ -593,4 +593,3 @@ gulp.task('test-wallet', function() {
 
 
 gulp.task('default', ['mist']);
-

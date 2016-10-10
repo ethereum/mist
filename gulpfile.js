@@ -50,23 +50,23 @@ var electronVersion = require('electron-prebuilt/package.json').version;
 var gethVersion = '1.4.17';
 var nodeUrls = {
     'mac-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.17-stable-6881525-darwin-10.6-amd64.tar.bz2',
+        url: 'https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-darwin-10.6-amd64.tar.bz2',
         ext: 'tar'
     },
     'linux-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.17-stable-6881525-linux-amd64.tar.bz2',
+        url: 'https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-linux-amd64.tar.bz2',
         ext: 'tar',
     },
     'linux-ia32': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.17-stable-6881525-linux-386.tar.bz2',
+        url: 'https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-linux-386.tar.bz2',
         ext: 'tar',
     },
     'win-x64': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.17-stable-6881525-windows-4.0-amd64.exe.zip',
+        url: 'https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-windows-4.0-amd64.exe.zip',
         ext: 'zip',
     },
     'win-ia32': {
-        url: 'https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.17-stable-6881525-windows-4.0-386.exe.zip',
+        url: 'https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-windows-4.0-386.exe.zip',
         ext: 'zip',
     },
 };

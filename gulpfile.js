@@ -420,6 +420,24 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
               "nodes/eth/${os}-${arch}",
               "nodes/geth/${os}-${arch}"
             ],
+            mac: {
+                target: [
+                    "zip",
+                    "dmg"
+                ]
+            },
+            linux: {
+                target: [
+                    "zip",
+                    "deb"
+                ]
+            },
+            win: {
+                target: [
+                    "zip",
+                    "squirrel"
+                ]
+            },
             dmg: {
                 background: "../build/dmg-background.jpg",
                 "icon-size": 128,

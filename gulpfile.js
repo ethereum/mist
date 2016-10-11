@@ -420,6 +420,12 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
               "nodes/eth/${os}-${arch}",
               "nodes/geth/${os}-${arch}"
             ],
+            linux: {
+                target: [
+                    "zip",
+                    "deb"
+                ]
+            },
             dmg: {
                 background: "../build/dmg-background.jpg",
                 "icon-size": 128,
@@ -487,19 +493,28 @@ gulp.task('release-dist', ['build-dist'], function(done) {
         if (platformIsActive(osArch)) {
             switch (osArch) {
                 case 'win-ia32':
-                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`), releasePath);
+                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-win32-${version.replace(/\./g, '-')}.exe`));
                     break;
                 case 'win-x64':
-                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), releasePath);
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), path.join(releasePath, 
+                            `${applicationName.replace(/\s/, '-')}-win64-${version.replace(/\./g, '-')}.exe`));
                     break;
                 case 'mac-x64':
-                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), releasePath);
+                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), 
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-macosx-${version.replace(/\./g, '-')}.dmg`));
                     break;
                 case 'linux-ia32':
-                    shell.cp(path.join(distPath, `Mist-${version}-ia32.deb`), path.join(releasePath, `${applicationName}-${version}-ia32.deb`) );
+                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}-ia32.deb`), 
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux32-${version.replace(/\./g, '-')}.deb`) );
+                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}-ia32.zip`), 
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux32-${version.replace(/\./g, '-')}.zip`) );
                     break;
                 case 'linux-x64':
-                    shell.cp(path.join(distPath, `Mist-${version}.deb`), path.join(releasePath, `${applicationName}-${version}.deb`) );
+                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}.deb`), 
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux64-${version.replace(/\./g, '-')}.deb`) );
+                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}.zip`), 
+                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux64-${version.replace(/\./g, '-')}.zip`) );
                     break;
             }
         }

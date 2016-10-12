@@ -31,6 +31,7 @@ Requirements:
 
 * Electron v1.3.5
 * Node v4.3.0 or above
+* [Yarn package manager](https://yarnpkg.com/)
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
@@ -51,14 +52,14 @@ Now you're ready to install Mist:
     $ git clone https://github.com/ethereum/mist.git
     $ cd mist
     $ git submodule update --init
-    $ npm install
+    $ yarn
     $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
-    $ npm install
+    $ yarn
     $ gulp update-nodes
 
 

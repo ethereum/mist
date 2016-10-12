@@ -529,9 +529,10 @@ gulp.task('get-release-checksums', function(done) {
     const releasePath = `./dist_${type}/release`;
 
     let files = fs.readdirSync(releasePath);
-
+    
+    shell.cd(releasePath);
     for (let file of files) {
-        let sha = shell.exec(`shasum -a 256 "./dist_${type}/release/${file}"`);
+        let sha = shell.exec(`shasum -a 256 "${file}"`);
 
         if (0 !== sha.code) {
             return done(new Error('Error executing shasum: ' + sha.stderr));

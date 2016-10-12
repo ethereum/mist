@@ -489,32 +489,36 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
+    let appNameHypen = applicationName.replace(/\s/, '-');
+    let appNameNoSpace = applicationName.replace(/\s/, '');
+    let versionDashed = version.replace(/\./g, '-');
+
     _.each(nodeUrls, (info, osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {
                 case 'win-ia32':
                     shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-win32-${version.replace(/\./g, '-')}.exe`));
+                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.exe`));
                     break;
                 case 'win-x64':
-                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), path.join(releasePath, 
-                            `${applicationName.replace(/\s/, '-')}-win64-${version.replace(/\./g, '-')}.exe`));
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), 
+                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.exe`));
                     break;
                 case 'mac-x64':
                     shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), 
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-macosx-${version.replace(/\./g, '-')}.dmg`));
+                            path.join(releasePath, `${appNameHypen}-macosx-${versionDashed}.dmg`));
                     break;
                 case 'linux-ia32':
-                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}-ia32.deb`), 
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux32-${version.replace(/\./g, '-')}.deb`) );
-                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}-ia32.zip`), 
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux32-${version.replace(/\./g, '-')}.zip`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.deb`), 
+                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.zip`), 
+                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.zip`) );
                     break;
                 case 'linux-x64':
-                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}.deb`), 
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux64-${version.replace(/\./g, '-')}.deb`) );
-                    shell.cp(path.join(distPath, `${applicationName.replace(/\s/, '')}-${version}.zip`), 
-                            path.join(releasePath, `${applicationName.replace(/\s/, '-')}-linux64-${version.replace(/\./g, '-')}.zip`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.deb`), 
+                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.zip`), 
+                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.zip`) );
                     break;
             }
         }
@@ -530,9 +534,8 @@ gulp.task('get-release-checksums', function(done) {
 
     let files = fs.readdirSync(releasePath);
     
-    shell.cd(releasePath);
     for (let file of files) {
-        let sha = shell.exec(`shasum -a 256 "${file}"`);
+        let sha = shell.exec(`shasum -a 256 "${file}"`, { cwd:releasePath });
 
         if (0 !== sha.code) {
             return done(new Error('Error executing shasum: ' + sha.stderr));

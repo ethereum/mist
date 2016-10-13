@@ -5,17 +5,18 @@ Window communication
 */
 
 const electron = require('electron');
+const shell = electron.shell;
 
 const app = electron.app;  // Module to control application life.
 const appMenu = require('./menuItems');
 const logger = require('./utils/logger');
 const Windows = require('./windows');
 const ipc = electron.ipcMain;
-
 const _ = global._;
 
 const log = logger.create('ipcCommunicator');
 
+require('./abi.js');
 /*
 
 // windows including webviews
@@ -38,6 +39,11 @@ windows = {
 ipc.on('backendAction_closeApp', function() {
     app.quit();
 });
+
+ipc.on('backendAction_openExternalUrl', function(e, url) {
+    shell.openExternal(url);
+});
+
 ipc.on('backendAction_closePopupWindow', function(e) {
     var windowId = e.sender.getId(),
         senderWindow = Windows.getById(windowId);
@@ -87,6 +93,7 @@ ipc.on('backendAction_setLanguage', function(e, lang){
         });
     }
 });
+
 
 // import presale file
 ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
@@ -138,9 +145,7 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
 
 
 
-
-// MIST API
-ipc.on('mistAPI_requestAccount', function(e){
+var createAccountPopup = function(e){
     Windows.createPopup('requestAccount', {
         ownerId: e.sender.getId(),
         electronOptions: {
@@ -149,9 +154,29 @@ ipc.on('mistAPI_requestAccount', function(e){
             alwaysOnTop: true,
         },
     });
+};
+
+// MIST API
+ipc.on('mistAPI_createAccount', createAccountPopup);
+
+ipc.on('mistAPI_requestAccount', function(e) {
+    if (global.mode == 'wallet') {
+        createAccountPopup(e);
+    }
+    // Mist
+    else {
+        Windows.createPopup('connectAccount', {
+            ownerId: e.sender.getId(),
+            electronOptions: {
+                width: 460,
+                height: 497,
+                maximizable: false,
+                minimizable: false,
+                alwaysOnTop: true,
+            },
+        });
+    }
 });
-
-
 
 const uiLoggers = {};
 
@@ -169,6 +194,10 @@ ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
     } catch (err) {
         log.error(err);
     }
+});
+
+ipc.on('backendAction_reloadSelectedTab', function(event) {
+    event.sender.send('uiAction_reloadSelectedTab');
 });
 
 

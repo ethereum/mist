@@ -17,6 +17,29 @@ i18nConf.supported_languages.forEach(function(lang) {
     resources[lang] = { translation: require('../interface/i18n/mist.'+ lang +'.i18n.json') };
 });
 
+/**
+* Given a language code, get best matched code from supported languages.
+*
+* > getBestMatchedLangCode('en-US')
+* 'en'
+* > getBestMatchedLangCode('zh-TW')
+* 'zh-TW'
+* > getBestMatchedLangCode('no-such-code')
+* 'en'
+*/
+i18n.getBestMatchedLangCode = function(langCode){
+    const codeList = Object.keys(resources);
+    let bestMatchedCode = langCode;
+    if(codeList.indexOf(langCode) === -1){
+        if (codeList.indexOf(langCode.substr(0,2)) > -1){
+            bestMatchedCode = langCode.substr(0,2);
+        }else{
+            bestMatchedCode = 'en';
+        }
+    }
+    return bestMatchedCode
+}
+
 
 // init i18n
 i18n.init({

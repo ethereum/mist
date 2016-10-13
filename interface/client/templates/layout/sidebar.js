@@ -173,7 +173,21 @@ Template['layout_sidebar'].events({
         } else if (isSelected) {
             LocalStore.set('fullTabs', true);
         } 
+    },
+    /*
+    Remove the current selected tab
+
+    // TODO show popup before to confirm
+
+    @event click button.remove-tab
+    */
+    'click button.remove-tab': function(){
+        if (LocalStore.get('selectedTab') === this._id)
+            LocalStore.set('selectedTab', 'browser');
+        
+        Tabs.remove(this._id);
     }
+
 });
 
 

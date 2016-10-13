@@ -1,4 +1,6 @@
+const path = require('path');
 const electron = require('electron');
+const fs = require('fs');
 const app = electron.app;
 
 const logger = require('./utils/logger');
@@ -20,7 +22,7 @@ try {
 
 
 const argv = require('yargs')
-    .usage('Usage: $0 [Mist options] -- [Node options]')
+    .usage('Usage: $0 [Mist options] [Node options]')
     .option({
         mode: {
             alias: 'm',
@@ -50,9 +52,9 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
-        ipcpath: {
+        rpc: {
             demand: false,
-            describe: 'Path to node IPC socket file (this will automatically get passed as an option to Geth).',
+            describe: 'Path to node IPC socket file OR HTTP RPC hostport (if IPC socket file then --node-ipcpath will be set with this value).',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -117,7 +119,7 @@ const argv = require('yargs')
             type: 'boolean',
         },
         '': {
-            describe: 'All options will be passed onto the node (e.g. Geth).',
+            describe: 'To pass options to the underlying node (e.g. Geth) use the --node- prefix, e.g. --node-datadir',
             group: 'Node options:',
         }
     })
@@ -205,8 +207,48 @@ class Settings {
     return argv.ethpath;
   }
 
-  get ipcPath () {
-    return argv.ipcpath;
+  get rpcMode () {
+    return (argv.rpc && 0 > argv.rpc.indexOf('.ipc')) ? 'http' : 'ipc';
+  }
+
+  get rpcConnectConfig () {
+    if ('ipc' ===  this.rpcMode) {
+        return {
+            path: this.rpcIpcPath,
+        };
+    } else {
+        return {
+            hostPort: this.rpcHttpPath,
+        };        
+    }
+  }
+
+  get rpcHttpPath () {
+    return ('http' === this.rpcMode) ? argv.rpc : null;
+  }
+
+  get rpcIpcPath () {
+    let ipcPath = ('ipc' === this.rpcMode) ? argv.rpc : null;
+
+    if (ipcPath) {
+        return ipcPath;
+    }
+    
+    ipcPath = this.userHomePath;
+
+    if (process.platform === 'darwin') {
+        ipcPath += '/Library/Ethereum/geth.ipc';
+    } else if (process.platform === 'freebsd' ||
+       process.platform === 'linux' ||
+       process.platform === 'sunos') {
+        ipcPath += '/.ethereum/geth.ipc';
+    } else if (process.platform === 'win32') {
+        ipcPath = '\\\\.\\pipe\\geth.ipc';
+    }
+    
+    this._log.debug(`IPC path: ${ipcPath}`);
+
+    return ipcPath;
   }
 
   get nodeType () {
@@ -221,6 +263,45 @@ class Settings {
     return argv.nodeOptions;
   }
 
+  loadUserData (path) {
+      const fullPath = this.constructUserDataPath(path);
+
+      this._log.trace('Load user data', fullPath);
+
+      // check if the file exists
+      try {
+          fs.accessSync(fullPath, fs.R_OK);
+      } catch (err){
+          return null;
+      }
+
+      // try to read it
+      try {
+          return fs.readFileSync(fullPath, {encoding: 'utf8'});
+      } catch (err){
+          this._log.warn(`File not readable: ${fullPath}`, err);
+      }
+
+      return null;
+  }
+
+
+  saveUserData (path, data) {
+      if (!data) return; // return so we dont write null, or other invalid data
+
+      const fullPath = this.constructUserDataPath(path);
+
+      try {
+          fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
+      } catch (err){
+          this._log.warn(`Unable to write to ${fullPath}`, err);
+      }
+  }
+
+
+  constructUserDataPath (filePath) {
+      return path.join(this.userDataPath, filePath);   
+  }
 
 }
 

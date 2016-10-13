@@ -58,6 +58,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
+                "externalNode": "using external node",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
@@ -71,7 +72,8 @@
                 "toFront": "Bring All to Front"
             },
             "help": {
-                "label": "Help"
+                "label": "Help",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -83,6 +85,10 @@
                 "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -112,7 +118,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "No accounts set"
+                "noAccounts": "No accounts set",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -175,11 +182,14 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Execution failed.  Consumed all provided gas.",
+                "estimatedGasError": "Is seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",
                 "gasLimit": "Provide maximum fee",
-                "data": "Data",
+                "data": "Raw Data",
+                "parameters": "Parameters",
                 "buttons": {
                     "sendTransaction": "Send transaction"
                 },
@@ -187,8 +197,13 @@
                     "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
                     "wrongPassword": "Wrong password",
                     "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
-                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas"
-                }
+                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "sameAccount": "Can't send to itself"
+                },
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
                 "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
@@ -248,6 +263,14 @@
     },
     "elements": {
         "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one"
+        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one",
+        "type": {
+            "address" : "Address",
+            "bool" : "Boolean",
+            "int" : "Integer",
+            "uint" : "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

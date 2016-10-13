@@ -26,7 +26,7 @@ ipc.on('ipcProvider-setWritable', function(e, writable){
 
 
 
-ipcProviderWrapper = {
+const ipcProviderWrapper = {
     writable: false,
 
     /**
@@ -59,6 +59,20 @@ ipcProviderWrapper = {
         });
     },
     /**
+    Returns data from the IPC through the backend
+
+    @method once
+    @param {String} name `connect`, `error`, `end`, `timeout` or `data`
+    @param  {Funciton} callback
+    */
+    once: function(name, callback) {
+        // console.debug('ipcProviderWrapper: add listener', name);
+
+        ipc.once('ipcProvider-'+ name, function(e, result){
+            callback(result);
+        });
+    },
+    /**
     Removes listener
 
     @method removeListener
@@ -77,7 +91,14 @@ ipcProviderWrapper = {
     removeAllListeners: function(name){
         // console.debug('ipcProviderWrapper: remove all listeners', name);
 
-        ipc.removeAllListeners('ipcProvider-'+ name);
+        if(name) {
+            ipc.removeAllListeners('ipcProvider-'+ name);
+        } else {
+            ipc.removeAllListeners('ipcProvider-error');
+            ipc.removeAllListeners('ipcProvider-end');
+            ipc.removeAllListeners('ipcProvider-timeout');
+            ipc.removeAllListeners('ipcProvider-connect');
+        }
     },
     /**
     Write to the IPC connection through the backend

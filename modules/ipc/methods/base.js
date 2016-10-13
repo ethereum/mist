@@ -5,6 +5,7 @@ const Q = require('bluebird');
 
 const log = require('../../utils/logger').create('method');
 const Windows = require('../../windows');
+const db = require('../../db');
 
 
 /**
@@ -22,64 +23,23 @@ module.exports = class BaseProcessor {
     /**
      * Execute given request.
      * @param  {Object} conn    IPCProviderBackend connection data.
-     * @param  {Object|Array} payload JSON payload object
+     * @param  {Object|Array} payload  payload
      * @return {Promise}
      */
     exec (conn, payload) {
         this._log.trace('Execute request', payload);
 
-        const isBatch = _.isArray(payload);
-
-        const payloadList = isBatch ? payload : [payload];
-
-        // filter out payloads which already have an error
-        const finalPayload = _.filter(payloadList, (p) => {
-            return !p.error;
-        });
-
-        return Q.try(() => {
-            if (finalPayload.length) {
-                return conn.socket.send(finalPayload, {
-                    fullResult: true,
-                });
-            } else {
-                return [];
-            }
+        return conn.socket.send(payload, {
+            fullResult: true,
         })
-        .then((ret) => {
-            let result = [];
-
-            _.each(payloadList, (p) => {
-                if (p.error) {
-                    result.push(p);
-                } else {
-                    p = _.extend({}, p, ret.result.shift());
-
-                    this.sanitizePayload(conn, p);
-
-                    result.push(p);
-                }
-            });
-
-            // if single payload
-            if (!isBatch) {
-                result = result[0];
-
-                // throw error if found
-                if (result.error) {
-                    throw result.error;
-                }
-            }
-
-            return result;
-        });
+        .then((ret) => ret.result);
     }
 
 
     _isAdminConnection (conn) {
         // main window or popupwindows - always allow requests
         let wnd = Windows.getById(conn.id);
-        let tab = global.db.Tabs.findOne({ webviewId: conn.id });
+        let tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
 
         return ((wnd && ('main' === wnd.type || wnd.isPopup)) ||
                 (tab && _.get(tab, 'permissions.admin') === true));
@@ -87,16 +47,47 @@ module.exports = class BaseProcessor {
 
 
     /**
-    Sanitize a request or response payload.
+    Sanitize a request payload.
 
-    This will modify the input payload object.
+    This may modify the input payload object.
 
     @param {Object} conn The connection.
     @param {Object} payload The request payload.
+    @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
-    sanitizePayload (conn, payload) {
-        this._log.trace('Sanitize payload', payload);
+    sanitizeRequestPayload (conn, payload, isPartOfABatch) {
+        this._log.trace('Sanitize request payload', payload);
+        
+        this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
+    }
 
+
+    /**
+    Sanitize a response payload.
+
+    This may modify the input payload object.
+
+    @param {Object} conn The connection.
+    @param {Object} payload The request payload.
+    @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
+    */
+    sanitizeResponsePayload (conn, payload, isPartOfABatch) {
+        this._log.trace('Sanitize response payload', payload);
+        
+        this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
+    }
+    
+    
+    /**
+    Sanitize a request or response payload.
+
+    This may modify the input payload object.
+
+    @param {Object} conn The connection.
+    @param {Object} payload The request payload.
+    @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
+    */
+    _sanitizeRequestResponsePayload (conn, payload, isPartOfABatch) {
         if (!_.isObject(payload)) {
             throw this.ERRORS.INVALID_PAYLOAD;
         }
@@ -112,7 +103,5 @@ module.exports = class BaseProcessor {
             payload.error = this.ERRORS.METHOD_DENIED;
         }
     }
-
-
 };
 

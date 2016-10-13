@@ -1,5 +1,7 @@
 "use strict";
 
+if(require('electron-squirrel-startup')) return;
+
 global._ = require('./modules/utils/underscore');
 
 const Q = require('bluebird');
@@ -11,6 +13,7 @@ const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
+const shell = electron.shell;
 const timesync = require("os-timesync");
 const syncMinimongo = require('./modules/syncMinimongo.js');
 const ipc = electron.ipcMain;
@@ -23,6 +26,7 @@ const Windows = require('./modules/windows');
 
 const Settings = require('./modules/settings');
 Settings.init();
+
 
 
 if (Settings.cli.version) {
@@ -45,6 +49,9 @@ if (Settings.inAutoTestMode) {
 
 log.info(`Running in production mode: ${Settings.inProductionMode}`);
 
+if ('http' === Settings.rpcMode) {
+    log.warn('Connecting to a node via HTTP instead of IPC. This is less secure!!!'.toUpperCase());
+}
 
 // db
 const db = global.db = require('./modules/db');
@@ -160,6 +167,17 @@ var splashWindow;
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
 app.on('ready', function() {
+    // if using HTTP RPC then inform user
+    if ('http' === Settings.rpcMode) {
+        dialog.showErrorBox('Insecure RPC connection', `
+WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
+
+This is less secure than using local IPC - your passwords will be sent over the wire as plaintext. 
+
+Only do this if you have secured your HTTP connection or you know what you are doing.
+`);
+    }
+
     // initialise the db
     global.db.init().then(onReady).catch((err) => {
         log.error(err);
@@ -172,7 +190,7 @@ app.on('ready', function() {
 
 var onReady = function() {
     // sync minimongo
-    syncMinimongo.backendSync(global.db.Tabs);
+    syncMinimongo.backendSync();
 
     // Initialise window mgr
     Windows.init();
@@ -307,8 +325,28 @@ var onReady = function() {
             });
         });
 
-        // go!
-        ethereumNode.init()
+        // check legacy chain
+        // CHECK for legacy chain (FORK RELATED)
+        Q.try(() => {
+            // open the legacy chain message
+            if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
+
+                dialog.showMessageBox({
+                    type: "warning",
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.legacyChain.title'),
+                    detail: global.i18n.t('mist.errors.legacyChain.description')
+                }, function(){
+                    shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
+                    app.quit();
+                });
+
+                throw new Error('Cant start client due to legacy non-Fork setting.');
+            }            
+        })
+            .then(() => {
+                return ethereumNode.init();
+            })
             .then(function sanityCheck() {
                 if (!ethereumNode.isIpcConnected) {
                     throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
@@ -481,7 +519,9 @@ var startMainWindow = function() {
     });
 
     // observe Tabs for changes and refresh menu
-    let sortedTabs = global.db.Tabs.addDynamicView('sorted_tabs');
+    const Tabs = global.db.getCollection('tabs');
+
+    let sortedTabs = Tabs.addDynamicView('sorted_tabs');
     sortedTabs.applySimpleSort('position', false);
 
     let refreshMenu = function() {
@@ -496,7 +536,7 @@ var startMainWindow = function() {
         }, 200);
     };
 
-    global.db.Tabs.on('insert', refreshMenu);
-    global.db.Tabs.on('update', refreshMenu);
-    global.db.Tabs.on('delete', refreshMenu);
+    Tabs.on('insert', refreshMenu);
+    Tabs.on('update', refreshMenu);
+    Tabs.on('delete', refreshMenu);
 };

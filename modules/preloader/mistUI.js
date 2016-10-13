@@ -51,14 +51,13 @@ delete window.Web3;
 // ipc.send('setLanguage', navigator.language.substr(0,2));
 
 
-// A message will be send to a webview/window
+// A message will be sent to a webview/window
 ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
-
-    if(type === 'requestAccount' && !error) {
+    if((type === 'requestAccount') || (type === 'connectAccount') && !error) {
         Tabs.update({webviewId: id}, {$addToSet: {
             'permissions.accounts': value
-        }})
-    }
+        }});
+    } 
 });
 
 

@@ -6,7 +6,6 @@
 
 less
 tap:i18n
-tap:i18n-bundler
 jeeeyul:moment-with-langs
 raix:handlebar-helpers
 frozeman:animation-helper
@@ -41,3 +40,4 @@ spacebars
 check
 standard-minifier-css
 standard-minifier-js
+tap:i18n-bundler

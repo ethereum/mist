@@ -78,9 +78,9 @@ module.exports = function(isWallet) {
         platform: process.platform,
         requestAccount:  function(callback){
             if(callback) {
-                if(!this.callbacks['requestAccount'])
-                    this.callbacks['requestAccount'] = [];
-                this.callbacks['requestAccount'].push(callback);
+                if(!this.callbacks['connectAccount'])
+                    this.callbacks['connectAccount'] = [];
+                this.callbacks['connectAccount'].push(callback);
             }
 
             ipc.send('mistAPI_requestAccount');

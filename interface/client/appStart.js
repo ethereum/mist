@@ -4,11 +4,6 @@
 if(location.hash)
     return;
 
-
-// set browser as default tab
-if(!LocalStore.get('selectedTab'))
-    LocalStore.set('selectedTab', 'wallet');
-
 /**
 The init function of Mist
 
@@ -17,44 +12,48 @@ The init function of Mist
 mistInit = function(){
     console.info('Initialise Mist');
 
-    if (0 <= location.search.indexOf('reset-tabs')) {
-        console.info('Resetting UI tabs');
-        
-        Tabs.remove({});
-    }
+    Tabs.onceSynced.then(function() {
+        if (0 <= location.search.indexOf('reset-tabs')) {
+            console.info('Resetting UI tabs');
+            
+            Tabs.remove({});
+        }
 
-    if(!Tabs.findOne('browser')) {
-        console.debug('Insert tabs');
+        if(!Tabs.findOne('browser')) {
+            console.debug('Insert tabs');
 
-        Tabs.insert({
-            _id: 'browser',
-            url: 'https://ethereum.org',
-            position: 0
+            Tabs.insert({
+                _id: 'browser',
+                url: 'https://ethereum.org',
+                position: 0
+            });
+        }
+
+        Tabs.upsert({_id: 'wallet'}, {
+            url: 'https://wallet.ethereum.org',
+            position: 1,
+            permissions: {
+                admin: true
+            }
         });
-    }
 
-    Tabs.upsert({_id: 'wallet'}, {
-        url: 'https://wallet.ethereum.org',
-        position: 1,
-        permissions: {
-            admin: true
+        // Sets browser as default tab if:
+        // 1) there's no record of selected tab
+        // 2) data is corrupted (no saved tab matches localstore)
+        if(!LocalStore.get('selectedTab') || !Tabs.findOne(LocalStore.get('selectedTab'))){
+            LocalStore.set('selectedTab', 'wallet');
         }
     });
-
-    EthAccounts.init();
-    EthBlocks.init();
 };
 
 
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    // check that it is not syncing before
-    web3.eth.getSyncing(function(e, sync) {
-        if(e || !sync)
-            mistInit();
-    });
+    EthAccounts.init();
+    EthBlocks.init();
 
+    mistInit();
 
     console.debug('Setting language');
 

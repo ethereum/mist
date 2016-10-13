@@ -14,8 +14,8 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('../utils/logger').create('ipcProviderBackend');
-const ipcPath = require('./getIpcPath')();
 const Sockets = require('../sockets');
+const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const Windows = require('../windows');
 
@@ -26,6 +26,7 @@ const ERRORS = {
     METHOD_TIMEOUT: {"code": -32603, "message": "Request timed out for method  \'__method__\'."},
     TX_DENIED: {"code": -32603, "message": "Transaction denied"},
     BATCH_TX_DENIED: {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."},
+    BATCH_COMPILE_DENIED: {"code": -32603, "message": "Compilation denied, compileSolidity is not allowed in batch requests."},
 };
 
 
@@ -82,7 +83,7 @@ class IpcProviderBackend {
             } else {
                 log.debug(`Get/create socket connection, id=${ownerId}`);
 
-                socket = Sockets.get(ownerId, Sockets.TYPES.WEB3_IPC);
+                socket = Sockets.get(ownerId, Settings.rpcMode);
             }
         })
         .then(() => {
@@ -105,6 +106,10 @@ class IpcProviderBackend {
                             owner.send(`ipcProvider-${ev}`, JSON.stringify(data));
                         });
                     });                
+                });
+
+                socket.on('connect', (data) => {
+                    owner.send(`ipcProvider-connect`, JSON.stringify(data));
                 });
 
                 // pass notifications back up the chain
@@ -148,9 +153,7 @@ class IpcProviderBackend {
                         }                    
                     })
                     .then(() => {
-                        return socket.connect({
-                            path: ipcPath,
-                        }, {
+                        return socket.connect(Settings.rpcConnectConfig, {
                             timeout: 5000,
                         });
                     })
@@ -256,18 +259,79 @@ class IpcProviderBackend {
             // reparse original string (so that we don't modify input payload)
             let finalPayload = JSON.parse(originalPayloadStr);
 
-            this._sanitizeRequestPayload(conn, finalPayload);
+            // is batch?
+            const isBatch = _.isArray(finalPayload),
+                finalPayloadList = isBatch ? finalPayload : [finalPayload];
+              
+             // sanitize each and every request payload
+            _.each(finalPayloadList, (p) => {
+                let processor = (this._processors[p.method])
+                    ? this._processors[p.method]
+                    : this._processors.base;
 
-            // if a single payload and has an erro then throw it
-            if (!_.isArray(finalPayload) && finalPayload.error) {
+                processor.sanitizeRequestPayload(conn, p, isBatch);
+            });
+
+            // if a single payload and has an error then throw it
+            if (!isBatch && finalPayload.error) {
                 throw finalPayload.error;
             }
+            
+            // get non-error payloads
+            const nonErrorPayloads = _.filter(finalPayloadList, (p) => (!p.error));
 
-            if (this._processors[finalPayload.method]) {
-                return this._processors[finalPayload.method].exec(conn, finalPayload);
-            } else {
-                return this._processors.base.exec(conn, finalPayload);                
-            }
+            // execute non-error payloads
+            return Q.try(() => {
+                if (nonErrorPayloads.length) {
+                    // if single payload check if we have special processor for it
+                    // if not then use base generic processor
+                    let processor = (this._processors[finalPayload.method])
+                        ? this._processors[finalPayload.method]
+                        : this._processors.base;
+
+                    return processor.exec(
+                        conn, 
+                        isBatch ? nonErrorPayloads : nonErrorPayloads[0]
+                    );
+                } else {
+                    return [];
+                }
+            })
+            .then((ret) => {
+                log.trace('Got result', ret);
+                
+                let finalResult = [];
+                
+                // collate results
+                _.each(finalPayloadList, (p) => {
+                    if (p.error) {
+                        finalResult.push(p);
+                    } else {
+                        p = _.extend({}, p, isBatch ? ret.shift() : ret);
+
+                        let processor = (this._processors[p.method])
+                            ? this._processors[p.method]
+                            : this._processors.base;
+                        
+                        // sanitize response payload
+                        processor.sanitizeResponsePayload(conn, p, isBatch);
+                        
+                        finalResult.push(p);
+                    }
+                });                 
+                
+                // extract single payload result
+                if (!isBatch) {
+                    finalResult = finalResult.pop();
+                    
+                    // check if it's an error
+                    if (finalResult.error) {
+                        throw finalResult.error;
+                    }
+                }
+                
+                return finalResult;
+            });
         })
         .then((result) => {
             log.trace('Got result', result);
@@ -336,6 +400,10 @@ class IpcProviderBackend {
             }, error);
 
             if (e.message) {
+                if (_.isArray(e.message)) {
+                    e.message = e.message.pop();
+                }
+                
                 e.error = {
                     message: e.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'")
                 };

@@ -9,9 +9,16 @@ const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const fs = require('fs');
+<<<<<<<
+
+=======
+
+const app = electron.app; // Module to control application life.
+>>>>>>>
 const appMenu = require('./menuItems');
 const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
+const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
 const log = logger.create('ipcCommunicator');
 
@@ -114,45 +121,47 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
 
 // check wallet file type
 ipc.on('backendAction_checkWalletFile', function(e, path) {
-    fs.readFile(path, 'utf8', function (event, data) {
-        if(!event) {
+    fs.readFile(path, 'utf8', function(event, data) {
+        if (!event) {
             try {
-                var wallet = JSON.parse(data); // TODO web3-storage-definition matching
-            } catch (err) {
-                log.error("Wallet import: Cannot read file");
-                log.error(err);
-            }
-            if(data.indexOf('"ethaddr"') !== -1) {  // Presale wallet
-                e.sender.send('uiAction_checkedWalletFile', null, 'presale');
-            } else if(data.indexOf('"address"') !== -1) {  // web3 secret storage wallet
-                e.sender.send('uiAction_checkedWalletFile', null, 'web3');
+                var wallet = JSON.parse(data);
+                var result = keyfileRecognizer(wallet);
 
-                // TODO bad practice, copied from menuItems.js
-                var path = Settings.userHomePath;
-                // eth
-                if(ethereumNode.isEth) {
-                    if(process.platform === 'win32')
-                        path = Settings.appDataPath + '\\Web3\\keys';
-                    else
-                        path += '/.web3/keys';
+                if (result[0] === 'ethersale') {
+                    e.sender.send('uiAction_checkedWalletFile', null, 'presale');
+                } else if (result[0] === 'web3') {
+                    e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
-                // geth
+                    // TODO bad practice, copied from menuItems.js
+                    var path = Settings.userHomePath;
+                    // eth
+                    if (ethereumNode.isEth) {
+                        if (process.platform === 'win32')
+                            path = Settings.appDataPath + '\\Web3\\keys';
+                        else
+                            path += '/.web3/keys';
+
+                        // geth
+                    } else {
+                        if (process.platform === 'darwin')
+                            path += '/Library/Ethereum/keystore';
+
+                        if (process.platform === 'freebsd' ||
+                            process.platform === 'linux' ||
+                            process.platform === 'sunos')
+                            path += '/.ethereum/keystore';
+
+                        if (process.platform === 'win32')
+                            path = Settings.appDataPath + '\\Ethereum\\keystore';
+                    }
+                    // TODO write async, naming
+                    fs.writeFileSync(path + '/0x' + wallet['address'], data);
                 } else {
-                    if(process.platform === 'darwin')
-                        path += '/Library/Ethereum/keystore';
-
-                    if(process.platform === 'freebsd' ||
-                        process.platform === 'linux' ||
-                        process.platform === 'sunos')
-                        path += '/.ethereum/keystore';
-
-                    if(process.platform === 'win32')
-                        path = Settings.appDataPath + '\\Ethereum\\keystore';
+                    log.warn("Wallet import: Cannot recognize format");
                 }
-                // TODO write async, naming
-                fs.writeFileSync(path + '/0x' + wallet['address'], data);
-            } else {
-                log.warn("Wallet import: Cannot recognize format");
+            } catch (err) {
+                log.error("Wallet import: Cannot parse file, no valid json");
+                log.error(err);
             }
         }
     });
@@ -201,18 +210,18 @@ ipc.on('backendAction_importWalletFile', function(e, path, pw) {
             log.info('Imported presale: ', data);
         }
 
-        if(/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
+        if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
             e.sender.send('uiAction_importedWalletFile', 'Decryption Failed');
 
-        // if imported, return the address
-        } else if(data.indexOf('Address:') !== -1) {
+            // if imported, return the address
+        } else if (data.indexOf('Address:') !== -1) {
             var find = data.match(/\{([a-f0-9]+)\}/i);
-            if(find.length && find[1])
-                e.sender.send('uiAction_importedWalletFile', null, '0x'+ find[1]);
+            if (find.length && find[1])
+                e.sender.send('uiAction_importedWalletFile', null, '0x' + find[1]);
             else
                 e.sender.send('uiAction_importedWalletFile', data);
 
-        // if not stop, so we don't kill the process
+            // if not stop, so we don't kill the process
         } else {
             return;
         }

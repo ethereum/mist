@@ -17,6 +17,7 @@
     "bluebird": "^3.3.5",
     "electron-squirrel-startup": "^1.0.0",
     "ethereum-client-binaries": "^1.6.1",
+    "ethereum-keyfile-recognizer": "^1.0.1",
     "ethereumjs-abi": "^0.6.3",
     "got": "^6.3.0",
     "i18next": "^2.3.4",

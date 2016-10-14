@@ -19,8 +19,6 @@ try {
 
 
 
-
-
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] [Node options]')
     .option({
@@ -134,7 +132,10 @@ argv.nodeOptions = [];
 for (let optIdx in argv) {
     if (0 === optIdx.indexOf('node-')) {
         argv.nodeOptions.push('--' + optIdx.substr(5));
-        argv.nodeOptions.push(argv[optIdx]);
+        
+        if (true !== argv[optIdx]) {
+            argv.nodeOptions.push(argv[optIdx]);
+        }
 
         break;
     }

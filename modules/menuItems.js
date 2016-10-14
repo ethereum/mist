@@ -61,9 +61,10 @@ var menuTempl = function(webviews) {
     webviews = webviews || [];
 
     // APP
-    menu.push({
-        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
-        submenu: [
+    var fileMenu = [];
+    
+    if(process.platform === 'darwin') {
+        fileMenu.push(
             {
                 label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
                 click: function(){
@@ -108,15 +109,19 @@ var menuTempl = function(webviews) {
             },
             {
                 type: 'separator'
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
-                accelerator: 'CommandOrControl+Q',
-                click: function(){
-                    app.quit();
-                }
             }
-        ]
+        );
+    }
+    fileMenu.push(
+        {label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
+            accelerator: 'CommandOrControl+Q',
+            click: function(){
+                app.quit();
+            }
+        });
+    menu.push({
+        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
+        submenu: fileMenu
     });
 
     // ACCOUNTS
@@ -321,6 +326,7 @@ var menuTempl = function(webviews) {
         }];
     }
 
+    var externalNodeMsg = (ethereumNode.isOwnNode)? '' : ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
     devToolsMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devTools'),
             submenu: devtToolsSubMenu
@@ -331,24 +337,15 @@ var menuTempl = function(webviews) {
                 Windows.getByType('main').send('runTests', 'webview');
             }
         },{
-            label: i18n.t('mist.applicationMenu.develop.logFiles'),
+            label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
+            enabled: ethereumNode.isOwnNode, 
             click: function(){
-                var log = '';
                 try {
-                    log = fs.readFileSync(Settings.userDataPath + '/node.log', {encoding: 'utf8'});
-                    log = '...'+ log.slice(-1000);
+                    shell.showItemInFolder(Settings.userDataPath + '/node.log');
                 } catch(e){
                     log.info(e);
                     log = 'Couldn\'t load log file.';
                 };
-
-                dialog.showMessageBox({
-                    type: "info",
-                    buttons: ['OK'],
-                    message: 'Node log file',
-                    detail: log
-                }, function(){
-                });
             }
         }
     ];
@@ -498,19 +495,43 @@ var menuTempl = function(webviews) {
     })
 
     // HELP
-    if(process.platform === 'darwin') {
-        menu.push({
-            label: i18n.t('mist.applicationMenu.help.label'),
-            role: 'help',
-            submenu: [{
-                label: 'Report a bug on Github',
-                click: function(){
-                    shell.openExternal('https://github.com/ethereum/mist/issues');
-                }
-            }]
-        });
-    }
+    var helpMenu = []; 
 
+    if (process.platform === 'freebsd' || process.platform === 'linux' ||
+            process.platform === 'sunos' || process.platform === 'win32') {
+        helpMenu.push(
+            {
+                label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
+                click: function(){
+                    Windows.createPopup('about', {
+                        electronOptions: {
+                            width: 420,
+                            height: 230,
+                            alwaysOnTop: true,
+                        }
+                    });
+                }
+            },
+            {
+                label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
+                click: function() {
+                    updateChecker.runVisibly();
+                }
+            }
+        );
+    }
+    helpMenu.push({
+        label: i18n.t('mist.applicationMenu.help.reportBug'),
+        click: function(){
+            shell.openExternal('https://github.com/ethereum/mist/issues');
+        }
+    });
+
+    menu.push({
+        label: i18n.t('mist.applicationMenu.help.label'),
+        role: 'help',
+        submenu: helpMenu
+    });
     return menu;
 };
 

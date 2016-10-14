@@ -180,5 +180,3 @@ exports.frontendSync = function(coll) {
 
     return coll;
 };
-
-

@@ -58,6 +58,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
+                "externalNode": "using external node",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
@@ -71,7 +72,8 @@
                 "toFront": "Bring All to Front"
             },
             "help": {
-                "label": "Help"
+                "label": "Help",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {

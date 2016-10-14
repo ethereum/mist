@@ -1,0 +1,16 @@
+extends: airbnb
+
+plugins:
+  - import
+
+settings:
+  import/core-modules:  # don't lint for these missing packages in package.json
+    - electron  # 'electron-prebuilt' is being used
+
+rules:
+  indent:
+    - error
+    - 4
+
+globals:
+  i18n: true

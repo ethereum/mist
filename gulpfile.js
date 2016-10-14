@@ -45,7 +45,7 @@ else
 var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
-var applicationName = 'Mist'; 
+var applicationName = 'Mist';
 var electronVersion = require('electron-prebuilt/package.json').version;
 var gethVersion = '1.4.17';
 var nodeUrls = {
@@ -247,7 +247,7 @@ gulp.task('checkNodes', function(cb) {
             } catch (err) {
                 nodeUpdateNeeded = true;
             }
-        }        
+        }
     });
 
     cb();
@@ -335,7 +335,7 @@ gulp.task('copy-node-folder-files', ['checkNodes', 'clean:dist'], function(done)
 
 
 gulp.task('copy-files', [
-    'clean:dist', 
+    'clean:dist',
     'copy-app-folder-files',
     'copy-build-folder-files',
     'copy-node-folder-files',
@@ -406,7 +406,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
         name: applicationName.replace(/\s/, ''),
         productName: applicationName,
         description: applicationName,
-        homepage: "https://github.com/ethereum/mist",       
+        homepage: "https://github.com/ethereum/mist",
         build: {
             appId: "com.ethereum.mist." + type,
             "category": "public.app-category.productivity",
@@ -420,6 +420,12 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
               "nodes/eth/${os}-${arch}",
               "nodes/geth/${os}-${arch}"
             ],
+            linux: {
+                target: [
+                    "zip",
+                    "deb"
+                ]
+            },
             dmg: {
                 background: "../build/dmg-background.jpg",
                 "icon-size": 128,
@@ -451,7 +457,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
 
     // Copy build script
     shell.cp(
-        path.join(__dirname, 'scripts', 'build-dist.js'), 
+        path.join(__dirname, 'scripts', 'build-dist.js'),
         path.join(__dirname, 'dist_' + type, 'app')
     );
 
@@ -483,23 +489,36 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
+    const appNameHypen = applicationName.replace(/\s/, '-');
+    const appNameNoSpace = applicationName.replace(/\s/, '');
+    const versionDashed = version.replace(/\./g, '-');
+
     _.each(nodeUrls, (info, osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {
                 case 'win-ia32':
-                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`), releasePath);
+                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
+                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.exe`));
                     break;
                 case 'win-x64':
-                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`), releasePath);
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`),
+                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.exe`));
                     break;
                 case 'mac-x64':
-                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`), releasePath);
+                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`),
+                            path.join(releasePath, `${appNameHypen}-macosx-${versionDashed}.dmg`));
                     break;
                 case 'linux-ia32':
-                    shell.cp(path.join(distPath, `Mist-${version}-ia32.deb`), path.join(releasePath, `${applicationName}-${version}-ia32.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.deb`),
+                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.zip`),
+                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.zip`) );
                     break;
                 case 'linux-x64':
-                    shell.cp(path.join(distPath, `Mist-${version}.deb`), path.join(releasePath, `${applicationName}-${version}.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.deb`),
+                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.deb`) );
+                    shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.zip`),
+                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.zip`) );
                     break;
             }
         }
@@ -516,7 +535,7 @@ gulp.task('get-release-checksums', function(done) {
     let files = fs.readdirSync(releasePath);
 
     for (let file of files) {
-        let sha = shell.exec(`shasum -a 256 "./dist_${type}/release/${file}"`);
+        let sha = shell.exec(`shasum -a 256 "${file}"`, { cwd:releasePath });
 
         if (0 !== sha.code) {
             return done(new Error('Error executing shasum: ' + sha.stderr));

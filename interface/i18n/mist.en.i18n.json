@@ -147,7 +147,8 @@
                 "downloading": "Downloading client binaries ...",
                 "loadConfig": "Loading client config ...",
                 "filtering": "Filtering client binaries ...",
-                "done": "Client binaries resolved"
+                "done": "Client binaries resolved",
+                "error": "Error running downloaded binary."
             }
         },
         "popupWindows": {

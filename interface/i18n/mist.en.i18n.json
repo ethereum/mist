@@ -143,7 +143,15 @@
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
             "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
-            "launchApp": "Launch Application"
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Scanning for client binaries ...",
+                "downloading": "Downloading client binaries ...",
+                "loadConfig": "Loading client config ...",
+                "filtering": "Filtering client binaries ...",
+                "done": "Client binaries resolved",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "updateAvailable": {
@@ -182,7 +190,7 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Is seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
+                "estimatedGasError": "It seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
                 "transactionThrow": "The contract won't allow this transaction to be executed",
                 "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",

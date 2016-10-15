@@ -9,8 +9,8 @@ settings:
 
 rules:
   indent:
-    - error
-    - 4
+    - 2  # error
+    - 4  # number of spaces
 
 globals:
-  i18n: true
+  i18n: true  # don't warn about missing 'i18n' declaration

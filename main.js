@@ -13,6 +13,7 @@ const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
 const ClientBinaryManager = require('./modules/clientBinaryManager');
+const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
 
@@ -21,10 +22,14 @@ Q.config({
 });
 
 
+// logging setup
+const log = logger.create('main');
+
+
 Settings.init();
 
 if (Settings.cli.version) {
-    console.log(Settings.appVersion);
+    log.info(Settings.appVersion);
 
     process.exit(0);
 }
@@ -32,10 +37,6 @@ if (Settings.cli.version) {
 if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
-
-
-// logging setup
-const log = logger.create('main');
 
 
 if (Settings.inAutoTestMode) {
@@ -72,10 +73,7 @@ global.i18n = i18n; // TODO: detect language switches somehow
 
 
 // INTERFACE PATHS
-global.interfaceAppUrl;
-global.interfacePopupsUrl;
-
-// WALLET
+// - WALLET
 if (Settings.uiMode === 'wallet') {
     log.info('Starting in Wallet mode');
 
@@ -86,7 +84,7 @@ if (Settings.uiMode === 'wallet') {
         ? `file://${__dirname}/interface/wallet/index.html`
         : 'http://localhost:3000';
 
-// MIST
+// - MIST
 } else {
     log.info('Starting in Mist mode');
 
@@ -187,9 +185,7 @@ onReady = () => {
     Windows.init();
 
     // check for update
-    if (!Settings.inAutoTestMode) {
-        require('./modules/updateChecker').run();
-    }
+    if (!Settings.inAutoTestMode) UpdateChecker.run();
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
@@ -347,7 +343,7 @@ onReady = () => {
             })
             .then(function sanityCheck() {
                 if (!ethereumNode.isIpcConnected) {
-                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.')
+                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
                 }
 
                 /* At this point Geth is running and the socket is connected. */
@@ -365,7 +361,7 @@ onReady = () => {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {
-                        var onboardingWindow = Windows.createPopup('onboardingScreen', {
+                        const onboardingWindow = Windows.createPopup('onboardingScreen', {
                             primary: true,
                             electronOptions: {
                                 width: 576,

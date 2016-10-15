@@ -188,9 +188,9 @@
       "resolved": "https://registry.npmjs.org/error-ex/-/error-ex-1.3.0.tgz"
     },
     "ethereum-client-binaries": {
-      "version": "1.2.0",
-      "from": "ethereum-client-binaries@>=1.2.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/ethereum-client-binaries/-/ethereum-client-binaries-1.2.0.tgz"
+      "version": "1.2.1",
+      "from": "ethereum-client-binaries@>=1.2.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/ethereum-client-binaries/-/ethereum-client-binaries-1.2.1.tgz"
     },
     "ethereumjs-abi": {
       "version": "0.6.4",

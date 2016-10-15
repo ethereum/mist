@@ -22,7 +22,7 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
-
+const ClientBinaryManager = require('./modules/clientBinaryManager');
 
 const Settings = require('./modules/settings');
 Settings.init();
@@ -288,6 +288,11 @@ var onReady = function() {
 
 
     const kickStart = function() {
+        // client binary stuff
+        ClientBinaryManager.on('status', function(status, data) {
+            Windows.broadcast('uiAction_clientBinaryStatus', status, data);
+        });
+
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
             Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
@@ -348,6 +353,9 @@ var onReady = function() {
                 throw new Error('Cant start client due to legacy non-Fork setting.');
             }            
         })
+            .then(() => {
+                return ClientBinaryManager.init();
+            })
             .then(() => {
                 return ethereumNode.init();
             })

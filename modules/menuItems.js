@@ -9,6 +9,7 @@ const ipc = electron.ipcMain;
 const ethereumNode = require('./ethereumNode.js');
 const Windows = require('./windows');
 const updateChecker = require('./updateChecker');
+const ClientBinaryManager = require('./clientBinaryManager');
 const Settings = require('./settings');
 const fs = require('fs');
 const dialog = electron.dialog;
@@ -359,29 +360,44 @@ var menuTempl = function(webviews) {
     });
     // add node switch
     if(process.platform === 'darwin' || process.platform === 'win32') {
+        const nodeSubmenu = [];
+        
+        const ethClient = ClientBinaryManager.getClient('eth'),
+            gethClient = ClientBinaryManager.getClient('geth');
+
+        if (gethClient) {
+            nodeSubmenu.push(
+                {
+                  label: `Geth ${gethClient.version} (Go)`,
+                  checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                  enabled: ethereumNode.isOwnNode,
+                  type: 'checkbox',
+                  click: function(){
+                      restartNode('geth');
+                  }
+                }          
+            );
+        }
+
+        if (ethClient) {
+            nodeSubmenu.push(
+                {
+                    label: `Eth ${ethClient.version} (C++)`,
+                    checked: ethereumNode.isOwnNode && ethereumNode.isEth,
+                    enabled: ethereumNode.isOwnNode,
+                    // enabled: false,
+                    type: 'checkbox',
+                    click: function(){
+                        restartNode('eth');
+                    }
+                }
+            );
+        }
+        
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: [
-              {
-                label: 'Geth 1.4.17 (Go)',
-                checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
-                enabled: ethereumNode.isOwnNode,
-                type: 'checkbox',
-                click: function(){
-                    restartNode('geth');
-                }
-              },
-              {
-                label: 'Eth 1.3.0 (C++)',
-                checked: ethereumNode.isOwnNode && ethereumNode.isEth,
-                enabled: ethereumNode.isOwnNode,
-                // enabled: false,
-                type: 'checkbox',
-                click: function(){
-                    restartNode('eth');
-                }
-              }
-        ]});
+            submenu: nodeSubmenu
+        });
     }
 
     // add network switch

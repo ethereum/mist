@@ -143,7 +143,15 @@
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
             "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
-            "launchApp": "Launch Application"
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Scanning for client binaries ...",
+                "downloading": "Downloading client binaries ...",
+                "loadConfig": "Loading client config ...",
+                "filtering": "Filtering client binaries ...",
+                "done": "Client binaries resolved",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "updateAvailable": {

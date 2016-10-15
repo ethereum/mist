@@ -395,7 +395,7 @@ onReady = () => {
                         });
 
                         // launch app
-                        ipcMain.on('onBoarding_launchApp', function (e) {
+                        ipcMain.on('onBoarding_launchApp', (e) => {
                             // prevent that it closes the app
                             onboardingWindow.removeAllListeners('close');
                             onboardingWindow.close();

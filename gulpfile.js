@@ -315,6 +315,10 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
+    const appNameHypen = applicationName.replace(/\s/, '-');
+    const appNameNoSpace = applicationName.replace(/\s/, '');
+    const versionDashed = version.replace(/\./g, '-');
+    
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {

@@ -52,9 +52,9 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe.zip",
-                            "type": "zip",
-                            "bin": "geth-windows-4.0-amd64.exe"
+                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe",
+                            "type": "exe",
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -66,9 +66,9 @@
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe.zip",
-                            "type": "zip",
-                            "bin": "geth-windows-4.0-386.exe"
+                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe",
+                            "type": "exe",
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-386.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {

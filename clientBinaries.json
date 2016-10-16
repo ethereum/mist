@@ -8,7 +8,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-amd64.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-linux-amd64"
+                            "bin": "geth-1.4.18-stable-c72f545-linux-amd64"
                         },
                         "bin": "geth",
                         "commands": {
@@ -22,7 +22,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-386.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-linux-386"
+                            "bin": "geth-1.4.18-stable-c72f545-linux-386"
                         },
                         "bin": "geth",
                         "commands": {
@@ -38,7 +38,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-darwin-10.6-amd64"
+                            "bin": "geth-1.4.18-stable-c72f545-darwin-10.6-amd64"
                         },
                         "bin": "geth",
                         "commands": {
@@ -54,7 +54,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe.zip",
                             "type": "zip",
-                            "bin": "geth-windows-4.0-amd64.exe"
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -68,7 +68,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe.zip",
                             "type": "zip",
-                            "bin": "geth-windows-4.0-386.exe"
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-386.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {

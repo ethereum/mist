@@ -36,12 +36,8 @@ var createMenu = function(webviews) {
 };
 
 
-const restartNode = function(newType, newNetwork, daoFork) { // FORK RELATED
+const restartNode = function(newType, newNetwork) {
     newNetwork = newNetwork || ethereumNode.network;
-
-    // FORK RELATED
-    if(daoFork)
-        ethereumNode.daoFork = daoFork;
 
     log.info('Switch node', newType, newNetwork);
 
@@ -66,7 +62,7 @@ var menuTempl = function(webviews) {
 
     // APP
     var fileMenu = [];
-    
+
     if(process.platform === 'darwin') {
         fileMenu.push(
             {
@@ -342,7 +338,7 @@ var menuTempl = function(webviews) {
             }
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
-            enabled: ethereumNode.isOwnNode, 
+            enabled: ethereumNode.isOwnNode,
             click: function(){
                 try {
                     shell.showItemInFolder(Settings.userDataPath + '/node.log');
@@ -365,7 +361,7 @@ var menuTempl = function(webviews) {
     // add node switch
     if(process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];
-        
+
         const ethClient = ClientBinaryManager.getClient('eth'),
             gethClient = ClientBinaryManager.getClient('geth');
 
@@ -379,7 +375,7 @@ var menuTempl = function(webviews) {
                   click: function(){
                       restartNode('geth');
                   }
-                }          
+                }
             );
         }
 
@@ -397,7 +393,7 @@ var menuTempl = function(webviews) {
                 }
             );
         }
-        
+
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
             submenu: nodeSubmenu
@@ -499,7 +495,7 @@ var menuTempl = function(webviews) {
     })
 
     // HELP
-    var helpMenu = []; 
+    var helpMenu = [];
 
     if (process.platform === 'freebsd' || process.platform === 'linux' ||
             process.platform === 'sunos' || process.platform === 'win32') {

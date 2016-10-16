@@ -50,7 +50,7 @@ if (Settings.inAutoTestMode) {
 log.info(`Running in production mode: ${Settings.inProductionMode}`);
 
 if ('http' === Settings.rpcMode) {
-    log.warn('Connecting to a node via HTTP instead of IPC. This is less secure!!!'.toUpperCase());
+    log.warn('Connecting to a node via HTTP instead of IPC. This is less secure!!!!'.toUpperCase());
 }
 
 // db
@@ -150,7 +150,7 @@ app.on('before-quit', function(event){
                 return db.close();
             })
             .then(function() {
-                app.quit(); 
+                app.quit();
             });
 
         }, 500);
@@ -172,7 +172,7 @@ app.on('ready', function() {
         dialog.showErrorBox('Insecure RPC connection', `
 WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
 
-This is less secure than using local IPC - your passwords will be sent over the wire as plaintext. 
+This is less secure than using local IPC - your passwords will be sent over the wire as plaintext.
 
 Only do this if you have secured your HTTP connection or you know what you are doing.
 `);
@@ -347,7 +347,7 @@ var onReady = function() {
                 });
 
                 throw new Error('Cant start client due to legacy non-Fork setting.');
-            }            
+            }
         })
             .then(() => {
                 return ClientBinaryManager.init();
@@ -365,57 +365,6 @@ var onReady = function() {
 
                 // update menu, to show node switching possibilities
                 appMenu();
-            })
-            // FORK RELATED
-            .then(function hardForkOption() {
-                // open the fork popup
-                if (ethereumNode.isMainNetwork && !ethereumNode.daoFork) {
-
-                    return new Q((resolve, reject) => {
-                        var forkChoiceWindow = Windows.createPopup('forkChoice', {
-                            primary: true,
-                            electronOptions: {
-                                width: 640,
-                                height: 580,
-                            },
-                        });
-
-                        forkChoiceWindow.on('close', function(){
-                            app.quit();
-                        });
-
-                        // choose the fork side
-                        ipc.on('forkChoice_choosen', function(e, daoFork) {
-                            // prevent that it closes the app
-                            forkChoiceWindow.removeAllListeners('close');
-                            forkChoiceWindow.close();
-
-                            ipc.removeAllListeners('forkChoice_choosen');
-
-                            log.debug('Enable DAO Fork? ', daoFork);
-
-                            // no need to restart
-                            if(!daoFork)
-                                return resolve();
-
-                            // set forkside
-                            ethereumNode.daoFork = daoFork;
-                            
-                            // start node
-                            ethereumNode.restart(ethereumNode.type, 'main')
-                                .then(function nodeRestarted() {
-                                    appMenu();
-
-                                    resolve();
-                                })
-                                .catch((err) => {
-                                    log.error('Error restarting node', err);
-
-                                    reject(err);
-                                });
-                        });
-                    });
-                }
             })
             .then(function getAccounts() {
                 return ethereumNode.send('eth_accounts', []);
@@ -444,7 +393,7 @@ var onReady = function() {
                             let newNetwork = testnet ? 'test' : 'main';
 
                             log.debug('Onboarding change network', newNetwork);
-                            
+
                             ethereumNode.restart(newType, newNetwork)
                                 .then(function nodeRestarted() {
                                     appMenu();
@@ -540,7 +489,7 @@ var startMainWindow = function() {
 
             global.webviews = sortedTabs.data();
 
-            appMenu(global.webviews);            
+            appMenu(global.webviews);
         }, 200);
     };
 

@@ -98,13 +98,11 @@ ipc.on('backendAction_setLanguage', function(e, lang){
 // import presale file
 ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
     const spawn = require('child_process').spawn;
-    const ClientBinaryManager = require('./clientBinaryManager');
+    const getNodePath = require('./getNodePath.js');
     var error = false;
-    
-    const binPath = ClientBinaryManager.getClient('geth').binPath;
-    
+
     // start import process
-    var nodeProcess = spawn(binPath, ['wallet', 'import', path]);
+    var nodeProcess = spawn(getNodePath('geth'), ['wallet', 'import', path]);
 
     nodeProcess.once('error',function(){
         error = true;

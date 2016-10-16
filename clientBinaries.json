@@ -36,7 +36,7 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
                             "type": "tar",
                             "bin": "geth-1.4.18-stable-c72f545-darwin-10.6-amd64"
                         },

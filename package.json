@@ -23,6 +23,7 @@
     "log-rotate": "^0.2.7",
     "log4js": "^0.6.35",
     "lokijs": "^1.4.1",
+    "minimist": "^1.2.0",
     "minimongo-standalone": "0.0.9",
     "numeral": "^1.5.3",
     "optimist": "^0.6.1",

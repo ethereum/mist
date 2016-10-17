@@ -9,3 +9,4 @@ dist_wallet/
 dist_mist/
 config.json
 nodes/geth/
+npm-debug.log

@@ -32,13 +32,16 @@ else
 ## API
 
 
-- [mist.platform](#mistmenuupdateid-options-callback)
-- [mist.menu](#mistmenuupdateid-options-callback)
+- [mist.platform](#mistplatform)
+- [mist.requestAccount](#mistrequestaccountcallback)(callback)
+- [mist.menu](#mistmenu)
 - [mist.menu.setBadge](#mistmenusetbadgetext)(text)
 - [mist.menu.add](#mistmenuaddid-options-callback)(id, options, callback)
 - [mist.menu.update](#mistmenuupdateid--options--callback)(id [, options] [, callback])
 - [mist.menu.remove](#mistmenuremoveid)(id)
 - [mist.menu.clear](#mistmenuclear)()
+- [mist.sounds](#mistsounds)
+- [mist.sounds.bip](#mistsoundsbip)()
 
 
 ### mist.platform

@@ -255,6 +255,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
             win: {
                 target: [
                     "zip",
+                    "squirrel",
                 ]
             },
             dmg: {
@@ -328,10 +329,14 @@ gulp.task('release-dist', ['build-dist'], function(done) {
         if (platformIsActive(osArch)) {
             switch (osArch) {
                 case 'win-ia32':
+                    shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
+                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.exe`));
                     shell.cp(path.join(distPath, `${applicationName}-${version}-ia32-win.zip`),
                             path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.zip`));
                     break;
                 case 'win-x64':
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`),
+                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.exe`));
                     shell.cp(path.join(distPath, `${applicationName}-${version}-win.zip`),
                             path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.zip`));
                     break;

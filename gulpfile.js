@@ -41,7 +41,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist';
-var electronVersion = require('electron-prebuilt/package.json').version;
+var electronVersion = require('electron/package.json').version;
 
 
 var packJson = require('./package.json');

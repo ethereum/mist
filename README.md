@@ -14,6 +14,8 @@ If you want install the app from a pre-built version on the [release page](https
 you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
+
+#### Config folder
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
@@ -53,18 +55,12 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
     $ npm install
-    $ gulp update-nodes
-
-
-#### Options
-It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
@@ -78,6 +74,7 @@ In the original window you can then start Mist with:
     $ cd mist
     $ electron .
 
+*NOTE: client-binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)*
 
 ### Run the Wallet
 
@@ -159,7 +156,6 @@ To create a binaries you need to install [`electron-builder` dependencies](https
 To generate the binaries simply run:
 
     $ cd mist
-    $ gulp update-nodes
     $ gulp
 
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
@@ -168,26 +164,6 @@ To generate the binaries simply run:
 This will generate the binaries inside the `dist_mist/release` or `dist_wallet/release` folder.
 
 #### Options
-
-##### platform
-
-Additional you can only build the windows, linux, mac or all binary by using the `platform` option:
-
-    $ gulp update-nodes --platform mac
-
-    // And
-    $ gulp mist --platform mac
-
-    // Or
-    $ gulp mist --platform mac,win
-
-
-Options are:
-
-- `mac` (Mac OSX)
-- `win` (Windows)
-- `linux` (Linux)
-- `all` (default)
 
 ##### walletSource
 
@@ -206,7 +182,7 @@ Options are:
 
 Spits out the SHA256 checksums of distributables.
 
-It expects installer/zip files to be in the generated folders e.g. `dist_wallet/release`
+It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
     $ gulp mist-checksums
 

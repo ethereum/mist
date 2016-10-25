@@ -64,7 +64,7 @@ To update Mist in the future, run:
 
 
 #### Options
-It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
+It may be preferable to only download platform-specific nodes by passing the `--platform` flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
@@ -78,6 +78,7 @@ In the original window you can then start Mist with:
     $ cd mist
     $ electron .
 
+*NOTE: use `--help` to display available options, e.g. `--loglevel debug` (or `trace`) for verbose output*
 
 ### Run the Wallet
 

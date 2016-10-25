@@ -8,6 +8,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-amd64.tar.bz2",
                             "type": "tar",
+                            "sha256": "ad74e052a9fba8e7389ee64c8b664c4dd9e9e2209276149bc49818f9064689b1",
                             "bin": "geth-1.4.18-stable-c72f545-linux-amd64"
                         },
                         "bin": "geth",
@@ -22,6 +23,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-386.tar.bz2",
                             "type": "tar",
+                            "sha256": "bb23492f948527ae153dee2f9315996e02067ee045f83b204d3cc6aa16e1c1f5",
                             "bin": "geth-1.4.18-stable-c72f545-linux-386"
                         },
                         "bin": "geth",
@@ -38,6 +40,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
                             "type": "tar",
+                            "sha256": "1f7ac168a4502a9e88474f74b3cef2dda4843f350d7f9fcdd9ef10dff30b7282",
                             "bin": "geth-1.4.18-stable-c72f545-darwin-10.6-amd64"
                         },
                         "bin": "geth",
@@ -54,6 +57,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe.zip",
                             "type": "zip",
+                            "sha256": "7503cf9ab55225ab22674295e210a107ded2a8d4af57dc7cfcaa4c2b863b506e",
                             "bin": "geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe"
                         },
                         "bin": "geth.exe",
@@ -68,6 +72,7 @@
                         "download": {
                             "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe.zip",
                             "type": "zip",
+                            "sha256": "a24af273139c394072806f193ad6cf4d64114a6c7c7fca83f90f1c5c8e4347bb",
                             "bin": "geth-1.4.18-stable-c72f545-windows-4.0-386.exe"
                         },
                         "bin": "geth.exe",

@@ -165,6 +165,27 @@ This will generate the binaries inside the `dist_mist/release` or `dist_wallet/r
 
 #### Options
 
+##### platform
+
+Additional you can only build the windows, linux, mac or all binary by using the `platform` option:
+
+    $ gulp update-nodes --platform mac
+
+    // And
+    $ gulp mist --platform mac
+
+    // Or
+    $ gulp mist --platform mac,win
+
+
+Options are:
+
+- `mac` (Mac OSX)
+- `win` (Windows)
+- `linux` (Linux)
+- `all` (default)
+
+
 ##### walletSource
 
 With the `walletSource` you can specify the branch to use, default ist `master`:

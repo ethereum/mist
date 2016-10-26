@@ -266,7 +266,7 @@ class Windows {
         opts.isPopup = true;
 
         if (opts.useWeb3) {
-            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';
+            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';
         } else {
             opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindowsNoWeb3.js';
         }

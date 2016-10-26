@@ -146,7 +146,7 @@ Template['layout_browserBar'].events({
         mist.requestAccount(function(e, addresses){
             var tabId;
 
-            mist.syncMinimongo.frontendSync(Tabs);
+            window.syncMinimongo.frontendSync(Tabs);
             
             tabId = LocalStore.get('selectedTab');
 

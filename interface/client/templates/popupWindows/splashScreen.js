@@ -166,7 +166,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
     },
     /**
     Updates the Sync Message live

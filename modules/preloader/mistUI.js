@@ -10,7 +10,7 @@ const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
-const syncMinimongo = require('../syncMinimongo.js');
+const syncDb = require('../syncDb.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
@@ -36,14 +36,13 @@ setTimeout(function(){
 
 window.mist = mist();
 window.dirname = remote.getGlobal('dirname');
-window.syncMinimongo = syncMinimongo;
+window.syncDb = syncDb;
 window.ipc = ipc;
 
 
 // remove require and modules, when node-integration is on
 delete window.module;
 delete window.require;
-
 
 
 // prevent overwriting the Dapps Web3

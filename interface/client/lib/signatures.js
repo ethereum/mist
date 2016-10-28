@@ -1,4 +1,172 @@
 window.SIGNATURES = {
+	"0x30a24abd": [
+		"create(bytes4,bytes)"
+	],
+	"0xa039e3c7": [
+		"testSetNotTransferable()"
+	],
+	"0xac3e6b2f": [
+		"testSetNotRetractable()"
+	],
+	"0xee0dc478": [
+		"testSetEnforceRevisions()"
+	],
+	"0xad544dcb": [
+		"testSetNotUpdatable()"
+	],
+	"0xda5c0a7c": [
+		"testDisown()"
+	],
+	"0x804e11dc": [
+		"testThrowsDisownNotTransferable()"
+	],
+	"0x0af4626d": [
+		"testRetract()"
+	],
+	"0xd96e5565": [
+		"testThrowsRetractNotRetractable()"
+	],
+	"0xcaab0acc": [
+		"testThrowCreateRetracted()"
+	],
+	"0x465e759b": [
+		"testRestart()"
+	],
+	"0x5292c1a9": [
+		"testThrowsRestartEnforceRevisions()"
+	],
+	"0x1b769e74": [
+		"testThrowsRestartNotUpdatable()"
+	],
+	"0x40695625": [
+		"testRetractLatestRevision()"
+	],
+	"0xe0cfc05c": [
+		"testThrowsRetractLatestRevisionDoesntHaveAdditionalRevisions()"
+	],
+	"0x8e1ffb19": [
+		"testThrowsRetractLatestRevisionEnforceRevisions()"
+	],
+	"0xe82f7dd4": [
+		"testThrowsRetractLatestRevisionNotUpdatable()"
+	],
+	"0x1fb2f2a0": [
+		"testUpdateLatestRevision()"
+	],
+	"0x2eb5c61f": [
+		"testThrowsUpdateLatestRevisionEnforceRevisions()"
+	],
+	"0x13137731": [
+		"testThrowsUpdateLatestRevisionNotUpdatable()"
+	],
+	"0x22057bc7": [
+		"getAllRevisionBlockNumbers(bytes20)"
+	],
+	"0x74f8d96e": [
+		"getRevisionBlockNumber(bytes20,uint256)"
+	],
+	"0x3ef87414": [
+		"getRevisionCount(bytes20)"
+	],
+	"0xe487eb58": [
+		"getOwner(bytes20)"
+	],
+	"0xaa5d4719": [
+		"getTransferable(bytes20)"
+	],
+	"0x3c335b0e": [
+		"getRetractable(bytes20)"
+	],
+	"0xdba1ac3d": [
+		"getEnforceRevisions(bytes20)"
+	],
+	"0x3df91162": [
+		"getUpdatable(bytes20)"
+	],
+	"0x01fd89a4": [
+		"getFlags(bytes20)"
+	],
+	"0xba15e52e": [
+		"getInfo(bytes20)"
+	],
+	"0xec035393": [
+		"_getAllRevisionBlockNumbers(bytes20)"
+	],
+	"0xfb47a067": [
+		"_getRevisionBlockNumber(bytes20,uint256)"
+	],
+	"0x08b7c13b": [
+		"getExists(bytes20)"
+	],
+	"0xb971b4e5": [
+		"setNotTransferable(bytes20)"
+	],
+	"0x976b01c0": [
+		"setNotRetractable(bytes20)"
+	],
+	"0x9243e088": [
+		"setEnforceRevisions(bytes20)"
+	],
+	"0xd0c24e93": [
+		"setNotUpdatable(bytes20)"
+	],
+	"0xd6ca8ccb": [
+		"disown(bytes20)"
+	],
+	"0xb06df18e": [
+		"transfer(bytes20,address)"
+	],
+	"0x47bdb7f4": [
+		"transferDisable(bytes20)"
+	],
+	"0x12511c14": [
+		"transferEnable(bytes20)"
+	],
+	"0xcf7315c6": [
+		"retract(bytes20)"
+	],
+	"0xe0a70811": [
+		"restart(bytes20,bytes)"
+	],
+	"0x5ccd2f9b": [
+		"_deleteAllPackedRevisionBlockNumbers(bytes20)"
+	],
+	"0xa7e93e87": [
+		"retractLatestRevision(bytes20)"
+	],
+	"0x9e65c7e5": [
+		"updateLatestRevision(bytes20,bytes)"
+	],
+	"0xa84c5330": [
+		"createNewRevision(bytes20,bytes)"
+	],
+	"0x338a1379": [
+		"_setPackedBlockNumber(bytes20,uint256)"
+	],
+	"0x5b37e150": [
+		"create(bytes32,bytes)"
+	],
+	"0xd0b52156": [
+		"getIpfsHash(address,address)"
+	],
+	"0x337b1cf9": [
+		"setIpfsHash(bytes)"
+	],
+	"0x7fefde53": [
+		"WillRegistry()"
+	],
+	"0xe597f402": [
+		"create(bytes1,bytes32,bytes)"
+	],
+	"0x8d375da2": [
+		"testMakeItFail()"
+	],
+	"0x2551858e": [
+		"getFlags(bytes32)"
+	],
+	"0x5f0edfb8": [
+		"create(bytes,bytes32,bytes1)"
+	],
 	"0x85b73d3c": [
 		"testCreateNewRevision()"
 	],

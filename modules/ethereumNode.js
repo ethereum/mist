@@ -11,9 +11,9 @@ const logRotate = require('log-rotate');
 const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
-const getNodePath = require('./getNodePath.js');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./sockets');
+const ClientBinaryManager = require('./clientBinaryManager');
 const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
@@ -281,7 +281,6 @@ class EthereumNode extends EventEmitter {
                 Settings.saveUserData('node', this._type);
                 Settings.saveUserData('network', this._network);
 
-
                 return this._socket.connect(Settings.rpcConnectConfig, {
                         timeout: 30000 /* 30s */
                     })
@@ -325,7 +324,7 @@ class EthereumNode extends EventEmitter {
         this._network = network;
         this._type = nodeType;
 
-        const binPath = getNodePath(nodeType);
+        const binPath = ClientBinaryManager.getClient(nodeType).binPath;
 
         log.debug(`Start node using ${binPath}`);
 
@@ -490,15 +489,12 @@ class EthereumNode extends EventEmitter {
     }
 
 
-
     _loadDefaults () {
         log.trace('Load defaults');
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
     }
-
-
 }
 
 

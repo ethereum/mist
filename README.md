@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
+[![Code Climate](https://codeclimate.com/github/ethereum/mist/badges/gpa.svg)](https://codeclimate.com/github/ethereum/mist)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
@@ -27,7 +28,7 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 ### Dependencies
 
-Requirements: 
+Requirements:
 
 * Electron v1.3.5
 * Node v4.3.0 or above
@@ -35,7 +36,7 @@ Requirements:
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@1.3.5
+    $ npm install -g electron@1.3.5
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:
@@ -52,14 +53,12 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
     $ npm install
-    $ gulp update-nodes
 
 
 #### Options
@@ -96,7 +95,7 @@ In the original window you can then start Mist using wallet mode:
 
 ### Connecting to node via HTTP instead of IPC
 
-This is useful if you have a node running on another machine, though note that 
+This is useful if you have a node running on another machine, though note that
 it's less secure than using the default IPC method.
 
 ```bash
@@ -106,14 +105,14 @@ $ electron . --rpc http://localhost:8545
 
 ### Passing options to Geth
 
-You can pass command-line options directly to Geth by prefixing them with `--node-` in 
+You can pass command-line options directly to Geth by prefixing them with `--node-` in
 the command-line invocation:
 
 ```bash
-$ electron . --mode mist --node-rpcport 19343 --node-networkid 2 
+$ electron . --mode mist --node-rpcport 19343 --node-networkid 2
 ```
 
-The `--rpc` Mist option is a special case. If you set this to an IPC socket file 
+The `--rpc` Mist option is a special case. If you set this to an IPC socket file
 path then the `--ipcpath` option automatically gets set, i.e.:
 
 ```bash
@@ -129,17 +128,17 @@ $ electron . --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
 
 ### Using Mist with a privatenet
 
-To run a private network you will need to set the IPC path, network id and data 
+To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
 $ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
 ```
 
-_NOTE: since `ipcpath` is also a Mist option you do not need to also include a 
+_NOTE: since `ipcpath` is also a Mist option you do not need to also include a
 `--node-ipcpath` option._
 
-You can also run `geth` separately yourself with the same options prior to start 
+You can also run `geth` separately yourself with the same options prior to start
 Mist normally.
 
 
@@ -215,6 +214,6 @@ It expects installer/zip files to be in the generated folders e.g. `dist_wallet/
     e114d6188963dfdae0489abf4e8923da58b39ff9cdbaad26e803af27c7ce55d1  ./dist_wallet/release/Ethereum Wallet-0.8.1.deb
     930787dd2f5ed6931068bff9244bccc01f397f552c48ded0f08e515e276dd080  ./dist_wallet/release/Ethereum Wallet-0.8.1.dmg
 
-### Code signing for production 
+### Code signing for production
 
 **As of #972 we've updated the build process and thus need to redo code-signing.**

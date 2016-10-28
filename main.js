@@ -22,7 +22,7 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
 const Windows = require('./modules/windows');
-
+const ClientBinaryManager = require('./modules/clientBinaryManager');
 
 const Settings = require('./modules/settings');
 Settings.init();
@@ -43,7 +43,6 @@ if (Settings.cli.ignoreGpuBlacklist) {
 // logging setup
 const log = logger.create('main');
 
-
 if (Settings.inAutoTestMode) {
     log.info('AUTOMATED TESTING');
 }
@@ -53,9 +52,6 @@ log.info(`Running in production mode: ${Settings.inProductionMode}`);
 if ('http' === Settings.rpcMode) {
     log.warn('Connecting to a node via HTTP instead of IPC. This is less secure!!!!'.toUpperCase());
 }
-
-
-
 
 // db
 const db = global.db = require('./modules/db');
@@ -154,7 +150,7 @@ app.on('before-quit', function(event){
                 return db.close();
             })
             .then(function() {
-                app.quit(); 
+                app.quit();
             });
 
         }, 500);
@@ -176,7 +172,7 @@ app.on('ready', function() {
         dialog.showErrorBox('Insecure RPC connection', `
 WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
 
-This is less secure than using local IPC - your passwords will be sent over the wire as plaintext. 
+This is less secure than using local IPC - your passwords will be sent over the wire as plaintext.
 
 Only do this if you have secured your HTTP connection or you know what you are doing.
 `);
@@ -288,6 +284,11 @@ var onReady = function() {
 
 
     const kickStart = function() {
+        // client binary stuff
+        ClientBinaryManager.on('status', function(status, data) {
+            Windows.broadcast('uiAction_clientBinaryStatus', status, data);
+        });
+
         // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', function() {
             Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
@@ -346,8 +347,11 @@ var onReady = function() {
                 });
 
                 throw new Error('Cant start client due to legacy non-Fork setting.');
-            }            
+            }
         })
+            .then(() => {
+                return ClientBinaryManager.init();
+            })
             .then(() => {
                 return ethereumNode.init();
             })
@@ -389,7 +393,7 @@ var onReady = function() {
                             let newNetwork = testnet ? 'test' : 'main';
 
                             log.debug('Onboarding change network', newNetwork);
-                            
+
                             ethereumNode.restart(newType, newNetwork)
                                 .then(function nodeRestarted() {
                                     appMenu();
@@ -485,7 +489,7 @@ var startMainWindow = function() {
 
             global.webviews = sortedTabs.data();
 
-            appMenu(global.webviews);            
+            appMenu(global.webviews);
         }, 200);
     };
 

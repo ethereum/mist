@@ -11,6 +11,19 @@ The body template
 @constructor
 */
 
+Template.body.onCreated(function() {
+    ipc.on('uiAction_EnableSecurityOverlay', function() {
+        console.log('uiAction_EnableSecurityOverlay');
+        document.querySelector('html').classList.add('has-security-overlay');
+    });
+
+    ipc.on('uiAction_DisableSecurityOverlay', function() {
+        console.log('uiAction_DisableSecurityOverlay');
+        document.querySelector('html').classList.remove('has-security-overlay');
+    });
+
+});
+
 Template.body.helpers({
     /**
     Chooses the view to render at start
@@ -31,6 +44,7 @@ Template.body.helpers({
         }
     }
 });
+
 
 /*
 Template.body.events({

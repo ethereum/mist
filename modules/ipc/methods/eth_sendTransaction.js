@@ -56,7 +56,10 @@ module.exports = class extends BaseProcessor {
                 },
             });
 
+            ipc.send('uiAction_EnableSecurityOverlay');
+
             modalWindow.on('closed', () => {
+                ipc.send('uiAction_DisableSecurityOverlay');
                 // user cancelled?
                 if (!modalWindow.processed) {
                     reject(this.ERRORS.METHOD_DENIED);

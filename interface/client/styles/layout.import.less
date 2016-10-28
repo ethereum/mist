@@ -140,20 +140,24 @@ main {
     -webkit-app-region: drag;
 }
 
-.security-overlay {
-    &.is-shown {
-        background-color: rgba(0,0,0,0.3);
+
+// Fading Mist interface when sendTransactionConfirmationPopup is shown.
+html {
+    body {
+        transition: all 150ms ease-out;
     }
-    pointer-events: none;
-    transition: 200ms background-color ease-out;
-    background-color: rgba(0,0,0,0.0);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 1000;
+    &.has-security-overlay {
+        box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.7) inset;
+        pointer-events: none;
+        body {
+            -webkit-filter: blur(5px) brightness(0.5);
+        }
+    }
+    &.linux.has-security-overlay body {
+        filter: brightness(0.5);
+    }
 }
+
 
 .tab-view {
     position: absolute;

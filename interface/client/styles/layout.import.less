@@ -19,14 +19,17 @@
 
 
 // MAC
-.darwin {
+.darwin, .linux {
     body {
         background: @colorOSBackgroundFocus;
 
         &.app-blur {
             background: @colorOSBackgroundBlur;
         }
+}
 
+
+.darwin {
         aside {
             top: @gridHeight * 2;
         }

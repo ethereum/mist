@@ -9,8 +9,8 @@
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
 
-if (typeof window.mist.syncMinimongo !== 'undefined') {
-    Tabs = window.mist.syncMinimongo.frontendSync(Tabs);
+if (typeof window.syncMinimongo !== 'undefined') {
+    Tabs = window.syncMinimongo.frontendSync(Tabs);
 }
 
 

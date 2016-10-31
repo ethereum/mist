@@ -1,9 +1,5 @@
 "use strict";
 
-const electron = require('electron');
-const ipc = electron.ipcMain;
-const EventEmitter = require('events').EventEmitter;
-const log = require('./utils/logger').create('SecurityOverlay');
 const Windows = require('./windows');
 
 class SecurityOverlay {

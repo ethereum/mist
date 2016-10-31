@@ -7,42 +7,29 @@
 @colorWinBackgroundFocus: #F0F0F0;
 @colorWinBackgroundBlur: #F0F0F0;
 
-@colorLinuxBackgroundFocus: #403F3A;
-@colorLinuxBackgroundBlur: #3C3B36;
-
-
 // WINDOWS
 .win32 {
 
 }
+
 // LINUX
+// use only to solve OS conflicts
 .linux {
-    body {
-        background: @colorLinuxBackgroundFocus;
-        color: @colorWhite;
-
-        &.app-blur {
-            background: @colorLinuxBackgroundBlur;
-        }
-    }
-
-    aside.sidebar ul li:not(.selected) button.main {
-        color: @colorWhite;
-    }
-
-    code {
-        background-color: rgba(245, 244, 242, 0.2);
-    }
 }
+
+
 // MAC
-.darwin {
+.darwin, .linux {
     body {
         background: @colorOSBackgroundFocus;
 
         &.app-blur {
             background: @colorOSBackgroundBlur;
         }
+}
 
+
+.darwin {
         aside {
             top: @gridHeight * 2;
         }
@@ -110,6 +97,10 @@ aside {
         // box-shadow: @shadowStandard;
     }
 }
+.linux aside {
+    top: 0;
+}
+
 
 main {
     z-index: 1;
@@ -118,16 +109,6 @@ main {
     left: @widthSideBar;
     top: 0; 
     bottom: 0;
-
-    &.open-bar {
-        overflow: hidden;
-        .tab-view:not(.hidden) {
-            -webkit-filter: blur(1.5px) brightness(1.08) saturate(1.01) opacity(0.5);
-            // filter: blur(1.5px) brightness(1.05) saturate(1.1) opacity(0.5);
-            transform: scale(1.005);
-
-        }
-    }
 }
 
 .drag-bar {
@@ -178,4 +159,7 @@ webview {
     overflow: hidden;
     margin-top: @gridHeight*2;
     border-top: solid 1px rgba(0, 0, 0, 0.1);
+}
+.linux webview {
+    top: 0;
 }

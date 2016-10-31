@@ -38,10 +38,6 @@ if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
 
-
-// logging setup
-const log = logger.create('main');
-
 if (Settings.inAutoTestMode) {
     log.info('AUTOMATED TESTING');
 }

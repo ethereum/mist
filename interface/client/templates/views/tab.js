@@ -12,11 +12,6 @@ The tab template
 @constructor
 */
 
-Template['views_tab'].onCreated(function(){
-    this._url;
-});
-
-
 Template['views_tab'].onRendered(function(){
     var template = this,
         webview = this.find('webview'),

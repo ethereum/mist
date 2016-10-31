@@ -112,7 +112,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             TemplateVar.set(template, 'syncing', syncing);
 
             // Only show states if they are less than 50% downloaded
-            if (Math.round(1000*Number(syncing._displayStatesDownload)) != Math.round(1000*Number(syncing.pulledStates/syncing.knownStates))) {
+            if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/syncing.knownStates))) {
                 TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
             } else {
                 TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
@@ -361,8 +361,8 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        TemplateVar.set(template, 'passwordsNotEmpty', pw != '' || pwRepeat != '');
-        TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw != pwRepeat);
+        TemplateVar.set(template, 'passwordsNotEmpty', pw !== '' || pwRepeat !== '');
+        TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw !== pwRepeat);
 
     },
     /**

@@ -14,7 +14,7 @@ var filterId = function(str) {
     for (var i = 0; i < str.length; i++) {
         if(/[a-zA-Z0-9_-]/.test(str.charAt(i)))
             newStr += str.charAt(i);
-    };
+    }
     return newStr;
 };
 
@@ -101,7 +101,7 @@ mistAPIBackend = function(event) {
             }
 
             if(arg.action === 'removeMenu') {
-                var query = {'$unset': {}};
+                query = {'$unset': {}};
 
                 query['$unset']['menu.'+ arg.id] = '';
 

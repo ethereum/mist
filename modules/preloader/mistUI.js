@@ -10,10 +10,12 @@ const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
+const syncMinimongo = require('../syncMinimongo.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
+
 
 require('./include/setBasePath')('interface');
 
@@ -33,6 +35,8 @@ setTimeout(function(){
 }, 1000);
 
 window.mist = mist();
+window.dirname = remote.getGlobal('dirname');
+window.syncMinimongo = syncMinimongo;
 window.ipc = ipc;
 
 

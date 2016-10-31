@@ -1,83 +1,83 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.4.17",
+            "version": "1.4.18",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-linux-amd64.tar.bz2",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-amd64.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-linux-amd64"
+                            "bin": "geth-1.4.18-stable-c72f545-linux-amd64"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.17" ]
-                            }                
+                                "output": [ "Geth", "1.4.18" ]
+                            }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-linux-386.tar.bz2",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-386.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-linux-386"
+                            "bin": "geth-1.4.18-stable-c72f545-linux-386"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.17" ]
-                            }                
+                                "output": [ "Geth", "1.4.18" ]
+                            }
                         }
                     }
                 },
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-darwin-10.6-amd64.tar.bz2",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
                             "type": "tar",
-                            "bin": "geth-darwin-10.6-amd64"
+                            "bin": "geth-1.4.18-stable-c72f545-darwin-10.6-amd64"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.17" ]
-                            }                
+                                "output": [ "Geth", "1.4.18" ]
+                            }
                         }
                     }
                 },
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-windows-4.0-amd64.exe.zip",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe.zip",
                             "type": "zip",
-                            "bin": "geth-windows-4.0-amd64.exe"
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.17" ]
-                            }                
+                                "output": [ "Geth", "1.4.18" ]
+                            }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/luclu/ethereum/geth-1.4.17-stable-5a6008e-windows-4.0-386.exe.zip",
+                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe.zip",
                             "type": "zip",
-                            "bin": "geth-windows-4.0-386.exe"
+                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-386.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.17" ]
-                            }                
+                                "output": [ "Geth", "1.4.18" ]
+                            }
                         }
-                    }            
+                    }
                 }
             }
         }

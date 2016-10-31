@@ -39,6 +39,9 @@ if (Settings.cli.ignoreGpuBlacklist) {
 }
 
 
+// logging setup
+const log = logger.create('main');
+
 if (Settings.inAutoTestMode) {
     log.info('AUTOMATED TESTING');
 }
@@ -48,7 +51,6 @@ log.info(`Running in production mode: ${Settings.inProductionMode}`);
 if (Settings.rpcMode === 'http') {
     log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
 }
-
 
 // db
 const db = global.db = require('./modules/db');

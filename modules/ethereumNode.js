@@ -281,7 +281,6 @@ class EthereumNode extends EventEmitter {
                 Settings.saveUserData('node', this._type);
                 Settings.saveUserData('network', this._network);
 
-
                 return this._socket.connect(Settings.rpcConnectConfig, {
                         timeout: 30000 /* 30s */
                     })
@@ -490,15 +489,12 @@ class EthereumNode extends EventEmitter {
     }
 
 
-
     _loadDefaults () {
         log.trace('Load defaults');
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
     }
-
-
 }
 
 

@@ -9,8 +9,6 @@ require('../openExternal.js');
 
 require('./include/setBasePath')('interface');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
 
 // get and set language
 ipc.send('backendAction_setLanguage', navigator.language);

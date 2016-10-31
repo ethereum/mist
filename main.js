@@ -9,15 +9,15 @@ Q.config({
     cancellation: true,
 });
 
+const packageJson = require('./package.json');
 const fs = require('fs');
 const electron = require('electron');
 const app = electron.app;
 const dialog = electron.dialog;
 const shell = electron.shell;
 const timesync = require("os-timesync");
-const syncDb = require('./modules/syncDb.js');
 const ipc = electron.ipcMain;
-const packageJson = require('./package.json');
+const syncDb = require('./modules/syncDb.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
@@ -189,6 +189,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 
 var onReady = function() {
+
     // setup DB sync to backend
     syncDb.backendSync();
 

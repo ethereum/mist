@@ -1,5 +1,5 @@
 /**
-Sets the base path in production, for the file protocol, so assets are loaded properly
+Sets the base path in production for the file protocol, so assets are loaded properly
 
 @module setBasePath
 */

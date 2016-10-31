@@ -8,9 +8,9 @@ var electron = require('electron');
  * @param  {Object} coll Db collection to save to.
  */
 exports.backendSync = function() {
-    var log = require('./utils/logger').create('syncDb');
-    var db = require('./db');
-    var ipc = electron.ipcMain;
+    var log = require('./utils/logger').create('syncDb'),
+        db = require('./db'),
+        ipc = electron.ipcMain;
 
     ipc.on('syncDb-add', function(event, args) {
         var collName = args.collName,
@@ -107,7 +107,7 @@ exports.frontendSync = function(coll, collName) {
         });
 
         try {
-            if (!dataStr || (dataJson = JSON.parse(dataStr)).length == 0) {
+            if (!dataStr || (dataJson = JSON.parse(dataStr)).length === 0) {
                 return resolve();
             }
 
@@ -154,20 +154,20 @@ exports.frontendSync = function(coll, collName) {
                 ipc.send('syncDb-add', {
                     collName: collName,
                     _id: id,
-                    fields: fields,
+                    fields: fields
                 });
             },
             'changed': function(id, fields){
                 ipc.send('syncDb-changed', {
                     collName: collName,
                     _id: id, 
-                    fields: fields,
+                    fields: fields
                 });
             },
             removed: function(id) {
                 ipc.send('syncDb-removed', {
                     collName: collName,
-                    _id: id,
+                    _id: id
                 });
             }
         });

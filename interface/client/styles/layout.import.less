@@ -125,17 +125,14 @@ main {
 // Fading Mist interface when sendTransactionConfirmationPopup is shown.
 html {
     body {
-        transition: all 150ms ease-out;
+        transition: all 200ms ease-out;
     }
-    &.has-security-overlay {
-        box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.7) inset;
+    &.has-blur-overlay {
         pointer-events: none;
+        opacity: 0.7;
         body {
-            -webkit-filter: blur(3px) brightness(0.5);
+            -webkit-filter: blur(3px);
         }
-    }
-    &.linux.has-security-overlay body {
-        filter: brightness(0.5);
     }
 }
 

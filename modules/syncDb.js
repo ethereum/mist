@@ -37,7 +37,9 @@ exports.backendSync = function() {
 
         if (item) {
             for (var k in args.fields) {
-                item[k] = args.fields[k];
+                if ({}.hasOwnProperty.call(args.fields, k)) {
+                    item[k] = args.fields[k];
+                }
             }
 
             coll.update(item);

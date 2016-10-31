@@ -149,7 +149,7 @@
                 "downloading": "Downloading new node...",
                 "loadConfig": "Loading client config...",
                 "filtering": "Filtering client binaries...",
-                "done": "Node is up to date",
+                "done": "Ethereum node up-to-date...",
                 "error": "Error running downloaded binary."
             }
         },

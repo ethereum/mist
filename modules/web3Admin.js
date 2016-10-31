@@ -90,5 +90,5 @@ module.exports = {
                 insertProperty('status', 'txpool_status', null)
             ]
         });
-    },
+    }
 };

@@ -14,9 +14,6 @@ require('../openExternal.js');
 
 require('./include/setBasePath')('interface/wallet');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
-
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
 

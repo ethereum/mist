@@ -145,11 +145,11 @@
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
             "clientBinaries": {
-                "scanning": "Scanning for client binaries ...",
-                "downloading": "Downloading client binaries ...",
-                "loadConfig": "Loading client config ...",
-                "filtering": "Filtering client binaries ...",
-                "done": "Client binaries resolved",
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Node is up to date",
                 "error": "Error running downloaded binary."
             }
         },

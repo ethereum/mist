@@ -22,6 +22,7 @@ electron.webFrame.setZoomLevelLimits(1, 1);
 // window.dirname = __dirname;
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+
 // add admin later
 setTimeout(function(){
     web3Admin.extend(window.web3);

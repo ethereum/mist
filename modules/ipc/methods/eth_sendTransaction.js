@@ -5,7 +5,7 @@ const Windows = require('../../windows');
 const Q = require('bluebird');
 const electron = require('electron');
 const ipc = electron.ipcMain;
-
+const SecurityOverlay = require('../../securityOverlay');
 
 /**
  * Process method: eth_sendTransaction
@@ -52,14 +52,15 @@ module.exports = class extends BaseProcessor {
                 electronOptions: {
                     width: 580, 
                     height: 550, 
-                    alwaysOnTop: false,
+                    alwaysOnTop: true,
                 },
             });
 
-            ipc.send('uiAction_EnableSecurityOverlay');
+            SecurityOverlay.enable();
 
             modalWindow.on('closed', () => {
-                ipc.send('uiAction_DisableSecurityOverlay');
+                SecurityOverlay.disable();
+
                 // user cancelled?
                 if (!modalWindow.processed) {
                     reject(this.ERRORS.METHOD_DENIED);

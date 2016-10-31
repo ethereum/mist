@@ -50,9 +50,9 @@ module.exports = class extends BaseProcessor {
             let modalWindow = Windows.createPopup('sendTransactionConfirmation', {
                 sendData: ['data', payload.params[0]],
                 electronOptions: {
-                    width: 580, 
-                    height: 550, 
-                    alwaysOnTop: true,
+                    width: 580,
+                    height: 550,
+                    alwaysOnTop: true
                 },
             });
 

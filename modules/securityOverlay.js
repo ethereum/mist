@@ -16,7 +16,6 @@ class SecurityOverlay {
 		let mainWindow = Windows.getByType('main');
 		mainWindow.send('mistUI_enableSecurityOverlay', flag);
 	}
-
-};
+}
 
 module.exports = SecurityOverlay;

@@ -61,6 +61,9 @@ ipc.on('uiAction_windowMessage', function(e, type, id, error, value) {
     } 
 });
 
+ipc.on('uiAction_enableBlurOverlay', function(e, value) {
+    $('html').toggleClass('has-blur-overlay', !!value);
+});
 
 // Wait for webview toggle
 ipc.on('uiAction_toggleWebviewDevTool', function(e, id){

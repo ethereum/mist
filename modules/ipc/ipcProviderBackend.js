@@ -405,9 +405,11 @@ class IpcProviderBackend {
                 }
                 
                 e.error = {
+                    code: e.code,
                     message: e.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'")
                 };
 
+                delete e.code;
                 delete e.message;
             }
 

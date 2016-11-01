@@ -1,5 +1,5 @@
 /**
-@module syncMinimongo
+@module syncDb
 */
 var electron = require('electron');
 
@@ -8,15 +8,15 @@ var electron = require('electron');
  * @param  {Object} coll Db collection to save to.
  */
 exports.backendSync = function() {
-    var log = require('./utils/logger').create('syncMinimongo');
-    var db = require('./db');
-    var ipc = electron.ipcMain;
+    var log = require('./utils/logger').create('syncDb'),
+        db = require('./db'),
+        ipc = electron.ipcMain;
 
-    ipc.on('minimongo-add', function(event, args) {
+    ipc.on('syncDb-add', function(event, args) {
         var collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('minimongo-add', collName, args._id);
+        log.trace('syncDb-add', collName, args._id);
 
         var _id = args._id;
 
@@ -26,18 +26,20 @@ exports.backendSync = function() {
         }
     });
 
-    ipc.on('minimongo-changed', function(event, args) {
+    ipc.on('syncDb-changed', function(event, args) {
         var collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('minimongo-changed', collName, args._id);
+        log.trace('syncDb-changed', collName, args._id);
 
         var _id = args._id;
         var item = coll.findOne({_id: _id});
 
         if (item) {
             for (var k in args.fields) {
-                item[k] = args.fields[k];
+                if ({}.hasOwnProperty.call(args.fields, k)) {
+                    item[k] = args.fields[k];
+                }
             }
 
             coll.update(item);
@@ -46,11 +48,11 @@ exports.backendSync = function() {
         }
     });
 
-    ipc.on('minimongo-removed', function(event, args) {
+    ipc.on('syncDb-removed', function(event, args) {
         var collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('minimongo-removed', collName, args._id);
+        log.trace('syncDb-removed', collName, args._id);
 
         var _id = args._id;
         var item = coll.findOne({_id: _id});
@@ -63,12 +65,12 @@ exports.backendSync = function() {
     });
 
     // get all data (synchronous)
-    ipc.on('minimongo-reloadSync', function(event, args) {
+    ipc.on('syncDb-reloadSync', function(event, args) {
         var collName = args.collName,
             coll = db.getCollection(collName),
             docs = coll.find();
 
-        log.debug('minimongo-reloadSync, no. of docs:', collName, docs.length);
+        log.debug('syncDb-reloadSync, no. of docs:', collName, docs.length);
 
         docs = docs.map(function(doc) {
             var ret = {};
@@ -89,9 +91,8 @@ exports.backendSync = function() {
 
 
 
-exports.frontendSync = function(coll) {
+exports.frontendSync = function(coll, collName) {
     var ipc = electron.ipcRenderer,
-        collName = coll._name,
         syncDoneResolver;
 
     console.debug('Reload collection from backend: ', collName);
@@ -103,12 +104,12 @@ exports.frontendSync = function(coll) {
     (new Promise(function(resolve, reject) {
         var dataStr, dataJson;
 
-        dataStr = ipc.sendSync('minimongo-reloadSync', {
+        dataStr = ipc.sendSync('syncDb-reloadSync', {
             collName: collName
         });
 
         try {
-            if (!dataStr || (dataJson = JSON.parse(dataStr)).length == 0) {
+            if (!dataStr || (dataJson = JSON.parse(dataStr)).length === 0) {
                 return resolve();
             }
 
@@ -152,23 +153,23 @@ exports.frontendSync = function(coll) {
         // start watching for changes
         coll.find().observeChanges({
             'added': function(id, fields){
-                ipc.send('minimongo-add', {
+                ipc.send('syncDb-add', {
                     collName: collName,
                     _id: id,
-                    fields: fields,
+                    fields: fields
                 });
             },
             'changed': function(id, fields){
-                ipc.send('minimongo-changed', {
+                ipc.send('syncDb-changed', {
                     collName: collName,
                     _id: id, 
-                    fields: fields,
+                    fields: fields
                 });
             },
             removed: function(id) {
-                ipc.send('minimongo-removed', {
+                ipc.send('syncDb-removed', {
                     collName: collName,
-                    _id: id,
+                    _id: id
                 });
             }
         });

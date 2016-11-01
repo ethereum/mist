@@ -7,7 +7,7 @@ if (squirrelStartup) exit();
 global._ = require('./modules/utils/underscore');
 const { app, dialog, ipcMain, shell } = require('electron');
 const timesync = require('os-timesync');
-const syncMinimongo = require('./modules/syncMinimongo.js');
+const syncDb = require('./modules/syncDb.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
@@ -176,8 +176,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 
 onReady = () => {
-    // sync minimongo
-    syncMinimongo.backendSync();
+    // setup DB sync to backend
+    syncDb.backendSync();
 
     // Initialise window mgr
     Windows.init();

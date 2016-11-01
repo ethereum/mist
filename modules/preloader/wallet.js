@@ -14,9 +14,6 @@ require('../openExternal.js');
 
 require('./include/setBasePath')('interface/wallet');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
-
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
 
@@ -25,6 +22,7 @@ electron.webFrame.setZoomLevelLimits(1, 1);
 // window.dirname = __dirname;
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+
 // add admin later
 setTimeout(function(){
     web3Admin.extend(window.web3);

@@ -10,3 +10,4 @@ dist_mist/
 nodes/geth/
 config.json
 mist.log
+npm-debug.log

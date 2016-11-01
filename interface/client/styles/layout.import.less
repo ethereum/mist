@@ -121,6 +121,19 @@ main {
     -webkit-app-region: drag;
 }
 
+
+// Fading Mist interface when sendTransactionConfirmationPopup is shown.
+html {
+    &.has-blur-overlay {
+        pointer-events: none;
+        opacity: 0.7;
+        body {
+            -webkit-filter: blur(3px);
+        }
+    }
+}
+
+
 .tab-view {
     position: absolute;
     top: 0;

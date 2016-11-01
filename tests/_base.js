@@ -36,7 +36,7 @@ exports.mocha = function(_module, options) {
       const logFilePath = path.join(__dirname, 'mist.log');
       shell.rm('-rf', logFilePath);
 
-      const appFileName = ('wallet' === options.app) ? 'Ethereum-Wallet' : 'Mist',
+      const appFileName = ('wallet' === options.app) ? 'Ethereum Wallet' : 'Mist',
         appVers = packageJson.version.replace(/\./ig, '-'),
         platformArch = `${process.platform}-${process.arch}`;
 
@@ -46,8 +46,9 @@ exports.mocha = function(_module, options) {
         case 'darwin-x64':
           appPath = path.join(
             process.cwd(), 
-            `dist_${options.app}`, 
-            `${appFileName}-macosx-${appVers}`,
+            `dist_${options.app}`,
+            `dist`,
+            `mac`,
             `${appFileName}.app`,
             'Contents',
             'MacOS',

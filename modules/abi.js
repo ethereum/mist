@@ -28,7 +28,7 @@ ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data)
 		// Turns numbers into their decimal string version
 		paramTypes.forEach((type, index) => {
 			var conversionFlag = isHexType(type) ? 'hex' : null,
-				prefix = isHexType(type) ? '0x' : '';
+				prefix = isHexType(type) ? (paramsResponse[index].length%2 ? '0x' : '0x0') : '';
 
 			paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 

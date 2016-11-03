@@ -101,7 +101,7 @@ const argv = require('yargs')
         loglevel: {
             demand: false,
             default: 'info',
-            describe: 'Minimum logging threshold: info, debug, warn, error, trace (all logs, including possible passwords over IPC!).',
+            describe: 'Minimum logging threshold: info, debug, error, trace (shows all logs, including possible passwords over IPC!).',
             requiresArg: true,
             nargs: 1,
             type: 'string',

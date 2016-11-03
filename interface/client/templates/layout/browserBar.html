@@ -17,6 +17,7 @@
                     <div class="url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
 
+                {{#unless permissions.admin}}
                 <button class="accounts">
                     {{#each dappAccounts}}
                         <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
@@ -29,6 +30,7 @@
                         <span class="simptip-position-left simptip-movable no-accounts" data-tooltip="{{i18n 'mist.browserBar.buttons.noAccounts'}}"></span>
                     {{/each}}
                 </button>
+                {{/unless}}
             </div>
     </div>
     {{/with}}    

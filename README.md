@@ -36,7 +36,7 @@ Requirements:
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@1.3.5
+    $ npm install -g electron@1.3.5
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:
@@ -53,18 +53,16 @@ Now you're ready to install Mist:
     $ cd mist
     $ git submodule update --init
     $ npm install
-    $ gulp update-nodes
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
     $ npm install
-    $ gulp update-nodes
 
 
 #### Options
-It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
+It may be preferable to only download platform-specific nodes by passing the `--platform` flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
@@ -78,6 +76,7 @@ In the original window you can then start Mist with:
     $ cd mist
     $ electron .
 
+*NOTE: use `--help` to display available options, e.g. `--loglevel debug` (or `trace`) for verbose output*
 
 ### Run the Wallet
 

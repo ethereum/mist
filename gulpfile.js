@@ -41,7 +41,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist';
-var electronVersion = require('electron-prebuilt/package.json').version;
+var electronVersion = require('electron/package.json').version;
 
 
 var packJson = require('./package.json');
@@ -110,6 +110,7 @@ gulp.task('clean:dist', function (cb) {
 gulp.task('copy-app-source-files', ['clean:dist'], function() {
     return gulp.src([
         './tests/**/*.*',
+        '!./tests/wallet/*.*',
         './icons/'+ type +'/*',
         './modules/**/**/**/*',
         './sounds/*',
@@ -420,7 +421,7 @@ gulp.task('wallet-checksums', function(cb) {
 
 gulp.task('test-wallet', function() {
     return gulp.src([
-        './test/wallet/*.test.js'
+        './tests/wallet/*.test.js'
     ])
     .pipe(mocha({
         timeout: 60000,

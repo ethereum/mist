@@ -63,7 +63,7 @@ Template['popupWindows_connectAccount'].helpers({
     */
     dappFriendlyURL: function(){
         var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
-        if (currentTab.url){
+        if (currentTab && currentTab.url){
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
     },

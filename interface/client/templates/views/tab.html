@@ -4,7 +4,7 @@
             <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/browser.js" autosize="on"></webview> 
         {{else}}
             {{#if $eq _id "tests"}}
-                <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/tests.js" autosize="on" nodeintegration></webview> 
+                <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/tests.js" autosize="on"></webview> 
             {{else}}
                 <webview src="{{url}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/dapps.js" autosize="on"></webview> 
             {{/if}}

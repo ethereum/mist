@@ -220,7 +220,7 @@ var onReady = function() {
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
-                    nodeIntegration: true,
+                    nodeIntegration: true, // necessary for webviews; require will be removed through preloader
                     preload: __dirname +'/modules/preloader/mistUI.js',
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true
@@ -491,7 +491,7 @@ var startMainWindow = function() {
             global.webviews = sortedTabs.data();
 
             appMenu(global.webviews);
-        }, 200);
+        }, 1000);
     };
 
     Tabs.on('insert', refreshMenu);

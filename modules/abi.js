@@ -12,7 +12,7 @@ function isHexType(type) {
 }
 
 function padLeft(string, chars) {
-    return string + (new Array(chars - string.length + 1).join('0'));
+    return (new Array(chars - string.length + 1).join('0')) + string;
 };
 
 ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {

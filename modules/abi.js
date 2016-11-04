@@ -12,7 +12,7 @@ function isHexType(type) {
 }
 
 ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
-    var dataBuffer, paramTypes;
+    let dataBuffer, paramTypes;
     signature = signature.match(/\((.+)\)/i);
 
     if (!signature) return;
@@ -22,13 +22,13 @@ ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
     try {
     	dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
         const paramsResponse = abi.rawDecode(paramTypes, dataBuffer);
-        var paramsDictArr = [];
+        let paramsDictArr = [];
 
         // Turns addresses into proper hex string
         // Turns numbers into their decimal string version
         paramTypes.forEach((type, index) => {
-            var conversionFlag = isHexType(type) ? 'hex' : null,
-                prefix = isHexType(type) ? '0x' : '';
+            let conversionFlag = isHexType(type) ? 'hex' : null,
+                prefix = isHexType(type) ? (paramsResponse[index].length%2 ? '0x' : '0x0') : '';
 
             paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 

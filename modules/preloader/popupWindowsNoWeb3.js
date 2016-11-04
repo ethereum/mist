@@ -6,9 +6,9 @@ require('./include/common')('popup-no-web3');
 const electron = require('electron');
 const remote = electron.remote;
 const mist = require('../mistAPI.js');
-const syncDb = require('../syncDb.js');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+const syncDb = require('../syncDb.js');
 
 require('./include/setBasePath')('interface');
 
@@ -21,7 +21,7 @@ ipc.on('data', function(e, data) {
     Session.set('data', data);
 })
 
-window.ipc = ipc;
 window.mist = mist();
 window.dirname = remote.getGlobal('dirname');
 window.syncDb = syncDb;
+window.ipc = ipc;

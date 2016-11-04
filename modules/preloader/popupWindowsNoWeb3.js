@@ -4,14 +4,14 @@
 
 require('./include/common')('popup-no-web3');
 const electron = require('electron');
+const remote = electron.remote;
 const mist = require('../mistAPI.js');
+const syncDb = require('../syncDb.js');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 
 require('./include/setBasePath')('interface');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
 
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
@@ -23,3 +23,5 @@ ipc.on('data', function(e, data) {
 
 window.ipc = ipc;
 window.mist = mist();
+window.dirname = remote.getGlobal('dirname');
+window.syncDb = syncDb;

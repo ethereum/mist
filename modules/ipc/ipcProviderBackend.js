@@ -52,8 +52,8 @@ class IpcProviderBackend {
         // dynamically load in method processors
         let processors = fs.readdirSync(path.join(__dirname, 'methods'));
 
+        // get response processors
         this._processors = {};
-
         processors.forEach((p) => {
             let name = path.basename(p, '.js');
 
@@ -405,9 +405,11 @@ class IpcProviderBackend {
                 }
                 
                 e.error = {
+                    code: e.code,
                     message: e.message.replace(/'[a-z_]*'/i, "'"+ item.method +"'")
                 };
 
+                delete e.code;
                 delete e.message;
             }
 

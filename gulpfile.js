@@ -5,21 +5,14 @@ var path = require('path');
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
-var replace = require('gulp-replace');
-var runSeq = require('run-sequence');
-var merge = require('merge-stream');
-var rename = require("gulp-rename");
 var flatten = require('gulp-flatten');
-var tap = require("gulp-tap");
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
+var merge = require('merge-stream');
 var minimist = require('minimist');
 var fs = require('fs');
-var rcedit = require('rcedit');
+var runSeq = require('run-sequence');
 var syncRequest = require('sync-request');
-
-
-var builder = require('electron-builder');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -41,7 +34,7 @@ var type = 'mist';
 var filenameLowercase = 'mist';
 var filenameUppercase = 'Mist';
 var applicationName = 'Mist';
-var electronVersion = require('electron-prebuilt/package.json').version;
+var electronVersion = require('electron/package.json').version;
 
 
 var packJson = require('./package.json');
@@ -110,6 +103,7 @@ gulp.task('clean:dist', function (cb) {
 gulp.task('copy-app-source-files', ['clean:dist'], function() {
     return gulp.src([
         './tests/**/*.*',
+        '!./tests/wallet/*.*',
         './icons/'+ type +'/*',
         './modules/**/**/**/*',
         './sounds/*',
@@ -318,7 +312,7 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     const appNameHypen = applicationName.replace(/\s/, '-');
     const appNameNoSpace = applicationName.replace(/\s/, '');
     const versionDashed = version.replace(/\./g, '-');
-    
+
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {
@@ -420,7 +414,7 @@ gulp.task('wallet-checksums', function(cb) {
 
 gulp.task('test-wallet', function() {
     return gulp.src([
-        './test/wallet/*.test.js'
+        './tests/wallet/*.test.js'
     ])
     .pipe(mocha({
         timeout: 60000,

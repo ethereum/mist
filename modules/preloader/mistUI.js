@@ -8,6 +8,7 @@ const ipc = electron.ipcRenderer;
 const remote = electron.remote;
 const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
+const syncDb = require('../syncDb.js');
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
@@ -15,10 +16,9 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
+
 require('./include/setBasePath')('interface');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
 
 // disable pinch zoom
 electron.webFrame.setZoomLevelLimits(1, 1);
@@ -33,13 +33,14 @@ setTimeout(function(){
 }, 1000);
 
 window.mist = mist();
+window.syncDb = syncDb;
+window.dirname = remote.getGlobal('dirname');
 window.ipc = ipc;
 
 
 // remove require and modules, when node-integration is on
 delete window.module;
 delete window.require;
-
 
 
 // prevent overwriting the Dapps Web3
@@ -51,8 +52,8 @@ delete window.Web3;
 // ipc.send('setLanguage', navigator.language.substr(0,2));
 
 
-// A message will be sent to a webview/window
-ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
+// A message coming from a webview or other window
+ipc.on('uiAction_windowMessage', function(e, type, id, error, value) {
     if((type === 'requestAccount') || (type === 'connectAccount') && !error) {
         Tabs.update({webviewId: id}, {$addToSet: {
             'permissions.accounts': value
@@ -60,9 +61,12 @@ ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
     } 
 });
 
+ipc.on('uiAction_enableBlurOverlay', function(e, value) {
+    $('html').toggleClass('has-blur-overlay', !!value);
+});
 
 // Wait for webview toggle
-ipc.on('toggleWebviewDevTool', function(e, id){
+ipc.on('uiAction_toggleWebviewDevTool', function(e, id){
     var webview = Helpers.getWebview(id);
 
     if(!webview)
@@ -75,7 +79,7 @@ ipc.on('toggleWebviewDevTool', function(e, id){
 });
 
 // Run tests
-ipc.on('runTests', function(e, type){
+ipc.on('uiAction_runTests', function(e, type){
     if(type === 'webview') {
         web3.eth.getAccounts(function(error, accounts){
             if(error)

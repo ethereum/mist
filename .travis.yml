@@ -8,7 +8,7 @@ branches:
     - develop
 
 node_js:
-  - "4"
+  - "6"
 
 before_install:
   - sudo apt-get -qq update

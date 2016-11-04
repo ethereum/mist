@@ -21,6 +21,8 @@ describe("IPC connection", function() {
             data = data.toString();
             data = JSON.parse(data);
 
+            console.log(data);
+
             expect(data.id).to.be.equal(id);
             expect(data.error).to.be.defined;
             expect(data.error.code).to.be.equal(-32601);

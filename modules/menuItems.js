@@ -309,7 +309,7 @@ var menuTempl = function(webviews) {
             devtToolsSubMenu.push({
                 label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
                 click: function() {
-                    Windows.getByType('main').send('toggleWebviewDevTool', webview._id);
+                    Windows.getByType('main').send('uiAction_toggleWebviewDevTool', webview._id);
                 }
             });
         });
@@ -334,7 +334,7 @@ var menuTempl = function(webviews) {
             label: i18n.t('mist.applicationMenu.develop.runTests'),
             enabled: (Settings.uiMode === 'mist'),
             click: function(){
-                Windows.getByType('main').send('runTests', 'webview');
+                Windows.getByType('main').send('uiAction_runTests', 'webview');
             }
         },{
             label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,

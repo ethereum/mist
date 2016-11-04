@@ -35,7 +35,7 @@ Return the preload modules dirname.
 @method (dirname)
 **/
 Template.registerHelper('preload_dirname', function(){
-    return window.mist.dirname + '/modules/preloader';
+    return window.dirname + '/modules/preloader';
 });
 
 /**
@@ -72,7 +72,7 @@ Return the app icon path.
 @method (iconPath)
 **/
 Template.registerHelper('appIconPath', function(){
-    return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+    return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
 });
 
 /**
@@ -128,7 +128,8 @@ Get the account name or display the address
 @param {String} address
 */
 Template.registerHelper('accountNameOrAddress', function(address){
-    if(account = EthAccounts.findOne({address: address}))
+    var account = EthAccounts.findOne({address: address});
+    if(account)
         return account.name;
     else
         return address;

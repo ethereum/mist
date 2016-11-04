@@ -36,7 +36,7 @@ module.exports = class extends BaseProcessor {
             // validate data
             try {
                 _.each(payload.params[0], (val) => {
-                    // if doesn't have hex then leave
+                    // if doesn't have only hex then leave
                     if(_.isString(val)) {
                         if (val.match(/[^0-9a-fx]/igm)) {
                             throw this.ERRORS.INVALID_PAYLOAD;

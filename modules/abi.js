@@ -13,7 +13,6 @@ function isHexType(type) {
 
 ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data){
 	var dataBuffer, paramTypes;
-	dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
 	signature = signature.match(/\((.+)\)/i);
 
 	if (!signature) return;
@@ -21,6 +20,7 @@ ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data)
 	paramTypes = signature[1].split(',');
 
 	try	{
+		dataBuffer = new Buffer(data.slice(10, data.length), 'hex');		
 		var paramsResponse = abi.rawDecode(paramTypes, dataBuffer);
 		var paramsDictArr = [];
 

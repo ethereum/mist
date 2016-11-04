@@ -4,14 +4,14 @@ setTimeout(function(){
     document.getElementsByTagName('html')[0].className =  window.mist.platform;
 
     if (window.basePathHref) {
-      var base = document.createElement('base');
+        var base = document.createElement('base');
 
-      base.href = window.basePathHref;
-      
-      document.getElementsByTagName('head')[0].appendChild(base);      
+        base.href = window.basePathHref;
+
+        document.getElementsByTagName('head')[0].appendChild(base);      
     }
 
-}, 100);
+}, 200);
 
 
 $(window).on('blur', function(e){ 

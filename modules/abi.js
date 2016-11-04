@@ -36,10 +36,11 @@ ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
 
             paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 
+            let res = type.match(/bytes(\d+)/i);
             if(type === 'address')
             	paramsResponse[index] = padLeft(paramsResponse[index], 40);
-            else if(type.match(/bytes\d+/g))
-            	paramsResponse[index] = padLeft(paramsResponse[index], 64);
+            else if(res)
+            	paramsResponse[index] = padLeft(paramsResponse[index], Number(res[1])*2);
 
             paramsDictArr.push({type: type, value: prefix + paramsResponse[index]});
         });

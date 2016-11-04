@@ -243,6 +243,12 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
                     'deb',
                 ],
             },
+            win: {
+                target: [
+                    "zip",
+                    "squirrel",
+                ]
+            },
             dmg: {
                 background: '../build/dmg-background.jpg',
                 'icon-size': 128,
@@ -315,13 +321,17 @@ gulp.task('release-dist', ['build-dist'], (done) => {
             case 'win-ia32':
                 shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
                             path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.exe`));
-                break;
-            case 'win-x64':
-                shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`),
+                    shell.cp(path.join(distPath, `${applicationName}-${version}-ia32-win.zip`),
+                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.zip`));
+                    break;
+                case 'win-x64':
+                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`),
                             path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.exe`));
-                break;
-            case 'mac-x64':
-                shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`),
+                    shell.cp(path.join(distPath, `${applicationName}-${version}-win.zip`),
+                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.zip`));
+                    break;
+                case 'mac-x64':
+                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`),
                             path.join(releasePath, `${appNameHypen}-macosx-${versionDashed}.dmg`));
                 break;
             case 'linux-ia32':

@@ -1,5 +1,5 @@
 /**
-Gets the right Node path
+Gets the favicon url
 
 @module getFavicon
 */

@@ -5,8 +5,8 @@ const remote = electron.remote;
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const Web3 = require('web3');
-require('../openExternal.js');
 
+require('./include/openExternal.js');
 require('./include/setBasePath')('interface');
 
 

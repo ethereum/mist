@@ -18,15 +18,9 @@ class Manager extends EventEmitter {
         this._availableClients = {};
     }
     
-    init () {
-        log.info('Initializing...');
-        
-        this._availableClients = {};
-        
-        this._resolveEthBinPath();
+    checkForNewConfig () {
+        log.info(`Checking for new client binaries config...`);
 
-        this._emit('loadConfig', 'Fetching client config');
-        
         // fetch config
         return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
             timeout: 3000,
@@ -39,6 +33,33 @@ class Manager extends EventEmitter {
                 return res.body;
             }
         })
+        .then((latestConfig) => {
+            let localConfig;
+            
+            try {
+                // now load the local json
+                localConfig = fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString();
+            } catch (err) {
+                log.warn(`Error loading local clientBinaries.json - assuming this is a first run: ${err}`);
+            }
+            
+            if (JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
+                log.debug(`New client binaries config found, asking user if they wish to update...`);
+
+                // TODO: ask user if they wish to upgrade!
+            }
+        })
+    }
+    
+    init () {
+        log.info('Initializing...');
+        
+        this._availableClients = {};
+        
+        this._resolveEthBinPath();
+
+        this._emit('loadConfig', 'Fetching client config');
+        
         .catch((err) => {
             log.warn('Error fetching client binaries config from repo', err);
             
@@ -115,7 +136,7 @@ class Manager extends EventEmitter {
     
     _resolveEthBinPath () {
         log.info('Resolving path to Eth client binary ...');
-        
+
         let platform = process.platform;
 
         // "win32" -> "win" (because nodes are bundled by electron-builder)
@@ -128,8 +149,8 @@ class Manager extends EventEmitter {
         log.debug('Platform: ' + platform);
 
         let binPath = path.join(
-            __dirname, 
-            '..', 
+            __dirname,
+            '..',
             'nodes',
             'eth',
             `${platform}-${process.arch}`
@@ -147,7 +168,7 @@ class Manager extends EventEmitter {
         }
 
         log.info('Eth client binary path: ' + binPath);
-        
+
         this._availableClients.eth = {
             binPath: binPath,
             version: '1.3.0',

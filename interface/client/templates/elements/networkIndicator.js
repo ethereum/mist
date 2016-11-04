@@ -77,7 +77,7 @@ Template['elements_networkIndicator'].onRendered(function(){
     ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
         console.trace('Node sync status', status);
 
-        if ('inProgress' === status && TemplateVar.get(template, 'network')=='unknown') {
+        if ('inProgress' === status && TemplateVar.get(template, 'network') === 'unknown') {
             console.debug('Node syncing, re-check network type.');
 
             checkNetworkType(template);            

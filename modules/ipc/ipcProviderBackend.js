@@ -339,13 +339,14 @@ class IpcProviderBackend {
             return this._makeResponsePayload(payload, result);
         })
         .catch((err) => {
-            log.error('Send request failed', err);
 
             err = this._makeErrorResponsePayload(payload || {}, {
                 message: (typeof err === 'string' ? err : err.message),
                 code: err.code,
             });
 
+            log.error('Send request failed', err);
+            
             return err;
         })
         .then((returnValue) => {

@@ -2,17 +2,13 @@
 
 // fired by "did-stop-loading"
 webviewLoadStop = function(e){
-    var webview = this;
+    var webview = this,
         url = webview.getURL(),
         title = webview.getTitle(),
         tabId = $(webview).data('id');
-        // tabs = Tabs.find().fetch();
 
     if(!url || url === 'about:blank' || url === location.toString())
         return;
-
-    // console.log('Stop loading '+ url);
-
 
     // IS BROWSER
     if(tabId === 'browser') {

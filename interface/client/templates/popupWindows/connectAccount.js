@@ -5,7 +5,7 @@ var pinToSidebar = function() {
 
     if(selectedTab) {
         var existingUserTab = _.find(Tabs.find().fetch(), function(tab){
-          return tab._id !== 'browser' && tab.url == selectedTab.url;
+          return tab._id !== 'browser' && tab.url === selectedTab.url;
         });
 
         if (!existingUserTab) {
@@ -20,7 +20,7 @@ var pinToSidebar = function() {
         }
 
         console.log('tab info', selectedTab);
-        if (selectedTab._id == 'browser') {
+        if (selectedTab._id === 'browser') {
             // move the current browser tab to the last visited page
             var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
             Tabs.update('browser', {
@@ -63,7 +63,7 @@ Template['popupWindows_connectAccount'].helpers({
     */
     dappFriendlyURL: function(){
         var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
-        if (currentTab.url){
+        if (currentTab && currentTab.url){
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
     },
@@ -96,7 +96,7 @@ Template['popupWindows_connectAccount'].helpers({
     */
     'selected': function(){
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
-    },
+    }
 });
 
 Template['popupWindows_connectAccount'].events({
@@ -150,5 +150,5 @@ Template['popupWindows_connectAccount'].events({
     */
     'click button.create-account': function(e, template){
         ipc.send('mistAPI_createAccount');
-    },
+    }
 });

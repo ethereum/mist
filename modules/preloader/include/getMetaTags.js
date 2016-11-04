@@ -1,3 +1,9 @@
+/**
+Gest the meta[name="ethereum-dapp-url-bar-style"] meta tag
+
+@module getMetaTags
+*/
+
 const electron = require('electron');
 const ipc = electron.ipcRenderer;
 

@@ -7,24 +7,17 @@ const path = require('path');
 const gulp = require('gulp');
 const exec = require('child_process').exec;
 const del = require('del');
-const replace = require('gulp-replace');
 const runSeq = require('run-sequence');
 const merge = require('merge-stream');
-const rename = require('gulp-rename');
 const flatten = require('gulp-flatten');
-const tap = require('gulp-tap');
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
 const fs = require('fs');
-const rcedit = require('rcedit');
 const syncRequest = require('sync-request');
 
-
-const builder = require('electron-builder');
-
-const options = minimist(process.argv.slice(2), {
-    string: ['platform', 'walletSource'],
+var options = minimist(process.argv.slice(2), {
+    string: ['platform','walletSource'],
     default: {
         platform: 'all',
         walletSource: 'master',
@@ -169,14 +162,14 @@ gulp.task('copy-files', [
     'clean:dist',
     'copy-app-folder-files',
     'copy-build-folder-files',
-    'copy-node-folder-files',
+    'copy-node-folder-files'
 ]);
 
 
 gulp.task('switch-production', ['copy-files'], (cb) => {
     fs.writeFileSync(`${__dirname}/dist_${type}/app/config.json`, JSON.stringify({
         production: true,
-        mode: type,
+        mode: type
     }));
 
     cb();
@@ -300,7 +293,7 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
     } else {
         console.log(ret.stdout);
 
-        cb();
+        return cb();
     }
 });
 

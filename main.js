@@ -204,7 +204,7 @@ onReady = () => {
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
-                    nodeIntegration: true,
+                    nodeIntegration: true, // necessary for webviews; require will be removed through preloader
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
@@ -469,8 +469,8 @@ startMainWindow = () => {
 
             global.webviews = sortedTabs.data();
 
-            appMenu();
-        }, 200);
+            appMenu(global.webviews);
+        }, 1000);
     };
 
     Tabs.on('insert', refreshMenu);

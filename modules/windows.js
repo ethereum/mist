@@ -24,7 +24,7 @@ class Window extends EventEmitter {
         this.isPrimary = !!opts.primary;
         this.type = type;
         this.isPopup = !!opts.isPopup;
-        this.ownerId = opts.ownerId;
+        this.ownerId = opts.ownerId; // the window which creates this new window
 
         const electronOptions = {
             title: Settings.appName,

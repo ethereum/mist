@@ -38,14 +38,14 @@ window.dirname = remote.getGlobal('dirname');
 window.ipc = ipc;
 
 
-// remove require and modules, when node-integration is on
+// remove require and module, because node-integration is on
 delete window.module;
 delete window.require;
 
 
 // prevent overwriting the Dapps Web3
-delete global.Web3;
-delete window.Web3;
+// delete global.Web3;
+// delete window.Web3;
 
 
 // set the langauge for the electron interface

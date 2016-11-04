@@ -5,21 +5,14 @@ var path = require('path');
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
-var replace = require('gulp-replace');
-var runSeq = require('run-sequence');
-var merge = require('merge-stream');
-var rename = require("gulp-rename");
 var flatten = require('gulp-flatten');
-var tap = require("gulp-tap");
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
+var merge = require('merge-stream');
 var minimist = require('minimist');
 var fs = require('fs');
-var rcedit = require('rcedit');
+var runSeq = require('run-sequence');
 var syncRequest = require('sync-request');
-
-
-var builder = require('electron-builder');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -319,7 +312,7 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     const appNameHypen = applicationName.replace(/\s/, '-');
     const appNameNoSpace = applicationName.replace(/\s/, '');
     const versionDashed = version.replace(/\./g, '-');
-    
+
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {

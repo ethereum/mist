@@ -5,21 +5,14 @@ var path = require('path');
 var gulp = require('gulp');
 var exec = require('child_process').exec;
 var del = require('del');
-var replace = require('gulp-replace');
-var runSeq = require('run-sequence');
-var merge = require('merge-stream');
-var rename = require("gulp-rename");
 var flatten = require('gulp-flatten');
-var tap = require("gulp-tap");
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
+var merge = require('merge-stream');
 var minimist = require('minimist');
 var fs = require('fs');
-var rcedit = require('rcedit');
+var runSeq = require('run-sequence');
 var syncRequest = require('sync-request');
-
-
-var builder = require('electron-builder');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -100,7 +93,7 @@ gulp.task('set-variables-wallet', function () {
 gulp.task('clean:dist', function (cb) {
   return del([
     './dist_'+ type +'/**/*',
-    './meteor-dapp-wallet',
+    './meteor-dapp-wallet'
   ], cb);
 });
 
@@ -110,6 +103,7 @@ gulp.task('clean:dist', function (cb) {
 gulp.task('copy-app-source-files', ['clean:dist'], function() {
     return gulp.src([
         './tests/**/*.*',
+        '!./tests/wallet/*.*',
         './icons/'+ type +'/*',
         './modules/**/**/**/*',
         './sounds/*',
@@ -139,7 +133,7 @@ gulp.task('copy-app-folder-files', ['copy-app-source-files'], function(done) {
 gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], function() {
     return gulp.src([
         './icons/'+ type +'/*',
-        './interface/public/images/dmg-background.jpg',
+        './interface/public/images/dmg-background.jpg'
         ], { base: './' })
         .pipe(flatten())
         .pipe(gulp.dest('./dist_'+ type +'/build'));
@@ -167,16 +161,16 @@ gulp.task('copy-files', [
     'clean:dist',
     'copy-app-folder-files',
     'copy-build-folder-files',
-    'copy-node-folder-files',
+    'copy-node-folder-files'
 ]);
 
 
 
 
 gulp.task('switch-production', ['copy-files'], function(cb) {
-    fs.writeFileSync(__dirname+'/dist_'+ type +'/app/config.json', JSON.stringify({
+    fs.writeFileSync(path.join(__dirname, 'dist_'+ type, 'app', 'config.json'), JSON.stringify({
         production: true,
-        mode: type,
+        mode: type
     }));
 
     cb();
@@ -241,10 +235,10 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
             files: [
               "**/*",
               "!nodes",
-              "build-dist.js",
+              "build-dist.js"
             ],
             extraFiles: [
-              "nodes/eth/${os}-${arch}",
+              "nodes/eth/${os}-${arch}"
             ],
             linux: {
                 target: [
@@ -277,8 +271,8 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
         directories: {
             buildResources: "../build",
             app: ".",
-            output: "../dist",
-        },
+            output: "../dist"
+        }
     });
 
     fs.writeFileSync(
@@ -297,7 +291,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     var oses = '--' + options.platform.join(' --');
 
     var ret = shell.exec(`./build-dist.js --type ${type} ${oses}`, {
-        cwd: path.join(__dirname, 'dist_' + type, 'app'),
+        cwd: path.join(__dirname, 'dist_' + type, 'app')
     });
 
     if (0 !== ret.code) {
@@ -308,7 +302,7 @@ gulp.task('build-dist', ['copy-i18n'], function(cb) {
     } else {
         console.log(ret.stdout);
 
-        cb();
+        return cb();
     }
 });
 
@@ -324,7 +318,7 @@ gulp.task('release-dist', ['build-dist'], function(done) {
     const appNameHypen = applicationName.replace(/\s/, '-');
     const appNameNoSpace = applicationName.replace(/\s/, '');
     const versionDashed = version.replace(/\./g, '-');
-    
+
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {
@@ -385,17 +379,19 @@ gulp.task('download-signatures', function(){
     getFrom4byteAPI = function(url){
         console.log('Requesting ', url);
         var res = syncRequest('GET', url);
-        if (res.statusCode == 200) {
+        if (res.statusCode === 200) {
             var responseData = JSON.parse(res.getBody('utf8'));
             _.map(responseData.results, function(e){
-                if (!!signatures[e.hex_signature]) {
+                if (signatures[e.hex_signature]) {
                     signatures[e.hex_signature].push(e.text_signature);
                 }
                 else {
                     signatures[e.hex_signature] = [e.text_signature];
                 }
             });
-            responseData.next && getFrom4byteAPI(responseData.next);
+            if (responseData.next) {
+                getFrom4byteAPI(responseData.next);
+            }
         }
     };
 
@@ -430,7 +426,7 @@ gulp.task('wallet-checksums', function(cb) {
 
 gulp.task('test-wallet', function() {
     return gulp.src([
-        './test/wallet/*.test.js'
+        './tests/wallet/*.test.js'
     ])
     .pipe(mocha({
         timeout: 60000,

@@ -76,7 +76,7 @@ ipc.on('backendAction_sendToOwner', function(e, error, value) {
         }
 
         if (mainWindow) {
-            mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
+            mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
         }
     }
 

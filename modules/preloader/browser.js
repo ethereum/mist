@@ -15,8 +15,6 @@ require('../getMetaTags.js');
 require('../openExternal.js');
 require('./include/setBasePath')('interface');
 
-// register with window manager
-ipc.send('backendAction_setWindowId');
 
 // notifiy the tab to store the webview id
 ipc.sendToHost('setWebviewId');

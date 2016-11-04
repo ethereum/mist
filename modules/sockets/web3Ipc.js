@@ -1,4 +1,4 @@
-"use strict";
+
 
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
@@ -13,12 +13,11 @@ const SocketBase = require('./base'),
 const Web3SocketBase = require('./web3Base');
 
 
-
 module.exports = class Web3IpcSocket extends Web3SocketBase {
     /**
      * Reset socket.
      */
-    _resetSocket () {
+    _resetSocket() {
         this._log.debug('Resetting socket');
 
         return Q.try(() => {
@@ -38,7 +37,7 @@ module.exports = class Web3IpcSocket extends Web3SocketBase {
                 this._socket.on('close', (hadError) => {
                     // if we did the disconnection then all good
                     if (STATE.DISCONNECTING === this._state) {
-                      return;
+                        return;
                     }
 
                     this.emit('close', hadError);
@@ -65,7 +64,7 @@ module.exports = class Web3IpcSocket extends Web3SocketBase {
                 this._socket.on('error', (err) => {
                     // connection errors will be handled in connect() code
                     if (STATE.CONNECTING === this._state) {
-                      return;
+                        return;
                     }
 
                     this._log.error(err);
@@ -74,4 +73,4 @@ module.exports = class Web3IpcSocket extends Web3SocketBase {
                 });
             });
     }
-}
+};

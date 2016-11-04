@@ -12,7 +12,8 @@ function isHexType(type) {
 }
 
 ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
-    var dataBuffer, paramTypes;
+    let dataBuffer,
+        paramTypes;
     dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
     signature = signature.match(/\((.+)\)/i);
 
@@ -20,24 +21,24 @@ ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
 
     paramTypes = signature[1].split(',');
 
-    try {
+    try	{
         const paramsResponse = abi.rawDecode(paramTypes, dataBuffer);
-        var paramsDictArr = [];
+        const paramsDictArr = [];
 
-        // Turns addresses into proper hex string
-        // Turns numbers into their decimal string version
+		// Turns addresses into proper hex string
+		// Turns numbers into their decimal string version
         paramTypes.forEach((type, index) => {
-            var conversionFlag = isHexType(type) ? 'hex' : null,
+            let conversionFlag = isHexType(type) ? 'hex' : null,
                 prefix = isHexType(type) ? '0x' : '';
 
             paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 
-            paramsDictArr.push({type: type, value: prefix + paramsResponse[index]});
+            paramsDictArr.push({ type, value: prefix + paramsResponse[index] });
         });
 
         event.sender.send('uiAction_decodedFunctionSignatures', paramsDictArr);
     }
-    catch(e){
-        console.warn('ABI.js Warning:', e.message);
-    }
+	catch (e) {
+    console.warn('ABI.js Warning:', e.message);
+}
 });

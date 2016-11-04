@@ -8,10 +8,10 @@ const shell = electron.shell;
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-var Web3 = require('web3');
-require('./include/getFavicon.js');
-require('./include/getMetaTags.js');
-require('./include/openExternal.js');
+const Web3 = require('web3');
+require('../getFavicon.js');
+require('../getMetaTags.js');
+require('../openExternal.js');
 require('./include/setBasePath')('interface');
 
 // notifiy the tab to store the webview id

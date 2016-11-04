@@ -9,7 +9,7 @@ const mist = require('../mistAPI.js');
 require('../openExternal.js');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-var Web3 = require('web3');
+const Web3 = require('web3');
 require('../getFavicon.js');
 require('../getMetaTags.js');
 require('../openExternal.js');
@@ -21,7 +21,6 @@ ipc.sendToHost('setWebviewId');
 
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
-
 
 
 window.mist = mist();

@@ -1,4 +1,4 @@
-"use strict";
+
 
 const _ = global._;
 const solc = require('solc');
@@ -13,13 +13,13 @@ module.exports = class extends BaseProcessor {
     /**
      * @override
      */
-    exec (conn, payload) {
+    exec(conn, payload) {
         return Q.try(() => {
             this._log.debug('Compile solidity');
 
-            let output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
+            const output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
 
-            let finalResult = _.extend({}, payload);
+            const finalResult = _.extend({}, payload);
 
             if (!output || output.errors) {
                 let msg = (output ? output.errors : 'Compile error');
@@ -29,27 +29,26 @@ module.exports = class extends BaseProcessor {
                 }
 
                 finalResult.error = {
-                    code: -32700, 
+                    code: -32700,
                     message: msg,
                 };
             } else {
                 finalResult.result = output.contracts;
-            }            
+            }
 
             return finalResult;
         });
     }
-    
+
     /**
      * @override
      */
-    sanitizeRequestPayload (conn, payload, isPartOfABatch) {
+    sanitizeRequestPayload(conn, payload, isPartOfABatch) {
         if (isPartOfABatch) {
             throw this.ERRORS.BATCH_COMPILE_DENIED;
         }
-        
+
         return super.sanitizeRequestPayload(conn, payload, isPartOfABatch);
     }
-}
-
+};
 

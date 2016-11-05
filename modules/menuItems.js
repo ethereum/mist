@@ -187,7 +187,7 @@ let menuTempl = function (webviews) {
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
                         click() {
-                            shell.showItemInFolder(Settings.userDataPath);
+                            shell.openItem(Settings.userDataPath);
                         },
                     },
                 ],

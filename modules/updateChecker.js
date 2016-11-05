@@ -1,4 +1,4 @@
-"use strict";
+
 
 const _ = global._;
 const got = require('got');
@@ -12,18 +12,18 @@ const Settings = require('./settings');
  * Check for updates to the app.
  * @return {[type]} [description]
  */
-const check = exports.check = function() {
+const check = exports.check = function () {
     log.info('Check for update...');
 
     let str = null;
 
     switch (Settings.uiMode) {
-        case 'mist':
-            str = 'mist';
-            break;
-        case 'wallet':
-            str = 'wallet';
-            break;
+    case 'mist':
+        str = 'mist';
+        break;
+    case 'wallet':
+        str = 'wallet';
+        break;
     }
 
     return got('https://api.github.com/repos/ethereum/mist/releases', {
@@ -31,10 +31,10 @@ const check = exports.check = function() {
         json: true,
     })
     .then((res) => {
-        let releases = _.filter(res.body, function(release) {
+        const releases = _.filter(res.body, (release) => {
             return (
-                !_.get(release, 'draft') 
-                && 0 <= _.get(release, 'name', '').toLowerCase().indexOf(str)
+                !_.get(release, 'draft')
+                && _.get(release, 'name', '').toLowerCase().indexOf(str) >= 0
             );
         });
 
@@ -44,7 +44,7 @@ const check = exports.check = function() {
             return;
         }
 
-        let latest = releases[0];
+        const latest = releases[0];
 
         if (semver.gt(latest.tag_name, Settings.appVersion)) {
             log.info(`App (${Settings.appVersion}) is out of date. New ${latest.tag_name} found.`);
@@ -70,8 +70,8 @@ function showWindow(options) {
     return Windows.createPopup('updateAvailable', _.extend({
         useWeb3: false,
         electronOptions: {
-            width: 420, 
-            height: 230 ,
+            width: 420,
+            height: 230,
             alwaysOnTop: true,
             resizable: false,
             maximizable: false,
@@ -80,14 +80,12 @@ function showWindow(options) {
 }
 
 
-
-
-exports.run = function() {
-    check().then((update) => {     
+exports.run = function () {
+    check().then((update) => {
         if (update) {
             showWindow({
                 sendData: ['uiAction_checkUpdateDone', update],
-            });            
+            });
         }
     }).catch((err) => {
         log.error(err);
@@ -95,18 +93,18 @@ exports.run = function() {
 };
 
 
-exports.runVisibly = function() {
-    let wnd = showWindow({
+exports.runVisibly = function () {
+    const wnd = showWindow({
         sendData: ['uiAction_checkUpdateInProgress'],
     });
 
-    wnd.on('ready', function() {
+    wnd.on('ready', () => {
         check().then((update) => {
             wnd.send('uiAction_checkUpdateDone', update);
         }).catch((err) => {
             log.error(err);
 
             wnd.send('uiAction_checkUpdateDone');
-        })
+        });
     });
 };

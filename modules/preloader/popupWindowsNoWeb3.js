@@ -17,9 +17,9 @@ require('./include/setBasePath')('interface');
 electron.webFrame.setZoomLevelLimits(1, 1);
 
 // receive data in the popupWindow
-ipc.on('data', function(e, data) {
+ipc.on('data', (e, data) => {
     Session.set('data', data);
-})
+});
 
 window.mist = mist();
 window.dirname = remote.getGlobal('dirname');

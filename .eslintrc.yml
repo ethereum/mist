@@ -11,9 +11,6 @@ rules:
   indent:
     - 2  # error
     - 4  # number of spaces
-  prefer-arrow-callback:
-    - 2
-    - allowNamedFunctions: true
 
 globals:
   i18n: true  # don't warn about missing 'i18n' declaration

@@ -154,6 +154,10 @@
             }
         },
         "popupWindows": {
+            "clientUpdateAvailable": {
+                "downloadAndRestart": "Download and Restart",
+                "newVersionAvailable": "A new version of __client__ is available (__version__)!"
+            },
             "updateAvailable": {
                 "download": "Download",
                 "newVersionAvailable": "A new version of __app__ is available!",
@@ -190,7 +194,7 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "It seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
+                "estimatedGasError": "It seems this transaction will fail. If you submit it, it may consume all the gas you send.",
                 "transactionThrow": "The contract won't allow this transaction to be executed",
                 "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",

@@ -3,23 +3,43 @@
 const _ = global._;
 const path = require('path');
 const Q = require('bluebird');
+const fs = require('fs');
+const electron = require('electron');
+const ipc = electron.ipcMain;
+const app = electron.app;
 const got = require('got');
 const Settings = require('./settings');
+const Windows = require("./windows");
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
+const ALLOWED_DOWNLOAD_URLS_REGEX =
+    /^http[s]?:\/\/([^\.]*\.)?ethereum\.org\/(.*)?|^http[s]?:\/\/([^\.]*\.)?bintray\.com\/karalabe\/ethereum\/(.*)?/;
+
+
 class Manager extends EventEmitter {
     constructor () {
         super();
-        
+
         this._availableClients = {};
     }
-    
-    checkForNewConfig () {
+
+    _writeLocalConfig (json) {
+        log.info('Write new client binaries local config to disk ...');
+
+        fs.writeFileSync(
+            path.join(Settings.userDataPath, 'clientBinaries.json'),
+            JSON.stringify(json, null, 2)
+        );
+    }
+
+    _checkForNewConfig () {
         log.info(`Checking for new client binaries config...`);
+
+        this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
         return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
@@ -33,44 +53,67 @@ class Manager extends EventEmitter {
                 return res.body;
             }
         })
-        .then((latestConfig) => {
-            let localConfig;
-            
-            try {
-                // now load the local json
-                localConfig = fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString();
-            } catch (err) {
-                log.warn(`Error loading local clientBinaries.json - assuming this is a first run: ${err}`);
-            }
-            
-            if (JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
-                log.debug(`New client binaries config found, asking user if they wish to update...`);
-
-                // TODO: ask user if they wish to upgrade!
-            }
-        })
-    }
-    
-    init () {
-        log.info('Initializing...');
-        
-        this._availableClients = {};
-        
-        this._resolveEthBinPath();
-
-        this._emit('loadConfig', 'Fetching client config');
-        
         .catch((err) => {
             log.warn('Error fetching client binaries config from repo', err);
-            
-            this._emit('loadConfig', 'Loading local client config');
-
-            return require('../clientBinaries.json');
         })
-        .then((json) => {
-            const mgr = new ClientBinaryManager(json);
+        .then((latestConfig) => {
+            let localConfig
+
+            this._emit('loadConfig', 'Fetching local config');
+
+            try {
+                // now load the local json
+                localConfig = JSON.parse(
+                    fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString()
+                );
+            } catch (err) {
+                log.warn(`Error loading local config - assuming this is a first run: ${err}`);
+
+                if (latestConfig) {
+                    localConfig = latestConfig;
+
+                    this._writeLocalConfig(localConfig);
+                } else {
+                    throw new Error(`Unable to load local or remote config, cannot proceed!`);
+                }
+            }
+
+            // if new config version available then ask user if they wish to update
+            if (latestConfig && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
+                log.debug(`New client binaries config found, asking user if they wish to update...`);
+
+                const newVersion = latestConfig.clients.Geth.version;
+
+                const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
+                    useWeb3: false,
+                    electronOptions: {
+                        width: 420,
+                        height: 230 ,
+                        alwaysOnTop: true,
+                        resizable: false,
+                        maximizable: false,
+                    },
+                }, {
+                    sendData: ['uiAction_clientUpdateAvailable', {
+                        name: 'Geth',
+                        version: newVersion,
+                    }],
+                }));
+
+                // remove previous update listeners and then add new one
+                ipc.removeAllListeners('backendAction_confirmClientUpdate');
+                ipc.once('backendAction_confirmClientUpdate', (e) => {
+                    this._writeLocalConfig(latestConfig);
+                    log.info('Restarting app ...');
+                    app.relaunch();
+                    app.quit();
+                });
+            }
+
+            // scan for geth
+            const mgr = new ClientBinaryManager(localConfig);
             mgr.logger = log;
-            
+
             this._emit('scanning', 'Scanning for binaries');
 
             return mgr.init({
@@ -81,59 +124,73 @@ class Manager extends EventEmitter {
             })
             .then(() => {
                 const clients = mgr.clients;
-                
+
+                this._availableClients = {};
+
                 const available = _.filter(clients, (c) => !!c.state.available);
-                
+
                 if (!available.length) {
                     if (_.isEmpty(clients)) {
                         throw new Error('No client binaries available for this system!');
                     }
-                    
+
                     this._emit('downloading', 'Downloading binaries');
-                    
+
                     return Q.map(_.values(clients), (c) => {
                         return mgr.download(c.id, {
                             downloadFolder: path.join(Settings.userDataPath, 'binaries'),
+                            urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
                         });
                     });
                 }
             })
             .then(() => {
                 this._emit('filtering', 'Filtering available clients');
-                
+
                 _.each(mgr.clients, (client) => {
                     if (client.state.available) {
                         const idlcase = client.id.toLowerCase();
-                        
+
                         this._availableClients[idlcase] = {
                             binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
                             version: client.version,
                         }
                     }
                 });
-                
-                this._emit('done');                
-            })
+
+                this._emit('done');
+            });
         })
         .catch((err) => {
             log.error(err);
-            
+
             this._emit('error', err.message);
         });
     }
-    
+
+
+    init () {
+        log.info('Initializing...');
+
+        this._resolveEthBinPath();
+        this._checkForNewConfig();
+
+        // check every hour
+        setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
+    }
+
     getClient (clientId) {
         return this._availableClients[clientId.toLowerCase()];
     }
 
-    
+
     _emit(status, msg) {
         log.debug(`Status: ${status} - ${msg}`);
-        
+
         this.emit('status', status, msg);
     }
-    
-    
+
+
     _resolveEthBinPath () {
         log.info('Resolving path to Eth client binary ...');
 

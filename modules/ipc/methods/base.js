@@ -1,4 +1,4 @@
-"use strict";
+
 
 const _ = global._;
 const Q = require('bluebird');
@@ -14,7 +14,7 @@ const db = require('../../db');
  * This is the base class for all specialized request processors.
  */
 module.exports = class BaseProcessor {
-    constructor (name, ipcProviderBackend) {
+    constructor(name, ipcProviderBackend) {
         this._log = log.create(name);
         this._ipcProviderBackend = ipcProviderBackend;
         this.ERRORS = this._ipcProviderBackend.ERRORS;
@@ -26,22 +26,22 @@ module.exports = class BaseProcessor {
      * @param  {Object|Array} payload  payload
      * @return {Promise}
      */
-    exec (conn, payload) {
+    exec(conn, payload) {
         this._log.trace('Execute request', payload);
 
         return conn.socket.send(payload, {
             fullResult: true,
         })
-        .then((ret) => ret.result);
+        .then(ret => ret.result);
     }
 
 
-    _isAdminConnection (conn) {
+    _isAdminConnection(conn) {
         // main window or popupwindows - always allow requests
-        let wnd = Windows.getById(conn.id);
-        let tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
+        const wnd = Windows.getById(conn.id);
+        const tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
 
-        return ((wnd && ('main' === wnd.type || wnd.isPopup)) ||
+        return ((wnd && (wnd.type === 'main' || wnd.isPopup)) ||
                 (tab && _.get(tab, 'permissions.admin') === true));
     }
 
@@ -55,9 +55,9 @@ module.exports = class BaseProcessor {
     @param {Object} payload The request payload.
     @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
-    sanitizeRequestPayload (conn, payload, isPartOfABatch) {
+    sanitizeRequestPayload(conn, payload, isPartOfABatch) {
         this._log.trace('Sanitize request payload', payload);
-        
+
         this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
     }
 
@@ -71,13 +71,13 @@ module.exports = class BaseProcessor {
     @param {Object} payload The request payload.
     @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
-    sanitizeResponsePayload (conn, payload, isPartOfABatch) {
+    sanitizeResponsePayload(conn, payload, isPartOfABatch) {
         this._log.trace('Sanitize response payload', payload);
-        
+
         this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
     }
-    
-    
+
+
     /**
     Sanitize a request or response payload.
 
@@ -87,7 +87,7 @@ module.exports = class BaseProcessor {
     @param {Object} payload The request payload.
     @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
-    _sanitizeRequestResponsePayload (conn, payload, isPartOfABatch) {
+    _sanitizeRequestResponsePayload(conn, payload, isPartOfABatch) {
         if (!_.isObject(payload)) {
             throw this.ERRORS.INVALID_PAYLOAD;
         }
@@ -97,7 +97,7 @@ module.exports = class BaseProcessor {
         }
 
         // prevent dapps from acccesing admin endpoints
-        if(!/^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method)){
+        if (!/^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
             delete payload.result;
 
             payload.error = this.ERRORS.METHOD_DENIED;

@@ -1,4 +1,4 @@
-"use strict";
+
 
 const _ = global._;
 const path = require('path');
@@ -21,7 +21,7 @@ const ALLOWED_DOWNLOAD_URLS_REGEX =
 
 
 class Manager extends EventEmitter {
-    constructor () {
+    constructor() {
         super();
 
         this._availableClients = {};
@@ -120,7 +120,7 @@ class Manager extends EventEmitter {
                 folders: [
                     path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
                     path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
-                ]
+                ],
             })
             .then(() => {
                 const clients = mgr.clients;
@@ -154,7 +154,7 @@ class Manager extends EventEmitter {
                         this._availableClients[idlcase] = {
                             binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
                             version: client.version,
-                        }
+                        };
                     }
                 });
 
@@ -197,13 +197,13 @@ class Manager extends EventEmitter {
         let platform = process.platform;
 
         // "win32" -> "win" (because nodes are bundled by electron-builder)
-        if (0 === platform.indexOf('win')) {
+        if (platform.indexOf('win') === 0) {
             platform = 'win';
-        } else if (0 === platform.indexOf('darwin')) {
+        } else if (platform.indexOf('darwin') === 0) {
             platform = 'mac';
         }
 
-        log.debug('Platform: ' + platform);
+        log.debug(`Platform: ${platform}`);
 
         let binPath = path.join(
             __dirname,
@@ -220,14 +220,14 @@ class Manager extends EventEmitter {
 
         binPath = path.join(path.resolve(binPath), 'eth');
 
-        if ('win' === platform) {
+        if (platform === 'win') {
             binPath += '.exe';
         }
 
         log.info('Eth client binary path: ' + binPath);
 
         this._availableClients.eth = {
-            binPath: binPath,
+            binPath,
             version: '1.3.0',
         };
     }

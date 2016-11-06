@@ -1,21 +1,21 @@
-"use strict";
+
 
 const Windows = require('./windows');
 
 class BlurOverlay {
 
-	static enable () {
-		BlurOverlay.setBlurOverlay(true);
-	}
+    static enable() {
+        BlurOverlay.setBlurOverlay(true);
+    }
 
-	static disable () {
-		BlurOverlay.setBlurOverlay(false);
-	}
+    static disable() {
+        BlurOverlay.setBlurOverlay(false);
+    }
 
-	static setBlurOverlay (flag) {
-		let mainWindow = Windows.getByType('main');
-		mainWindow.send('uiAction_enableBlurOverlay', flag);
-	}
+    static setBlurOverlay(flag) {
+        const mainWindow = Windows.getByType('main');
+        mainWindow.send('uiAction_enableBlurOverlay', flag);
+    }
 }
 
 module.exports = BlurOverlay;

@@ -8,7 +8,7 @@ const packageJson = require('../package.json');
 
 
 // try loading in config file
-let defaultConfig = {
+const defaultConfig = {
     mode: 'mist',
     production: false,
 };
@@ -16,7 +16,6 @@ try {
     _.extend(defaultConfig, require('../config.json'));
 } catch (err) {
 }
-
 
 
 const argv = require('yargs')
@@ -88,7 +87,7 @@ const argv = require('yargs')
             requiresArg: false,
             nargs: 0,
             type: 'boolean',
-            group: 'Mist options:',            
+            group: 'Mist options:',
         },
         logfile: {
             demand: false,
@@ -96,16 +95,16 @@ const argv = require('yargs')
             requiresArg: true,
             nargs: 1,
             type: 'string',
-            group: 'Mist options:',            
+            group: 'Mist options:',
         },
         loglevel: {
             demand: false,
             default: 'info',
-            describe: 'Minimum logging threshold: trace (all logs), debug, info, warn, error.',
+            describe: 'Minimum logging threshold: info, debug, error, trace (shows all logs, including possible passwords over IPC!).',
             requiresArg: true,
             nargs: 1,
             type: 'string',
-            group: 'Mist options:',                        
+            group: 'Mist options:',
         },
         version: {
             alias: 'v',
@@ -119,21 +118,20 @@ const argv = require('yargs')
         '': {
             describe: 'To pass options to the underlying node (e.g. Geth) use the --node- prefix, e.g. --node-datadir',
             group: 'Node options:',
-        }
+        },
     })
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
 
 
-
 argv.nodeOptions = [];
 
-for (let optIdx in argv) {
-    if (0 === optIdx.indexOf('node-')) {
-        argv.nodeOptions.push('--' + optIdx.substr(5));
-        
-        if (true !== argv[optIdx]) {
+for (const optIdx in argv) {
+    if (optIdx.indexOf('node-') === 0) {
+        argv.nodeOptions.push(`--${optIdx.substr(5)}`);
+
+        if (argv[optIdx] !== true) {
             argv.nodeOptions.push(argv[optIdx]);
         }
 
@@ -147,162 +145,161 @@ if (argv.ipcpath) {
 }
 
 
-
-var log = null;
+const log = null;
 
 
 class Settings {
-  init () {
-    logger.setup(argv);
+    init() {
+        logger.setup(argv);
 
-    this._log = logger.create('Settings');    
-  }
+        this._log = logger.create('Settings');
+    }
 
-  get userDataPath() {
+    get userDataPath() {
     // Application Aupport/Mist
-    return app.getPath('userData');
-  }
+        return app.getPath('userData');
+    }
 
-  get appDataPath() {
+    get appDataPath() {
     // Application Support/
-    return app.getPath('appData');
-  }
-
-  get userHomePath() {
-    return app.getPath('home');
-  }
-
-  get cli () {
-    return argv;
-  }
-
-  get appVersion () {
-    return packageJson.version;
-  }
-
-  get appName () {
-    return 'mist' === this.uiMode ? 'Mist' : 'Ethereum Wallet';
-  }
-
-  get appLicense () {
-    return packageJson.license;
-  }
-
-  get uiMode () {
-    return argv.mode;
-  }
-
-  get inProductionMode () {
-    return defaultConfig.production;
-  }
-
-  get inAutoTestMode () {
-    return !!process.env.TEST_MODE;
-  }
-
-  get gethPath () {
-    return argv.gethpath;
-  }
-
-  get ethPath () {
-    return argv.ethpath;
-  }
-
-  get rpcMode () {
-    return (argv.rpc && 0 > argv.rpc.indexOf('.ipc')) ? 'http' : 'ipc';
-  }
-
-  get rpcConnectConfig () {
-    if ('ipc' ===  this.rpcMode) {
-        return {
-            path: this.rpcIpcPath,
-        };
-    } else {
-        return {
-            hostPort: this.rpcHttpPath,
-        };        
+        return app.getPath('appData');
     }
-  }
 
-  get rpcHttpPath () {
-    return ('http' === this.rpcMode) ? argv.rpc : null;
-  }
-
-  get rpcIpcPath () {
-    let ipcPath = ('ipc' === this.rpcMode) ? argv.rpc : null;
-
-    if (ipcPath) {
-        return ipcPath;
+    get userHomePath() {
+        return app.getPath('home');
     }
-    
-    ipcPath = this.userHomePath;
 
-    if (process.platform === 'darwin') {
-        ipcPath += '/Library/Ethereum/geth.ipc';
-    } else if (process.platform === 'freebsd' ||
+    get cli() {
+        return argv;
+    }
+
+    get appVersion() {
+        return packageJson.version;
+    }
+
+    get appName() {
+        return this.uiMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    }
+
+    get appLicense() {
+        return packageJson.license;
+    }
+
+    get uiMode() {
+        return argv.mode;
+    }
+
+    get inProductionMode() {
+        return defaultConfig.production;
+    }
+
+    get inAutoTestMode() {
+        return !!process.env.TEST_MODE;
+    }
+
+    get gethPath() {
+        return argv.gethpath;
+    }
+
+    get ethPath() {
+        return argv.ethpath;
+    }
+
+    get rpcMode() {
+        return (argv.rpc && argv.rpc.indexOf('.ipc') < 0) ? 'http' : 'ipc';
+    }
+
+    get rpcConnectConfig() {
+        if (this.rpcMode === 'ipc') {
+            return {
+                path: this.rpcIpcPath,
+            };
+        } else {
+            return {
+                hostPort: this.rpcHttpPath,
+            };
+        }
+    }
+
+    get rpcHttpPath() {
+        return (this.rpcMode === 'http') ? argv.rpc : null;
+    }
+
+    get rpcIpcPath() {
+        let ipcPath = (this.rpcMode === 'ipc') ? argv.rpc : null;
+
+        if (ipcPath) {
+            return ipcPath;
+        }
+
+        ipcPath = this.userHomePath;
+
+        if (process.platform === 'darwin') {
+            ipcPath += '/Library/Ethereum/geth.ipc';
+        } else if (process.platform === 'freebsd' ||
        process.platform === 'linux' ||
        process.platform === 'sunos') {
-        ipcPath += '/.ethereum/geth.ipc';
-    } else if (process.platform === 'win32') {
-        ipcPath = '\\\\.\\pipe\\geth.ipc';
+            ipcPath += '/.ethereum/geth.ipc';
+        } else if (process.platform === 'win32') {
+            ipcPath = '\\\\.\\pipe\\geth.ipc';
+        }
+
+        this._log.debug(`IPC path: ${ipcPath}`);
+
+        return ipcPath;
     }
-    
-    this._log.debug(`IPC path: ${ipcPath}`);
 
-    return ipcPath;
-  }
+    get nodeType() {
+        return argv.node;
+    }
 
-  get nodeType () {
-    return argv.node;
-  }
+    get network() {
+        return argv.network;
+    }
 
-  get network () {
-    return argv.network;
-  }
+    get nodeOptions() {
+        return argv.nodeOptions;
+    }
 
-  get nodeOptions () {
-    return argv.nodeOptions;
-  }
+    loadUserData(path) {
+        const fullPath = this.constructUserDataPath(path);
 
-  loadUserData (path) {
-      const fullPath = this.constructUserDataPath(path);
-
-      this._log.trace('Load user data', fullPath);
+        this._log.trace('Load user data', fullPath);
 
       // check if the file exists
-      try {
-          fs.accessSync(fullPath, fs.R_OK);
-      } catch (err){
-          return null;
-      }
+        try {
+            fs.accessSync(fullPath, fs.R_OK);
+        } catch (err) {
+            return null;
+        }
 
       // try to read it
-      try {
-          return fs.readFileSync(fullPath, {encoding: 'utf8'});
-      } catch (err){
-          this._log.warn(`File not readable: ${fullPath}`, err);
-      }
+        try {
+            return fs.readFileSync(fullPath, { encoding: 'utf8' });
+        } catch (err) {
+            this._log.warn(`File not readable: ${fullPath}`, err);
+        }
 
-      return null;
-  }
-
-
-  saveUserData (path, data) {
-      if (!data) return; // return so we dont write null, or other invalid data
-
-      const fullPath = this.constructUserDataPath(path);
-
-      try {
-          fs.writeFileSync(fullPath, data, {encoding: 'utf8'});
-      } catch (err){
-          this._log.warn(`Unable to write to ${fullPath}`, err);
-      }
-  }
+        return null;
+    }
 
 
-  constructUserDataPath (filePath) {
-      return path.join(this.userDataPath, filePath);   
-  }
+    saveUserData(path, data) {
+        if (!data) return; // return so we dont write null, or other invalid data
+
+        const fullPath = this.constructUserDataPath(path);
+
+        try {
+            fs.writeFileSync(fullPath, data, { encoding: 'utf8' });
+        } catch (err) {
+            this._log.warn(`Unable to write to ${fullPath}`, err);
+        }
+    }
+
+
+    constructUserDataPath(filePath) {
+        return path.join(this.userDataPath, filePath);
+    }
 
 }
 

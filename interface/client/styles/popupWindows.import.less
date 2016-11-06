@@ -62,6 +62,7 @@
 		right: 0;
 		background: linear-gradient(transparent 0%, @colorGrayLight 20%);
 		padding: 0 @gridHeight;
+        padding-top: @gridHeight * 3;
 	}
 
 	.info.dapp-error{
@@ -86,7 +87,7 @@
 		.container {
 			overflow: auto;
 			height: 80vh;
-			padding-bottom: 160px;
+			padding-bottom: 120px;
 		}
 
 		.transaction-parties {
@@ -204,6 +205,10 @@
 					    	position: relative;
 					    	top: 1px;
 					    }
+                        &:hover strong {
+                            word-break: break-all;
+                        }
+                        
                     }
                     .type {
                     	text-align: right;
@@ -215,6 +220,11 @@
                     	transition: background 0.1s ease-in;
                     }
                 }
+
+                ::selection {
+                    color: #FFF; 
+                    background: @colorLink;
+                }                 
             }
 
             ol li::before {

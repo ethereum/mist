@@ -6,9 +6,9 @@ require('./include/common')('popup-no-web3');
 const electron = require('electron');
 const remote = electron.remote;
 const mist = require('../mistAPI.js');
-const syncDb = require('../syncDb.js');
 const ipc = electron.ipcRenderer;
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
+const syncDb = require('../syncDb.js');
 
 require('./include/setBasePath')('interface');
 
@@ -17,11 +17,11 @@ require('./include/setBasePath')('interface');
 electron.webFrame.setZoomLevelLimits(1, 1);
 
 // receive data in the popupWindow
-ipc.on('data', function(e, data) {
+ipc.on('data', (e, data) => {
     Session.set('data', data);
-})
+});
 
-window.ipc = ipc;
 window.mist = mist();
 window.dirname = remote.getGlobal('dirname');
 window.syncDb = syncDb;
+window.ipc = ipc;

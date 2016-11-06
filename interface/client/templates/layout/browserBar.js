@@ -33,7 +33,7 @@ Template['layout_browserBar'].helpers({
             return;
         }
         var pathname = _.reject(url.pathname.replace(/\/$/g, '').split("/"), function(el) {
-            return el == '';
+            return el === '';
         });
         var breadcrumb = _.flatten(["<span>" + url.host + " </span>", pathname]).join(" ▸ ");
         return new Spacebars.SafeString(breadcrumb);

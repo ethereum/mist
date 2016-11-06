@@ -257,9 +257,9 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (transactionInvalid)
     */
     'transactionInvalid': function() {
-        return TemplateVar.get('estimatedGas') == 'invalid' 
-                || TemplateVar.get('estimatedGas') == 0
-                || typeof TemplateVar.get('estimatedGas') == 'undefined';
+        return TemplateVar.get('estimatedGas') === 'invalid' 
+                || TemplateVar.get('estimatedGas') === 0
+                || typeof TemplateVar.get('estimatedGas') === 'undefined';
     }
 });
 
@@ -296,7 +296,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
         // check if account is about to send to itself
-        if (data.to && data.from == data.to.toLowerCase()) {
+        if (data.to && data.from === data.to.toLowerCase()) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.sameAccount'),
                 duration: 5
@@ -365,8 +365,11 @@ Template['popupWindows_sendTransactionConfirmation'].events({
    },
    'click .lookup-function-signature': function(e, template) {
         var data = Session.get('data');
+        TemplateVar.set('lookingUpFunctionSignature', true);
 
         remoteSignatureLookup(data.data).then(function(textSignature) {
+            TemplateVar.set(template, 'lookingUpFunctionSignature', false);
+            
             // Clean version of function signature. Striping params
             TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
             TemplateVar.set(template, 'hasSignature', true);
@@ -378,6 +381,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
             }
         }).catch(function(bytesSignature) {
+            TemplateVar.set(template, 'lookingUpFunctionSignature', false);            
             TemplateVar.set(template, 'executionFunction', bytesSignature);
             TemplateVar.set(template, 'hasSignature', false);
         });

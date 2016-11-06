@@ -17,7 +17,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^http[s]?:\/\/([^\.]*\.)?ethereum\.org\/(.*)?|^http[s]?:\/\/([^\.]*\.)?bintray\.com\/karalabe\/ethereum\/(.*)?/;
+    /^http[s]?:\/\/([^\.]*\.)?ethereum\.org\/(.*)?|^http[s]?:\/\/([^\.]*\.)?bintray\.com\/artifact\/download\/karalabe\/ethereum\/(.*)?/;
 
 
 class Manager extends EventEmitter {

@@ -156,7 +156,7 @@
         "popupWindows": {
             "clientUpdateAvailable": {
                 "downloadAndRestart": "Download and Restart",
-                "newVersionAvailable": "A new version of __client__ is available (__version__)!"
+                "newVersionAvailable": "A new version of __client__(__version__) is available!"
             },
             "updateAvailable": {
                 "download": "Download",

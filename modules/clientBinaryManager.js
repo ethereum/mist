@@ -89,7 +89,7 @@ class Manager extends EventEmitter {
                     electronOptions: {
                         width: 420,
                         height: 230 ,
-                        alwaysOnTop: true,
+                        alwaysOnTop: false,
                         resizable: false,
                         maximizable: false,
                     },

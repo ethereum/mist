@@ -11,19 +11,22 @@ function isHexType(type) {
     return _.includes(['address', 'bytes'], type) || type.match(/bytes\d+/g);
 }
 
+function padLeft(string, chars) {
+    return (new Array(chars - string.length + 1).join('0')) + string;
+};
+
 ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
-    let dataBuffer,
-        paramTypes;
-    dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
+    let paramTypes;
+    data = data.slice(10, data.length);
     signature = signature.match(/\((.+)\)/i);
 
     if (!signature) return;
 
     paramTypes = signature[1].split(',');
 
-    try	{
-        const paramsResponse = abi.rawDecode(paramTypes, dataBuffer);
-        const paramsDictArr = [];
+    try {
+        const paramsResponse = abi.rawDecode(paramTypes, new Buffer(data, 'hex'));
+        let paramsDictArr = [];
 
 		// Turns addresses into proper hex string
 		// Turns numbers into their decimal string version
@@ -33,7 +36,13 @@ ipc.on('backendAction_decodeFunctionSignature', (event, signature, data) => {
 
             paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 
-            paramsDictArr.push({ type, value: prefix + paramsResponse[index] });
+            let res = type.match(/bytes(\d+)/i);
+            if(type === 'address')
+            	paramsResponse[index] = padLeft(paramsResponse[index], 40);
+            else if(res)
+            	paramsResponse[index] = padLeft(paramsResponse[index], Number(res[1])*2);
+
+            paramsDictArr.push({type: type, value: prefix + paramsResponse[index]});
         });
 
         event.sender.send('uiAction_decodedFunctionSignatures', paramsDictArr);

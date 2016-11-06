@@ -205,6 +205,10 @@
 					    	position: relative;
 					    	top: 1px;
 					    }
+                        &:hover strong {
+                            word-break: break-all;
+                        }
+                        
                     }
                     .type {
                     	text-align: right;
@@ -216,6 +220,11 @@
                     	transition: background 0.1s ease-in;
                     }
                 }
+
+                ::selection {
+                    color: #FFF; 
+                    background: @colorLink;
+                }                 
             }
 
             ol li::before {

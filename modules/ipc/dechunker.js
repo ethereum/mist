@@ -6,8 +6,8 @@ The dechunker module gets IPC buffers and tries to decode them.
 
 const _ = require('underscore');
 
-let lastChunk = null,
-    lastChunkTimeout = null;
+let lastChunk = null;
+let lastChunkTimeout = null;
 
 /**
 The dechunker module gets IPC buffers and tries to decode them.

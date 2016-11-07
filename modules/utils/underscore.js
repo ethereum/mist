@@ -1,6 +1,6 @@
+const _ = module.exports = require('underscore');
 const uuid = require('uuid');
 const deepExtend = require('deep-extend');
-const _ = module.exports = require('underscore');
 
 _.mixin({
     /**
@@ -39,4 +39,3 @@ _.mixin({
 });
 
 module.exports = _;
-

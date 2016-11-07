@@ -3,11 +3,8 @@
 */
 
 require('./include/common')('mist');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const remote = electron.remote;
-const Menu = remote.Menu;
-const MenuItem = remote.MenuItem;
+const { ipcRenderer: ipc, remote, webFrame } = require('electron');
+const { Menu, MenuItem } = remote;
 const syncDb = require('../syncDb.js');
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
@@ -21,7 +18,7 @@ require('./include/setBasePath')('interface');
 
 
 // disable pinch zoom
-electron.webFrame.setZoomLevelLimits(1, 1);
+webFrame.setZoomLevelLimits(1, 1);
 
 // make variables globally accessable
 window.BigNumber = BigNumber;
@@ -159,4 +156,3 @@ document.addEventListener('keydown', (e) => {
             { webview.reloadIgnoringCache(); }
     }
 }, false);
-

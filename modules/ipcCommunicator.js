@@ -4,15 +4,11 @@ Window communication
 @module ipcCommunicator
 */
 
-const electron = require('electron');
-const shell = electron.shell;
-
-const app = electron.app;  // Module to control application life.
-const appMenu = require('./menuItems');
-const logger = require('./utils/logger');
-const Windows = require('./windows');
-const ipc = electron.ipcMain;
 const _ = global._;
+const { app, ipcMain: ipc, shell } = require('electron');
+const Windows = require('./windows');
+const logger = require('./utils/logger');
+const appMenu = require('./menuItems');
 
 const log = logger.create('ipcCommunicator');
 
@@ -199,4 +195,3 @@ ipc.on('console_log', (event, id, logLevel, logItemsStr) => {
 ipc.on('backendAction_reloadSelectedTab', (event) => {
     event.sender.send('uiAction_reloadSelectedTab');
 });
-

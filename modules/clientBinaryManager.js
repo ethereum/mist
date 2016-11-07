@@ -1,24 +1,22 @@
-
-
 const _ = global._;
-const path = require('path');
 const Q = require('bluebird');
 const fs = require('fs');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 const app = electron.app;
 const got = require('got');
+const path = require('path');
 const Settings = require('./settings');
 const Windows = require("./windows");
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
+const got = require('got');
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^http[s]?:\/\/([^\.]*\.)?ethereum\.org\/(.*)?|^http[s]?:\/\/([^\.]*\.)?bintray\.com\/artifact\/download\/karalabe\/ethereum\/(.*)?/;
-
+    /^https:\/\/([A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/(.*)?|^https:\/\/gethstore\.blob\.core\.windows\.net\/(.*)?|^https:\/\/bintray\.com\/artifact\/download\/karalabe\/ethereum\/(.*)?/;
 
 class Manager extends EventEmitter {
     constructor() {

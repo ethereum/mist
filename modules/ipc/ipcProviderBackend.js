@@ -8,8 +8,7 @@ The IPC provider backend filter and tunnel all incoming request to the ethereum 
 
 const _ = global._;
 const Q = require('bluebird');
-const electron = require('electron');
-const ipc = electron.ipcMain;
+const { ipcMain: ipc } = require('electron');
 const fs = require('fs');
 const path = require('path');
 
@@ -344,7 +343,7 @@ class IpcProviderBackend {
             });
 
             log.error('Send request failed', err);
-            
+
             return err;
         })
         .then((returnValue) => {
@@ -467,4 +466,3 @@ class IpcProviderBackend {
 exports.init = function () {
     return new IpcProviderBackend();
 };
-

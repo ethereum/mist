@@ -1,11 +1,9 @@
-
-
 const _ = global._;
+const Windows = require('./windows');
+const Settings = require('./settings');
+const log = require('./utils/logger').create('updateChecker');
 const got = require('got');
 const semver = require('semver');
-const Windows = require('./windows');
-const log = require('./utils/logger').create('updateChecker');
-const Settings = require('./settings');
 
 
 /**

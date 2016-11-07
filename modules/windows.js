@@ -1,16 +1,8 @@
-
-
 const _ = global._;
-const Q = require('bluebird');
-const EventEmitter = require('events').EventEmitter;
-const log = require('./utils/logger').create('Windows');
-
+const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
-
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipc = electron.ipcMain;
+const log = require('./utils/logger').create('Windows');
+const EventEmitter = require('events').EventEmitter;
 
 
 class Window extends EventEmitter {
@@ -352,4 +344,3 @@ class Windows {
 
 
 module.exports = new Windows();
-

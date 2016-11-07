@@ -10,19 +10,32 @@ const Settings = require('./settings');
 const Windows = require("./windows");
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
-const got = require('got');
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/([A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/(.*)?|^https:\/\/gethstore\.blob\.core\.windows\.net\/(.*)?|^https:\/\/bintray\.com\/artifact\/download\/karalabe\/ethereum\/(.*)?/;
+    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;
 
 class Manager extends EventEmitter {
     constructor() {
         super();
 
         this._availableClients = {};
+    }
+
+    init () {
+        log.info('Initializing...');
+
+        this._resolveEthBinPath();
+        this._checkForNewConfig();
+
+        // check every hour
+        setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
+    }
+
+    getClient (clientId) {
+        return this._availableClients[clientId.toLowerCase()];
     }
 
     _writeLocalConfig (json) {
@@ -167,21 +180,6 @@ class Manager extends EventEmitter {
     }
 
 
-    init () {
-        log.info('Initializing...');
-
-        this._resolveEthBinPath();
-        this._checkForNewConfig();
-
-        // check every hour
-        setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
-    }
-
-    getClient (clientId) {
-        return this._availableClients[clientId.toLowerCase()];
-    }
-
-
     _emit(status, msg) {
         log.debug(`Status: ${status} - ${msg}`);
 
@@ -222,7 +220,7 @@ class Manager extends EventEmitter {
             binPath += '.exe';
         }
 
-        log.info('Eth client binary path: ' + binPath);
+        log.info(`Eth client binary path: ${binPath}`);
 
         this._availableClients.eth = {
             binPath,

@@ -15,8 +15,7 @@ const got = require('got');
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
-const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/([A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/(.*)?|^https:\/\/gethstore\.blob\.core\.windows\.net\/(.*)?|^https:\/\/bintray\.com\/artifact\/download\/karalabe\/ethereum\/(.*)?/;
+const ALLOWED_DOWNLOAD_URLS_REGEX = /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;
 
 class Manager extends EventEmitter {
     constructor() {

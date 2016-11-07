@@ -1,16 +1,9 @@
-
-
-const Q = require('bluebird');
-const EventEmitter = require('events').EventEmitter;
-const net = require('net');
-
 const _ = global._;
+const Q = require('bluebird');
 const dechunker = require('../ipc/dechunker.js');
+const SocketBase = require('./base');
 
-const SocketBase = require('./base'),
-    Socket = SocketBase.Socket,
-    STATE = SocketBase.STATE;
-
+const Socket = SocketBase.Socket;
 
 module.exports = class Web3Socket extends Socket {
     constructor(socketMgr, id) {

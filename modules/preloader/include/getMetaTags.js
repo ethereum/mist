@@ -4,8 +4,7 @@ Gest the meta[name="ethereum-dapp-url-bar-style"] meta tag
 @module getMetaTags
 */
 
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const  { ipcRenderer: ipc } = require('electron');
 
 module.export = (function () {
     document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);

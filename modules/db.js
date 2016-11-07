@@ -1,9 +1,9 @@
-const Loki = require('lokijs');
-const Settings = require('./settings');
+const fs = require('fs');
 const path = require('path');
 const Q = require('bluebird');
+const Loki = require('lokijs');
+const Settings = require('./settings');
 const log = require('./utils/logger').create('Db');
-const fs = require('fs');
 
 
 let db;
@@ -71,4 +71,3 @@ exports.close = function () {
         });
     });
 };
-

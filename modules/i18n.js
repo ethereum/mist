@@ -5,6 +5,7 @@ The i18n module, loads the language files and initializes i18next
 */
 const fs = require('fs');
 const i18n = require('i18next');
+
 let i18nConf = fs.readFileSync(`${__dirname}/../interface/project-tap.i18n`);
 i18nConf = JSON.parse(i18nConf);
 

@@ -3,8 +3,7 @@ Decodes Data into values, for a given signature.
 
 @module ABI
 */
-const electron = require('electron');
-const ipc = electron.ipcMain;
+const { ipcMain: ipc } = require('electron');
 const abi = require('ethereumjs-abi');
 
 function isHexType(type) {

@@ -1,12 +1,10 @@
-
-
 const _ = global._;
-const path = require('path');
 const Q = require('bluebird');
-const got = require('got');
+const path = require('path');
 const Settings = require('./settings');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
+const got = require('got');
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 

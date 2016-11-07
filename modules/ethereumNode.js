@@ -1,20 +1,15 @@
-
-
 const _ = global._;
-const log = require('./utils/logger').create('EthereumNode');
-const electron = require('electron');
-const app = electron.app;
-const ipc = electron.ipcMain;
-const spawn = require('child_process').spawn;
-const Windows = require('./windows.js');
-const logRotate = require('log-rotate');
-const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
+const spawn = require('child_process').spawn;
+const { dialog } = require('electron');
+const Windows = require('./windows.js');
+const Settings = require('./settings');
+const log = require('./utils/logger').create('EthereumNode');
+const logRotate = require('log-rotate');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./sockets');
 const ClientBinaryManager = require('./clientBinaryManager');
-const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
@@ -508,4 +503,3 @@ EthereumNode.STARTING = 0;
 
 
 module.exports = new EthereumNode();
-

@@ -4,10 +4,7 @@ Opens windows and popups
 @module openExternal
 */
 
-const electron = require('electron');
-const shell = electron.shell;
-const remote = electron.remote;
-const BrowserWindow = remote.BrowserWindow;
+const { BrowserWindow, remote, shell } = require('electron');
 
 
 // open a[target="_blank"] in external browser
@@ -34,4 +31,3 @@ document.addEventListener('click', (e) => {
         win.loadURL(node.href);
     }
 }, false);
-

@@ -3,10 +3,10 @@ engines:
     enabled: true
     config:
       languages:
-        -javascript:
+        -javascript
   eslint:
     enabled: true
-    channel: "eslint-3"  // supports airbnb-base config
+    channel: "eslint-3"
 
 ratings:
   paths:

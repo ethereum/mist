@@ -4,6 +4,7 @@ const dechunker = require('../ipc/dechunker.js');
 const SocketBase = require('./base');
 
 const Socket = SocketBase.Socket;
+const STATE = SocketBase.STATE;
 
 module.exports = class Web3Socket extends Socket {
     constructor(socketMgr, id) {

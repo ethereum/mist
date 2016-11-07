@@ -1,6 +1,5 @@
-module.exports = function(windowType) {
-    const electron = require('electron');
-    const ipc = electron.ipcRenderer;
+module.exports = function (windowType) {
+    const { ipcRenderer: ipc } = require('electron');
 
     if (process.env.TEST_MODE) {
         window.electronRequire = require;
@@ -11,4 +10,4 @@ module.exports = function(windowType) {
 
     // register with window manager
     ipc.send('backendAction_setWindowId');
-}
+};

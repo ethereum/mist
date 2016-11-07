@@ -6,44 +6,42 @@ The dechunker module gets IPC buffers and tries to decode them.
 
 const _ = require('underscore');
 
-var lastChunk = null,
-    lastChunkTimeout = null;
+let lastChunk = null;
+let lastChunkTimeout = null;
 
 /**
 The dechunker module gets IPC buffers and tries to decode them.
 
 @method dechunker
 */
-module.exports = function(data, callback){
+module.exports = function (data, callback) {
     data = data.toString();
 
     // DE-CHUNKER
-    var dechunkedData = data
-        .replace(/\}[\n\r]?\{/g,'}|--|{') // }{
-        .replace(/\}\][\n\r]?\[\{/g,'}]|--|[{') // }][{
-        .replace(/\}[\n\r]?\[\{/g,'}|--|[{') // }[{
-        .replace(/\}\][\n\r]?\{/g,'}]|--|{') // }]{
+    const dechunkedData = data
+        .replace(/\}[\n\r]?\{/g, '}|--|{') // }{
+        .replace(/\}\][\n\r]?\[\{/g, '}]|--|[{') // }][{
+        .replace(/\}[\n\r]?\[\{/g, '}|--|[{') // }[{
+        .replace(/\}\][\n\r]?\{/g, '}]|--|{') // }]{
         .split('|--|');
 
 
-    _.each(dechunkedData, function(data) {
-
+    _.each(dechunkedData, (data) => {
         // prepend the last chunk
-        if(lastChunk)
-            data = lastChunk + data;
+        if (lastChunk)
+            { data = lastChunk + data; }
 
-        var result = data;
+        let result = data;
 
         try {
             result = JSON.parse(result);
-    
-        } catch(e) {
+        } catch (e) {
             lastChunk = data;
 
             // start timeout to cancel all requests
             clearTimeout(lastChunkTimeout);
-            lastChunkTimeout = setTimeout(function(){
-                callback('Couldn\'t decode data: '+ data);
+            lastChunkTimeout = setTimeout(() => {
+                callback(`Couldn't decode data: ${data}`);
             }, 1000 * 15);
 
             return;

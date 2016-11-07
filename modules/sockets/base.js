@@ -1,11 +1,8 @@
-"use strict";
-
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 
-const _ = global._;
 const log = require('../utils/logger').create('Sockets');
-
 
 
 const CONNECT_INTERVAL_MS = 1000;
@@ -16,7 +13,7 @@ const CONNECT_TIMEOUT_MS = 3000;
  * Socket connecting to Ethereum Node.
  */
 class Socket extends EventEmitter {
-    constructor (socketMgr, id) {
+    constructor(socketMgr, id) {
         super();
 
         this._mgr = socketMgr;
@@ -28,12 +25,12 @@ class Socket extends EventEmitter {
     }
 
 
-    get id () {
+    get id() {
         return this._id;
     }
-    
 
-    get isConnected () {
+
+    get isConnected() {
         return STATE.CONNECTED === this._state;
     }
 
@@ -45,7 +42,7 @@ class Socket extends EventEmitter {
      * @param  {Number} [options.timeout] Milliseconds to wait before timeout (default is 5000).
      * @return {Promise}
      */
-    connect (connectConfig, options) {
+    connect(connectConfig, options) {
         this._log.info(`Connect to ${JSON.stringify(connectConfig)}`);
 
         options = _.extend({
@@ -75,7 +72,7 @@ class Socket extends EventEmitter {
 
                             this.emit('connect');
 
-                            resolve();                            
+                            resolve();
                         }
                     });
 
@@ -97,22 +94,22 @@ class Socket extends EventEmitter {
 
                             clearTimeout(connectTimerId);
 
-                            return reject(new Error(`Unable to connect to socket: timeout`));
+                            return reject(new Error('Unable to connect to socket: timeout'));
                         }
                     }, options.timeout);
 
                     // initial kick-off
                     this._socket.connect(connectConfig);
-                });            
+                });
             });
-    } 
+    }
 
 
     /**
      * Disconnect from socket.
      * @return {Promise}
      */
-    disconnect (options) {
+    disconnect(options) {
         if (!this._disconnectPromise) {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
@@ -122,13 +119,13 @@ class Socket extends EventEmitter {
                 // remove all existing listeners
                 this._socket.removeAllListeners();
 
-                let timer = setTimeout(() => {
+                const timer = setTimeout(() => {
                     log.warn('Disconnection timed out, continuing anyway...');
 
                     this._state = STATE.DISCONNECTION_TIMEOUT;
 
                     resolve();
-                }, 5000 /* wait 5 seconds for disconnection */)
+                }, 5000 /* wait 5 seconds for disconnection */);
 
                 this._socket.once('close', () => {
                     // if we manually killed it then all good
@@ -146,12 +143,12 @@ class Socket extends EventEmitter {
                 });
 
                 this._socket.destroy();
-            })  
+            })
                 .finally(() => {
                     this._disconnectPromise = null;
                 });
         }
-        
+
         return this._disconnectPromise;
     }
 
@@ -160,16 +157,16 @@ class Socket extends EventEmitter {
      * An alias to `disconnect()`.
      * @return {Promise}
      */
-    destroy () {
+    destroy() {
         return this.disconnect();
     }
 
 
     /**
      * Write data to socket.
-     * @param  {String}   data     
+     * @param  {String}   data
      */
-    write (data) {
+    write(data) {
         if (STATE.CONNECTED !== this._state) {
             throw new Error('Socket not connected');
         }
@@ -180,16 +177,15 @@ class Socket extends EventEmitter {
     }
 
 
-
     /**
      * Reset socket.
      *
-     * Upon completion `this._socket` will be set to a valid socket object, but 
+     * Upon completion `this._socket` will be set to a valid socket object, but
      * not yet connected.
      *
      * To be implemented by subclasses.
      */
-    _resetSocket () {
+    _resetSocket() {
         return Q.reject(new Error('Not yet implemented'));
     }
 }
@@ -208,6 +204,3 @@ const STATE = exports.STATE = Socket.STATE = {
     DISCONNECTION_TIMEOUT: -2,
     CONNECTION_TIMEOUT: -3,
 };
-
-
-

@@ -1,20 +1,15 @@
-"use strict";
-
 const _ = global._;
-const log = require('./utils/logger').create('EthereumNode');
-const electron = require('electron');
-const app = electron.app;
-const ipc = electron.ipcMain;
-const spawn = require('child_process').spawn;
-const Windows = require('./windows.js');
-const logRotate = require('log-rotate');
-const dialog = electron.dialog;
 const fs = require('fs');
 const Q = require('bluebird');
+const spawn = require('child_process').spawn;
+const { dialog } = require('electron');
+const Windows = require('./windows.js');
+const Settings = require('./settings');
+const log = require('./utils/logger').create('EthereumNode');
+const logRotate = require('log-rotate');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./sockets');
 const ClientBinaryManager = require('./clientBinaryManager');
-const Settings = require('./settings');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
@@ -46,74 +41,74 @@ class EthereumNode extends EventEmitter {
         this.on('data', _.bind(this._logNodeData, this));
     }
 
-    get isOwnNode () {
+    get isOwnNode() {
         return !!this._node;
     }
 
-    get isExternalNode () {
+    get isExternalNode() {
         return !this._node;
     }
 
-    get isIpcConnected () {
+    get isIpcConnected() {
         return this._socket.isConnected;
     }
 
-    get type () {
+    get type() {
         return this.isOwnNode ? this._type : null;
     }
 
-    get network () {
+    get network() {
         return this.isOwnNode ? this._network : null;
     }
 
-    get isEth () {
+    get isEth() {
         return this._type === 'eth';
     }
 
-    get isGeth () {
+    get isGeth() {
         return this._type === 'geth';
     }
 
-    get isMainNetwork () {
-        return 'main' === this.network;
+    get isMainNetwork() {
+        return this.network === 'main';
     }
 
-    get isTestNetwork () {
-        return 'test' === this.network;
+    get isTestNetwork() {
+        return this.network === 'test';
     }
 
-    get state () {
+    get state() {
         return this._state;
     }
 
-    get stateAsText () {
+    get stateAsText() {
         switch (this._state) {
-            case STATES.STARTING:
-                return 'starting';
-            case STATES.STARTED:
-                return 'started';
-            case STATES.CONNECTED:
-                return 'connected';
-            case STATES.STOPPING:
-                return 'stopping';
-            case STATES.STOPPED:
-                return 'stopped';
-            case STATES.ERROR:
-                return 'error';
+        case STATES.STARTING:
+            return 'starting';
+        case STATES.STARTED:
+            return 'started';
+        case STATES.CONNECTED:
+            return 'connected';
+        case STATES.STOPPING:
+            return 'stopping';
+        case STATES.STOPPED:
+            return 'stopped';
+        case STATES.ERROR:
+            return 'error';
         }
     }
 
-    set state (newState) {
+    set state(newState) {
         this._state = newState;
 
         this.emit('state', this.state, this.stateAsText);
     }
 
-    get lastError () {
+    get lastError() {
         return this._lastErr;
     }
 
-    set lastError (err) {
+    set lastError(err) {
         return this._lastErr = err;
     }
 
@@ -121,9 +116,9 @@ class EthereumNode extends EventEmitter {
      * This method should always be called first to initialise the connection.
      * @return {Promise}
      */
-    init () {
+    init() {
         return this._socket.connect(Settings.rpcConnectConfig)
-            .then(()=> {
+            .then(() => {
                 this.state = STATES.CONNECTED;
 
                 this.emit('runningNodeFound');
@@ -145,8 +140,7 @@ class EthereumNode extends EventEmitter {
     }
 
 
-
-    restart (newType, newNetwork) {
+    restart(newType, newNetwork) {
         return Q.try(() => {
             if (!this.isOwnNode) {
                 throw new Error('Cannot restart node since it was started externally');
@@ -173,13 +167,12 @@ class EthereumNode extends EventEmitter {
     }
 
 
-
     /**
      * Stop node.
-     * 
+     *
      * @return {Promise}
      */
-    stop () {
+    stop() {
         if (!this._stopPromise) {
             return new Q((resolve, reject) => {
                 if (!this._node) {
@@ -195,15 +188,15 @@ class EthereumNode extends EventEmitter {
                 this._node.stdin.removeAllListeners('error');
                 this._node.removeAllListeners('error');
                 this._node.removeAllListeners('exit');
-                
+
                 this._node.kill('SIGINT');
 
                 // after some time just kill it if not already done so
-                let killTimeout = setTimeout(() => {
+                const killTimeout = setTimeout(() => {
                     if (this._node) {
                         this._node.kill('SIGKILL');
                     }
-                }, 8000 /* 8 seconds */)
+                }, 8000 /* 8 seconds */);
 
                 this._node.once('close', () => {
                     clearTimeout(killTimeout);
@@ -211,7 +204,7 @@ class EthereumNode extends EventEmitter {
                     this._node = null;
 
                     resolve();
-                }); 
+                });
             })
                 .then(() => {
                     this.state = STATES.STOPPED;
@@ -225,25 +218,23 @@ class EthereumNode extends EventEmitter {
     }
 
 
-    getLog () {
+    getLog() {
         return Settings.loadUserData('node.log');
     }
 
 
-
-    /** 
+    /**
      * Send Web3 command to socket.
      * @param  {String} method Method name
      * @param  {Array} [params] Method arguments
      * @return {Promise} resolves to result or error.
      */
-    send (method, params) {
+    send(method, params) {
         return this._socket.send({
-            method: method, 
-            params: params
+            method,
+            params,
         });
     }
-
 
 
     /**
@@ -252,10 +243,10 @@ class EthereumNode extends EventEmitter {
      * @param  {String} network  network id
      * @return {Promise}
      */
-    _start (nodeType, network) {
+    _start(nodeType, network) {
         log.info(`Start node: ${nodeType} ${network}`);
 
-        const isTestNet = ('test' === network);
+        const isTestNet = (network === 'test');
 
         if (isTestNet) {
             log.debug('Node will connect to the test network');
@@ -282,15 +273,15 @@ class EthereumNode extends EventEmitter {
                 Settings.saveUserData('network', this._network);
 
                 return this._socket.connect(Settings.rpcConnectConfig, {
-                        timeout: 30000 /* 30s */
-                    })
+                    timeout: 30000, /* 30s */
+                })
                     .then(() => {
                         this.state = STATES.CONNECTED;
                     })
                     .catch((err) => {
                         log.error('Failed to connect to node', err);
 
-                        if (0 <= err.toString().indexOf('timeout')) {
+                        if (err.toString().indexOf('timeout') >= 0) {
                             this.emit('nodeConnectionTimeout');
                         }
 
@@ -302,11 +293,11 @@ class EthereumNode extends EventEmitter {
             .catch((err) => {
                 // set before updating state so that state change event observers
                 // can pick up on this
-                this.lastError = err.tag; 
+                this.lastError = err.tag;
                 this.state = STATES.ERROR;
 
                 // if unable to start eth node then write geth to defaults
-                if ('eth' === nodeType) {
+                if (nodeType === 'eth') {
                     Settings.saveUserData('node', 'geth');
                 }
 
@@ -318,7 +309,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startNode (nodeType, network) {
+    __startNode(nodeType, network) {
         this.state = STATES.STARTING;
 
         this._network = network;
@@ -338,12 +329,12 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startProcess (nodeType, network, binPath) {
+    __startProcess(nodeType, network, binPath) {
         return new Q((resolve, reject) => {
             log.trace('Rotate log file');
 
             // rotate the log file
-            logRotate(Settings.constructUserDataPath('node.log'), {count: 5}, (err) => {
+            logRotate(Settings.constructUserDataPath('node.log'), { count: 5 }, (err) => {
                 if (err) {
                     log.error('Log rotation problems', err);
 
@@ -353,19 +344,19 @@ class EthereumNode extends EventEmitter {
                 let args;
 
                 // START TESTNET
-                if ('test' == network) {
-                    args = (nodeType === 'geth') 
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath] 
+                if (network == 'test') {
+                    args = (nodeType === 'geth')
+                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
                         : ['--morden', '--unsafe-transactions'];
-                } 
+                }
                 // START MAINNET
                 else {
-                    args = (nodeType === 'geth') 
+                    args = (nodeType === 'geth')
                         ? ['--fast', '--cache', '512', '--support-dao-fork'] // FORK RELATED
                         : ['--unsafe-transactions', '--support-dao-fork'];
                 }
 
-                let nodeOptions = Settings.nodeOptions;
+                const nodeOptions = Settings.nodeOptions;
 
                 if (nodeOptions && nodeOptions.length) {
                     log.debug('Custom node options', nodeOptions);
@@ -381,7 +372,7 @@ class EthereumNode extends EventEmitter {
                 proc.once('error', (err) => {
                     if (STATES.STARTING === this.state) {
                         this.state = STATES.ERROR;
-                        
+
                         log.info('Node startup error');
 
                         // TODO: detect this properly
@@ -404,13 +395,13 @@ class EthereumNode extends EventEmitter {
 
                     // check for startup errors
                     if (STATES.STARTING === this.state) {
-                        let dataStr = data.toString().toLowerCase();
+                        const dataStr = data.toString().toLowerCase();
 
-                        if ('geth' === nodeType) {
-                            if (0 <= dataStr.indexOf('fatal: error')) {
-                                let err = new Error(`Geth error: ${dataStr}`);
+                        if (nodeType === 'geth') {
+                            if (dataStr.indexOf('fatal: error') >= 0) {
+                                const err = new Error(`Geth error: ${dataStr}`);
 
-                                if (0 <= dataStr.indexOf('bind')) {
+                                if (dataStr.indexOf('bind') >= 0) {
                                     err.tag = UNABLE_TO_BIND_PORT_ERROR;
                                 }
 
@@ -435,18 +426,18 @@ class EthereumNode extends EventEmitter {
                 // when data is first received
                 this.once('data', () => {
                     /*
-                        We wait a short while before marking startup as successful 
-                        because we may want to parse the initial node output for 
+                        We wait a short while before marking startup as successful
+                        because we may want to parse the initial node output for
                         errors, etc (see geth port-binding error above)
                     */
                     setTimeout(() => {
                         if (STATES.STARTING === this.state) {
                             log.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`);
 
-                            resolve(proc);                        
+                            resolve(proc);
                         }
                     }, NODE_START_WAIT_MS);
-                })
+                });
             });
         });
     }
@@ -456,30 +447,30 @@ class EthereumNode extends EventEmitter {
         let nodelog = this.getLog();
 
         if (nodelog) {
-            nodelog = '...'+ nodelog.slice(-1000);
+            nodelog = `...${nodelog.slice(-1000)}`;
         } else {
             nodelog = global.i18n.t('mist.errors.nodeStartup');
         }
 
         // add node type
-        nodelog = 'Node type: '+ nodeType + "\n" +
-            'Network: '+ network + "\n" +
-            'Platform: '+ process.platform +' (Architecure '+ process.arch +')'+"\n\n" +
-            nodelog;
+        nodelog = `Node type: ${nodeType}\n` +
+            `Network: ${network}\n` +
+            `Platform: ${process.platform} (Architecure ${process.arch})` + `\n\n${
+            nodelog}`;
 
         dialog.showMessageBox({
-            type: "error",
+            type: 'error',
             buttons: ['OK'],
             message: global.i18n.t('mist.errors.nodeConnect'),
-            detail: nodelog
-        }, function(){});
+            detail: nodelog,
+        }, () => {});
     }
 
 
-    _logNodeData (data) {
-        data = data.toString().replace(/[\r\n]+/,'');
+    _logNodeData(data) {
+        data = data.toString().replace(/[\r\n]+/, '');
 
-        let nodeType = (this.type || 'node').toUpperCase();
+        const nodeType = (this.type || 'node').toUpperCase();
 
         log.trace(`${nodeType}: ${data}`);
 
@@ -489,7 +480,7 @@ class EthereumNode extends EventEmitter {
     }
 
 
-    _loadDefaults () {
+    _loadDefaults() {
         log.trace('Load defaults');
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
@@ -508,12 +499,7 @@ const STATES = {
 };
 
 
-
 EthereumNode.STARTING = 0;
 
 
-
-
-
 module.exports = new EthereumNode();
-

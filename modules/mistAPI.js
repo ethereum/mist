@@ -2,33 +2,32 @@
 @module MistAPI
 */
 
-const electron = require('electron');
+const { ipcRenderer: ipc, remote } = require('electron');
 const packageJson = require('./../package.json');
-const remote = electron.remote;
-const ipc = electron.ipcRenderer;
 
-module.exports = function(isWallet) {
-    var queue = [];
-    var prefix = 'entry_';
+
+module.exports = function (isWallet) {
+    let queue = [];
+    const prefix = 'entry_';
 
     // filterId the id to only contain a-z A-Z 0-9
-    var filterId = function(str) {
-        var newStr = '';
-        for (var i = 0; i < str.length; i++) {
-            if(/[a-zA-Z0-9_-]/.test(str.charAt(i)))
-                newStr += str.charAt(i);
-        };
+    const filterId = function (str) {
+        let newStr = '';
+        for (let i = 0; i < str.length; i++) {
+            if (/[a-zA-Z0-9_-]/.test(str.charAt(i)))
+                { newStr += str.charAt(i); }
+        }
         return newStr;
     };
 
-    ipc.on('mistAPI_callMenuFunction', function(e, id) {
-        if(mist.menu.entries[id] && mist.menu.entries[id].callback)
-            mist.menu.entries[id].callback();
+    ipc.on('mistAPI_callMenuFunction', (e, id) => {
+        if (mist.menu.entries[id] && mist.menu.entries[id].callback)
+            { mist.menu.entries[id].callback(); }
     });
 
-    ipc.on('windowMessage', function(e, type, error, value) {
-        if(mist.callbacks[type]) {
-            mist.callbacks[type].forEach(function(cb){
+    ipc.on('windowMessage', (e, type, error, value) => {
+        if (mist.callbacks[type]) {
+            mist.callbacks[type].forEach((cb) => {
                 cb(error, value);
             });
             delete mist.callbacks[type];
@@ -36,8 +35,8 @@ module.exports = function(isWallet) {
     });
 
     // work up queue every 500ms
-    setInterval(function(){
-        if(queue.length > 0) {
+    setInterval(() => {
+        if (queue.length > 0) {
             ipc.sendToHost('mistAPI_menuChanges', queue);
             queue = [];
         }
@@ -45,15 +44,15 @@ module.exports = function(isWallet) {
 
     // preparing sounds
     // if wallet
-    if(isWallet) {
+    if (isWallet) {
         var sound = {
             bip: document.createElement('audio'),
             bloop: document.createElement('audio'),
             invite: document.createElement('audio'),
         };
-        sound.bip.src = 'file://'+ __dirname + '/../sounds/bip.mp3';
-        sound.bloop.src = 'file://'+ __dirname + '/../sounds/bloop.mp3';
-        sound.invite.src = 'file://'+ __dirname + '/../sounds/invite.mp3';
+        sound.bip.src = `file://${__dirname}/../sounds/bip.mp3`;
+        sound.bloop.src = `file://${__dirname}/../sounds/bloop.mp3`;
+        sound.invite.src = `file://${__dirname}/../sounds/invite.mp3`;
     }
 
 
@@ -65,31 +64,31 @@ module.exports = function(isWallet) {
     @class mist
     @constructor
     */
-    
-    var mist = {
+
+    let mist = {
         callbacks: {},
         version: packageJson.version,
         mode: remote.getGlobal('mode'),
         license: packageJson.license,
         platform: process.platform,
-        requestAccount:  function(callback){
-            if(callback) {
-                if(!this.callbacks['connectAccount'])
-                    this.callbacks['connectAccount'] = [];
-                this.callbacks['connectAccount'].push(callback);
+        requestAccount(callback) {
+            if (callback) {
+                if (!this.callbacks.connectAccount)
+                    { this.callbacks.connectAccount = []; }
+                this.callbacks.connectAccount.push(callback);
             }
 
             ipc.send('mistAPI_requestAccount');
         },
         sounds: {
-            bip: function(){
+            bip() {
                 // if wallet
-                if(isWallet)
-                    sound.bip.play();
+                if (isWallet)
+                    { sound.bip.play(); }
                 // if mist
                 else
-                    ipc.sendToHost('mistAPI_sound', sound.bip.src);
-            }
+                    { ipc.sendToHost('mistAPI_sound', sound.bip.src); }
+            },
         },
         menu: {
             entries: {},
@@ -103,7 +102,7 @@ module.exports = function(isWallet) {
             @method setBadge
             @param {String} text
             */
-            setBadge: function(text){
+            setBadge(text) {
                 ipc.sendToHost('mistAPI_setBadge', text);
             },
             /**
@@ -125,11 +124,11 @@ module.exports = function(isWallet) {
             @param {Object} options     The menu options like {badge: 23, name: 'My Entry'}
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
-            'add': function(id, options, callback){
+            add(id, options, callback) {
                 id = prefix + filterId(id);
 
-                var entry = {
-                    id: id,
+                const entry = {
+                    id,
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -138,15 +137,15 @@ module.exports = function(isWallet) {
 
                 queue.push({
                     action: 'addMenu',
-                    entry: entry
+                    entry,
                 });
 
-                if(callback)
-                    entry.callback = callback;
+                if (callback)
+                    { entry.callback = callback; }
 
                 this.entries[id] = entry;
             },
-            'update': function(){
+            update() {
                 this.add.apply(this, arguments);
             },
             /**
@@ -155,14 +154,14 @@ module.exports = function(isWallet) {
             @method remove
             @param {String} id
             */
-            'remove': function(id){
+            remove(id) {
                 id = prefix + filterId(id);
 
                 delete this.entries[id];
 
                 queue.push({
                     action: 'removeMenu',
-                    id: id
+                    id,
                 });
             },
             /**
@@ -170,9 +169,9 @@ module.exports = function(isWallet) {
 
             @method clear
             */
-            'clear': function(){
-                queue.push({action: 'clearMenu'});
-            }
+            clear() {
+                queue.push({ action: 'clearMenu' });
+            },
         },
     };
 

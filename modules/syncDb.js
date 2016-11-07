@@ -1,42 +1,42 @@
 /**
 @module syncDb
 */
-var electron = require('electron');
+const { ipcMain, ipcRenderer } = require('electron');
 
 /**
  * Sync IPC calls received from given window into given db table.
  * @param  {Object} coll Db collection to save to.
  */
-exports.backendSync = function() {
-    var log = require('./utils/logger').create('syncDb'),
+exports.backendSync = function () {
+    let log = require('./utils/logger').create('syncDb'),
         db = require('./db'),
-        ipc = electron.ipcMain;
+        ipc = ipcMain;
 
-    ipc.on('syncDb-add', function(event, args) {
-        var collName = args.collName,
+    ipc.on('syncDb-add', (event, args) => {
+        let collName = args.collName,
             coll = db.getCollection(collName);
 
         log.trace('syncDb-add', collName, args._id);
 
-        var _id = args._id;
+        const _id = args._id;
 
-        if (!coll.findOne({_id: _id})) {
+        if (!coll.findOne({ _id })) {
             args.fields._id = _id;
             coll.insert(args.fields);
         }
     });
 
-    ipc.on('syncDb-changed', function(event, args) {
-        var collName = args.collName,
+    ipc.on('syncDb-changed', (event, args) => {
+        let collName = args.collName,
             coll = db.getCollection(collName);
 
         log.trace('syncDb-changed', collName, args._id);
 
-        var _id = args._id;
-        var item = coll.findOne({_id: _id});
+        const _id = args._id;
+        const item = coll.findOne({ _id });
 
         if (item) {
-            for (var k in args.fields) {
+            for (const k in args.fields) {
                 if ({}.hasOwnProperty.call(args.fields, k)) {
                     item[k] = args.fields[k];
                 }
@@ -48,14 +48,14 @@ exports.backendSync = function() {
         }
     });
 
-    ipc.on('syncDb-removed', function(event, args) {
-        var collName = args.collName,
+    ipc.on('syncDb-removed', (event, args) => {
+        let collName = args.collName,
             coll = db.getCollection(collName);
 
         log.trace('syncDb-removed', collName, args._id);
 
-        var _id = args._id;
-        var item = coll.findOne({_id: _id});
+        const _id = args._id;
+        const item = coll.findOne({ _id });
 
         if (item) {
             coll.remove(item);
@@ -65,18 +65,18 @@ exports.backendSync = function() {
     });
 
     // get all data (synchronous)
-    ipc.on('syncDb-reloadSync', function(event, args) {
-        var collName = args.collName,
+    ipc.on('syncDb-reloadSync', (event, args) => {
+        let collName = args.collName,
             coll = db.getCollection(collName),
             docs = coll.find();
 
         log.debug('syncDb-reloadSync, no. of docs:', collName, docs.length);
 
-        docs = docs.map(function(doc) {
-            var ret = {};
+        docs = docs.map((doc) => {
+            const ret = {};
 
-            for (var k in doc) {
-                if ('meta' !== k && '$loki' !== k) {
+            for (const k in doc) {
+                if (k !== 'meta' && k !== '$loki') {
                     ret[k] = doc[k];
                 }
             }
@@ -89,23 +89,22 @@ exports.backendSync = function() {
 };
 
 
-
-
-exports.frontendSync = function(coll, collName) {
-    var ipc = electron.ipcRenderer,
+exports.frontendSync = function (coll, collName) {
+    let ipc = ipcRenderer,
         syncDoneResolver;
 
     console.debug('Reload collection from backend: ', collName);
 
-    coll.onceSynced = new Promise(function(resolve, reject) {
+    coll.onceSynced = new Promise((resolve, reject) => {
         syncDoneResolver = resolve;
     });
 
-    (new Promise(function(resolve, reject) {
-        var dataStr, dataJson;
+    (new Promise((resolve, reject) => {
+        let dataStr,
+            dataJson;
 
         dataStr = ipc.sendSync('syncDb-reloadSync', {
-            collName: collName
+            collName,
         });
 
         try {
@@ -113,19 +112,18 @@ exports.frontendSync = function(coll, collName) {
                 return resolve();
             }
 
-            var done = 0;
+            let done = 0;
 
             coll.remove({});
 
             // we do inserts slowly, to avoid race conditions when it comes
             // to updating the UI
-            dataJson.forEach(function(record) {
-                Tracker.afterFlush(function() {
+            dataJson.forEach((record) => {
+                Tracker.afterFlush(() => {
                     try {
-
                         // On Meteor startup if a record contains a redirect to about:blank
                         // page, the application process crashes.
-                        if(typeof(record.redirect) !== 'undefined' 
+                        if (typeof (record.redirect) !== 'undefined'
                             && record.redirect.indexOf('//about:blank') > -1) {
                             record.redirect = null;
                         }
@@ -144,36 +142,36 @@ exports.frontendSync = function(coll, collName) {
             });
         } catch (err) {
             reject(err);
-        }        
+        }
     }))
-    .catch(function(err) {
+    .catch((err) => {
         console.error(err.toString());
     })
-    .then(function() {
+    .then(() => {
         // start watching for changes
         coll.find().observeChanges({
-            'added': function(id, fields){
+            added(id, fields) {
                 ipc.send('syncDb-add', {
-                    collName: collName,
+                    collName,
                     _id: id,
-                    fields: fields
+                    fields,
                 });
             },
-            'changed': function(id, fields){
+            changed(id, fields) {
                 ipc.send('syncDb-changed', {
-                    collName: collName,
-                    _id: id, 
-                    fields: fields
+                    collName,
+                    _id: id,
+                    fields,
                 });
             },
-            removed: function(id) {
+            removed(id) {
                 ipc.send('syncDb-removed', {
-                    collName: collName,
-                    _id: id
+                    collName,
+                    _id: id,
                 });
-            }
+            },
         });
-        
+
         console.debug('Finished reloading collection from backend: ', collName);
 
         syncDoneResolver();

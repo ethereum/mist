@@ -1,6 +1,6 @@
+const _ = module.exports = require('underscore');
 const uuid = require('uuid');
 const deepExtend = require('deep-extend');
-const _ = module.exports = require('underscore');
 
 _.mixin({
     /**
@@ -12,15 +12,15 @@ _.mixin({
      *
      * @return {*} Returns value if found; otherwise the fallbackVAlue.
      */
-    get: function(obj, path, fallbackValue) {
-        if (this.isUndefined(obj) || null === obj || typeof path !== 'string') {
+    get(obj, path, fallbackValue) {
+        if (this.isUndefined(obj) || obj === null || typeof path !== 'string') {
             return fallbackValue;
         }
 
-        var fields = path.split('.'),
+        let fields = path.split('.'),
             result = obj;
 
-        for (var i=0; i<fields.length; ++i) {
+        for (let i = 0; i < fields.length; ++i) {
             if (!this.isObject(result) && !this.isArray(result)) {
                 return fallbackValue;
             }
@@ -30,13 +30,12 @@ _.mixin({
 
         return result || fallbackValue;
     },
-    extendDeep: function(obj1, obj2) {
+    extendDeep(obj1, obj2) {
         deepExtend(obj1, obj2);
     },
-    uuid: function() {
+    uuid() {
         return uuid.v4();
     },
 });
 
 module.exports = _;
-

@@ -3,9 +3,7 @@
 */
 
 require('./include/common')('popup');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const remote = electron.remote;
+const { ipcRenderer: ipc, remote, webFrame } = require('electron');
 const mist = require('../mistAPI.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const BigNumber = require('bignumber.js');
@@ -20,12 +18,12 @@ require('./include/setBasePath')('interface');
 
 
 // disable pinch zoom
-electron.webFrame.setZoomLevelLimits(1, 1);
+webFrame.setZoomLevelLimits(1, 1);
 
 // receive data in the popupWindow
-ipc.on('data', function(e, data) {
+ipc.on('data', (e, data) => {
     Session.set('data', data);
-})
+});
 
 
 // make variables globally accessable

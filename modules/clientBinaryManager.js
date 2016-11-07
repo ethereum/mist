@@ -1,32 +1,30 @@
-"use strict";
-
 const _ = global._;
-const path = require('path');
 const Q = require('bluebird');
-const got = require('got');
+const path = require('path');
 const Settings = require('./settings');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
+const got = require('got');
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 class Manager extends EventEmitter {
-    constructor () {
+    constructor() {
         super();
-        
+
         this._availableClients = {};
     }
-    
-    init () {
+
+    init() {
         log.info('Initializing...');
-        
+
         this._availableClients = {};
-        
+
         this._resolveEthBinPath();
 
         this._emit('loadConfig', 'Fetching client config');
-        
+
         // fetch config
         return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
             timeout: 3000,
@@ -41,7 +39,7 @@ class Manager extends EventEmitter {
         })
         .catch((err) => {
             log.warn('Error fetching client binaries config from repo', err);
-            
+
             this._emit('loadConfig', 'Loading local client config');
 
             return require('../clientBinaries.json');
@@ -49,27 +47,27 @@ class Manager extends EventEmitter {
         .then((json) => {
             const mgr = new ClientBinaryManager(json);
             mgr.logger = log;
-            
+
             this._emit('scanning', 'Scanning for binaries');
 
             return mgr.init({
                 folders: [
                     path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
                     path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
-                ]
+                ],
             })
             .then(() => {
                 const clients = mgr.clients;
-                
-                const available = _.filter(clients, (c) => !!c.state.available);
-                
+
+                const available = _.filter(clients, c => !!c.state.available);
+
                 if (!available.length) {
                     if (_.isEmpty(clients)) {
                         throw new Error('No client binaries available for this system!');
                     }
-                    
+
                     this._emit('downloading', 'Downloading binaries');
-                    
+
                     return Q.map(_.values(clients), (c) => {
                         return mgr.download(c.id, {
                             downloadFolder: path.join(Settings.userDataPath, 'binaries'),
@@ -79,57 +77,57 @@ class Manager extends EventEmitter {
             })
             .then(() => {
                 this._emit('filtering', 'Filtering available clients');
-                
+
                 _.each(mgr.clients, (client) => {
                     if (client.state.available) {
                         const idlcase = client.id.toLowerCase();
-                        
+
                         this._availableClients[idlcase] = {
                             binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
                             version: client.version,
-                        }
+                        };
                     }
                 });
-                
-                this._emit('done');                
-            })
+
+                this._emit('done');
+            });
         })
         .catch((err) => {
             log.error(err);
-            
+
             this._emit('error', err.message);
         });
     }
-    
-    getClient (clientId) {
+
+    getClient(clientId) {
         return this._availableClients[clientId.toLowerCase()];
     }
 
-    
+
     _emit(status, msg) {
         log.debug(`Status: ${status} - ${msg}`);
-        
+
         this.emit('status', status, msg);
     }
-    
-    
-    _resolveEthBinPath () {
+
+
+    _resolveEthBinPath() {
         log.info('Resolving path to Eth client binary ...');
-        
+
         let platform = process.platform;
 
         // "win32" -> "win" (because nodes are bundled by electron-builder)
-        if (0 === platform.indexOf('win')) {
+        if (platform.indexOf('win') === 0) {
             platform = 'win';
-        } else if (0 === platform.indexOf('darwin')) {
+        } else if (platform.indexOf('darwin') === 0) {
             platform = 'mac';
         }
 
-        log.debug('Platform: ' + platform);
+        log.debug(`Platform: ${platform}`);
 
         let binPath = path.join(
-            __dirname, 
-            '..', 
+            __dirname,
+            '..',
             'nodes',
             'eth',
             `${platform}-${process.arch}`
@@ -142,14 +140,14 @@ class Manager extends EventEmitter {
 
         binPath = path.join(path.resolve(binPath), 'eth');
 
-        if ('win' === platform) {
+        if (platform === 'win') {
             binPath += '.exe';
         }
 
-        log.info('Eth client binary path: ' + binPath);
-        
+        log.info(`Eth client binary path: ${binPath}`);
+
         this._availableClients.eth = {
-            binPath: binPath,
+            binPath,
             version: '1.3.0',
         };
     }

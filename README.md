@@ -33,7 +33,7 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 Requirements:
 
 * Electron v1.3.5
-* Node v4.3.0 or above
+* Node v6.0 or above
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 

@@ -1,34 +1,26 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const MenuItem = electron.MenuItem;
-const Menu = electron.Menu;
-const shell = electron.shell;
-const log = require('./utils/logger').create('menuItems');
-const ipc = electron.ipcMain;
-const ethereumNode = require('./ethereumNode.js');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
 const Windows = require('./windows');
-const updateChecker = require('./updateChecker');
-const ClientBinaryManager = require('./clientBinaryManager');
 const Settings = require('./settings');
-const fs = require('fs');
-const dialog = electron.dialog;
+const log = require('./utils/logger').create('menuItems');
+const updateChecker = require('./updateChecker');
+const ethereumNode = require('./ethereumNode.js');
+const ClientBinaryManager = require('./clientBinaryManager');
 
 
 // Make easier to return values for specific systems
-var switchForSystem = function(options){
+const switchForSystem = function (options) {
     if (process.platform in options) {
         return options[process.platform];
     }
     else if ('default' in options) {
-        return options['default'];
+        return options.default;
     }
 };
 
 
 // create menu
 // null -> null
-var createMenu = function(webviews) {
+const createMenu = function (webviews) {
     webviews = webviews || [];
 
     const menu = Menu.buildFromTemplate(menuTempl(webviews));
@@ -36,7 +28,7 @@ var createMenu = function(webviews) {
 };
 
 
-const restartNode = function(newType, newNetwork) {
+const restartNode = function (newType, newNetwork) {
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
@@ -53,75 +45,74 @@ const restartNode = function(newType, newNetwork) {
 };
 
 
-
 // create a menu template
 // null -> obj
-var menuTempl = function(webviews) {
-    const menu = []
+let menuTempl = function (webviews) {
+    const menu = [];
     webviews = webviews || [];
 
     // APP
-    var fileMenu = [];
+    const fileMenu = [];
 
-    if(process.platform === 'darwin') {
+    if (process.platform === 'darwin') {
         fileMenu.push(
             {
-                label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
-                click: function(){
+                label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
+                click() {
                     Windows.createPopup('about', {
                         electronOptions: {
                             width: 420,
                             height: 230,
                             alwaysOnTop: true,
-                        }
+                        },
                     });
-                }
+                },
             },
             {
                 label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
-                click: function() {
+                click() {
                     updateChecker.runVisibly();
-                }
-            },            {
-                type: 'separator'
+                },
+            }, {
+                type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.app.services', {app: Settings.appName}),
+                label: i18n.t('mist.applicationMenu.app.services', { app: Settings.appName }),
                 role: 'services',
-                submenu: []
+                submenu: [],
             },
             {
-                type: 'separator'
+                type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hide', {app: Settings.appName}),
+                label: i18n.t('mist.applicationMenu.app.hide', { app: Settings.appName }),
                 accelerator: 'Command+H',
-                role: 'hide'
+                role: 'hide',
             },
             {
-                label: i18n.t('mist.applicationMenu.app.hideOthers', {app: Settings.appName}),
+                label: i18n.t('mist.applicationMenu.app.hideOthers', { app: Settings.appName }),
                 accelerator: 'Command+Alt+H',
-                role: 'hideothers'
+                role: 'hideothers',
             },
             {
-                label: i18n.t('mist.applicationMenu.app.showAll', {app: Settings.appName}),
-                role: 'unhide'
+                label: i18n.t('mist.applicationMenu.app.showAll', { app: Settings.appName }),
+                role: 'unhide',
             },
             {
-                type: 'separator'
+                type: 'separator',
             }
         );
     }
     fileMenu.push(
-        {label: i18n.t('mist.applicationMenu.app.quit', {app: Settings.appName}),
+        { label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
             accelerator: 'CommandOrControl+Q',
-            click: function(){
+            click() {
                 app.quit();
-            }
+            },
         });
     menu.push({
-        label: i18n.t('mist.applicationMenu.app.label', {app: Settings.appName}),
-        submenu: fileMenu
+        label: i18n.t('mist.applicationMenu.app.label', { app: Settings.appName }),
+        submenu: fileMenu,
     });
 
     // ACCOUNTS
@@ -131,69 +122,69 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.accounts.newAccount'),
                 accelerator: 'CommandOrControl+N',
-                click: function(){
+                click() {
                     Windows.createPopup('requestAccount', {
                         electronOptions: {
-                            width: 420, height: 230, alwaysOnTop: true
-                        }
+                            width: 420, height: 230, alwaysOnTop: true,
+                        },
                     });
-                }
+                },
             },
             {
                 label: i18n.t('mist.applicationMenu.accounts.importPresale'),
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
-                click: function(){
+                click() {
                     Windows.createPopup('importAccount', {
                         electronOptions: {
-                            width: 600, height: 370, alwaysOnTop: true
-                        }
+                            width: 600, height: 370, alwaysOnTop: true,
+                        },
                     });
-                }
+                },
             },
             {
-                type: 'separator'
+                type: 'separator',
             },
             {
                 label: i18n.t('mist.applicationMenu.accounts.backup'),
                 submenu: [
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
-                        click: function(){
-                            var path = Settings.userHomePath;
+                        click() {
+                            let path = Settings.userHomePath;
 
                             // eth
-                            if(ethereumNode.isEth) {
-                                if(process.platform === 'win32')
-                                    path = Settings.appDataPath + '\\Web3\\keys';
+                            if (ethereumNode.isEth) {
+                                if (process.platform === 'win32')
+                                    { path = `${Settings.appDataPath}\\Web3\\keys`; }
                                 else
-                                    path += '/.web3/keys';
+                                    { path += '/.web3/keys'; }
 
                             // geth
                             } else {
-                                if(process.platform === 'darwin')
-                                    path += '/Library/Ethereum/keystore';
+                                if (process.platform === 'darwin')
+                                    { path += '/Library/Ethereum/keystore'; }
 
-                                if(process.platform === 'freebsd' ||
+                                if (process.platform === 'freebsd' ||
                                    process.platform === 'linux' ||
                                    process.platform === 'sunos')
-                                    path += '/.ethereum/keystore';
+                                    { path += '/.ethereum/keystore'; }
 
-                                if(process.platform === 'win32')
-                                    path = Settings.appDataPath + '\\Ethereum\\keystore';
+                                if (process.platform === 'win32')
+                                    { path = `${Settings.appDataPath}\\Ethereum\\keystore`; }
                             }
 
                             shell.showItemInFolder(path);
-                        }
-                    },{
+                        },
+                    }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
-                        click: function(){
-                            shell.showItemInFolder(Settings.userDataPath);
-                        }
-                    }
-                ]
-            }
-        ]
+                        click() {
+                            shell.openItem(Settings.userDataPath);
+                        },
+                    },
+                ],
+            },
+        ],
     });
 
     // EDIT
@@ -203,65 +194,65 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.edit.undo'),
                 accelerator: 'CommandOrControl+Z',
-                role: 'undo'
+                role: 'undo',
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.redo'),
                 accelerator: 'Shift+CommandOrControl+Z',
-                role: 'redo'
+                role: 'redo',
             },
             {
-                type: 'separator'
+                type: 'separator',
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.cut'),
                 accelerator: 'CommandOrControl+X',
-                role: 'cut'
+                role: 'cut',
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.copy'),
                 accelerator: 'CommandOrControl+C',
-                role: 'copy'
+                role: 'copy',
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.paste'),
                 accelerator: 'CommandOrControl+V',
-                role: 'paste'
+                role: 'paste',
             },
             {
                 label: i18n.t('mist.applicationMenu.edit.selectAll'),
                 accelerator: 'CommandOrControl+A',
-                role: 'selectall'
+                role: 'selectall',
             },
-        ]
-    })
+        ],
+    });
 
-    let genSwitchLanguageFunc = (lang_code) => function(menuItem, browserWindow){
+    const genSwitchLanguageFunc = lang_code => function (menuItem, browserWindow) {
         browserWindow.webContents.executeJavaScript(
             `TAPi18n.setLanguage("${lang_code}");`
         );
-        ipc.emit("backendAction_setLanguage", {}, lang_code);
-    }
-    let currentLanguage = i18n.getBestMatchedLangCode(global.language);
+        ipc.emit('backendAction_setLanguage', {}, lang_code);
+    };
+    const currentLanguage = i18n.getBestMatchedLangCode(global.language);
 
-    let languageMenu =
+    const languageMenu =
     Object.keys(i18n.options.resources)
     .filter(lang_code => lang_code != 'dev')
-    .map(lang_code => {
+    .map((lang_code) => {
         menuItem = {
-            label: i18n.t('mist.applicationMenu.view.langCodes.' + lang_code),
+            label: i18n.t(`mist.applicationMenu.view.langCodes.${lang_code}`),
             type: 'checkbox',
             checked: (currentLanguage === lang_code),
-            click: genSwitchLanguageFunc(lang_code)
-        }
-        return menuItem
+            click: genSwitchLanguageFunc(lang_code),
+        };
+        return menuItem;
     });
-    let defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
+    const defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
     languageMenu.unshift({
-        label:  i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(defaultLang)
+        label: i18n.t('mist.applicationMenu.view.default'),
+        click: genSwitchLanguageFunc(defaultLang),
     }, {
-        type: 'separator'
+        type: 'separator',
     });
 
     // VIEW
@@ -271,46 +262,46 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.view.fullscreen'),
                 accelerator: switchForSystem({
-                    'darwin': 'Command+Control+F',
-                    'default': 'F11'
+                    darwin: 'Command+Control+F',
+                    default: 'F11',
                 }),
-                click: function(){
-                    let mainWindow = Windows.getByType('main');
+                click() {
+                    const mainWindow = Windows.getByType('main');
 
                     mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
-                }
+                },
             },
             {
                 label: i18n.t('mist.applicationMenu.view.languages'),
-                submenu: languageMenu
-            }
-        ]
-    })
+                submenu: languageMenu,
+            },
+        ],
+    });
 
 
     // DEVELOP
-    var devToolsMenu = [];
+    let devToolsMenu = [];
 
     // change for wallet
-    if(Settings.uiMode === 'mist') {
+    if (Settings.uiMode === 'mist') {
         devtToolsSubMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
-            click: function() {
-                if(curWindow = BrowserWindow.getFocusedWindow())
-                    curWindow.toggleDevTools();
-            }
-        },{
-            type: 'separator'
+            click() {
+                if (curWindow = BrowserWindow.getFocusedWindow())
+                    { curWindow.toggleDevTools(); }
+            },
+        }, {
+            type: 'separator',
         }];
 
         // add webviews
-        webviews.forEach(function(webview){
+        webviews.forEach((webview) => {
             devtToolsSubMenu.push({
-                label: i18n.t('mist.applicationMenu.develop.devToolsWebview', {webview: webview.name}),
-                click: function() {
+                label: i18n.t('mist.applicationMenu.develop.devToolsWebview', { webview: webview.name }),
+                click() {
                     Windows.getByType('main').send('uiAction_toggleWebviewDevTool', webview._id);
-                }
+                },
             });
         });
 
@@ -319,47 +310,44 @@ var menuTempl = function(webviews) {
         devtToolsSubMenu = [{
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
-            click: function() {
-                if(curWindow = BrowserWindow.getFocusedWindow())
-                    curWindow.toggleDevTools();
-            }
+            click() {
+                if (curWindow = BrowserWindow.getFocusedWindow())
+                    { curWindow.toggleDevTools(); }
+            },
         }];
     }
 
-    var externalNodeMsg = (ethereumNode.isOwnNode)? '' : ' (' + i18n.t('mist.applicationMenu.develop.externalNode') + ')';
+    const externalNodeMsg = (ethereumNode.isOwnNode) ? '' : ` (${i18n.t('mist.applicationMenu.develop.externalNode')})`;
     devToolsMenu = [{
-            label: i18n.t('mist.applicationMenu.develop.devTools'),
-            submenu: devtToolsSubMenu
-        },{
-            label: i18n.t('mist.applicationMenu.develop.runTests'),
-            enabled: (Settings.uiMode === 'mist'),
-            click: function(){
-                Windows.getByType('main').send('uiAction_runTests', 'webview');
+        label: i18n.t('mist.applicationMenu.develop.devTools'),
+        submenu: devtToolsSubMenu,
+    }, {
+        label: i18n.t('mist.applicationMenu.develop.runTests'),
+        enabled: (Settings.uiMode === 'mist'),
+        click() {
+            Windows.getByType('main').send('uiAction_runTests', 'webview');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
+        enabled: ethereumNode.isOwnNode,
+        click() {
+            try {
+                shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
+            } catch (e) {
+                log.info(e);
+                log = 'Couldn\'t load log file.';
             }
-        },{
-            label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
-            enabled: ethereumNode.isOwnNode,
-            click: function(){
-                try {
-                    shell.showItemInFolder(Settings.userDataPath + '/node.log');
-                } catch(e){
-                    log.info(e);
-                    log = 'Couldn\'t load log file.';
-                };
-            }
-        }
+        },
+    },
     ];
-
-
-
 
 
     // add node switching menu
     devToolsMenu.push({
-        type: 'separator'
+        type: 'separator',
     });
     // add node switch
-    if(process.platform === 'darwin' || process.platform === 'win32') {
+    if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];
 
         const ethClient = ClientBinaryManager.getClient('eth'),
@@ -368,13 +356,13 @@ var menuTempl = function(webviews) {
         if (gethClient) {
             nodeSubmenu.push(
                 {
-                  label: `Geth ${gethClient.version} (Go)`,
-                  checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
-                  enabled: ethereumNode.isOwnNode,
-                  type: 'checkbox',
-                  click: function(){
-                      restartNode('geth');
-                  }
+                    label: `Geth ${gethClient.version} (Go)`,
+                    checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                    enabled: ethereumNode.isOwnNode,
+                    type: 'checkbox',
+                    click() {
+                        restartNode('geth');
+                    },
                 }
             );
         }
@@ -387,16 +375,16 @@ var menuTempl = function(webviews) {
                     enabled: ethereumNode.isOwnNode,
                     // enabled: false,
                     type: 'checkbox',
-                    click: function(){
+                    click() {
                         restartNode('eth');
-                    }
+                    },
                 }
             );
         }
 
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: nodeSubmenu
+            submenu: nodeSubmenu,
         });
     }
 
@@ -404,35 +392,35 @@ var menuTempl = function(webviews) {
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.network'),
         submenu: [
-          {
-            label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-            accelerator: 'CommandOrControl+Shift+1',
-            checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-            enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
-            type: 'checkbox',
-            click: function(){
-                restartNode(ethereumNode.type, 'main');
-            }
-          },
-          {
-            label: 'Testnet (Morden)',
-            accelerator: 'CommandOrControl+Shift+2',
-            checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-            enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
-            type: 'checkbox',
-            click: function(){
-                restartNode(ethereumNode.type, 'test');
-            }
-          }
-    ]});
+            {
+                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+                accelerator: 'CommandOrControl+Shift+1',
+                checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
+                enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'main');
+                },
+            },
+            {
+                label: 'Testnet (Morden)',
+                accelerator: 'CommandOrControl+Shift+2',
+                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'test');
+                },
+            },
+        ] });
 
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+Shift+M',
         enabled: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-        click: function(){
-            if(!global.mining) {
+        click() {
+            if (!global.mining) {
                 ethereumNode.send('miner_start', [1])
                     .then((ret) => {
                         log.info('miner_start', ret.result);
@@ -459,14 +447,14 @@ var menuTempl = function(webviews) {
                         log.error('miner_stop', err);
                     });
             }
-        }
+        },
     });
 
 
     menu.push({
         label: ((global.mining) ? '⛏ ' : '') + i18n.t('mist.applicationMenu.develop.label'),
-        submenu: devToolsMenu
-    })
+        submenu: devToolsMenu,
+    });
 
     // WINDOW
     menu.push({
@@ -476,61 +464,61 @@ var menuTempl = function(webviews) {
             {
                 label: i18n.t('mist.applicationMenu.window.minimize'),
                 accelerator: 'CommandOrControl+M',
-                role: 'minimize'
+                role: 'minimize',
             },
             {
                 label: i18n.t('mist.applicationMenu.window.close'),
                 accelerator: 'CommandOrControl+W',
-                role: 'close'
+                role: 'close',
             },
             {
-                type: 'separator'
+                type: 'separator',
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
                 role: 'arrangeInFront:',
-                role: 'front'
+                role: 'front',
             },
-        ]
-    })
+        ],
+    });
 
     // HELP
-    var helpMenu = [];
+    const helpMenu = [];
 
     if (process.platform === 'freebsd' || process.platform === 'linux' ||
             process.platform === 'sunos' || process.platform === 'win32') {
         helpMenu.push(
             {
-                label: i18n.t('mist.applicationMenu.app.about', {app: Settings.appName}),
-                click: function(){
+                label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
+                click() {
                     Windows.createPopup('about', {
                         electronOptions: {
                             width: 420,
                             height: 230,
                             alwaysOnTop: true,
-                        }
+                        },
                     });
-                }
+                },
             },
             {
                 label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
-                click: function() {
+                click() {
                     updateChecker.runVisibly();
-                }
+                },
             }
         );
     }
     helpMenu.push({
         label: i18n.t('mist.applicationMenu.help.reportBug'),
-        click: function(){
+        click() {
             shell.openExternal('https://github.com/ethereum/mist/issues');
-        }
+        },
     });
 
     menu.push({
         label: i18n.t('mist.applicationMenu.help.label'),
         role: 'help',
-        submenu: helpMenu
+        submenu: helpMenu,
     });
     return menu;
 };

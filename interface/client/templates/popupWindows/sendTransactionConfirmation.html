@@ -86,8 +86,10 @@
                                 <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
                             {{else}}
                                 {{#if to}}
-                                <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="{{i18n 'mist.popupWindows.sendTransactionConfirmation.lookupDataExplainer'}}"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
-                                </a>
+                                    {{#unless (TemplateVar.get "lookingUpFunctionSignature")}}
+                                        <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="{{i18n 'mist.popupWindows.sendTransactionConfirmation.lookupDataExplainer'}}"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
+                                        </a>
+                                    {{/unless}}
                                 {{/if}}
                             {{/if}} 
                             </h3>                           

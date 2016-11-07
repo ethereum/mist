@@ -1,36 +1,31 @@
-"use strict";
-
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const got = require('got');
+const SocketBase = require('./base');
 
-const _ = global._;
-const dechunker = require('../ipc/dechunker.js');
-
-const SocketBase = require('./base'),
-    STATE = SocketBase.STATE;
+const STATE = SocketBase.STATE;
 
 const Web3SocketBase = require('./web3Base');
 
 
-
 class HttpSocket extends EventEmitter {
-    constructor (_parentSocket) {
+    constructor(_parentSocket) {
         super();
 
         this._log = _parentSocket._log.create('HttpSocket');
     }
 
-    connect (connectConfig) {
+    connect(connectConfig) {
         this._log.trace('Connect', connectConfig);
 
         this._hostPort = connectConfig.hostPort;
 
-        let payload = JSON.stringify({
-            jsonrpc: "2.0",
+        const payload = JSON.stringify({
+            jsonrpc: '2.0',
             id: 0,
-            method: "eth_accounts",
-            params: []
+            method: 'eth_accounts',
+            params: [],
         });
 
         this._call(payload)
@@ -46,7 +41,7 @@ class HttpSocket extends EventEmitter {
             });
     }
 
-    destroy () {
+    destroy() {
         this._log.trace('Destroy');
 
         this._hostPort = null;
@@ -54,10 +49,10 @@ class HttpSocket extends EventEmitter {
         this.emit('close');
     }
 
-    write (data) {
+    write(data) {
         this._log.trace('Write data', data);
 
-        this._call(data)            
+        this._call(data)
             .then((body) => {
                 this._log.trace('Got response', body);
 
@@ -66,13 +61,13 @@ class HttpSocket extends EventEmitter {
             .catch(this.emit.bind(this, 'error'));
     }
 
-    setEncoding (enc) {
+    setEncoding(enc) {
         this._log.trace('Set encoding', enc);
 
         this._encoding = enc;
     }
 
-    _call (dataStr) {
+    _call(dataStr) {
         return got.post(this._hostPort, {
             encoding: this._encoding,
             headers: {
@@ -87,12 +82,11 @@ class HttpSocket extends EventEmitter {
 }
 
 
-
 module.exports = class Web3HttpSocket extends Web3SocketBase {
     /**
      * Reset socket.
      */
-    _resetSocket () {
+    _resetSocket() {
         this._log.debug('Resetting socket');
 
         return Q.try(() => {
@@ -110,7 +104,7 @@ module.exports = class Web3HttpSocket extends Web3SocketBase {
                 this._socket.on('close', (hadError) => {
                     // if we did the disconnection then all good
                     if (STATE.DISCONNECTING === this._state) {
-                      return;
+                        return;
                     }
 
                     this.emit('close', hadError);
@@ -125,7 +119,7 @@ module.exports = class Web3HttpSocket extends Web3SocketBase {
                 this._socket.on('error', (err) => {
                     // connection errors will be handled in connect() code
                     if (STATE.CONNECTING === this._state) {
-                      return;
+                        return;
                     }
 
                     this._log.error(err);
@@ -134,4 +128,4 @@ module.exports = class Web3HttpSocket extends Web3SocketBase {
                 });
             });
     }
-}
+};

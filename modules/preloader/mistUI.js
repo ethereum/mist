@@ -3,11 +3,8 @@
 */
 
 require('./include/common')('mist');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const remote = electron.remote;
-const Menu = remote.Menu;
-const MenuItem = remote.MenuItem;
+const { ipcRenderer: ipc, remote, webFrame } = require('electron');
+const { Menu, MenuItem } = remote;
 const syncDb = require('../syncDb.js');
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
@@ -21,14 +18,14 @@ require('./include/setBasePath')('interface');
 
 
 // disable pinch zoom
-electron.webFrame.setZoomLevelLimits(1, 1);
+webFrame.setZoomLevelLimits(1, 1);
 
 // make variables globally accessable
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 
 // add admin later
-setTimeout(function(){
+setTimeout(() => {
     web3Admin.extend(window.web3);
 }, 1000);
 
@@ -53,37 +50,37 @@ delete window.require;
 
 
 // A message coming from a webview or other window
-ipc.on('uiAction_windowMessage', function(e, type, id, error, value) {
-    if((type === 'requestAccount') || (type === 'connectAccount') && !error) {
-        Tabs.update({webviewId: id}, {$addToSet: {
-            'permissions.accounts': value
-        }});
-    } 
+ipc.on('uiAction_windowMessage', (e, type, id, error, value) => {
+    if ((type === 'requestAccount') || (type === 'connectAccount') && !error) {
+        Tabs.update({ webviewId: id }, { $addToSet: {
+            'permissions.accounts': value,
+        } });
+    }
 });
 
-ipc.on('uiAction_enableBlurOverlay', function(e, value) {
+ipc.on('uiAction_enableBlurOverlay', (e, value) => {
     $('html').toggleClass('has-blur-overlay', !!value);
 });
 
 // Wait for webview toggle
-ipc.on('uiAction_toggleWebviewDevTool', function(e, id){
-    var webview = Helpers.getWebview(id);
+ipc.on('uiAction_toggleWebviewDevTool', (e, id) => {
+    const webview = Helpers.getWebview(id);
 
-    if(!webview)
-        return;
+    if (!webview)
+        { return; }
 
-    if(webview.isDevToolsOpened())
-        webview.closeDevTools();
+    if (webview.isDevToolsOpened())
+        { webview.closeDevTools(); }
     else
-        webview.openDevTools();
+        { webview.openDevTools(); }
 });
 
 // Run tests
-ipc.on('uiAction_runTests', function(e, type){
-    if(type === 'webview') {
-        web3.eth.getAccounts(function(error, accounts){
-            if(error)
-                return;
+ipc.on('uiAction_runTests', (e, type) => {
+    if (type === 'webview') {
+        web3.eth.getAccounts((error, accounts) => {
+            if (error)
+                { return; }
 
             // remove one account
             accounts.pop();
@@ -91,13 +88,13 @@ ipc.on('uiAction_runTests', function(e, type){
             Tabs.upsert('tests', {
                 position: -1,
                 name: 'Test',
-                url: 'file://'+ __dirname + '/../../tests/mocha-in-browser/runner.html',
+                url: `file://${__dirname}/../../tests/mocha-in-browser/runner.html`,
                 permissions: {
-                    accounts: accounts
-                }
+                    accounts,
+                },
             });
 
-            Tracker.afterFlush(function(){
+            Tracker.afterFlush(() => {
                 LocalStore.set('selectedTab', 'tests');
             });
 
@@ -117,34 +114,33 @@ ipc.on('uiAction_runTests', function(e, type){
 });
 
 
-
 // CONTEXT MENU
 
-var currentMousePosition = {x: 0, y: 0};
-var menu = new Menu();
+const currentMousePosition = { x: 0, y: 0 };
+const menu = new Menu();
 // menu.append(new MenuItem({ type: 'separator' }));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
-        webview.reloadIgnoringCache();
-}}));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
-        webview.openDevTools();
-}}));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
-        webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
-}}));
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click() {
+    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if (webview)
+        { webview.reloadIgnoringCache(); }
+} }));
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click() {
+    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if (webview)
+        { webview.openDevTools(); }
+} }));
+menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click() {
+    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+    if (webview)
+        { webview.inspectElement(currentMousePosition.x, currentMousePosition.y); }
+} }));
 
 
-window.addEventListener('contextmenu', function (e) {
+window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
 
     // OPEN CONTEXT MENU over webviews
-    if($('webview:hover')[0]) {
+    if ($('webview:hover')[0]) {
         currentMousePosition.x = e.layerX;
         currentMousePosition.y = e.layerY;
         menu.popup(remote.getCurrentWindow());
@@ -152,12 +148,11 @@ window.addEventListener('contextmenu', function (e) {
 }, false);
 
 
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', (e) => {
     // RELOAD current webview
-    if(e.metaKey && e.keyCode === 82) {
-        var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-        if(webview)
-            webview.reloadIgnoringCache();
+    if (e.metaKey && e.keyCode === 82) {
+        const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+        if (webview)
+            { webview.reloadIgnoringCache(); }
     }
 }, false);
-

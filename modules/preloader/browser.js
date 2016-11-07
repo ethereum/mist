@@ -2,13 +2,11 @@
 @module preloader browser
 */
 require('./include/common')('browser');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
-const shell = electron.shell;
+const { ipcRenderer: ipc, shell } = require('electron');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-var Web3 = require('web3');
+const Web3 = require('web3');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/openExternal.js');
@@ -19,7 +17,6 @@ ipc.sendToHost('setWebviewId');
 
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
-
 
 
 window.mist = mist();

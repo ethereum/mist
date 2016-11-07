@@ -4,8 +4,7 @@ Gets the favicon url
 @module getFavicon
 */
 
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const { ipcRenderer: ipc } = require('electron');
 
 (function () {
     document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);

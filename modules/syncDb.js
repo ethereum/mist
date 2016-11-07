@@ -1,7 +1,7 @@
 /**
 @module syncDb
 */
-const electron = require('electron');
+const { ipcMain, ipcRenderer } = require('electron');
 
 /**
  * Sync IPC calls received from given window into given db table.
@@ -10,7 +10,7 @@ const electron = require('electron');
 exports.backendSync = function () {
     let log = require('./utils/logger').create('syncDb'),
         db = require('./db'),
-        ipc = electron.ipcMain;
+        ipc = ipcMain;
 
     ipc.on('syncDb-add', (event, args) => {
         let collName = args.collName,
@@ -90,7 +90,7 @@ exports.backendSync = function () {
 
 
 exports.frontendSync = function (coll, collName) {
-    let ipc = electron.ipcRenderer,
+    let ipc = ipcRenderer,
         syncDoneResolver;
 
     console.debug('Reload collection from backend: ', collName);

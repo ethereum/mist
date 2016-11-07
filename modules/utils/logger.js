@@ -1,5 +1,3 @@
-
-
 const _ = require('./underscore');
 const log4js = require('log4js');
 
@@ -51,4 +49,3 @@ exports.create = function (category) {
 
     return logger;
 };
-

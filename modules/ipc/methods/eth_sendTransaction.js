@@ -3,8 +3,7 @@
 const BaseProcessor = require('./base');
 const Windows = require('../../windows');
 const Q = require('bluebird');
-const electron = require('electron');
-const ipc = electron.ipcMain;
+const { ipcMain: ipc } = require('electron');
 const BlurOverlay = require('../../blurOverlay');
 
 /**

@@ -1,11 +1,8 @@
-
-
-const net = require('net');
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
-
-const _ = global._;
 const log = require('./utils/logger').create('Sockets');
+const net = require('net');
 const dechunker = require('./ipc/dechunker.js');
 
 const Web3IpcSocket = require('./sockets/web3Ipc');
@@ -72,4 +69,3 @@ class SocketManager {
 
 
 module.exports = new SocketManager();
-

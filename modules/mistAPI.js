@@ -2,10 +2,9 @@
 @module MistAPI
 */
 
-const electron = require('electron');
+const { ipcRenderer: ipc, remote } = require('electron');
 const packageJson = require('./../package.json');
-const remote = electron.remote;
-const ipc = electron.ipcRenderer;
+
 
 module.exports = function (isWallet) {
     let queue = [];

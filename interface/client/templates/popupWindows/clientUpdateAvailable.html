@@ -1,0 +1,17 @@
+<template name="popupWindows_clientUpdateAvailable">
+    <div class="popup-windows update-available row">
+        <div class="col col-4">
+            <img class="left-overlay {{mode}}" src="{{appIconPath}}" />
+        </div>
+        <div class="col col-8 text">
+            {{#with TemplateVar.get "update"}}
+                <h1 class="update-found">
+                    {{i18n "mist.popupWindows.clientUpdateAvailable.newVersionAvailable" client=name version=version }}
+                </h1>
+                <button class="get-update">
+                    {{i18n "mist.popupWindows.clientUpdateAvailable.downloadAndRestart"}}
+                </button>
+            {{/with}}
+        </div>
+    </div>
+</template>

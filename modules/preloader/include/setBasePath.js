@@ -4,9 +4,8 @@ Sets the base path in production for the file protocol, so assets are loaded pro
 @module setBasePath
 */
 
-const electron = require('electron');
+const { remote } = require('electron');
 const path = require('path');
-const remote = electron.remote;
 
 module.exports = function (appPath) {
     // set the base path for relative assets in production mode

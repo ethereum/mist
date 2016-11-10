@@ -1,14 +1,10 @@
-
-
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const got = require('got');
+const SocketBase = require('./base');
 
-const _ = global._;
-const dechunker = require('../ipc/dechunker.js');
-
-const SocketBase = require('./base'),
-    STATE = SocketBase.STATE;
+const STATE = SocketBase.STATE;
 
 const Web3SocketBase = require('./web3Base');
 

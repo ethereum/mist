@@ -1,10 +1,7 @@
-
-
 const _ = require('underscore');
-
-const Q = require('bluebird'),
-    fs = require('fs'),
-    path = require('path');
+const Q = require('bluebird');
+const fs = require('fs');
+const path = require('path');
 
 
 const test = require('../_base').mocha(module, {

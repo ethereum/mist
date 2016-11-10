@@ -9,8 +9,7 @@ The IPC provider wrapper to communicate to the backend
 @constructor
 */
 
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const { ipcRenderer: ipc } = require('electron');
 
 
 /**

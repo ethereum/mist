@@ -1,4 +1,4 @@
-const ipc = require('electron').ipcRenderer;
+const { ipcRenderer: ipc } = require('electron');
 
 
 const extractLineNumberFromStack = function (stack) {
@@ -57,4 +57,3 @@ module.exports = function (windowId) {
         }(console[method]));
     });
 };
-

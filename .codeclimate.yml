@@ -13,3 +13,6 @@ engines:
         enabled: true
   csslint:
     enabled: true
+
+exclude_paths:
+- interface/**

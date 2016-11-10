@@ -4,10 +4,10 @@ engines:
     config:
       languages:
         javascript:
-          mass_threshold: 40  // default threshold
+          mass_threshold: 40  ## default threshold
   eslint:
     enabled: true
-    channel: "eslint-3"  // supports airbnb-base config
+    channel: "eslint-3"  ## supports airbnb-base config
     checks:
       complexity:
         enabled: true

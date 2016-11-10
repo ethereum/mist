@@ -1,18 +1,10 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const MenuItem = electron.MenuItem;
-const Menu = electron.Menu;
-const shell = electron.shell;
-const log = require('./utils/logger').create('menuItems');
-const ipc = electron.ipcMain;
-const ethereumNode = require('./ethereumNode.js');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
 const Windows = require('./windows');
-const updateChecker = require('./updateChecker');
-const ClientBinaryManager = require('./clientBinaryManager');
 const Settings = require('./settings');
-const fs = require('fs');
-const dialog = electron.dialog;
+const log = require('./utils/logger').create('menuItems');
+const updateChecker = require('./updateChecker');
+const ethereumNode = require('./ethereumNode.js');
+const ClientBinaryManager = require('./clientBinaryManager');
 
 
 // Make easier to return values for specific systems
@@ -187,7 +179,7 @@ let menuTempl = function (webviews) {
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
                         click() {
-                            shell.showItemInFolder(Settings.userDataPath);
+                            shell.openItem(Settings.userDataPath);
                         },
                     },
                 ],

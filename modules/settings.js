@@ -1,8 +1,6 @@
+const { app } = require('electron');
 const path = require('path');
-const electron = require('electron');
 const fs = require('fs');
-const app = electron.app;
-
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 

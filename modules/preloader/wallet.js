@@ -3,8 +3,7 @@
 */
 
 require('./include/common')('wallet');
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const { ipcRenderer: ipc, webFrame } = require('electron');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
 const Web3 = require('web3');
@@ -15,7 +14,7 @@ require('./include/openExternal.js');
 require('./include/setBasePath')('interface/wallet');
 
 // disable pinch zoom
-electron.webFrame.setZoomLevelLimits(1, 1);
+webFrame.setZoomLevelLimits(1, 1);
 
 
 // make variables globally accessable

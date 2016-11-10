@@ -1,9 +1,7 @@
-
-
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 
-const _ = global._;
 const log = require('../utils/logger').create('Sockets');
 
 
@@ -206,4 +204,3 @@ const STATE = exports.STATE = Socket.STATE = {
     DISCONNECTION_TIMEOUT: -2,
     CONNECTION_TIMEOUT: -3,
 };
-

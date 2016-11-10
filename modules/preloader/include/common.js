@@ -1,6 +1,5 @@
 module.exports = function (windowType) {
-    const electron = require('electron');
-    const ipc = electron.ipcRenderer;
+    const { ipcRenderer: ipc } = require('electron');
 
     if (process.env.TEST_MODE) {
         window.electronRequire = require;

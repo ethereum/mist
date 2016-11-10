@@ -79,7 +79,7 @@ if (Settings.uiMode === 'wallet') {
         ? `file://${__dirname}/interface/wallet/index.html`
         : 'http://localhost:3050';
     global.interfacePopupsUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
+        ? `file://${__dirname}/interface/index.html`
         : 'http://localhost:3000';
 
 // - MIST
@@ -87,7 +87,7 @@ if (Settings.uiMode === 'wallet') {
     log.info('Starting in Mist mode');
 
     let url = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
+        ? `file://${__dirname}/interface/index.html`
         : 'http://localhost:3000';
 
     if (Settings.cli.resetTabs) {

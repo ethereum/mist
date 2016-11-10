@@ -1,5 +1,3 @@
-
-
 /**
 The nodeSync module,
 checks the current node whether its synching or not and how much it kept up already.
@@ -206,4 +204,3 @@ class NodeSync extends EventEmitter {
 
 
 module.exports = new NodeSync();
-

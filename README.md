@@ -92,6 +92,8 @@ Start the wallet app for development, *in a separate terminal window:*
 
     $ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
 
+Note that Meteor may suggest that an upgrade is available and that you run 'meteor update'. **Do not do it** as that [can break Mist](https://github.com/ethereum/mist/issues/1402). 
+
 In the original window you can then start Mist using wallet mode:
 
     $ cd mist

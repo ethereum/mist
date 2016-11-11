@@ -15,6 +15,7 @@ const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
 const fs = require('fs');
 const syncRequest = require('sync-request');
+const got = require('got');
 
 var options = minimist(process.argv.slice(2), {
     string: ['platform','walletSource'],
@@ -217,7 +218,7 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
 });
 
 
-gulp.task('build-dist', ['copy-i18n'], (cb) => {
+gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
     console.log('Bundling platforms: ', options.platform);
 
     const appPackageJson = _.extend({}, packJson, {
@@ -369,29 +370,28 @@ gulp.task('get-release-checksums', (done) => {
 });
 
 
-gulp.task('download-signatures', () => {
-    let signatures = {},
-        getFrom4byteAPI = function (url) {
-            console.log('Requesting ', url);
-            const res = syncRequest('GET', url);
-            if (res.statusCode == 200) {
-                const responseData = JSON.parse(res.getBody('utf8'));
-                _.map(responseData.results, (e) => {
-                    if (!!signatures[e.hex_signature]) {
-                        signatures[e.hex_signature].push(e.text_signature);
-                    }
-                    else {
-                        signatures[e.hex_signature] = [e.text_signature];
-                    }
-                });
-                responseData.next && getFrom4byteAPI(responseData.next);
-            }
-        };
+gulp.task('download-signatures', (cb) => {
+    got('https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at', {
+        json: true
+    })
+    .then((res) => {
+        if (res.statusCode !== 200) {
+            throw new Error(res.statusText);
+        }
 
-    getFrom4byteAPI('https://www.4byte.directory/api/v1/signatures/');
-    fs.writeFileSync('interface/client/lib/signatures.js', `window.SIGNATURES = ${JSON.stringify(signatures, null, '\t')};`);
+        const signatures = {};
+
+        _.each(res.body.results, (e) => {
+            signatures[e.hex_signature] = signatures[e.hex_signature] || [];
+            signatures[e.hex_signature].push(e.text_signature);
+        });
+
+        fs.writeFileSync('interface/client/lib/signatures.js', `window.SIGNATURES = ${JSON.stringify(signatures, null, 4)};`);
+
+        cb();
+    })
+    .catch(cb);
 });
-
 
 gulp.task('taskQueue', [
     'release-dist',

@@ -22,7 +22,7 @@ const NODE_START_WAIT_MS = 3000;
 
 
 /**
- * Etheruem nodes manager.
+ * Ethereum nodes manager.
  */
 class EthereumNode extends EventEmitter {
     constructor() {
@@ -317,7 +317,7 @@ class EthereumNode extends EventEmitter {
 
         const binPath = ClientBinaryManager.getClient(nodeType).binPath;
 
-        log.debug(`Start node using ${binPath}`);
+        log.info(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
             this.__startProcess(nodeType, network, binPath)
@@ -346,13 +346,13 @@ class EthereumNode extends EventEmitter {
                 // START TESTNET
                 if (network == 'test') {
                     args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
+                        ? ['--testnet', '--light', '--ipcpath', Settings.rpcIpcPath]
                         : ['--morden', '--unsafe-transactions'];
                 }
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', '512', '--support-dao-fork'] // FORK RELATED
+                        ? ['--light', '--cache', '512', '--support-dao-fork'] // FORK RELATED
                         : ['--unsafe-transactions', '--support-dao-fork'];
                 }
 

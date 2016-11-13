@@ -1,4 +1,9 @@
-/* eslint-disable import/no-extraneous-dependencies, no-console, strict, prefer-spread */
+/* eslint-disable
+import/no-extraneous-dependencies,
+no-console,
+strict,
+prefer-spread,
+arrow-body-style */
 
 'use strict';
 
@@ -14,11 +19,10 @@ const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
 const fs = require('fs');
-const syncRequest = require('sync-request');
 const got = require('got');
 
-var options = minimist(process.argv.slice(2), {
-    string: ['platform','walletSource'],
+const options = minimist(process.argv.slice(2), {
+    string: ['platform', 'walletSource'],
     default: {
         platform: 'all',
         walletSource: 'master',
@@ -26,21 +30,18 @@ var options = minimist(process.argv.slice(2), {
 });
 
 
-if (options.platform.indexOf(',') !== -1)
-    { options.platform = options.platform.replace(/ +/g, '').split(','); }
-else
-    { options.platform = options.platform.split(' '); }
-
+if (options.platform.indexOf(',') !== -1) {
+    options.platform = options.platform.replace(/ +/g, '').split(',');
+} else {
+    options.platform = options.platform.split(' ');
+}
 
 // CONFIG
 let type = 'mist';
-let filenameLowercase = 'mist';
-let filenameUppercase = 'Mist';
 let applicationName = 'Mist';
 const electronVersion = require('electron/package.json').version;
-
-
 const packJson = require('./package.json');
+
 const version = packJson.version;
 
 const osArchList = [
@@ -80,14 +81,10 @@ function platformIsActive(osArch) {
 // TASKS
 gulp.task('set-variables-mist', () => {
     type = 'mist';
-    filenameLowercase = 'mist';
-    filenameUppercase = 'Mist';
     applicationName = 'Mist';
 });
 gulp.task('set-variables-wallet', () => {
     type = 'wallet';
-    filenameLowercase = 'ethereum-wallet';
-    filenameUppercase = 'Ethereum-Wallet';
     applicationName = 'Ethereum Wallet';
 });
 
@@ -142,7 +139,7 @@ gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], ()
 });
 
 
-gulp.task('copy-node-folder-files', ['clean:dist'], (done) => {
+gulp.task('copy-node-folder-files', ['clean:dist'], () => {
     const streams = [];
 
     _.each(osArchList, (osArch) => {
@@ -163,14 +160,14 @@ gulp.task('copy-files', [
     'clean:dist',
     'copy-app-folder-files',
     'copy-build-folder-files',
-    'copy-node-folder-files'
+    'copy-node-folder-files',
 ]);
 
 
 gulp.task('switch-production', ['copy-files'], (cb) => {
     fs.writeFileSync(`${__dirname}/dist_${type}/app/config.json`, JSON.stringify({
         production: true,
-        mode: type
+        mode: type,
     }));
 
     cb();
@@ -179,7 +176,7 @@ gulp.task('switch-production', ['copy-files'], (cb) => {
 
 gulp.task('bundling-interface', ['switch-production'], (cb) => {
     if (type === 'mist') {
-        exec(`cd interface && meteor-build-client ../dist_${type}/app/interface -p ""`, (err, stdout, stderr) => {
+        exec(`cd interface && meteor-build-client ../dist_${type}/app/interface -p ""`, (err, stdout) => {
             console.log(stdout);
 
             cb(err);
@@ -190,7 +187,7 @@ gulp.task('bundling-interface', ['switch-production'], (cb) => {
         if (options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
             exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                 `cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`, (err, stdout, stderr) => {
+                 `cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`, (err, stdout) => {
                 console.log(stdout);
 
                 cb(err);
@@ -198,7 +195,7 @@ gulp.task('bundling-interface', ['switch-production'], (cb) => {
         } else {
             console.log(`Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${options.walletSource} "${options.walletSource}" branch...`);
             exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                 `cd ../dist_${type}/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, (err, stdout, stderr) => {
+                 `cd ../dist_${type}/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, (err, stdout) => {
                 console.log(stdout);
 
                 cb(err);
@@ -236,7 +233,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
                 'build-dist.js',
             ],
             extraFiles: [
-                'nodes/eth/${os}-${arch}',
+                'nodes/eth/${os}-${arch}',  // eslint-disable-line no-template-curly-in-string
             ],
             linux: {
                 target: [
@@ -246,9 +243,9 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
             },
             win: {
                 target: [
-                    "zip",
-                    "squirrel",
-                ]
+                    'zip',
+                    'squirrel',
+                ],
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
@@ -297,17 +294,17 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
         console.error(ret.stderr);
 
         return cb(new Error('Error building distributables'));
-    } else {
-        console.log(ret.stdout);
-
-        return cb();
     }
+
+    console.log(ret.stdout);
+
+    return cb();
 });
 
 
 gulp.task('release-dist', ['build-dist'], (done) => {
-    const distPath = path.join(__dirname, `dist_${type}`, 'dist'),
-        releasePath = path.join(__dirname, `dist_${type}`, 'release');
+    const distPath = path.join(__dirname, `dist_${type}`, 'dist');
+    const releasePath = path.join(__dirname, `dist_${type}`, 'release');
 
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
@@ -316,36 +313,31 @@ gulp.task('release-dist', ['build-dist'], (done) => {
     const appNameNoSpace = applicationName.replace(/\s/, '');
     const versionDashed = version.replace(/\./g, '-');
 
+    const cp = (inputPath, outputPath) => {
+        shell.cp(path.join(distPath, inputPath), path.join(releasePath, outputPath));
+    };
+
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
-            switch (osArch) {
+            switch (osArch) {  // eslint-disable-line default-case
             case 'win-ia32':
-                shell.cp(path.join(distPath, 'win-ia32', `${applicationName} Setup ${version}-ia32.exe`),
-                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.exe`));
-                    shell.cp(path.join(distPath, `${applicationName}-${version}-ia32-win.zip`),
-                            path.join(releasePath, `${appNameHypen}-win32-${versionDashed}.zip`));
-                    break;
-                case 'win-x64':
-                    shell.cp(path.join(distPath, 'win', `${applicationName} Setup ${version}.exe`),
-                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.exe`));
-                    shell.cp(path.join(distPath, `${applicationName}-${version}-win.zip`),
-                            path.join(releasePath, `${appNameHypen}-win64-${versionDashed}.zip`));
-                    break;
-                case 'mac-x64':
-                    shell.cp(path.join(distPath, 'mac', `${applicationName}-${version}.dmg`),
-                            path.join(releasePath, `${appNameHypen}-macosx-${versionDashed}.dmg`));
+                cp(path.join('win-ia32', `${applicationName} Setup ${version}-ia32.exe`), `${appNameHypen}-win32-${versionDashed}.exe`);
+                cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+                break;
+            case 'win-x64':
+                cp(path.join('win', `${applicationName} Setup ${version}.exe`), `${appNameHypen}-win64-${versionDashed}.exe`);
+                cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+                break;
+            case 'mac-x64':
+                cp(path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
                 break;
             case 'linux-ia32':
-                shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.deb`),
-                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.deb`));
-                shell.cp(path.join(distPath, `${appNameNoSpace}-${version}-ia32.zip`),
-                            path.join(releasePath, `${appNameHypen}-linux32-${versionDashed}.zip`));
+                cp(`${appNameNoSpace}-${version}-ia32.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+                cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
                 break;
             case 'linux-x64':
-                shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.deb`),
-                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.deb`));
-                shell.cp(path.join(distPath, `${appNameNoSpace}-${version}.zip`),
-                            path.join(releasePath, `${appNameHypen}-linux64-${versionDashed}.zip`));
+                cp(`${appNameNoSpace}-${version}.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+                cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
                 break;
             }
         }
@@ -367,12 +359,14 @@ gulp.task('get-release-checksums', (done) => {
             return done(new Error(`Error executing shasum: ${sha.stderr}`));
         }
     }
+
+    return done();
 });
 
 
 gulp.task('download-signatures', (cb) => {
     got('https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at', {
-        json: true
+        json: true,
     })
     .then((res) => {
         if (res.statusCode !== 200) {

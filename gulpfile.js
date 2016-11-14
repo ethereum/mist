@@ -3,7 +3,8 @@ import/no-extraneous-dependencies,
 no-console,
 strict,
 prefer-spread,
-arrow-body-style */
+arrow-body-style,
+import/no-unresolved */
 
 'use strict';
 

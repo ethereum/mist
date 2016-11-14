@@ -190,6 +190,12 @@
                     "importFailed": "Não pode importar. Erro: __error__"
                 }
             }
+        },
+        "connectAccount": {
+            "chooseAccountTitle": "Escolha suas contas",
+            "createAccount": "Criar nova conta",
+            "pinToSidebar": "Fixar app na barra lateral",
+            "connectAccountDescription": "Você está compartilhando sua identidade com __dappName__. Isso permite que a app tenha acesso a informações públicas das suas contas selecionadas, incuindo saldos relacionados a elas."
         }
     },
     "elements": {

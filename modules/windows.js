@@ -61,6 +61,13 @@ class Window extends EventEmitter {
             this.emit('ready');
         });
 
+
+        // prevent droping files
+        this.webContents.on('will-navigate', (e) => {
+            e.preventDefault();
+        });
+
+
         this.window.once('closed', () => {
             this._log.debug('Closed');
 

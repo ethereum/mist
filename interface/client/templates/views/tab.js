@@ -50,10 +50,13 @@ Template['views_tab'].onRendered(function(){
         // Meteor.clearTimeout(timeoutId);
         TemplateVar.set(template, 'loading', false);
 
-        var titleFull = title = webview.getTitle();
+        var titleFull = webview.getTitle(),
+            title;
 
-        if(titleFull && titleFull.length > 40)
-            title = titleFull.substr(0, 40) + '...';
+        if(titleFull && titleFull.length > 40) {
+            title = titleFull.substr(0, 40);
+            title += '...';
+        }
 
         // update the title
         Tabs.update(template.data._id, {$set: {name: title}});

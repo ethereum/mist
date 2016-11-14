@@ -23,20 +23,15 @@ Template['layout_browserBar'].helpers({
 
     @method (breadcrumb)
     */
-    'breadcrumb': function(){
-        if(!this || !this.url)
+    breadcrumb: function () {
+        if (!this || !this.url) {
             return;
+        }
         try {
-            var url = new URL(this.url);
-        }
-        catch(e){
+            return Helpers.generateBreadcrumb(new URL(this.url));
+        } catch (e) {
             return;
         }
-        var pathname = _.reject(url.pathname.replace(/\/$/g, '').split("/"), function(el) {
-            return el === '';
-        });
-        var breadcrumb = _.flatten(["<span>" + url.host + " </span>", pathname]).join(" ▸ ");
-        return new Spacebars.SafeString(breadcrumb);
     },
 
     /**

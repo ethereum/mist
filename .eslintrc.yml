@@ -14,3 +14,4 @@ rules:
 
 globals:
   i18n: true  # don't warn about missing 'i18n' declaration
+  Helpers: true  # don't warn about missing 'Helpers' declaration

@@ -58,7 +58,7 @@ Sanatizes URLs to prevent phishing and XSS attacks
 Helpers.sanatizeUrl = function(url){    
     // add http:// if no protocol is present
     if(_.isString(url)) {
-        url = url.replace(/^(javascript\:)?(data\:)?\/\//i,'http:');
+        url = url.replace(/^(javascript:)?(data:)?\/\//i, 'http:');
     }
 
     return url;

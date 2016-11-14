@@ -1,8 +1,5 @@
 env:  # don't warn about no-def meteor keywords
   meteor: true
 
-plugins:
-  - meteor
-
 rules:
   no-undef: 0

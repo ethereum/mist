@@ -50,6 +50,21 @@ Helpers.formatUrl = function(url){
 };
 
 /**
+Sanatizes URLs to prevent phishing and XSS attacks
+
+@method sanatizeUrl
+@param {String} url
+**/
+Helpers.sanatizeUrl = function(url){    
+    // add http:// if no protocol is present
+    if(_.isString(url)) {
+        url = url.replace(/^(javascript\:)?(data\:)?\/\//i,'http:');
+    }
+
+    return url;
+};
+
+/**
 Takes an URL and creates a breadcrumb out of it.
 
 @method generateBreadcrumb

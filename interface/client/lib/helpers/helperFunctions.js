@@ -55,11 +55,18 @@ Sanatizes URLs to prevent phishing and XSS attacks
 @method sanatizeUrl
 @param {String} url
 **/
-Helpers.sanatizeUrl = function(url){    
-    // add http:// if no protocol is present
+Helpers.sanatizeUrl = function(url){
+    var parser;
+
     if(_.isString(url)) {
-        url = url.replace(/^(javascript:)?(data:)?\/\//i, 'http:');
+        parser = document.createElement('a');
+        parser.href = url;
+    } else if(_.isObject(url) && url.protocol) {
+        parser = url;
     }
+
+    parser.protocol = parser.protocol.replace(/^(javascript:)?(data:)?(:)?/i, 'http:');
+    url = parser.toString();
 
     return url;
 };

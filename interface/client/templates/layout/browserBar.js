@@ -141,7 +141,7 @@ Template['layout_browserBar'].events({
         mist.requestAccount(function(e, addresses){
             var tabId;
 
-            window.syncDb.frontendSync(Tabs, Tabs._name);
+            window.dbSync.frontendSync(Tabs, Tabs._name);
             
             tabId = LocalStore.get('selectedTab');
 

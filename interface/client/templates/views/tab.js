@@ -33,7 +33,6 @@ Template['views_tab'].onRendered(function(){
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
         if(LocalStore.get('selectedTab') === this._id){
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-            console.log(webview);
             webview.reload();        
         }
     });

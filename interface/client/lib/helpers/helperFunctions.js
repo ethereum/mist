@@ -49,6 +49,27 @@ Helpers.formatUrl = function(url){
     return url;
 };
 
+/**
+Takes an URL and creates a breadcrumb out of it.
+
+@method generateBreadcrumb
+@return Spacebars.SafeString
+**/
+Helpers.generateBreadcrumb = function (url) {
+    var filteredUrl;
+    var pathname;
+
+    filteredUrl = {
+        host: Blaze._escape(url.host),
+        pathname: Blaze._escape(url.pathname)
+    };
+
+    pathname = _.reject(filteredUrl.pathname.replace(/\/$/g, '').split('/'), function (el) {
+        return el === '';
+    });
+
+    return new Spacebars.SafeString(_.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+};
 
 /**
 Clear localStorage

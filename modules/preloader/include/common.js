@@ -7,6 +7,7 @@ module.exports = function (windowType) {
 
     require('./consoleLogCapture')(windowType);
 
+    require('./suppressWindowPrompt')();
 
     // register with window manager
     ipc.send('backendAction_setWindowId');

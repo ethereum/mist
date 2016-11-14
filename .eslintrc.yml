@@ -5,12 +5,12 @@ plugins:
 
 settings:
   import/core-modules:  # don't lint for these missing packages in package.json
-    - electron  # 'electron-prebuilt' is being used
+    - electron  # 'electron' is only needed as devDependency / global installation
 
 rules:
   indent:
     - 2  # error
     - 4  # number of spaces
 
-globals:
-  i18n: true  # don't warn about missing 'i18n' declaration
+globals:  # don't warn about missing declaration
+  i18n: true

@@ -1,7 +1,10 @@
-extends: airbnb-base
+extends:
+  - airbnb-base
+  - plugin:meteor/recommended
 
 plugins:
   - import
+  - meteor
 
 settings:
   import/core-modules:  # don't lint for these missing packages in package.json
@@ -11,6 +14,3 @@ rules:
   indent:
     - 2  # error
     - 4  # number of spaces
-
-globals:
-  i18n: true  # don't warn about missing 'i18n' declaration

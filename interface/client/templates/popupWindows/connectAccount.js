@@ -19,7 +19,6 @@ var pinToSidebar = function() {
             LocalStore.set('selectedTab', newTabId);
         }
 
-        console.log('tab info', selectedTab);
         if (selectedTab._id === 'browser') {
             // move the current browser tab to the last visited page
             var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();

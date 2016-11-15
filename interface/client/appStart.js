@@ -10,7 +10,7 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-    console.info('Initialise Mist');
+    console.info('Initialise Mist Interface');
 
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {

@@ -251,8 +251,9 @@ class Windows {
             return w.type === 'main';
         });
 
-        if (parent)
-            { opts.electronOptions.parent = parent.window; }
+        if (parent) {
+            opts.electronOptions.parent = parent.window;
+        }
 
 
         _.extendDeep(opts, options);

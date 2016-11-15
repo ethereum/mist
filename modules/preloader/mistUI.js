@@ -3,7 +3,7 @@
 */
 
 require('./include/common')('mist');
-const { ipcRenderer: ipc, remote, webFrame } = require('electron');
+const { ipcRenderer: ipc, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
 const { Menu, MenuItem } = remote;
 const syncDb = require('../syncDb.js');
 const i18n = require('../i18n.js');

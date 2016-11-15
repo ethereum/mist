@@ -4,13 +4,14 @@ plugins:
   - import
 
 settings:
-  import/core-modules:  # don't lint for these missing packages in package.json
-    - electron  # 'electron' is only needed as devDependency / global installation
+  import/core-modules:  ## don't lint for these missing packages in package.json
+    - electron  ## 'electron' is only needed as devDependency / global installation
 
 rules:
   indent:
-    - 2  # error
-    - 4  # number of spaces
+    - 2  ## error
+    - 4  ## number of spaces
+  no-console: 0  ## allowed for chrome dev-console
 
-globals:  # don't warn about missing declaration
+globals:  ## don't warn about missing declaration
   i18n: true

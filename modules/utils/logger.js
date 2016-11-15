@@ -39,11 +39,11 @@ exports.setup = function (options) {
 };
 
 
-exports.create = function (category) {
+exports.create = (category) => {
     const logger = log4js.getLogger(category);
 
     // Allow for easy creation of sub-categories.
-    logger.create = function (subCategory) {
+    logger.create = (subCategory) => {
         return exports.create(`${category}/${subCategory}`);
     };
 

@@ -10,12 +10,12 @@ const semver = require('semver');
  * Check for updates to the app.
  * @return {[type]} [description]
  */
-const check = exports.check = function () {
+const check = exports.check = () => {
     log.info('Check for update...');
 
     let str = null;
 
-    switch (Settings.uiMode) {
+    switch (Settings.uiMode) {  // eslint-disable-line default-case
     case 'mist':
         str = 'mist';
         break;
@@ -52,9 +52,9 @@ const check = exports.check = function () {
                 version: latest.tag_name,
                 url: latest.html_url,
             };
-        } else {
-            log.info('App is up-to-date.');
         }
+
+        log.info('App is up-to-date.');
     })
     .catch((err) => {
         log.error('Error checking for update', err);
@@ -78,7 +78,7 @@ function showWindow(options) {
 }
 
 
-exports.run = function () {
+exports.run = () => {
     check().then((update) => {
         if (update) {
             showWindow({
@@ -91,7 +91,7 @@ exports.run = function () {
 };
 
 
-exports.runVisibly = function () {
+exports.runVisibly = () => {
     const wnd = showWindow({
         sendData: ['uiAction_checkUpdateInProgress'],
     });

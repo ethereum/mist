@@ -143,9 +143,6 @@ if (argv.ipcpath) {
 }
 
 
-const log = null;
-
-
 class Settings {
     init() {
         logger.setup(argv);
@@ -212,11 +209,11 @@ class Settings {
             return {
                 path: this.rpcIpcPath,
             };
-        } else {
-            return {
-                hostPort: this.rpcHttpPath,
-            };
         }
+
+        return {
+            hostPort: this.rpcHttpPath,
+        };
     }
 
     get rpcHttpPath() {
@@ -282,10 +279,10 @@ class Settings {
     }
 
 
-    saveUserData(path, data) {
+    saveUserData(path2, data) {
         if (!data) return; // return so we dont write null, or other invalid data
 
-        const fullPath = this.constructUserDataPath(path);
+        const fullPath = this.constructUserDataPath(path2);
 
         try {
             fs.writeFileSync(fullPath, data, { encoding: 'utf8' });

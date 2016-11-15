@@ -17,8 +17,8 @@ _.mixin({
             return fallbackValue;
         }
 
-        let fields = path.split('.'),
-            result = obj;
+        const fields = path.split('.');
+        let result = obj;
 
         for (let i = 0; i < fields.length; ++i) {
             if (!this.isObject(result) && !this.isArray(result)) {

@@ -6,23 +6,25 @@ const { ipcRenderer: ipc, remote } = require('electron');
 const packageJson = require('./../package.json');
 
 
-module.exports = function (isWallet) {
+module.exports = (isWallet) => {
     let queue = [];
     const prefix = 'entry_';
 
     // filterId the id to only contain a-z A-Z 0-9
-    const filterId = function (str) {
+    const filterId = (str) => {
         let newStr = '';
         for (let i = 0; i < str.length; i++) {
-            if (/[a-zA-Z0-9_-]/.test(str.charAt(i)))
-                { newStr += str.charAt(i); }
+            if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
+                newStr += str.charAt(i);
+            }
         }
         return newStr;
     };
 
     ipc.on('mistAPI_callMenuFunction', (e, id) => {
-        if (mist.menu.entries[id] && mist.menu.entries[id].callback)
-            { mist.menu.entries[id].callback(); }
+        if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
+            mist.menu.entries[id].callback();
+        }
     });
 
     ipc.on('windowMessage', (e, type, error, value) => {
@@ -73,8 +75,9 @@ module.exports = function (isWallet) {
         platform: process.platform,
         requestAccount(callback) {
             if (callback) {
-                if (!this.callbacks.connectAccount)
-                    { this.callbacks.connectAccount = []; }
+                if (!this.callbacks.connectAccount) {
+                    this.callbacks.connectAccount = [];
+                }
                 this.callbacks.connectAccount.push(callback);
             }
 
@@ -83,11 +86,11 @@ module.exports = function (isWallet) {
         sounds: {
             bip() {
                 // if wallet
-                if (isWallet)
-                    { sound.bip.play(); }
-                // if mist
-                else
-                    { ipc.sendToHost('mistAPI_sound', sound.bip.src); }
+                if (isWallet) {
+                    sound.bip.play();
+                } else { // if mist
+                    ipc.sendToHost('mistAPI_sound', sound.bip.src);
+                }
             },
         },
         menu: {
@@ -140,8 +143,9 @@ module.exports = function (isWallet) {
                     entry,
                 });
 
-                if (callback)
-                    { entry.callback = callback; }
+                if (callback) {
+                    entry.callback = callback;
+                }
 
                 this.entries[id] = entry;
             },

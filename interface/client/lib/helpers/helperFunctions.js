@@ -52,10 +52,10 @@ Helpers.formatUrl = function(url){
 /**
 Sanatizes URLs to prevent phishing and XSS attacks
 
-@method sanatizeUrl
+@method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanatizeUrl = function(url){
+Helpers.sanitizeUrl = function(url){
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');

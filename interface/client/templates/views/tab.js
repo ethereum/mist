@@ -65,7 +65,7 @@ Template['views_tab'].onRendered(function(){
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
     webview.addEventListener('new-window', function(e){
-        var url = Helpers.sanatizeUrl(e.url);
+        var url = Helpers.sanitizeUrl(e.url);
         Tabs.update(template.data._id, {$set: {redirect: url}});
     });
 
@@ -107,7 +107,7 @@ Template['views_tab'].helpers({
             } else if(!template.url)
                 template.url = tab.url;
 
-            return Helpers.formatUrl(Helpers.sanatizeUrl(template.url));
+            return Helpers.formatUrl(Helpers.sanitizeUrl(template.url));
         }
     }
 });

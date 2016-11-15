@@ -52,21 +52,14 @@ Helpers.formatUrl = function(url){
 /**
 Sanatizes URLs to prevent phishing and XSS attacks
 
-@method sanatizeUrl
+@method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanatizeUrl = function(url){
-    var parser;
+Helpers.sanitizeUrl = function(url){
+    url = String(url);
 
-    if(_.isString(url)) {
-        parser = document.createElement('a');
-        parser.href = url;
-    } else if(_.isObject(url) && url.protocol) {
-        parser = url;
-    }
-
-    parser.protocol = parser.protocol.replace(/^(javascript:)?(data:)?(:)?/i, 'http:');
-    url = parser.toString();
+    url = url.replace(/[\t\n\r\s]+/g, '');
+    url = url.replace(/^((?:javascript)?(?:data)?[:\/\/]{1,3})/i, 'http://');
 
     return url;
 };

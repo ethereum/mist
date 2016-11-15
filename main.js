@@ -366,7 +366,7 @@ onReady = () => {
                             },
                         });
 
-                        onboardingWindow.on('close', () => {
+                        onboardingWindow.on('closed', () => {
                             app.quit();
                         });
 
@@ -391,7 +391,7 @@ onReady = () => {
                         // launch app
                         ipcMain.on('onBoarding_launchApp', (e) => {
                             // prevent that it closes the app
-                            onboardingWindow.removeAllListeners('close');
+                            onboardingWindow.removeAllListeners('closed');
                             onboardingWindow.close();
 
                             ipcMain.removeAllListeners('onBoarding_changeNet');

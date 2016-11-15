@@ -18,7 +18,7 @@ class Window extends EventEmitter {
         this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId; // the window which creates this new window
 
-        const electronOptions = {
+        let electronOptions = {
             title: Settings.appName,
             show: false,
             width: 1100,
@@ -32,12 +32,12 @@ class Window extends EventEmitter {
                 nodeIntegration: false,
                 webaudio: true,
                 webgl: false,
-                webSecurity: false, // necessary to make routing work on file:// protocol
+                webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
                 textAreasAreResizable: true,
             },
         };
 
-        _.extendDeep(electronOptions, opts.electronOptions);
+        electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
 
         this._log.debug('Creating browser window');
 
@@ -78,7 +78,7 @@ class Window extends EventEmitter {
             this.emit('closed');
         });
 
-        this.window.on('close', (e) => {
+        this.window.once('close', (e) => {
             this.emit('close', e);
         });
 
@@ -233,7 +233,7 @@ class Windows {
     createPopup(type, options) {
         options = options || {};
 
-        const opts = {
+        let opts = {
             url: `${global.interfacePopupsUrl}#${type}`,
             show: true,
             ownerId: null,
@@ -249,8 +249,8 @@ class Windows {
                 autoHideMenuBar: true, // TODO: test on windows
                 webPreferences: {
                     textAreasAreResizable: false,
-                },
-            },
+                }
+            }
         };
 
         // always show on top of main window
@@ -262,7 +262,7 @@ class Windows {
             { opts.electronOptions.parent = parent.window; }
 
 
-        _.extendDeep(opts, options);
+        opts = _.deepExtend(opts, options);
 
         // mark it as a pop-up window
         opts.isPopup = true;

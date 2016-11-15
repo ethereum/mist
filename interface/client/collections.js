@@ -9,8 +9,8 @@
 // Contains the accounts
 Tabs = new Mongo.Collection('tabs', {connection: null});
 
-if (typeof window.syncDb !== 'undefined') {
-    Tabs = window.syncDb.frontendSync(Tabs, Tabs._name);
+if (typeof window.dbSync !== 'undefined') {
+    Tabs = window.dbSync.frontendSync(Tabs, Tabs._name);
 }
 
 

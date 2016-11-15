@@ -60,7 +60,7 @@ exports.getCollection = (name) => {
 };
 
 
-exports.close = () => ({
+exports.close = () => {
     return new Q((resolve, reject) => {
         db.close((err) => {
             if (err) {
@@ -70,4 +70,4 @@ exports.close = () => ({
             }
         });
     });
-});
+};

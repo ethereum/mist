@@ -337,14 +337,14 @@ class IpcProviderBackend {
         })
         .catch((err) => {
 
-            var returnErr = this._makeErrorResponsePayload(payload || {}, {
+            log.error('Send request failed', err);
+
+            err = this._makeErrorResponsePayload(payload || {}, {
                 message: (typeof err === 'string' ? err : err.message),
                 code: err.code,
             });
 
-            log.error('Send request failed', err);
-
-            return returnErr;
+            return err;
         })
         .then((returnValue) => {
             returnValue = JSON.stringify(returnValue);

@@ -6,7 +6,7 @@ require('./include/common')('popup-no-web3');
 const { ipcRenderer: ipc, remote, webFrame } = require('electron');
 const mist = require('../mistAPI.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const syncDb = require('../syncDb.js');
+const dbSync = require('../dbSync.js');
 
 require('./include/setBasePath')('interface');
 
@@ -21,5 +21,5 @@ ipc.on('data', (e, data) => {
 
 window.mist = mist();
 window.dirname = remote.getGlobal('dirname');
-window.syncDb = syncDb;
+window.dbSync = dbSync;
 window.ipc = ipc;

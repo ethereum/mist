@@ -1,5 +1,5 @@
 /**
-@module syncDb
+@module dbSync
 */
 const { ipcMain, ipcRenderer } = require('electron');
 
@@ -8,15 +8,15 @@ const { ipcMain, ipcRenderer } = require('electron');
  * @param  {Object} coll Db collection to save to.
  */
 exports.backendSync = function () {
-    let log = require('./utils/logger').create('syncDb'),
+    let log = require('./utils/logger').create('dbSync'),
         db = require('./db'),
         ipc = ipcMain;
 
-    ipc.on('syncDb-add', (event, args) => {
+    ipc.on('dbSync-add', (event, args) => {
         let collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('syncDb-add', collName, args._id);
+        log.trace('dbSync-add', collName, args._id);
 
         const _id = args._id;
 
@@ -26,11 +26,11 @@ exports.backendSync = function () {
         }
     });
 
-    ipc.on('syncDb-changed', (event, args) => {
+    ipc.on('dbSync-changed', (event, args) => {
         let collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('syncDb-changed', collName, args._id);
+        log.trace('dbSync-changed', collName, args._id);
 
         const _id = args._id;
         const item = coll.findOne({ _id });
@@ -48,11 +48,11 @@ exports.backendSync = function () {
         }
     });
 
-    ipc.on('syncDb-removed', (event, args) => {
+    ipc.on('dbSync-removed', (event, args) => {
         let collName = args.collName,
             coll = db.getCollection(collName);
 
-        log.trace('syncDb-removed', collName, args._id);
+        log.trace('dbSync-removed', collName, args._id);
 
         const _id = args._id;
         const item = coll.findOne({ _id });
@@ -65,12 +65,12 @@ exports.backendSync = function () {
     });
 
     // get all data (synchronous)
-    ipc.on('syncDb-reloadSync', (event, args) => {
+    ipc.on('dbSync-reloadSync', (event, args) => {
         let collName = args.collName,
             coll = db.getCollection(collName),
             docs = coll.find();
 
-        log.debug('syncDb-reloadSync, no. of docs:', collName, docs.length);
+        log.debug('dbSync-reloadSync, no. of docs:', collName, docs.length);
 
         docs = docs.map((doc) => {
             const ret = {};
@@ -103,7 +103,7 @@ exports.frontendSync = function (coll, collName) {
         let dataStr,
             dataJson;
 
-        dataStr = ipc.sendSync('syncDb-reloadSync', {
+        dataStr = ipc.sendSync('dbSync-reloadSync', {
             collName,
         });
 
@@ -151,21 +151,21 @@ exports.frontendSync = function (coll, collName) {
         // start watching for changes
         coll.find().observeChanges({
             added(id, fields) {
-                ipc.send('syncDb-add', {
+                ipc.send('dbSync-add', {
                     collName,
                     _id: id,
                     fields,
                 });
             },
             changed(id, fields) {
-                ipc.send('syncDb-changed', {
+                ipc.send('dbSync-changed', {
                     collName,
                     _id: id,
                     fields,
                 });
             },
             removed(id) {
-                ipc.send('syncDb-removed', {
+                ipc.send('dbSync-removed', {
                     collName,
                     _id: id,
                 });

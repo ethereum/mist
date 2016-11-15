@@ -14,7 +14,6 @@
   "dependencies": {
     "bignumber.js": "^2.1.4",
     "bluebird": "^3.3.5",
-    "deep-extend": "^0.4.1",
     "electron-squirrel-startup": "^1.0.0",
     "ethereum-client-binaries": "^1.6.0",
     "ethereumjs-abi": "^0.6.3",
@@ -30,6 +29,7 @@
     "solc": "^0.4.2",
     "typescript": "^1.7.3",
     "underscore": "^1.8.3",
+    "underscore-deep-extend": "^1.1.5",
     "uuid": "^2.0.2",
     "web3": "^0.17.0-alpha",
     "yargs": "^4.3.1"

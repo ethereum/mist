@@ -3,7 +3,7 @@
 // fired by "did-stop-loading"
 webviewLoadStop = function(e){
     var webview = this,
-        url = webview.getURL(),
+        url = Helpers.sanitizeUrl(webview.getURL()),
         title = webview.getTitle(),
         tabId = $(webview).data('id');
 
@@ -58,8 +58,9 @@ webviewLoadStart = function(e){
 
     var tabs = Tabs.find().fetch(),
         tabId = $(this).data('id'),
-        url = e.newURL,
-        foundTab = _.find(tabs, function(tab){
+        url = Helpers.sanitizeUrl(e.newURL);
+
+    var foundTab = _.find(tabs, function(tab){
             var tabOrigin = new URL(tab.url).origin;
             return (url && url.indexOf(tabOrigin) !== -1);
         });

@@ -8,11 +8,11 @@ Template Controllers
 /**
 The tab template
 
-@class [template] views_tab
+@class [template] views_webview
 @constructor
 */
 
-Template['views_tab'].onRendered(function(){
+Template['views_webview'].onRendered(function(){
     var template = this,
         webview = this.find('webview'),
         timeoutId;
@@ -50,7 +50,7 @@ Template['views_tab'].onRendered(function(){
         TemplateVar.set(template, 'loading', false);
 
         var titleFull = webview.getTitle(),
-            title;
+            title = titleFull;
 
         if(titleFull && titleFull.length > 40) {
             title = titleFull.substr(0, 40);
@@ -77,7 +77,7 @@ Template['views_tab'].onRendered(function(){
     }));
 });
 
-Template['views_tab'].helpers({
+Template['views_webview'].helpers({
     /**
     Determines if the current tab is visible
 
@@ -89,25 +89,35 @@ Template['views_tab'].helpers({
     /**
     Gets the current url
 
-    @method (url)
+    @method (checkedUrl)
     */
-    'url': function(){
+    'checkedUrl': function(){
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, {fields: {url: 1, redirect: 1}});
-        
+
         if(tab) {
+
             // set url only once
             if(tab.redirect) {
                 template.url = tab.redirect;
-                Tabs.update(this._id, {$unset: {
-                    redirect: ''
-                }, $set: {
-                    url: template.url
-                }});
-            } else if(!template.url)
+            } else if(!template.url) {
                 template.url = tab.url;
+            }
 
-            return Helpers.formatUrl(Helpers.sanitizeUrl(template.url));
+            // remove redirect
+            Tabs.update(this._id, {$unset: {
+                redirect: ''
+            }, $set: {
+                url: template.url
+            }});
+
+            // CHECK URL and throw error if not allowed
+            if(!Helpers.sanitizeUrl(template.url, true)) {
+                console.log('Not allowed URL: '+ template.url);
+                return 'file://'+ dirname + '/errorPages/400.html?'+ template.url;
+            }
+            
+            return Helpers.formatUrl(template.url);
         }
     }
 });

@@ -7,7 +7,9 @@ webviewLoadStop = function(e){
         title = webview.getTitle(),
         tabId = $(webview).data('id');
 
-    if(!url || url === 'about:blank' || url === location.toString())
+    console.log('webviewLoadStop', url);
+
+    if(!url || url === 'about:blank' || url.indexOf('mist/errorPages/') !== -1 || url === location.toString())
         return;
 
     // IS BROWSER
@@ -60,7 +62,7 @@ webviewLoadStart = function(e){
     var url = Helpers.sanitizeUrl(e.newURL);
     var tabId = Helpers.getTabIdByUrl(url);
 
-    // stop this action
+    // stop this action, as the redirect happens reactive through setting the URL attribute
     this.stop();
 
     Tabs.update(tabId, {$set: {

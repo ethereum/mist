@@ -81,11 +81,15 @@ Sanatizes URLs to prevent phishing and XSS attacks
 @method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanitizeUrl = function(url){
+Helpers.sanitizeUrl = function(url, returnEmptyURL){
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');
-    url = url.replace(/^((?:javascript)?(?:data)?[:\/\/]{1,3})/i, 'http://');
+    url = url.replace(/^[:\/\/]{1,3}/i, 'http://');
+
+    if(returnEmptyURL && /^((?:file)?(?:javascript)?(?:data)?:)/i.test(url)) {
+        url = false;
+    }
 
     return url;
 };

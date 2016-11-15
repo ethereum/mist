@@ -36,6 +36,32 @@ Helpers.getWebview = function(id){
 };
 
 /**
+Get tab by url and return the id
+
+@method getTabIdByUrl
+@param {String} url
+@return {String} id
+*/
+Helpers.getTabIdByUrl= function(url){
+    var tabs = Tabs.find().fetch();
+    url = Helpers.sanitizeUrl(url);
+
+    var foundTab = _.find(tabs, function(tab){
+            if(!tab.url) return;
+            var tabOrigin = new URL(tab.url).origin;
+            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+        });
+
+    // switch tab to browser
+    if(foundTab)
+        foundTab = foundTab._id;
+    else
+        foundTab = 'browser';
+
+    return foundTab;
+};
+
+/**
 Format Urls, e.g add a default protocol if on is missing.
 
 @method formatUrl

@@ -170,44 +170,24 @@ Template['layout_browserBar'].events({
         clearTimeout(TemplateVar.get('timeoutId'));
     },
     /*
-    Focus the input
-
-    @event click form.url
-    */
-    'click form.url': function(e, template){
-        template.$('.url-input').select();
-    },
-    /*
     Send the domain
 
     @event submit
     */
     'submit': function(e, template){     
-        var tabs = Tabs.find().fetch(),
-            url = Helpers.formatUrl(template.$('.url-input')[0].value);
+        var url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
         template.$('.url-input').blur();
 
         // look in tabs
-        var foundTab = _.find(tabs, function(tab){
-                if(tab.url && tab.url.indexOf('about:blank') === -1) {
-                    var tabOrigin = new URL(tab.url).origin;
-                    return (tabOrigin && url.indexOf(tabOrigin) !== -1);
-                }
-            });
-
-        // switch tab to browser
-        if(foundTab)
-            foundTab = foundTab._id;
-        else
-            foundTab = 'browser';
+        var tabId = Helpers.getTabIdByUrl(url);
 
         // update current tab url
-        Tabs.update(foundTab, {$set: {
+        Tabs.update(tabId, {$set: {
             url: url,
             redirect: url
         }});
-        LocalStore.set('selectedTab', foundTab);
+        LocalStore.set('selectedTab', tabId);
     }
 });

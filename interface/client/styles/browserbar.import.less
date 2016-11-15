@@ -95,6 +95,13 @@
             flex-grow: 1;
             height: @gridHeight;
 
+            &:hover > .url-input {
+                opacity: 1;
+            }
+            &:hover > .url-breadcrumb {
+                display: none;
+            }
+
             .url-input {
                 position: absolute;
                 top: 0;
@@ -114,7 +121,7 @@
                 font-size: 80%;
                 font-family: @sourceSansPro;
                 font-weight: 400;
-                transition: opacity 0.2s, transform 0.2s;
+                transition: opacity 0.3s, transform 0.2s;
                 line-height: @gridHeight;
 
                 &:focus {
@@ -122,13 +129,14 @@
                     opacity: 1;
                 }
 
-                &:focus + .url-breadcrumb {
+                &:focus + .url-breadcrumb, &:hover + .url-breadcrumb {
                     display: none;
                 }
             }
 
             .url-breadcrumb {
                 color: lighten(@colorLinkBlur, 40%);
+                background-color: #fff;
                 opacity: 0.8;
                 font-size: 80%;
                 text-align: center;

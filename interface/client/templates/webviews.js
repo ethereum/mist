@@ -15,6 +15,7 @@ webviewLoadStop = function(e){
 
         // ADD to doogle last visited pages
         if((find = _.find(DoogleLastVisitedPages.find().fetch(), function(historyEntry){
+                if(!historyEntry.url) return;
                 var historyEntryOrigin = new URL(historyEntry.url).origin;
                 return (url.indexOf(historyEntryOrigin) !== -1);
             })))
@@ -56,31 +57,16 @@ webviewLoadStart = function(e){
     if(!e.isMainFrame)
         return;
 
-    var tabs = Tabs.find().fetch(),
-        tabId = $(this).data('id'),
-        url = Helpers.sanitizeUrl(e.newURL);
-
-    var foundTab = _.find(tabs, function(tab){
-            var tabOrigin = new URL(tab.url).origin;
-            return (url && url.indexOf(tabOrigin) !== -1);
-        });
-
-
-    // make sure it switched to the correct existing tab, when the main url was changed
-    if(foundTab)
-        foundTab = foundTab._id;
-    else
-        foundTab = 'browser';
-
-    console.log('Intercept request, switching to correct tab: '+ (foundTab.name || 'Browser') + ' -> '+ url);
+    var url = Helpers.sanitizeUrl(e.newURL);
+    var tabId = Helpers.getTabIdByUrl(url);
 
     // stop this action
     this.stop();
 
-    Tabs.update(foundTab, {$set: {
+    Tabs.update(tabId, {$set: {
         url: url,
         redirect: url
     }});
-    LocalStore.set('selectedTab', foundTab);
+    LocalStore.set('selectedTab', tabId);
 
 };

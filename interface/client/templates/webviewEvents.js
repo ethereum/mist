@@ -7,10 +7,7 @@ webviewLoadStop = function(e){
         title = webview.getTitle(),
         tabId = $(webview).data('id');
 
-    console.log('webviewLoadStop', url);
-
-    if(!url || url === 'about:blank' || url.indexOf('mist/errorPages/') !== -1 || url === location.toString())
-        return;
+    console.log(e.type, url);
 
     // IS BROWSER
     if(tabId === 'browser') {
@@ -43,24 +40,25 @@ webviewLoadStop = function(e){
                 // icon: '',
                 timestamp: moment().unix()
             });
-
     }
-
-    // update current tab url
-    Tabs.update(tabId, {$set: {url: url}});
 };
 
 
-// TODO does this makes sense? use another
 // fired by "did-get-redirect-request"
+// fired by "new-window"
 webviewLoadStart = function(e){
-    console.log('webviewLoadStart', e, e.isMainFrame);
-
-    if(!e.isMainFrame)
+    if(e.type !== 'new-window' && !e.isMainFrame)
         return;
 
-    var url = Helpers.sanitizeUrl(e.newURL);
+    var url = Helpers.sanitizeUrl(e.newURL || e.url);
     var tabId = Helpers.getTabIdByUrl(url);
+    var currentTabId = $(this).data('id');
+
+    console.log(e.type, url);
+
+    // if new window (_blank) open in tab, or browser
+    if(e.type === 'new-window' && tabId === currentTabId)
+        tabId = 'browser';
 
     // stop this action, as the redirect happens reactive through setting the URL attribute
     this.stop();

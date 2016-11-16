@@ -93,33 +93,6 @@ Template['layout_browserBar'].events({
             webview.reload();
     },
     /*
-    Add the current selected URL as tab
-
-    @event click button.add-tab
-    */
-    'click button.add-tab': function(){
-        var webview = $('webview[data-id="browser"]')[0];
-
-        if(webview) {
-            var id = Tabs.insert({
-                url: webview.getURL(),
-                name: webview.getTitle(),
-                menu: {},
-                menuVisible: false,
-                position: Tabs.find().count() + 1
-            });
-
-            // move the current browser tab to the last visited page
-            var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
-            Tabs.update('browser', {
-                url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
-                redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
-            });
-
-            LocalStore.set('selectedTab', id);
-        }
-    },
-    /*
     Remove the current selected tab
 
     // TODO show popup before to confirm
@@ -174,7 +147,7 @@ Template['layout_browserBar'].events({
 
     @event submit
     */
-    'submit': function(e, template){     
+    'submit': function(e, template){
         var url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
@@ -183,6 +156,8 @@ Template['layout_browserBar'].events({
         // look in tabs
         var url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
+
+        console.log('Submitted new URL:'+ url); 
 
         // update current tab url
         Tabs.update(tabId, {$set: {

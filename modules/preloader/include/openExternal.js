@@ -16,8 +16,8 @@ document.addEventListener('click', (e) => {
     else if (e.target.parentNode && e.target.parentNode.nodeName === 'A')
         { node = e.target.parentNode; }
 
-    // open in browser
-    if (node && node.attributes.target && node.attributes.target.value === '_blank') {
+    // open in browser (DEPRECATED, only existing used by the wallet)
+    if (remote.getGlobal('mode') === 'wallet' && node && node.attributes.target && node.attributes.target.value === '_blank') {
         e.preventDefault();
         shell.openExternal(node.href);
     }
@@ -25,9 +25,13 @@ document.addEventListener('click', (e) => {
     // open popup
     if (node && node.attributes.target && node.attributes.target.value === '_popup') {
         e.preventDefault();
-        const win = new BrowserWindow({ width: 800, height: 420, webPreferences: {
-            nodeIntegration: false,
-        } });
+        const win = new BrowserWindow({
+            width: 800,
+            height: 420,
+            webPreferences: {
+                nodeIntegration: false,
+            }
+        });
         win.loadURL(node.href);
     }
 }, false);

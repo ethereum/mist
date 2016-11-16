@@ -39,15 +39,27 @@ Template['views_webview'].onRendered(function(){
 
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
+    });
+    webview.addEventListener('did-frame-finish-load', function(e){
+        var url = Helpers.sanitizeUrl(webview.getURL());
 
-        // timeout spinner after 10s
-        // timeoutId = Meteor.setTimeout(function(){
-        //     TemplateVar.set(template, 'loading', false);
-        // }, 10 * 1000);
+        // make sure to not store error pages
+        if(!url || url.indexOf('mist/errorPages/') !== -1)
+            return;
+
+        // update the url
+        Tabs.update(template.data._id, {$set: {
+            url: url
+        }});
     });
     webview.addEventListener('did-stop-loading', function(e){
-        // Meteor.clearTimeout(timeoutId);
         TemplateVar.set(template, 'loading', false);
+
+        var url = Helpers.sanitizeUrl(webview.getURL());
+
+        // make sure to not store error pages in history
+        if(!url || url.indexOf('mist/errorPages/') !== -1)
+            return;
 
         var titleFull = webview.getTitle(),
             title = titleFull;
@@ -58,16 +70,15 @@ Template['views_webview'].onRendered(function(){
         }
 
         // update the title
-        Tabs.update(template.data._id, {$set: {name: title}});
-        Tabs.update(template.data._id, {$set: {nameFull: titleFull}});
+        Tabs.update(template.data._id, {$set: {
+            name: title,
+            nameFull: titleFull
+        }});
 
-        webviewLoadStop.apply(this, e);
+        webviewLoadStop.call(this, e);
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
-    webview.addEventListener('new-window', function(e){
-        var url = Helpers.sanitizeUrl(e.url);
-        Tabs.update(template.data._id, {$set: {redirect: url}});
-    });
+    webview.addEventListener('new-window', webviewLoadStart);
 
 
     // MIST API for installed tabs/dapps
@@ -108,7 +119,7 @@ Template['views_webview'].helpers({
             Tabs.update(this._id, {$unset: {
                 redirect: ''
             }, $set: {
-                url: template.url
+                // url: template.url
             }});
 
             // CHECK URL and throw error if not allowed

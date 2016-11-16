@@ -324,9 +324,9 @@ onReady = () => {
                     type: 'warning',
                     buttons: ['OK'],
                     message: global.i18n.t('mist.errors.legacyChain.title'),
-                    detail: global.i18n.t('mist.errors.legacyChain.description'),
+                    detail: global.i18n.t('mist.errors.legacyChain.description')
                 }, () => {
-                    shell.openExternal('https://github.com/ethereum/mist/releases/0.8.2');
+                    shell.openExternal('https://github.com/ethereum/mist/releases');
                     app.quit();
                 });
 

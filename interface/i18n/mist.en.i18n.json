@@ -38,6 +38,7 @@
                     "nb": "Norsk",
                     "pt": "Português",
                     "sq": "Shqip",
+                    "ru": "Pусский",
                     "zh": "普通話",
                     "zh-TW": "國語"
                 }
@@ -269,8 +270,13 @@
                 "disclaimer": "READ THE ETHEREUM DISCLAIMER FIRST",
                 "yes": "yes",
                 "no": "no"
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
-
         }
     },
     "elements": {

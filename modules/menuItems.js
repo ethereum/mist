@@ -155,23 +155,27 @@ let menuTempl = function (webviews) {
 
                             // eth
                             if (ethereumNode.isEth) {
-                                if (process.platform === 'win32')
-                                    { path = `${Settings.appDataPath}\\Web3\\keys`; }
-                                else
-                                    { path += '/.web3/keys'; }
+                                if (process.platform === 'win32') {
+                                    path = `${Settings.appDataPath}\\Web3\\keys`;
+                                } else {
+                                    path += '/.web3/keys';
+                                }
 
                             // geth
                             } else {
-                                if (process.platform === 'darwin')
-                                    { path += '/Library/Ethereum/keystore'; }
+                                if (process.platform === 'darwin') {
+                                    path += '/Library/Ethereum/keystore';
+                                }
 
                                 if (process.platform === 'freebsd' ||
-                                   process.platform === 'linux' ||
-                                   process.platform === 'sunos')
-                                    { path += '/.ethereum/keystore'; }
+                                process.platform === 'linux' ||
+                                process.platform === 'sunos') {
+                                    path += '/.ethereum/keystore';
+                                }
 
-                                if (process.platform === 'win32')
-                                    { path = `${Settings.appDataPath}\\Ethereum\\keystore`; }
+                                if (process.platform === 'win32') {
+                                    path = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                                }
                             }
 
                             shell.showItemInFolder(path);
@@ -237,7 +241,7 @@ let menuTempl = function (webviews) {
 
     const languageMenu =
     Object.keys(i18n.options.resources)
-    .filter(lang_code => lang_code != 'dev')
+    .filter(lang_code => lang_code !== 'dev')
     .map((lang_code) => {
         menuItem = {
             label: i18n.t(`mist.applicationMenu.view.langCodes.${lang_code}`),
@@ -288,8 +292,9 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow())
-                    { curWindow.toggleDevTools(); }
+                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                    curWindow.toggleDevTools();
+                }
             },
         }, {
             type: 'separator',
@@ -311,8 +316,9 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow())
-                    { curWindow.toggleDevTools(); }
+                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                    curWindow.toggleDevTools();
+                }
             },
         }];
     }
@@ -350,8 +356,8 @@ let menuTempl = function (webviews) {
     if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];
 
-        const ethClient = ClientBinaryManager.getClient('eth'),
-            gethClient = ClientBinaryManager.getClient('geth');
+        const ethClient = ClientBinaryManager.getClient('eth');
+        const gethClient = ClientBinaryManager.getClient('geth');
 
         if (gethClient) {
             nodeSubmenu.push(

@@ -28,7 +28,7 @@ i18nConf.supported_languages.forEach((lang) => {
 * > getBestMatchedLangCode('no-such-code')
 * 'en'
 */
-i18n.getBestMatchedLangCode = function (langCode) {
+i18n.getBestMatchedLangCode = (langCode) => {
     const codeList = Object.keys(resources);
     let bestMatchedCode = langCode;
     if (codeList.indexOf(langCode) === -1) {

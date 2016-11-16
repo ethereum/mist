@@ -125,7 +125,7 @@
                 "title": {
                     "sendTransaction": "Enviar transacción",
                     "contractExecution": "Ejecutar contrato",
-                    "createContract": "Crear contrato"  
+                    "createContract": "Crear contrato"
                 },
                 "contractExecutionInfo": "Estás a punto de ejecutar una función en un contrato. Esto puede implicar la transferencia de valor.",
                 "contractCreationInfo": "Vas a crear un contrato a partir de los datos proporcionados.",
@@ -187,6 +187,12 @@
                     "wrongPassword": "Contraseña incorrecta.",
                     "importFailed": "No se pudo importar el archivo por el error: __error__"
                 }
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Elegir sus cuentas",
+                "createAccount": "Crear nueva cuenta",
+                "pinToSidebar": "Mantener la aplicación en la barra lateral",
+                "connectAccountDescription": "Usted está compartiendo su identidad con __dappName__. Esto permite que la aplicación tenga acceso a la información pública de las cuentas seleccionadas, saldos incuindo relacionados con las mismas."
             }
         }
     },

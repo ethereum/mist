@@ -7,7 +7,7 @@ if (squirrelStartup) exit();
 global._ = require('./modules/utils/underscore');
 const { app, dialog, ipcMain, shell } = require('electron');
 const timesync = require('os-timesync');
-const syncDb = require('./modules/syncDb.js');
+const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/sockets');
@@ -177,7 +177,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 onReady = () => {
     // setup DB sync to backend
-    syncDb.backendSync();
+    dbSync.backendSync();
 
     // Initialise window mgr
     Windows.init();
@@ -366,7 +366,7 @@ onReady = () => {
                             },
                         });
 
-                        onboardingWindow.on('close', () => {
+                        onboardingWindow.on('closed', () => {
                             app.quit();
                         });
 
@@ -391,7 +391,7 @@ onReady = () => {
                         // launch app
                         ipcMain.on('onBoarding_launchApp', (e) => {
                             // prevent that it closes the app
-                            onboardingWindow.removeAllListeners('close');
+                            onboardingWindow.removeAllListeners('closed');
                             onboardingWindow.close();
 
                             ipcMain.removeAllListeners('onBoarding_changeNet');

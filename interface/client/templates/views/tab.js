@@ -33,7 +33,6 @@ Template['views_tab'].onRendered(function(){
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
         if(LocalStore.get('selectedTab') === this._id){
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-            console.log(webview);
             webview.reload();        
         }
     });
@@ -50,14 +49,24 @@ Template['views_tab'].onRendered(function(){
         // Meteor.clearTimeout(timeoutId);
         TemplateVar.set(template, 'loading', false);
 
+        var titleFull = webview.getTitle(),
+            title;
+
+        if(titleFull && titleFull.length > 40) {
+            title = titleFull.substr(0, 40);
+            title += '...';
+        }
+
         // update the title
-        Tabs.update(template.data._id, {$set: {name: webview.getTitle()}});
+        Tabs.update(template.data._id, {$set: {name: title}});
+        Tabs.update(template.data._id, {$set: {nameFull: titleFull}});
 
         webviewLoadStop.apply(this, e);
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
     webview.addEventListener('new-window', function(e){
-        Tabs.update(template.data._id, {$set: {redirect: e.url}});
+        var url = Helpers.sanitizeUrl(e.url);
+        Tabs.update(template.data._id, {$set: {redirect: url}});
     });
 
 
@@ -98,7 +107,7 @@ Template['views_tab'].helpers({
             } else if(!template.url)
                 template.url = tab.url;
 
-            return Helpers.formatUrl(template.url);
+            return Helpers.formatUrl(Helpers.sanitizeUrl(template.url));
         }
     }
 });

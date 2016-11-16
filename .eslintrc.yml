@@ -13,5 +13,6 @@ rules:
     - 4  ## number of spaces
   no-console: 0  ## allowed for chrome dev-console
 
-globals:  ## don't warn about missing declaration
-  i18n: true
+globals:
+  i18n: true  # don't warn about missing 'i18n' declaration
+  Helpers: true  # don't warn about missing 'Helpers' declaration

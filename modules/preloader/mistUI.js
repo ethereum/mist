@@ -5,7 +5,7 @@
 require('./include/common')('mist');
 const { ipcRenderer: ipc, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
 const { Menu, MenuItem } = remote;
-const syncDb = require('../syncDb.js');
+const dbSync = require('../dbSync.js');
 const i18n = require('../i18n.js');
 const mist = require('../mistAPI.js');
 const BigNumber = require('bignumber.js');
@@ -30,7 +30,7 @@ setTimeout(() => {
 }, 1000);
 
 window.mist = mist();
-window.syncDb = syncDb;
+window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipc;
 

@@ -1,8 +1,7 @@
-const _ = global._;
 const Q = require('bluebird');
 const net = require('net');
-
 const SocketBase = require('./base');
+
 const STATE = SocketBase.STATE;
 
 const Web3SocketBase = require('./web3Base');

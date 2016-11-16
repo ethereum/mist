@@ -1,4 +1,3 @@
-const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const got = require('got');

@@ -56,12 +56,12 @@
             "help": {
                 "label": "Hilfe"
             }
-        },      
-        "errors": {     
-            "nodeConnect": "Es konnte keine Verbindung mit dem Node hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",      
-            "nodeStartup": "Anscheinend konnte der Node nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",     
-            "timeSync": {       
-                "title": "Deine Computer Uhr ist nicht synchronisiert!",     
+        },
+        "errors": {
+            "nodeConnect": "Es konnte keine Verbindung mit dem Node hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",
+            "nodeStartup": "Anscheinend konnte der Node nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",
+            "timeSync": {
+                "title": "Deine Computer Uhr ist nicht synchronisiert!",
                 "description": "Um mit dem Ethereum netzwerk zu synchronisieren muss deine Computer Uhr mit einem Zeit-Server synchronisiert werden.",
                 "win32": "Gehe dazu in deine Internet Zeit Einstellungen in deinen System Einstellungen and checke die Box. Siehe diese Anleitung für Details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Um Zeit Synchronisation einzuschalten installiere \"ntp\" via \"apt-get install ntp\".",
@@ -77,7 +77,7 @@
             "nodeSyncing": "__blockDiff__ Blöcke übrig",
             "blockReceived": "Neuer Block empfangen",
             "timeSinceBlock": "Abgelaufene Zeit seit dem letzten Block",
-            "blockNumber": "Ihre letzte Blocknummer",            
+            "blockNumber": "Ihre letzte Blocknummer",
             "testnetExplain": "Sie sind mit dem Testnetz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
             "peers": "Peers"
         },
@@ -125,7 +125,7 @@
                 "title": {
                     "sendTransaction": "Transaktion senden",
                     "contractExecution": "Vertrag ausführen",
-                    "createContract": "Vertrag anlegen"  
+                    "createContract": "Vertrag anlegen"
                 },
                 "contractExecutionInfo": "Sie sind dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
                 "contractCreationInfo": "Sie sind dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
@@ -175,7 +175,7 @@
                 "tutorial1Description" : "<p> Nun müssen Sie lediglich warten, bis der Download abgeschlossen ist. Hier finden Sie weitere Informationen:</p> <h4>Make your own money </h4> <p> Erstellen Sie eine eigene Kryptowährung mit einer festen Geldmenge, Token, die reale Vermögenswerte darstellen, und so weiter ...</p>",
                 "tutorial2Description" : "<h4> Erstellen Sie ein Crowdsale</h4> <p> Sammeln Sie Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinden Sie die Hürden von traditionellen Crowdfunding-Systemen und gehen Sie direkt an die Quellen, indem Sie Ihre Organisation über die Blockchain mit Mitteln versorgen.</p>",
                 "tutorial3Description" : "<h4> Blockchain-Organisation </h4> <p> Schaffen Sie eine autonome Organisation, deren Grundsätze über Geldverwendung und Entscheidungen nicht gebrochen werden können. Geben Sie Ihren Unterstützern eine aktive Rolle, wie die Mittel verwendet werden sollen</p>",
-				"buttons": {
+                "buttons": {
                     "showPassword": "Passwort anzeigen",
                     "importAccount": "Konto importieren",
                     "launchApp": "Anwendung wird gestartet!",

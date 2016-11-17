@@ -1,13 +1,11 @@
 const _ = global._;
 const Q = require('bluebird');
 const fs = require('fs');
-const electron = require('electron');
-const ipc = electron.ipcMain;
-const app = electron.app;
+const { app, ipcMain: ipc } = require('electron');
 const got = require('got');
 const path = require('path');
 const Settings = require('./settings');
-const Windows = require("./windows");
+const Windows = require('./windows');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 const EventEmitter = require('events').EventEmitter;
 
@@ -15,7 +13,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;
+    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
 
 class Manager extends EventEmitter {
     constructor() {
@@ -24,7 +22,7 @@ class Manager extends EventEmitter {
         this._availableClients = {};
     }
 
-    init () {
+    init() {
         log.info('Initializing...');
 
         this._resolveEthBinPath();
@@ -34,11 +32,11 @@ class Manager extends EventEmitter {
         setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
     }
 
-    getClient (clientId) {
+    getClient(clientId) {
         return this._availableClients[clientId.toLowerCase()];
     }
 
-    _writeLocalConfig (json) {
+    _writeLocalConfig(json) {
         log.info('Write new client binaries local config to disk ...');
 
         fs.writeFileSync(
@@ -47,8 +45,8 @@ class Manager extends EventEmitter {
         );
     }
 
-    _checkForNewConfig () {
-        log.info(`Checking for new client binaries config...`);
+    _checkForNewConfig() {
+        log.info('Checking for new client binaries config...');
 
         this._emit('loadConfig', 'Fetching remote client config');
 
@@ -68,7 +66,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            let localConfig
+            let localConfig;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -85,13 +83,13 @@ class Manager extends EventEmitter {
 
                     this._writeLocalConfig(localConfig);
                 } else {
-                    throw new Error(`Unable to load local or remote config, cannot proceed!`);
+                    throw new Error('Unable to load local or remote config, cannot proceed!');
                 }
             }
 
             // if new config version available then ask user if they wish to update
             if (latestConfig && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
-                log.debug(`New client binaries config found, asking user if they wish to update...`);
+                log.debug('New client binaries config found, asking user if they wish to update...');
 
                 const newVersion = latestConfig.clients.Geth.version;
 
@@ -99,7 +97,7 @@ class Manager extends EventEmitter {
                     useWeb3: false,
                     electronOptions: {
                         width: 420,
-                        height: 230 ,
+                        height: 230,
                         alwaysOnTop: false,
                         resizable: false,
                         maximizable: false,
@@ -138,7 +136,7 @@ class Manager extends EventEmitter {
 
                 this._availableClients = {};
 
-                const available = _.filter(clients, (c) => !!c.state.available);
+                const available = _.filter(clients, c => !!c.state.available);
 
                 if (!available.length) {
                     if (_.isEmpty(clients)) {
@@ -187,7 +185,7 @@ class Manager extends EventEmitter {
     }
 
 
-    _resolveEthBinPath () {
+    _resolveEthBinPath() {
         log.info('Resolving path to Eth client binary ...');
 
         let platform = process.platform;

@@ -69,8 +69,8 @@ class IpcProviderBackend {
      * @return {Promise}
      */
     _getOrCreateConnection(event) {
-        const owner = event.sender,
-            ownerId = owner.getId();
+        const owner = event.sender;
+        const ownerId = owner.getId();
 
         let socket;
 
@@ -202,7 +202,7 @@ class IpcProviderBackend {
      * @param {String} state The new state.
      */
     _onNodeStateChanged(state) {
-        switch (state) {
+        switch (state) {  // eslint-disable-line default-case
             // stop syncing when node about to be stopped
         case ethereumNode.STATES.STOPPING:
             log.info('Ethereum node stopping, disconnecting sockets');
@@ -215,9 +215,8 @@ class IpcProviderBackend {
 
                             item.owner.send('ipcProvider-setWritable', false);
                         });
-                } else {
-                    return Q.resolve();
                 }
+                return Q.resolve();
             }))
                 .catch((err) => {
                     log.error('Error disconnecting sockets', err);
@@ -463,6 +462,6 @@ class IpcProviderBackend {
 }
 
 
-exports.init = function () {
+exports.init = () => {
     return new IpcProviderBackend();
 };

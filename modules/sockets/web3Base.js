@@ -20,7 +20,8 @@ module.exports = class Web3Socket extends Socket {
      * Send an RPC call.
      * @param {Array|Object} single or array of payloads.
      * @param {Object} options Additional options.
-     * @param {Boolean} [options.fullResult] If set then will return full result JSON, not just result value.
+     * @param {Boolean} [options.fullResult] If set then will return full result
+     *  JSON, not just result value.
      * @return {Promise}
      */
     send(payload, options) {

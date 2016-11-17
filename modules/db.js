@@ -9,13 +9,13 @@ const log = require('./utils/logger').create('Db');
 let db;
 
 
-exports.init = function () {
+exports.init = () => {
     const filePath = path.join(Settings.userDataPath, 'mist.lokidb');
 
     return Q.try(() => {
         // if db file doesn't exist then create it
         try {
-            log.debug(`Check that db exists and it\'s writeable: ${filePath}`);
+            log.debug(`Check that db exists and it's writeable: ${filePath}`);
             fs.accessSync(filePath, fs.R_OK | fs.W_OK);
             return Q.resolve();
         } catch (err) {
@@ -51,7 +51,7 @@ exports.init = function () {
 };
 
 
-exports.getCollection = function (name) {
+exports.getCollection = (name) => {
     if (!db.getCollection(name)) {
         db.addCollection(name);
     }
@@ -60,7 +60,7 @@ exports.getCollection = function (name) {
 };
 
 
-exports.close = function () {
+exports.close = () => {
     return new Q((resolve, reject) => {
         db.close((err) => {
             if (err) {

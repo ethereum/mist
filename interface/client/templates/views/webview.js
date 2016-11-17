@@ -78,6 +78,7 @@ Template['views_webview'].onRendered(function(){
         webviewLoadStop.call(this, e);
     });
     webview.addEventListener('did-get-redirect-request', webviewLoadStart);
+    webview.addEventListener('will-navigate', webviewLoadStart);
     webview.addEventListener('new-window', webviewLoadStart);
 
 

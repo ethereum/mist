@@ -352,7 +352,7 @@ class IpcProviderBackend {
 
             if (isSync) {
                 event.returnValue = returnValue;
-            } else {
+            } else if(!event.sender.isDestroyed()) {
                 event.sender.send('ipcProvider-data', returnValue);
             }
         });

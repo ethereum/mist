@@ -20,3 +20,8 @@ $(window).on('blur', function(e){
 $(window).on('focus', function(e){ 
     $('body').removeClass('app-blur');
 });
+
+// make sure files can only be dropped in the browser webview
+$(window).on('dragenter', function(e) {
+    LocalStore.set('selectedTab', 'browser');
+});

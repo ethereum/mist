@@ -91,9 +91,11 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
 
 
 ipc.on('backendAction_stopFocusedWebviewNavigation', (e) => {
-    console.log(e);
+    var webContent = webContents.getFocusedWebContents();
 
-    webContents.getFocusedWebContents().stop()
+    // dissallows now also file dropping
+    if(webContent && !webContent.isDestroyed())
+        webContent.stop();
 });
 
 

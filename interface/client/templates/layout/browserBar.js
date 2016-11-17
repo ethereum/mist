@@ -112,18 +112,15 @@ Template['layout_browserBar'].events({
     */
     'click .app-bar > button.accounts': function(e, template) {
         mist.requestAccount(function(e, addresses){
-            var tabId;
+            var tabId = LocalStore.get('selectedTab');
 
-            window.dbSync.frontendSync(Tabs, Tabs._name);
-            
-            tabId = LocalStore.get('selectedTab');
-
-            // set new permissions
-            Tabs.onceSynced.then(function(){
+            dbSync.syncDataFromBackend(LastVisitedPages);
+            dbSync.syncDataFromBackend(Tabs).then(function(){
                 Tabs.update(tabId, {$set: {
                     'permissions.accounts': addresses
                 }});
             });
+
         });
     },
     /* 

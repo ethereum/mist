@@ -14,11 +14,11 @@ The tab template
 
 Template['views_webview'].onRendered(function(){
     var template = this,
-        webview = this.find('webview'),
-        timeoutId;
+        tabId = template.data._id,
+        webview = this.find('webview');
 
     // Send updated TEST DATA
-    if(template.data._id === 'tests') {
+    if(tabId === 'tests') {
         this.autorun(function(c){
             var tab = Tabs.findOne('tests');
 
@@ -40,28 +40,25 @@ Template['views_webview'].onRendered(function(){
     webview.addEventListener('did-start-loading', function(e){
         TemplateVar.set(template, 'loading', true);
     });
-    webview.addEventListener('did-frame-finish-load', function(e){
-        var url = Helpers.sanitizeUrl(webview.getURL());
-
-        // make sure to not store error pages
-        if(!url || url.indexOf('mist/errorPages/') !== -1)
-            return;
-
-        // update the url
-        Tabs.update(template.data._id, {$set: {
-            url: url
-        }});
-    });
     webview.addEventListener('did-stop-loading', function(e){
         TemplateVar.set(template, 'loading', false);
+    });
+    
+    // change url
+    webview.addEventListener('did-navigate', webviewChangeUrl.bind(webview, tabId));
+    webview.addEventListener('did-navigate-in-page', webviewChangeUrl.bind(webview, tabId));
+    webview.addEventListener('did-get-redirect-request', webviewChangeUrl.bind(webview, tabId));
+    webview.addEventListener('did-stop-loading', webviewChangeUrl.bind(webview, tabId));
 
-        var url = Helpers.sanitizeUrl(webview.getURL());
+    // set page history
+    webview.addEventListener('dom-ready', function(e){
+        var url = Helpers.sanitizeUrl(this.getURL());
 
         // make sure to not store error pages in history
         if(!url || url.indexOf('mist/errorPages/') !== -1)
             return;
 
-        var titleFull = webview.getTitle(),
+        var titleFull = this.getTitle(),
             title = titleFull;
 
         if(titleFull && titleFull.length > 40) {
@@ -70,16 +67,18 @@ Template['views_webview'].onRendered(function(){
         }
 
         // update the title
-        Tabs.update(template.data._id, {$set: {
+        Tabs.update(tabId, {$set: {
             name: title,
             nameFull: titleFull
         }});
 
-        webviewLoadStop.call(this, e);
+        webviewLoadStop.call(this, tabId, e);
     });
-    webview.addEventListener('did-get-redirect-request', webviewLoadStart);
-    webview.addEventListener('will-navigate', webviewLoadStart);
-    webview.addEventListener('new-window', webviewLoadStart);
+
+    // navigate page, and redirect to browser tab if necessary
+    webview.addEventListener('will-navigate', webviewLoadStart.bind(webview, tabId));
+    webview.addEventListener('did-get-redirect-request', webviewLoadStart.bind(webview, tabId));
+    webview.addEventListener('new-window', webviewLoadStart.bind(webview, tabId));
 
 
     // MIST API for installed tabs/dapps
@@ -105,22 +104,20 @@ Template['views_webview'].helpers({
     */
     'checkedUrl': function(){
         var template = Template.instance();
-        var tab = Tabs.findOne(this._id, {fields: {url: 1, redirect: 1}});
+        var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
 
         if(tab) {
 
             // set url only once
             if(tab.redirect) {
                 template.url = tab.redirect;
-            } else if(!template.url) {
-                template.url = tab.url;
             }
 
             // remove redirect
             Tabs.update(this._id, {$unset: {
                 redirect: ''
             }, $set: {
-                // url: template.url
+                url: template.url
             }});
 
             // CHECK URL and throw error if not allowed

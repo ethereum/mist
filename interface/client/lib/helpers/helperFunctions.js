@@ -42,12 +42,13 @@ Get tab by url and return the id
 @param {String} url
 @return {String} id
 */
-Helpers.getTabIdByUrl= function(url){
+Helpers.getTabIdByUrl= function(url, returnEmpty){
     var tabs = Tabs.find().fetch();
     url = Helpers.sanitizeUrl(url);
 
     var foundTab = _.find(tabs, function(tab){
-            if(!tab.url) return;
+            if(tab._id === 'browser' || !tab.url)
+                return false;
             var tabOrigin = new URL(tab.url).origin;
             return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
         });

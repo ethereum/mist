@@ -53,7 +53,9 @@ exports.init = () => {
 
 exports.getCollection = (name) => {
     if (!db.getCollection(name)) {
-        db.addCollection(name);
+        db.addCollection(name, {
+            unique: ['_id']
+        });
     }
 
     return db.getCollection(name);

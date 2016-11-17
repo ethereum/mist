@@ -177,7 +177,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 onReady = () => {
     // setup DB sync to backend
-    dbSync.backendSync();
+    dbSync.backendSyncInit();
 
     // Initialise window mgr
     Windows.init();

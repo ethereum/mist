@@ -189,7 +189,7 @@ onReady = () => {
     ipcProviderBackend.init();
 
     // instantiate custom protocols
-    require('./customProtocols.js');
+    // require('./customProtocols.js');
 
     // add menu already here, so we have copy and past functionality
     appMenu();

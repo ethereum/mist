@@ -6,7 +6,7 @@
 					{{#if selectedAccounts}}
 						{{selectedAccounts.[0]}}
 					{{else}}
-						Choose account
+						{{i18n "mist.popupWindows.connectAccount.chooseAccountTitle"}}
 					{{/if}}
 				</span>
 
@@ -27,20 +27,20 @@
 						</span>
 					{{/if}}
 				</div>
-				
-				<span class="dapp-url">{{dappFriendlyURL}}</span>
+
+				<span class="dapp-url" title="{{dappFriendlyURL}}">{{dappFriendlyURL}}</span>
 			</div>
 
-			<p>
-				You are sharing your identity with <strong>{{dapp.name}}</strong>. This allows the app to see any public information, including balances connected to it.
+			<p class="connect-account-warn-text">
+				{{i18n "mist.popupWindows.connectAccount.connectAccountDescription" dappName=dapp.name}}
 			</p>
-	    
+
 			<ul class="dapp-account-list">
 				<li>
 					<button class="create-account">
 						<span class="dapp-identicon dapp-small create-account-icon"></span>
-						<h3>Create new account</h3>
-					</button>         
+						<h3>{{i18n "mist.popupWindows.connectAccount.createAccount"}}</h3>
+					</button>
 				</li>
 				{{#each accounts}}
 					<li>
@@ -54,8 +54,8 @@
 			</ul>
 
 			<div class="checkbox-container">
-				<input type="checkbox" id="pin-to-sidebar" checked> 
-				<label for="pin-to-sidebar">Pin app to the sidebar</label>
+				<input type="checkbox" id="pin-to-sidebar" checked>
+				<label for="pin-to-sidebar">{{i18n "mist.popupWindows.connectAccount.pinToSidebar"}}</label>
 			</div>
 
 			<div class="dapp-modal-buttons">

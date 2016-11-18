@@ -39,7 +39,7 @@ module.exports = class BaseProcessor {
     _isAdminConnection(conn) {
         // main window or popupwindows - always allow requests
         const wnd = Windows.getById(conn.id);
-        const tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
+        const tab = db.getCollection('UI_tabs').findOne({ webviewId: conn.id });
 
         return ((wnd && (wnd.type === 'main' || wnd.isPopup)) ||
                 (tab && _.get(tab, 'permissions.admin') === true));

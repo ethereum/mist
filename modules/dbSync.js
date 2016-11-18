@@ -14,13 +14,13 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-add', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection(collName);
+            coll = db.getCollection('UI_'+ collName);
 
         log.trace('dbSync-add', collName, args._id);
 
         const _id = args._id;
 
-        if (!coll.by("_id", _id)) {
+        if (!coll.findOne({ _id })) {
             args.fields._id = _id;
             coll.insert(args.fields);
         }
@@ -28,12 +28,12 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-changed', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection(collName);
+            coll = db.getCollection('UI_'+ collName);
 
         log.trace('dbSync-changed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.by("_id", _id);
+        const item = coll.findOne({ _id });
 
         if (item) {
             for (const k in args.fields) {
@@ -50,12 +50,12 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-removed', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection(collName);
+            coll = db.getCollection('UI_'+ collName);
 
         log.trace('dbSync-removed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.by("_id", _id);
+        const item = coll.findOne({ _id });
 
         if (item) {
             coll.remove(item);
@@ -67,7 +67,7 @@ exports.backendSyncInit = function () {
     // Get all data (synchronous)
     ipc.on('dbSync-reloadSync', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection(collName),
+            coll = db.getCollection('UI_'+ collName),
             docs = coll.find();
 
         log.debug('dbSync-reloadSync, no. of docs:', collName, docs.length);

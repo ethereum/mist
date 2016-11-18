@@ -16,7 +16,7 @@ module.exports = class extends BaseProcessor {
 
         // if not an admin connection then do a check
         if (!this._isAdminConnection(conn)) {
-            const tab = db.getCollection('tabs').findOne({ webviewId: conn.id });
+            const tab = db.getCollection('UI_tabs').findOne({ webviewId: conn.id });
 
             if (_.get(tab, 'permissions.accounts')) {
                 payload.result = _.contains(tab.permissions.accounts, payload.result) ? payload.result : null;

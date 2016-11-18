@@ -24,4 +24,5 @@ $(window).on('focus', function(e){
 // make sure files can only be dropped in the browser webview
 $(window).on('dragenter', function(e) {
     LocalStore.set('selectedTab', 'browser');
+    ipc.send('backendAction_focusMainWindow');
 });

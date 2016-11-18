@@ -89,11 +89,9 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
     }
 });
 
-
-ipc.on('backendAction_stopFocusedWebviewNavigation', (e) => {
+ipc.on('backendAction_stopFocusedWebviewNavigation', (e, url) => {
     var webContent = webContents.getFocusedWebContents();
 
-    // dissallows now also file dropping
     if(webContent && !webContent.isDestroyed())
         webContent.stop();
 });

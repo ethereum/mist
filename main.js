@@ -150,8 +150,6 @@ app.on('before-quit', (event) => {
 
 let mainWindow;
 let splashWindow;
-let onReady;
-let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -161,7 +159,7 @@ app.on('ready', () => {
         dialog.showErrorBox('Insecure RPC connection', `
 WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
 
-This is less secure than using local IPC - your passwords will be sent over the wire as plaintext.
+This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
 
 Only do this if you have secured your HTTP connection or you know what you are doing.
 `);
@@ -175,7 +173,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 });
 
 
-onReady = () => {
+let onReady = () => {
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -437,7 +435,7 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-startMainWindow = () => {
+let startMainWindow = () => {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
     mainWindow.on('ready', () => {

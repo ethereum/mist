@@ -52,11 +52,6 @@ Template['views_webview'].onRendered(function(){
 
     // set page history
     webview.addEventListener('dom-ready', function(e){
-        var url = Helpers.sanitizeUrl(this.getURL());
-
-        // make sure to not store error pages in history
-        if(!url || url.indexOf('mist/errorPages/') !== -1)
-            return;
 
         var titleFull = this.getTitle(),
             title = titleFull;

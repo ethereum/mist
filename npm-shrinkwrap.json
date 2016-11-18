@@ -169,11 +169,6 @@
       "from": "decamelize@>=1.1.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz"
     },
-    "deep-extend": {
-      "version": "0.4.1",
-      "from": "deep-extend@>=0.4.1 <0.5.0",
-      "resolved": "https://registry.npmjs.org/deep-extend/-/deep-extend-0.4.1.tgz"
-    },
     "drbg.js": {
       "version": "1.0.1",
       "from": "drbg.js@>=1.0.1 <2.0.0",
@@ -753,6 +748,11 @@
       "version": "1.8.3",
       "from": "underscore@1.8.3",
       "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz"
+    },
+    "underscore-deep-extend": {
+      "version": "1.1.5",
+      "from": "underscore-deep-extend@>=1.1.5 <2.0.0",
+      "resolved": "https://registry.npmjs.org/underscore-deep-extend/-/underscore-deep-extend-1.1.5.tgz"
     },
     "unzip": {
       "version": "0.1.11",

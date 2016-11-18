@@ -20,7 +20,7 @@ exports.backendSyncInit = function () {
 
         const _id = args._id;
 
-        if (!coll.findOne({ _id })) {
+        if (!coll.by("_id", _id)) {
             args.fields._id = _id;
             coll.insert(args.fields);
         }
@@ -33,7 +33,7 @@ exports.backendSyncInit = function () {
         log.trace('dbSync-changed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.findOne({ _id });
+        const item = coll.by("_id", _id);
 
         if (item) {
             for (const k in args.fields) {
@@ -55,7 +55,7 @@ exports.backendSyncInit = function () {
         log.trace('dbSync-removed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.findOne({ _id });
+        const item = coll.by("_id", _id);
 
         if (item) {
             coll.remove(item);

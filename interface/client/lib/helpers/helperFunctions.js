@@ -86,9 +86,9 @@ Helpers.sanitizeUrl = function(url, returnEmptyURL){
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');
-    url = url.replace(/^[:\/\/]{1,3}/i, 'http://');
+    url = url.replace(/^[:\/]{1,3}/i, 'http://');
 
-    if(returnEmptyURL && /^((?:file)?(?:javascript)?(?:data)?:)/i.test(url)) {
+    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
         url = false;
     }
 

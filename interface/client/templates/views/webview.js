@@ -58,7 +58,7 @@ Template['views_webview'].onRendered(function(){
 
         if(titleFull && titleFull.length > 40) {
             title = titleFull.substr(0, 40);
-            title += '...';
+            title += '…';
         }
 
         // update the title

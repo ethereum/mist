@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
+const _ = require('./utils/underscore');
 
 
 // try loading in config file
@@ -181,7 +182,7 @@ class Settings {
     }
 
     get uiMode() {
-        return argv.mode;
+        return (_.isString(argv.mode)) ? argv.mode.toLowerCase() : argv.mode;
     }
 
     get inProductionMode() {

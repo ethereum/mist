@@ -5,7 +5,7 @@ Window communication
 */
 
 const _ = global._;
-const { app, ipcMain: ipc, shell } = require('electron');
+const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
@@ -87,6 +87,13 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
             }
         });
     }
+});
+
+ipc.on('backendAction_stopFocusedWebviewNavigation', (e, url) => {
+    var webContent = webContents.getFocusedWebContents();
+
+    if(webContent && !webContent.isDestroyed())
+        webContent.stop();
 });
 
 

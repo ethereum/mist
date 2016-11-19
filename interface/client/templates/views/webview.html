@@ -1,0 +1,13 @@
+<template name="views_webview">
+    <div class="webview {{isVisible}} {{#if appBar}}app-bar-{{appBar}}{{/if}}">
+        {{#if $eq _id "browser"}}
+            <webview src="{{checkedUrl}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/browser.js" autosize="on"></webview> 
+        {{else}}
+            {{#if $eq _id "tests"}}
+                <webview src="file://{{dirname}}/tests/mocha-in-browser/runner.html" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/tests.js" autosize="on"></webview> 
+            {{else}}
+                <webview src="{{checkedUrl}}" useragent="{{useragent}}" data-id="{{_id}}" preload="file://{{preload_dirname}}/dapps.js" autosize="on"></webview> 
+            {{/if}}
+        {{/if}}
+    </div>
+</template>

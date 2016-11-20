@@ -19,7 +19,9 @@
         "skip": "Pular",
         "sending": "Enviando...",
         "create": "Criar",
-        "tryToReconnect": "Tentando reconectar"
+        "tryToReconnect": "Tentando reconectar",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Você",

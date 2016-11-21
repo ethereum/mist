@@ -87,8 +87,8 @@ ipc.on('uiAction_runTests', (e, type) => {
 
             Tabs.upsert('tests', {
                 position: -1,
-                name: 'Test',
-                url: `file://${__dirname}/../../tests/mocha-in-browser/runner.html`,
+                name: 'Tests',
+                url: '', // is hardcoded in webview.html to prevent hijacking
                 permissions: {
                     accounts,
                 },

@@ -18,7 +18,6 @@ ipc.sendToHost('setWebviewId');
 // destroy the old socket
 ipc.send('ipcProvider-destroy');
 
-
 window.mist = mist();
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

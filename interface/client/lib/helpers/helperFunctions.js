@@ -36,6 +36,33 @@ Helpers.getWebview = function(id){
 };
 
 /**
+Get tab by url and return the id
+
+@method getTabIdByUrl
+@param {String} url
+@return {String} id
+*/
+Helpers.getTabIdByUrl= function(url, returnEmpty){
+    var tabs = Tabs.find().fetch();
+    url = Helpers.sanitizeUrl(url);
+
+    var foundTab = _.find(tabs, function(tab){
+            if(tab._id === 'browser' || !tab.url)
+                return false;
+            var tabOrigin = new URL(tab.url).origin;
+            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+        });
+
+    // switch tab to browser
+    if(foundTab)
+        foundTab = foundTab._id;
+    else
+        foundTab = 'browser';
+
+    return foundTab;
+};
+
+/**
 Format Urls, e.g add a default protocol if on is missing.
 
 @method formatUrl
@@ -55,11 +82,15 @@ Sanatizes URLs to prevent phishing and XSS attacks
 @method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanitizeUrl = function(url){
+Helpers.sanitizeUrl = function(url, returnEmptyURL){
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');
-    url = url.replace(/^((?:javascript)?(?:data)?[:\/\/]{1,3})/i, 'http://');
+    url = url.replace(/^[:\/]{1,3}/i, 'http://');
+
+    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
+        url = false;
+    }
 
     return url;
 };

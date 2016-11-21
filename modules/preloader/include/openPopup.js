@@ -4,8 +4,7 @@ Opens windows and popups
 @module openExternal
 */
 
-const { remote, shell } = require('electron');
-
+const { remote } = require('electron');
 
 // open a[target="_blank"] in external browser
 document.addEventListener('click', (e) => {
@@ -16,9 +15,16 @@ document.addEventListener('click', (e) => {
     else if (e.target.parentNode && e.target.parentNode.nodeName === 'A')
         { node = e.target.parentNode; }
 
-    // open in browser (DEPRECATED, only existing used by the wallet)
-    if (remote.getGlobal('mode') === 'wallet' && node && node.attributes.target && node.attributes.target.value === '_blank') {
+    // open popup
+    if (node && node.attributes.target && node.attributes.target.value === '_popup') {
         e.preventDefault();
-        shell.openExternal(node.href);
+        const win = new remote.BrowserWindow({
+            width: 800,
+            height: 420,
+            webPreferences: {
+                nodeIntegration: false,
+            }
+        });
+        win.loadURL(node.href, true);
     }
 }, false);

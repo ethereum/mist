@@ -40,7 +40,6 @@ fastclick@1.0.12
 frozeman:animation-helper@0.2.6
 frozeman:global-notifications@0.2.1
 frozeman:persistent-minimongo@0.1.8
-frozeman:persistent-minimongo2@0.3.4
 frozeman:reactive-timer@0.1.7
 frozeman:storage@0.1.9
 frozeman:template-var@1.2.3

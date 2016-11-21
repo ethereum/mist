@@ -25,12 +25,14 @@ mistInit = function(){
             Tabs.insert({
                 _id: 'browser',
                 url: 'https://ethereum.org',
+                redirect: 'https://ethereum.org',
                 position: 0
             });
         }
 
         Tabs.upsert({_id: 'wallet'}, {
             url: 'https://wallet.ethereum.org',
+            redirect: 'https://wallet.ethereum.org',
             position: 1,
             permissions: {
                 admin: true

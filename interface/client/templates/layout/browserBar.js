@@ -65,7 +65,7 @@ Template['layout_browserBar'].helpers({
     @method (currentWebView)
     */
     'currentWebView': function(){
-        return '.tab-view webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+        return '.webview webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
     }
 });
 
@@ -93,33 +93,6 @@ Template['layout_browserBar'].events({
             webview.reload();
     },
     /*
-    Add the current selected URL as tab
-
-    @event click button.add-tab
-    */
-    'click button.add-tab': function(){
-        var webview = $('webview[data-id="browser"]')[0];
-
-        if(webview) {
-            var id = Tabs.insert({
-                url: webview.getURL(),
-                name: webview.getTitle(),
-                menu: {},
-                menuVisible: false,
-                position: Tabs.find().count() + 1
-            });
-
-            // move the current browser tab to the last visited page
-            var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
-            Tabs.update('browser', {
-                url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
-                redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
-            });
-
-            LocalStore.set('selectedTab', id);
-        }
-    },
-    /*
     Remove the current selected tab
 
     // TODO show popup before to confirm
@@ -139,18 +112,15 @@ Template['layout_browserBar'].events({
     */
     'click .app-bar > button.accounts': function(e, template) {
         mist.requestAccount(function(e, addresses){
-            var tabId;
+            var tabId = LocalStore.get('selectedTab');
 
-            window.dbSync.frontendSync(Tabs, Tabs._name);
-            
-            tabId = LocalStore.get('selectedTab');
-
-            // set new permissions
-            Tabs.onceSynced.then(function(){
+            dbSync.syncDataFromBackend(LastVisitedPages);
+            dbSync.syncDataFromBackend(Tabs).then(function(){
                 Tabs.update(tabId, {$set: {
                     'permissions.accounts': addresses
                 }});
             });
+
         });
     },
     /* 
@@ -170,44 +140,27 @@ Template['layout_browserBar'].events({
         clearTimeout(TemplateVar.get('timeoutId'));
     },
     /*
-    Focus the input
-
-    @event click form.url
-    */
-    'click form.url': function(e, template){
-        template.$('.url-input').select();
-    },
-    /*
     Send the domain
 
     @event submit
     */
-    'submit': function(e, template){     
-        var tabs = Tabs.find().fetch(),
-            url = Helpers.formatUrl(template.$('.url-input')[0].value);
+    'submit': function(e, template){
+        var url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
         template.$('.url-input').blur();
 
         // look in tabs
-        var foundTab = _.find(tabs, function(tab){
-                if(tab.url && tab.url.indexOf('about:blank') === -1) {
-                    var tabOrigin = new URL(tab.url).origin;
-                    return (tabOrigin && url.indexOf(tabOrigin) !== -1);
-                }
-            });
+        var url = Helpers.sanitizeUrl(url);
+        var tabId = Helpers.getTabIdByUrl(url);
 
-        // switch tab to browser
-        if(foundTab)
-            foundTab = foundTab._id;
-        else
-            foundTab = 'browser';
+        console.log('Submitted new URL:'+ url); 
 
         // update current tab url
-        Tabs.update(foundTab, {$set: {
+        Tabs.update(tabId, {$set: {
             url: url,
             redirect: url
         }});
-        LocalStore.set('selectedTab', foundTab);
+        LocalStore.set('selectedTab', tabId);
     }
 });

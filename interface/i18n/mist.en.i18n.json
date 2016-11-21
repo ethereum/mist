@@ -38,6 +38,7 @@
                     "nb": "Norsk",
                     "pt": "Português",
                     "sq": "Shqip",
+                    "ru": "Pусский",
                     "zh": "普通話",
                     "zh-TW": "國語"
                 }
@@ -261,16 +262,12 @@
                     "importFailed": "Couldn't import the file, got: __error__"
                 }
             },
-            "daoFork" : {
-                "title": "Important decision affecting your app",
-                "overview": "A new community-created blockchain will be available for activation at block <strong>#1920000</strong>, which is expected to arrive on <strong>July 20th 2016</strong>, in which the Ether balance of contract <strong>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</strong> (commonly referred to as \"The DAO\") and all of its descendants will be moved to a withdraw contract due to an exploited bug in the original contract. This should restore funds from all contracts linked to the exploit and allow authenticated holders of \"The DAO\" tokens to redeem it for ether.",
-                "choice" : "<strong> This is a settings configuration, <em>not a vote</em></strong>, meaning that your wallet will operate on the blockchain of your choosing regardless of any other user's choice. Your ether and assets will exist in both chains and you will be able to switch back at a later date by resyncing your wallet.",
-                "question": "Do you want to activate the chain in which funds linked to the exploit are restored to a contract where they can be withdrawn by \"The DAO\" token holders?",
-                "disclaimer": "READ THE ETHEREUM DISCLAIMER FIRST",
-                "yes": "yes",
-                "no": "no"
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
-
         }
     },
     "elements": {

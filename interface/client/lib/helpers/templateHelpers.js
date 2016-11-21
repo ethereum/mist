@@ -32,10 +32,19 @@ Template.registerHelper('CurrentBlock', function(){
 /**
 Return the preload modules dirname.
 
-@method (dirname)
+@method (preload_dirname)
 **/
 Template.registerHelper('preload_dirname', function(){
     return window.dirname + '/modules/preloader';
+});
+
+/**
+Return the dirname.
+
+@method (dirname)
+**/
+Template.registerHelper('dirname', function(){
+    return window.dirname;
 });
 
 /**

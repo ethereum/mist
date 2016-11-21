@@ -13,7 +13,7 @@ const web3Admin = require('../web3Admin.js');
 const dbSync = require('../dbSync.js');
 const https = require('https');
 
-require('./include/openExternal.js');
+require('./include/openPopup.js');
 require('./include/setBasePath')('interface');
 
 

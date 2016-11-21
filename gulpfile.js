@@ -245,7 +245,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
             win: {
                 target: [
                     'zip',
-                    'squirrel',
+                    //'squirrel',
                 ],
             },
             dmg: {

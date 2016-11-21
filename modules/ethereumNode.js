@@ -320,6 +320,8 @@ class EthereumNode extends EventEmitter {
 
         if(client)
             binPath = client.binPath;
+        else 
+            throw new Error(`Node "${nodeType}" binPath is not available.`);
 
         log.debug(`Start node using ${binPath}`);
 

@@ -23,7 +23,7 @@
             "view": {
                 "label": "Visualizza",
                 "fullscreen": "Schermo intero",
-                "languages": "Change language"
+                "default": "Default"
             },
             "accounts": {
                 "label": "Accounts",
@@ -45,7 +45,8 @@
                 "network": "Rete",
                 "mainNetwork": "Rete principale",
                 "startMining": "⛏ Inizia mining (solo Testnet)",
-                "stopMining": "⛏ Ferma mining"
+                "stopMining": "⛏ Ferma mining",
+                "externalNode": "using external node"
             },
             "window": {
                 "label": "Finestra",
@@ -54,7 +55,8 @@
                 "toFront": "Tutte in primo piano"
             },
             "help": {
-                "label": "Aiuto"
+                "label": "Aiuto",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -66,6 +68,10 @@
                 "win32": "Apri le impostazioni dell'orologio di sistema, seleziona Orario internet e metti un tick sul box. Segui questa guida (in inglese) per i dettagli: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Per abilitare la sincronia con un time server installa \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Per abilitare la sincronia dell'ora, apri le preferenze di orario e spunta \"Setta ora e data automaticamente\"."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -79,7 +85,14 @@
             "blockNumber": "Il tuo ultimo numero di blocco",
             "timeSinceBlock": "Tempo trascorso dall'ultimo blocco",
             "testnetExplain": "Sei connesso alla testnet, NON INVIARE alcun ether a questi indirizzi",
-            "peers": "nodi"
+            "peers": "nodi",
+            "checkingWhichNetwork": "Checking network...",
+            "mainNetwork": "Main-net",
+            "testNetwork": "Test-net",
+            "privateNetwork": "Private-net",
+            "mainnetExplain": "You are on the main Ethereum global network",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "unknownnetExplain": "Unable to determine which network you are on"
         },
         "sidebar": {
             "buttons": {
@@ -88,7 +101,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "Nessun account impostato"
+                "noAccounts": "Nessun account impostato",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -100,8 +114,27 @@
             "nodeSyncing": "Il nodo Ethereum deve sincronizzarsi, attendere prego...",
             "nodeSyncInfo": "Scaricamento blocco __displayBlock__ di __highestBlock__.",
             "nodeSyncConnecting": "Alla ricerca di nodi...",
-            "nodeSyncProcessing": "Elaborazione blocchi, attendere prego...",
-            "privateChainTimeout": "Salta ricerca di nodi"
+            "stoppingNode": "Stopping Ethereum node...",
+            "nodeStarting": "Ethereum node starting up...",
+            "nodeStarted": "Ethereum node started",
+            "nodeConnected": "Ethereum node connected",
+            "nodeStopping": "Ethereum node stopping...",
+            "nodeStopped": "Ethereum node stopped",
+            "nodeError": "Ethereum node connection error :'(",
+            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
+            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
+            "nodeSyncingStopped": "Ethereum node sync stopped",
+            "peerSearchTimeout": "Skip peer search",
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "requestAccount": {
@@ -110,7 +143,8 @@
                 "repeatPassword": "Ripeti password",
                 "creating": "Generazione account...",
                 "errors": {
-                    "passwordMismatch": "Le due password non sono uguali."
+                    "passwordMismatch": "Le due password non sono uguali.",
+                    "passwordTooShort": "Make a longer password"
                 }
             },
             "unlockMasterPassword": {
@@ -125,7 +159,7 @@
                 "title": {
                     "sendTransaction": "Invia transazione",
                     "contractExecution": "Esegui contratto",
-                    "createContract": "Crea contratto"  
+                    "createContract": "Crea contratto"
                 },
                 "contractExecutionInfo": "Stai per eseguire una funzione su di un contratto. Questo potrebbe comportare trasferimento di valuta.",
                 "contractCreationInfo": "Stai per creare un contratto con i dati forniti.",
@@ -143,38 +177,47 @@
                 },
                 "errors": {
                     "connectionTimeout": "Impossibile connettersi al nodo, é forse terminato in modo inaspettato ?",
-                    "wrongPassword": "Password errata"
-                }
+                    "wrongPassword": "Password errata",
+                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "sameAccount": "Can't send to itself"
+                },
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
+                "parameters": "Parameters",
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "Ethereum é una piattaforma decentralizzata per costruire applicazioni sfruttando una blockchain: software a prova di manomissione che puó trasferire valore e proprietá vivendo per sempre",
-                "goToTestnet" : "Usa la rete di test",
-                "goToTestnetDescription" : "Prova la tecnologia liberamente utilizzando una testnet, senza l'utilizzo di vero ether.",
-                "gotoMainnet" : "Usa la rete principale",
-                "gotoMainnetDescription" : " Avrai bisogno di un po di Ether per creare ed eseguire contratti. Non ti preoccupare, ti aiuteremo ad ottenerne un pó...",
-                "doYouHaveAWalletFile" : "Hai un file per il wallet ?",
-                "walletFileDescription" : "<p>Se hai partecipato alla pre-vendita Ethereum nel 2014, dovresti avere un file nominato<code>ethereum_wallet_backup.json</code>. E' stato scaricato dopo la vendita e inoltre inviato al tuo indirizzo e-mail</p>",
-                "dropFilesHere" : "Trascina file pre-vendita",
+                "description": "Ethereum é una piattaforma decentralizzata per costruire applicazioni sfruttando una blockchain: software a prova di manomissione che puó trasferire valore e proprietá vivendo per sempre",
+                "goToTestnet": "Usa la rete di test",
+                "goToTestnetDescription": "Prova la tecnologia liberamente utilizzando una testnet, senza l'utilizzo di vero ether.",
+                "gotoMainnet": "Usa la rete principale",
+                "gotoMainnetDescription": " Avrai bisogno di un po di Ether per creare ed eseguire contratti. Non ti preoccupare, ti aiuteremo ad ottenerne un pó...",
+                "doYouHaveAWalletFile": "Hai un file per il wallet ?",
+                "walletFileDescription": "<p>Se hai partecipato alla pre-vendita Ethereum nel 2014, dovresti avere un file nominato<code>ethereum_wallet_backup.json</code>. E' stato scaricato dopo la vendita e inoltre inviato al tuo indirizzo e-mail</p>",
+                "dropFilesHere": "Trascina file pre-vendita",
                 "creating": "Creazione...",
                 "importing": "Importazione...",
-                "skip" : "Salta il passaggio",
-                "next" : "Successivo",
-                "protectTitle" : "Proteggi il tuo account",
-                "protectDescription" : "Scegli una password per il tuo nuovo account. Rendila piu complicata possibile come se dovesse proteggere le tue chiavi di casa!",
-                "accountTitle" : "Stra-caricalo!",
-                "accountTitleTestnet" : "Mina un pó!",
+                "skip": "Salta il passaggio",
+                "next": "Successivo",
+                "protectTitle": "Proteggi il tuo account",
+                "protectDescription": "Scegli una password per il tuo nuovo account. Rendila piu complicata possibile come se dovesse proteggere le tue chiavi di casa!",
+                "accountTitle": "Stra-caricalo!",
+                "accountTitleTestnet": "Mina un pó!",
                 "etherDescription": "La rete ethereum é basata su di un token chiamato “Ether”. Avrai bisogno di una piccola quantitá di ether per fare qualsiasi cosa sulla rete Ethereum.",
-                "loadItDescription" : "Se possiedi giá Bitcoin, o qualunque altra cryptovaluta, puoi facilmente convertirla in eth usando shapeshift. <br><br> Raccomandiamo di depositare da <strong>0.25 a 1 ether</strong>.",
+                "loadItDescription": "Se possiedi giá Bitcoin, o qualunque altra cryptovaluta, puoi facilmente convertirla in eth usando shapeshift. <br><br> Raccomandiamo di depositare da <strong>0.25 a 1 ether</strong>.",
                 "mineItDescription": "<strong>Sulla rete di test (testnet) puoi minare ether in autonomia utilizzando il menu' <em>Sviluppo</em> e selezionando <em>Inizia Mining</em>. </strong> <br> <strong> NON TENTARE DI INVIARE ETHER REALE A QUESTO INDIRIZZO</strong>",
-                "you" : "TU",
-                "etherbase" : "Account principale (etherbase)",
-                "depositBitcoin" : "Deposita Bitcoin",
-                "learnIt" : "Impara mentre aspetti",
+                "you": "TU",
+                "etherbase": "Account principale (etherbase)",
+                "depositBitcoin": "Deposita Bitcoin",
+                "learnIt": "Impara mentre aspetti",
                 "downloadingBlocks": "Scaricamento blocchi ",
-                "block": "Blocco",
-                "tutorial1Description" : "<p> Ora l'ultima cosa rimasta e' aspettare che il download sia completato. Eccoti alcuni consigli di letture: </p> <h4>Conia la tua moneta </h4> <p> Conia una cryptovaluta con una offerta di mercato fissa, tokens che rappresentano beni nel mondo reale, etc </p>",
-                "tutorial2Description" : "<h4> Crea una crowdsale </h4> <p> Raccogli fondi per uno scopo comune, in piena fiducia e senza terze parti. Evita le difficoltá di un sistema tradizionale di raccolta fondi e raggiungi direttamente la fonte finanziando una organizzazione tramite la blockchain.</p>",
-                "tutorial3Description" : "<h4> Organizzazione su Blockchain </h4> <p> Crea una organizzazione autonoma con regole indissolubili riguardo a come i soldi possono essere spesi e da chi puó prendere le decisioni. Permetti ai tuoi sostenitori di partecipare attivamente riguardo a come i soldi vengono spesi</p>",
+                "tutorial1Description": "<p> Ora l'ultima cosa rimasta e' aspettare che il download sia completato. Eccoti alcuni consigli di letture: </p> <h4>Conia la tua moneta </h4> <p> Conia una cryptovaluta con una offerta di mercato fissa, tokens che rappresentano beni nel mondo reale, etc </p>",
+                "tutorial2Description": "<h4> Crea una crowdsale </h4> <p> Raccogli fondi per uno scopo comune, in piena fiducia e senza terze parti. Evita le difficoltá di un sistema tradizionale di raccolta fondi e raggiungi direttamente la fonte finanziando una organizzazione tramite la blockchain.</p>",
+                "tutorial3Description": "<h4> Organizzazione su Blockchain </h4> <p> Crea una organizzazione autonoma con regole indissolubili riguardo a come i soldi possono essere spesi e da chi puó prendere le decisioni. Permetti ai tuoi sostenitori di partecipare attivamente riguardo a come i soldi vengono spesi</p>",
                 "buttons": {
                     "showPassword": "Mostra password",
                     "importAccount": "Importa account",
@@ -186,12 +229,39 @@
                     "unknownFile": "File non riconosciuto.",
                     "wrongPassword": "Password errata.",
                     "importFailed": "Impossibile importare il file: __error__"
-                }
+                },
+                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+            },
+            "clientUpdateAvailable": {
+                "downloadAndRestart": "Download and Restart",
+                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+            },
+            "updateAvailable": {
+                "download": "Download",
+                "newVersionAvailable": "A new version of __app__ is available!",
+                "checking": "Checking for updates to __app__...",
+                "noUpdateFound": "No update found. You are running the latest version of __app__."
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
-        "checksumAlert":"Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
-        "identiconHelper": "Questa é un icona di sicurezza, se c'é qulasiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente"
+        "checksumAlert": "Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
+        "identiconHelper": "Questa é un icona di sicurezza, se c'é qulasiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente",
+        "type": {
+            "address": "Address",
+            "bool": "Boolean",
+            "int": "Integer",
+            "uint": "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

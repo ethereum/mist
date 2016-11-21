@@ -23,7 +23,6 @@
             "view": {
                 "label": "Вид",
                 "fullscreen": "Полноэкранный режим",
-                "languages": "Выбрать язык",
                 "default": "По умолчанию"
             },
             "accounts": {
@@ -46,7 +45,8 @@
                 "network": "Сеть",
                 "mainNetwork": "Основная сеть",
                 "startMining": "⛏ Запустить майнинг (только для тестовой сети)",
-                "stopMining": "⛏ Остановить майнинг"
+                "stopMining": "⛏ Остановить майнинг",
+                "externalNode": "using external node"
             },
             "window": {
                 "label": "Окно",
@@ -55,7 +55,8 @@
                 "toFront": "Все окна на переднем плане"
             },
             "help": {
-                "label": "Помощь"
+                "label": "Помощь",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -67,6 +68,10 @@
                 "win32": "Откройте системные настройки \"Дата и время\" и установите флажок для настройки времени по Интернету. Смотрите подробности в этом описании: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Чтобы использовать сервер синхронизации времени установите \"ntp\" через команду \"apt-get install ntp\".",
                 "darwin": "Для включения синхронизации времени откройте системные настройки и укажите: \"Устанавливать время и дату автоматически\"."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -96,7 +101,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "Аккаунт не установлен"
+                "noAccounts": "Аккаунт не установлен",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -120,7 +126,15 @@
             "nodeSyncFoundPeers": "Количество подключеных пиров __peers__...",
             "nodeSyncingStopped": "Остановилась синхронизация Ethereum-ноды",
             "peerSearchTimeout": "Пропустить поиск пиров",
-            "launchApp": "Запуск приложения"
+            "launchApp": "Запуск приложения",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "updateAvailable": {
@@ -171,39 +185,47 @@
                     "connectionTimeout": "Не удается подключиться к ноде, возможно завершилось фоновое приложение?",
                     "wrongPassword": "Неверный пароль",
                     "multipleKeysMatchAddress": "У нескольких ключей совпадает адрес, удалите дубликаты из хранилища ключей (Меню -> Аккаунты -> Резервное копирование -> Аккаунтов)",
-                    "insufficientFundsForGas": "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ"
-                }
+                    "insufficientFundsForGas": "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ",
+                    "sameAccount": "Can't send to itself"
+                },
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
+                "parameters": "Parameters",
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "Etherium представляет собой децентрализованную платформу основанную на блокчейне для создания надежных и децентрализованных приложений",
-                "goToTestnet" : "Использовать тестовую сеть",
-                "goToTestnetDescription" : "Свободное тестирование технологии в тестовой сети (sandbox), без использования реального эфира.",
-                "gotoMainnet" : "Использовать основную сеть",
-                "gotoMainnetDescription" : "Вам потребуется некоторое количество эфира для того, чтобы создавать и выполнять контракты. Не волнуйтесь, мы вам поможем получить некоторое количество...",
-                "doYouHaveAWalletFile" : "У вас есть файл кошелька?",
-                "walletFileDescription" : "<p>Если вы участвовали в Ethereum Pre-sale 2014, у вас должен быть файл с именем <code>ethereum_wallet_backup.json</code>. Он был загружен после продажи, а также отправлен на электронную почту</p>",
-                "dropFilesHere" : "Перетащите сюда ваш файл",
+                "description": "Etherium представляет собой децентрализованную платформу основанную на блокчейне для создания надежных и децентрализованных приложений",
+                "goToTestnet": "Использовать тестовую сеть",
+                "goToTestnetDescription": "Свободное тестирование технологии в тестовой сети (sandbox), без использования реального эфира.",
+                "gotoMainnet": "Использовать основную сеть",
+                "gotoMainnetDescription": "Вам потребуется некоторое количество эфира для того, чтобы создавать и выполнять контракты. Не волнуйтесь, мы вам поможем получить некоторое количество...",
+                "doYouHaveAWalletFile": "У вас есть файл кошелька?",
+                "walletFileDescription": "<p>Если вы участвовали в Ethereum Pre-sale 2014, у вас должен быть файл с именем <code>ethereum_wallet_backup.json</code>. Он был загружен после продажи, а также отправлен на электронную почту</p>",
+                "dropFilesHere": "Перетащите сюда ваш файл",
                 "creating": "Создание...",
                 "importing": "Импорт...",
-                "skip" : "Пропустить этот шаг",
-                "next" : "Далее",
-                "protectTitle" : "Защитите ваш аккаунт",
-                "protectDescription" : "Выберите пароль для новой учетной записи. Придумайте такой пароль, как будто он защитит ваши ключи от дома!",
-                "accountTitle" : "Загрузите его!",
+                "skip": "Пропустить этот шаг",
+                "next": "Далее",
+                "protectTitle": "Защитите ваш аккаунт",
+                "protectDescription": "Выберите пароль для новой учетной записи. Придумайте такой пароль, как будто он защитит ваши ключи от дома!",
+                "accountTitle": "Загрузите его!",
                 "etherDescription": "Сеть Ethereum основана на маркерах называемых “Ether” (Эфир). Он вам необходим в небольшом количетсве для того, что бы что-либо сделать в сети Etherium.",
-                "loadItDescription" : "Если у вас уже есть Bitcoin, или любая другая криптовалюта, вы можете легко преобразовать её в эфир (Ether) с помощью Shapeshift. <br><br> Мы рекомендуем загрузить где-то <strong>от 0.25 до 1 эфира</strong>.",
+                "loadItDescription": "Если у вас уже есть Bitcoin, или любая другая криптовалюта, вы можете легко преобразовать её в эфир (Ether) с помощью Shapeshift. <br><br> Мы рекомендуем загрузить где-то <strong>от 0.25 до 1 эфира</strong>.",
                 "mineItDescription": "<strong>В тестовой сети вы можете добыть (намайнить) эфир сами, перейдя в меню <em>Дополнительно</em> и выбрав <em>Запустить майнинг</em>. </strong> <br> <strong> НЕ ПЫТАЙТЕСЬ ОТПРАВИТЬ РЕАЛЬНЫЙ ЭФИР НА ЭТОТ АДРЕС</strong>",
-                "you" : "ВЫ",
-                "etherbase" : "Основной аккаунт (etherbase)",
-                "depositBitcoin" : "Внести депозит через Bitcoin",
-                "viaShapeshift" : "Мгновенное приобразование с помощью <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
-                "learnIt" : "Изучайте, пока ожидаете",
+                "you": "ВЫ",
+                "etherbase": "Основной аккаунт (etherbase)",
+                "depositBitcoin": "Внести депозит через Bitcoin",
+                "viaShapeshift": "Мгновенное приобразование с помощью <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "learnIt": "Изучайте, пока ожидаете",
                 "downloadingBlocks": "Загрузка блоков",
                 "syncMessage": "Блок __displayBlock__ из __highestBlockString__",
                 "syncMessageWithStates": "Блок __displayBlock__ из __highestBlockString__ (Структура блокчейна __statesPercent__%)",
-                "tutorial1Description" : "<p> Теперь ожидайте окончания загрузки для завершения. Вот несколько советов: </p> <h4>Сделайте свои собственные деньги </h4> <p> Сделайте криптовалюту с запасом фиксированного рынка, маркеры представляющие реальные мировые активы и т.д. </p>",
-                "tutorial2Description" : "<h4> Организуйте crowdsale </h4> <p> Привлечение средств для достижения общей цели полностью надёжно только без участия третьей стороны. Обойдите барьер традиционной системы финансирования и перейдите к финансированию организации непосредственно через блокчейн.</p>",
-                "tutorial3Description" : "<h4> Создайте организацию </h4> <p> Создайте автономную организацию с правилами о расходовании денег и принятии решений для вас и ваших инвесторов.</p>",
+                "tutorial1Description": "<p> Теперь ожидайте окончания загрузки для завершения. Вот несколько советов: </p> <h4>Сделайте свои собственные деньги </h4> <p> Сделайте криптовалюту с запасом фиксированного рынка, маркеры представляющие реальные мировые активы и т.д. </p>",
+                "tutorial2Description": "<h4> Организуйте crowdsale </h4> <p> Привлечение средств для достижения общей цели полностью надёжно только без участия третьей стороны. Обойдите барьер традиционной системы финансирования и перейдите к финансированию организации непосредственно через блокчейн.</p>",
+                "tutorial3Description": "<h4> Создайте организацию </h4> <p> Создайте автономную организацию с правилами о расходовании денег и принятии решений для вас и ваших инвесторов.</p>",
                 "buttons": {
                     "showPassword": "Показать пароль",
                     "importAccount": "Импортировать аккаунт",
@@ -215,12 +237,31 @@
                     "unknownFile": "Файл не распознается.",
                     "wrongPassword": "Неверный пароль.",
                     "importFailed": "Не удалось импортировать файл, дополнительно: __error__"
-                }
+                },
+                "accountTitleTestnet": "Mine some!"
+            },
+            "clientUpdateAvailable": {
+                "downloadAndRestart": "Download and Restart",
+                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
-        "checksumAlert":"Этот адрес выглядит правильно, но не хватает некоторых функций безопасности, которые могут защитить от опечаток. Поэтому, пожалуйста, дважды проверяйте введеный адрес. Если у вас есть возможность, пожалуйста, проверьте также соответствие иконки безопасности.",
-        "identiconHelper": "Это значок безопасности, если будут какие-либо изменения в адресе получателя - иконка будет совершенно другая"
+        "checksumAlert": "Этот адрес выглядит правильно, но не хватает некоторых функций безопасности, которые могут защитить от опечаток. Поэтому, пожалуйста, дважды проверяйте введеный адрес. Если у вас есть возможность, пожалуйста, проверьте также соответствие иконки безопасности.",
+        "identiconHelper": "Это значок безопасности, если будут какие-либо изменения в адресе получателя - иконка будет совершенно другая",
+        "type": {
+            "address": "Address",
+            "bool": "Boolean",
+            "int": "Integer",
+            "uint": "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

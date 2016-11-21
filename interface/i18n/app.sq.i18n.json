@@ -19,7 +19,9 @@
         "skip": "Kapërce",
         "sending": "Duke dërguar...",
         "create": "Krijo",
-        "tryToReconnect": "Provo të rilidhesh"
+        "tryToReconnect": "Provo të rilidhesh",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Ju",

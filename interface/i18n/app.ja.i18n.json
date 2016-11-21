@@ -19,7 +19,9 @@
         "skip": "スキップ",
         "sending": "送信中...",
         "create": "作成中",
-        "tryToReconnect": "再接続しています。"
+        "tryToReconnect": "再接続しています。",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "You",

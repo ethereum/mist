@@ -5,6 +5,7 @@
                 "label": "__app__",
                 "about": "About __app__",
                 "checkForUpdates": "Check for updates...",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Services",
                 "hide": "Hide __app__",
                 "hideOthers": "Hide Others",
@@ -141,7 +142,7 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Update",
                 "skipUpdate": "Skip Update",
-                "newVersionAvailable": "A new version of Ethereum clients is available!"
+                "newVersionAvailable": "New Ethereum node versions are available!"
             },
             "updateAvailable": {
                 "download": "Download",

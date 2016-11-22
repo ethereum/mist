@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const fs = require('fs');
+const path = require('path');
 const Windows = require('./windows');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
@@ -72,6 +74,17 @@ let menuTempl = function (webviews) {
                 label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
                 click() {
                     updateChecker.runVisibly();
+                },
+            }, {
+                label: i18n.t('mist.applicationMenu.app.checkForNodeUpdates'),
+                click() {
+                    // remove skipVersion
+                    fs.writeFileSync(
+                        path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+                        '' // write no version
+                    );
+
+                    ClientBinaryManager.init(true); // true = will restart after updating and user consent
                 },
             }, {
                 type: 'separator',

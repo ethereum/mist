@@ -5,6 +5,7 @@
                 "label": "__app__",
                 "about": "О __app__",
                 "checkForUpdates": "Проверить обновления...",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Сервисы",
                 "hide": "Скрыть __app__",
                 "hideOthers": "Скрыть прочие",
@@ -244,7 +245,7 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Update",
                 "skipUpdate": "Skip Update",
-                "newVersionAvailable": "A new version of Ethereum clients is available!"
+                "newVersionAvailable": "New Ethereum node versions are available!"
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

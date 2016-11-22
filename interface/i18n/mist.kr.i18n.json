@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Services",
                 "quit": "__app__ 종료",
                 "checkForUpdates": "Check for updates...",
@@ -238,7 +239,7 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Update",
                 "skipUpdate": "Skip Update",
-                "newVersionAvailable": "A new version of Ethereum clients is available!"
+                "newVersionAvailable": "New Ethereum node versions are available!"
             },
             "updateAvailable": {
                 "download": "Download",

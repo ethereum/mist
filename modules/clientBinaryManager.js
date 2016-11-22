@@ -22,14 +22,14 @@ class Manager extends EventEmitter {
         this._availableClients = {};
     }
 
-    init() {
+    init(restart) {
         log.info('Initializing...');
 
         // check every hour
         setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
 
         this._resolveEthBinPath();
-        return this._checkForNewConfig();
+        return this._checkForNewConfig(restart);
     }
 
     getClient(clientId) {
@@ -128,7 +128,7 @@ class Manager extends EventEmitter {
                                 restart: restart
                             }
                         }
-                    }), function(update){
+                    }), (update) => {
 
                         // update
                         if(update) {

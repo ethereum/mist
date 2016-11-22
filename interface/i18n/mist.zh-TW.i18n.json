@@ -23,8 +23,7 @@
             "view": {
                 "label": "檢視",
                 "fullscreen": "全螢幕",
-                "languages": "語言",
-                "languages": "Change language"
+                "default": "Default"
             },
             "accounts": {
                 "label": "帳號",
@@ -46,7 +45,8 @@
                 "network": "網路",
                 "mainNetwork": "主網路",
                 "startMining": "⛏ 開啓挖礦（僅限Testnet網路）",
-                "stopMining": "⛏ 停止挖礦"
+                "stopMining": "⛏ 停止挖礦",
+                "externalNode": "using external node"
             },
             "window": {
                 "label": "視窗",
@@ -55,7 +55,8 @@
                 "toFront": "全部前置"
             },
             "help": {
-                "label": "幫助"
+                "label": "幫助",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -67,6 +68,10 @@
                 "win32": "從系統選項中打開網路時間設置並勾選。詳細資訊參考：http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "爲開啓時間同步伺服器，請通過\"apt-get install ntp\"安裝\"ntp\"。",
                 "darwin": "爲開啓時間同步，打開時間選項並勾選\"Set the time and date automatically\"."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -80,7 +85,14 @@
             "blockNumber": "最新區塊數量",
             "timeSinceBlock": "自上一區塊已經過去的時間",
             "testnetExplain": "您正處於Testnet測試網路中，請勿發送真正的以太幣到這些地址中",
-            "peers": "節點"
+            "peers": "節點",
+            "checkingWhichNetwork": "Checking network...",
+            "mainNetwork": "Main-net",
+            "testNetwork": "Test-net",
+            "privateNetwork": "Private-net",
+            "mainnetExplain": "You are on the main Ethereum global network",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "unknownnetExplain": "Unable to determine which network you are on"
         },
         "sidebar": {
             "buttons": {
@@ -89,7 +101,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "未設置帳號"
+                "noAccounts": "未設置帳號",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -101,8 +114,27 @@
             "nodeSyncing": "需要同步以太坊節點，請等待……",
             "nodeSyncInfo": "正在下載第__displayBlock__塊，共__highestBlock__。",
             "nodeSyncConnecting": "正在查找節點……",
-            "nodeSyncProcessing": "正在處理區塊，請等待……",
-            "peerSearchTimeout": "跳過節點搜索"
+            "peerSearchTimeout": "跳過節點搜索",
+            "stoppingNode": "Stopping Ethereum node...",
+            "nodeStarting": "Ethereum node starting up...",
+            "nodeStarted": "Ethereum node started",
+            "nodeConnected": "Ethereum node connected",
+            "nodeStopping": "Ethereum node stopping...",
+            "nodeStopped": "Ethereum node stopped",
+            "nodeError": "Ethereum node connection error :'(",
+            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
+            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
+            "nodeSyncingStopped": "Ethereum node sync stopped",
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "requestAccount": {
@@ -111,7 +143,8 @@
                 "repeatPassword": "重複密碼",
                 "creating": "正在生成帳號……",
                 "errors": {
-                    "passwordMismatch": "您輸入的密碼不符合。"
+                    "passwordMismatch": "您輸入的密碼不符合。",
+                    "passwordTooShort": "Make a longer password"
                 }
             },
             "unlockMasterPassword": {
@@ -144,38 +177,47 @@
                 },
                 "errors": {
                     "connectionTimeout": "無法連接該節點，後台節點是否崩潰了？",
-                    "wrongPassword": "密碼錯誤"
-                }
+                    "wrongPassword": "密碼錯誤",
+                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "sameAccount": "Can't send to itself"
+                },
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
+                "parameters": "Parameters",
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "以太坊是一個用於在區塊鏈上創建應用的去中心化平台：一種用於轉移價值和資產，永遠存在並且無法被篡改的軟體",
-                "goToTestnet" : "使用測試網路",
-                "goToTestnetDescription" : "請放心在沙盒測試網路中測試該技術，無需使用真正的以太幣。",
-                "gotoMainnet" : "使用主網路",
-                "gotoMainnetDescription" : "您需要一些以太幣來創建和執行合約。別擔心，我們將幫您獲取一些……",
-                "doYouHaveAWalletFile" : "您擁有一個錢包文件嗎？",
-                "walletFileDescription" : "<p>如果您參與了2014年的以太坊預售，您應該有一個文件名爲<code>ethereum_wallet_backup.json</code>的錢包文件。在您購買後已被下載並且也發送到您信箱。</p>",
-                "dropFilesHere" : "預售文件拖入此處",
+                "description": "以太坊是一個用於在區塊鏈上創建應用的去中心化平台：一種用於轉移價值和資產，永遠存在並且無法被篡改的軟體",
+                "goToTestnet": "使用測試網路",
+                "goToTestnetDescription": "請放心在沙盒測試網路中測試該技術，無需使用真正的以太幣。",
+                "gotoMainnet": "使用主網路",
+                "gotoMainnetDescription": "您需要一些以太幣來創建和執行合約。別擔心，我們將幫您獲取一些……",
+                "doYouHaveAWalletFile": "您擁有一個錢包文件嗎？",
+                "walletFileDescription": "<p>如果您參與了2014年的以太坊預售，您應該有一個文件名爲<code>ethereum_wallet_backup.json</code>的錢包文件。在您購買後已被下載並且也發送到您信箱。</p>",
+                "dropFilesHere": "預售文件拖入此處",
                 "creating": "正在創建……",
                 "importing": "正在匯入……",
-                "skip" : "跳過該步驟",
-                "next" : "下一個",
-                "protectTitle" : "保護您的帳號",
-                "protectDescription" : "爲您的新帳號選擇一個密碼。請像保持您家鑰匙一樣保證密碼強度足夠安全！",
-                "accountTitle" : "正在裝載！",
-                "accountTitleTestnet" : "挖到一些以太幣！",
+                "skip": "跳過該步驟",
+                "next": "下一個",
+                "protectTitle": "保護您的帳號",
+                "protectDescription": "爲您的新帳號選擇一個密碼。請像保持您家鑰匙一樣保證密碼強度足夠安全！",
+                "accountTitle": "正在裝載！",
+                "accountTitleTestnet": "挖到一些以太幣！",
                 "etherDescription": "以太坊網路是基於一種叫做“以太幣”的代幣。您需要一點以太幣來嘗試在以太坊網路上的任何操作。",
-                "loadItDescription" : "如果您已經擁有比特幣或者任何其他加密貨幣，您可以使用shapeshift來方便地轉換爲以太幣。<br><br>我們推薦您存入<strong>0.25到1以太幣</strong>.",
+                "loadItDescription": "如果您已經擁有比特幣或者任何其他加密貨幣，您可以使用shapeshift來方便地轉換爲以太幣。<br><br>我們推薦您存入<strong>0.25到1以太幣</strong>.",
                 "mineItDescription": "<strong>如果您在testnet測試網路中，您可以自己挖掘一些以太幣，點擊<em>開發</em>選單並選擇<em>開啓挖礦</em>。</strong> <br> <strong>請勿將真正的以太幣發往該地址！</strong>",
-                "you" : "您本人",
-                "etherbase" : "主帳號（etherbase）",
-                "depositBitcoin" : "存入比特幣",
-                "learnIt" : "在等待期間學習一下",
+                "you": "您本人",
+                "etherbase": "主帳號（etherbase）",
+                "depositBitcoin": "存入比特幣",
+                "learnIt": "在等待期間學習一下",
                 "downloadingBlocks": "正在下載區塊",
-                "block": "區塊",
-                "tutorial1Description" : "<p>現在您只需等待下載完成。這裏是一些閱讀推薦：</p> <h4>創造您自己的貨幣</h4> <p>創造一個固定發行量的加密貨幣，這些代幣代表真正的世界資產，等等</p>",
-                "tutorial2Description" : "<h4>創建一個群眾募資</h4> <p>爲一個共同的目標籌集資金，完全可信而無需第三方擔保。繞開傳統融資系統的障礙，通過區塊鏈直接和出資人共同籌資建立一個機構。</p>",
-                "tutorial3Description" : "<h4>區塊鏈機構</h4> <p>創建一個自治的機構，並且制定關於資金如何使用以太誰能做決定的不可違背的規則，讓您的贊助人在如何使用資金上發揮積極作用。</p>",
+                "tutorial1Description": "<p>現在您只需等待下載完成。這裏是一些閱讀推薦：</p> <h4>創造您自己的貨幣</h4> <p>創造一個固定發行量的加密貨幣，這些代幣代表真正的世界資產，等等</p>",
+                "tutorial2Description": "<h4>創建一個群眾募資</h4> <p>爲一個共同的目標籌集資金，完全可信而無需第三方擔保。繞開傳統融資系統的障礙，通過區塊鏈直接和出資人共同籌資建立一個機構。</p>",
+                "tutorial3Description": "<h4>區塊鏈機構</h4> <p>創建一個自治的機構，並且制定關於資金如何使用以太誰能做決定的不可違背的規則，讓您的贊助人在如何使用資金上發揮積極作用。</p>",
                 "buttons": {
                     "showPassword": "顯示密碼",
                     "importAccount": "導入帳號",
@@ -187,12 +229,39 @@
                     "unknownFile": "文件無法識別。",
                     "wrongPassword": "密碼錯誤。",
                     "importFailed": "無法匯入該文件，錯誤：__error__"
-                }
+                },
+                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+            },
+            "clientUpdateAvailable": {
+                "downloadAndRestart": "Download and Restart",
+                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+            },
+            "updateAvailable": {
+                "download": "Download",
+                "newVersionAvailable": "A new version of __app__ is available!",
+                "checking": "Checking for updates to __app__...",
+                "noUpdateFound": "No update found. You are running the latest version of __app__."
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
-        "checksumAlert":"該地址格式有效，但是由於沒有安全機制保證您不會拼寫錯誤，因此請反覆確認您輸入正確。如果可能的話，請驗證一下安全圖標是否相同。",
-        "identiconHelper": "這是一個安全圖標，如果地址有任何改動，該圖標將會完全不一樣"
+        "checksumAlert": "該地址格式有效，但是由於沒有安全機制保證您不會拼寫錯誤，因此請反覆確認您輸入正確。如果可能的話，請驗證一下安全圖標是否相同。",
+        "identiconHelper": "這是一個安全圖標，如果地址有任何改動，該圖標將會完全不一樣",
+        "type": {
+            "address": "Address",
+            "bool": "Boolean",
+            "int": "Integer",
+            "uint": "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

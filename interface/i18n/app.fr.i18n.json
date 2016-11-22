@@ -19,7 +19,9 @@
         "skip": "Ignorer",
         "sending": "Envoi en cours...",
         "create": "Créer",
-        "tryToReconnect": "Tentative de reconnexion"
+        "tryToReconnect": "Tentative de reconnexion",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Vous",

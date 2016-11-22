@@ -105,9 +105,12 @@ class Manager extends EventEmitter {
                 return new Q((resolve, reject) => {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
-
-                    let platform = process.platform.replace('darwin','mac').replace('win32','win').replace('freebsd','linux').replace('sunos','linux');
-                    let binaryVersion = latestConfig.clients.Geth.platforms[platform][process.arch];
+                    log.error(latestConfig)
+                    const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+                    const binaryVersion = latestConfig.clients.Geth.platforms[platform][process.arch];
+                    const checksums = _.pick(binaryVersion.download, 'md5', 'sha256');
+                    const algorithm = _.keys(checksums)[0].toUpperCase();
+                    const hash = _.values(checksums)[0];
 
                     const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
                         useWeb3: false,
@@ -123,15 +126,15 @@ class Manager extends EventEmitter {
                             uiAction_sendData: {
                                 name: 'Geth',
                                 version: gethVersion,
-                                checksum: `SHA256: ${binaryVersion.download.sha256}`,
+                                checksum: `${algorithm}: ${hash}`,
                                 downloadUrl: binaryVersion.download.url,
-                                restart: restart
+                                restart
                             }
                         }
                     }), (update) => {
 
                         // update
-                        if(update) {
+                        if (update) {
                             this._writeLocalConfig(latestConfig);
 
                             resolve(latestConfig);
@@ -154,9 +157,9 @@ class Manager extends EventEmitter {
             return localConfig;
 
         }).then((localConfig) => {
-
-            if(!localConfig)
+            if (!localConfig) {
                 throw new Error('No config given for the ClientBinaryManager, aborting.');
+            }
 
             // scan for geth
             const mgr = new ClientBinaryManager(localConfig);
@@ -209,7 +212,7 @@ class Manager extends EventEmitter {
                 });
 
                 // restart if it downloaded while running
-                if(restart && binariesDownloaded) {
+                if (restart && binariesDownloaded) {
                     log.info('Restarting app ...');
                     app.relaunch();
                     app.quit();

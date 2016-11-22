@@ -25,11 +25,11 @@ class Manager extends EventEmitter {
     init() {
         log.info('Initializing...');
 
-        this._resolveEthBinPath();
-        this._checkForNewConfig();
-
         // check every hour
-        setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
+        setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
+
+        this._resolveEthBinPath();
+        return this._checkForNewConfig();
     }
 
     getClient(clientId) {
@@ -45,7 +45,9 @@ class Manager extends EventEmitter {
         );
     }
 
-    _checkForNewConfig() {
+    _checkForNewConfig(restart) {
+        let binariesDownloaded = false;
+
         log.info('Checking for new client binaries config...');
 
         this._emit('loadConfig', 'Fetching remote client config');
@@ -67,6 +69,8 @@ class Manager extends EventEmitter {
         })
         .then((latestConfig) => {
             let localConfig;
+            let skipedVersion;
+            let gethVersion = latestConfig.clients.Geth.version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -75,6 +79,7 @@ class Manager extends EventEmitter {
                 localConfig = JSON.parse(
                     fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString()
                 );
+
             } catch (err) {
                 log.warn(`Error loading local config - assuming this is a first run: ${err}`);
 
@@ -87,37 +92,71 @@ class Manager extends EventEmitter {
                 }
             }
 
+            try {  
+                skipedVersion = fs.readFileSync(path.join(Settings.userDataPath, 'skippedNodeVersion.json')).toString();
+            } catch (err) {
+            }
+
+
             // if new config version available then ask user if they wish to update
-            if (latestConfig && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
-                log.debug('New client binaries config found, asking user if they wish to update...');
+            if (latestConfig &&
+                JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
+                gethVersion !== skipedVersion) {
+                return new Q((resolve, reject) => {
 
-                const newVersion = latestConfig.clients.Geth.version;
+                    log.debug('New client binaries config found, asking user if they wish to update...');
 
-                const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
-                    useWeb3: false,
-                    electronOptions: {
-                        width: 420,
-                        height: 230,
-                        alwaysOnTop: false,
-                        resizable: false,
-                        maximizable: false,
-                    },
-                }, {
-                    sendData: ['uiAction_clientUpdateAvailable', {
-                        name: 'Geth',
-                        version: newVersion,
-                    }],
-                }));
+                    let platform = process.platform.replace('darwin','mac').replace('win32','win').replace('freebsd','linux').replace('sunos','linux');
+                    let binaryVersion = latestConfig.clients.Geth.platforms[platform][process.arch];
 
-                // remove previous update listeners and then add new one
-                ipc.removeAllListeners('backendAction_confirmClientUpdate');
-                ipc.once('backendAction_confirmClientUpdate', (e) => {
-                    this._writeLocalConfig(latestConfig);
-                    log.info('Restarting app ...');
-                    app.relaunch();
-                    app.quit();
+                    const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
+                        useWeb3: false,
+                        electronOptions: {
+                            width: 800,
+                            height: 330,
+                            alwaysOnTop: false,
+                            resizable: false,
+                            maximizable: false,
+                        },
+                    }, {
+                        sendData: {
+                            uiAction_sendData: {
+                                name: 'Geth',
+                                version: gethVersion,
+                                checksum: `SHA256: ${binaryVersion.download.sha256}`,
+                                downloadUrl: binaryVersion.download.url,
+                                restart: restart
+                            }
+                        }
+                    }), function(update){
+
+                        // update
+                        if(update) {
+                            this._writeLocalConfig(latestConfig);
+
+                            resolve(latestConfig);
+
+                        // skip
+                        } else {
+                            fs.writeFileSync(
+                                path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+                                gethVersion
+                            );
+
+                            resolve(localConfig);
+                        }
+
+                        wnd.close();
+                    });
                 });
             }
+
+            return localConfig;
+
+        }).then((localConfig) => {
+
+            if(!localConfig)
+                throw new Error('No config given for the ClientBinaryManager, aborting.');
 
             // scan for geth
             const mgr = new ClientBinaryManager(localConfig);
@@ -146,6 +185,8 @@ class Manager extends EventEmitter {
                     this._emit('downloading', 'Downloading binaries');
 
                     return Q.map(_.values(clients), (c) => {
+                        binariesDownloaded = true;
+
                         return mgr.download(c.id, {
                             downloadFolder: path.join(Settings.userDataPath, 'binaries'),
                             urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
@@ -166,6 +207,13 @@ class Manager extends EventEmitter {
                         };
                     }
                 });
+
+                // restart if it downloaded while running
+                if(restart && binariesDownloaded) {
+                    log.info('Restarting app ...');
+                    app.relaunch();
+                    app.quit();
+                }
 
                 this._emit('done');
             });

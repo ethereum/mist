@@ -17,6 +17,17 @@ img {
     }
 }
 
+ul.no-bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+        margin: 0;
+        margin-bottom: @defaultMargin/2;
+    }
+}
+
 
 .node-info { 
     position: absolute;
@@ -32,4 +43,16 @@ img {
     border-radius: 3px;
     color: @colorWhite;
     background-color: @colorError;
+}
+
+.border-button {
+    border: 1px solid @colorBlue;
+    border-radius: 4px;
+    padding: 5px 10px;
+    text-decoration: none;
+
+    &:hover, &:focus {
+        background-color: @colorBlue;
+        color: @colorWhite;
+    }
 }

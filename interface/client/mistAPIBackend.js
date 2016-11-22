@@ -41,7 +41,7 @@ mistAPIBackend = function(event) {
 
     // Send TEST DATA
     if(event.channel === 'sendTestData') {
-         webview.send('sendTestData', Tabs.findOne('tests'));
+         webview.send('uiAction_sendTestData', Tabs.findOne('tests'));
     }
 
     // SET FAVICON

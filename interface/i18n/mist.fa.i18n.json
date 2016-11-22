@@ -138,8 +138,10 @@
         },
         "popupWindows": {
             "clientUpdateAvailable": {
-                "downloadAndRestart": "Download and Restart",
-                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+                "downloadAndRestart": "Update and Restart",
+                "download": "Update",
+                "skipUpdate": "Skip Update",
+                "newVersionAvailable": "A new version of Ethereum clients is available!"
             },
             "updateAvailable": {
                 "download": "Download",

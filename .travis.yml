@@ -1,13 +1,14 @@
 language: node_js
 node_js: 6
 
+sudo: false
+
 cache:
   yarn: true
 
 matrix:
   include:
     - os: linux
-      sudo: false
       dist: precise
       addons:
         apt:
@@ -17,13 +18,15 @@ matrix:
             - xz-utils
             - gcc-multilib
             - g++-multilib
-      before_script:
-        - export DISPLAY=:99.0
-        - sh -e /etc/init.d/xvfb start
-        - curl https://install.meteor.com/ | sh
-        - PATH=$PATH:~/.meteor
-        - npm install -g meteor-build-client
-      script:
-        - gulp --platform linux
     - os: osx
       osx_image: xcode8.1
+
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - curl https://install.meteor.com/ | sh
+  - PATH=$PATH:~/.meteor
+  - npm install -g meteor-build-client
+
+script:
+  - gulp --platform linux

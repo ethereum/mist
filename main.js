@@ -334,28 +334,6 @@ let onReady = () => {
             .then(() => {
                 return ClientBinaryManager.init();
             })
-            .catch(function(err){
-                if(err.message.indexOf('Hash mismatch') !== -1) {
-                    console.log(err);
-
-                    // show hash mismatch error
-                    dialog.showMessageBox({
-                        type: 'warning',
-                        buttons: ['OK'],
-                        message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
-                        detail: global.i18n.t('mist.errors.nodeChecksumMismatch.description', {
-                            type: err.nodeInfo.type,
-                            version: err.nodeInfo.version,
-                            algorithm: err.nodeInfo.algorithm,
-                            hash: err.nodeInfo.checksum
-                        })
-                    }, () => {
-                        app.quit();
-                    });
-
-                    throw err;
-                }
-            })
             .then(() => {
                 return ethereumNode.init();
             })

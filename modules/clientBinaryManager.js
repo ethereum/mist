@@ -1,7 +1,7 @@
 const _ = global._;
 const Q = require('bluebird');
 const fs = require('fs');
-const { app, ipcMain: ipc } = require('electron');
+const { app, dialog, ipcMain: ipc } = require('electron');
 const got = require('got');
 const path = require('path');
 const Settings = require('./settings');
@@ -237,9 +237,27 @@ class Manager extends EventEmitter {
 
             this._emit('error', err.message);
 
-            // throw so the main.js can catch it
-            err.nodeInfo = nodeInfo;
-            throw err;
+            // show error
+            if(err.message.indexOf('Hash mismatch') !== -1) {
+
+                // show hash mismatch error
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
+                    detail: global.i18n.t('mist.errors.nodeChecksumMismatch.description', {
+                        type: nodeInfo.type,
+                        version: nodeInfo.version,
+                        algorithm: nodeInfo.algorithm,
+                        hash: nodeInfo.checksum
+                    })
+                }, () => {
+                    app.quit();
+                });
+
+                // throw so the main.js can catch it
+                throw err;
+            }
         });
     }
 

@@ -3,7 +3,7 @@ language: node_js
 matrix:
   include:
     - os: linux  ## build linux and win in one run; installation of wine is considerable faster using apt than brew on osx
-      sudo: true
+      sudo: required
       dist: trusty
       node_js: 6
       before_install:

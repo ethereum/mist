@@ -322,22 +322,22 @@ gulp.task('release-dist', ['build-dist'], (done) => {
         if (platformIsActive(osArch)) {
             switch (osArch) {  // eslint-disable-line default-case
             case 'win-ia32':
-                cp(path.join('win-ia32', `${applicationName} Setup ${version}-ia32.exe`), `${appNameHypen}-win32-${versionDashed}.exe`);
+                // cp(path.join('win-ia32', `${applicationName} Setup ${version}-ia32.exe`), `${appNameHypen}-win32-${versionDashed}.exe`);
                 cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
                 break;
             case 'win-x64':
-                cp(path.join('win', `${applicationName} Setup ${version}.exe`), `${appNameHypen}-win64-${versionDashed}.exe`);
+                // cp(path.join('win', `${applicationName} Setup ${version}.exe`), `${appNameHypen}-win64-${versionDashed}.exe`);
                 cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
                 break;
             case 'mac-x64':
                 cp(path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
                 break;
             case 'linux-ia32':
-                cp(`${appNameNoSpace}-${version}-ia32.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+                cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
                 cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
                 break;
             case 'linux-x64':
-                cp(`${appNameNoSpace}-${version}.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+                cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
                 cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
                 break;
             }

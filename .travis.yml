@@ -2,14 +2,14 @@ language: node_js
 
 matrix:
   include:
-    - os: linux
+    - os: linux  ## build linux and win in one run; installation of wine is considerable faster using apt than brew on osx
       sudo: true
       dist: trusty
       node_js: 6
       before_install:
-      - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
-      - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-      - echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list
+      - sudo add-apt-repository ppa:ubuntu-wine/ppa -y  ## dep for win: add wine's PPA
+      - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF  ## dep for win: add mono's keys
+      - echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list  ## dep for win: add mono
       - sudo apt-get update -q
       - sudo apt-get install --no-install-recommends -y ca-certificates-mono icnsutils graphicsmagick gcc-multilib g++-multilib mono-devel wine1.8 xz-utils
       script:

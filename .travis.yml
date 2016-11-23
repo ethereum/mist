@@ -1,15 +1,11 @@
 language: node_js
-node_js: 6
 
 sudo: false
-
-cache:
-  yarn: true
-
 matrix:
   include:
     - os: linux
       dist: precise
+      node_js: 6
       addons:
         apt:
           packages:
@@ -20,6 +16,7 @@ matrix:
             - g++-multilib
     - os: osx
       osx_image: xcode8.1
+      node_js: 6
 
 before_script:
   - export DISPLAY=:99.0

@@ -55,7 +55,7 @@ class Manager extends EventEmitter {
         this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
-        return got('http://0.0.0.0:8080/clientBinaries.json', {
+        return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
             timeout: 3000,
             json: true,
         })
@@ -168,8 +168,10 @@ class Manager extends EventEmitter {
             return localConfig;
 
         }).then((localConfig) => {
+
             if (!localConfig) {
-                throw new Error('No config given for the ClientBinaryManager, aborting.');
+                log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
+                localConfig = require('../clientBinaries.json');
             }
 
             // scan for node

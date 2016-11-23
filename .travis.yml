@@ -2,13 +2,14 @@ sudo: required
 dist: trusty
 
 language: node_js
+node_js: 6
+
+cache:
+  yarn: true
 
 branches:
   only:
     - develop
-
-node_js:
-  - "6"
 
 before_install:
   - sudo apt-get -qq update

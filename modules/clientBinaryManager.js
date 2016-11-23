@@ -116,9 +116,9 @@ class Manager extends EventEmitter {
 
 
             // if new config version available then ask user if they wish to update
-            if (latestConfig &&
-                JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
-                nodeVersion !== skipedVersion) {
+            if (latestConfig
+                && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)
+                && nodeVersion !== skipedVersion) {
 
                 return new Q((resolve) => {
 
@@ -143,8 +143,7 @@ class Manager extends EventEmitter {
                                 restart,
                             },
                         },
-                    }),
-                    (update) => {
+                    }),(update) => {
 
                         // update
                         if (update === 'update') {
@@ -153,7 +152,7 @@ class Manager extends EventEmitter {
                             resolve(latestConfig);
 
                         // skip
-                        } else if(update === 'skip') {
+                        } else if (update === 'skip') {
                             fs.writeFileSync(
                                 path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
                                 nodeVersion
@@ -170,10 +169,8 @@ class Manager extends EventEmitter {
             }
 
             return localConfig;
-
         })
         .then((localConfig) => {
-
             if (!localConfig) {
                 log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
                 localConfig = require('../clientBinaries.json');
@@ -246,7 +243,6 @@ class Manager extends EventEmitter {
 
             // show error
             if (err.message.indexOf('Hash mismatch') !== -1) {
-
                 // show hash mismatch error
                 dialog.showMessageBox({
                     type: 'warning',

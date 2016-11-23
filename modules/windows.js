@@ -54,7 +54,7 @@ class Window extends EventEmitter {
                 if (_.isString(opts.sendData)) {
                     this.send(opts.sendData);
                 } else if (_.isObject(opts.sendData)) {
-                    for (let key in opts.sendData) {
+                    for (const key in opts.sendData) {
                         if (opts.sendData.hasOwnProperty(key)) {
                             this.send(key, opts.sendData[key]);
                         }

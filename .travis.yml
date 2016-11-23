@@ -22,7 +22,7 @@ matrix:
       osx_image: xcode8.1
       node_js: 6
       script:
-        - gulp --platform mac
+        - travis_wait 30 gulp --platform mac
 
 before_script:
   - curl https://install.meteor.com/ | sh

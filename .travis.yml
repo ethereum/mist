@@ -20,5 +20,4 @@ matrix:
 
 before_script:
   - curl https://install.meteor.com/ | sh
-  - PATH=$PATH:~/.meteor
   - npm install -g meteor-build-client

@@ -1,7 +1,7 @@
 const _ = global._;
 const Q = require('bluebird');
 const fs = require('fs');
-const { app, dialog, ipcMain: ipc } = require('electron');
+const { app, dialog } = require('electron');
 const got = require('got');
 const path = require('path');
 const Settings = require('./settings');
@@ -72,7 +72,7 @@ class Manager extends EventEmitter {
         .then((latestConfig) => {
             let localConfig;
             let skipedVersion;
-            let nodeVersion = latestConfig.clients[nodeType].version;
+            const nodeVersion = latestConfig.clients[nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -81,7 +81,6 @@ class Manager extends EventEmitter {
                 localConfig = JSON.parse(
                     fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString()
                 );
-
             } catch (err) {
                 log.warn(`Error loading local config - assuming this is a first run: ${err}`);
 
@@ -94,9 +93,10 @@ class Manager extends EventEmitter {
                 }
             }
 
-            try {  
+            try {
                 skipedVersion = fs.readFileSync(path.join(Settings.userDataPath, 'skippedNodeVersion.json')).toString();
             } catch (err) {
+                log.info('No "skippedNodeVersion.json" found.');
             }
 
             // prepare node info
@@ -111,7 +111,7 @@ class Manager extends EventEmitter {
                 type: nodeType,
                 version: nodeVersion,
                 checksum: hash,
-                algorithm: algorithm,
+                algorithm,
             };
 
 
@@ -119,7 +119,8 @@ class Manager extends EventEmitter {
             if (latestConfig &&
                 JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
                 nodeVersion !== skipedVersion) {
-                return new Q((resolve, reject) => {
+
+                return new Q((resolve) => {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
 
@@ -139,24 +140,27 @@ class Manager extends EventEmitter {
                                 version: nodeVersion,
                                 checksum: `${algorithm}: ${hash}`,
                                 downloadUrl: binaryVersion.download.url,
-                                restart
-                            }
-                        }
-                    }), (update) => {
+                                restart,
+                            },
+                        },
+                    }),
+                    (update) => {
 
                         // update
-                        if (update) {
+                        if (update === 'update') {
                             this._writeLocalConfig(latestConfig);
 
                             resolve(latestConfig);
 
                         // skip
-                        } else {
+                        } else if(update === 'skip') {
                             fs.writeFileSync(
                                 path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
                                 nodeVersion
                             );
 
+                            resolve(localConfig);
+                        } else {
                             resolve(localConfig);
                         }
 
@@ -167,7 +171,8 @@ class Manager extends EventEmitter {
 
             return localConfig;
 
-        }).then((localConfig) => {
+        })
+        .then((localConfig) => {
 
             if (!localConfig) {
                 log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
@@ -240,7 +245,7 @@ class Manager extends EventEmitter {
             this._emit('error', err.message);
 
             // show error
-            if(err.message.indexOf('Hash mismatch') !== -1) {
+            if (err.message.indexOf('Hash mismatch') !== -1) {
 
                 // show hash mismatch error
                 dialog.showMessageBox({
@@ -251,8 +256,8 @@ class Manager extends EventEmitter {
                         type: nodeInfo.type,
                         version: nodeInfo.version,
                         algorithm: nodeInfo.algorithm,
-                        hash: nodeInfo.checksum
-                    })
+                        hash: nodeInfo.checksum,
+                    }),
                 }, () => {
                     app.quit();
                 });

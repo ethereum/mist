@@ -7,6 +7,7 @@ matrix:
       dist: trusty
       node_js: 6
       before_install:
+      - sudo dpkg --add-architecture i386  ## dep for win: add i386 for wine installation
       - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF  ## dep for win: add mono's keys
       - echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee /etc/apt/sources.list.d/mono-xamarin.list  ## dep for win: add mono
       - sudo apt-get update -q

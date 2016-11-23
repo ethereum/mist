@@ -11,9 +11,14 @@ branches:
   only:
     - develop
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y icnsutils graphicsmagick xz-utils gcc-multilib g++-multilib
+addons:
+  apt:
+    packages:
+    - icnsutils
+    - graphicsmagick
+    - xz-utils
+    - gcc-multilib
+    - g++-multilib
 
 before_script:
   - "export DISPLAY=:99.0"

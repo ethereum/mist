@@ -13,7 +13,7 @@ matrix:
       - sudo apt-get update -q
       - sudo apt-get install --no-install-recommends -y ca-certificates-mono icnsutils graphicsmagick gcc-multilib g++-multilib mono-devel wine xz-utils
       script:
-        - gulp --platform linux, win
+        - gulp --platform linux,win
     - os: osx
       osx_image: xcode8.1
       node_js: 6

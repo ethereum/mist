@@ -23,4 +23,4 @@ matrix:
 
 before_script:
   - curl https://install.meteor.com/ | sh
-  - npm install -g meteor-build-client
+  - npm install -g meteor-build-client gulp

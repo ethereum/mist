@@ -25,3 +25,5 @@ matrix:
         - npm install -g meteor-build-client
       script:
         - gulp --platform linux
+    - os: osx
+      osx_image: xcode8.1

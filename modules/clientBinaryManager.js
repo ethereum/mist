@@ -46,14 +46,16 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
+        const nodeType = 'Geth';
         let binariesDownloaded = false;
+        let nodeInfo;
 
         log.info('Checking for new client binaries config...');
 
         this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
-        return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
+        return got('http://0.0.0.0:8080/clientBinaries.json', {
             timeout: 3000,
             json: true,
         })
@@ -70,7 +72,7 @@ class Manager extends EventEmitter {
         .then((latestConfig) => {
             let localConfig;
             let skipedVersion;
-            let gethVersion = latestConfig.clients.Geth.version;
+            let nodeVersion = latestConfig.clients[nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -97,20 +99,29 @@ class Manager extends EventEmitter {
             } catch (err) {
             }
 
+            // prepare node info
+            const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+            const binaryVersion = latestConfig.clients[nodeType].platforms[platform][process.arch];
+            const checksums = _.pick(binaryVersion.download, 'sha256', 'md5');
+            const algorithm = _.keys(checksums)[0].toUpperCase();
+            const hash = _.values(checksums)[0];
+
+            // get the node data, to be able to pass it to a possible error
+            nodeInfo = {
+                type: nodeType,
+                version: nodeVersion,
+                checksum: hash,
+                algorithm: algorithm,
+            };
+
 
             // if new config version available then ask user if they wish to update
             if (latestConfig &&
                 JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
-                gethVersion !== skipedVersion) {
+                nodeVersion !== skipedVersion) {
                 return new Q((resolve, reject) => {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
-                    log.error(latestConfig)
-                    const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
-                    const binaryVersion = latestConfig.clients.Geth.platforms[platform][process.arch];
-                    const checksums = _.pick(binaryVersion.download, 'md5', 'sha256');
-                    const algorithm = _.keys(checksums)[0].toUpperCase();
-                    const hash = _.values(checksums)[0];
 
                     const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
                         useWeb3: false,
@@ -124,8 +135,8 @@ class Manager extends EventEmitter {
                     }, {
                         sendData: {
                             uiAction_sendData: {
-                                name: 'Geth',
-                                version: gethVersion,
+                                name: nodeType,
+                                version: nodeVersion,
                                 checksum: `${algorithm}: ${hash}`,
                                 downloadUrl: binaryVersion.download.url,
                                 restart
@@ -143,7 +154,7 @@ class Manager extends EventEmitter {
                         } else {
                             fs.writeFileSync(
                                 path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
-                                gethVersion
+                                nodeVersion
                             );
 
                             resolve(localConfig);
@@ -161,7 +172,7 @@ class Manager extends EventEmitter {
                 throw new Error('No config given for the ClientBinaryManager, aborting.');
             }
 
-            // scan for geth
+            // scan for node
             const mgr = new ClientBinaryManager(localConfig);
             mgr.logger = log;
 
@@ -225,6 +236,10 @@ class Manager extends EventEmitter {
             log.error(err);
 
             this._emit('error', err.message);
+
+            // throw so the main.js can catch it
+            err.nodeInfo = nodeInfo;
+            throw err;
         });
     }
 

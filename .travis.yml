@@ -1,5 +1,4 @@
 language: node_js
-
 sudo: false
 matrix:
   include:
@@ -14,9 +13,13 @@ matrix:
             - xz-utils
             - gcc-multilib
             - g++-multilib
+      script:
+        - gulp --platform linux
     - os: osx
       osx_image: xcode8.1
       node_js: 6
+      script:
+        - gulp --platform mac
 
 before_script:
   - export DISPLAY=:99.0
@@ -24,6 +27,3 @@ before_script:
   - curl https://install.meteor.com/ | sh
   - PATH=$PATH:~/.meteor
   - npm install -g meteor-build-client
-
-script:
-  - gulp --platform linux

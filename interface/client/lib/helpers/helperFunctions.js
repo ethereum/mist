@@ -36,6 +36,33 @@ Helpers.getWebview = function(id){
 };
 
 /**
+Get tab by url and return the id
+
+@method getTabIdByUrl
+@param {String} url
+@return {String} id
+*/
+Helpers.getTabIdByUrl= function(url, returnEmpty){
+    var tabs = Tabs.find().fetch();
+    url = Helpers.sanitizeUrl(url);
+
+    var foundTab = _.find(tabs, function(tab){
+            if(tab._id === 'browser' || !tab.url)
+                return false;
+            var tabOrigin = new URL(tab.url).origin;
+            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+        });
+
+    // switch tab to browser
+    if(foundTab)
+        foundTab = foundTab._id;
+    else
+        foundTab = 'browser';
+
+    return foundTab;
+};
+
+/**
 Format Urls, e.g add a default protocol if on is missing.
 
 @method formatUrl
@@ -49,6 +76,46 @@ Helpers.formatUrl = function(url){
     return url;
 };
 
+/**
+Sanatizes URLs to prevent phishing and XSS attacks
+
+@method sanitizeUrl
+@param {String} url
+**/
+Helpers.sanitizeUrl = function(url, returnEmptyURL){
+    url = String(url);
+
+    url = url.replace(/[\t\n\r\s]+/g, '');
+    url = url.replace(/^[:\/]{1,3}/i, 'http://');
+
+    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
+        url = false;
+    }
+
+    return url;
+};
+
+/**
+Takes an URL and creates a breadcrumb out of it.
+
+@method generateBreadcrumb
+@return Spacebars.SafeString
+**/
+Helpers.generateBreadcrumb = function (url) {
+    var filteredUrl;
+    var pathname;
+
+    filteredUrl = {
+        host: Blaze._escape(url.host),
+        pathname: Blaze._escape(url.pathname)
+    };
+
+    pathname = _.reject(filteredUrl.pathname.replace(/\/$/g, '').split('/'), function (el) {
+        return el === '';
+    });
+
+    return new Spacebars.SafeString(_.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+};
 
 /**
 Clear localStorage

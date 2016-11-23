@@ -1,46 +1,41 @@
-"use strict";
-
-const net = require('net');
+const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
-
-const _ = global._;
 const log = require('./utils/logger').create('Sockets');
+const net = require('net');
 const dechunker = require('./ipc/dechunker.js');
 
 const Web3IpcSocket = require('./sockets/web3Ipc');
 const Web3HttpSocket = require('./sockets/web3Http');
 
 
-
-
 /**
  * `Socket` manager.
  */
 class SocketManager {
-    constructor () {
+    constructor() {
         this._sockets = {};
     }
 
 
     /**
      * Get socket with given id, creating it if it does not exist.
-     * 
+     *
      * @return {Socket}
      */
-    get (id, type) {
+    get(id, type) {
         if (!this._sockets[id]) {
             log.debug(`Create socket, id=${id}, type=${type}`);
 
             switch (type) {
-                case 'ipc':
-                    this._sockets[id] = new Web3IpcSocket(this, id);
-                    break;
-                case 'http':
-                    this._sockets[id] = new Web3HttpSocket(this, id);
-                    break;
-                default:
-                    throw new Error(`Unrecognized socket type: ${type}`);
+            case 'ipc':
+                this._sockets[id] = new Web3IpcSocket(this, id);
+                break;
+            case 'http':
+                this._sockets[id] = new Web3HttpSocket(this, id);
+                break;
+            default:
+                throw new Error(`Unrecognized socket type: ${type}`);
             }
         }
 
@@ -48,11 +43,10 @@ class SocketManager {
     }
 
 
-
     /**
      * @return {Promise}
      */
-    destroyAll () {
+    destroyAll() {
         log.info('Destroy all sockets');
 
         return Q.all(_.map(this._sockets, (s) => {
@@ -65,7 +59,7 @@ class SocketManager {
      *
      * Usually called by `Socket` instances when they're destroyed.
      */
-    _remove (id) {
+    _remove(id) {
         log.debug(`Remove socket, id=${id}`);
 
         delete this._sockets[id];
@@ -74,6 +68,4 @@ class SocketManager {
 }
 
 
-
 module.exports = new SocketManager();
-

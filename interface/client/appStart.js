@@ -10,7 +10,7 @@ The init function of Mist
 @method mistInit
 */
 mistInit = function(){
-    console.info('Initialise Mist');
+    console.info('Initialise Mist Interface');
 
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {
@@ -25,12 +25,14 @@ mistInit = function(){
             Tabs.insert({
                 _id: 'browser',
                 url: 'https://ethereum.org',
+                redirect: 'https://ethereum.org',
                 position: 0
             });
         }
 
         Tabs.upsert({_id: 'wallet'}, {
             url: 'https://wallet.ethereum.org',
+            redirect: 'https://wallet.ethereum.org',
             position: 1,
             permissions: {
                 admin: true

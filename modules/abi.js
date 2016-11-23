@@ -3,41 +3,50 @@ Decodes Data into values, for a given signature.
 
 @module ABI
 */
-const electron = require('electron');
-const ipc = electron.ipcMain;
+const _ = global._;
+const { ipcMain: ipc } = require('electron');
 const abi = require('ethereumjs-abi');
 
 function isHexType(type) {
-	return _.includes(['address', 'bytes'], type) || type.match(/bytes\d+/g);
+    return _.includes(['address', 'bytes'], type) || type.match(/bytes\d+/g);
 }
 
-ipc.on('backendAction_decodeFunctionSignature', function(event, signature, data){
-	var dataBuffer, paramTypes;
-	dataBuffer = new Buffer(data.slice(10, data.length), 'hex');
-	signature = signature.match(/\((.+)\)/i);
+function padLeft(string, chars) {
+    return (new Array((chars - string.length) + 1).join('0')) + string;
+}
 
-	if (!signature) return;
+ipc.on('backendAction_decodeFunctionSignature', (event, _signature, _data) => {
+    const data = _data.slice(10, _data.length);
+    const signature = _signature.match(/\((.+)\)/i);
 
-	paramTypes = signature[1].split(',');
+    if (!signature) return;
 
-	try	{
-		var paramsResponse = abi.rawDecode(paramTypes, dataBuffer);
-		var paramsDictArr = [];
+    const paramTypes = signature[1].split(',');
 
-		// Turns addresses into proper hex string
-		// Turns numbers into their decimal string version
-		paramTypes.forEach((type, index) => {
-			var conversionFlag = isHexType(type) ? 'hex' : null,
-				prefix = isHexType(type) ? '0x' : '';
+    try {
+        const paramsResponse = abi.rawDecode(paramTypes, new Buffer(data, 'hex'));
+        const paramsDictArr = [];
 
-			paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
+        // Turns addresses into proper hex string
+        // Turns numbers into their decimal string version
+        paramTypes.forEach((type, index) => {
+            const conversionFlag = isHexType(type) ? 'hex' : null;
+            const prefix = isHexType(type) ? '0x' : '';
 
-			paramsDictArr.push({type: type, value: prefix + paramsResponse[index]});
-		});
+            paramsResponse[index] = paramsResponse[index].toString(conversionFlag);
 
-		event.sender.send('uiAction_decodedFunctionSignatures', paramsDictArr);
-	}
-	catch(e){
-		console.warn('ABI.js Warning:', e.message);
-	}
+            const res = type.match(/bytes(\d+)/i);
+            if (type === 'address') {
+                paramsResponse[index] = padLeft(paramsResponse[index], 40);
+            } else if (res) {
+                paramsResponse[index] = padLeft(paramsResponse[index], Number(res[1]) * 2);
+            }
+
+            paramsDictArr.push({ type, value: prefix + paramsResponse[index] });
+        });
+
+        event.sender.send('uiAction_decodedFunctionSignatures', paramsDictArr);
+    } catch (e) {
+        console.warn('ABI.js Warning:', e.message);
+    }
 });

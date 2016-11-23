@@ -4,29 +4,40 @@ var pinToSidebar = function() {
     var selectedTab = Tabs.findOne(LocalStore.get('selectedTab'));
 
     if(selectedTab) {
-        var existingUserTab = _.find(Tabs.find().fetch(), function(tab){
-          return tab._id !== 'browser' && tab.url == selectedTab.url;
-        });
+        var existingUserTab = Helpers.getTabIdByUrl(selectedTab.url);
 
-        if (!existingUserTab) {
+        console.log(existingUserTab);
+        console.log(selectedTab);
+
+        if(existingUserTab === 'browser') {
             var newTabId = Tabs.insert({
                 url: selectedTab.url,
+                redirect: selectedTab.url,
                 name: selectedTab.name,
                 menu: {},
                 menuVisible: false,
                 position: Tabs.find().count() + 1
             });
             LocalStore.set('selectedTab', newTabId);
+        } else {
+            LocalStore.set('selectedTab', existingUserTab);
         }
 
-        console.log('tab info', selectedTab);
-        if (selectedTab._id == 'browser') {
+        if (selectedTab._id === 'browser') {
+            var sameLastPage;
+
             // move the current browser tab to the last visited page
-            var lastPage = DoogleLastVisitedPages.find({},{limit: 2, sort: {timestamp: -1}}).fetch();
+            var lastPageItems = LastVisitedPages.find({}, {limit: 2, sort: {timestamp: -1}}).fetch();
+            var lastPage = lastPageItems.pop();
+            var lastPageURL = lastPage ? lastPage.url : 'http://about:blank';
             Tabs.update('browser', {
-                url: lastPage[1] ? lastPage[1].url : 'http://about:blank',
-                redirect: lastPage[1] ? lastPage[1].url : 'http://about:blank'
+                url: lastPageURL,
+                redirect: lastPageURL
             });
+
+            // remove last page form last pages
+            if(sameLastPage = LastVisitedPages.findOne({url: selectedTab.url}))
+                LastVisitedPages.remove(sameLastPage._id);
         }
     }
 };
@@ -63,7 +74,7 @@ Template['popupWindows_connectAccount'].helpers({
     */
     dappFriendlyURL: function(){
         var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
-        if (currentTab.url){
+        if (currentTab && currentTab.url){
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
     },
@@ -96,7 +107,7 @@ Template['popupWindows_connectAccount'].helpers({
     */
     'selected': function(){
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
-    },
+    }
 });
 
 Template['popupWindows_connectAccount'].events({
@@ -141,7 +152,9 @@ Template['popupWindows_connectAccount'].events({
 
         // reload the webview
         ipc.send('backendAction_sendToOwner', null, accounts);
-        ipc.send('backendAction_closePopupWindow');
+        setTimeout(function(){
+            ipc.send('backendAction_closePopupWindow');
+        }, 600);
     },
     /**
     Create account
@@ -150,5 +163,5 @@ Template['popupWindows_connectAccount'].events({
     */
     'click button.create-account': function(e, template){
         ipc.send('mistAPI_createAccount');
-    },
+    }
 });

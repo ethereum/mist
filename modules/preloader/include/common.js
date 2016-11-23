@@ -1,7 +1,14 @@
-module.exports = function(windowId) {
-  if (process.env.TEST_MODE) {
-    window.electronRequire = require;
-  }
+module.exports = (windowType) => {
+    const { ipcRenderer: ipc } = require('electron');
 
-  require('./consoleLogCapture')(windowId);
-}
+    if (process.env.TEST_MODE) {
+        window.electronRequire = require;
+    }
+
+    require('./consoleLogCapture')(windowType);
+
+    require('./suppressWindowPrompt')();
+
+    // register with window manager
+    ipc.send('backendAction_setWindowId');
+};

@@ -13,11 +13,11 @@
 
                             <button class="main {{#if badge}}has-badge{{/if}}">
                                 {{#if icon}}
-                                    {{> elements_img src=icon}}
+                                    <img src="{{icon}}">
                                 {{else}}
                                     <i class="icon-globe"></i>
                                 {{/if}}
-                                <span>{{name}}</span>
+                                <span title="{{nameFull}}">{{name}}</span>
                                 {{#if badge}}
                                     <div class="badge">{{badge}}</div>
                                 {{/if}}
@@ -38,7 +38,7 @@
                                     {{/if}}
                                 </li>
                             {{/each}}
-                            <li class="see-all"><button> See All</button></li>
+                            <li class="see-all"><button> See All...</button></li>
                         </ul>
                     </li>
                 {{/each}}

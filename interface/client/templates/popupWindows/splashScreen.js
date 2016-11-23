@@ -35,6 +35,13 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         }
     });
 
+    ipc.on('uiAction_clientBinaryStatus', function(e, status) {
+        TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.clientBinaries.' + status));
+        TemplateVar.set(template, 'showProgressBar', false);
+        TemplateVar.set(template, 'showStartAppButton', false);            
+        TemplateVar.set(template, 'logText', null);
+    });
+
 
     ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
         switch (status) {
@@ -82,11 +89,11 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
         TemplateVar.set(template, 'smallClass', 'small');
 
-        if (status == 'inProgress') {
+        if (status === 'inProgress') {
             TemplateVar.set(template, 'showStartAppButton', true);
             TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
-            if (data != false) {
+            if (data !== false) {
                 // if state is "in progress" and we have data
                 showNodeLog = false;
                 var translationString = '';                    
@@ -99,8 +106,8 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                     // Check which state we are
 
                     if  (   0 < lastSyncData._displayKnownStates && (
-                            lastSyncData.pulledStates != Math.round(lastSyncData._displayState) 
-                        ||  lastSyncData.knownStates != Math.round(lastSyncData._displayKnownStates)) 
+                            lastSyncData.pulledStates !== Math.round(lastSyncData._displayState) 
+                        ||  lastSyncData.knownStates !== Math.round(lastSyncData._displayKnownStates)) 
                     ) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
@@ -159,7 +166,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ window.mist.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
     },
     /**
     Updates the Sync Message live
@@ -188,7 +195,7 @@ Template['popupWindows_splashScreen'].helpers({
                 syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
                 syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / 10;
                 syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / 10;
-            };            
+            }
 
             // Create the fancy strings
             lastSyncData.displayBlock = numeral(Math.round(lastSyncData._displayBlock)).format('0,0');

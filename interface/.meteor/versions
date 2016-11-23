@@ -33,14 +33,13 @@ ejson@1.0.12
 ethereum:accounts@0.3.10
 ethereum:blocks@0.3.1
 ethereum:dapp-styles@0.5.6
-ethereum:elements@0.7.7
+ethereum:elements@0.7.10
 ethereum:tools@0.5.2
 ethereum:web3@0.15.3
 fastclick@1.0.12
 frozeman:animation-helper@0.2.6
 frozeman:global-notifications@0.2.1
 frozeman:persistent-minimongo@0.1.8
-frozeman:persistent-minimongo2@0.3.4
 frozeman:reactive-timer@0.1.7
 frozeman:storage@0.1.9
 frozeman:template-var@1.2.3

@@ -9,8 +9,7 @@ The IPC provider wrapper to communicate to the backend
 @constructor
 */
 
-const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const { ipcRenderer: ipc } = require('electron');
 
 
 /**
@@ -18,12 +17,11 @@ Gets the writable property.
 
 @method on('ipcProvider-setWritable')
 */
-ipc.on('ipcProvider-setWritable', function(e, writable){
+ipc.on('ipcProvider-setWritable', (e, writable) => {
     // console.debug('ipcProvider-setWritable', writable);
 
     ipcProviderWrapper.writable = writable;
 });
-
 
 
 const ipcProviderWrapper = {
@@ -37,7 +35,7 @@ const ipcProviderWrapper = {
 
     @method connect
     */
-    connect: function(path) {
+    connect(path) {
         // console.debug('ipcProviderWrapper: connect');
 
         ipc.send('ipcProvider-create', path);
@@ -51,10 +49,10 @@ const ipcProviderWrapper = {
     @param {String} name `connect`, `error`, `end`, `timeout` or `data`
     @param  {Funciton} callback
     */
-    on: function(name, callback) {
+    on(name, callback) {
         // console.debug('ipcProviderWrapper: add listener', name);
 
-        ipc.on('ipcProvider-'+ name, function(e, result){
+        ipc.on(`ipcProvider-${name}`, (e, result) => {
             callback(result);
         });
     },
@@ -65,10 +63,10 @@ const ipcProviderWrapper = {
     @param {String} name `connect`, `error`, `end`, `timeout` or `data`
     @param  {Funciton} callback
     */
-    once: function(name, callback) {
+    once(name, callback) {
         // console.debug('ipcProviderWrapper: add listener', name);
 
-        ipc.once('ipcProvider-'+ name, function(e, result){
+        ipc.once(`ipcProvider-${name}`, (e, result) => {
             callback(result);
         });
     },
@@ -77,10 +75,10 @@ const ipcProviderWrapper = {
 
     @method removeListener
     */
-    removeListener: function(name, callback){
+    removeListener(name, callback) {
         // console.debug('ipcProviderWrapper: remove listener', name);
 
-        ipc.removeListener('ipcProvider-'+ name, callback);
+        ipc.removeListener(`ipcProvider-${name}`, callback);
     },
 
     /**
@@ -88,11 +86,11 @@ const ipcProviderWrapper = {
 
     @method removeAllListeners
     */
-    removeAllListeners: function(name){
+    removeAllListeners(name) {
         // console.debug('ipcProviderWrapper: remove all listeners', name);
 
-        if(name) {
-            ipc.removeAllListeners('ipcProvider-'+ name);
+        if (name) {
+            ipc.removeAllListeners(`ipcProvider-${name}`);
         } else {
             ipc.removeAllListeners('ipcProvider-error');
             ipc.removeAllListeners('ipcProvider-end');
@@ -105,7 +103,7 @@ const ipcProviderWrapper = {
 
     @method write
     */
-    write: function (payload) {
+    write(payload) {
         // console.debug('ipcProviderWrapper: write payload');
 
         ipc.send('ipcProvider-write', payload);
@@ -115,11 +113,11 @@ const ipcProviderWrapper = {
 
     @method writeSync
     */
-    writeSync: function (payload) {
+    writeSync(payload) {
         // console.debug('ipcProviderWrapper: write payload (sync)');
 
         return ipc.sendSync('ipcProvider-writeSync', payload);
-    }
+    },
 
 };
 

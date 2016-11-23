@@ -38,6 +38,7 @@
                     "nb": "Norsk",
                     "pt": "Português",
                     "sq": "Shqip",
+                    "ru": "Pусский",
                     "zh": "普通話",
                     "zh-TW": "國語"
                 }
@@ -143,9 +144,21 @@
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
             "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
-            "launchApp": "Launch Application"
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
+            "clientUpdateAvailable": {
+                "downloadAndRestart": "Download and Restart",
+                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+            },
             "updateAvailable": {
                 "download": "Download",
                 "newVersionAvailable": "A new version of __app__ is available!",
@@ -182,7 +195,7 @@
                 "unlocking": "Confirming...",
                 "createContract": "Create contract",
                 "estimatedFee": "Estimated fee consumption",
-                "estimatedGasError": "Is seems this transaction will fail. If you submit it, it may consume all the gas you send.", 
+                "estimatedGasError": "It seems this transaction will fail. If you submit it, it may consume all the gas you send.",
                 "transactionThrow": "The contract won't allow this transaction to be executed",
                 "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
@@ -248,6 +261,12 @@
                     "wrongPassword": "Wrong password.",
                     "importFailed": "Couldn't import the file, got: __error__"
                 }
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },

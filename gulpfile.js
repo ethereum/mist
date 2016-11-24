@@ -216,7 +216,7 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
 });
 
 
-gulp.task('build-dist', ['copy-i18n'], (cb) => {
+gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
     console.log('Bundling platforms: ', options.platform);
 
     const appPackageJson = _.extend({}, packJson, {

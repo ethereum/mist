@@ -82,7 +82,9 @@ exports.run = () => {
     check().then((update) => {
         if (update) {
             showWindow({
-                sendData: {uiAction_checkUpdateDone: update},
+                sendData: {
+                    uiAction_checkUpdateDone: update,
+                },
             });
         }
     }).catch((err) => {
@@ -98,7 +100,9 @@ exports.runVisibly = () => {
 
     wnd.on('ready', () => {
         check().then((update) => {
-            wnd.send({uiAction_checkUpdateDone: update});
+            wnd.send({
+                uiAction_checkUpdateDone: update,
+            });
         }).catch((err) => {
             log.error(err);
 

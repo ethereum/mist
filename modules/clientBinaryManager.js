@@ -1,7 +1,7 @@
 const _ = global._;
 const Q = require('bluebird');
 const fs = require('fs');
-const { app, ipcMain: ipc } = require('electron');
+const { app, dialog } = require('electron');
 const got = require('got');
 const path = require('path');
 const Settings = require('./settings');
@@ -46,7 +46,9 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
+        const nodeType = 'Geth';
         let binariesDownloaded = false;
+        let nodeInfo;
 
         log.info('Checking for new client binaries config...');
 
@@ -70,7 +72,7 @@ class Manager extends EventEmitter {
         .then((latestConfig) => {
             let localConfig;
             let skipedVersion;
-            let gethVersion = latestConfig.clients.Geth.version;
+            const nodeVersion = latestConfig.clients[nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -79,7 +81,6 @@ class Manager extends EventEmitter {
                 localConfig = JSON.parse(
                     fs.readFileSync(path.join(Settings.userDataPath, 'clientBinaries.json')).toString()
                 );
-
             } catch (err) {
                 log.warn(`Error loading local config - assuming this is a first run: ${err}`);
 
@@ -92,22 +93,36 @@ class Manager extends EventEmitter {
                 }
             }
 
-            try {  
+            try {
                 skipedVersion = fs.readFileSync(path.join(Settings.userDataPath, 'skippedNodeVersion.json')).toString();
             } catch (err) {
+                log.info('No "skippedNodeVersion.json" found.');
             }
+
+            // prepare node info
+            const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+            const binaryVersion = latestConfig.clients[nodeType].platforms[platform][process.arch];
+            const checksums = _.pick(binaryVersion.download, 'sha256', 'md5');
+            const algorithm = _.keys(checksums)[0].toUpperCase();
+            const hash = _.values(checksums)[0];
+
+            // get the node data, to be able to pass it to a possible error
+            nodeInfo = {
+                type: nodeType,
+                version: nodeVersion,
+                checksum: hash,
+                algorithm,
+            };
 
 
             // if new config version available then ask user if they wish to update
-            if (latestConfig &&
-                JSON.stringify(localConfig) !== JSON.stringify(latestConfig) &&
-                gethVersion !== skipedVersion) {
-                return new Q((resolve, reject) => {
+            if (latestConfig
+                && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)
+                && nodeVersion !== skipedVersion) {
+
+                return new Q((resolve) => {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
-
-                    let platform = process.platform.replace('darwin','mac').replace('win32','win').replace('freebsd','linux').replace('sunos','linux');
-                    let binaryVersion = latestConfig.clients.Geth.platforms[platform][process.arch];
 
                     const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
                         useWeb3: false,
@@ -121,28 +136,30 @@ class Manager extends EventEmitter {
                     }, {
                         sendData: {
                             uiAction_sendData: {
-                                name: 'Geth',
-                                version: gethVersion,
-                                checksum: `SHA256: ${binaryVersion.download.sha256}`,
+                                name: nodeType,
+                                version: nodeVersion,
+                                checksum: `${algorithm}: ${hash}`,
                                 downloadUrl: binaryVersion.download.url,
-                                restart: restart
-                            }
-                        }
-                    }), (update) => {
+                                restart,
+                            },
+                        },
+                    }),(update) => {
 
                         // update
-                        if(update) {
+                        if (update === 'update') {
                             this._writeLocalConfig(latestConfig);
 
                             resolve(latestConfig);
 
                         // skip
-                        } else {
+                        } else if (update === 'skip') {
                             fs.writeFileSync(
                                 path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
-                                gethVersion
+                                nodeVersion
                             );
 
+                            resolve(localConfig);
+                        } else {
                             resolve(localConfig);
                         }
 
@@ -152,13 +169,14 @@ class Manager extends EventEmitter {
             }
 
             return localConfig;
+        })
+        .then((localConfig) => {
+            if (!localConfig) {
+                log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
+                localConfig = require('../clientBinaries.json');
+            }
 
-        }).then((localConfig) => {
-
-            if(!localConfig)
-                throw new Error('No config given for the ClientBinaryManager, aborting.');
-
-            // scan for geth
+            // scan for node
             const mgr = new ClientBinaryManager(localConfig);
             mgr.logger = log;
 
@@ -209,7 +227,7 @@ class Manager extends EventEmitter {
                 });
 
                 // restart if it downloaded while running
-                if(restart && binariesDownloaded) {
+                if (restart && binariesDownloaded) {
                     log.info('Restarting app ...');
                     app.relaunch();
                     app.quit();
@@ -222,6 +240,27 @@ class Manager extends EventEmitter {
             log.error(err);
 
             this._emit('error', err.message);
+
+            // show error
+            if (err.message.indexOf('Hash mismatch') !== -1) {
+                // show hash mismatch error
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
+                    detail: global.i18n.t('mist.errors.nodeChecksumMismatch.description', {
+                        type: nodeInfo.type,
+                        version: nodeInfo.version,
+                        algorithm: nodeInfo.algorithm,
+                        hash: nodeInfo.checksum,
+                    }),
+                }, () => {
+                    app.quit();
+                });
+
+                // throw so the main.js can catch it
+                throw err;
+            }
         });
     }
 

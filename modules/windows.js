@@ -51,11 +51,13 @@ class Window extends EventEmitter {
             this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
-                if(_.isString(opts.sendData)) {
+                if (_.isString(opts.sendData)) {
                     this.send(opts.sendData);
-                } else if(_.isObject(opts.sendData)) {
-                    for (var key in opts.sendData) {
-                        this.send(key, opts.sendData[key]);
+                } else if (_.isObject(opts.sendData)) {
+                    for (const key in opts.sendData) {
+                        if (opts.sendData.hasOwnProperty(key)) {
+                            this.send(key, opts.sendData[key]);
+                        }
                     }
                 }
             }
@@ -228,11 +230,12 @@ class Windows {
 
         log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
-        let wnd = this._windows[type] = new Window(this, type, options);
+        const wnd = this._windows[type] = new Window(this, type, options);
         wnd.on('closed', this._onWindowClosed.bind(this, wnd));
 
-        if(callback)
+        if (callback) {
             wnd.callback = callback;
+        }
 
         return wnd;
     }

@@ -68,8 +68,8 @@ function showWindow(options) {
     return Windows.createPopup('updateAvailable', _.extend({
         useWeb3: false,
         electronOptions: {
-            width: 480,
-            height: 230,
+            width: 550,
+            height: 250,
             alwaysOnTop: true,
             resizable: false,
             maximizable: false,

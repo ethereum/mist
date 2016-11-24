@@ -112,8 +112,8 @@ class Manager extends EventEmitter {
                     const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
                         useWeb3: false,
                         electronOptions: {
-                            width: 800,
-                            height: 330,
+                            width: 600,
+                            height: 340,
                             alwaysOnTop: false,
                             resizable: false,
                             maximizable: false,

@@ -6,10 +6,10 @@ Template Controllers
 
 
 Template['popupWindows_clientUpdateAvailable'].events({
-    'click .yes': function(e){
+    'click .ok': function(e){
         ipc.send('backendAction_windowCallback', true);
     },
-    'click .no': function(e){
+    'click .cancel': function(e){
         ipc.send('backendAction_windowCallback', false);
     }
 });

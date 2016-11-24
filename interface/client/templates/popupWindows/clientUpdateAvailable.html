@@ -1,32 +1,36 @@
 <template name="popupWindows_clientUpdateAvailable">
     <div class="popup-windows update-available row">
-        <div class="col col-4">
+        <div class="col col-3">
             <img class="left-overlay {{mode}}" src="{{appIconPath}}" />
         </div>
+        {{#with Session "data"}}
         <div class="col col-8 text">
-            {{#with Session "data"}}
-                <h3>
-                    {{i18n "mist.popupWindows.clientUpdateAvailable.newVersionAvailable" client=name version=version }}
-                </h3>
-                <p style="-webkit-user-select: all; margin: 35px 0;">
+                <h1>
+                    {{i18n "mist.popupWindows.updateAvailable.newVersionAvailable" name=name version=version }}
+                </h1>
+                <p>
+                <br>
                     <ul class="no-bullets">
-                        <li><strong>Client</strong>: {{name}}</li>
-                        <li><strong>Version</strong>: {{version}}</li>
-                        <li><strong>Checksum</strong>: {{checksum}}</li>
-                        <li><strong>Download URL</strong>: <a href="{{downloadUrl}}" target="_blank">{{downloadUrl}}</a></li>
+                        <li>{{i18n "mist.popupWindows.updateAvailable.version"}}: <strong> {{version}} </strong></li>
+                        <li>{{i18n "mist.popupWindows.updateAvailable.downloadURL"}}: <strong> {{downloadUrl}}</strong></li>
+                        <li>{{i18n "mist.popupWindows.updateAvailable.checksum"}}: <strong> {{checksum}} </strong></li>
                     </ul>
                 </p>
-                <button class="yes border-button" style="margin-right: 20px;">
+        </div>
+        <footer class="dapp-small">
+            <div class="dapp-modal-buttons">
+                <button class="cancel" type="button">
+                    {{i18n "mist.popupWindows.updateAvailable.skipUpdate"}}
+                </button>
+                <button class="ok dapp-primary-button">
                     {{#if restart}}
-                        {{i18n "mist.popupWindows.clientUpdateAvailable.downloadAndRestart"}}
+                        {{i18n "mist.popupWindows.updateAvailable.downloadAndRestart"}}
                     {{else}}
-                        {{i18n "mist.popupWindows.clientUpdateAvailable.download"}}
+                        {{i18n "mist.popupWindows.updateAvailable.download"}}
                     {{/if}}
                 </button>
-                <button class="no border-button">
-                    {{i18n "mist.popupWindows.clientUpdateAvailable.skipUpdate"}}
-                </button>
-            {{/with}}
-        </div>
+            </div>
+        </footer>
+        {{/with}}
     </div>
 </template>

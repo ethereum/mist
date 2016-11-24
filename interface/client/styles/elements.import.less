@@ -21,10 +21,15 @@ ul.no-bullets {
     margin: 0;
     padding: 0;
     list-style: none;
+    word-wrap: break-word;
 
     li {
         margin: 0;
         margin-bottom: @defaultMargin/2;
+
+        strong {
+            font-weight: 400;
+        }
     }
 }
 
@@ -43,16 +48,4 @@ ul.no-bullets {
     border-radius: 3px;
     color: @colorWhite;
     background-color: @colorError;
-}
-
-.border-button {
-    border: 1px solid @colorBlue;
-    border-radius: 4px;
-    padding: 5px 10px;
-    text-decoration: none;
-
-    &:hover, &:focus {
-        background-color: @colorBlue;
-        color: @colorWhite;
-    }
 }

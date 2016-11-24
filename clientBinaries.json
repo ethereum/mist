@@ -2,36 +2,36 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.5.2",
+            "version": "1.5.3",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "00348fb870755350a9c03d66ff9347ffef8c6154701dc54cc325b3fb2c156541",
-                            "bin": "geth-linux-amd64-1.5.2-c8695209/geth"
+                            "MD5": "08c982c0a094e3fb55934caa75cd2525",
+                            "bin": "geth-linux-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "a2bf2378e480e68b4012305990f7afffc8d32f6678df96be77419c2013636c96",
-                            "bin": "geth-linux-386-1.5.2-c8695209/geth"
+                            "MD5": "5ddd37349c3767833d5f0f174c0411d7",
+                            "bin": "geth-linux-386-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }
@@ -39,16 +39,16 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "4da78ba53f1bd487f420245797c8c8a9cbea9d8ce3738925c3727834a5dcab45",
-                            "bin": "geth-darwin-amd64-1.5.2-c8695209/geth"
+                            "MD5": "ec3df4fb350adfcb66c488f68cea02e9",
+                            "bin": "geth-darwin-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }

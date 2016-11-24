@@ -241,17 +241,17 @@
                 "pinToSidebar": "Mantener la aplicación en la barra lateral",
                 "connectAccountDescription": "Usted está compartiendo su identidad con __dappName__. Esto permite que la aplicación tenga acceso a la información pública de las cuentas seleccionadas, saldos incuindo relacionados con las mismas."
             },
-            "clientUpdateAvailable": {
-                "downloadAndRestart": "Update and Restart",
-                "download": "Update",
-                "skipUpdate": "Skip Update",
-                "newVersionAvailable": "New Ethereum node versions are available!"
-            },
             "updateAvailable": {
-                "download": "Download",
-                "newVersionAvailable": "A new version of __app__ is available!",
-                "checking": "Checking for updates to __app__...",
-                "noUpdateFound": "No update found. You are running the latest version of __app__."
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
             }
         }
     },

@@ -139,20 +139,16 @@
         },
         "popupWindows": {
             "updateAvailable": {
-                "download": "Загрузка",
-                "newVersionAvailable": "Доступна новая версия __app__ !",
-                "checking": "Проверка обновления для __app__...",
-                "noUpdateFound": "Обновления не найдены. Вы используете последнюю версию __app__."
-            },
-            "requestAccount": {
-                "title": "Создание аккаунта",
-                "enterPassword": "Введите пароль",
-                "repeatPassword": "Повторите пароль",
-                "creating": "Генерация аккаунта...",
-                "errors": {
-                    "passwordMismatch": "Ваши пароли не совпадают.",
-                    "passwordTooShort": "Требуется длинный пароль"
-                }
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
             "unlockMasterPassword": {
                 "title": "Ввод мастер-пароля",

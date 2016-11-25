@@ -56,9 +56,9 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://ethereum.github.io/ethereum-org/dist/geth/geth-windows-amd64-1.5.3-978737f5-mist-fix.zip",
+                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-amd64-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "e69491a548fa1b8d332b55888797c3477d88d8835e33592bd36cdea8fe5318f8",
+                            "sha256": "329caa90b5e02f71300b217c3a93a777c6ef09ae38d7be4f2cd5127ddbaed0e1",
                             "bin": "geth-windows-amd64-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
@@ -71,9 +71,9 @@
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://ethereum.github.io/ethereum-org/dist/geth/geth-windows-386-1.5.3-978737f5-mist-fix.zip",
+                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-386-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "84d8931f06f393cb647e500388dc2eae209739a6b12a2c78e0d66613720e511a",
+                            "sha256": "637447797ed362a409d9e8e5b12bee1a56009faa8a98c20dab4af77f04527b2e",
                             "bin": "geth-windows-386-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",

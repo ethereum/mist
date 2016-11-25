@@ -118,7 +118,7 @@ Template['views_webview'].helpers({
             // CHECK URL and throw error if not allowed
             if(!Helpers.sanitizeUrl(template.url, true)) {
                 console.log('Not allowed URL: '+ template.url);
-                return 'file://'+ dirname + '/errorPages/400.html?'+ template.url;
+                return 'file://'+ dirname + '/errorPages/400.html;
             }
             
             return Helpers.formatUrl(template.url);

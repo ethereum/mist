@@ -17,25 +17,6 @@ Template['views_webview'].onRendered(function(){
         tabId = template.data._id,
         webview = template.find('webview');
 
-    // template update URL interval
-    // template.updateURLIntervalId = Meteor.setInterval(function(){
-
-    //     var titleFull = webview.getTitle(),
-    //         title = titleFull;
-
-    //     if(titleFull && titleFull.length > 40) {
-    //         title = titleFull.substr(0, 40);
-    //         title += '…';
-    //     }
-
-    //     // update the title
-    //     Tabs.update(tabId, {$set: {
-    //         name: title,
-    //         nameFull: titleFull,
-    //         // url: webview.getURL(),
-    //     }});
-    // }, 500);
-
 
     // Send updated TEST DATA
     if(tabId === 'tests') {
@@ -104,11 +85,6 @@ Template['views_webview'].onRendered(function(){
         webview: webview
     }));
 });
-
-
-// Template['views_webview'].onDestroyed(function(){
-//     Meteor.clearInterval(template.updateURLIntervalId);
-// });
 
 
 Template['views_webview'].helpers({

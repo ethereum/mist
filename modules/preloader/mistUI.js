@@ -148,18 +148,6 @@ window.addEventListener('contextmenu', (e) => {
 }, false);
 
 
-const selectTabWithIndex = (index) => {
-    const tabList = Tabs.find({}, {sort: {position: 1}, fields: {_id: 1}}).fetch();
-    if (index < tabList.length) {
-        LocalStore.set('selectedTab', tabList[index]._id);
-    }
-};
-
-const selectLastTab = () => {
-    const lastTab = Tabs.findOne({}, {sort: {position: -1}, fields: {_id: 1}, limit: 1});
-    LocalStore.set('selectedTab', lastTab._id);
-};
-
 document.addEventListener('keydown', (e) => {
 
     // RELOAD current webview
@@ -167,17 +155,6 @@ document.addEventListener('keydown', (e) => {
         const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
         if (webview)
             { webview.reloadIgnoringCache(); }
-        return;
     }
 
-    // Switch tabs with Ctrl/Cmd + number
-    if (e.metaKey && e.keyCode >= 49 && e.keyCode <= 56) {
-        const index = parseInt(String.fromCharCode(e.keyCode), 10) - 1;
-        selectTabWithIndex(index);
-        return;
-    }
-    // Select last tab on Ctrl + 9
-    if (e.metaKey && e.keyCode === 57) {
-        selectLastTab();
-    }
 }, false);

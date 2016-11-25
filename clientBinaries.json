@@ -2,36 +2,36 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.5.2",
+            "version": "1.5.3",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "00348fb870755350a9c03d66ff9347ffef8c6154701dc54cc325b3fb2c156541",
-                            "bin": "geth-linux-amd64-1.5.2-c8695209/geth"
+                            "sha256": "7f1de3b66176111864571d66917ec885f0e789b140e1fca01bf2296cbcb13f57",
+                            "bin": "geth-linux-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "a2bf2378e480e68b4012305990f7afffc8d32f6678df96be77419c2013636c96",
-                            "bin": "geth-linux-386-1.5.2-c8695209/geth"
+                            "sha256": "527785d2d21655fb5756390ce06188961929856295f29811afe188aa5585880b",
+                            "bin": "geth-linux-386-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }
@@ -39,16 +39,16 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.2-c8695209.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "4da78ba53f1bd487f420245797c8c8a9cbea9d8ce3738925c3727834a5dcab45",
-                            "bin": "geth-darwin-amd64-1.5.2-c8695209/geth"
+                            "sha256": "dca175529d1d626d7ccb7dafab4374a39d715dc524734b09e5c4ebbb68615ffb",
+                            "bin": "geth-darwin-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }
@@ -56,31 +56,31 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-amd64-1.5.2-c8695209-mist-fix.zip",
+                            "url": "https://ethereum.github.io/ethereum-org/dist/geth/geth-windows-amd64-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "2ab8b35729fa0f3f8398c04f72b743a5e1b2177186d945c8c1e4a8622a54c6a1",
-                            "bin": "geth-windows-amd64-1.5.2-c8695209\\geth.exe"
+                            "sha256": "e69491a548fa1b8d332b55888797c3477d88d8835e33592bd36cdea8fe5318f8",
+                            "bin": "geth-windows-amd64-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-386-1.5.2-c8695209-mist-fix.zip",
+                            "url": "https://ethereum.github.io/ethereum-org/dist/geth/geth-windows-386-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "5aced89ff8ae0d7c5151ca247b6899b586184975cdc1e4208f9bd3fd23bd7ecb",
-                            "bin": "geth-windows-386-1.5.2-c8695209\\geth.exe"
+                            "sha256": "84d8931f06f393cb647e500388dc2eae209739a6b12a2c78e0d66613720e511a",
+                            "bin": "geth-windows-386-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.2" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }

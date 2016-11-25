@@ -9,7 +9,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "md5": "08c982c0a094e3fb55934caa75cd2525",
+                            "sha256": "7f1de3b66176111864571d66917ec885f0e789b140e1fca01bf2296cbcb13f57",
                             "bin": "geth-linux-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
@@ -24,7 +24,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "md5": "5ddd37349c3767833d5f0f174c0411d7",
+                            "sha256": "527785d2d21655fb5756390ce06188961929856295f29811afe188aa5585880b",
                             "bin": "geth-linux-386-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
@@ -41,7 +41,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "md5": "ec3df4fb350adfcb66c488f68cea02e9",
+                            "sha256": "dca175529d1d626d7ccb7dafab4374a39d715dc524734b09e5c4ebbb68615ffb",
                             "bin": "geth-darwin-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
@@ -58,7 +58,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.5.3-978737f5.zip",
                             "type": "zip",
-                            "md5": "03502c5208a58aaeb54cfd3fcffb5c26",
+                            "sha256": "8f794a33292b3087be4a12569f6946242f42f30373ca712d018dfb1d738b33ea",
                             "bin": "geth-windows-amd64-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
@@ -73,7 +73,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.5.3-978737f5.zip",
                             "type": "zip",
-                            "md5": "1e6913252d63544edaa18cf1f2f7d27a",
+                            "sha256": "9dd158a2e4bcdc73f60d482c522c67c35ba3f7ebb799bc25f28bb574ba9b04f2",
                             "bin": "geth-windows-386-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",

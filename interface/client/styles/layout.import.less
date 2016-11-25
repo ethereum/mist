@@ -33,10 +33,10 @@
         aside {
             top: @gridHeight * 2;
         }
-        
+
         div.browser-bar {
             top: @gridHeight * 1.5;
-        }        
+        }
 
         .node-info {
             top: @gridHeight;
@@ -88,7 +88,7 @@ aside {
     &:before {
         content: " ";
         display: block;
-        position: absolute; 
+        position: absolute;
         z-index: 2;
         top: 0;
         left: @widthSideBar;
@@ -107,7 +107,7 @@ main {
     position: absolute;
     right: 0;
     left: @widthSideBar;
-    top: 0; 
+    top: 0;
     bottom: 0;
 }
 
@@ -150,16 +150,16 @@ html {
     &.hidden {
         visibility: hidden;
         z-index: 1;
-        webview { 
-            // Temporary fix. See https://github.com/electron/electron/issues/5110
+        webview {
             height: 0;
-            flex: 0 1;
         }
     }
 
     &.app-bar-transparent webview {
         top: 0;
         margin-top: 0;
+        // Temporary fix. See https://github.com/electron/electron/issues/5110
+        flex: 0 1;
     }
 }
 

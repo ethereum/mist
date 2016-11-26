@@ -35,10 +35,16 @@ var checkNetworkType = function(template) {
                         TemplateVar.set(template, 'network', 'mainnet' );
                         break;
 
-                    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
-                        console.log('network is testnet')
+                    case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
+                        console.log('network is testnet (Ropstein)')
                         TemplateVar.set(template, 'network', 'testnet' );
                         break;
+
+                    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
+                        console.log('network is testnet (Morden)')
+                        TemplateVar.set(template, 'network', 'testnet' );
+                        break;
+
                     default:
                         console.log('network is privatenet')
                         TemplateVar.set(template, 'network', 'privatenet' );

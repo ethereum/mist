@@ -140,8 +140,8 @@ Makes tab with index active
 @method selecTabWithIndex
 @param {Integer} index
 */
-Helpers.selectTabWithIndex = function(index) {
-    var tabList = Tabs.find({}, {sort: {position: 1}, fields: {_id: 1}}).fetch();
+Helpers.selectTabWithIndex = function (index) {
+    var tabList = Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch();
     if (index < tabList.length) {
         LocalStore.set('selectedTab', tabList[index]._id);
     }
@@ -152,13 +152,32 @@ Makes last tab active
 
 @method selecLastTab
 */
-Helpers.selectLastTab = function() {
-    var lastTab = Tabs.findOne({}, {sort: {position: -1}, fields: {_id: 1}, limit: 1});
+Helpers.selectLastTab = function () {
+    var lastTab = Tabs.findOne({}, { sort: { position: -1 }, fields: { _id: 1 }, limit: 1 });
     LocalStore.set('selectedTab', lastTab._id);
 };
 
+/**
+Selects previous or next tab (offset +1 or -1)
 
+@method selectTabWithOffset
+*/
+Helpers.selectTabWithOffset = function (offset) {
+    var tabList, selectedTab, currentTabIndex, newTabIndex;
 
+    if (Math.abs(offset) !== 1) {
+        return;
+    }
+    selectedTab = LocalStore.get('selectedTab');
+    tabList = _.pluck(Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch(), '_id');
+    currentTabIndex = tabList.indexOf(selectedTab);
+
+    newTabIndex = (currentTabIndex + offset) % tabList.length;
+    if (newTabIndex < 0) newTabIndex = tabList.length - 1;
+
+    LocalStore.set('selectedTab', tabList[newTabIndex]);
+    console.log(currentTabIndex, newTabIndex);
+};
 
 /**
 Displays an error as global notification

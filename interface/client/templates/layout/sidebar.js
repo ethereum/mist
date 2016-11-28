@@ -185,24 +185,4 @@ Template['layout_sidebar'].events({
 
         Tabs.remove(this._id);
     },
-    /**
-    Switches tabs with Ctrl/Cmd + number [1-9]
-
-    @event keydown document
-    */
-    'keydown document': function(e) {
-        // Select tab with index when number is 1-8
-        if (e.metaKey && e.keyCode >= 49 && e.keyCode <= 56) {
-            var index = parseInt(String.fromCharCode(e.keyCode), 10) - 1;
-            Helpers.selectTabWithIndex(index);
-            return;
-        }
-        // Select last tab on Ctrl + 9
-        if (e.metaKey && e.keyCode === 57) {
-            Helpers.selectLastTab();
-        }
-    }
-
 });
-
-

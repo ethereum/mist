@@ -7,5 +7,5 @@
   "fileBlacklist": ["*.md, signatures.js, interface/.meteor"],
   "skipAlreadyAssignedPR": false,
   "skipAlreadyMentionedPR": false,
-  "assignToReviewer": false,
+  "assignToReviewer": false
 }

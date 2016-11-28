@@ -194,15 +194,15 @@ Helpers.detectNetwork = function (hash) {
         break;
 
     case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
-        console.log('Network is testnet (Ropsten)');
+        console.log('Network is Testnet #3 (Ropsten)');
         network.type = 'testnet';
-        network.name = 'Ropsten';
+        network.name = 'Testnet #3 (Ropsten)';
         break;
 
     case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
-        console.log('Network is testnet (Morden)');
+        console.log('Network is Testnet #2 (Morden)');
         network.type = 'testnet';
-        network.name = 'Morden';
+        network.name = 'Testnet #2 (Morden)';
         break;
 
     default:

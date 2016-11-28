@@ -68,7 +68,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){    
+Helpers.formatUrl = function(url){
     // add http:// if no protocol is present
     if(url && url.indexOf('://') === -1)
         url = 'http://'+ url;
@@ -122,11 +122,11 @@ Clear localStorage
 
 @method getLocalStorageSize
 **/
-Helpers.getLocalStorageSize = function(){
+Helpers.getLocalStorageSize = function () {
 
     var size = 0;
     if(localStorage) {
-        _.each(Object.keys(localStorage), function(key){
+        _.each(Object.keys(localStorage), function (key) {
             size += localStorage[key].length * 2 / 1024 / 1024;
         });
     }
@@ -140,8 +140,7 @@ Detect Network
 
 @method detectNetwork
 **/
-Helpers.detectNetwork = function(hash){
-
+Helpers.detectNetwork = function (hash) {
     var network = {};
 
     switch (hash) {
@@ -153,19 +152,19 @@ Helpers.detectNetwork = function(hash){
     case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
         console.log('Network is testnet (Ropsten)');
         network.type = 'testnet';
-        network.name = 'Ropsten'
+        network.name = 'Ropsten';
         break;
 
     case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
         console.log('Network is testnet (Morden)');
         network.type = 'testnet';
-        network.name = 'Morden'
+        network.name = 'Morden';
         break;
 
     default:
         console.log('Network is privatenet');
         network.type = 'privatenet';
-    } 
+    }
 
     return network;
 };
@@ -288,7 +287,7 @@ Formats a timestamp to any format given.
 @return {String} The formated time
 **/
 // Helpers.formatTime = function(time, format) { //parameters
-    
+
 //     // make sure not existing values are not Spacebars.kw
 //     if(format instanceof Spacebars.kw)
 //         format = null;

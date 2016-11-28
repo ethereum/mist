@@ -120,7 +120,7 @@ class Manager extends EventEmitter {
                 && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)
                 && nodeVersion !== skipedVersion) {
 
-                var promise = new Q((resolve) => {
+                return new Q((resolve) => {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
 
@@ -143,8 +143,7 @@ class Manager extends EventEmitter {
                                 restart,
                             },
                         },
-                    }),(update) => {
-
+                    }), (update) => {
                         // update
                         if (update === 'update') {
                             this._writeLocalConfig(latestConfig);
@@ -165,12 +164,10 @@ class Manager extends EventEmitter {
                     });
 
                     // if the window is closed, simply continue and as again next time
-                    wnd.on('close', function() {
+                    wnd.on('close', () => {
                         resolve(localConfig);
-                    })
+                    });
                 });
-
-                return promise;
             }
 
             return localConfig;

@@ -48,9 +48,9 @@ Template['elements_nodeInfo'].onCreated(function(){
     // CHECK FOR NETWORK
     web3.eth.getBlock(0, function(e, res){
         if(!e){
-            let networkDetected = Helpers.detectNetwork(res.hash);
-            TemplateVar.set(template, 'network', networkDetected.type); 
-            TemplateVar.set(template, 'networkName', networkDetected.name); 
+            const network = Helpers.detectNetwork(res.hash);
+            TemplateVar.set(template, 'network', network.type); 
+            TemplateVar.set(template, 'networkName', network.name); 
         }
     });
 

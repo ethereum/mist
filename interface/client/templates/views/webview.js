@@ -23,7 +23,7 @@ Template['views_webview'].onRendered(function(){
             var tab = Tabs.findOne('tests');
 
             if(!c.firstRun)
-                webview.send('sendData', tab);
+                webview.send('uiAction_sendTestData', tab);
 
             // ADD SWITCHUNG USING webview.loadURL();
         });

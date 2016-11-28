@@ -27,7 +27,7 @@ module.exports = (isWallet) => {
         }
     });
 
-    ipc.on('windowMessage', (e, type, error, value) => {
+    ipc.on('uiAction_windowMessage', (e, type, error, value) => {
         if (mist.callbacks[type]) {
             mist.callbacks[type].forEach((cb) => {
                 cb(error, value);

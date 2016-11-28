@@ -1,7 +1,7 @@
 const _ = global._;
 const Q = require('bluebird');
 const fs = require('fs');
-const { app, ipcMain: ipc } = require('electron');
+const { app, dialog } = require('electron');
 const got = require('got');
 const path = require('path');
 const Settings = require('./settings');
@@ -22,14 +22,14 @@ class Manager extends EventEmitter {
         this._availableClients = {};
     }
 
-    init() {
+    init(restart) {
         log.info('Initializing...');
 
-        this._resolveEthBinPath();
-        this._checkForNewConfig();
-
         // check every hour
-        setInterval(() => this._checkForNewConfig(), 1000 * 60 * 60);
+        setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
+
+        this._resolveEthBinPath();
+        return this._checkForNewConfig(restart);
     }
 
     getClient(clientId) {
@@ -45,7 +45,11 @@ class Manager extends EventEmitter {
         );
     }
 
-    _checkForNewConfig() {
+    _checkForNewConfig(restart) {
+        const nodeType = 'Geth';
+        let binariesDownloaded = false;
+        let nodeInfo;
+
         log.info('Checking for new client binaries config...');
 
         this._emit('loadConfig', 'Fetching remote client config');
@@ -67,6 +71,8 @@ class Manager extends EventEmitter {
         })
         .then((latestConfig) => {
             let localConfig;
+            let skipedVersion;
+            const nodeVersion = latestConfig.clients[nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -87,39 +93,92 @@ class Manager extends EventEmitter {
                 }
             }
 
+            try {
+                skipedVersion = fs.readFileSync(path.join(Settings.userDataPath, 'skippedNodeVersion.json')).toString();
+            } catch (err) {
+                log.info('No "skippedNodeVersion.json" found.');
+            }
+
+            // prepare node info
+            const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+            const binaryVersion = latestConfig.clients[nodeType].platforms[platform][process.arch];
+            const checksums = _.pick(binaryVersion.download, 'sha256', 'md5');
+            const algorithm = _.keys(checksums)[0].toUpperCase();
+            const hash = _.values(checksums)[0];
+
+            // get the node data, to be able to pass it to a possible error
+            nodeInfo = {
+                type: nodeType,
+                version: nodeVersion,
+                checksum: hash,
+                algorithm,
+            };
+
+
             // if new config version available then ask user if they wish to update
-            if (latestConfig && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)) {
-                log.debug('New client binaries config found, asking user if they wish to update...');
+            if (latestConfig
+                && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)
+                && nodeVersion !== skipedVersion) {
 
-                const newVersion = latestConfig.clients.Geth.version;
+                return new Q((resolve) => {
 
-                const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
-                    useWeb3: false,
-                    electronOptions: {
-                        width: 420,
-                        height: 230,
-                        alwaysOnTop: false,
-                        resizable: false,
-                        maximizable: false,
-                    },
-                }, {
-                    sendData: ['uiAction_clientUpdateAvailable', {
-                        name: 'Geth',
-                        version: newVersion,
-                    }],
-                }));
+                    log.debug('New client binaries config found, asking user if they wish to update...');
 
-                // remove previous update listeners and then add new one
-                ipc.removeAllListeners('backendAction_confirmClientUpdate');
-                ipc.once('backendAction_confirmClientUpdate', (e) => {
-                    this._writeLocalConfig(latestConfig);
-                    log.info('Restarting app ...');
-                    app.relaunch();
-                    app.quit();
+                    const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
+                        useWeb3: false,
+                        electronOptions: {
+                            width: 600,
+                            height: 340,
+                            alwaysOnTop: false,
+                            resizable: false,
+                            maximizable: false,
+                        },
+                    }, {
+                        sendData: {
+                            uiAction_sendData: {
+                                name: nodeType,
+                                version: nodeVersion,
+                                checksum: `${algorithm}: ${hash}`,
+                                downloadUrl: binaryVersion.download.url,
+                                restart,
+                            },
+                        },
+                    }), (update) => {
+                        // update
+                        if (update === 'update') {
+                            this._writeLocalConfig(latestConfig);
+
+                            resolve(latestConfig);
+
+                        // skip
+                        } else if (update === 'skip') {
+                            fs.writeFileSync(
+                                path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+                                nodeVersion
+                            );
+
+                            resolve(localConfig);
+                        }
+
+                        wnd.close();
+                    });
+
+                    // if the window is closed, simply continue and as again next time
+                    wnd.on('close', () => {
+                        resolve(localConfig);
+                    });
                 });
             }
 
-            // scan for geth
+            return localConfig;
+        })
+        .then((localConfig) => {
+            if (!localConfig) {
+                log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
+                localConfig = require('../clientBinaries.json');
+            }
+
+            // scan for node
             const mgr = new ClientBinaryManager(localConfig);
             mgr.logger = log;
 
@@ -146,6 +205,8 @@ class Manager extends EventEmitter {
                     this._emit('downloading', 'Downloading binaries');
 
                     return Q.map(_.values(clients), (c) => {
+                        binariesDownloaded = true;
+
                         return mgr.download(c.id, {
                             downloadFolder: path.join(Settings.userDataPath, 'binaries'),
                             urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
@@ -167,6 +228,13 @@ class Manager extends EventEmitter {
                     }
                 });
 
+                // restart if it downloaded while running
+                if (restart && binariesDownloaded) {
+                    log.info('Restarting app ...');
+                    app.relaunch();
+                    app.quit();
+                }
+
                 this._emit('done');
             });
         })
@@ -174,6 +242,27 @@ class Manager extends EventEmitter {
             log.error(err);
 
             this._emit('error', err.message);
+
+            // show error
+            if (err.message.indexOf('Hash mismatch') !== -1) {
+                // show hash mismatch error
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.nodeChecksumMismatch.title'),
+                    detail: global.i18n.t('mist.errors.nodeChecksumMismatch.description', {
+                        type: nodeInfo.type,
+                        version: nodeInfo.version,
+                        algorithm: nodeInfo.algorithm,
+                        hash: nodeInfo.checksum,
+                    }),
+                }, () => {
+                    app.quit();
+                });
+
+                // throw so the main.js can catch it
+                throw err;
+            }
         });
     }
 

@@ -5,6 +5,7 @@
                 "label": "__app__",
                 "about": "Sobre __app__",
                 "checkForUpdates": "Procurar Atualizações...",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Serviços",
                 "hide": "Ocultar o __app__",
                 "hideOthers": "Ocultar Outros",
@@ -68,6 +69,10 @@
                 "win32": "Vá em ‘Ajustes de tempo’ depois a aba ‘internet’ nas suas preferências de sistema e marque a opção ‘sincronizar com um servidor de tempo’. Veja esse guia para mais detalhes: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Para instalar um servidor de tempo, instale \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Abra suas preferências, escolha \"preferências de tempo\" e marque \"Ajustar o tempo automaticamente\"."
+            },
+           "nodeChecksumMismatch": {
+                "title": "Checksum mismatch in downloaded node!",
+                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
@@ -234,15 +239,17 @@
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
             },
-            "clientUpdateAvailable": {
-                "downloadAndRestart": "Download and Restart",
-                "newVersionAvailable": "A new version of __client__(__version__) is available!"
-            },
             "updateAvailable": {
-                "download": "Download",
-                "newVersionAvailable": "A new version of __app__ is available!",
-                "checking": "Checking for updates to __app__...",
-                "noUpdateFound": "No update found. You are running the latest version of __app__."
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

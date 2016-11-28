@@ -1,4 +1,6 @@
 const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const fs = require('fs');
+const path = require('path');
 const Windows = require('./windows');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
@@ -72,6 +74,18 @@ let menuTempl = function (webviews) {
                 label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
                 click() {
                     updateChecker.runVisibly();
+                },
+            }, {
+                label: i18n.t('mist.applicationMenu.app.checkForNodeUpdates'),
+                click() {
+                    // remove skipVersion
+                    fs.writeFileSync(
+                        path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+                        '' // write no version
+                    );
+
+                    // true = will restart after updating and user consent
+                    ClientBinaryManager.init(true);
                 },
             }, {
                 type: 'separator',
@@ -151,34 +165,34 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
                         click() {
-                            let path = Settings.userHomePath;
+                            let userPath = Settings.userHomePath;
 
                             // eth
                             if (ethereumNode.isEth) {
                                 if (process.platform === 'win32') {
-                                    path = `${Settings.appDataPath}\\Web3\\keys`;
+                                    userPath = `${Settings.appDataPath}\\Web3\\keys`;
                                 } else {
-                                    path += '/.web3/keys';
+                                    userPath += '/.web3/keys';
                                 }
 
                             // geth
                             } else {
                                 if (process.platform === 'darwin') {
-                                    path += '/Library/Ethereum/keystore';
+                                    userPath += '/Library/Ethereum/keystore';
                                 }
 
                                 if (process.platform === 'freebsd' ||
                                 process.platform === 'linux' ||
                                 process.platform === 'sunos') {
-                                    path += '/.ethereum/keystore';
+                                    userPath += '/.ethereum/keystore';
                                 }
 
                                 if (process.platform === 'win32') {
-                                    path = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
                                 }
                             }
 
-                            shell.showItemInFolder(path);
+                            shell.showItemInFolder(userPath);
                         },
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),

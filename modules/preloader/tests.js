@@ -19,6 +19,6 @@ window.ipcProvider = require('../ipc/ipcProviderWrapper.js');
 window.permissions = {};
 
 ipc.sendToHost('sendTestData');
-ipc.on('sendTestData', function(e, data) {
+ipc.on('uiAction_sendTestData', function(e, data) {
     window.permissions = data.permissions;
 })

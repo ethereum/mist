@@ -163,20 +163,20 @@ Selects previous or next tab (offset +1 or -1)
 @method selectTabWithOffset
 */
 Helpers.selectTabWithOffset = function (offset) {
-    var tabList, selectedTab, currentTabIndex, newTabIndex;
+    var tabList;
+    var currentTabIndex;
+    var newTabIndex;
 
     if (Math.abs(offset) !== 1) {
         return;
     }
-    selectedTab = LocalStore.get('selectedTab');
     tabList = _.pluck(Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch(), '_id');
-    currentTabIndex = tabList.indexOf(selectedTab);
+    currentTabIndex = tabList.indexOf(LocalStore.get('selectedTab'));
 
     newTabIndex = (currentTabIndex + offset) % tabList.length;
     if (newTabIndex < 0) newTabIndex = tabList.length - 1;
 
     LocalStore.set('selectedTab', tabList[newTabIndex]);
-    console.log(currentTabIndex, newTabIndex);
 };
 
 /**

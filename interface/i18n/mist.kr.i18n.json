@@ -4,6 +4,7 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Services",
                 "quit": "__app__ 종료",
                 "checkForUpdates": "Check for updates...",
@@ -68,6 +69,10 @@
                 "win32": "시스템 설정에 있는 인터넷 시간 설정에서 박스를 체크하세요. 자세한 것은 다음의 가이드를 참조하세요: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 의 방법으로 설치하세요.",
                 "darwin": "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
+            },
+           "nodeChecksumMismatch": {
+                "title": "Checksum mismatch in downloaded node!",
+                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
@@ -234,15 +239,17 @@
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
             },
-            "clientUpdateAvailable": {
-                "downloadAndRestart": "Download and Restart",
-                "newVersionAvailable": "A new version of __client__(__version__) is available!"
-            },
             "updateAvailable": {
-                "download": "Download",
-                "newVersionAvailable": "A new version of __app__ is available!",
-                "checking": "Checking for updates to __app__...",
-                "noUpdateFound": "No update found. You are running the latest version of __app__."
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

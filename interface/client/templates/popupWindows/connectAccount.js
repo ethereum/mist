@@ -151,7 +151,7 @@ Template['popupWindows_connectAccount'].events({
         }
 
         // reload the webview
-        ipc.send('backendAction_sendToOwner', null, accounts);
+        ipc.send('backendAction_windowMessageToOwner', null, accounts);
         setTimeout(function(){
             ipc.send('backendAction_closePopupWindow');
         }, 600);

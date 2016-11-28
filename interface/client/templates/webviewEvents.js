@@ -68,13 +68,14 @@ webviewLoadStart = function(currentTabId, e){
 
     if(e.type === 'did-get-redirect-request' && !e.isMainFrame)
         return;
+
+    console.log(e.type, currentTabId, e);
     
     // stop this action, as the redirect happens reactive through setting the URL attribute
     e.preventDefault(); // doesnt work
     webview.stop();
     ipc.send('backendAction_stopFocusedWebviewNavigation'); // race condition? cant cancel fast enough sometimes?
-
-    console.log(e.type, currentTabId, e);
+    
 
     var url = Helpers.sanitizeUrl(e.newURL || e.url);
     var tabId = Helpers.getTabIdByUrl(url);

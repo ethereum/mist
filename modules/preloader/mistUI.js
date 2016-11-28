@@ -149,12 +149,10 @@ window.addEventListener('contextmenu', (e) => {
 
 
 document.addEventListener('keydown', (e) => {
-
     // RELOAD current webview
     if (e.metaKey && e.keyCode === 82) {
         const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
         if (webview)
             { webview.reloadIgnoringCache(); }
     }
-
 }, false);

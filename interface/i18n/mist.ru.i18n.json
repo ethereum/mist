@@ -5,6 +5,7 @@
                 "label": "__app__",
                 "about": "О __app__",
                 "checkForUpdates": "Проверить обновления...",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Сервисы",
                 "hide": "Скрыть __app__",
                 "hideOthers": "Скрыть прочие",
@@ -68,6 +69,10 @@
                 "win32": "Откройте системные настройки \"Дата и время\" и установите флажок для настройки времени по Интернету. Смотрите подробности в этом описании: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Чтобы использовать сервер синхронизации времени установите \"ntp\" через команду \"apt-get install ntp\".",
                 "darwin": "Для включения синхронизации времени откройте системные настройки и укажите: \"Устанавливать время и дату автоматически\"."
+            },
+           "nodeChecksumMismatch": {
+                "title": "Checksum mismatch in downloaded node!",
+                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
@@ -138,20 +143,16 @@
         },
         "popupWindows": {
             "updateAvailable": {
-                "download": "Загрузка",
-                "newVersionAvailable": "Доступна новая версия __app__ !",
-                "checking": "Проверка обновления для __app__...",
-                "noUpdateFound": "Обновления не найдены. Вы используете последнюю версию __app__."
-            },
-            "requestAccount": {
-                "title": "Создание аккаунта",
-                "enterPassword": "Введите пароль",
-                "repeatPassword": "Повторите пароль",
-                "creating": "Генерация аккаунта...",
-                "errors": {
-                    "passwordMismatch": "Ваши пароли не совпадают.",
-                    "passwordTooShort": "Требуется длинный пароль"
-                }
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
             "unlockMasterPassword": {
                 "title": "Ввод мастер-пароля",
@@ -241,8 +242,10 @@
                 "accountTitleTestnet": "Mine some!"
             },
             "clientUpdateAvailable": {
-                "downloadAndRestart": "Download and Restart",
-                "newVersionAvailable": "A new version of __client__(__version__) is available!"
+                "downloadAndRestart": "Update and Restart",
+                "download": "Update",
+                "skipUpdate": "Skip Update",
+                "newVersionAvailable": "New Ethereum node versions are available!"
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

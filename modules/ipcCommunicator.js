@@ -58,7 +58,16 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
     }
 });
 
-ipc.on('backendAction_sendToOwner', (e, error, value) => {
+ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
+    const windowId = e.sender.getId();
+    const senderWindow = Windows.getById(windowId);
+
+    if(senderWindow.callback) {
+        senderWindow.callback(value1, value2, value3);
+    }
+});
+
+ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     const windowId = e.sender.getId();
     const senderWindow = Windows.getById(windowId);
 
@@ -68,7 +77,7 @@ ipc.on('backendAction_sendToOwner', (e, error, value) => {
         const ownerWindow = Windows.getById(senderWindow.ownerId);
 
         if (ownerWindow) {
-            ownerWindow.send('windowMessage', senderWindow.type, error, value);
+            ownerWindow.send('uiAction_windowMessage', senderWindow.type, error, value);
         }
 
         if (mainWindow) {

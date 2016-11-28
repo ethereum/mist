@@ -9,7 +9,6 @@ const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const Web3 = require('web3');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
-require('./include/openExternal.js');
 require('./include/setBasePath')('interface');
 
 // notifiy the tab to store the webview id

@@ -41,8 +41,9 @@ $(window).on('keydown', function (e) {
     // RELOAD current webview
     if (e.metaKey && e.keyCode === 82) {
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-        if (webview)
-            { webview.reloadIgnoringCache(); }
+        if (webview) {
+            webview.reloadIgnoringCache();
+        }
         return;
     }
 

@@ -68,7 +68,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){    
+Helpers.formatUrl = function(url){
     // add http:// if no protocol is present
     if(url && url.indexOf('://') === -1)
         url = 'http://'+ url;
@@ -134,6 +134,50 @@ Helpers.getLocalStorageSize = function(){
     return size;
 };
 
+/**
+Makes tab with index active
+
+@method selecTabWithIndex
+@param {Integer} index
+*/
+Helpers.selectTabWithIndex = function (index) {
+    var tabList = Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch();
+    if (index < tabList.length) {
+        LocalStore.set('selectedTab', tabList[index]._id);
+    }
+};
+
+/**
+Makes last tab active
+
+@method selecLastTab
+*/
+Helpers.selectLastTab = function () {
+    var lastTab = Tabs.findOne({}, { sort: { position: -1 }, fields: { _id: 1 }, limit: 1 });
+    LocalStore.set('selectedTab', lastTab._id);
+};
+
+/**
+Selects previous or next tab (offset +1 or -1)
+
+@method selectTabWithOffset
+*/
+Helpers.selectTabWithOffset = function (offset) {
+    var tabList;
+    var currentTabIndex;
+    var newTabIndex;
+
+    if (Math.abs(offset) !== 1) {
+        return;
+    }
+    tabList = _.pluck(Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch(), '_id');
+    currentTabIndex = tabList.indexOf(LocalStore.get('selectedTab'));
+
+    newTabIndex = (currentTabIndex + offset) % tabList.length;
+    if (newTabIndex < 0) newTabIndex = tabList.length - 1;
+
+    LocalStore.set('selectedTab', tabList[newTabIndex]);
+};
 
 /**
 Displays an error as global notification
@@ -252,7 +296,7 @@ Formats a timestamp to any format given.
 @return {String} The formated time
 **/
 // Helpers.formatTime = function(time, format) { //parameters
-    
+
 //     // make sure not existing values are not Spacebars.kw
 //     if(format instanceof Spacebars.kw)
 //         format = null;

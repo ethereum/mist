@@ -136,9 +136,7 @@ Template['views_webview'].helpers({
             // remove redirect
             if(url) {
                 template.url = url;
-                Tabs.update(this._id, {$set: {
-                    url: url
-                }});
+                Tabs.update(this._id, {$set: {url}});
             }
 
             return Helpers.formatUrl(url);

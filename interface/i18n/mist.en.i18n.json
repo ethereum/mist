@@ -112,7 +112,7 @@
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
             "mainnetExplain": "You are on the main Ethereum global network",
-            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses",
+            "testnetExplain": "You are on the __name__, DO NOT SEND any real ether to these addresses",
             "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on",
             "peers": "peers"

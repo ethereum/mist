@@ -106,6 +106,7 @@ Helpers.generateBreadcrumb = function (url) {
     var pathname;
 
     filteredUrl = {
+        protocol: Blaze._escape(url.protocol),
         host: Blaze._escape(url.host),
         pathname: Blaze._escape(url.pathname)
     };
@@ -114,7 +115,7 @@ Helpers.generateBreadcrumb = function (url) {
         return el === '';
     });
 
-    return new Spacebars.SafeString(_.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+    return new Spacebars.SafeString(filteredUrl.protocol +'//'+ _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
 };
 
 /**

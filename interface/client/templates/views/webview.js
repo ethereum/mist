@@ -15,7 +15,8 @@ The tab template
 Template['views_webview'].onRendered(function(){
     var template = this,
         tabId = template.data._id,
-        webview = this.find('webview');
+        webview = template.find('webview');
+
 
     // Send updated TEST DATA
     if(tabId === 'tests') {
@@ -28,6 +29,7 @@ Template['views_webview'].onRendered(function(){
             // ADD SWITCHUNG USING webview.loadURL();
         });
     }
+
 
     ipc.on('uiAction_reloadSelectedTab', function(e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
@@ -53,7 +55,7 @@ Template['views_webview'].onRendered(function(){
     // set page history
     webview.addEventListener('dom-ready', function(e){
 
-        var titleFull = this.getTitle(),
+        var titleFull = webview.getTitle(),
             title = titleFull;
 
         if(titleFull && titleFull.length > 40) {
@@ -64,7 +66,8 @@ Template['views_webview'].onRendered(function(){
         // update the title
         Tabs.update(tabId, {$set: {
             name: title,
-            nameFull: titleFull
+            nameFull: titleFull,
+            // url: webview.getURL(),
         }});
 
         webviewLoadStop.call(this, tabId, e);
@@ -83,6 +86,7 @@ Template['views_webview'].onRendered(function(){
     }));
 });
 
+
 Template['views_webview'].helpers({
     /**
     Determines if the current tab is visible
@@ -100,28 +104,44 @@ Template['views_webview'].helpers({
     'checkedUrl': function(){
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
+        var url;
 
         if(tab) {
 
             // set url only once
             if(tab.redirect) {
-                template.url = tab.redirect;
+                url = tab.redirect;
+
+                // remove redirect
+                Tabs.update(this._id, {$unset: {
+                    redirect: ''
+                }});
             }
 
-            // remove redirect
-            Tabs.update(this._id, {$unset: {
-                redirect: ''
-            }, $set: {
-                url: template.url
-            }});
 
             // CHECK URL and throw error if not allowed
-            if(!Helpers.sanitizeUrl(template.url, true)) {
-                console.log('Not allowed URL: '+ template.url);
-                return 'file://'+ dirname + '/errorPages/400.html?'+ template.url;
+            if(!Helpers.sanitizeUrl(url, true)) {
+
+                // Prevent websites usingt the history back attacks
+                if(template.view.isRendered) {
+                    // get the current webview
+                    var webview = template.find('webview');
+                    webview.clearHistory();
+                }
+
+                console.warn('Not allowed URL: '+ template.url);
+                return 'file://'+ dirname + '/errorPages/400.html';
             }
             
-            return Helpers.formatUrl(template.url);
+            // remove redirect
+            if(url) {
+                template.url = url;
+                Tabs.update(this._id, {$set: {
+                    url: url
+                }});
+            }
+
+            return Helpers.formatUrl(url);
         }
     }
 });

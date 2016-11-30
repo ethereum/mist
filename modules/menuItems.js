@@ -423,7 +423,7 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Testnet (Morden)',
+                label: 'Testnet',
                 accelerator: 'CommandOrControl+Shift+2',
                 checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,

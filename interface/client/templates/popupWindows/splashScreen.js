@@ -159,7 +159,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method mode
     */
     'mode': function(){
-        return window.mist.mode;
+        return window.mistMode;
     },
     /**
     Returns the icon path
@@ -167,7 +167,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        return 'file://'+ window.dirname +'/icons/'+ window.mistMode +'/icon2x.png';
     },
     /**
     Updates the Sync Message live

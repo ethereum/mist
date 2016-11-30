@@ -17,7 +17,6 @@ require('./include/openPopup.js');
 // make variables globally accessable
 window.BigNumber = BigNumber;
 window.Q = Q;
+window.https = https;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 web3Admin.extend(window.web3);
-
-window.https = https;

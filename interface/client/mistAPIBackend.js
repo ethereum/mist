@@ -47,19 +47,19 @@ mistAPIBackend = function(event) {
     // SET FAVICON
     if(event.channel === 'favicon') {
         Tabs.update(template.data._id, {$set:{
-            icon: arg
+            icon: Blaze._escape(arg || '')
         }});
     }
 
     // SET APPBAR
     if(event.channel === 'appBar') {
         Tabs.update(template.data._id, {$set:{
-            appBar: arg
+            appBar: Blaze._escape(arg || '')
         }});
     }
 
     if(event.channel === 'mistAPI_sound') {
-        sound.src = arg;
+        sound.src = Blaze._escape(arg);
         sound.play();
     }
 

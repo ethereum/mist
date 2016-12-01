@@ -24,10 +24,12 @@ matrix:
           - gcc-multilib
           - g++-multilib
       install:
-        - curl https://install.meteor.com/ | sh
+        - "curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh"
         - npm install -g meteor-build-client
-        - npm install gulp
         - npm install -g electron@1.3.5
+      before_script:
+        - "export PATH=$HOME/.meteor:$PATH"
+        - yarn
       script:
         - sh -e /etc/init.d/xvfb start
         - npm run ci

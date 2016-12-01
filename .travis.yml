@@ -74,7 +74,7 @@ install:
   - yarn
 
 script:
-  - gulp mist --platform $GULP_PLATFORM
+  - travis_wait 30 gulp mist --platform $GULP_PLATFORM
 
 after_success:
   - gulp mist-checksums

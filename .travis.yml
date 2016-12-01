@@ -22,6 +22,8 @@ matrix:
             - icnsutils
             - graphicsmagick
             - xz-utils
+            - gcc-multilib
+            - g++-multilib
           sources:
             - mono
       before_install:

@@ -26,7 +26,8 @@ matrix:
       install:
         - curl https://install.meteor.com/ | sh
         - npm install -g meteor-build-client
-        - npm install -g gulp
+        - npm install gulp
+        - npm install -g electron@1.3.5
       script:
         - sh -e /etc/init.d/xvfb start
         - npm run ci

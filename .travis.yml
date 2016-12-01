@@ -23,16 +23,12 @@ matrix:
           - xz-utils
           - gcc-multilib
           - g++-multilib
-      before_script:
-        - sh -e /etc/init.d/xvfb start
-      before_install:
+      install:
         - curl https://install.meteor.com/ | sh
-
-install:
-  - npm install -g meteor-build-client
-
-script:
-  - npm run ci
+        - npm install -g meteor-build-client
+      script:
+        - sh -e /etc/init.d/xvfb start
+        - npm run ci
 
 # notifications:
 #   webhooks:

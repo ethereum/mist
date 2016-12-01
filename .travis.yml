@@ -1,5 +1,4 @@
 language: node_js
-node_js: 6
 
 branches:
   only:
@@ -13,6 +12,7 @@ matrix:
       sudo: required
       env:
           - DISPLAY=:99.0
+      node_js: 6
       cache:
         yarn: true
       addons:
@@ -26,6 +26,7 @@ matrix:
       install:
         - curl https://install.meteor.com/ | sh
         - npm install -g meteor-build-client
+        - npm install -g gulp
       script:
         - sh -e /etc/init.d/xvfb start
         - npm run ci

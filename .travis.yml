@@ -48,12 +48,15 @@ matrix:
             - gcc-multilib
             - g++-multilib
 
-    # # MAC
-    # - os: osx
-    #   osx_image: xcode7.3
-    #   env:
-    #       - GULP_PLATFORM=mac
-    #   node_js: 6
+    # MAC
+    - os: osx
+      osx_image: xcode7.3
+      env:
+          - GULP_PLATFORM=mac
+      node_js: 6
+      before_install:
+        - brew update
+        - brew install gnu-tar libicns graphicsmagick xz
 
 cache:
   yarn: true
@@ -76,11 +79,10 @@ script:
 after_success:
   - gulp mist-checksums
 
-
 # notifications:
 #   webhooks:
 #     urls:
-#       - YOUR_WEBHOOK_URL
+#       - https://webhooks.gitter.im/e/33972d9e627a142c57a6
 #     on_success: change
 #     on_failure: always
 #     on_start: never

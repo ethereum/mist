@@ -17,9 +17,6 @@ const web3Admin = require('../web3Admin.js');
 require('./include/setBasePath')('interface');
 
 
-// disable pinch zoom
-webFrame.setZoomLevelLimits(1, 1);
-
 // make variables globally accessable
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

@@ -13,7 +13,7 @@ matrix:
     - os: linux
       dist: trusty
       env:
-          - GULP_PLATFORM=linux,win
+          - GULP_PLATFORM=win
           - DISPLAY=:99.0
       node_js: 6
       addons:
@@ -69,13 +69,13 @@ cache:
 
 install:
   - "curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh"
-  - "export PATH=$HOME/.meteor:$PATH"
+  - "export PATH=$PATH:$HOME/.meteor"
   - npm install -g meteor-build-client
   - npm install -g electron@1.3.5
   - yarn
 
 script:
-  - travis_wait 30 gulp mist --platform $GULP_PLATFORM
+  - travis_wait 60 gulp mist --platform $GULP_PLATFORM
 
 after_success:
   - gulp mist-checksums --platform $GULP_PLATFORM

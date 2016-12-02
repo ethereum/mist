@@ -3,6 +3,8 @@
 */
 
 
+var allowedBrowserBarStyles = ['transparent'];
+
 
 /**
 Filters a id the id to only contain a-z A-Z 0-9 _ -.
@@ -53,8 +55,10 @@ mistAPIBackend = function(event) {
 
     // SET APPBAR
     if(event.channel === 'appBar') {
+        var appBarClass = Blaze._escape(arg || '');
+
         Tabs.update(template.data._id, {$set:{
-            appBar: Blaze._escape(arg || '')
+            appBar: (_.contains(allowedBrowserBarStyles, appBarClass) ? appBarClass : null)
         }});
     }
 

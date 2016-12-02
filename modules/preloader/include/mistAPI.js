@@ -71,15 +71,15 @@ module.exports = () => {
             ipcRenderer.send('mistAPI_requestAccount');
         },
         sounds: {
-            bip: function(){
+            bip: function playSound(){
                 ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/bip.mp3');
             },
-            bloop: function(){
+            bloop: function playSound(){
                 ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/bloop.mp3');
             },
-            invite: function(){
+            invite: function playSound(){
                 ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/invite.mp3');
-            }
+            },
         },
         menu: {
             entries: {},

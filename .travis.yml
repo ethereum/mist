@@ -13,7 +13,7 @@ matrix:
     - os: linux
       dist: trusty
       env:
-          - GULP_PLATFORM=win
+          - GULP_PLATFORM=linux,win
           - DISPLAY=:99.0
       node_js: 6
       addons:
@@ -22,8 +22,6 @@ matrix:
             - icnsutils
             - graphicsmagick
             - xz-utils
-            - gcc-multilib
-            - g++-multilib
           sources:
             - mono
       before_install:
@@ -59,6 +57,7 @@ matrix:
       before_install:
         - brew update
         - brew install gnu-tar libicns graphicsmagick xz
+        - npm install -g yarn
 
 cache:
   yarn: true

@@ -22,6 +22,8 @@ matrix:
             - icnsutils
             - graphicsmagick
             - xz-utils
+            - gcc-multilib
+            - g++-multilib
           sources:
             - mono
       before_install:
@@ -33,20 +35,20 @@ matrix:
       before_script:
         - sh -e /etc/init.d/xvfb start
 
-    # LINUX
-    - os: linux
-      dist: trusty
-      env:
-          - GULP_PLATFORM=linux
-      node_js: 6
-      addons:
-        apt:
-          packages:
-            - icnsutils
-            - graphicsmagick
-            - xz-utils
-            - gcc-multilib
-            - g++-multilib
+    # # LINUX
+    # - os: linux
+    #   dist: trusty
+    #   env:
+    #       - GULP_PLATFORM=linux
+    #   node_js: 6
+    #   addons:
+    #     apt:
+    #       packages:
+    #         - icnsutils
+    #         - graphicsmagick
+    #         - xz-utils
+    #         - gcc-multilib
+    #         - g++-multilib
 
     # MAC
     - os: osx

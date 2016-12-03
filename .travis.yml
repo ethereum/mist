@@ -63,7 +63,7 @@ cache:
     - $HOME/.cache
 
 install:
-  - PATH=$PATH:$HOME/.meteor & curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh
+  - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh
   - npm install -g meteor-build-client electron@1.3.5
   - yarn
 

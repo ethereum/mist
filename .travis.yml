@@ -73,10 +73,10 @@ script:
 after_success:
   - gulp mist-checksums --platform $GULP_PLATFORM
 
-# notifications:
-#   webhooks:
-#     urls:
-#       - https://webhooks.gitter.im/e/33972d9e627a142c57a6
-#     on_success: change
-#     on_failure: always
-#     on_start: never
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/33972d9e627a142c57a6
+    on_success: change
+    on_failure: always
+    on_start: never

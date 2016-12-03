@@ -14,7 +14,6 @@ matrix:
       dist: trusty
       env:
           - GULP_PLATFORM=win
-          - DISPLAY=:99.0
       node_js: 6
       addons:
         apt:
@@ -25,11 +24,9 @@ matrix:
           sources:
             - mono
       before_install:
-        - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
-        - sudo dpkg --add-architecture i386
+        - sudo dpkg --add-architecture i386 && sudo add-apt-repository ppa:ubuntu-wine/ppa -y
         - sudo apt-get update -q
-        - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono
-        - sudo apt-get install --no-install-recommends -y wine1.8
+        - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
       before_script:
         - sh -e /etc/init.d/xvfb start
 
@@ -50,7 +47,7 @@ matrix:
 
     # MAC
     - os: osx
-      osx_image: xcode7.3
+      osx_image: xcode8.1
       env:
           - GULP_PLATFORM=mac
       node_js: 6

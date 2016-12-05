@@ -1,0 +1,27 @@
+{
+  "name": "Mist-Interface",
+  "version": "0.1.0",
+  "description": "Mist interface application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/mist.git"
+  },
+  "keywords": [
+    "ethereum",
+    "mist",
+    "web3"
+  ],
+  "author": "Fabian Vogelsteller <fabian@ethereum.org>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ethereum/mist/issues"
+  },
+  "homepage": "https://github.com/ethereum/mist#readme",
+  "dependencies": {
+    "babel-runtime": "^6.18.0"
+  }
+}

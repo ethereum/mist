@@ -32,14 +32,14 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements:
 
-* Electron v1.4.10
+* Electron v1.3.12
 * Node v6.0 or above
 * [Yarn package manager](https://yarnpkg.com/)
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron@1.4.10
+    $ npm install -g electron@1.3.12
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:

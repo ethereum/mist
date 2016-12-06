@@ -56,7 +56,7 @@ cache:
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh
-  - npm install -g gulp meteor-build-client electron@1.3.5
+  - npm install -g gulp yarn meteor-build-client electron@1.3.5
   - yarn
 
 script:

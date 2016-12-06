@@ -245,6 +245,7 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
             win: {
                 target: [
                     'zip',
+                    'nsis',
                     //'squirrel',
                 ],
             },

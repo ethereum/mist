@@ -13,6 +13,9 @@ Var /GLOBAL switch_overwrite
 # Enable CRC
 CRCCheck on
 
+# Require admin privledges when UAC is on
+RequestExecutionLevel admin
+
 !define APPNAME "Mist"
 !define GROUPNAME "Ethereum"
 !define HELPURL "https://ethereum.org"
@@ -30,26 +33,42 @@ CRCCheck on
 Name "${GROUPNAME} ${APPNAME}"
 Icon "dist_mist\build\icon.ico"
 OutFile "dist_mist\release\mist-installer.exe"
+var FILEDIR
+var DATADIR
 
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel user
-
-InstallDir "$PROGRAMFILES\${APPNAME}"
 
 # The license page. Can use .txt or .rtf data
 PageEx license
   LicenseData LICENSE
 PageExEnd
 
-# Components is a good place to allow the user to select optional software to install if we have any
+# Components is a good place to allow the user to select optional software to install
+# For example, it could be used to allow the user to select which node they want installed and then download it
 #Page components
 
 # Select the location to install the files
-Page directory
+PageEx directory
+  PageCallbacks "preFileDir" "" ""
+  DirVar $FILEDIR
+PageExEnd
+
+Function preFileDir
+  StrCpy $FILEDIR "$PROGRAMFILES\${APPNAME}"
+FunctionEnd
 
 # This can be used so the data directory is selectable by the user
-#PageEx datadir
-#PageExEnd
+PageEx directory
+  PageCallbacks "preDatadir" "" ""
+  DirText "Select a location for data files (including keystore and chaindata)"
+  DirVar $DATADIR
+PageExEnd
+
+Function preDataDir
+  StrCpy $DATADIR "$APPDATA\${APPNAME}"
+  SetShellVarContext ALL
+FunctionEnd
 
 # Installation
 Page instfiles
@@ -76,8 +95,9 @@ Section Mist
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--fast"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--light"
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"${DATADIR}\""
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
 
@@ -98,11 +118,3 @@ Section "uninstall"
  
 # uninstaller section end
 SectionEnd
-
-
-
-
-
-
-
-

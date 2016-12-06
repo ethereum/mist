@@ -36,6 +36,16 @@ OutFile "dist_mist\release\mist-installer.exe"
 var FILEDIR
 var DATADIR
 
+!macro VerifyUserIsAdmin
+UserInfo::GetAccountType
+pop $0
+${If} $0 != "admin" ;Require admin rights on NT4+
+        messageBox mb_iconstop "Administrator rights required!"
+        setErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
+        quit
+${EndIf}
+!macroend
+
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel user
 
@@ -55,6 +65,7 @@ PageEx directory
 PageExEnd
 
 Function preFileDir
+  !insertmacro VerifyUserIsAdmin
   StrCpy $FILEDIR "$PROGRAMFILES\${APPNAME}"
 FunctionEnd
 
@@ -66,6 +77,7 @@ PageEx directory
 PageExEnd
 
 Function preDataDir
+  !insertmacro VerifyUserIsAdmin
   StrCpy $DATADIR "$APPDATA\${APPNAME}"
   SetShellVarContext ALL
 FunctionEnd

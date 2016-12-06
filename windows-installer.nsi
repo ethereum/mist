@@ -1,12 +1,10 @@
+# Include ZipDLL plugin (http://nsis.sourceforge.net/ZipDLL_plug-in)
+!include 'ZipDLL.nsh'
 CRCCheck on
 
 !define APPNAME "Mist"
 !define GROUPNAME "Ethereum"
 !define HELPURL "https://ethereum.org"
-
-Name "${GROUPNAME} ${APPNAME}"
-Icon "dist_mist\build\icon.ico"
-OutFile "dist_mist\release\mist-installer.exe"
 
 # These must be integers and can be set on the command line by NSIS with "/DMAJORVERSION=0 /DMINORVERSION=8 /DBUILDVERSION=7"
 !define VERSIONMAJOR 0
@@ -17,9 +15,11 @@ OutFile "dist_mist\release\mist-installer.exe"
 # Need to add architecture detection and/or include both files
 !define RELEASEZIP "Mist-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
 
-# Include ZipDLL plugin (http://nsis.sourceforge.net/ZipDLL_plug-in)
-!include "ZipDLL.nsh"
- 
+# Define some script globals
+Name "${GROUPNAME} ${APPNAME}"
+Icon "dist_mist\build\icon.ico"
+OutFile "dist_mist\release\mist-installer.exe"
+
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel user
 

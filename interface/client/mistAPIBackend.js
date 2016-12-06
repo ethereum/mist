@@ -3,6 +3,8 @@
 */
 
 
+var allowedBrowserBarStyles = ['transparent'];
+
 
 /**
 Filters a id the id to only contain a-z A-Z 0-9 _ -.
@@ -47,19 +49,22 @@ mistAPIBackend = function(event) {
     // SET FAVICON
     if(event.channel === 'favicon') {
         Tabs.update(template.data._id, {$set:{
-            icon: arg
+            icon: Blaze._escape(arg || '')
         }});
     }
 
     // SET APPBAR
     if(event.channel === 'appBar') {
+        var appBarClass = Blaze._escape(arg || '');
+
         Tabs.update(template.data._id, {$set:{
-            appBar: arg
+            appBar: (_.contains(allowedBrowserBarStyles, appBarClass) ? appBarClass : null)
         }});
     }
 
     if(event.channel === 'mistAPI_sound') {
-        sound.src = arg;
+        sound.pause();
+        sound.src = Blaze._escape(arg);
         sound.play();
     }
 

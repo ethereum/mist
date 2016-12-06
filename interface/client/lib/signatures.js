@@ -10009,5 +10009,11 @@ window.SIGNATURES = {
     ],
     "0x043bb5e7": [
         "getIdentities(address[])"
+    ],
+    "0x27dc297e": [
+        "__callback(bytes32,string)"
+    ],
+    "0x38bbfa50": [
+        "__callback(bytes32,string,bytes)"
     ]
 };

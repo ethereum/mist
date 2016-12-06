@@ -13,6 +13,14 @@ The Helpers class containing helper functions
 Helpers = {};
 
 /**
+The preloader dirname
+
+@property preloaderDirname
+**/
+Helpers.preloaderDirname = window.dirname + '/modules/preloader';
+
+
+/**
 Reruns functions reactively, based on an interval. Use it like so:
 
     Helpers.rerun['10s'].tick();
@@ -106,6 +114,7 @@ Helpers.generateBreadcrumb = function (url) {
     var pathname;
 
     filteredUrl = {
+        protocol: Blaze._escape(url.protocol),
         host: Blaze._escape(url.host),
         pathname: Blaze._escape(url.pathname)
     };
@@ -114,7 +123,7 @@ Helpers.generateBreadcrumb = function (url) {
         return el === '';
     });
 
-    return new Spacebars.SafeString(_.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+    return new Spacebars.SafeString(filteredUrl.protocol +'//'+ _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
 };
 
 /**

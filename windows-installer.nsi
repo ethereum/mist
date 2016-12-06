@@ -1,5 +1,16 @@
+# Include LogicLib (http://nsis.sourceforge.net/LogicLib)
+!include 'LogicLib.nsh'
+
 # Include ZipDLL plugin (http://nsis.sourceforge.net/ZipDLL_plug-in)
 !include 'ZipDLL.nsh'
+
+# Include MoveFileFolder plugin (http://nsis.sourceforge.net/MoveFileFolder)
+!include 'FileFunc.nsh'
+!insertmacro Locate
+Var /GLOBAL switch_overwrite
+!include 'MoveFileFolder.nsh'
+
+# Enable CRC
 CRCCheck on
 
 !define APPNAME "Mist"
@@ -51,6 +62,8 @@ UninstPage instfiles
 
 # Mist installer instructions
 Section Mist
+    StrCpy $switch_overwrite 0
+
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
     # include the zip file in this installer

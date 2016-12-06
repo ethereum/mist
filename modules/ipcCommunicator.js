@@ -103,6 +103,8 @@ ipc.on('backendAction_stopFocusedWebviewNavigation', (e, url) => {
 
     if(webContent && !webContent.isDestroyed())
         webContent.stop();
+
+    e.returnValue = true;
 });
 
 

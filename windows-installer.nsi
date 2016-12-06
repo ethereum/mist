@@ -88,22 +88,22 @@ Section Mist
     # include the zip file in this installer
     file "dist_mist\release\${RELEASEZIP}"
     # Extract the zip file from TEMP to the user's selected installation directory
-    ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$INSTDIR"
+    ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
  
     # create the uninstaller
-    WriteUninstaller "$INSTDIR\uninstall.exe"
+    WriteUninstaller "$FILEDIR\uninstall.exe"
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"${DATADIR}\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"${DATADIR}\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$INSTDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"${DATADIR}\""
     # create a shortcut for the program uninstaller
-    CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+    CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 
     # write registry strings for uninstallation
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${GROUPNAME} ${APPNAME}"
-    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+    WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$FILEDIR\uninstall.exe$\""
 SectionEnd
  
 # uninstaller section start
@@ -111,7 +111,7 @@ Section "uninstall"
 
     # second, remove the link from the start menu
     rmDir /r /REBOOTOK "$SMPROGRAMS\${APPNAME}"
-    rmDir /r /REBOOTOK "$INSTDIR"
+    rmDir /r /REBOOTOK "$FILEDIR"
 
     # delete registry strings
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"

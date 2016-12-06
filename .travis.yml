@@ -54,8 +54,6 @@ matrix:
           - GULP_PLATFORM=mac
       node_js: 6
       before_install:
-        - brew update
-        - brew install gnu-tar libicns graphicsmagick xz
         - npm install -g gulp yarn
 
 cache:

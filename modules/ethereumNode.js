@@ -358,8 +358,8 @@ class EthereumNode extends EventEmitter {
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', '512', '--support-dao-fork'] // FORK RELATED
-                        : ['--unsafe-transactions', '--support-dao-fork'];
+                        ? ['--fast', '--cache', '1024'] 
+                        : ['--unsafe-transactions'];
                 }
 
                 const nodeOptions = Settings.nodeOptions;

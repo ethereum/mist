@@ -30,12 +30,14 @@ mistInit = function(){
             });
         }
 
-        Tabs.upsert({_id: 'wallet'}, {
-            url: 'https://wallet.ethereum.org',
-            redirect: 'https://wallet.ethereum.org',
-            position: 1,
-            permissions: {
-                admin: true
+        // overwrite wallet on start again, but use $set to dont remove titles
+        Tabs.upsert({_id: 'wallet'}, {$set: {
+                url: 'https://wallet.ethereum.org',
+                redirect: 'https://wallet.ethereum.org',
+                position: 1,
+                permissions: {
+                    admin: true
+                }
             }
         });
 

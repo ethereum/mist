@@ -63,6 +63,7 @@ mistAPIBackend = function(event) {
     }
 
     if(event.channel === 'mistAPI_sound') {
+        sound.pause();
         sound.src = Blaze._escape(arg);
         sound.play();
     }

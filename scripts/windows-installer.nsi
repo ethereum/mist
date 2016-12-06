@@ -1,3 +1,6 @@
+# Add current directory to plugin path
+!addplugindir .\
+
 # Include LogicLib (http://nsis.sourceforge.net/LogicLib)
 !include 'LogicLib.nsh'
 
@@ -31,8 +34,8 @@ RequestExecutionLevel admin
 
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
-Icon "dist_mist\build\icon.ico"
-OutFile "dist_mist\release\mist-installer.exe"
+Icon "..\dist_mist\build\icon.ico"
+OutFile "..\dist_mist\release\mist-installer.exe"
 var FILEDIR
 var DATADIR
 
@@ -51,7 +54,7 @@ RequestExecutionLevel user
 
 # The license page. Can use .txt or .rtf data
 PageEx license
-  LicenseData LICENSE
+  LicenseData ..\LICENSE
 PageExEnd
 
 # Components is a good place to allow the user to select optional software to install
@@ -98,7 +101,7 @@ Section Mist
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
     # include the zip file in this installer
-    file "dist_mist\release\${RELEASEZIP}"
+    file "..\dist_mist\release\${RELEASEZIP}"
     # Extract the zip file from TEMP to the user's selected installation directory
     ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
  

@@ -95,9 +95,9 @@ Section Mist
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"${DATADIR}\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"${DATADIR}\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"${DATADIR}\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"$DATADIR\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"$DATADIR\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"$DATADIR\""
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

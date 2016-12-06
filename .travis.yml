@@ -29,7 +29,6 @@ matrix:
         - sudo apt-get update -q
         - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
 
-
     # LINUX
     - os: linux
       dist: trusty
@@ -54,11 +53,6 @@ matrix:
 
 cache:
   yarn: true
-  directories:
-    - node_modules
-    - app/node_modules
-    - $HOME/.electron
-    - $HOME/.cache
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh

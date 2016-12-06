@@ -29,14 +29,6 @@ Template.registerHelper('CurrentBlock', function(){
     return EthBlocks.latest;
 });
 
-/**
-Return the preload modules dirname.
-
-@method (preload_dirname)
-**/
-Template.registerHelper('preload_dirname', function(){
-    return window.dirname + '/modules/preloader';
-});
 
 /**
 Return the dirname.

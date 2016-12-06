@@ -2,7 +2,7 @@
 @module preloader browser
 */
 require('./include/common')('browser');
-const { ipcRenderer, remote } = require('electron');
+const { ipcRenderer } = require('electron');
 const mist = require('./include/mistAPI.js');
 const BigNumber = require('bignumber.js');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
@@ -28,7 +28,6 @@ process.on('loaded',function () {
 
 
 window.mist = mist();
-window.mistMode = remote.getGlobal('mode');
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 

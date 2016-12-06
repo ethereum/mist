@@ -72,13 +72,13 @@ module.exports = () => {
         },
         sounds: {
             bip: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/bip.mp3');
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bip.mp3');
             },
             bloop: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/bloop.mp3');
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bloop.mp3');
             },
             invite: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../sounds/invite.mp3');
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/invite.mp3');
             },
         },
         menu: {

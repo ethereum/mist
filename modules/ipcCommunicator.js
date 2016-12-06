@@ -98,8 +98,9 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
     }
 });
 
-ipc.on('backendAction_stopFocusedWebviewNavigation', (e, url) => {
-    var webContent = webContents.getFocusedWebContents();
+ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
+    console.log('webcontent ID', id);
+    var webContent = webContents.fromId(id);
 
     if(webContent && !webContent.isDestroyed())
         webContent.stop();

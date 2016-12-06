@@ -73,8 +73,8 @@ webviewLoadStart = function(currentTabId, e){
     
     // stop this action, as the redirect happens reactive through setting the URL attribute
     e.preventDefault(); // doesnt work
-    webview.stop();
-    ipc.sendSync('backendAction_stopFocusedWebviewNavigation');
+    webview.stop(); // doesnt work
+    ipc.sendSync('backendAction_stopWebviewNavigation', webview.getWebContents().id);
     
 
     var url = Helpers.sanitizeUrl(e.newURL || e.url);

@@ -30,7 +30,6 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
             TemplateVar.set(template, 'syncStatusMessage', false);
-
             return;
         }
     });
@@ -105,18 +104,15 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 // Select the appropriate message
                 if(web3.net.peerCount > 0) {
                     // Check which state we are
-
                     if  (   0 < lastSyncData._displayKnownStates && (
-                            lastSyncData.pulledStates !== Math.round(lastSyncData._displayState) 
-                        ||  lastSyncData.knownStates !== Math.round(lastSyncData._displayKnownStates)) 
+                            Number(lastSyncData.pulledStates) !== Math.round(lastSyncData._displayState) 
+                        ||  Number(lastSyncData.knownStates) !== Math.round(lastSyncData._displayKnownStates)) 
                     ) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
-
                     } else {
                         // Mostly downloading blocks
                         translationString = 'mist.startScreen.nodeSyncInfo';
-
                     }
                 } else {
                     // Not online
@@ -159,7 +155,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method mode
     */
     'mode': function(){
-        return window.mist.mode;
+        return window.mistMode;
     },
     /**
     Returns the icon path
@@ -167,7 +163,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        return 'file://'+ window.dirname +'/icons/'+ window.mistMode +'/icon2x.png';
     },
     /**
     Updates the Sync Message live

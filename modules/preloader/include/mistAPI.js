@@ -2,11 +2,11 @@
 @module MistAPI
 */
 
-const { ipcRenderer: ipc, remote } = require('electron');
-const packageJson = require('./../package.json');
+const { ipcRenderer } = require('electron');
+const packageJson = require('./../../../package.json');
 
 
-module.exports = (isWallet) => {
+module.exports = () => {
     let queue = [];
     const prefix = 'entry_';
 
@@ -21,13 +21,14 @@ module.exports = (isWallet) => {
         return newStr;
     };
 
-    ipc.on('mistAPI_callMenuFunction', (e, id) => {
+    ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
         if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
             mist.menu.entries[id].callback();
         }
     });
 
-    ipc.on('uiAction_windowMessage', (e, type, error, value) => {
+    ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
+        console.log(type);
         if (mist.callbacks[type]) {
             mist.callbacks[type].forEach((cb) => {
                 cb(error, value);
@@ -39,23 +40,10 @@ module.exports = (isWallet) => {
     // work up queue every 500ms
     setInterval(() => {
         if (queue.length > 0) {
-            ipc.sendToHost('mistAPI_menuChanges', queue);
+            ipcRenderer.sendToHost('mistAPI_menuChanges', queue);
             queue = [];
         }
-    }, 200);
-
-    // preparing sounds
-    // if wallet
-    if (isWallet) {
-        var sound = {
-            bip: document.createElement('audio'),
-            bloop: document.createElement('audio'),
-            invite: document.createElement('audio'),
-        };
-        sound.bip.src = `file://${__dirname}/../sounds/bip.mp3`;
-        sound.bloop.src = `file://${__dirname}/../sounds/bloop.mp3`;
-        sound.invite.src = `file://${__dirname}/../sounds/invite.mp3`;
-    }
+    }, 500);
 
 
     /**
@@ -67,10 +55,9 @@ module.exports = (isWallet) => {
     @constructor
     */
 
-    let mist = {
+    const mist = {
         callbacks: {},
         version: packageJson.version,
-        mode: remote.getGlobal('mode'),
         license: packageJson.license,
         platform: process.platform,
         requestAccount(callback) {
@@ -81,16 +68,17 @@ module.exports = (isWallet) => {
                 this.callbacks.connectAccount.push(callback);
             }
 
-            ipc.send('mistAPI_requestAccount');
+            ipcRenderer.send('mistAPI_requestAccount');
         },
         sounds: {
-            bip() {
-                // if wallet
-                if (isWallet) {
-                    sound.bip.play();
-                } else { // if mist
-                    ipc.sendToHost('mistAPI_sound', sound.bip.src);
-                }
+            bip: function playSound(){
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bip.mp3');
+            },
+            bloop: function playSound(){
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bloop.mp3');
+            },
+            invite: function playSound(){
+                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/invite.mp3');
             },
         },
         menu: {
@@ -106,7 +94,7 @@ module.exports = (isWallet) => {
             @param {String} text
             */
             setBadge(text) {
-                ipc.sendToHost('mistAPI_setBadge', text);
+                ipcRenderer.sendToHost('mistAPI_setBadge', text);
             },
             /**
             Adds/Updates a menu entry

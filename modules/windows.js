@@ -51,7 +51,15 @@ class Window extends EventEmitter {
             this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
-                this.send.apply(this, opts.sendData);
+                if (_.isString(opts.sendData)) {
+                    this.send(opts.sendData);
+                } else if (_.isObject(opts.sendData)) {
+                    for (const key in opts.sendData) {
+                        if ({}.hasOwnProperty.call(opts.sendData, key)) {
+                            this.send(key, opts.sendData[key]);
+                        }
+                    }
+                }
             }
 
             if (opts.show) {
@@ -207,7 +215,7 @@ class Windows {
     }
 
 
-    create(type, options) {
+    create(type, options, callback) {
         options = options || {};
 
         const existing = this.getByType(type);
@@ -223,14 +231,17 @@ class Windows {
         log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
         const wnd = this._windows[type] = new Window(this, type, options);
-
         wnd.on('closed', this._onWindowClosed.bind(this, wnd));
+
+        if (callback) {
+            wnd.callback = callback;
+        }
 
         return wnd;
     }
 
 
-    createPopup(type, options) {
+    createPopup(type, options, callback) {
         options = options || {};
 
         let opts = {
@@ -278,7 +289,7 @@ class Windows {
 
         log.info(`Create popup window: ${type}`);
 
-        const wnd = this.create(type, opts);
+        const wnd = this.create(type, opts, callback);
 
         wnd.once('ready', () => {
             this.loading.hide();

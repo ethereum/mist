@@ -47,7 +47,9 @@ module.exports = class extends BaseProcessor {
             }
 
             const modalWindow = Windows.createPopup('sendTransactionConfirmation', {
-                sendData: ['data', payload.params[0]],
+                sendData: {
+                    uiAction_sendData: payload.params[0],
+                },
                 electronOptions: {
                     width: 580,
                     height: 550,

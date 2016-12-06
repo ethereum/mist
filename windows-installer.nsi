@@ -75,13 +75,10 @@ SectionEnd
  
 # uninstaller section start
 Section "uninstall"
- 
-    # first, delete the uninstaller
-    Delete "$INSTDIR\uninstall.exe"
- 
+
     # second, remove the link from the start menu
-    rmDir "$SMPROGRAMS\${APPNAME}"
-    rmDir "$INSTDIR"
+    rmDir /r /REBOOTOK "$SMPROGRAMS\${APPNAME}"
+    rmDir /r /REBOOTOK "$INSTDIR"
 
     # delete registry strings
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"

@@ -41,6 +41,7 @@
                 "devToolsWalletUI": "Portafoglio UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Esegui Test",
+                "runTestsAnon": "Eseguire i test anonimamente",
                 "logFiles": "Mostra file di log",
                 "ethereumNode": "Nodo Ethereum",
                 "network": "Rete",

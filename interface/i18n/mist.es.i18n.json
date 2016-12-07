@@ -35,12 +35,13 @@
                 "backupMist": "Datos de la aplicación"
             },
             "develop": {
-                "label": "Desarrollar",
+                "label": "Desarrollo",
                 "devTools": "Herramientas para desarrolladores",
                 "devToolsMistUI": "UI de Mist",
                 "devToolsWalletUI": "UI del monedero",
                 "devToolsWebview": "__webview__",
                 "runTests": "Ejecutar pruebas",
+                "runTestsAnon": "Ejecutar pruebas anónimamente",
                 "logFiles": "Mostrar archivo de registro",
                 "ethereumNode": "Nodo de Ethereum",
                 "network": "Red",

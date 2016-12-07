@@ -29,7 +29,6 @@ $(window).on('dragenter', function(e) {
 
 
 $(window).on('keydown', function (e) {
-    console.log(e);
 
     // Select tab with index when number is 1-8
     if (e.metaKey && e.keyCode >= 49 && e.keyCode <= 56) {

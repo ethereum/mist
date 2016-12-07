@@ -71,15 +71,15 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     const windowId = e.sender.getId();
     const senderWindow = Windows.getById(windowId);
 
-    const mainWindow = Windows.getByType('main');
-
     if (senderWindow.ownerId) {
         const ownerWindow = Windows.getById(senderWindow.ownerId);
+        const mainWindow = Windows.getByType('main');
 
         if (ownerWindow) {
             ownerWindow.send('uiAction_windowMessage', senderWindow.type, error, value);
         }
 
+        // send through the mainWindow to the webviews
         if (mainWindow) {
             mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
         }

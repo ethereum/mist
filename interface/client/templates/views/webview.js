@@ -35,7 +35,7 @@ Template['views_webview'].onRendered(function(){
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
         if(LocalStore.get('selectedTab') === this._id){
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-            webview.reload();        
+            webview.reload();
         }
     });
 
@@ -45,7 +45,7 @@ Template['views_webview'].onRendered(function(){
     webview.addEventListener('did-stop-loading', function(e){
         TemplateVar.set(template, 'loading', false);
     });
-    
+
     // change url
     webview.addEventListener('did-navigate', webviewChangeUrl.bind(webview, tabId));
     webview.addEventListener('did-navigate-in-page', webviewChangeUrl.bind(webview, tabId));
@@ -101,6 +101,8 @@ Template['views_webview'].helpers({
                 return 'file://'+ Helpers.preloaderDirname +'/wallet.js';
             case 'tests':
                 return 'file://'+ Helpers.preloaderDirname +'/tests.js';
+            case 'testsAnon':
+                return 'file://'+ Helpers.preloaderDirname +'/tests.js';
             default:
                 return 'file://'+ Helpers.preloaderDirname +'/dapps.js';
         }
@@ -149,7 +151,7 @@ Template['views_webview'].helpers({
                 console.warn('Not allowed URL: '+ template.url);
                 return 'file://'+ dirname + '/errorPages/400.html';
             }
-            
+
             // remove redirect
             if(url) {
                 template.url = url;

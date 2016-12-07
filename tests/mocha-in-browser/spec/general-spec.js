@@ -32,10 +32,4 @@ describe('General', function () {
             expect(mist).to.have.all.keys(allowedAttributes);
         });
     });
-
-    describe('Anonymous mode', function () {
-        it('shouldn\'t show etherbase account', function () {
-            expect(web3.coinbase).to.be.undefined;
-        });
-    });
 });

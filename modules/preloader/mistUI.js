@@ -121,6 +121,23 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
     }
 });
 
+// Run tests without any accounts
+ipcRenderer.on('uiAction_runTestsAnon', (e, type) => {
+    if (type === 'webview') {
+
+        Tabs.upsert('testsAnon', {
+            position: -1,
+            name: 'Tests Anon',
+            url: '', // is hardcoded in webview.html to prevent hijacking
+            permissions: {},
+        });
+
+        Tracker.afterFlush(() => {
+            LocalStore.set('selectedTab', 'testsAnon');
+        });
+    }
+});
+
 
 // CONTEXT MENU
 

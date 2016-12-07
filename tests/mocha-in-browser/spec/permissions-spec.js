@@ -71,4 +71,32 @@ describe("Permissions", function() {
         });
 
     });
+
+   describe('web3 attributes', function() {
+        it('shouldn\'t allow `admin`', function () {
+            expect(web3.admin).to.be.undefined;
+        });
+
+        it('shouldn\'t allow IPC provider', function () {
+            expect(web3.ipc).to.be.undefined;
+        });
+
+        it('should only contain allowed attributes', function (){
+            var allowedAttributes = [
+                '_requestManager',
+                'currentProvider',
+                'eth',
+                'db',
+                'shh',
+                'net',
+                'personal',
+                'settings',
+                'version',
+                'providers',
+                '_extend'
+            ];
+
+            expect(web3).to.have.all.keys(allowedAttributes);
+        });
+    });
 });

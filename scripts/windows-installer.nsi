@@ -24,7 +24,10 @@ RequestExecutionLevel admin
 
 !define APPNAME "Mist"
 !define GROUPNAME "Ethereum"
-!define HELPURL "https://ethereum.org"
+!define HELPURL "https://github.com/ethereum/mist/releases/issues"
+!define UPDATEURL "https://github.com/ethereum/mist/releases"
+!define ABOUTURL "https://ethereum.org"
+!define /date NOW "%Y%m%d"
 
 # These must be integers and can be set on the command line by NSIS with "/DMAJORVERSION=0 /DMINORVERSION=8 /DBUILDVERSION=7"
 !define VERSIONMAJOR 0
@@ -80,7 +83,6 @@ function .onInit
   call setenv
 functionEnd
 
-
 # The license page. Can use .txt or .rtf data
 PageEx license
   LicenseData ..\LICENSE
@@ -110,6 +112,10 @@ UninstPage uninstConfirm
 # Uninstallation section
 UninstPage instfiles
 
+# Show details by default
+ShowInstDetails show
+ShowUninstDetails show
+
 # Mist installer instructions
 Section Mist
     StrCpy $switch_overwrite 0
@@ -121,6 +127,7 @@ Section Mist
 
     # Extract the zip file from TEMP to the user's selected installation directory
     ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
+    # Move files out of subfolder
     !insertmacro MoveFolder "$FILEDIR\win-unpacked" "$FILEDIR" "*.*"
  
     # create the uninstaller
@@ -147,13 +154,11 @@ functionEnd
  
 # uninstaller section start
 Section "uninstall"
-
-    # second, remove the link from the start menu
-    rmDir /r /REBOOTOK "$SMPROGRAMS\${APPNAME}"
+    # remove the link from the start menu
+    rmDir /r "$SMPROGRAMS\${APPNAME}"
+    # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"
 
     # delete registry strings
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
- 
-# uninstaller section end
 SectionEnd

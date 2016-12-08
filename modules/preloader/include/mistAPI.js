@@ -40,7 +40,6 @@ module.exports = () => {
     });
 
     ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
-        console.log(type);
         if (mist.callbacks[type]) {
             mist.callbacks[type].forEach((cb) => {
                 cb(error, value);
@@ -136,7 +135,7 @@ module.exports = () => {
                 filteredId = prefix + filterId(id);
 
                 const entry = {
-                    filteredId,
+                    id: filteredId,
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -153,6 +152,7 @@ module.exports = () => {
                 }
 
                 this.entries[filteredId] = entry;
+                return true;
             },
             update() {
                 this.add.apply(this, arguments);
@@ -179,7 +179,19 @@ module.exports = () => {
             @method clear
             */
             clear() {
+                this.entries = {};
                 queue.push({ action: 'clearMenu' });
+            },
+
+            select(id) {
+                filteredId = prefix + filterId(id);
+                queue.push({action: 'selectMenu', id: filteredId});
+
+                for (var e in this.entries) {
+                    if (this.entries.hasOwnProperty(e)){
+                        this.entries[e].selected = (e === filteredId);
+                    }
+                }
             },
         },
     };

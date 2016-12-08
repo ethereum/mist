@@ -93,7 +93,7 @@ mistAPIBackend = function(event) {
                 // filter ID
                 if(arg.entry && arg.entry.id)
                     arg.entry.id = filterId(arg.entry.id);
-                
+
                 var query = {'$set': {}};
 
                 if(arg.entry.id)
@@ -109,6 +109,17 @@ mistAPIBackend = function(event) {
                     query['$set']['menu.'+ arg.entry.id +'.badge'] = arg.entry.badge;
 
                 Tabs.update(template.data._id, query);
+            }
+
+            if(arg.action === 'selectMenu') {
+                var tab = Tabs.findOne(template.data._id);
+
+                for (var e in tab.menu) {
+                    if (tab.menu.hasOwnProperty(e)){
+                        tab.menu[e].selected = (e === arg.id);
+                    }
+                }
+                Tabs.update(template.data._id, {$set: {menu: tab.menu}});
             }
 
             if(arg.action === 'removeMenu') {

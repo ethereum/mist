@@ -18,19 +18,6 @@ Template['views_webview'].onRendered(function(){
         webview = template.find('webview');
 
 
-    // Send updated TEST DATA
-    if(tabId === 'tests') {
-        this.autorun(function(c){
-            var tab = Tabs.findOne('tests');
-
-            if(!c.firstRun)
-                webview.send('uiAction_sendTestData', tab);
-
-            // ADD SWITCHUNG USING webview.loadURL();
-        });
-    }
-
-
     ipc.on('uiAction_reloadSelectedTab', function(e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
         if(LocalStore.get('selectedTab') === this._id){
@@ -100,8 +87,6 @@ Template['views_webview'].helpers({
             case 'wallet':
                 return 'file://'+ Helpers.preloaderDirname +'/wallet.js';
             case 'tests':
-                return 'file://'+ Helpers.preloaderDirname +'/tests.js';
-            case 'testsAnon':
                 return 'file://'+ Helpers.preloaderDirname +'/tests.js';
             default:
                 return 'file://'+ Helpers.preloaderDirname +'/dapps.js';

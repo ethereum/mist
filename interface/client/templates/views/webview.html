@@ -3,11 +3,7 @@
         {{#if $eq _id "tests"}}
             <webview src="file://{{dirname}}/tests/mocha-in-browser/runner.html" useragent="{{useragent}}" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
         {{else}}
-            {{#if $eq _id "testsAnon"}}
-                <webview src="file://{{dirname}}/tests/mocha-in-browser/runner-anonymous.html" useragent="{{useragent}}" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
-                {{else}}
-                <webview src="{{checkedUrl}}" useragent="{{useragent}}" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
-                {{/if}}
+            <webview src="{{checkedUrl}}" useragent="{{useragent}}" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
         {{/if}}
     </div>
 </template>

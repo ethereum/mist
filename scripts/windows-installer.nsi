@@ -49,9 +49,6 @@ ${If} $0 != "admin" ;Require admin rights on NT4+
 ${EndIf}
 !macroend
 
-# For removing Start Menu shortcut in Windows 7
-RequestExecutionLevel user
-
 # The license page. Can use .txt or .rtf data
 PageEx license
   LicenseData ..\LICENSE

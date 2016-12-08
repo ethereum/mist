@@ -35,7 +35,7 @@ RequestExecutionLevel admin
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
 Icon "..\dist_mist\build\icon.ico"
-OutFile "..\dist_mist\release\mist-installer.exe"
+OutFile "..\dist_mist\release\mist-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
 var FILEDIR
 var DATADIR
 

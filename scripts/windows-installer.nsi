@@ -30,7 +30,7 @@ RequestExecutionLevel admin
 !define INSTALLSIZE 78233
 
 # Need to add architecture detection and/or include both files
-!define RELEASEZIP "Mist-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+!define RELEASEZIP "${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
 
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
@@ -101,15 +101,16 @@ Section Mist
     file "..\dist_mist\release\${RELEASEZIP}"
     # Extract the zip file from TEMP to the user's selected installation directory
     ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
+    !insertmacro MoveFolder "$FILEDIR\win-unpacked" "$FILEDIR" "*.*"
  
     # create the uninstaller
     WriteUninstaller "$FILEDIR\uninstall.exe"
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--fast --datadir=\"$DATADIR\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--light --datadir=\"$DATADIR\""
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\win-unpacked\${APPNAME}.exe" "--testnet --fast --datadir=\"$DATADIR\""
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\${APPNAME}.exe" '--fast --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\${APPNAME}.exe" '--light --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --fast --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

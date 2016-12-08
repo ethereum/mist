@@ -54,20 +54,30 @@ ${If} $0 != "admin" ;Require admin rights on NT4+
 ${EndIf}
 !macroend
 
+# Create a shared function function for setting environment variables
+!macro ENVFUNC un
+  Function ${un}setenv
+    SetShellVarContext current
+    StrCpy $DATADIR "$APPDATA\${APPNAME}"
+    ${If} ${RunningX64}
+      StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
+      StrCpy $ARCHDIR "win-unpacked"
+      StrCpy $ARCHSHRT "win64"
+    ${Else}
+      StrCpy $FILEDIR "$PROGRAMFILES32\${APPNAME}"
+      StrCpy $ARCHDIR "win-ia32-unpacked"
+      StrCpy $ARCHSHRT "win32"
+    ${Endif}
+  FunctionEnd
+!macroend
+
+!insertmacro ENVFUNC ""
+!insertmacro ENVFUNC "un."
+
 function .onInit
   setShellVarContext all
   !insertmacro VerifyUserIsAdmin
-
-  ${If} ${RunningX64}
-    StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
-    StrCpy $ARCHDIR "win-unpacked"
-    StrCpy $ARCHSHRT "win64"
-  ${Else}
-    StrCpy $FILEDIR "$PROGRAMFILES32\${APPNAME}"
-    StrCpy $ARCHDIR "win-ia32-unpacked"
-    StrCpy $ARCHSHRT "win32"
-  ${Endif}
-
+  call setenv
 functionEnd
 
 
@@ -82,24 +92,14 @@ PageExEnd
 
 # Select the location to install the files
 PageEx directory
-  PageCallbacks "preFileDir" "" ""
   DirVar $FILEDIR
 PageExEnd
 
-Function preFileDir
-  StrCpy $FILEDIR "$PROGRAMFILES\${APPNAME}"
-FunctionEnd
-
 # This can be used so the data directory is selectable by the user
 PageEx directory
-  PageCallbacks "preDatadir" "" ""
   DirText "Select a location for data files (including keystore and chaindata)"
   DirVar $DATADIR
 PageExEnd
-
-Function preDataDir
-  StrCpy $DATADIR "$APPDATA\${APPNAME}"
-FunctionEnd
 
 # Installation
 Page instfiles
@@ -138,6 +138,12 @@ Section Mist
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "DisplayName" "${GROUPNAME} ${APPNAME}"
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}" "UninstallString" "$\"$FILEDIR\uninstall.exe$\""
 SectionEnd
+
+function un.onInit
+  call un.setenv
+  SetShellVarContext all
+  !insertmacro VerifyUserIsAdmin
+functionEnd
  
 # uninstaller section start
 Section "uninstall"

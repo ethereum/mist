@@ -86,9 +86,9 @@ ipcRenderer.on('uiAction_toggleWebviewDevTool', (e, id) => {
 
 // randomize accounts and drop half
 // also certainly remove the web3.ethbase one
-var randomizeAccounts = function(accounts, coinbase) {
-    accounts = _.shuffle(accounts);
-    accounts = _.rest(accounts, (accounts.length/2).toFixed(0));
+var randomizeAccounts = (acc, coinbase) => {
+    var accounts = _.shuffle(acc);
+    accounts = _.rest(accounts, (accounts.length / 2).toFixed(0));
     accounts = _.without(accounts, coinbase);
     return accounts;
 };
@@ -97,10 +97,10 @@ var randomizeAccounts = function(accounts, coinbase) {
 ipcRenderer.on('uiAction_runTests', (e, type) => {
     if (type === 'webview') {
         web3.eth.getAccounts((error, accounts) => {
-            if (error) return; 
+            if (error) return;
 
-            web3.eth.getCoinbase((error, coinbase) => {
-                if (error) return;
+            web3.eth.getCoinbase((coinbaseError, coinbase) => {
+                if (coinbaseError) return;
 
 
                 Tabs.upsert('tests', {
@@ -108,7 +108,7 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
                     name: 'Tests',
                     url: '', // is hardcoded in webview.html to prevent hijacking
                     permissions: {
-                        accounts: randomizeAccounts(accounts, coinbase)
+                        accounts: randomizeAccounts(accounts, coinbase),
                     },
                 });
 
@@ -117,14 +117,14 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
                 });
 
                 // update the permissions, when accounts change
-                Tracker.autorun(function(){
-                    var accounts = _.pluck(EthAccounts.find({}, {fields:{address: 1}}).fetch(), 'address');
+                Tracker.autorun(() => {
+                    var accountList = _.pluck(EthAccounts.find({}, { fields:{ address: 1 } }).fetch(), 'address');
 
-                    Tabs.update('tests', {$set: {
-                        'permissions.accounts': randomizeAccounts(accounts, coinbase)
-                    }});
+                    Tabs.update('tests', { $set: {
+                        'permissions.accounts': randomizeAccounts(accountList, coinbase),
+                    } });
                 });
-             });
+            });
         });
     }
 });

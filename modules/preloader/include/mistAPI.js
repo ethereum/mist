@@ -13,12 +13,24 @@ module.exports = () => {
     // filterId the id to only contain a-z A-Z 0-9
     const filterId = (str) => {
         let newStr = '';
-        for (let i = 0; i < str.length; i++) {
-            if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
-                newStr += str.charAt(i);
+        if (str) {
+            for (let i = 0; i < str.length; i++) {
+                if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
+                    newStr += str.charAt(i);
+                }
             }
         }
         return newStr;
+    };
+
+    //todo: error handling
+    const filterAdd = (options) => {
+        if (typeof options !== 'object') { return false; }
+
+        hasRequiredKeys = ['position', 'selected', 'name', 'badge'].every(function(e){
+            return e in options;
+        });
+        return hasRequiredKeys;
     };
 
     ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
@@ -116,10 +128,15 @@ module.exports = () => {
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             add(id, options, callback) {
-                id = prefix + filterId(id);
+                var filteredId;
+                var hasRequiredKeys;
+
+                if (!filterAdd(options)) { return false; }
+
+                filteredId = prefix + filterId(id);
 
                 const entry = {
-                    id,
+                    filteredId,
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -135,7 +152,7 @@ module.exports = () => {
                     entry.callback = callback;
                 }
 
-                this.entries[id] = entry;
+                this.entries[filteredId] = entry;
             },
             update() {
                 this.add.apply(this, arguments);

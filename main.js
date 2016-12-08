@@ -218,7 +218,7 @@ let onReady = () => {
                 width: 1100,
                 height: 720,
                 webPreferences: {
-                    preload: `${__dirname}/modules/preloader/wallet.js`,
+                    preload: `${__dirname}/modules/preloader/walletMain.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
                 },

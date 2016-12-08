@@ -43,7 +43,13 @@ mistAPIBackend = function(event) {
 
     // Send TEST DATA
     if(event.channel === 'sendTestData') {
-         webview.send('uiAction_sendTestData', Tabs.findOne('tests'));
+        var tests = Tabs.findOne('tests');
+
+        if(tests) {
+            web3.eth.getCoinbase(function(e, coinbase){
+                webview.send('uiAction_sendTestData', tests.permissions, coinbase);
+            });
+        }
     }
 
     // SET FAVICON

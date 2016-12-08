@@ -41,7 +41,6 @@
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Lancer les tests",
-                "runTestsAnon": "Lancer les tests anonymement",
                 "logFiles": "Afficher le journal de log",
                 "ethereumNode": "Nœud Ethereum",
                 "network": "Réseau",

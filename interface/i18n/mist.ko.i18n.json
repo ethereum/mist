@@ -41,7 +41,6 @@
                 "devToolsWalletUI": "지갑 UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "테스트 실행",
-                "runTestsAnon": "익명으로 테스트 실행",
                 "logFiles": "로그파일 보기",
                 "ethereumNode": "이더리움 노드",
                 "network": "네트워크",

@@ -41,7 +41,6 @@
                 "devToolsWalletUI": "錢包界面",
                 "devToolsWebview": "__webview__",
                 "runTests": "運行測試",
-                "runTestsAnon": "運行測試匿名",
                 "logFiles": "顯示日誌文件",
                 "ethereumNode": "以太坊節點",
                 "network": "網路",

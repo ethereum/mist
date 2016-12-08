@@ -348,12 +348,6 @@ let menuTempl = function (webviews) {
             Windows.getByType('main').send('uiAction_runTests', 'webview');
         },
     }, {
-        label: i18n.t('mist.applicationMenu.develop.runTestsAnon'),
-        enabled: (Settings.uiMode === 'mist'),
-        click() {
-            Windows.getByType('main').send('uiAction_runTestsAnon', 'webview');
-        },
-    }, {
         label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
         enabled: ethereumNode.isOwnNode,
         click() {

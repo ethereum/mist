@@ -108,9 +108,9 @@ Section Mist
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Full Node.lnk" "$FILEDIR\${APPNAME}.exe" '--fast --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Light Client.lnk" "$FILEDIR\${APPNAME}.exe" '--light --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --fast --datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    #createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Light).lnk" "$FILEDIR\${APPNAME}.exe" '--light --node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

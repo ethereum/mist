@@ -1,6 +1,9 @@
 # Add current directory to plugin path
 !addplugindir .\
 
+# Architecture detection
+!include x64.nsh
+
 # Include LogicLib (http://nsis.sourceforge.net/LogicLib)
 !include 'LogicLib.nsh'
 
@@ -38,6 +41,8 @@ Icon "..\dist_mist\build\icon.ico"
 OutFile "..\dist_mist\release\mist-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
 var FILEDIR
 var DATADIR
+var ARCHDIR
+var ARCHSHRT
 
 !macro VerifyUserIsAdmin
 UserInfo::GetAccountType
@@ -48,6 +53,23 @@ ${If} $0 != "admin" ;Require admin rights on NT4+
         quit
 ${EndIf}
 !macroend
+
+function .onInit
+  setShellVarContext all
+  !insertmacro VerifyUserIsAdmin
+
+  ${If} ${RunningX64}
+    StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
+    StrCpy $ARCHDIR "win-unpacked"
+    StrCpy $ARCHSHRT "win64"
+  ${Else}
+    StrCpy $FILEDIR "$PROGRAMFILES32\${APPNAME}"
+    StrCpy $ARCHDIR "win-ia32-unpacked"
+    StrCpy $ARCHSHRT "win32"
+  ${Endif}
+
+functionEnd
+
 
 # The license page. Can use .txt or .rtf data
 PageEx license
@@ -65,7 +87,6 @@ PageEx directory
 PageExEnd
 
 Function preFileDir
-  !insertmacro VerifyUserIsAdmin
   StrCpy $FILEDIR "$PROGRAMFILES\${APPNAME}"
 FunctionEnd
 
@@ -77,9 +98,7 @@ PageEx directory
 PageExEnd
 
 Function preDataDir
-  !insertmacro VerifyUserIsAdmin
   StrCpy $DATADIR "$APPDATA\${APPNAME}"
-  SetShellVarContext ALL
 FunctionEnd
 
 # Installation
@@ -99,6 +118,7 @@ Section Mist
     SetOutPath $TEMP
     # include the zip file in this installer
     file "..\dist_mist\release\${RELEASEZIP}"
+
     # Extract the zip file from TEMP to the user's selected installation directory
     ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
     !insertmacro MoveFolder "$FILEDIR\win-unpacked" "$FILEDIR" "*.*"

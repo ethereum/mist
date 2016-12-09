@@ -46,6 +46,7 @@ var DATADIR
 var NODEDATADIR
 var ARCHDIR
 var ARCHSHRT
+var SHORTCUTDIR
 
 # Check for administrative rights
 !macro VerifyUserIsAdmin
@@ -61,9 +62,12 @@ ${EndIf}
 # Create a shared function function for setting environment variables
 !macro ENVFUNC un
   Function ${un}setenv
+
     SetShellVarContext current
     StrCpy $DATADIR "$APPDATA\${APPNAME}"
     StrCpy $NODEDATADIR "$APPDATA\Ethereum"
+    StrCpy $SHORTCUTDIR "$SMPROGRAMS\${APPNAME}"
+
     ${If} ${RunningX64}
       StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
       StrCpy $ARCHDIR "win-unpacked"
@@ -73,6 +77,8 @@ ${EndIf}
       StrCpy $ARCHDIR "win-ia32-unpacked"
       StrCpy $ARCHSHRT "win32"
     ${Endif}
+    SetShellVarContext all
+
   FunctionEnd
 !macroend
 
@@ -80,7 +86,6 @@ ${EndIf}
 !insertmacro ENVFUNC "un."
 
 function .onInit
-  setShellVarContext all
   !insertmacro VerifyUserIsAdmin
   call setenv
 functionEnd
@@ -145,11 +150,11 @@ Section Mist MIST_IDX
     WriteUninstaller "$FILEDIR\uninstall.exe"
  
     # create shortcuts with flags in the start menu programs directory
-    createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createDirectory "$SHORTCUTDIR"
+    createShortCut "$SHORTCUTDIR\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SHORTCUTDIR\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
-    CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
+    CreateShortCut "$SHORTCUTDIR\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 
     # write registry strings for uninstallation
     WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "DisplayName" "${GROUPNAME} ${APPNAME}"
@@ -174,19 +179,18 @@ Section Mist MIST_IDX
 SectionEnd
 
 Function .onInstSuccess
-  ExecShell "open" "$SMPROGRAMS\${APPNAME}"
+  ExecShell "open" "$SHORTCUTDIR"
 FunctionEnd
 
 function un.onInit
   call un.setenv
-  SetShellVarContext all
   !insertmacro VerifyUserIsAdmin
 functionEnd
  
 # uninstaller section start
 Section "uninstall"
     # remove the link from the start menu
-    rmDir /r "$SMPROGRAMS\${APPNAME}"
+    rmDir /r "$SHORTCUTDIR"
 
     # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"

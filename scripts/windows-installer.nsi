@@ -125,18 +125,21 @@ ShowInstDetails show
 ShowUninstDetails show
 
 # Mist installer instructions
-Section Mist
-    StrCpy $switch_overwrite 0
+Section "Mist"
+    StrCpy $switch_overwrite 1
 
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
     # include the zip file in this installer
     file "..\dist_mist\release\${RELEASEZIP}"
+    file "..\dist_mist\build\icon.ico"
 
     # Extract the zip file from TEMP to the user's selected installation directory
     ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
     # Move files out of subfolder
     !insertmacro MoveFolder "$FILEDIR\win-unpacked" "$FILEDIR" "*.*"
+    # Copy the icon over (not included in zip)
+    !insertmacro MoveFile "$TEMP\icon.ico" "$FILEDIR\logo.ico"
  
     # create the uninstaller
     WriteUninstaller "$FILEDIR\uninstall.exe"

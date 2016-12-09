@@ -162,15 +162,19 @@ module.exports = () => {
                         this.entries[e].selected = (e === filteredId);
                     }
                 }
+
+                executeCallback(null, filteredId);
             },
         },
     };
 
-    ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
+    const executeCallback = (e, id) => {
         if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
             mist.menu.entries[id].callback();
         }
-    });
+    }
+
+    ipcRenderer.on('mistAPI_callMenuFunction', executeCallback);
 
     ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
         if (mist.callbacks[type]) {

@@ -30,6 +30,10 @@ describe('General', function () {
 
             expect(mist).to.have.all.keys(allowedAttributes);
         });
+
+        it('should return platform', function () {
+            expect(mist.platform).to.be.oneOf(['darwin', 'win32', 'freebsd', 'linux', 'sunos']);
+        });
     });
 
     describe('mist.menu', function () {
@@ -44,12 +48,15 @@ describe('General', function () {
 
         var addMenu = function (selected = false, cb = null) {
             var obj = Object.assign({}, menuObj);
+            var id = 'menu' + menuId;
+
             obj.selected = selected;
             obj.position = menuId;
             obj.name = 'My dapp menu ' + menuId;
-            mist.menu.add('menu' + menuId, obj, cb);
+            mist.menu.add(id, obj, cb);
 
-            return 'menu' + (menuId++);
+            menuId += 1;
+            return id;
         };
 
         beforeEach(function () {
@@ -69,22 +76,31 @@ describe('General', function () {
         });
 
         it('should be selectable', function () {
+            var menu1;
+
             addMenu(true);
-            var menu1 = addMenu(false);
+            menu1 = addMenu(false);
 
             mist.menu.select(menu1);
             expect(mist.menu.entries['entry_' + menu1].selected).to.be.true;
         });
 
-        // it('add() should execute callback when selected', function (done) {
-        //     mist.menu.add('mydappmenu', menuObj, function () {
-        //         done();
-        //     });
-        // });
+        it('add() should execute callback when selected', function (done) {
+            var menu1;
+
+            addMenu();
+            menu1 = addMenu(false, function () {
+                done();
+            });
+
+            mist.menu.select(menu1);
+        });
 
         it('remove() should remove menu from entries', function () {
+            var menu1;
+
             addMenu();
-            var menu1 = addMenu();
+            menu1 = addMenu();
             addMenu();
 
             expect(mist.menu.entries).to.have.all.keys('entry_menu0', 'entry_menu1', 'entry_menu2');
@@ -101,16 +117,4 @@ describe('General', function () {
             expect(mist.menu.entries).to.be.empty;
         });
     });
-
 });
-
-
-
-
-
-
-
-
-
-
-

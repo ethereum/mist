@@ -199,6 +199,12 @@ Section "uninstall"
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}"
 SectionEnd
 
+Function un.onUnInstSuccess
+  MessageBox MB_OK "Opening leftover data directories (backup before deleting!)"
+  ExecShell "open" "$DATADIR"
+  ExecShell "open" "$NODEDATADIR"
+FunctionEnd
+
 
 # Return on top of stack the total size (as DWORD) of the selected/installed sections.
 Var GetInstalledSize.total

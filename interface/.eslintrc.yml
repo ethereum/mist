@@ -14,3 +14,4 @@ globals:
     Blaze: true
     EthAccounts: true
     _: true
+    mist: true

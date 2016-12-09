@@ -169,6 +169,10 @@ Section "Mist"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "NoRepair" 1
 SectionEnd
 
+Function .onInstSuccess
+  ExecShell "open" "$SMPROGRAMS\${APPNAME}"
+FunctionEnd
+
 function un.onInit
   call un.setenv
   SetShellVarContext all

@@ -33,7 +33,6 @@ RequestExecutionLevel admin
 !define VERSIONMAJOR 0
 !define VERSIONMINOR 8
 !define VERSIONBUILD 7
-!define INSTALLSIZE 78233
 
 # Need to add architecture detection and/or include both files
 !define RELEASEZIP "${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
@@ -48,10 +47,11 @@ var NODEDATADIR
 var ARCHDIR
 var ARCHSHRT
 
+# Check for administrative rights
 !macro VerifyUserIsAdmin
 UserInfo::GetAccountType
 pop $0
-${If} $0 != "admin" ;Require admin rights on NT4+
+${If} $0 != "admin"
         messageBox mb_iconstop "Administrator rights required!"
         setErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
         quit
@@ -147,7 +147,7 @@ Section "Mist"
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
     createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadior="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

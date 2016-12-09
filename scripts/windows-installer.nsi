@@ -44,6 +44,7 @@ Icon "..\dist_mist\build\icon.ico"
 OutFile "..\dist_mist\release\mist-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
 var FILEDIR
 var DATADIR
+var NODEDATADIR
 var ARCHDIR
 var ARCHSHRT
 
@@ -62,6 +63,7 @@ ${EndIf}
   Function ${un}setenv
     SetShellVarContext current
     StrCpy $DATADIR "$APPDATA\${APPNAME}"
+    StrCpy $NODEDATADIR "$APPDATA\Ethereum"
     ${If} ${RunningX64}
       StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
       StrCpy $ARCHDIR "win-unpacked"
@@ -92,15 +94,21 @@ PageExEnd
 # For example, it could be used to allow the user to select which node they want installed and then download it
 #Page components
 
-# Select the location to install the files
+# Select the location to install the main program files
 PageEx directory
   DirVar $FILEDIR
 PageExEnd
 
-# This can be used so the data directory is selectable by the user
+# Select the location for Mist's data directory
 PageEx directory
-  DirText "Select a location for data files (including keystore and chaindata)"
+  DirText "Select a location for Mist's data files (watched contracts, etc.)"
   DirVar $DATADIR
+PageExEnd
+
+# Select the location for the node's data directory
+PageEx directory
+  DirText "Select a location where blockchain data will be stored"
+  DirVar $NODEDATADIR
 PageExEnd
 
 # Installation
@@ -135,9 +143,8 @@ Section Mist
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SMPROGRAMS\${APPNAME}"
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    #createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Light).lnk" "$FILEDIR\${APPNAME}.exe" '--light --node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --node-datadir="$DATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SMPROGRAMS\${APPNAME}\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadior="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
     CreateShortCut "$SMPROGRAMS\${APPNAME}\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

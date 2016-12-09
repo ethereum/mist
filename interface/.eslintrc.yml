@@ -12,3 +12,5 @@ rules:
 
 globals:
     Blaze: true
+    EthAccounts: true
+    _: true

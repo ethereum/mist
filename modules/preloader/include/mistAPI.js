@@ -15,9 +15,7 @@ module.exports = () => {
     const filterAdd = (options) => {
         if (typeof options !== 'object') { return false; }
 
-        return ['position', 'selected', 'name', 'badge'].every((e) => {
-            return e in options;
-        });
+        return ['position', 'selected', 'name', 'badge'].every(e => e in options);
     };
 
     // filterId the id to only contain a-z A-Z 0-9
@@ -159,7 +157,7 @@ module.exports = () => {
                 const filteredId = prefix + filterId(id);
                 queue.push({ action: 'selectMenu', id: filteredId });
 
-                for (var e in this.entries) {
+                for (let e in this.entries) {
                     if ({}.hasOwnProperty.call(this.entries, e)) {
                         this.entries[e].selected = (e === filteredId);
                     }

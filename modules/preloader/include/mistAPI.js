@@ -10,41 +10,28 @@ module.exports = () => {
     let queue = [];
     const prefix = 'entry_';
 
+
+    // todo: error handling
+    const filterAdd = (options) => {
+        if (typeof options !== 'object') { return false; }
+
+        return ['position', 'selected', 'name', 'badge'].every((e) => {
+            return e in options;
+        });
+    };
+
     // filterId the id to only contain a-z A-Z 0-9
     const filterId = (str) => {
         let newStr = '';
-        for (let i = 0; i < str.length; i++) {
-            if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
-                newStr += str.charAt(i);
+        if (str) {
+            for (let i = 0; i < str.length; i += 1) {
+                if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
+                    newStr += str.charAt(i);
+                }
             }
         }
         return newStr;
     };
-
-    ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
-        if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
-            mist.menu.entries[id].callback();
-        }
-    });
-
-    ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
-        console.log(type);
-        if (mist.callbacks[type]) {
-            mist.callbacks[type].forEach((cb) => {
-                cb(error, value);
-            });
-            delete mist.callbacks[type];
-        }
-    });
-
-    // work up queue every 500ms
-    setInterval(() => {
-        if (queue.length > 0) {
-            ipcRenderer.sendToHost('mistAPI_menuChanges', queue);
-            queue = [];
-        }
-    }, 500);
-
 
     /**
     Mist API
@@ -71,14 +58,14 @@ module.exports = () => {
             ipcRenderer.send('mistAPI_requestAccount');
         },
         sounds: {
-            bip: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bip.mp3');
+            bip: function playSound() {
+                ipcRenderer.sendToHost('mistAPI_sound', `file://${__dirname}/../../../sounds/bip.mp3`);
             },
-            bloop: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/bloop.mp3');
+            bloop: function playSound() {
+                ipcRenderer.sendToHost('mistAPI_sound', `file://${__dirname}/../../../sounds/bloop.mp3`);
             },
-            invite: function playSound(){
-                ipcRenderer.sendToHost('mistAPI_sound', 'file://'+ __dirname +'/../../../sounds/invite.mp3');
+            invite: function playSound() {
+                ipcRenderer.sendToHost('mistAPI_sound', `file://${__dirname}/../../../sounds/invite.mp3`);
             },
         },
         menu: {
@@ -116,10 +103,11 @@ module.exports = () => {
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             add(id, options, callback) {
-                id = prefix + filterId(id);
+                if (!filterAdd(options)) { return false; }
 
+                const filteredId = prefix + filterId(id);
                 const entry = {
-                    id,
+                    id: filteredId,
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -135,7 +123,8 @@ module.exports = () => {
                     entry.callback = callback;
                 }
 
-                this.entries[id] = entry;
+                this.entries[filteredId] = entry;
+                return true;
             },
             update() {
                 this.add.apply(this, arguments);
@@ -147,13 +136,13 @@ module.exports = () => {
             @param {String} id
             */
             remove(id) {
-                id = prefix + filterId(id);
+                const filteredId = prefix + filterId(id);
 
-                delete this.entries[id];
+                delete this.entries[filteredId];
 
                 queue.push({
                     action: 'removeMenu',
-                    id,
+                    filteredId,
                 });
             },
             /**
@@ -162,10 +151,46 @@ module.exports = () => {
             @method clear
             */
             clear() {
+                this.entries = {};
                 queue.push({ action: 'clearMenu' });
+            },
+
+            select(id) {
+                const filteredId = prefix + filterId(id);
+                queue.push({ action: 'selectMenu', id: filteredId });
+
+                for (var e in this.entries) {
+                    if ({}.hasOwnProperty.call(this.entries, e)) {
+                        this.entries[e].selected = (e === filteredId);
+                    }
+                }
             },
         },
     };
+
+    ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
+        if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
+            mist.menu.entries[id].callback();
+        }
+    });
+
+    ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
+        if (mist.callbacks[type]) {
+            mist.callbacks[type].forEach((cb) => {
+                cb(error, value);
+            });
+            delete mist.callbacks[type];
+        }
+    });
+
+    // work up queue every 500ms
+    setInterval(() => {
+        if (queue.length > 0) {
+            ipcRenderer.sendToHost('mistAPI_menuChanges', queue);
+            queue = [];
+        }
+    }, 500);
+
 
     return mist;
 };

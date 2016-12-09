@@ -3,3 +3,12 @@ env:  # don't warn about no-def meteor keywords
 
 rules:
   no-undef: 0
+  no-var: 0
+  prefer-arrow-callback: 0
+  prefer-template: 0
+  no-underscore-dangle:
+    - error
+    - allow: ['_id', '_escape']
+
+globals:
+    Blaze: true

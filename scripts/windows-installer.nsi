@@ -125,7 +125,7 @@ ShowInstDetails show
 ShowUninstDetails show
 
 # Mist installer instructions
-Section "Mist"
+Section Mist MIST_IDX
     StrCpy $switch_overwrite 1
 
     # set the installation directory as the destination for the following actions
@@ -167,6 +167,10 @@ Section "Mist"
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "VersionMinor" ${VERSIONMINOR}
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "NoRepair" 1
+
+    Call GetInstalledSize
+    Pop $0
+    WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "EstimatedSize" "$0"
 SectionEnd
 
 Function .onInstSuccess
@@ -183,9 +187,27 @@ functionEnd
 Section "uninstall"
     # remove the link from the start menu
     rmDir /r "$SMPROGRAMS\${APPNAME}"
+
     # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"
 
     # delete registry strings
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}"
 SectionEnd
+
+
+# Return on top of stack the total size (as DWORD) of the selected/installed sections.
+Var GetInstalledSize.total
+Function GetInstalledSize
+  StrCpy $GetInstalledSize.total 0
+
+  ${if} ${SectionIsSelected} ${MIST_IDX}
+    SectionGetSize ${MIST_IDX} $0
+    IntOp $GetInstalledSize.total $GetInstalledSize.total + $0
+    # estimate to accomodate zip compression which nsis can't see
+    IntOp $GetInstalledSize.total $GetInstalledSize.total * 3
+  ${endif}
+
+  IntFmt $GetInstalledSize.total "0x%08X" $GetInstalledSize.total
+  Push $GetInstalledSize.total
+FunctionEnd

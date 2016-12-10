@@ -59,12 +59,14 @@ describe('General', function () {
             return id;
         };
 
+
         beforeEach(function () {
             mist.menu.clear();
             menuId = 0;
         });
 
         it('add() should return false when params are incorrect', function () {
+
             expect(mist.menu.add()).to.be.false;
             expect(mist.menu.add('mydappmenu')).to.be.false;
             expect(mist.menu.add('mydappmenu', {})).to.be.false;
@@ -113,6 +115,7 @@ describe('General', function () {
             addMenu();
 
             expect(mist.menu.entries).to.have.all.keys('entry_menu0', 'entry_menu1');
+
             mist.menu.clear();
             expect(mist.menu.entries).to.be.empty;
         });

@@ -162,7 +162,6 @@ module.exports = () => {
                         this.entries[e].selected = (e === filteredId);
                     }
                 }
-
                 executeCallback(null, filteredId);
             },
         },

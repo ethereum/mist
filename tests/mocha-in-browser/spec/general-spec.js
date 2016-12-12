@@ -75,6 +75,11 @@ describe('General', function () {
             expect(mist.menu.add('mydappmenu', menuObj, function () {})).to.be.true;
         });
 
+        it('add() should add menu item to entries object', function () {
+            var menu0 = addMenu();
+            expect(mist.menu.entries).to.have.all.keys('entry_' + menu0);
+        });
+
         it('should be selectable', function () {
             var menu1;
 
@@ -83,17 +88,6 @@ describe('General', function () {
 
             mist.menu.select(menu1);
             expect(mist.menu.entries['entry_' + menu1].selected).to.be.true;
-        });
-
-        it('add() should execute callback when selected', function (done) {
-            var menu1;
-
-            addMenu();
-            menu1 = addMenu(false, function () {
-                done();
-            });
-
-            mist.menu.select(menu1);
         });
 
         it('remove() should remove menu from entries', function () {

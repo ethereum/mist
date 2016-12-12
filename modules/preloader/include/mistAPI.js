@@ -124,6 +124,11 @@ module.exports = () => {
                 this.entries[filteredId] = entry;
                 return true;
             },
+            /**
+            Updates a menu entry
+
+            @method update
+            */
             update() {
                 this.add.apply(this, arguments);
             },
@@ -132,6 +137,9 @@ module.exports = () => {
 
             @method remove
             @param {String} id
+            @param {String} id          The id of the menu, has to be the same accross page reloads.
+            @param {Object} options     The menu options like {badge: 23, name: 'My Entry'}
+            @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             remove(id) {
                 const filteredId = prefix + filterId(id);
@@ -152,7 +160,12 @@ module.exports = () => {
                 this.entries = {};
                 queue.push({ action: 'clearMenu' });
             },
+            /**
+            Selects menu with given Id.
 
+            @method select
+            @oaram {String} id
+            */
             select(id) {
                 const filteredId = prefix + filterId(id);
                 queue.push({ action: 'selectMenu', id: filteredId });
@@ -162,19 +175,15 @@ module.exports = () => {
                         this.entries[e].selected = (e === filteredId);
                     }
                 }
-
-                executeCallback(null, filteredId);
             },
         },
     };
 
-    const executeCallback = (e, id) => {
+    ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
         if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
             mist.menu.entries[id].callback();
         }
-    }
-
-    ipcRenderer.on('mistAPI_callMenuFunction', executeCallback);
+    });
 
     ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
         if (mist.callbacks[type]) {

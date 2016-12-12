@@ -22,3 +22,8 @@ globals:
   expect: true
   chai: true
   beforeEach: true
+  LocalStore: true
+  web3: true
+  Tabs: true
+  Tracker: true
+  _: true

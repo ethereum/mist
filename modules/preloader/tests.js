@@ -19,6 +19,7 @@ window.ipcProvider = require('../ipc/ipcProviderWrapper.js');
 window.permissions = {};
 
 ipcRenderer.sendToHost('sendTestData');
-ipcRenderer.on('uiAction_sendTestData', function(e, data) {
-    window.permissions = data.permissions;
-})
+ipcRenderer.on('uiAction_sendTestData', function(e, permissions, coinbase) {
+    window.permissions = permissions;
+    window.coinbase = coinbase;
+});

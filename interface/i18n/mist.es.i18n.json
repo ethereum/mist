@@ -35,7 +35,7 @@
                 "backupMist": "Datos de la aplicación"
             },
             "develop": {
-                "label": "Desarrollar",
+                "label": "Desarrollo",
                 "devTools": "Herramientas para desarrolladores",
                 "devToolsMistUI": "UI de Mist",
                 "devToolsWalletUI": "UI del monedero",

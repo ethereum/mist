@@ -12,6 +12,8 @@ The init function of Mist
 mistInit = function(){
     console.info('Initialise Mist Interface');
 
+    EthBlocks.init();
+
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {
             console.info('Resetting UI tabs');
@@ -55,8 +57,6 @@ Meteor.startup(function(){
     console.info('Meteor starting up...');
 
     EthAccounts.init();
-    EthBlocks.init();
-
     mistInit();
 
     console.debug('Setting language');

@@ -2,6 +2,7 @@
 @module MistAPI
 */
 
+const _ = require('underscore');
 const { ipcRenderer } = require('electron');
 const packageJson = require('./../../../package.json');
 
@@ -13,13 +14,14 @@ module.exports = () => {
 
     // todo: error handling
     const filterAdd = (options) => {
-        if (typeof options !== 'object') { return false; }
+        if (!(options instanceof Object)) { return false; }
 
-        return ['position', 'selected', 'name', 'badge'].every(e => e in options);
+        return ['name'].every(e => e in options);
     };
 
     // filterId the id to only contain a-z A-Z 0-9
     const filterId = (str) => {
+        str = String(str);
         let newStr = '';
         if (str) {
             for (let i = 0; i < str.length; i += 1) {
@@ -101,11 +103,16 @@ module.exports = () => {
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             add(id, options, callback) {
+                var args = Array.prototype.slice.call(arguments);
+                callback = _.isFunction(args[args.length-1]) ? args.pop() : null;
+                options = _.isObject(args[args.length-1]) ? args.pop() : null;
+                id = _.isString(args[args.length-1]) || _.isFinite(args[args.length-1]) ? args.pop() : null;
+
                 if (!filterAdd(options)) { return false; }
 
                 const filteredId = prefix + filterId(id);
                 const entry = {
-                    id: filteredId,
+                    id: filteredId || 'mist_defaultId',
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -125,9 +132,12 @@ module.exports = () => {
                 return true;
             },
             /**
-            Updates a menu entry
+            Updates a menu entry from the mist sidebar.
 
             @method update
+            @param {String} id          The id of the menu, has to be the same accross page reloads.
+            @param {Object} options     The menu options like {badge: 23, name: 'My Entry'}
+            @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             update() {
                 this.add.apply(this, arguments);
@@ -152,19 +162,10 @@ module.exports = () => {
                 });
             },
             /**
-            Removes all menu entries.
-
-            @method clear
-            */
-            clear() {
-                this.entries = {};
-                queue.push({ action: 'clearMenu' });
-            },
-            /**
-            Selects menu with given Id.
+            Marks a menu entry as selected
 
             @method select
-            @oaram {String} id
+            @param {String} id
             */
             select(id) {
                 const filteredId = prefix + filterId(id);
@@ -175,6 +176,15 @@ module.exports = () => {
                         this.entries[e].selected = (e === filteredId);
                     }
                 }
+            },
+            /**
+            Removes all menu entries.
+
+            @method clear
+            */
+            clear() {
+                this.entries = {};
+                queue.push({ action: 'clearMenu' });
             },
         },
     };

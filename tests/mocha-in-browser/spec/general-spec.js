@@ -37,31 +37,8 @@ describe('General', function () {
     });
 
     describe('mist.menu', function () {
-        var menuObj = {
-            position: 0,
-            selected: false,
-            name: 'My dapp menu',
-            badge: '0 eth',
-        };
-
-        var menuId = 0;
-
-        var addMenu = function (selected = false, cb = null) {
-            var obj = Object.assign({}, menuObj);
-            var id = 'menu' + menuId;
-
-            obj.selected = selected;
-            obj.position = menuId;
-            obj.name = 'My dapp menu ' + menuId;
-            mist.menu.add(id, obj, cb);
-
-            menuId += 1;
-            return id;
-        };
-
         beforeEach(function () {
             mist.menu.clear();
-            menuId = 0;
         });
 
         it('add() should return false when params are incorrect', function () {
@@ -71,42 +48,44 @@ describe('General', function () {
         });
 
         it('add() should return true when successful', function () {
-            expect(mist.menu.add('mydappmenu', menuObj)).to.be.true;
-            expect(mist.menu.add('mydappmenu', menuObj, function () {})).to.be.true;
+            expect(mist.menu.add('mydappmenu', { name: 'MyMenu' })).to.be.true;
+            expect(mist.menu.add('mydappmenu', { name: 'MyMenu', position: 1 }, function () {})).to.be.true;
         });
 
-        it('add() should add menu item to entries object', function () {
-            var menu0 = addMenu();
-            expect(mist.menu.entries).to.have.all.keys('entry_' + menu0);
+        it('add() should update menu entries', function () {
+            mist.menu.add('menu0', { name: 'Test1', selected: true, position: 1 });
+
+            mist.menu.update('menu0', { name: 'Test1234', selected: false, position: 12 });
+
+            expect(mist.menu.entries.entry_menu0).to.eql({ id: 'entry_menu0', position: 12, name: 'Test1234', selected: false, badge: undefined });
         });
 
         it('should be selectable', function () {
-            var menu1;
+            mist.menu.add('menu0', { name: 'Test1', selected: true });
+            mist.menu.add('menu1', { name: 'Test2' });
 
-            addMenu(true);
-            menu1 = addMenu(false);
+            mist.menu.select('menu1');
 
-            mist.menu.select(menu1);
-            expect(mist.menu.entries['entry_' + menu1].selected).to.be.true;
+            expect(mist.menu.entries.entry_menu0.selected).to.be.false;
+            expect(mist.menu.entries.entry_menu1.selected).to.be.true;
         });
 
         it('remove() should remove menu from entries', function () {
-            var menu1;
-
-            addMenu();
-            menu1 = addMenu();
-            addMenu();
+            mist.menu.add('menu0', { name: 'Test2' });
+            mist.menu.add('menu1', { name: 'Test3' });
+            mist.menu.add('menu2', { name: 'Test4' });
 
             expect(mist.menu.entries).to.have.all.keys('entry_menu0', 'entry_menu1', 'entry_menu2');
-            mist.menu.remove(menu1);
+            mist.menu.remove('menu1');
             expect(mist.menu.entries).to.have.all.keys('entry_menu0', 'entry_menu2');
         });
 
         it('clear() should clear menu entries', function () {
-            addMenu();
-            addMenu();
+            mist.menu.add('menu0', { name: 'Test1' });
+            mist.menu.add('menu1', { name: 'Test2' });
 
             expect(mist.menu.entries).to.have.all.keys('entry_menu0', 'entry_menu1');
+
             mist.menu.clear();
             expect(mist.menu.entries).to.be.empty;
         });

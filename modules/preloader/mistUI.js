@@ -129,6 +129,18 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
     }
 });
 
+// Open Browser Solidity
+ipcRenderer.on('uiAction_openBrowserSolidity', () => {
+    Tabs.upsert('browserSol', {
+        position: 1,
+        name: 'Browser Solidity',
+        redirect: 'https://ethereum.github.io/browser-solidity/',
+        permissions: {},
+    });
+
+    Tracker.afterFlush(() => LocalStore.set('selectedTab', 'browserSol'));
+});
+
 
 // CONTEXT MENU
 

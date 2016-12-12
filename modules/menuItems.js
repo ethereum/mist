@@ -17,6 +17,7 @@ const switchForSystem = function (options) {
     else if ('default' in options) {
         return options.default;
     }
+    return null;
 };
 
 
@@ -358,9 +359,17 @@ let menuTempl = function (webviews) {
                 log = 'Couldn\'t load log file.';
             }
         },
-    },
-    ];
+    }];
 
+    if (Settings.uiMode === 'mist') {
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.browsersol'),
+            enabled: true,
+            click() {
+                Windows.getByType('main').send('uiAction_openBrowserSolidity');
+            },
+        });
+    }
 
     // add node switching menu
     devToolsMenu.push({

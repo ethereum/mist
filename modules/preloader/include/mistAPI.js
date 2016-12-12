@@ -173,7 +173,6 @@ module.exports = () => {
                         this.entries[e].selected = (e === filteredId);
                     }
                 }
-                executeCallback(null, filteredId);
             },
             /**
             Removes all menu entries.

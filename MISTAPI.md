@@ -88,13 +88,13 @@ Adds/Updates a sub menu entry, which is placed below you dapp button in the side
 
 #### Parameters
 
-1. `String` **optional** and id string to identify your sub menu entry when updating. 
+1. `String` **optional** and id string to identify your sub menu entry when updating.
 2. `Object` The menu options:
     - `name` (`String`): The name of the sub menu button.
-    - `badge` (`String|null`) optional: The badge text for the sub menu button, e.g. `50`
-    - `position` (`Number`) optional: The position of the submenu button, `1` is on the top.
-    - `selected` (`Boolean`) optionsl: whether or not this sub menu entry is currently selected.
-3. `Function` The callback to be called when the sub menu entry is clicked
+    - `badge` (`String|null`) **optional**: The badge text for the sub menu button, e.g. `50`
+    - `position` (`Number`) **optional**: The position of the submenu button, `1` is on the top.
+    - `selected` (`Boolean`) **optional**: whether or not this sub menu entry is currently selected.
+3. `Function` **optional**: The callback to be called when the sub menu entry is clicked
 
 #### Minimal example
 

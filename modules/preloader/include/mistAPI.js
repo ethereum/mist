@@ -10,7 +10,7 @@ const packageJson = require('./../../../package.json');
 module.exports = () => {
     let queue = [];
     const prefix = 'entry_';
-
+    const MIST_SUBMENU_LIMIT = 100;
 
     // todo: error handling
     const filterAdd = (options) => {
@@ -21,12 +21,12 @@ module.exports = () => {
 
     // filterId the id to only contain a-z A-Z 0-9
     const filterId = (str) => {
-        str = String(str);
+        const filteredStr = String(str);
         let newStr = '';
-        if (str) {
-            for (let i = 0; i < str.length; i += 1) {
-                if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
-                    newStr += str.charAt(i);
+        if (filteredStr) {
+            for (let i = 0; i < filteredStr.length; i += 1) {
+                if (/[a-zA-Z0-9_-]/.test(filteredStr.charAt(i))) {
+                    newStr += filteredStr.charAt(i);
                 }
             }
         }
@@ -41,7 +41,6 @@ module.exports = () => {
     @class mist
     @constructor
     */
-
     const mist = {
         callbacks: {},
         version: packageJson.version,
@@ -104,13 +103,20 @@ module.exports = () => {
             */
             add(id, options, callback) {
                 var args = Array.prototype.slice.call(arguments);
-                callback = _.isFunction(args[args.length-1]) ? args.pop() : null;
-                options = _.isObject(args[args.length-1]) ? args.pop() : null;
-                id = _.isString(args[args.length-1]) || _.isFinite(args[args.length-1]) ? args.pop() : null;
+                callback = _.isFunction(args[args.length - 1]) ? args.pop() : null;
+                options = _.isObject(args[args.length - 1]) ? args.pop() : null;
+                id = _.isString(args[args.length - 1]) || _.isFinite(args[args.length - 1]) ? args.pop() : null;
 
                 if (!filterAdd(options)) { return false; }
 
                 const filteredId = prefix + filterId(id);
+
+                // restricting to 100 menu entries
+                if (!(filteredId in this.entries) &&
+                    Object.keys(this.entries).length >= MIST_SUBMENU_LIMIT) {
+                    return false;
+                }
+
                 const entry = {
                     id: filteredId || 'mist_defaultId',
                     position: options.position,

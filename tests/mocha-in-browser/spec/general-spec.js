@@ -89,5 +89,17 @@ describe('General', function () {
             mist.menu.clear();
             expect(mist.menu.entries).to.be.empty;
         });
+
+        it('add() should be limited to 100 entries', function () {
+            var i;
+            // adding 100 entries
+            for (i = 0; i < 100; i += 1) {
+                mist.menu.add('menu' + i, { name: 'Test' + i });
+            }
+            expect(Object.keys(mist.menu.entries).length).to.equals(100);
+            expect(mist.menu.add('menu 101', {
+                name: 'Menu overflow',
+            })).to.be.false;
+        });
     });
 });

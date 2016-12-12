@@ -118,7 +118,7 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
 
                 // update the permissions, when accounts change
                 Tracker.autorun(() => {
-                    var accountList = _.pluck(EthAccounts.find({}, { fields:{ address: 1 } }).fetch(), 'address');
+                    var accountList = _.pluck(EthAccounts.find({}, { fields: { address: 1 } }).fetch(), 'address');
 
                     Tabs.update('tests', { $set: {
                         'permissions.accounts': randomizeAccounts(accountList, coinbase),

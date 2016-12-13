@@ -109,7 +109,7 @@ Template['views_webview'].helpers({
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
         var url;
-        console.log('tab', tab);
+
         if(tab) {
 
             // set url only once
@@ -144,7 +144,7 @@ Template['views_webview'].helpers({
                     url: url
                 }});
             }
-            console.log(Helpers.formatUrl(url));
+
             return Helpers.formatUrl(url);
         }
     }

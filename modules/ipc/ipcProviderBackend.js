@@ -70,7 +70,7 @@ class IpcProviderBackend {
      */
     _getOrCreateConnection(event) {
         const owner = event.sender;
-        const ownerId = owner.getId();
+        const ownerId = owner.id;
 
         let socket;
 
@@ -182,19 +182,16 @@ class IpcProviderBackend {
      * Handle IPC call to destroy a connection.
      */
     _destroyConnection(event) {
-        const ownerId = event.sender.getId();
+        const ownerId = event.sender.id;
 
-        return Q.try(() => {
-            if (this._connections[ownerId]) {
-                log.debug('Destroy socket connection', ownerId);
+        if (this._connections[ownerId]) {
+            log.debug('Destroy socket connection', ownerId);
 
-                this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
+            this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
 
-                return this._connections[ownerId].socket.destroy().finally(() => {
-                    delete this._connections[ownerId];
-                });
-            }
-        });
+            this._connections[ownerId].socket.destroy();
+            delete this._connections[ownerId];
+        }
     }
 
 
@@ -237,7 +234,7 @@ class IpcProviderBackend {
      * @param  {String}  payload request payload.
      */
     _sendRequest(isSync, event, payload) {
-        const ownerId = event.sender.getId();
+        const ownerId = event.sender.id;
 
         log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
 

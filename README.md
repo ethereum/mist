@@ -32,14 +32,14 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements:
 
-* Electron v1.3.12
+* Electron v1.3.13
 * Node v6.0 or above
 * [Yarn package manager](https://yarnpkg.com/)
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron@1.3.12
+    $ npm install -g electron@1.3.13
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:
@@ -72,7 +72,7 @@ It may be preferable to only download platform-specific nodes by passing the `--
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
 In the original window you can then start Mist with:
 
@@ -87,7 +87,7 @@ In the original window you can then start Mist with:
 
 Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
     // and in another terminal
 

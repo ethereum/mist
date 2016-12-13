@@ -88,7 +88,7 @@ Template['layout_browserBar'].events({
     */
     'click button.reload': function(){
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-        
+
         if(webview)
             webview.reload();
     },
@@ -101,7 +101,7 @@ Template['layout_browserBar'].events({
     */
     'click button.remove-tab': function(){
         var tabId = LocalStore.get('selectedTab');
-        
+
         Tabs.remove(tabId);
         LocalStore.set('selectedTab', 'browser');
     },
@@ -123,10 +123,10 @@ Template['layout_browserBar'].events({
 
         });
     },
-    /* 
+    /*
     Hide the app bar on input blur
-    
-    @event blur 
+
+    @event blur
     */
     'blur .app-bar > form.url .url-input': function(e, template) {
         template.$('.app-bar').removeClass('show-bar');
@@ -154,7 +154,7 @@ Template['layout_browserBar'].events({
         var url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
 
-        console.log('Submitted new URL:'+ url); 
+        console.log('Submitted new URL:'+ url);
 
         // update current tab url
         Tabs.update(tabId, {$set: {

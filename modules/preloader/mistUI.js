@@ -13,7 +13,6 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
-
 require('./include/setBasePath')('interface');
 
 

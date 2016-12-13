@@ -1,5 +1,3 @@
-
-
 const _ = global._;
 const BaseProcessor = require('./base');
 const db = require('../../db');
@@ -24,8 +22,6 @@ module.exports = class extends BaseProcessor {
                 payload.result = null;
             }
         }
-
         return super.sanitizeResponsePayload(conn, payload, isPartOfABatch);
     }
 };
-

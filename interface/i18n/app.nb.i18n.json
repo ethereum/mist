@@ -19,7 +19,9 @@
         "skip": "Hopp over",
         "sending": "Sender...",
         "create": "Lag",
-        "tryToReconnect": "Prøv å koble"
+        "tryToReconnect": "Prøv å koble",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Du",

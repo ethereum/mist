@@ -30,15 +30,15 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
             TemplateVar.set(template, 'syncStatusMessage', false);
-
             return;
         }
     });
 
     ipc.on('uiAction_clientBinaryStatus', function(e, status) {
         TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.clientBinaries.' + status));
+        TemplateVar.set(template, 'showNetworkIndicator', status === 'done');
         TemplateVar.set(template, 'showProgressBar', false);
-        TemplateVar.set(template, 'showStartAppButton', false);            
+        TemplateVar.set(template, 'showStartAppButton', false);
         TemplateVar.set(template, 'logText', null);
     });
 
@@ -78,7 +78,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
             case 'error':
                 errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
-                
+
                 TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
                 break;
         }
@@ -89,38 +89,35 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
         TemplateVar.set(template, 'smallClass', 'small');
 
-        if (status == 'inProgress') {
+        if (status === 'inProgress') {
             TemplateVar.set(template, 'showStartAppButton', true);
             TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
 
-            if (data != false) {
+            if (data !== false) {
                 // if state is "in progress" and we have data
                 showNodeLog = false;
-                var translationString = '';                    
+                var translationString = '';
 
                 // add the data received to the object lastSyncData
                 lastSyncData = _.extend(lastSyncData, data || {});
-                
+
                 // Select the appropriate message
                 if(web3.net.peerCount > 0) {
                     // Check which state we are
-
                     if  (   0 < lastSyncData._displayKnownStates && (
-                            lastSyncData.pulledStates != Math.round(lastSyncData._displayState) 
-                        ||  lastSyncData.knownStates != Math.round(lastSyncData._displayKnownStates)) 
+                            Number(lastSyncData.pulledStates) !== Math.round(lastSyncData._displayState)
+                        ||  Number(lastSyncData.knownStates) !== Math.round(lastSyncData._displayKnownStates))
                     ) {
                         // Mostly downloading new states
                         translationString = 'mist.startScreen.nodeSyncInfoStates';
-
                     } else {
                         // Mostly downloading blocks
                         translationString = 'mist.startScreen.nodeSyncInfo';
-
                     }
                 } else {
                     // Not online
-                    translationString = 'mist.startScreen.nodeSyncConnecting';                    
-                } 
+                    translationString = 'mist.startScreen.nodeSyncConnecting';
+                }
 
                 // Saves data as numbers (hex)
                 lastSyncData._highestBlock = lastSyncData.highestBlock;
@@ -134,9 +131,9 @@ Template['popupWindows_splashScreen'].onCreated(function(){
             } else {
                 // It's not connected anymore
                 if (web3.net.peerCount > 1) {
-                    translationString = 'mist.startScreen.nodeSyncFoundPeers';                    
+                    translationString = 'mist.startScreen.nodeSyncFoundPeers';
                 } else {
-                    translationString = 'mist.startScreen.nodeSyncConnecting';                    
+                    translationString = 'mist.startScreen.nodeSyncConnecting';
                 }
 
                 TemplateVar.set(template, 'lastSyncData', {'peers': web3.net.peerCount});
@@ -158,7 +155,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method mode
     */
     'mode': function(){
-        return window.mist.mode;
+        return window.mistMode;
     },
     /**
     Returns the icon path
@@ -166,7 +163,7 @@ Template['popupWindows_splashScreen'].helpers({
     @method iconPath
     */
     'iconPath': function(){
-        return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+        return 'file://' + window.dirname + '/icons/' + window.mistMode + '/icon2x.png';
     },
     /**
     Updates the Sync Message live
@@ -189,13 +186,13 @@ Template['popupWindows_splashScreen'].helpers({
                 // initialize the display numbers
                 syncData._displayBlock = Number(syncData.currentBlock);
                 syncData._displayState = Number(syncData.pulledStates || 0);
-                syncData._displayKnownStates = Number(syncData.knownStates || 0);                    
+                syncData._displayKnownStates = Number(syncData.knownStates || 0);
             } else {
                 // Increment each them slowly to match target number
                 syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 10;
                 syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / 10;
                 syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / 10;
-            };            
+            }
 
             // Create the fancy strings
             lastSyncData.displayBlock = numeral(Math.round(lastSyncData._displayBlock)).format('0,0');
@@ -212,11 +209,11 @@ Template['popupWindows_splashScreen'].helpers({
             }
 
             var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100 ;
-                    
+
             // Saves data back to templates
             TemplateVar.set(template, "syncStatusMessageLive", translatedMessage);
             TemplateVar.set(template, 'lastSyncData', syncData);
-            
+
             // set progress value
             if(_.isFinite(progress)) {
                 TemplateVar.set(template, 'showProgressBar', true);
@@ -237,5 +234,5 @@ Template['popupWindows_splashScreen'].helpers({
 Template['popupWindows_splashScreen'].events({
    'click .start-app': function(){
         ipc.send('backendAction_skipSync');
-   } 
+   }
 });

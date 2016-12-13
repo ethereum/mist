@@ -51,8 +51,9 @@
 	img.left-overlay {
 		position: relative;
 		top: -40px;
-		left: -132%;
-		width: 255%;
+		left: -160%;
+		width: 300%;
+        z-index: 1;
 	}
 
 	footer {
@@ -60,8 +61,13 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: linear-gradient(transparent 0%, @colorGrayLight 20%);
 		padding: 0 @gridHeight;
+        padding-top: @gridHeight * 3;
+        background: linear-gradient(transparent 0%, @colorGrayLight 20%);
+
+        &.dapp-small {
+            background: linear-gradient(transparent 50%, @colorGrayLight 70%);       
+        }
 	}
 
 	.info.dapp-error{
@@ -69,13 +75,16 @@
 		font-weight: 600;
 	}
 
-	&.update-available {
+	&.update-available {  
+        -webkit-user-select: all;
+
 		.text {
 			text-align: left;
 		}
 		h1 {
 			font-size: 200%;
 			margin-bottom: 20px;
+
 			&.no-update {
 				font-size: 180%;
 			}
@@ -86,7 +95,7 @@
 		.container {
 			overflow: auto;
 			height: 80vh;
-			padding-bottom: 160px;
+			padding-bottom: 120px;
 		}
 
 		.transaction-parties {
@@ -204,6 +213,10 @@
 					    	position: relative;
 					    	top: 1px;
 					    }
+                        &:hover strong {
+                            word-break: break-all;
+                        }
+                        
                     }
                     .type {
                     	text-align: right;
@@ -215,6 +228,11 @@
                     	transition: background 0.1s ease-in;
                     }
                 }
+
+                ::selection {
+                    color: #FFF; 
+                    background: @colorLink;
+                }                 
             }
 
             ol li::before {

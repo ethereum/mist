@@ -14,6 +14,8 @@ If you want install the app from a pre-built version on the [release page](https
 you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
+
+#### Config folder
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
@@ -30,13 +32,14 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements:
 
-* Electron v1.3.5
-* Node v4.3.0 or above
+* Electron v1.3.13
+* Node v6.0 or above
+* [Yarn package manager](https://yarnpkg.com/)
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron@1.3.5
+    $ npm install -g electron@1.3.13
     $ npm install -g gulp
 
 And some futher tools to help with downloading and unzipping client nodes:
@@ -45,6 +48,7 @@ _Linux:_
 
     $ apt-get install unzip
 
+
 ### Installation
 
 Now you're ready to install Mist:
@@ -52,36 +56,38 @@ Now you're ready to install Mist:
     $ git clone https://github.com/ethereum/mist.git
     $ cd mist
     $ git submodule update --init
-    $ npm install
+    $ yarn
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull && git submodule update
-    $ npm install
-
+    $ yarn
 
 #### Options
-It may be preferable to only download platform-specific nodes by passing the --platform flag, please refer to the [options section](#platform).
+It may be preferable to only download platform-specific nodes by passing the `--platform` flag, please refer to the [options section](#platform).
 
 ### Run Mist
 
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
 In the original window you can then start Mist with:
 
     $ cd mist
     $ electron .
 
+*NOTE: client-binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)*
+
+*NOTE: use `--help` to display available options, e.g. `--loglevel debug` (or `trace`) for verbose output*
 
 ### Run the Wallet
 
 Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
     // and in another terminal
 
@@ -157,7 +163,6 @@ To create a binaries you need to install [`electron-builder` dependencies](https
 To generate the binaries simply run:
 
     $ cd mist
-    $ gulp update-nodes
     $ gulp
 
     // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
@@ -187,6 +192,7 @@ Options are:
 - `linux` (Linux)
 - `all` (default)
 
+
 ##### walletSource
 
 With the `walletSource` you can specify the branch to use, default ist `master`:
@@ -204,16 +210,16 @@ Options are:
 
 Spits out the SHA256 checksums of distributables.
 
-It expects installer/zip files to be in the generated folders e.g. `dist_wallet/release`
+It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
     $ gulp mist-checksums
 
-    3f726fff186b85c600ea2459413d0bf5ada2dbc98877764efbefa545f96eb975  ./dist_wallet/release/Ethereum Wallet Setup 0.8.1-ia32.exe
-    ab4d26d5ebc66e9aba0fa610071266bacbb83faacbb7ed0dd2acb24386190bdb  ./dist_wallet/release/Ethereum Wallet Setup 0.8.1.exe
-    909b0fb4c7b09b731b2a442c457747e04ffdd9c03b6edc06079ae05a46200d13  ./dist_wallet/release/Ethereum Wallet-0.8.1-ia32.deb
-    e114d6188963dfdae0489abf4e8923da58b39ff9cdbaad26e803af27c7ce55d1  ./dist_wallet/release/Ethereum Wallet-0.8.1.deb
-    930787dd2f5ed6931068bff9244bccc01f397f552c48ded0f08e515e276dd080  ./dist_wallet/release/Ethereum Wallet-0.8.1.dmg
+    3f726fff186b85c600ea2459413d0bf5ada2dbc98877764efbefa545f96eb975  ./dist_mist/release/Mist-0.8.1-ia32.exe
+    ab4d26d5ebc66e9aba0fa610071266bacbb83faacbb7ed0dd2acb24386190bdb  ./dist_mist/release/Mist-0.8.1.exe
+    909b0fb4c7b09b731b2a442c457747e04ffdd9c03b6edc06079ae05a46200d13  ./dist_mist/release/Mist-0.8.1-ia32.deb
+    e114d6188963dfdae0489abf4e8923da58b39ff9cdbaad26e803af27c7ce55d1  ./dist_mist/release/Mist-0.8.1.deb
+    930787dd2f5ed6931068bff9244bccc01f397f552c48ded0f08e515e276dd080  ./dist_mist/release/Mist-0.8.1.dmg
 
 ### Code signing for production
 
-**As of #972 we've updated the build process and thus need to redo code-signing.**
+**As of [#972](https://github.com/ethereum/mist/pull/972) we've updated the build process and thus need to redo code-signing.**

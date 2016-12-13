@@ -5,6 +5,7 @@
                 "label": "__app__",
                 "about": "Over __app__",
                 "checkForUpdates": "Op updates controleren...",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Diensten",
                 "hide": "__app__ verbergen",
                 "hideOthers": "Andere verbergen",
@@ -22,7 +23,8 @@
             },
             "view": {
                 "label": "Bekijken",
-                "fullscreen": "Volledig Scherm Inschakelen"
+                "fullscreen": "Volledig Scherm Inschakelen",
+                "default": "Default"
             },
             "accounts": {
                 "label": "Accounts",
@@ -44,7 +46,8 @@
                 "network": "Netwerk",
                 "mainNetwork": "Hoofdnetwerk",
                 "startMining": "⛏ Start Mining (Alleen testnet)",
-                "stopMining": "⛏ Stop Mining"
+                "stopMining": "⛏ Stop Mining",
+                "externalNode": "using external node"
             },
             "window": {
                 "label": "Scherm",
@@ -53,7 +56,8 @@
                 "toFront": "Alles op voorgrond"
             },
             "help": {
-                "label": "Help"
+                "label": "Help",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -65,6 +69,14 @@
                 "win32": "Ga naat uw Internet Tijd Instellingen in uw configuratiescherm en selecteer de optie. Zie deze uitleg voor details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Om tijdssynchronisatie aan de zetten opent u uw instellingen en activeert u \"Tijd en datum automatisch instellen\"."
+            },
+           "nodeChecksumMismatch": {
+                "title": "Checksum mismatch in downloaded node!",
+                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -78,7 +90,14 @@
             "blockNumber": "Uw laatste bloknummer",
             "timeSinceBlock": "Verstreken tijd sinds laatste blok",
             "testnetExplain": "U best actief op een testnet, VERSTUUR GEEN echte ether naar deze adressen",
-            "peers": "peers"
+            "peers": "peers",
+            "checkingWhichNetwork": "Checking network...",
+            "mainNetwork": "Main-net",
+            "testNetwork": "Test-net",
+            "privateNetwork": "Private-net",
+            "mainnetExplain": "You are on the main Ethereum global network",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "unknownnetExplain": "Unable to determine which network you are on"
         },
         "sidebar": {
             "buttons": {
@@ -87,7 +106,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "Geen accounts ingesteld"
+                "noAccounts": "Geen accounts ingesteld",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -99,8 +119,27 @@
             "nodeSyncing": "Ethereum node moet synchroniseren, even gedult alstublieft...",
             "nodeSyncInfo": "Blok __currentBlock__ van __highestBlock__ aan het downloaden.",
             "nodeSyncConnecting": "Zoeken naar peers...",
-            "nodeSyncProcessing": "Blokken aan het verwerken, even gedult alstublieft...",
-            "privateChainTimeout": "Sta zoeken naar peers over"
+            "stoppingNode": "Stopping Ethereum node...",
+            "nodeStarting": "Ethereum node starting up...",
+            "nodeStarted": "Ethereum node started",
+            "nodeConnected": "Ethereum node connected",
+            "nodeStopping": "Ethereum node stopping...",
+            "nodeStopped": "Ethereum node stopped",
+            "nodeError": "Ethereum node connection error :'(",
+            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
+            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
+            "nodeSyncingStopped": "Ethereum node sync stopped",
+            "peerSearchTimeout": "Skip peer search",
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "requestAccount": {
@@ -109,7 +148,8 @@
                 "repeatPassword": "Wachtwoord herhalen",
                 "creating": "Account genereren...",
                 "errors": {
-                    "passwordMismatch": "Uw wachtwoorden komen niet overeen."
+                    "passwordMismatch": "Uw wachtwoorden komen niet overeen.",
+                    "passwordTooShort": "Make a longer password"
                 }
             },
             "unlockMasterPassword": {
@@ -124,7 +164,7 @@
                 "title": {
                     "sendTransaction": "Send transaction",
                     "contractExecution": "Execute contract",
-                    "createContract": "Create contract"  
+                    "createContract": "Create contract"
                 },
                 "contractExecutionInfo": "U staat op het punt een functie uit te voeren op een contract. Dit kan overdrachten van waarde tot gevolg hebben.",
                 "contractCreationInfo": "U staat op het punt een contract aan te maken met de gegeven gevevens.",
@@ -142,38 +182,47 @@
                 },
                 "errors": {
                     "connectionTimeout": "Kon niet verbinden naar de node, is het in de achtergrond uitgevallen?",
-                    "wrongPassword": "Onjuist wachtwoord"
-                }
+                    "wrongPassword": "Onjuist wachtwoord",
+                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "sameAccount": "Can't send to itself"
+                },
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
+                "parameters": "Parameters",
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "Ethereum is een decentraal platform voor het bouwen van applicaties op een blockchain: software die immuun is voor fruide en levenslang waarde en eigendom over kan brengen",
-                "goToTestnet" : "Gebruik het test netwerk",
-                "goToTestnetDescription" : "Test de technologie vrij in een testongeving, zonder echte ether te gebruiken.",
-                "gotoMainnet" : "Gebruik hoofdnetwerk",
-                "gotoMainnetDescription" : "U zal een beetje Ether nodig hebben om contracten uit te voeren. Geen zorgen, we helpen u met het verkrijgen...",
-                "doYouHaveAWalletFile" : "Heeft u een wallet bestand?",
-                "walletFileDescription" : "<p>Als u mee heeft gedaan met de Ethereum voorverkoop van 2014 zou u een bestand met de naam <code>ethereum_wallet_backup.json</code> ontvangen moeten hebben. U kon deze downloaden na uw contributie en is ook per email verstuurd</p>",
-                "dropFilesHere" : "Sleep voorverkoop bestand hier",
+                "description": "Ethereum is een decentraal platform voor het bouwen van applicaties op een blockchain: software die immuun is voor fruide en levenslang waarde en eigendom over kan brengen",
+                "goToTestnet": "Gebruik het test netwerk",
+                "goToTestnetDescription": "Test de technologie vrij in een testongeving, zonder echte ether te gebruiken.",
+                "gotoMainnet": "Gebruik hoofdnetwerk",
+                "gotoMainnetDescription": "U zal een beetje Ether nodig hebben om contracten uit te voeren. Geen zorgen, we helpen u met het verkrijgen...",
+                "doYouHaveAWalletFile": "Heeft u een wallet bestand?",
+                "walletFileDescription": "<p>Als u mee heeft gedaan met de Ethereum voorverkoop van 2014 zou u een bestand met de naam <code>ethereum_wallet_backup.json</code> ontvangen moeten hebben. U kon deze downloaden na uw contributie en is ook per email verstuurd</p>",
+                "dropFilesHere": "Sleep voorverkoop bestand hier",
                 "creating": "Aanmaken...",
                 "importing": "Importeren...",
-                "skip" : "Sla deze stap over",
-                "next" : "Volgende",
-                "protectTitle" : "Bescherm uw account",
-                "protectDescription" : "Kies een wachtwoord voor uw nieuwe account. Maak het even veilig alsof het uw huissleutels zijn!",
-                "accountTitle" : "Opladen!",
-                "accountTitleTestnet" : "Mine wat!",
+                "skip": "Sla deze stap over",
+                "next": "Volgende",
+                "protectTitle": "Bescherm uw account",
+                "protectDescription": "Kies een wachtwoord voor uw nieuwe account. Maak het even veilig alsof het uw huissleutels zijn!",
+                "accountTitle": "Opladen!",
+                "accountTitleTestnet": "Mine wat!",
                 "etherDescription": "Het ethereum netwerk is gebaseerd op het “Ether” token. U zal een kleine hoeveelheid nodig hebben om dingen op het netwerk te doen.",
-                "loadItDescription" : "Als u al Bitcoins of een andere cryptocurrency heeft kan u deze makkelijk omzetten in ether met Shapeshift.<br><br> Wij raden aan een hoeveelheid van tussen de <strong>0.25 en 1 ether</strong> om te zetten.",
+                "loadItDescription": "Als u al Bitcoins of een andere cryptocurrency heeft kan u deze makkelijk omzetten in ether met Shapeshift.<br><br> Wij raden aan een hoeveelheid van tussen de <strong>0.25 en 1 ether</strong> om te zetten.",
                 "mineItDescription": "<strong>Op het testnetwerk kan u zelf ether minen door te gaan naar het <em>Ontwikkelaars</em> menu en te kiezen voor <em>Begin Mining</em>. </strong> <br> <strong> PROBEER GEEN ECHTE ETHER NAAR DIT ADRES TE VERSTUREN </strong>",
-                "you" : "U",
-                "etherbase" : "Centrale account (etherbase)",
-                "depositBitcoin" : "Bitcoin Storten",
-                "learnIt" : "Leer terwijl u wacht",
+                "you": "U",
+                "etherbase": "Centrale account (etherbase)",
+                "depositBitcoin": "Bitcoin Storten",
+                "learnIt": "Leer terwijl u wacht",
                 "downloadingBlocks": "Blokken downloaden",
-                "block": "blok",
-                "tutorial1Description" : "<p> Het enige wat er nog moet gebeuren is wachten tot de download compleet is. Hier zijn een aantal leessuggesties: </p> <h4>Maak uw eigen geld </h4> <p> Maak een cryptocurrency met een vaste uitgeveven hoeveelheid, tokens die vermogen uit de echte wereld voorstellen, etc </p>",
-                "tutorial2Description" : "<h4> Start een crowdsale </h4> <p> Haal geld op voor een gemeenschappelijk doel, volledig betrouwbaar zonder derde partij. Ga om het traditionele systeem heen en haal geld direct bij de bron op door een organisatie te crowdfunden via de blockchain</p>",
-                "tutorial3Description" : "<h4> Blockchain Organisatie </h4> <p> Maak een autonome organisatie aan met onbreekbare regels over het uitgeven van geld en wie beslissingen kan maken. Laat uw investeerders een actieve rol nemen in het besluiten hoe geld wordt uitgegeven</p>",
+                "tutorial1Description": "<p> Het enige wat er nog moet gebeuren is wachten tot de download compleet is. Hier zijn een aantal leessuggesties: </p> <h4>Maak uw eigen geld </h4> <p> Maak een cryptocurrency met een vaste uitgeveven hoeveelheid, tokens die vermogen uit de echte wereld voorstellen, etc </p>",
+                "tutorial2Description": "<h4> Start een crowdsale </h4> <p> Haal geld op voor een gemeenschappelijk doel, volledig betrouwbaar zonder derde partij. Ga om het traditionele systeem heen en haal geld direct bij de bron op door een organisatie te crowdfunden via de blockchain</p>",
+                "tutorial3Description": "<h4> Blockchain Organisatie </h4> <p> Maak een autonome organisatie aan met onbreekbare regels over het uitgeven van geld en wie beslissingen kan maken. Laat uw investeerders een actieve rol nemen in het besluiten hoe geld wordt uitgegeven</p>",
                 "buttons": {
                     "showPassword": "Toon wachtwoord",
                     "importAccount": "Importeer account",
@@ -185,12 +234,41 @@
                     "unknownFile": "Bestand niet herkent.",
                     "wrongPassword": "Incorrect wachtwoord.",
                     "importFailed": "Kon bestand niet inporteren en kreeg: __error__"
-                }
+                },
+                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+            },
+            "updateAvailable": {
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
-        "checksumAlert":"Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die u zullen beschermen teken typfouten, dus ga graag even na of dit de goede is. Als aangeveven, ga na of het beveiligingsicoon klopt.",
-        "identiconHelper": "Dit is een beveilliginsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan"
+        "checksumAlert": "Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die u zullen beschermen teken typfouten, dus ga graag even na of dit de goede is. Als aangeveven, ga na of het beveiligingsicoon klopt.",
+        "identiconHelper": "Dit is een beveilliginsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan",
+        "type": {
+            "address": "Address",
+            "bool": "Boolean",
+            "int": "Integer",
+            "uint": "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

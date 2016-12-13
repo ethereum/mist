@@ -1,22 +1,12 @@
-"use strict";
-
 const _ = global._;
-const Q = require('bluebird');
-const EventEmitter = require('events').EventEmitter;
-const log = require('./utils/logger').create('Windows');
-
+const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
-
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipc = electron.ipcMain;
-
-
+const log = require('./utils/logger').create('Windows');
+const EventEmitter = require('events').EventEmitter;
 
 
 class Window extends EventEmitter {
-    constructor (mgr, type, opts) {
+    constructor(mgr, type, opts) {
         super();
 
         opts = opts || {};
@@ -26,7 +16,7 @@ class Window extends EventEmitter {
         this.isPrimary = !!opts.primary;
         this.type = type;
         this.isPopup = !!opts.isPopup;
-        this.ownerId = opts.ownerId;
+        this.ownerId = opts.ownerId; // the window which creates this new window
 
         let electronOptions = {
             title: Settings.appName,
@@ -34,7 +24,7 @@ class Window extends EventEmitter {
             width: 1100,
             height: 720,
             icon: global.icon,
-            titleBarStyle: 'hidden-inset', //hidden-inset: more space
+            titleBarStyle: 'hidden-inset', // hidden-inset: more space
             backgroundColor: '#F6F6F6',
             acceptFirstMouse: true,
             darkTheme: true,
@@ -42,12 +32,12 @@ class Window extends EventEmitter {
                 nodeIntegration: false,
                 webaudio: true,
                 webgl: false,
-                webSecurity: false, // necessary to make routing work on file:// protocol
+                webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
                 textAreasAreResizable: true,
             },
         };
 
-        _.extendDeep(electronOptions, opts.electronOptions);
+        electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
 
         this._log.debug('Creating browser window');
 
@@ -61,7 +51,15 @@ class Window extends EventEmitter {
             this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
-                this.send.apply(this, opts.sendData);
+                if (_.isString(opts.sendData)) {
+                    this.send(opts.sendData);
+                } else if (_.isObject(opts.sendData)) {
+                    for (const key in opts.sendData) {
+                        if ({}.hasOwnProperty.call(opts.sendData, key)) {
+                            this.send(key, opts.sendData[key]);
+                        }
+                    }
+                }
             }
 
             if (opts.show) {
@@ -71,8 +69,15 @@ class Window extends EventEmitter {
             this.emit('ready');
         });
 
+
+        // prevent droping files
+        this.webContents.on('will-navigate', (e) => {
+            e.preventDefault();
+        });
+
+
         this.window.once('closed', () => {
-            this._log.debug(`Closed`);
+            this._log.debug('Closed');
 
             this.isShown = false;
             this.isClosed = true;
@@ -81,7 +86,7 @@ class Window extends EventEmitter {
             this.emit('closed');
         });
 
-        this.window.on('close', (e) => {
+        this.window.once('close', (e) => {
             this.emit('close', e);
         });
 
@@ -98,8 +103,8 @@ class Window extends EventEmitter {
         }
     }
 
-    load (url) {
-        if (this.isClosed) { 
+    load(url) {
+        if (this.isClosed) {
             return;
         }
 
@@ -108,12 +113,12 @@ class Window extends EventEmitter {
         this.window.loadURL(url);
     }
 
-    send () {
-        if (this.isClosed || !this.isContentReady) { 
+    send() {
+        if (this.isClosed || !this.isContentReady) {
             return;
         }
 
-        this._log.trace(`Sending data`, arguments);
+        this._log.trace('Sending data', arguments);
 
         this.webContents.send.apply(
             this.webContents,
@@ -122,12 +127,12 @@ class Window extends EventEmitter {
     }
 
 
-    hide () {
+    hide() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug(`Hide`);
+        this._log.debug('Hide');
 
         this.window.hide();
 
@@ -135,12 +140,12 @@ class Window extends EventEmitter {
     }
 
 
-    show () {
+    show() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug(`Show`);
+        this._log.debug('Show');
 
         this.window.show();
 
@@ -148,32 +153,30 @@ class Window extends EventEmitter {
     }
 
 
-    close () {
+    close() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug(`Close`);
+        this._log.debug('Close');
 
         this.window.close();
     }
 }
 
 
-
-
 class Windows {
-    constructor () {
+    constructor() {
         this._windows = {};
     }
 
 
-    init () {
+    init() {
         log.info('Creating commonly-used windows');
 
         this.loading = this.create('loading', {
             show: false,
-            url: global.interfacePopupsUrl +'#loadingWindow',
+            url: `${global.interfacePopupsUrl}#loadingWindow`,
             electronOptions: {
                 title: '',
                 alwaysOnTop: true,
@@ -183,8 +186,8 @@ class Windows {
                 center: true,
                 frame: false,
                 useContentSize: true,
-                titleBarStyle: '', //hidden-inset: more space
-                skipTaskbar: true
+                titleBarStyle: '', // hidden-inset: more space
+                skipTaskbar: true,
             },
         });
 
@@ -192,15 +195,14 @@ class Windows {
             this.loading.window.center();
         });
 
-        // when a window gets initalized it will us its id
+        // when a window gets initalized it will send us its id
         ipc.on('backendAction_setWindowId', (event) => {
-            let id = event.sender.getId();
+            const id = event.sender.getId();
 
-            log.debug(`Set window id`, id);
+            log.debug('Set window id', id);
 
-            let bwnd = BrowserWindow.fromWebContents(event.sender);
-
-            let wnd = _.find(this._windows, (w) => {
+            const bwnd = BrowserWindow.fromWebContents(event.sender);
+            const wnd = _.find(this._windows, (w) => {
                 return (w.window === bwnd);
             });
 
@@ -213,69 +215,81 @@ class Windows {
     }
 
 
-    create (type, options) {
+    create(type, options, callback) {
         options = options || {};
 
-        let existing = this.getByType(type);
+        const existing = this.getByType(type);
 
         if (existing && existing.ownerId === options.ownerId) {
-            log.debug(`Window ${type} with owner ${options.ownerId} already created.`);
+            log.debug(`Window ${type} with owner ${options.ownerId} already existing.`);
 
             return existing;
         }
 
-        let category = options.primary ? 'primary' : 'secondary';
+        const category = options.primary ? 'primary' : 'secondary';
 
         log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
-        let wnd = this._windows[type] = new Window(this, type, options);
-
+        const wnd = this._windows[type] = new Window(this, type, options);
         wnd.on('closed', this._onWindowClosed.bind(this, wnd));
+
+        if (callback) {
+            wnd.callback = callback;
+        }
 
         return wnd;
     }
 
 
-    createPopup(type, options) {
+    createPopup(type, options, callback) {
         options = options || {};
 
         let opts = {
-            url: global.interfacePopupsUrl +'#'+ type,
+            url: `${global.interfacePopupsUrl}#${type}`,
             show: true,
             ownerId: null,
             useWeb3: true,
             electronOptions: {
                 title: '',
-                alwaysOnTop: false,
                 width: 400,
                 height: 400,
                 resizable: false,
                 center: true,
                 useContentSize: true,
-                titleBarStyle: 'hidden', //hidden-inset: more space
+                titleBarStyle: 'hidden', // hidden-inset: more space
                 autoHideMenuBar: true, // TODO: test on windows
                 webPreferences: {
                     textAreasAreResizable: false,
-                },
-            },
+                }
+            }
         };
 
-        _.extendDeep(opts, options);
-       
+        // always show on top of main window
+        const parent = _.find(this._windows, (w) => {
+            return w.type === 'main';
+        });
+
+        if (parent) {
+            opts.electronOptions.parent = parent.window;
+        }
+
+
+        opts = _.deepExtend(opts, options);
+
         // mark it as a pop-up window
         opts.isPopup = true;
 
         if (opts.useWeb3) {
-            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindows.js';
+            opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`;
         } else {
-            opts.electronOptions.webPreferences.preload = __dirname +'/preloader/popupWindowsNoWeb3.js';
+            opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
         }
 
         this.loading.show();
 
         log.info(`Create popup window: ${type}`);
 
-        let wnd = this.create(type, opts);
+        const wnd = this.create(type, opts, callback);
 
         wnd.once('ready', () => {
             this.loading.hide();
@@ -285,7 +299,7 @@ class Windows {
     }
 
 
-    getByType (type) {
+    getByType(type) {
         log.trace('Get by type', type);
 
         return _.find(this._windows, (w) => {
@@ -294,7 +308,7 @@ class Windows {
     }
 
 
-    getById (id) {
+    getById(id) {
         log.trace('Get by id', id);
 
         return _.find(this._windows, (w) => {
@@ -303,14 +317,13 @@ class Windows {
     }
 
 
-
-    broadcast () {
+    broadcast() {
         const data = arguments;
 
         log.trace('Broadcast', data);
 
         _.each(this._windows, (wnd) => {
-            wnd.send.apply(wnd, data);
+            wnd.send(...data);
         });
     }
 
@@ -320,15 +333,15 @@ class Windows {
      *
      * This will remove the window from the internal list.
      *
-     * This also checks to see if any primary windows are still visible 
+     * This also checks to see if any primary windows are still visible
      * (even if hidden). If none found then it quits the app.
      *
      * @param {Window} wnd
      */
-    _onWindowClosed (wnd) {
+    _onWindowClosed(wnd) {
         log.debug(`Removing window from list: ${wnd.type}`);
 
-        for (let t in this._windows) {
+        for (const t in this._windows) {
             if (this._windows[t] === wnd) {
                 delete this._windows[t];
 
@@ -336,7 +349,7 @@ class Windows {
             }
         }
 
-        let anyOpen = _.find(this._windows, (wnd) => {
+        const anyOpen = _.find(this._windows, (wnd) => {
             return wnd.isPrimary && !wnd.isClosed && wnd.isShown;
         });
 
@@ -350,6 +363,3 @@ class Windows {
 
 
 module.exports = new Windows();
-
-
-

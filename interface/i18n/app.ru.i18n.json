@@ -19,7 +19,9 @@
         "skip": "Сбросить",
         "sending": "Отправка...",
         "create": "Создать",
-        "tryToReconnect": "Переподключить"
+        "tryToReconnect": "Переподключить",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Вы",

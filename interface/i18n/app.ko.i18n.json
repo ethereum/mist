@@ -19,7 +19,9 @@
         "skip": "건너뛰기",
         "sending": "보내는 중...",
         "create": "만들기",
-        "tryToReconnect": "재연결 시도"
+        "tryToReconnect": "재연결 시도",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "당신",

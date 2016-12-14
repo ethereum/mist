@@ -34,9 +34,6 @@ RequestExecutionLevel admin
 !define VERSIONMINOR 8
 !define VERSIONBUILD 7
 
-# Need to add architecture detection and/or include both files
-!define RELEASEZIP "${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
 Icon "..\dist_mist\build\icon.ico"
@@ -45,7 +42,6 @@ var FILEDIR
 var DATADIR
 var NODEDATADIR
 var ARCHDIR
-var ARCHSHRT
 var SHORTCUTDIR
 
 # Check for administrative rights
@@ -71,12 +67,11 @@ ${EndIf}
     ${If} ${RunningX64}
       StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
       StrCpy $ARCHDIR "win-unpacked"
-      StrCpy $ARCHSHRT "win64"
     ${Else}
       StrCpy $FILEDIR "$PROGRAMFILES32\${APPNAME}"
       StrCpy $ARCHDIR "win-ia32-unpacked"
-      StrCpy $ARCHSHRT "win32"
     ${Endif}
+
     SetShellVarContext all
 
   FunctionEnd
@@ -135,15 +130,23 @@ Section Mist MIST_IDX
 
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
-    # include the zip file in this installer
-    file "..\dist_mist\release\${RELEASEZIP}"
+    # include bothj architecture zip files
+    file "..\dist_mist\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    file "..\dist_mist\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
     file "..\dist_mist\build\icon.ico"
 
     # Extract the zip file from TEMP to the user's selected installation directory
-    ZipDLL::extractALL "$TEMP\${RELEASEZIP}" "$FILEDIR"
+    ${If} ${RunningX64}
+      ZipDLL::extractALL "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
+      StrCpy $ARCHDIR "win-unpacked"
+    ${Else}
+      ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
+      StrCpy $ARCHDIR "win-ia32-unpacked"
+    ${Endif}
+    
     # Move files out of subfolder
-    !insertmacro MoveFolder "$FILEDIR\win-unpacked" "$FILEDIR" "*.*"
-    # Copy the icon over (not included in zip)
+    !insertmacro MoveFolder "$FILEDIR\$ARCHDIR" "$FILEDIR" "*.*"
+    # Copy icon from installer (not included in zip)
     !insertmacro MoveFile "$TEMP\icon.ico" "$FILEDIR\logo.ico"
  
     # create the uninstaller
@@ -221,11 +224,12 @@ Var GetInstalledSize.total
 Function GetInstalledSize
   StrCpy $GetInstalledSize.total 0
 
+  # TODO This is not a very robust solution. Needs improvement
   ${if} ${SectionIsSelected} ${MIST_IDX}
     SectionGetSize ${MIST_IDX} $0
     IntOp $GetInstalledSize.total $GetInstalledSize.total + $0
-    # estimate to accomodate zip compression which nsis can't see
-    IntOp $GetInstalledSize.total $GetInstalledSize.total * 3
+    # estimate to accomodate zip compression and duplicate files
+    IntOp $GetInstalledSize.total $GetInstalledSize.total * 1.5
   ${endif}
 
   IntFmt $GetInstalledSize.total "0x%08X" $GetInstalledSize.total

@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('../utils/logger').create('ipcProviderBackend');
-const Sockets = require('../sockets');
+const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const Windows = require('../windows');
@@ -70,7 +70,7 @@ class IpcProviderBackend {
      */
     _getOrCreateConnection(event) {
         const owner = event.sender;
-        const ownerId = owner.getId();
+        const ownerId = owner.id;
 
         let socket;
 
@@ -79,7 +79,7 @@ class IpcProviderBackend {
             if (this._connections[ownerId]) {
                 socket = this._connections[ownerId].socket;
             } else {
-                log.debug(`Get/create socket connection, id=${ownerId}`);
+                log.debug(`Create new socket connection, id=${ownerId}`);
 
                 socket = Sockets.get(ownerId, Settings.rpcMode);
             }
@@ -99,11 +99,13 @@ class IpcProviderBackend {
                         log.debug(`Destroy socket connection due to event: ${ev}, id=${ownerId}`);
 
                         socket.destroy().finally(() => {
-                            delete this._connections[ownerId];
 
                             if(!owner.isDestroyed())
                                 owner.send(`ipcProvider-${ev}`, JSON.stringify(data));
                         });
+
+                        delete this._connections[ownerId];
+                        Sockets.remove(ownerId);
                     });
                 });
 
@@ -182,19 +184,17 @@ class IpcProviderBackend {
      * Handle IPC call to destroy a connection.
      */
     _destroyConnection(event) {
-        const ownerId = event.sender.getId();
+        const ownerId = event.sender.id;
 
-        return Q.try(() => {
-            if (this._connections[ownerId]) {
-                log.debug('Destroy socket connection', ownerId);
+        if (this._connections[ownerId]) {
+            log.debug('Destroy socket connection', ownerId);
 
-                this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
+            this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
 
-                return this._connections[ownerId].socket.destroy().finally(() => {
-                    delete this._connections[ownerId];
-                });
-            }
-        });
+            this._connections[ownerId].socket.destroy();
+            delete this._connections[ownerId];
+            Sockets.remove(ownerId);
+        }
     }
 
 
@@ -237,7 +237,7 @@ class IpcProviderBackend {
      * @param  {String}  payload request payload.
      */
     _sendRequest(isSync, event, payload) {
-        const ownerId = event.sender.getId();
+        const ownerId = event.sender.id;
 
         log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
 

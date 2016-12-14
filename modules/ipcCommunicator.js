@@ -41,7 +41,7 @@ ipc.on('backendAction_openExternalUrl', (e, url) => {
 });
 
 ipc.on('backendAction_closePopupWindow', (e) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
@@ -49,7 +49,7 @@ ipc.on('backendAction_closePopupWindow', (e) => {
     }
 });
 ipc.on('backendAction_setWindowSize', (e, width, height) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
@@ -59,7 +59,7 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
 });
 
 ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if(senderWindow.callback) {
@@ -68,7 +68,7 @@ ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
 });
 
 ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow.ownerId) {
@@ -163,7 +163,7 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
 
 const createAccountPopup = (e) => {
     Windows.createPopup('requestAccount', {
-        ownerId: e.sender.getId(),
+        ownerId: e.sender.id,
         electronOptions: {
             width: 400,
             height: 230,
@@ -180,7 +180,7 @@ ipc.on('mistAPI_requestAccount', (e) => {
         createAccountPopup(e);
     } else { // Mist
         Windows.createPopup('connectAccount', {
-            ownerId: e.sender.getId(),
+            ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
                 height: 497,

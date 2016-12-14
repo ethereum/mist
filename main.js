@@ -150,6 +150,8 @@ app.on('before-quit', (event) => {
 
 let mainWindow;
 let splashWindow;
+let onReady;
+let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -173,7 +175,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 });
 
 
-let onReady = () => {
+onReady = () => {
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -202,7 +204,8 @@ let onReady = () => {
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
-                    nodeIntegration: true, // necessary for webviews; require will be removed through preloader
+                    nodeIntegration: true, /* necessary for webviews;
+                        require will be removed through preloader */
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
@@ -278,7 +281,7 @@ let onReady = () => {
         });
 
         ethereumNode.on('nodeLog', (data) => {
-            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]\]/, ''));
+            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
         });
 
         // state change
@@ -387,7 +390,7 @@ let onReady = () => {
                         });
 
                         // launch app
-                        ipcMain.on('onBoarding_launchApp', (e) => {
+                        ipcMain.on('onBoarding_launchApp', () => {
                             // prevent that it closes the app
                             onboardingWindow.removeAllListeners('closed');
                             onboardingWindow.close();
@@ -403,6 +406,8 @@ let onReady = () => {
                         }
                     });
                 }
+
+                return Q.cancel();
             })
             .then(function doSync() {
                 // we're going to do the sync - so show splash
@@ -410,9 +415,11 @@ let onReady = () => {
                     splashWindow.show();
                 }
 
-                if (!Settings.inAutoTestMode) {
-                    return syncResultPromise;
+                if (Settings.inAutoTestMode) {
+                    return Q.cancel();
                 }
+
+                return syncResultPromise;
             })
             .then(function allDone() {
                 startMainWindow();
@@ -435,7 +442,7 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-let startMainWindow = () => {
+startMainWindow = () => {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
     mainWindow.on('ready', () => {

@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('../utils/logger').create('ipcProviderBackend');
-const Sockets = require('../sockets');
+const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const Windows = require('../windows');
@@ -79,7 +79,7 @@ class IpcProviderBackend {
             if (this._connections[ownerId]) {
                 socket = this._connections[ownerId].socket;
             } else {
-                log.debug(`Get/create socket connection, id=${ownerId}`);
+                log.debug(`Create new socket connection, id=${ownerId}`);
 
                 socket = Sockets.get(ownerId, Settings.rpcMode);
             }
@@ -105,6 +105,7 @@ class IpcProviderBackend {
                         });
 
                         delete this._connections[ownerId];
+                        Sockets.remove(ownerId);
                     });
                 });
 
@@ -192,6 +193,7 @@ class IpcProviderBackend {
 
             this._connections[ownerId].socket.destroy();
             delete this._connections[ownerId];
+            Sockets.remove(ownerId);
         }
     }
 

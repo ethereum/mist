@@ -7,7 +7,6 @@ The dechunker module gets IPC buffers and tries to decode them.
 const _ = require('underscore');
 
 
-
 /**
 The dechunker module gets IPC buffers and tries to decode them.
 
@@ -34,11 +33,11 @@ module.exports = class Dechunker {
 
 
         // if it couldn't be split, return error
-        if(!_.isArray(dechunkedData)) {
+        if (!_.isArray(dechunkedData)) {
             return callback(`Couldn't split data: ${data}`);
         }
 
-        _.each(dechunkedData, (data) => {
+        return _.each(dechunkedData, (data) => {
             // prepend the last chunk
             if (this.lastChunk)
                 { data = this.lastChunk + data; }

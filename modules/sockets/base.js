@@ -158,7 +158,7 @@ class Socket extends EventEmitter {
      * @return {Promise}
      */
     destroy() {
-        this.removeAllListeners();        
+        this.removeAllListeners();
         return this.disconnect();
     }
 

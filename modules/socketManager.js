@@ -1,8 +1,6 @@
 const _ = global._;
 const Q = require('bluebird');
-const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('Sockets');
-const net = require('net');
 
 const Web3IpcSocket = require('./sockets/web3Ipc');
 const Web3HttpSocket = require('./sockets/web3Http');

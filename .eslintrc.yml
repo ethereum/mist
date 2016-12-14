@@ -13,19 +13,20 @@ rules:
   # "warn" or 1 - turn the rule on as a warning (doesn’t affect exit code)
   # "error" or 2 - turn the rule on as an error (exit code is 1 when triggered)
   indent:
-    - 2  ## error
+    - error
     - 4  ## number of spaces
-  no-console: 0  ## allowed for chrome dev-console
-  no-underscore-dangle: 0
+  no-console: off  ## allowed for chrome dev-console
+  padded-blocks: off
+  arrow-body-style: off
+  prefer-arrow-callback: off
+  no-underscore-dangle: off
+  comma-dangle:
+    - error
+    - only-multiline
 
-globals:
-  i18n: true  # don't warn about missing 'i18n' declaration
-  Helpers: true  # don't warn about missing 'Helpers' declaration
+globals:  # don't warn about missing declarations
+  i18n: true
   mist: true
-  describe: true
-  it: true
-  expect: true
-  chai: true
   beforeEach: true
   LocalStore: true
   web3: true

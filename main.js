@@ -407,7 +407,7 @@ onReady = () => {
                 });
             }
 
-            return Q.cancel();
+            return;
         })
         .then(function doSync() {
             // we're going to do the sync - so show splash
@@ -416,10 +416,10 @@ onReady = () => {
             }
 
             if (Settings.inAutoTestMode) {
-                return Q.cancel();
+                return syncResultPromise;
             }
 
-            return syncResultPromise;
+            return;
         })
         .then(function allDone() {
             startMainWindow();

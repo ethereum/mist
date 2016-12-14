@@ -10,7 +10,7 @@ const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
-const Sockets = require('./modules/sockets');
+const Sockets = require('./modules/socketManager');
 const Windows = require('./modules/windows');
 const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
@@ -150,6 +150,8 @@ app.on('before-quit', (event) => {
 
 let mainWindow;
 let splashWindow;
+let onReady;
+let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -173,7 +175,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 });
 
 
-let onReady = () => {
+onReady = () => {
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -202,7 +204,8 @@ let onReady = () => {
                 width: 1024 + 208,
                 height: 720,
                 webPreferences: {
-                    nodeIntegration: true, // necessary for webviews; require will be removed through preloader
+                    nodeIntegration: true, /* necessary for webviews;
+                        require will be removed through preloader */
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
@@ -278,7 +281,7 @@ let onReady = () => {
         });
 
         ethereumNode.on('nodeLog', (data) => {
-            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]\]/, ''));
+            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
         });
 
         // state change
@@ -331,95 +334,99 @@ let onReady = () => {
                 throw new Error('Cant start client due to legacy non-Fork setting.');
             }
         })
-            .then(() => {
-                return ClientBinaryManager.init();
-            })
-            .then(() => {
-                return ethereumNode.init();
-            })
-            .then(function sanityCheck() {
-                if (!ethereumNode.isIpcConnected) {
-                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
-                }
+        .then(() => {
+            return ClientBinaryManager.init();
+        })
+        .then(() => {
+            return ethereumNode.init();
+        })
+        .then(function sanityCheck() {
+            if (!ethereumNode.isIpcConnected) {
+                throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
+            }
 
-                /* At this point Geth is running and the socket is connected. */
-                log.info('Connected via IPC to node.');
+            /* At this point Geth is running and the socket is connected. */
+            log.info('Connected via IPC to node.');
 
-                // update menu, to show node switching possibilities
-                appMenu();
-            })
-            .then(function getAccounts() {
-                return ethereumNode.send('eth_accounts', []);
-            })
-            .then(function onboarding(resultData) {
-                if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
-                    log.info('No accounts setup yet, lets do onboarding first.');
+            // update menu, to show node switching possibilities
+            appMenu();
+        })
+        .then(function getAccounts() {
+            return ethereumNode.send('eth_accounts', []);
+        })
+        .then(function onboarding(resultData) {
+            if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+                log.info('No accounts setup yet, lets do onboarding first.');
 
-                    return new Q((resolve, reject) => {
-                        const onboardingWindow = Windows.createPopup('onboardingScreen', {
-                            primary: true,
-                            electronOptions: {
-                                width: 576,
-                                height: 442,
-                            },
-                        });
-
-                        onboardingWindow.on('closed', () => {
-                            app.quit();
-                        });
-
-                        // change network types (mainnet, testnet)
-                        ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                            const newType = ethereumNode.type;
-                            const newNetwork = testnet ? 'test' : 'main';
-
-                            log.debug('Onboarding change network', newNetwork);
-
-                            ethereumNode.restart(newType, newNetwork)
-                                .then(function nodeRestarted() {
-                                    appMenu();
-                                })
-                                .catch((err) => {
-                                    log.error('Error restarting node', err);
-
-                                    reject(err);
-                                });
-                        });
-
-                        // launch app
-                        ipcMain.on('onBoarding_launchApp', (e) => {
-                            // prevent that it closes the app
-                            onboardingWindow.removeAllListeners('closed');
-                            onboardingWindow.close();
-
-                            ipcMain.removeAllListeners('onBoarding_changeNet');
-                            ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                            resolve();
-                        });
-
-                        if (splashWindow) {
-                            splashWindow.hide();
-                        }
+                return new Q((resolve, reject) => {
+                    const onboardingWindow = Windows.createPopup('onboardingScreen', {
+                        primary: true,
+                        electronOptions: {
+                            width: 576,
+                            height: 442,
+                        },
                     });
-                }
-            })
-            .then(function doSync() {
-                // we're going to do the sync - so show splash
-                if (splashWindow) {
-                    splashWindow.show();
-                }
 
-                if (!Settings.inAutoTestMode) {
-                    return syncResultPromise;
-                }
-            })
-            .then(function allDone() {
-                startMainWindow();
-            })
-            .catch((err) => {
-                log.error('Error starting up node and/or syncing', err);
-            }); /* socket connected to geth */
+                    onboardingWindow.on('closed', () => {
+                        app.quit();
+                    });
+
+                    // change network types (mainnet, testnet)
+                    ipcMain.on('onBoarding_changeNet', (e, testnet) => {
+                        const newType = ethereumNode.type;
+                        const newNetwork = testnet ? 'test' : 'main';
+
+                        log.debug('Onboarding change network', newNetwork);
+
+                        ethereumNode.restart(newType, newNetwork)
+                            .then(function nodeRestarted() {
+                                appMenu();
+                            })
+                            .catch((err) => {
+                                log.error('Error restarting node', err);
+
+                                reject(err);
+                            });
+                    });
+
+                    // launch app
+                    ipcMain.on('onBoarding_launchApp', () => {
+                        // prevent that it closes the app
+                        onboardingWindow.removeAllListeners('closed');
+                        onboardingWindow.close();
+
+                        ipcMain.removeAllListeners('onBoarding_changeNet');
+                        ipcMain.removeAllListeners('onBoarding_launchApp');
+
+                        resolve();
+                    });
+
+                    if (splashWindow) {
+                        splashWindow.hide();
+                    }
+                });
+            }
+
+            return;
+        })
+        .then(function doSync() {
+            // we're going to do the sync - so show splash
+            if (splashWindow) {
+                splashWindow.show();
+            }
+
+            if (Settings.inAutoTestMode) {
+                return syncResultPromise;
+            }
+
+            return;
+        })
+        .then(function allDone() {
+            startMainWindow();
+        })
+        .catch((err) => {
+            log.error('Error starting up node and/or syncing', err);
+        }); /* socket connected to geth */
     }; /* kick start */
 
     if (splashWindow) {
@@ -435,7 +442,7 @@ Start the main window and all its processes
 
 @method startMainWindow
 */
-let startMainWindow = () => {
+startMainWindow = () => {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
     mainWindow.on('ready', () => {

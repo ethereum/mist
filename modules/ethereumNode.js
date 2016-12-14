@@ -8,7 +8,7 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('EthereumNode');
 const logRotate = require('log-rotate');
 const EventEmitter = require('events').EventEmitter;
-const Sockets = require('./sockets');
+const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 const DEFAULT_NODE_TYPE = 'geth';

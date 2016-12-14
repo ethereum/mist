@@ -7,6 +7,11 @@ webviewChangeUrl = function(tabId, e){
 
     console.log(e.type, tabId, url);
 
+    if(e.type === 'did-navigate') {
+        // destroy socket when navigating away
+        ipc.send('ipcProvider-destroy', this.getWebContents().id);
+    }
+
     // make sure to not store error pages in history
     if(!url || url.indexOf('mist/errorPages/') !== -1)
         return;

@@ -18,24 +18,11 @@ Template['views_webview'].onRendered(function(){
         webview = template.find('webview');
 
 
-    // Send updated TEST DATA
-    if(tabId === 'tests') {
-        this.autorun(function(c){
-            var tab = Tabs.findOne('tests');
-
-            if(!c.firstRun)
-                webview.send('uiAction_sendTestData', tab);
-
-            // ADD SWITCHUNG USING webview.loadURL();
-        });
-    }
-
-
     ipc.on('uiAction_reloadSelectedTab', function(e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
         if(LocalStore.get('selectedTab') === this._id){
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-            webview.reload();        
+            webview.reload();
         }
     });
 
@@ -45,7 +32,7 @@ Template['views_webview'].onRendered(function(){
     webview.addEventListener('did-stop-loading', function(e){
         TemplateVar.set(template, 'loading', false);
     });
-    
+
     // change url
     webview.addEventListener('did-navigate', webviewChangeUrl.bind(webview, tabId));
     webview.addEventListener('did-navigate-in-page', webviewChangeUrl.bind(webview, tabId));
@@ -122,7 +109,7 @@ Template['views_webview'].helpers({
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
         var url;
-
+        console.log('tab', tab);
         if(tab) {
 
             // set url only once
@@ -149,7 +136,7 @@ Template['views_webview'].helpers({
                 console.warn('Not allowed URL: '+ template.url);
                 return 'file://'+ dirname + '/errorPages/400.html';
             }
-            
+
             // remove redirect
             if(url) {
                 template.url = url;
@@ -157,7 +144,7 @@ Template['views_webview'].helpers({
                     url: url
                 }});
             }
-
+            console.log(Helpers.formatUrl(url));
             return Helpers.formatUrl(url);
         }
     }

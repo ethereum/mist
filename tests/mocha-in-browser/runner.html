@@ -14,18 +14,13 @@
     </script>
     <script src="./spec/ipc-spec.js"></script>
     <script src="./spec/permissions-spec.js"></script>
-    <script src="./spec/misc-spec.js"></script>
+    <script src="./spec/general-spec.js"></script>
     <script>
       onload = function(){
-        // delay so we make sure the permissions object arrived first through ipc 
+        // delay so we make sure the permissions object arrived first through ipc
         setTimeout(function(){
           var runner = mocha.run();
-          // runner.globals(['foo', 'bar', 'baz']);
 
-          // runner.on('test end', function(test){
-          //   console.log(test.fullTitle());
-          // });
-          
         }, 1000);
       };
     </script>

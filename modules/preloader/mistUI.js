@@ -83,40 +83,48 @@ ipcRenderer.on('uiAction_toggleWebviewDevTool', (e, id) => {
         { webview.openDevTools(); }
 });
 
+
+// randomize accounts and drop half
+// also certainly remove the web3.ethbase one
+var randomizeAccounts = (acc, coinbase) => {
+    var accounts = _.shuffle(acc);
+    accounts = _.rest(accounts, (accounts.length / 2).toFixed(0));
+    accounts = _.without(accounts, coinbase);
+    return accounts;
+};
+
 // Run tests
 ipcRenderer.on('uiAction_runTests', (e, type) => {
     if (type === 'webview') {
         web3.eth.getAccounts((error, accounts) => {
-            if (error)
-                { return; }
+            if (error) return;
 
-            // remove one account
-            accounts.pop();
+            web3.eth.getCoinbase((coinbaseError, coinbase) => {
+                if (coinbaseError) return;
 
-            Tabs.upsert('tests', {
-                position: -1,
-                name: 'Tests',
-                url: '', // is hardcoded in webview.html to prevent hijacking
-                permissions: {
-                    accounts,
-                },
+
+                Tabs.upsert('tests', {
+                    position: -1,
+                    name: 'Tests',
+                    url: '', // is hardcoded in webview.html to prevent hijacking
+                    permissions: {
+                        accounts: randomizeAccounts(accounts, coinbase),
+                    },
+                });
+
+                Tracker.afterFlush(() => {
+                    LocalStore.set('selectedTab', 'tests');
+                });
+
+                // update the permissions, when accounts change
+                Tracker.autorun(() => {
+                    var accountList = _.pluck(EthAccounts.find({}, { fields: { address: 1 } }).fetch(), 'address');
+
+                    Tabs.update('tests', { $set: {
+                        'permissions.accounts': randomizeAccounts(accountList, coinbase),
+                    } });
+                });
             });
-
-            Tracker.afterFlush(() => {
-                LocalStore.set('selectedTab', 'tests');
-            });
-
-            // update the permissions, when accounts change
-            // Tracker.autorun(function(){
-            //     var accounts = _.pluck(EthAccounts.find({}, {fields:{address: 1}}).fetch(), 'address');
-
-            //     // remove one account
-            //     accounts.pop();
-
-            //     Tabs.update('tests', {$set: {
-            //         'permissions.accounts': accounts
-            //     }});
-            // });
         });
     }
 });

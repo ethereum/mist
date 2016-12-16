@@ -6,7 +6,6 @@ require('./include/common')('popupWindow');
 const { ipcRenderer, remote, webFrame } = require('electron');
 const mist = require('./include/mistAPI.js');
 const dbSync = require('../dbSync.js');
-
 require('./include/setBasePath')('interface');
 require('./include/openExternal.js');
 

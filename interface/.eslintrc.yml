@@ -11,7 +11,7 @@ rules:
     - allow: ['_id', '_escape', '__']
 
 globals:
-    Blaze: true
-    EthAccounts: true
-    _: true
-    mist: true
+  Helpers: true
+  Blaze: true
+  EthAccounts: true
+  mist: true

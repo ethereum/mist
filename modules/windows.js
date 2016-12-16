@@ -197,7 +197,7 @@ class Windows {
 
         // when a window gets initalized it will send us its id
         ipc.on('backendAction_setWindowId', (event) => {
-            const id = event.sender.getId();
+            const id = event.sender.id;
 
             log.debug('Set window id', id);
 

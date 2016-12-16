@@ -55,7 +55,7 @@ class Manager extends EventEmitter {
 
         log.info('Checking for new client binaries config...');
 
-        this._emit('loadConfig', 'Fetching remote client config');
+        this._emit('loadConfig', 'Fetching remote client config from: '+ BINARY_URL);
 
         // fetch config
         return got(BINARY_URL, {

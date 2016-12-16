@@ -16,7 +16,7 @@
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.5.5-stable" ]
                             }
                         }
                     },
@@ -31,7 +31,7 @@
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.5.5-stable" ]
                             }
                         }
                     }
@@ -48,7 +48,7 @@
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.5.5-stable" ]
                             }
                         }
                     }
@@ -65,7 +65,7 @@
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.5.5-stable" ]
                             }
                         }
                     },
@@ -80,7 +80,7 @@
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.5.5-stable" ]
                             }
                         }
                     }

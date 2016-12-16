@@ -2,27 +2,32 @@ sudo: required
 dist: trusty
 
 language: node_js
+node_js: 6
+
+cache:
+  yarn: true
 
 branches:
   only:
     - develop
 
-node_js:
-  - "6"
-
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y icnsutils graphicsmagick xz-utils
+addons:
+  apt:
+    packages:
+    - icnsutils
+    - graphicsmagick
+    - xz-utils
+    - gcc-multilib
+    - g++-multilib
 
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "sleep 3" # give xvfb some time to start
-  - "curl https://install.meteor.com/ | sh"
-  - "npm install -g meteor-build-client"
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - curl https://install.meteor.com/ | sh
+  - npm install -g meteor-build-client
 
 script:
-  - "npm run ci"
+  - npm run ci
 
 notifications:
   email:

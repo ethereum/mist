@@ -9721,5 +9721,299 @@ window.SIGNATURES = {
     ],
     "0xb463bcde": [
         "testThrowsSetNotTransferableNotOwner()"
+    ],
+    "0x1da6822c": [
+        "testThrowsTransferEnableNotTransferable()"
+    ],
+    "0x98024f18": [
+        "testThrowsTransferDisableNotEnabled()"
+    ],
+    "0x06459119": [
+        "testThrowsTransferNotTransferable()"
+    ],
+    "0xd3d6a975": [
+        "testThrowsTransferNotEnabled()"
+    ],
+    "0xd4b1d19f": [
+        "testThrowsTransferDisabled()"
+    ],
+    "0xd591221f": [
+        "testTransfer()"
+    ],
+    "0x15a0df43": [
+        "testThrowCreateNewRevisionNotOwner()"
+    ],
+    "0xe3a199d6": [
+        "testThrowCreateNewRevisionNotUpdatable()"
+    ],
+    "0x42ce0f30": [
+        "testThrowUpdateLatestRevisionNotOwner()"
+    ],
+    "0x835b42fc": [
+        "testThrowUpdateLatestRevisionNotUpdatable()"
+    ],
+    "0x550bcd8d": [
+        "testThrowUpdateLatestRevisionEnforceRevisions()"
+    ],
+    "0x46c3166f": [
+        "testThrowRetractLatestRevisionNotOwner()"
+    ],
+    "0x2432eb23": [
+        "testThrowRetractLatestRevisionNotUpdatable()"
+    ],
+    "0x531d1974": [
+        "testThrowRetractLatestRevisionEnforceRevisions()"
+    ],
+    "0x6edb4cf6": [
+        "testThrowRetractLatestRevisionDoesntHaveAdditionalRevisions()"
+    ],
+    "0xfaf0952b": [
+        "testThrowRestartNotOwner()"
+    ],
+    "0x85fe0448": [
+        "testThrowRestartNotUpdatable()"
+    ],
+    "0xbb6a1427": [
+        "testThrowRestartEnforceRevisions()"
+    ],
+    "0x23647398": [
+        "testThrowRetractNotOwner()"
+    ],
+    "0x75a6a332": [
+        "testThrowRetractNotRetractable()"
+    ],
+    "0x78205f67": [
+        "testThrowTransferEnableNotTransferable()"
+    ],
+    "0xe5c7e509": [
+        "testThrowTransferDisableNotEnabled()"
+    ],
+    "0x966acb38": [
+        "testThrowTransferNotTransferable()"
+    ],
+    "0xd9ec0508": [
+        "testThrowTransferNotEnabled()"
+    ],
+    "0x837a7ba5": [
+        "testThrowTransferDisabled()"
+    ],
+    "0x7b48ba20": [
+        "testThrowDisownNotOwner()"
+    ],
+    "0x938ae4cc": [
+        "testThrowDisownNotTransferable()"
+    ],
+    "0x53caf582": [
+        "testThrowSetNotUpdatableNotOwner()"
+    ],
+    "0xef41e06f": [
+        "testThrowSetEnforceRevisionsNotOwner()"
+    ],
+    "0x20130753": [
+        "testThrowSetNotRetractableNotOwner()"
+    ],
+    "0x5e1936d4": [
+        "testThrowSetNotTransferableNotOwner()"
+    ],
+    "0x4123cb6b": [
+        "m_numOwners()"
+    ],
+    "0x52375093": [
+        "m_lastDay()"
+    ],
+    "0x659010e7": [
+        "m_spentToday()"
+    ],
+    "0x746c9171": [
+        "m_required()"
+    ],
+    "0x797af627": [
+        "confirm(bytes32)"
+    ],
+    "0xb75c7dc6": [
+        "revoke(bytes32)"
+    ],
+    "0xc2cf7326": [
+        "hasConfirmed(bytes32,address)"
+    ],
+    "0xf1736d86": [
+        "m_dailyLimit()"
+    ],
+    "0x96286cc9": [
+        "isTokenOwner(address)"
+    ],
+    "0x69c8b344": [
+        "ownedToken(address)"
+    ],
+    "0xe8580dd4": [
+        "Survey(address,uint256,string,bytes32[])"
+    ],
+    "0x71c59097": [
+        "MainnetSurvey(uint256,string,bytes32[])"
+    ],
+    "0x6e2edf30": [
+        "ETCSurvey(address)"
+    ],
+    "0x58cb7323": [
+        "MainnetETCSurvey()"
+    ],
+    "0x76d66f5d": [
+        "_Transfer(address,address,bytes32)"
+    ],
+    "0x62c99e84": [
+        "_Approval(address,address,bytes32)"
+    ],
+    "0x5fcc2edb": [
+        "IndividualityTokenRoot(address)"
+    ],
+    "0xf3d91708": [
+        "isEligibleForUpgrade(address)"
+    ],
+    "0x1a695230": [
+        "transfer(address)"
+    ],
+    "0x103f9251": [
+        "transferFrom(address,address)"
+    ],
+    "0x7dd56411": [
+        "ownerOf(bytes32)"
+    ],
+    "0x7ca31724": [
+        "tokenId(address)"
+    ],
+    "0xd55ec697": [
+        "upgrade()"
+    ],
+    "0x216ef940": [
+        "proxyUpgrade(address,address,bytes)"
+    ],
+    "0xc4128b6d": [
+        "upgradeCount()"
+    ],
+    "0x09fc8f6d": [
+        "isTokenUpgraded(bytes32)"
+    ],
+    "0x19a9c2f1": [
+        "generateId(string)"
+    ],
+    "0xafb95eed": [
+        "logApproval(address,address,bytes32)"
+    ],
+    "0x85d5c971": [
+        "logTransfer(address,address,bytes32)"
+    ],
+    "0xbbba3333": [
+        "safer_ecrecover(bytes32,uint8,bytes32,bytes32)"
+    ],
+    "0x77d32e94": [
+        "ecrecovery(bytes32,bytes)"
+    ],
+    "0x39cdde32": [
+        "ecverify(bytes32,bytes,address)"
+    ],
+    "0x72c3015c": [
+        "mint(int256,address,string)"
+    ],
+    "0x6e0bd282": [
+        "destroy(bytes32)"
+    ],
+    "0x983b2d56": [
+        "addMinter(address)"
+    ],
+    "0x3092afd5": [
+        "removeMinter(address)"
+    ],
+    "0x7d32e7bd": [
+        "transfer(address,bytes32)"
+    ],
+    "0xb3c06f50": [
+        "transferFrom(address,address,bytes32)"
+    ],
+    "0x5cd2f4d3": [
+        "approve(address,bytes32)"
+    ],
+    "0x4fc9c91a": [
+        "identityOf(bytes32)"
+    ],
+    "0x34b7ac9b": [
+        "END_MINTING()"
+    ],
+    "0x899942b8": [
+        "Devcon2Token()"
+    ],
+    "0x7993e5c2": [
+        "Devcon2TokenForTesting()"
+    ],
+    "0x724121ae": [
+        "contentExists(uint256)"
+    ],
+    "0x1003e2d2": [
+        "add(uint256)"
+    ],
+    "0xa501e88d": [
+        "Content()"
+    ],
+    "0x8570153e": [
+        "publish(string,string,bytes,address[])"
+    ],
+    "0x76f30ca1": [
+        "toContentID(address,uint256,string,bytes)"
+    ],
+    "0xee725d44": [
+        "toChannelID(string)"
+    ],
+    "0x969cb7c3": [
+        "getPublisher(uint256)"
+    ],
+    "0x110df916": [
+        "getChannelID(uint256)"
+    ],
+    "0xb633620c": [
+        "getTimestamp(uint256)"
+    ],
+    "0x4378a6e3": [
+        "getAttributes(uint256)"
+    ],
+    "0x124eaee6": [
+        "Identity()"
+    ],
+    "0xf207564e": [
+        "register(uint256)"
+    ],
+    "0x4d207d9a": [
+        "identify(address)"
+    ],
+    "0x54ea4000": [
+        "identify(address[])"
+    ],
+    "0xeb782d8c": [
+        "ContentSeries(address)"
+    ],
+    "0xde8fa431": [
+        "getSize()"
+    ],
+    "0x21958a50": [
+        "AddressSeries(address)"
+    ],
+    "0x504f1671": [
+        "getSize(address)"
+    ],
+    "0xeb045789": [
+        "ChannelSeries(address)"
+    ],
+    "0x023c23db": [
+        "getSize(uint256)"
+    ],
+    "0x2fea7b81": [
+        "getIdentity(address)"
+    ],
+    "0x043bb5e7": [
+        "getIdentities(address[])"
+    ],
+    "0x27dc297e": [
+        "__callback(bytes32,string)"
+    ],
+    "0x38bbfa50": [
+        "__callback(bytes32,string,bytes)"
     ]
 };

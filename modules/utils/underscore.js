@@ -1,6 +1,6 @@
 const _ = module.exports = require('underscore');
 const uuid = require('uuid');
-const deepExtend = require('deep-extend');
+const underscoreDeepExtend = require('underscore-deep-extend');
 
 _.mixin({
     /**
@@ -17,8 +17,8 @@ _.mixin({
             return fallbackValue;
         }
 
-        let fields = path.split('.'),
-            result = obj;
+        const fields = path.split('.');
+        let result = obj;
 
         for (let i = 0; i < fields.length; ++i) {
             if (!this.isObject(result) && !this.isArray(result)) {
@@ -30,9 +30,7 @@ _.mixin({
 
         return result || fallbackValue;
     },
-    extendDeep(obj1, obj2) {
-        deepExtend(obj1, obj2);
-    },
+    deepExtend: underscoreDeepExtend(_),
     uuid() {
         return uuid.v4();
     },

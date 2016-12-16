@@ -18,7 +18,7 @@ class Window extends EventEmitter {
         this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId; // the window which creates this new window
 
-        const electronOptions = {
+        let electronOptions = {
             title: Settings.appName,
             show: false,
             width: 1100,
@@ -32,12 +32,12 @@ class Window extends EventEmitter {
                 nodeIntegration: false,
                 webaudio: true,
                 webgl: false,
-                webSecurity: false, // necessary to make routing work on file:// protocol
+                webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
                 textAreasAreResizable: true,
             },
         };
 
-        _.extendDeep(electronOptions, opts.electronOptions);
+        electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
 
         this._log.debug('Creating browser window');
 
@@ -51,7 +51,15 @@ class Window extends EventEmitter {
             this._log.debug(`Content loaded, id: ${this.id}`);
 
             if (opts.sendData) {
-                this.send.apply(this, opts.sendData);
+                if (_.isString(opts.sendData)) {
+                    this.send(opts.sendData);
+                } else if (_.isObject(opts.sendData)) {
+                    for (const key in opts.sendData) {
+                        if ({}.hasOwnProperty.call(opts.sendData, key)) {
+                            this.send(key, opts.sendData[key]);
+                        }
+                    }
+                }
             }
 
             if (opts.show) {
@@ -60,6 +68,13 @@ class Window extends EventEmitter {
 
             this.emit('ready');
         });
+
+
+        // prevent droping files
+        this.webContents.on('will-navigate', (e) => {
+            e.preventDefault();
+        });
+
 
         this.window.once('closed', () => {
             this._log.debug('Closed');
@@ -71,7 +86,7 @@ class Window extends EventEmitter {
             this.emit('closed');
         });
 
-        this.window.on('close', (e) => {
+        this.window.once('close', (e) => {
             this.emit('close', e);
         });
 
@@ -182,7 +197,7 @@ class Windows {
 
         // when a window gets initalized it will send us its id
         ipc.on('backendAction_setWindowId', (event) => {
-            const id = event.sender.getId();
+            const id = event.sender.id;
 
             log.debug('Set window id', id);
 
@@ -200,7 +215,7 @@ class Windows {
     }
 
 
-    create(type, options) {
+    create(type, options, callback) {
         options = options || {};
 
         const existing = this.getByType(type);
@@ -216,17 +231,20 @@ class Windows {
         log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
 
         const wnd = this._windows[type] = new Window(this, type, options);
-
         wnd.on('closed', this._onWindowClosed.bind(this, wnd));
+
+        if (callback) {
+            wnd.callback = callback;
+        }
 
         return wnd;
     }
 
 
-    createPopup(type, options) {
+    createPopup(type, options, callback) {
         options = options || {};
 
-        const opts = {
+        let opts = {
             url: `${global.interfacePopupsUrl}#${type}`,
             show: true,
             ownerId: null,
@@ -242,8 +260,8 @@ class Windows {
                 autoHideMenuBar: true, // TODO: test on windows
                 webPreferences: {
                     textAreasAreResizable: false,
-                },
-            },
+                }
+            }
         };
 
         // always show on top of main window
@@ -251,11 +269,12 @@ class Windows {
             return w.type === 'main';
         });
 
-        if (parent)
-            { opts.electronOptions.parent = parent.window; }
+        if (parent) {
+            opts.electronOptions.parent = parent.window;
+        }
 
 
-        _.extendDeep(opts, options);
+        opts = _.deepExtend(opts, options);
 
         // mark it as a pop-up window
         opts.isPopup = true;
@@ -270,7 +289,7 @@ class Windows {
 
         log.info(`Create popup window: ${type}`);
 
-        const wnd = this.create(type, opts);
+        const wnd = this.create(type, opts, callback);
 
         wnd.once('ready', () => {
             this.loading.hide();

@@ -7,9 +7,9 @@
             <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
                 <label for="url-input" class="dapp-info {{#if icon}}has-icon{{/if}}">
                     {{#if icon}}
-                        {{> elements_img src=icon class="app-icon" }}
+                        <img src="{{icon}}" class="app-icon">
                     {{/if}}
-                    <span>{{name}}</span>
+                    <span title="{{nameFull}}">{{name}}</span>
                 </label>
 
                 <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">

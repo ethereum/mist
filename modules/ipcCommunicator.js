@@ -5,7 +5,7 @@ Window communication
 */
 
 const _ = global._;
-const { app, ipcMain: ipc, shell } = require('electron');
+const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
@@ -41,16 +41,16 @@ ipc.on('backendAction_openExternalUrl', (e, url) => {
 });
 
 ipc.on('backendAction_closePopupWindow', (e) => {
-    let windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
         senderWindow.close();
     }
 });
 ipc.on('backendAction_setWindowSize', (e, width, height) => {
-    let windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
         senderWindow.window.setSize(width, height);
@@ -58,19 +58,28 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
     }
 });
 
-ipc.on('backendAction_sendToOwner', (e, error, value) => {
-    let windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
-    const mainWindow = Windows.getByType('main');
+    if(senderWindow.callback) {
+        senderWindow.callback(value1, value2, value3);
+    }
+});
+
+ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
     if (senderWindow.ownerId) {
         const ownerWindow = Windows.getById(senderWindow.ownerId);
+        const mainWindow = Windows.getByType('main');
 
         if (ownerWindow) {
-            ownerWindow.send('windowMessage', senderWindow.type, error, value);
+            ownerWindow.send('uiAction_windowMessage', senderWindow.type, error, value);
         }
 
+        // send through the mainWindow to the webviews
         if (mainWindow) {
             mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
         }
@@ -79,7 +88,7 @@ ipc.on('backendAction_sendToOwner', (e, error, value) => {
 
 ipc.on('backendAction_setLanguage', (e, lang) => {
     if (global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0, 5), (err, t) => {
+        global.i18n.changeLanguage(lang.substr(0, 5), (err) => {
             if (!err) {
                 global.language = global.i18n.language;
                 log.info('Backend language set to: ', global.language);
@@ -87,6 +96,16 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
             }
         });
     }
+});
+
+ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
+    console.log('webcontent ID', id);
+    var webContent = webContents.fromId(id);
+
+    if(webContent && !webContent.isDestroyed())
+        webContent.stop();
+
+    e.returnValue = true;
 });
 
 
@@ -116,10 +135,11 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
         // if imported, return the address
         } else if (data.indexOf('Address:') !== -1) {
             const find = data.match(/\{([a-f0-9]+)\}/i);
-            if (find.length && find[1])
-                { e.sender.send('uiAction_importedPresaleFile', null, `0x${find[1]}`); }
-            else
-                { e.sender.send('uiAction_importedPresaleFile', data); }
+            if (find.length && find[1]) {
+                e.sender.send('uiAction_importedPresaleFile', null, `0x${find[1]}`);
+            } else {
+                e.sender.send('uiAction_importedPresaleFile', data);
+            }
 
         // if not stop, so we don't kill the process
         } else {
@@ -141,9 +161,9 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
 });
 
 
-const createAccountPopup = function (e) {
+const createAccountPopup = (e) => {
     Windows.createPopup('requestAccount', {
-        ownerId: e.sender.getId(),
+        ownerId: e.sender.id,
         electronOptions: {
             width: 400,
             height: 230,
@@ -156,13 +176,11 @@ const createAccountPopup = function (e) {
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
 ipc.on('mistAPI_requestAccount', (e) => {
-    if (global.mode == 'wallet') {
+    if (global.mode === 'wallet') {
         createAccountPopup(e);
-    }
-    // Mist
-    else {
+    } else { // Mist
         Windows.createPopup('connectAccount', {
-            ownerId: e.sender.getId(),
+            ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
                 height: 497,

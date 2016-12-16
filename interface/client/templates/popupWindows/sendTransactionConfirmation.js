@@ -184,7 +184,11 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 });
 
 Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
-    this.$('input[type="password"]').focus();
+    var template = this;
+
+    Meteor.setTimeout(function(){
+        template.$('input[type="password"]').focus();
+    }, 200);
 });
 
 Template['popupWindows_sendTransactionConfirmation'].helpers({

@@ -2,36 +2,36 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.4.18",
+            "version": "1.5.3",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-amd64.tar.bz2",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "ad74e052a9fba8e7389ee64c8b664c4dd9e9e2209276149bc49818f9064689b1",
-                            "bin": "geth-1.4.18-stable-c72f545-linux-amd64"
+                            "sha256": "7f1de3b66176111864571d66917ec885f0e789b140e1fca01bf2296cbcb13f57",
+                            "bin": "geth-linux-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.18" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-linux-386.tar.bz2",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "bb23492f948527ae153dee2f9315996e02067ee045f83b204d3cc6aa16e1c1f5",
-                            "bin": "geth-1.4.18-stable-c72f545-linux-386"
+                            "sha256": "527785d2d21655fb5756390ce06188961929856295f29811afe188aa5585880b",
+                            "bin": "geth-linux-386-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.18" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }
@@ -39,16 +39,16 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-darwin-10.6-amd64.tar.bz2",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.3-978737f5.tar.gz",
                             "type": "tar",
-                            "sha256": "1f7ac168a4502a9e88474f74b3cef2dda4843f350d7f9fcdd9ef10dff30b7282",
-                            "bin": "geth-1.4.18-stable-c72f545-darwin-10.6-amd64"
+                            "sha256": "dca175529d1d626d7ccb7dafab4374a39d715dc524734b09e5c4ebbb68615ffb",
+                            "bin": "geth-darwin-amd64-1.5.3-978737f5/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.18" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }
@@ -56,31 +56,31 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe.zip",
+                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-amd64-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "7503cf9ab55225ab22674295e210a107ded2a8d4af57dc7cfcaa4c2b863b506e",
-                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-amd64.exe"
+                            "sha256": "329caa90b5e02f71300b217c3a93a777c6ef09ae38d7be4f2cd5127ddbaed0e1",
+                            "bin": "geth-windows-amd64-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.18" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://bintray.com/artifact/download/karalabe/ethereum/geth-1.4.18-stable-c72f545-windows-4.0-386.exe.zip",
+                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-386-1.5.3-978737f5-mist-fix.zip",
                             "type": "zip",
-                            "sha256": "a24af273139c394072806f193ad6cf4d64114a6c7c7fca83f90f1c5c8e4347bb",
-                            "bin": "geth-1.4.18-stable-c72f545-windows-4.0-386.exe"
+                            "sha256": "637447797ed362a409d9e8e5b12bee1a56009faa8a98c20dab4af77f04527b2e",
+                            "bin": "geth-windows-386-1.5.3-978737f5\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.4.18" ]
+                                "output": [ "Geth", "1.5.3" ]
                             }
                         }
                     }

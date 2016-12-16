@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
+const _ = require('./utils/underscore');
 
 
 // try loading in config file
@@ -143,9 +144,6 @@ if (argv.ipcpath) {
 }
 
 
-const log = null;
-
-
 class Settings {
     init() {
         logger.setup(argv);
@@ -184,7 +182,7 @@ class Settings {
     }
 
     get uiMode() {
-        return argv.mode;
+        return (_.isString(argv.mode)) ? argv.mode.toLowerCase() : argv.mode;
     }
 
     get inProductionMode() {
@@ -212,11 +210,11 @@ class Settings {
             return {
                 path: this.rpcIpcPath,
             };
-        } else {
-            return {
-                hostPort: this.rpcHttpPath,
-            };
         }
+
+        return {
+            hostPort: this.rpcHttpPath,
+        };
     }
 
     get rpcHttpPath() {
@@ -282,10 +280,10 @@ class Settings {
     }
 
 
-    saveUserData(path, data) {
+    saveUserData(path2, data) {
         if (!data) return; // return so we dont write null, or other invalid data
 
-        const fullPath = this.constructUserDataPath(path);
+        const fullPath = this.constructUserDataPath(path2);
 
         try {
             fs.writeFileSync(fullPath, data, { encoding: 'utf8' });

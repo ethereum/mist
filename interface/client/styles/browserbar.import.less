@@ -114,33 +114,48 @@
                 font-size: 80%;
                 font-family: @sourceSansPro;
                 font-weight: 400;
-                transition: opacity 0.2s, transform 0.2s;
+                transition: opacity 0.2s ease-in-out;
                 line-height: @gridHeight;
+                z-index: 10;
 
                 &:focus {
                     color: @colorLinkActive;
                     opacity: 1;
                 }
 
-                &:focus + .url-breadcrumb {
-                    display: none;
+                &:focus + .url-breadcrumb, &:hover + .url-breadcrumb {
+                    opacity: 0;
+                    word-spacing: -4px;
                 }
             }
 
             .url-breadcrumb {
                 color: lighten(@colorLinkBlur, 40%);
-                opacity: 0.8;
+                background-color: #fff;
+                opacity: 1;
                 font-size: 80%;
                 text-align: center;
                 font-weight: 400;
-                transition: opacity 0.2s, visibility 0.2s, transform 0.2s, word-spacing 0.2s;
+                transition: opacity 0.2s ease-in-out, word-spacing 0.1s ease-in-out 0.1s;
                 line-height: @gridHeight;
                 height: @gridHeight;
                 overflow: hidden;
+                z-index: 1;
 
                 span {
                     color: @colorLinkBlur;
                 }            
+            }
+
+            &:hover > .url-input {
+                opacity: 1;
+                transition: opacity 0.2s ease-in-out 0.1s;                
+            }
+
+            &:hover > .url-breadcrumb {
+                opacity: 0;
+                word-spacing: -3px;  
+                transition: opacity 0.2s ease-in-out 0.1s, word-spacing 0.2s ease-in-out;
             }
         }
 
@@ -230,17 +245,15 @@
     }
 }
 
-
-
 .loading {
-
     .url-input {
         .color-pulse;
         opacity: 1 !important;
-
     }
     .url-breadcrumb {
-        display: none;
+        visibility: hidden;
+        word-spacing: -3px;  
+        transition: word-spacing 0.5s ease-in-out;
     }
     .reload {
         .rotating;

@@ -59,7 +59,7 @@
                             "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-amd64-1.5.5-ff07d548-mist-fix.zip",
                             "type": "zip",
                             "sha256": "6b9e65ccac8a07535fbfd003662cdd4f69289f93947689c715d10c6486e703d7",
-                            "bin": "geth-windows-amd64-1.5.5-ff07d548-mist-fix\\geth.exe"
+                            "bin": "geth-windows-amd64-1.5.5-ff07d548\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -74,7 +74,7 @@
                             "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-386-1.5.5-ff07d548-mist-fix.zip",
                             "type": "zip",
                             "sha256": "74ef8372ae7748c1016a8fcfe2d49574b52a2780913081cf0184fb197f26f01c",
-                            "bin": "geth-windows-386-1.5.5-ff07d548-mist-fix\\geth.exe"
+                            "bin": "geth-windows-386-1.5.5-ff07d548\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {

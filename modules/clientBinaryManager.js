@@ -12,6 +12,9 @@ const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
+// should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
 
@@ -55,7 +58,7 @@ class Manager extends EventEmitter {
         this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
-        return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
+        return got(BINARY_URL, {
             timeout: 3000,
             json: true,
         })

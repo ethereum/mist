@@ -7,6 +7,11 @@ webviewChangeUrl = function(tabId, e){
 
     console.log(e.type, tabId, url);
 
+    if(e.type === 'did-navigate') {
+        // destroy socket when navigating away
+        ipc.send('ipcProvider-destroy', this.getWebContents().id);
+    }
+
     // make sure to not store error pages in history
     if(!url || url.indexOf('mist/errorPages/') !== -1)
         return;
@@ -68,13 +73,14 @@ webviewLoadStart = function(currentTabId, e){
 
     if(e.type === 'did-get-redirect-request' && !e.isMainFrame)
         return;
+
+    console.log(e.type, currentTabId, e);
     
     // stop this action, as the redirect happens reactive through setting the URL attribute
     e.preventDefault(); // doesnt work
-    webview.stop();
-    ipc.send('backendAction_stopFocusedWebviewNavigation'); // race condition? cant cancel fast enough sometimes?
-
-    console.log(e.type, currentTabId, e);
+    webview.stop(); // doesnt work
+    ipc.sendSync('backendAction_stopWebviewNavigation', webview.getWebContents().id);
+    
 
     var url = Helpers.sanitizeUrl(e.newURL || e.url);
     var tabId = Helpers.getTabIdByUrl(url);

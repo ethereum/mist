@@ -19,7 +19,8 @@ var pinToSidebar = function() {
                 position: Tabs.find().count() + 1
             });
             LocalStore.set('selectedTab', newTabId);
-        } else {
+
+        } else if(existingUserTab) {
             LocalStore.set('selectedTab', existingUserTab);
         }
 
@@ -150,8 +151,10 @@ Template['popupWindows_connectAccount'].events({
             pinToSidebar();
         }
 
+        accounts = _.unique(_.flatten(accounts)); 
+
         // reload the webview
-        ipc.send('backendAction_sendToOwner', null, accounts);
+        ipc.send('backendAction_windowMessageToOwner', null, accounts);
         setTimeout(function(){
             ipc.send('backendAction_closePopupWindow');
         }, 600);

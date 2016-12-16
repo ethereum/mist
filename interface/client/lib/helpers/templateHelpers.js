@@ -29,14 +29,6 @@ Template.registerHelper('CurrentBlock', function(){
     return EthBlocks.latest;
 });
 
-/**
-Return the preload modules dirname.
-
-@method (preload_dirname)
-**/
-Template.registerHelper('preload_dirname', function(){
-    return window.dirname + '/modules/preloader';
-});
 
 /**
 Return the dirname.
@@ -63,7 +55,7 @@ Return the app mode.
 @method (mode)
 **/
 Template.registerHelper('mode', function(){
-    return window.mist.mode;
+    return window.mistMode;
 });
 
 /**
@@ -72,7 +64,7 @@ Return the friendly app name.
 @method (appName)
 **/
 Template.registerHelper('appName', function(){
-    return window.mist.mode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    return window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
 });
 
 /**
@@ -81,7 +73,7 @@ Return the app icon path.
 @method (iconPath)
 **/
 Template.registerHelper('appIconPath', function(){
-    return 'file://'+ window.dirname +'/icons/'+ window.mist.mode +'/icon2x.png';
+    return 'file://'+ window.dirname +'/icons/'+ window.mistMode +'/icon2x.png';
 });
 
 /**
@@ -90,7 +82,7 @@ Get the current user agent
 @method (useragent)
 **/
 Template.registerHelper('useragent', function(){
-    return navigator.userAgent + ' Ethereum ' + (window.mist.mode === 'mist' ? 'Mist' : 'Wallet');
+    return navigator.userAgent + ' Ethereum ' + (window.mistMode === 'mist' ? 'Mist' : 'Wallet');
 });
 
 /**

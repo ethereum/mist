@@ -5,8 +5,8 @@ describe("Permissions", function() {
 
     describe('permissions', function() {
         it('should be available', function() {
-            expect(permissions).to.be.an('object', 'The permissions object was not present, please reload the test page');
-            expect(permissions.accounts).to.be.an('array', 'The permissions object was not present, please reload the test page');
+            expect(window.permissions).to.be.an('object', 'The permissions object was not present, please reload the test page');
+            expect(window.permissions.accounts).to.be.an('array', 'The permissions object was not present, please reload the test page');
         });
     });
 
@@ -26,22 +26,24 @@ describe("Permissions", function() {
             });
         });
 
-        it('should match the allowed accounts in the tabs permisssions [sync]', function(done) {
+        it('should match the allowed accounts in the tabs permisssions, and don\'t contain coinbase [sync]', function(done) {
             var accounts = web3.eth.accounts;
 
-            expect(permissions.accounts.length).to.equal(accounts.length);
+            expect(window.permissions.accounts.length).to.equal(accounts.length);
+            expect(window.permissions.accounts).to.not.include(window.coinbase);
             accounts.forEach(function(account){
-                expect(permissions.accounts).to.include(account);
+                expect(window.permissions.accounts).to.include(account);
             });
 
             done();
         });
 
-        it('should match the allowed accounts in the tabs permisssions [async]', function(done) {
+        it('should match the allowed accounts in the tabs permisssions, and don\'t contain coinbase [async]', function(done) {
             web3.eth.getAccounts(function(e, accounts){
-                expect(permissions.accounts.length).to.equal(accounts.length);
+                expect(window.permissions.accounts.length).to.equal(accounts.length);
+                expect(window.permissions.accounts).to.not.include(window.coinbase);
                 accounts.forEach(function(account){
-                    expect(permissions.accounts).to.include(account);
+                    expect(window.permissions.accounts).to.include(account);
                 });
 
                 done();
@@ -49,13 +51,14 @@ describe("Permissions", function() {
         });
 
 
-        it('should match the allowed accounts in the tabs permisssions [async, batch request]', function(done) {
+        it('should match the allowed accounts in the tabs permisssions, and don\'t contain coinbase [async, batch request]', function(done) {
             var count = 1;
 
             var callback = function(e, accounts){
-                expect(permissions.accounts.length).to.equal(accounts.length);
+                expect(window.permissions.accounts.length).to.equal(accounts.length);
+                expect(window.permissions.accounts).to.not.include(window.coinbase);
                 accounts.forEach(function(account){
-                    expect(permissions.accounts).to.include(account);
+                    expect(window.permissions.accounts).to.include(account);
                 });
 
                 if(count === 2)
@@ -70,5 +73,72 @@ describe("Permissions", function() {
             batch.execute();
         });
 
+    });
+
+    describe('web3.eth.coinbase', function() {
+
+        it('should be empty [sync]', function() {
+            var coinbase = web3.eth.coinbase;
+            expect(coinbase).to.be.null;
+        });
+
+        it('should be empty [async]', function(done) {
+            web3.eth.getCoinbase(function(e, coinbase){
+                expect(e).to.be.null;
+                expect(coinbase).to.be.null;
+
+                done();
+            });
+        });
+
+
+        it('should be empty [async, batch request]', function(done) {
+            var count = 1;
+
+            var callback = function(e, coinbase){
+                expect(e).to.be.null;
+                expect(coinbase).to.be.null;
+
+                if(count === 2)
+                    done();
+
+                count++;
+            };
+
+            var batch = web3.createBatch();
+            batch.add(web3.eth.getCoinbase.request(callback));
+            batch.add(web3.eth.getCoinbase.request(callback));
+            batch.execute();
+        });
+
+    });
+
+    describe('web3 attributes', function() {
+        it('shouldn\'t allow `admin`', function () {
+            expect(web3.admin).to.be.undefined;
+        });
+
+        it('shouldn\'t allow IPC provider', function () {
+            expect(window.ipc).to.be.undefined;
+            expect(window.ipcRenderer).to.be.undefined;
+        });
+
+        it('should only contain allowed attributes', function (){
+            var allowedAttributes = [
+                '_requestManager',
+                'currentProvider',
+                'eth',
+                'db',
+                'shh',
+                'net',
+                'personal',
+                'settings',
+                'version',
+                'providers',
+                '_extend'
+            ];
+
+            expect(web3).to.have.all.keys(allowedAttributes);
+        });
     });
 });

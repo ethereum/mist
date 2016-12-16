@@ -8,7 +8,7 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('EthereumNode');
 const logRotate = require('log-rotate');
 const EventEmitter = require('events').EventEmitter;
-const Sockets = require('./sockets');
+const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 const DEFAULT_NODE_TYPE = 'geth';
@@ -323,7 +323,7 @@ class EthereumNode extends EventEmitter {
         else 
             throw new Error(`Node "${nodeType}" binPath is not available.`);
 
-        log.debug(`Start node using ${binPath}`);
+        log.info(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
             this.__startProcess(nodeType, network, binPath)
@@ -358,8 +358,8 @@ class EthereumNode extends EventEmitter {
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', '512', '--support-dao-fork'] // FORK RELATED
-                        : ['--unsafe-transactions', '--support-dao-fork'];
+                        ? ['--fast', '--cache', '1024'] 
+                        : ['--unsafe-transactions'];
                 }
 
                 const nodeOptions = Settings.nodeOptions;

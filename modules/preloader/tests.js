@@ -13,12 +13,13 @@ require('./dapps.js');
 
 
 const electron = require('electron');
-const ipc = electron.ipcRenderer;
+const ipcRenderer = electron.ipcRenderer;
 
 window.ipcProvider = require('../ipc/ipcProviderWrapper.js');
 window.permissions = {};
 
-ipc.sendToHost('sendTestData');
-ipc.on('sendTestData', function(e, data) {
-    window.permissions = data.permissions;
-})
+ipcRenderer.sendToHost('sendTestData');
+ipcRenderer.on('uiAction_sendTestData', function(e, permissions, coinbase) {
+    window.permissions = permissions;
+    window.coinbase = coinbase;
+});

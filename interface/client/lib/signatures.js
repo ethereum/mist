@@ -10003,5 +10003,17 @@ window.SIGNATURES = {
     ],
     "0x023c23db": [
         "getSize(uint256)"
+    ],
+    "0x2fea7b81": [
+        "getIdentity(address)"
+    ],
+    "0x043bb5e7": [
+        "getIdentities(address[])"
+    ],
+    "0x27dc297e": [
+        "__callback(bytes32,string)"
+    ],
+    "0x38bbfa50": [
+        "__callback(bytes32,string,bytes)"
     ]
 };

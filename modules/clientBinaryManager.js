@@ -53,9 +53,9 @@ class Manager extends EventEmitter {
         let binariesDownloaded = false;
         let nodeInfo;
 
-        log.info('Checking for new client binaries config...');
+        log.info('Checking for new client binaries config from: '+ BINARY_URL);
 
-        this._emit('loadConfig', 'Fetching remote client config from: '+ BINARY_URL);
+        this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
         return got(BINARY_URL, {

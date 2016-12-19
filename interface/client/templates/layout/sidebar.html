@@ -1,4 +1,33 @@
 <template name="layout_sidebar">
+    <aside class="newsidebar {{fullTabs}}">
+        <nav>
+            <ul>
+                {{#each tabs}}
+                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+                        <header>
+                            <button class="main {{#if badge}}has-badge{{/if}}">
+                                {{#if icon}}
+                                    <!-- <img src="{{icon}}"> -->
+                                {{else}}
+                                    <!-- <i class="icon-globe"></i> -->
+                                {{/if}}
+                                <span title="{{nameFull}}">{{name}}</span>
+                                {{#if badge}}
+                                    <!-- <div class="badge">{{badge}}</div> -->
+                                {{/if}}
+                            </button>
+
+                            {{#if $neq _id 'browser'}}
+                                <button class="remove-tab"> &times; </button>
+                            {{/if}}
+                        </header>
+                    </li>
+                {{/each}}
+            </ul>
+            {{> elements_nodeInfo}}
+        </nav>
+    </aside>
+
     <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
@@ -31,7 +60,7 @@
                             {{#each subMenu}}
                                 <li>
                                     <button class="{{#if selected}}selected{{/if}}">
-                                        {{name}} 
+                                        {{name}}
                                     </button>
                                     {{#if badge}}
                                         <div class="badge">{{badge}}</div>

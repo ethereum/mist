@@ -1,7 +1,65 @@
+aside.newsidebar {
+    overflow: hidden;
+
+    ul {
+        padding: 0 6px;
+    }
+    li {
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 3px;
+
+        &.selected {
+            box-shadow: 0 1px 0 0px rgba(0, 0, 0, 0.08)
+        }
+
+        header:hover { background-color: #F6F6F6; }
+        header:active, &.selected header { background-color: #FFFFFF; }
+        header:active {
+
+        }
+        header:hover button {
+        }
+
+        header {
+            -webkit-transition: 150ms background-color linear;
+            padding: 0 5px 0 10px;
+            button.main {
+                height: @gridHeight*2;
+                padding: 1px 0;
+                color: @colorLinkActive;
+                text-align: left;
+                text-transform: uppercase;
+                font-family: @sourceSansPro;
+                font-size: @fontSizeNormal;
+                font-weight: 500;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                width: 85%;
+                &:focus {
+                    outline: 0;
+                    border: none;
+                }
+                &:active {
+                    transform: none;
+                }
+                span {
+                    color: #2D2D2D;
+                }
+            }
+        }
+    }
+
+    .node-info {
+        display: none;
+    }
+}
+
 
 aside.sidebar {
     overflow: hidden;
-
+    display: none;
     ul {
         z-index: 10;
         position: relative;
@@ -55,7 +113,7 @@ aside.sidebar {
                 }
 
                 button.selected {
-                    font-weight: 600;                    
+                    font-weight: 600;
                 }
             }
 
@@ -105,7 +163,7 @@ aside.sidebar {
                 .icon-globe {
                     top: 13px;
                 }
-                
+
                 span, .badge {
                     .dapp-shorten-text;
                     display: block;
@@ -133,7 +191,7 @@ aside.sidebar {
             button.main {
                 img, .icon-globe {
                     transition: 0.25s ease-in-out transform;
-                    transform: rotateY(0deg) translate3d(0, 0, 0);                    
+                    transform: rotateY(0deg) translate3d(0, 0, 0);
                     backface-visibility: hidden;
                     color: @colorGray;
                 }
@@ -141,18 +199,18 @@ aside.sidebar {
 
             &:not(.browser):not(.wallet) header:hover {
                 button.main img, button.main .icon-globe {
-                    transform: rotateY(-180deg) translate3d(0, 0, 0);    
+                    transform: rotateY(-180deg) translate3d(0, 0, 0);
                 }
 
                 button.remove-tab {
-                    transform: rotateY(0deg) translate3d(0px, 0px, 0);  
+                    transform: rotateY(0deg) translate3d(0px, 0px, 0);
                     &:hover {
                         background: @colorLink;
-                        color: @colorWhite;  
-                    }                  
+                        color: @colorWhite;
+                    }
                 }
             }
-            
+
             button.remove-tab {
                 box-sizing: border-box;
                 position: absolute;
@@ -167,7 +225,7 @@ aside.sidebar {
                 padding: 0;
                 z-index: 2;
                 backface-visibility: hidden;
-                transform: rotateY(180deg) translate3d(0px, 0px, 0);                         
+                transform: rotateY(180deg) translate3d(0px, 0px, 0);
                 &:focus {
                     border: none;
                 }
@@ -188,10 +246,10 @@ aside.sidebar {
                     transform: rotate(180deg) translate3d(-10px, 1px, 0);
                 }
             }
-    
+
             // SUB MENU
             ul.sub-menu {
-                padding-left: @gridWidth/2; 
+                padding-left: @gridWidth/2;
                 border-top: 0;
                 max-height: @gridHeight*12;
 
@@ -210,7 +268,7 @@ aside.sidebar {
                     }
                 }
 
-                li:nth-child(6), li:nth-child(7) { 
+                li:nth-child(6), li:nth-child(7) {
                     visibility: hidden;
                 }
 
@@ -226,13 +284,13 @@ aside.sidebar {
                         border: 0;
                         color: @colorLinkFocus;
                     }
-                    
+
 
                     &.selected {
                         color: @colorLinkBlur;
                     }
 
-                    
+
                 }
 
                 .badge {
@@ -258,12 +316,12 @@ aside.sidebar {
                     margin-top: -4px;
                     top: @gridHeight * 10;
                     width: 100%;
-                    
+
                     button {
                         font-style: italic;
                     }
                 }
-            } 
+            }
         }
 
     }
@@ -283,12 +341,12 @@ aside.sidebar {
                 left: 1px;
                 right: auto;
             }
-            
+
             ul {
                 max-height: none;
             }
 
-            li:nth-child(6), li:nth-child(7) { 
+            li:nth-child(6), li:nth-child(7) {
                 visibility: visible;
             }
 
@@ -308,7 +366,7 @@ aside.sidebar {
         bottom: @gridHeight;
         left: @gridWidth/2;
         flex-flow: row wrap;
-        
+
         div, span {
             padding: @gridHeight/2 1px;
             flex: 1;

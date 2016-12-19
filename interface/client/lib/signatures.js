@@ -10015,5 +10015,20 @@ window.SIGNATURES = {
     ],
     "0x38bbfa50": [
         "__callback(bytes32,string,bytes)"
+    ],
+    "0xbc08afd9": [
+        "WebOfTrustToken(address,uint256)"
+    ],
+    "0xa5bfa9a9": [
+        "claimToken(bytes32)"
+    ],
+    "0x5669c94f": [
+        "issueToken(address,string)"
+    ],
+    "0xcdcd77c0": [
+        "baz(uint32,bool)"
+    ],
+    "0x0b811cb6": [
+        "executeProposal(uint256,bytes32)"
     ]
 };

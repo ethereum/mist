@@ -250,7 +250,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
-                'icon-size': 128,
+                iconSize: 128,
                 contents: [{
                     x: 441,
                     y: 448,
@@ -411,15 +411,23 @@ gulp.task('wallet-checksums', (cb) => {
 });
 
 
-gulp.task('test-wallet', () => {
+let testApp = (app) => {
     return gulp.src([
-        './tests/wallet/*.test.js',
+        `./tests/${app}/*.test.js`,
     ])
     .pipe(mocha({
         timeout: 60000,
         ui: 'exports',
         reporter: 'spec',
     }));
+}
+
+gulp.task('test-wallet', () => {
+    testApp('wallet');
+});
+
+gulp.task('test-mist', () => {
+    testApp('mist');
 });
 
 

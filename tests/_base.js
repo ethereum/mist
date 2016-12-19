@@ -12,8 +12,9 @@ const path = require('path');
 const packageJson = require('../package.json');
 const gethPrivate = require('geth-private');
 const Application = require('spectron').Application;
-
 const chai = require('chai');
+// const ClientBinaryManager = require('../modules/clientBinaryManager');
+
 chai.should();
 
 process.env.TEST_MODE = 'true';
@@ -36,12 +37,13 @@ exports.mocha = function (_module, options) {
             const logFilePath = path.join(__dirname, 'mist.log');
             shell.rm('-rf', logFilePath);
 
-            const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist',
-                appVers = packageJson.version.replace(/\./ig, '-'),
-                platformArch = `${process.platform}-${process.arch}`;
+            const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
+            const appVers = packageJson.version.replace(/\./ig, '-');
+            const platformArch = `${process.platform}-${process.arch}`;
 
-            let appPath,
-                gethPath;
+            // Temporary. needs integration with ClientBinaryManager
+            const gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
+            let appPath;
 
             switch (platformArch) {
             case 'darwin-x64':
@@ -73,8 +75,13 @@ exports.mocha = function (_module, options) {
                 throw new Error(`Cannot find binary: ${appPath}`);
             }
 
+            // const clientBinaryManager = ClientBinaryManager.init();
+            // console.log(clientBinaryManager);
+
+
             this.geth = gethPrivate({
-                gethPath: path.join(process.cwd(), 'nodes', 'geth', platformArch, 'geth'),
+                gethPath,
+                // gethPath: path.join(process.cwd(), 'nodes', 'geth', platformArch, 'geth'),
                 balance: 5,
                 genesisBlock: {
                     difficulty: '0x1',
@@ -85,16 +92,14 @@ exports.mocha = function (_module, options) {
                     rpcport: 58545,
                 },
             });
-
+            console.log(this.geth);
             yield this.geth.start();
 
             this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
-
-
             this.app = new Application({
                 requireName: 'electronRequire',
-                startTimeout: 5000,
-                waitTimeout: 5000,
+                startTimeout: 10000,
+                waitTimeout: 10000,
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
@@ -106,20 +111,22 @@ exports.mocha = function (_module, options) {
                 ],
             });
 
+            console.log('==== App info', this.app);
+
             yield this.app.start();
 
             this.client = this.app.client;
 
             yield this.client.waitUntilWindowLoaded();
 
-      // wait a small amount of time to ensure main app window is ready with data
+            // wait a small amount of time to ensure main app window is ready with data
             yield Q.delay(8000);
 
-      // console.log(this.app.chromeDriver.logLines);
+            // console.log(this.app.chromeDriver.logLines);
 
-      /*
-      Utility methods
-       */
+            /*
+                Utility methods
+            */
             for (const key in Utils) {
                 this[key] = genomatic.bind(Utils[key], this);
             }
@@ -214,7 +221,7 @@ const Utils = {
     );
 
         accounts = accounts.map(a => a.toLowerCase());
-        balances = balances.map(b => parseInt(b));
+        balances = balances.map(b => parseInt(b, 10));
 
         return _.object(accounts, balances);
     },
@@ -224,7 +231,7 @@ const Utils = {
         let _balances = yield this.execElemsMethod('elementIdText', '.wallet-box .account-balance');
 
         _accounts = _accounts.map(a => a.toLowerCase());
-        _balances = _balances.map(b => parseInt(b));
+        _balances = _balances.map(b => parseInt(b, 10));
 
         return _.object(_accounts, _balances);
     },
@@ -233,10 +240,10 @@ const Utils = {
 
         let idx = -1;
 
-        accId = accId.toLowerCase();
+        const accountId = accId.toLowerCase();
 
         for (const i in _accounts) {
-            if (_accounts[i].toLowerCase() === accId) {
+            if (_accounts[i].toLowerCase() === accountId) {
                 idx = i;
             }
         }

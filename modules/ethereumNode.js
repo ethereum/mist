@@ -323,7 +323,7 @@ class EthereumNode extends EventEmitter {
         else 
             throw new Error(`Node "${nodeType}" binPath is not available.`);
 
-        log.debug(`Start node using ${binPath}`);
+        log.info(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
             this.__startProcess(nodeType, network, binPath)

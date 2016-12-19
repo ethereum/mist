@@ -1,6 +1,6 @@
 const _ = global._;
 const Q = require('bluebird');
-const dechunker = require('../ipc/dechunker.js');
+const Dechunker = require('../ipc/dechunker.js');
 const SocketBase = require('./base');
 
 const Socket = SocketBase.Socket;
@@ -9,6 +9,8 @@ const STATE = SocketBase.STATE;
 module.exports = class Web3Socket extends Socket {
     constructor(socketMgr, id) {
         super(socketMgr, id);
+
+        this.dechunker = new Dechunker();
 
         this._sendRequests = {};
 
@@ -97,7 +99,7 @@ module.exports = class Web3Socket extends Socket {
      * Handle responses from Geth.
      */
     _handleSocketResponse(data) {
-        dechunker(data, (err, result) => {
+        this.dechunker.dechunk(data, (err, result) => {
             this._log.trace('Dechunked response', result);
 
             try {

@@ -120,7 +120,7 @@ class Socket extends EventEmitter {
                 this._socket.removeAllListeners();
 
                 const timer = setTimeout(() => {
-                    log.warn('Disconnection timed out, continuing anyway...');
+                    log.warn('Disconnection timed out, closing socket anyway...');
 
                     this._state = STATE.DISCONNECTION_TIMEOUT;
 
@@ -144,9 +144,9 @@ class Socket extends EventEmitter {
 
                 this._socket.destroy();
             })
-                .finally(() => {
-                    this._disconnectPromise = null;
-                });
+            .finally(() => {
+                this._disconnectPromise = null;
+            });
         }
 
         return this._disconnectPromise;
@@ -158,6 +158,7 @@ class Socket extends EventEmitter {
      * @return {Promise}
      */
     destroy() {
+        this.removeAllListeners();
         return this.disconnect();
     }
 

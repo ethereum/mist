@@ -99,11 +99,11 @@ PageEx directory
   DirVar $FILEDIR
 PageExEnd
 
-# Select the location for Mist's data directory
-PageEx directory
-  DirText "Select a location for Mist's data files (watched contracts, etc.)"
-  DirVar $DATADIR
-PageExEnd
+## Select the location for Mist's data directory
+#PageEx directory
+#  DirText "Select a location for Mist's data files (watched contracts, etc.)"
+#  DirVar $DATADIR
+#PageExEnd
 
 # Select the location for the node's data directory
 PageEx directory

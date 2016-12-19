@@ -320,7 +320,7 @@ class EthereumNode extends EventEmitter {
 
         if(client)
             binPath = client.binPath;
-        else 
+        else
             throw new Error(`Node "${nodeType}" binPath is not available.`);
 
         log.info(`Start node using ${binPath}`);
@@ -350,7 +350,7 @@ class EthereumNode extends EventEmitter {
                 let args;
 
                 // START TESTNET
-                if (network == 'test') {
+                if (network === 'test') {
                     args = (nodeType === 'geth')
                         ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
                         : ['--ropstein', '--unsafe-transactions'];
@@ -358,7 +358,7 @@ class EthereumNode extends EventEmitter {
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth')
-                        ? ['--light', '--cache', '1024'] 
+                        ? ['--light']
                         : ['--unsafe-transactions'];
                 }
 

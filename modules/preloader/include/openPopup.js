@@ -10,10 +10,11 @@ const { remote } = require('electron');
 document.addEventListener('click', (e) => {
     let node = false;
 
-    if (e.target.nodeName === 'A')
-        { node = e.target; }
-    else if (e.target.parentNode && e.target.parentNode.nodeName === 'A')
-        { node = e.target.parentNode; }
+    if (e.target.nodeName === 'A') {
+        node = e.target;
+    } else if (e.target.parentNode && e.target.parentNode.nodeName === 'A') {
+        node = e.target.parentNode;
+    }
 
     // open popup
     if (node && node.attributes.target && node.attributes.target.value === '_popup') {

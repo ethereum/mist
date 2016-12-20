@@ -64,6 +64,10 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node",
+                "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",
                 "stopMining": "⛏ Stop Mining"
             },

@@ -7,9 +7,6 @@
     "type": "git",
     "url": "https://github.com/ethereum/mist.git"
   },
-  "scripts": {
-    "ci": "gulp --platform=linux"
-  },
   "main": "main.js",
   "dependencies": {
     "babel-runtime": "^6.18.0",

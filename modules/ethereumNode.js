@@ -253,7 +253,7 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     _start(nodeType, network, mode) {
-        log.info(`Start node: ${nodeType} ${network} ${mode}`);
+        log.info(`Starting ${nodeType} node on ${network}-network with ${mode} node`);
 
         const isTestNet = (network === 'test');
 

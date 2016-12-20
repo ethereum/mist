@@ -7,7 +7,6 @@ settings:
   import/core-modules:  ## don't lint for these missing packages in package.json
     - electron  ## 'electron' is only needed as devDependency / global installation
 
-
 rules:
   # "off" or 0 - turn the rule off
   # "warn" or 1 - turn the rule on as a warning (doesn’t affect exit code)
@@ -23,6 +22,10 @@ rules:
   comma-dangle:
     - error
     - only-multiline
+  import/no-extraneous-dependencies:
+    - error
+    - devDependencies:
+      - "**/*.test.js"
 
 globals:  # don't warn about missing declarations
   i18n: true

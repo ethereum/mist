@@ -100,8 +100,7 @@ class IpcProviderBackend {
 
                         socket.destroy().finally(() => {
 
-                            if(!owner.isDestroyed())
-                                owner.send(`ipcProvider-${ev}`, JSON.stringify(data));
+                            if (!owner.isDestroyed()) { owner.send(`ipcProvider-${ev}`, JSON.stringify(data)); }
                         });
 
                         delete this._connections[ownerId];
@@ -110,8 +109,9 @@ class IpcProviderBackend {
                 });
 
                 socket.on('connect', (data) => {
-                    if(!owner.isDestroyed())
+                    if (!owner.isDestroyed()) {
                         owner.send('ipcProvider-connect', JSON.stringify(data));
+                    }
                 });
 
                 // pass notifications back up the chain
@@ -124,8 +124,9 @@ class IpcProviderBackend {
                         data = this._makeResponsePayload(data, data);
                     }
 
-                    if(!owner.isDestroyed())
+                    if (!owner.isDestroyed()) {
                         owner.send('ipcProvider-data', JSON.stringify(data));
+                    }
                 });
             }
         })
@@ -172,8 +173,9 @@ class IpcProviderBackend {
             }
         })
         .then(() => {
-            if(!owner.isDestroyed())
+            if (!owner.isDestroyed()) {
                 owner.send('ipcProvider-setWritable', true);
+            }
 
             return this._connections[ownerId];
         });
@@ -356,7 +358,7 @@ class IpcProviderBackend {
 
             if (isSync) {
                 event.returnValue = returnValue;
-            } else if(!event.sender.isDestroyed()) {
+            } else if (!event.sender.isDestroyed()) {
                 event.sender.send('ipcProvider-data', returnValue);
             }
         });

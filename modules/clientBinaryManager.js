@@ -73,6 +73,8 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
+            if(!latestConfig) return;
+
             let localConfig;
             let skipedVersion;
             const nodeVersion = latestConfig.clients[nodeType].version;

@@ -62,7 +62,7 @@ ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
     const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
-    if(senderWindow.callback) {
+    if (senderWindow.callback) {
         senderWindow.callback(value1, value2, value3);
     }
 });
@@ -100,10 +100,11 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     console.log('webcontent ID', id);
-    var webContent = webContents.fromId(id);
+    const webContent = webContents.fromId(id);
 
-    if(webContent && !webContent.isDestroyed())
+    if (webContent && !webContent.isDestroyed()) {
         webContent.stop();
+    }
 
     e.returnValue = true;
 });
@@ -126,8 +127,9 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
     });
     nodeProcess.stdout.on('data', (data) => {
         var data = data.toString();
-        if (data)
-            { log.info('Imported presale: ', data); }
+        if (data) {
+            log.info('Imported presale: ', data);
+        }
 
         if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
             e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');

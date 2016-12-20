@@ -13,8 +13,7 @@ const ClientBinaryManager = require('./clientBinaryManager');
 const switchForSystem = function (options) {
     if (process.platform in options) {
         return options[process.platform];
-    }
-    else if ('default' in options) {
+    } else if ('default' in options) {
         return options.default;
     }
 };

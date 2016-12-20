@@ -29,10 +29,10 @@ RequestExecutionLevel admin
 !define ABOUTURL "https://ethereum.org"
 !define /date NOW "%Y%m%d"
 
-# These must be integers and can be set on the command line by NSIS with "/DMAJORVERSION=0 /DMINORVERSION=8 /DBUILDVERSION=7"
-!define VERSIONMAJOR 0
-!define VERSIONMINOR 8
-!define VERSIONBUILD 7
+## These must be integers and can be set on the command line by NSIS with "/DMAJORVERSION=0 /DMINORVERSION=8 /DBUILDVERSION=7"
+#!define VERSIONMAJOR 0
+#!define VERSIONMINOR 8
+#!define VERSIONBUILD 7
 
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"

@@ -342,6 +342,10 @@ gulp.task('release-dist', ['build-dist'], (done) => {
                 break;
             }
         }
+
+        if (platformIsActive('win')) {
+            runSeq('build-nsis');
+        }
     });
 
     done();
@@ -408,6 +412,13 @@ gulp.task('mist-checksums', (cb) => {
 });
 gulp.task('wallet-checksums', (cb) => {
     runSeq('set-variables-wallet', 'get-release-checksums', cb);
+});
+
+gulp.task('build-nsis', (cb) => {
+    var versionParts = version.split('.');
+    var versionString = '-DVERSIONMAJOR='+versionParts[0]+' -DVERSIONMINOR='+versionParts[1]+' -DVERSIONBUILD='+versionParts[2];
+    console.log(version, versionParts, versionString);
+    shell.exec('makensis -V3 '+ versionString+' scripts/windows-installer.nsi', cb);
 });
 
 

@@ -415,9 +415,9 @@ gulp.task('wallet-checksums', (cb) => {
 });
 
 gulp.task('build-nsis', (cb) => {
-    let versionParts = version.split('.');
-    let versionString = ''.concat('-DVERSIONMAJOR=',versionParts[0],' -DVERSIONMINOR=',versionParts[1],' -DVERSIONBUILD=',versionParts[2]);
-    let cmdString = 'makensis'.concat(' -V3 ',versionString,' scripts/windows-installer.nsi');
+    const versionParts = version.split('.');
+    const versionString = ''.concat('-DVERSIONMAJOR=', versionParts[0], ' -DVERSIONMINOR=', versionParts[1],' -DVERSIONBUILD=', versionParts[2]);
+    const cmdString = 'makensis'.concat(' -V3 ', versionString, ' scripts/windows-installer.nsi');
     console.log(cmdString);
     shell.exec(cmdString, cb);
 });

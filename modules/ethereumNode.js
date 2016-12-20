@@ -358,7 +358,7 @@ class EthereumNode extends EventEmitter {
                 // START MAINNET
                 else {
                     args = (nodeType === 'geth')
-                        ? ['--light', '--cache', '1024'] 
+                        ? ['--light'] 
                         : ['--unsafe-transactions'];
                 }
 

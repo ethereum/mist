@@ -70,8 +70,7 @@ module.exports = class extends BaseProcessor {
 
             ipc.once('backendAction_unlockedAccountAndSentTransaction', (ev, err, result) => {
                 if (Windows.getById(ev.sender.id) === modalWindow
-                        && !modalWindow.isClosed)
-                {
+                        && !modalWindow.isClosed) {
                     if (err || !result) {
                         this._log.debug('Confirmation error', err);
 

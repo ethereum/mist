@@ -102,7 +102,7 @@ module.exports = () => {
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             add(id, options, callback) {
-                var args = Array.prototype.slice.call(arguments);
+                const args = Array.prototype.slice.call(arguments);
                 callback = _.isFunction(args[args.length - 1]) ? args.pop() : null;
                 options = _.isObject(args[args.length - 1]) ? args.pop() : null;
                 id = _.isString(args[args.length - 1]) || _.isFinite(args[args.length - 1]) ? args.pop() : null;

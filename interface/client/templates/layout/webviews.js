@@ -11,13 +11,13 @@ The main section template
 @constructor
 */
 
-Template.layout_webviews.helpers({
+Template['layout_webviews'].helpers({
     /**
     Return the tabs
 
     @method (tabs)
     */
-    tabs() {
-        return Tabs.find({}, { field: { position: 1 } });
+    'tabs': function() {
+        return Tabs.find({}, {field: {position: 1}});
     }
 });

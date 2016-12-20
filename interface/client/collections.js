@@ -4,11 +4,12 @@
 */
 
 
+
 // BROWSER RELATED
 // Contains the accounts
-Tabs = new Mongo.Collection('tabs', { connection: null });
-LastVisitedPages = new Mongo.Collection('last-visted-pages', { connection: null });
-History = new Mongo.Collection('history', { connection: null });
+Tabs = new Mongo.Collection('tabs', {connection: null});
+LastVisitedPages = new Mongo.Collection('last-visted-pages', {connection: null});
+History = new Mongo.Collection('history', {connection: null});
 
 // Sync collection from and to the backend loki.js
 if (typeof window.dbSync !== 'undefined') {

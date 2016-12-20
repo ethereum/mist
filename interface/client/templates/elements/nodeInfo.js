@@ -9,9 +9,10 @@ Update the peercount
 
 @method getPeerCount
 */
-var getPeerCount = function (template) {
-    web3.net.getPeerCount(function (e, res) {
-        if (!e) { TemplateVar.set(template, 'peerCount', res); }
+var getPeerCount = function(template) {
+    web3.net.getPeerCount(function(e, res) {
+        if(!e)
+            TemplateVar.set(template, 'peerCount', res);
     });
 };
 
@@ -20,12 +21,12 @@ Update the mining hashrate
 
 @method getMining
 */
-var getMining = function (template) {
-    web3.eth.getMining(function (e, res) {
-        if (!e && res) {
-            web3.eth.getHashrate(function (e, res) {
-                if (!e) {
-                    TemplateVar.set(template, 'mining', numeral(res / 1000).format('0,0.0'));
+var getMining = function(template) {
+    web3.eth.getMining(function(e, res) {
+        if(!e && res) {
+            web3.eth.getHashrate(function(e, res) {
+                if(!e) {
+                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.0'));
                 }
             });
         } else {
@@ -41,33 +42,33 @@ The main template
 @constructor
 */
 
-Template.elements_nodeInfo.onCreated(function () {
+Template['elements_nodeInfo'].onCreated(function(){
     var template = this;
 
     // CHECK FOR NETWORK
-    web3.eth.getBlock(0, function (e, res) {
-        if (!e) {
+    web3.eth.getBlock(0, function(e, res){
+        if(!e){
             const network = Helpers.detectNetwork(res.hash);
-            TemplateVar.set(template, 'network', network.type);
-            TemplateVar.set(template, 'networkName', network.name);
+            TemplateVar.set(template, 'network', network.type); 
+            TemplateVar.set(template, 'networkName', network.name); 
         }
     });
 
     // CHECK SYNCING
-    this.syncFilter = web3.eth.isSyncing(function (error, syncing) {
-        if (!error) {
+    this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
+        if(!error) {
 
-            if (syncing === true) {
+            if(syncing === true) {
                 console.log('Node started syncing, stopping app operation');
                 web3.reset(true);
 
-            } else if (_.isObject(syncing)) {
-
+            } else if(_.isObject(syncing)) {
+                
                 syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
                 syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
 
                 TemplateVar.set(template, 'syncing', syncing);
-
+                
             } else {
                 console.log('Restart app operation again');
 
@@ -87,7 +88,7 @@ Template.elements_nodeInfo.onCreated(function () {
     getPeerCount(template);
 
     Meteor.clearInterval(this.peerCountIntervalId);
-    this.peerCountIntervalId = setInterval(function () {
+    this.peerCountIntervalId = setInterval(function() {
         getPeerCount(template);
     }, 1000);
 
@@ -98,27 +99,28 @@ Template.elements_nodeInfo.onCreated(function () {
     getMining(template);
 
     Meteor.clearInterval(this.miningIntervalId);
-    this.miningIntervalId = setInterval(function () {
+    this.miningIntervalId = setInterval(function() {
         getMining(template);
     }, 1000);
 });
 
 
-Template.elements_nodeInfo.onDestroyed(function () {
+Template['elements_nodeInfo'].onDestroyed(function(){
     Meteor.clearInterval(this.peerCountIntervalId);
 
-    if (this.syncFilter) { this.syncFilter.stopWatching(); }
+    if(this.syncFilter)
+        this.syncFilter.stopWatching();
 });
 
 
-Template.elements_nodeInfo.helpers({
+Template['elements_nodeInfo'].helpers({
     /**
     Formats the last block number
 
     @method (formattedBlockNumber)
     @return {String}
     */
-    formattedBlockNumber() {
+    'formattedBlockNumber': function() {
         return numeral(EthBlocks.latest.number).format('0,0');
     },
     /**
@@ -126,21 +128,23 @@ Template.elements_nodeInfo.helpers({
 
     @method (timeSinceBlock)
     */
-    timeSinceBlock() {
-        var timeSince = moment(EthBlocks.latest.timestamp, 'X');
+    'timeSinceBlock': function () {
+        var timeSince = moment(EthBlocks.latest.timestamp, "X");
         var now = moment();
-        var diff = now.diff(timeSince, 'seconds');
+        var diff = now.diff(timeSince, "seconds");
 
-        if (diff > 60) {
-            Helpers.rerun['10s'].tick();
+        if (diff>60) {
+            Helpers.rerun["10s"].tick();
             return timeSince.fromNow(true);
-        } else if (diff < 2) {
-            Helpers.rerun['1s'].tick();
-            return ' <span class="blue">' + TAPi18n.__('mist.nodeInfo.blockReceived') + '</span>';
+        } else if (diff<2) {
+            Helpers.rerun["1s"].tick();
+            return ' <span class="blue">' + TAPi18n.__('mist.nodeInfo.blockReceived') + '</span>'
         } else {
-            Helpers.rerun['1s'].tick();
-            return diff + 's';
+            Helpers.rerun["1s"].tick();
+            return diff + "s";
         }
     }
 });
+
+
 

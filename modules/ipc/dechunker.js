@@ -39,8 +39,9 @@ module.exports = class Dechunker {
 
         return _.each(dechunkedData, (data) => {
             // prepend the last chunk
-            if (this.lastChunk)
-                { data = this.lastChunk + data; }
+            if (this.lastChunk) {
+                data = this.lastChunk + data;
+            }
 
             let result = data;
 

@@ -14,13 +14,13 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-add', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection('UI_'+ collName);
+            coll = db.getCollection(`UI_${collName}`);
 
         log.trace('dbSync-add', collName, args._id);
 
         const _id = args._id;
 
-        if (!coll.by("_id", _id)) {
+        if (!coll.by('_id', _id)) {
             args.fields._id = _id;
             coll.insert(args.fields);
         }
@@ -28,12 +28,12 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-changed', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection('UI_'+ collName);
+            coll = db.getCollection(`UI_${collName}`);
 
         log.trace('dbSync-changed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.by("_id", _id);
+        const item = coll.by('_id', _id);
 
         if (item) {
             for (const k in args.fields) {
@@ -50,12 +50,12 @@ exports.backendSyncInit = function () {
 
     ipc.on('dbSync-removed', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection('UI_'+ collName);
+            coll = db.getCollection(`UI_${collName}`);
 
         log.trace('dbSync-removed', collName, args._id);
 
         const _id = args._id;
-        const item = coll.by("_id", _id);
+        const item = coll.by('_id', _id);
 
         if (item) {
             coll.remove(item);
@@ -67,7 +67,7 @@ exports.backendSyncInit = function () {
     // Get all data (synchronous)
     ipc.on('dbSync-reloadSync', (event, args) => {
         let collName = args.collName,
-            coll = db.getCollection('UI_'+ collName),
+            coll = db.getCollection(`UI_${collName}`),
             docs = coll.find();
 
         log.debug('dbSync-reloadSync, no. of docs:', collName, docs.length);
@@ -88,15 +88,15 @@ exports.backendSyncInit = function () {
     });
 };
 
-var syncDataFromBackend = function(coll){
-    let ipc = ipcRenderer;
+const syncDataFromBackend = function (coll) {
+    const ipc = ipcRenderer;
 
-    let collName = coll._name;
+    const collName = coll._name;
 
     console.debug('Load collection data from backend: ', collName);
 
     return new Promise((resolve, reject) => {
-        let dataJson = ipc.sendSync('dbSync-reloadSync', {
+        const dataJson = ipc.sendSync('dbSync-reloadSync', {
             collName,
         });
 
@@ -105,8 +105,9 @@ var syncDataFromBackend = function(coll){
 
             coll.remove({});
 
-            if(!dataJson.length)
+            if (!dataJson.length) {
                 resolve();
+            }
 
             // we do inserts slowly, to avoid race conditions when it comes
             // to updating the UI
@@ -120,10 +121,11 @@ var syncDataFromBackend = function(coll){
                             record.redirect = null;
                         }
 
-                        if(record._id)
+                        if (record._id) {
                             coll.upsert(record._id, record);
-                        else
+                        } else {
                             coll.insert(record);
+                        }
                     } catch (err) {
                         console.error(err.toString());
                     }
@@ -138,7 +140,7 @@ var syncDataFromBackend = function(coll){
         } catch (err) {
             reject(err);
         }
-    })
+    });
 };
 exports.syncDataFromBackend = syncDataFromBackend;
 
@@ -146,8 +148,8 @@ exports.frontendSyncInit = function (coll) {
     let ipc = ipcRenderer,
         syncDoneResolver;
 
-    let collName = coll._name;
-    
+    const collName = coll._name;
+
     coll.onceSynced = new Promise((resolve, reject) => {
         syncDoneResolver = resolve;
     });

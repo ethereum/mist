@@ -82,10 +82,6 @@ class EthereumNode extends EventEmitter {
         return this.network === 'test';
     }
 
-    get isFullNode() {
-        return this.mode === 'full';
-    }
-
     get isLightClient() {
         return this.mode === 'light';
     }
@@ -377,6 +373,7 @@ class EthereumNode extends EventEmitter {
                             : ['--light'];
                     }
                 } else {
+                    // START ETH
                     args = (network === 'test') 
                         ? ['--ropstein', '--unsafe-transactions']
                         : ['--unsafe-transactions'];

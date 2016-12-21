@@ -94,7 +94,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             var syncing = TemplateVar.get(template, 'syncing'); 
             
             // Calculates a block t display that is always getting a few % closer to target
-            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 200 ) || 0;            
+            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 500 ) || 0;            
 
             syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
 

@@ -66,7 +66,7 @@
                 "mainNetwork": "Main Network",
                 "nodeMode": "Chain download",
                 "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node",
+                "lightNode": "Use light Node (experimental!)",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",
                 "stopMining": "⛏ Stop Mining"

@@ -17,7 +17,7 @@ Template['layout_webviews'].helpers({
 
     @method (tabs)
     */
-    'tabs': function() {
-        return Tabs.find({}, {field: {position: 1}});
+    tabs() {
+        return Tabs.find({}, { field: { position: 1 } });
     }
 });

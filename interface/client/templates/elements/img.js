@@ -17,7 +17,7 @@ Template['elements_img'].helpers({
 
     @method (preload)
     */
-    'preload': function(){
+    preload() {
         var template = Template.instance(),
             data = this,
             img = new Image();

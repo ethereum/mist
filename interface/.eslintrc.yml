@@ -2,10 +2,11 @@ env:  # don't warn about no-def meteor keywords
   meteor: true
 
 rules:
-  no-undef: 0
-  no-var: 0
-  prefer-arrow-callback: 0
-  prefer-template: 0
+  no-undef: off
+  no-var: off
+  prefer-arrow-callback: off
+  prefer-template: off
+  dot-notation: off
   no-underscore-dangle:
     - error
     - allow: ['_id', '_escape', '__']

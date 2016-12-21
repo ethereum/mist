@@ -78,7 +78,7 @@ Template['popupWindows_onboardingScreen'].helpers({
         return (account) ? account.toLowerCase() : '';
     },
     /**
-    Updates the Sync Message live
+    Updates the Sync Data
 
     @method syncStatus
     */
@@ -86,46 +86,59 @@ Template['popupWindows_onboardingScreen'].helpers({
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
+
         Meteor.clearInterval(template._intervalId);
 
         // Create an interval to quickly iterate trough the numbers
         template._intervalId = Meteor.setInterval(function(){
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
-            
-            // Calculates a block t display that is always getting a few % closer to target
-            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 500 ) || 0;            
+            console.log('syncing', syncing);
 
-            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
+            if (syncing) {
+                TemplateVar.set(template, 'readyToLaunch', false);
 
-            // Calculates progress
-            syncing.progress = 100 * syncing._displayBlock / (Number(syncing.highestBlock)+1);
 
-            // Makes fancy strings
-            syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-            syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
-            syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
-            syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+                // Calculates a block t display that is always getting a few % closer to target
+                syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 500 ) || 0;            
 
-            // Saves the data back to the object
-            TemplateVar.set(template, 'syncing', syncing);
+                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
 
-            // If it's close enough, show the synced button
-            if (Number(syncing.highestBlock) - syncing.currentBlock < 5000 ) {
-                TemplateVar.set(template, 'readyToLaunch', true);
+                // Calculates progress
+                syncing.progress = 100 * syncing._displayBlock / (Number(syncing.highestBlock)+1);
+
+                // Makes fancy strings
+                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
+                syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
+                syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
+                syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+
+                // Saves the data back to the object
+                TemplateVar.set(template, 'syncing', syncing);
+
+
+                // If it's close enough, show the synced button
+                if (Number(syncing.highestBlock) - syncing.currentBlock < 5000 ) {
+                    TemplateVar.set(template, 'readyToLaunch', true);
+                }
+
+                // Only show states if they are changing
+                if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/(syncing.knownStates+1)))) {
+                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
+                } else {
+                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+                }
             }
-
-            // Only show states if they are changing
-            if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/(syncing.knownStates+1)))) {
-                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
-            } else {
-                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
-            }
-
 
         }, 10);
+    },
+    /**
+    Updates the Sync Message live
 
-        return TemplateVar.get(template, "syncStatusMessageLive");
+    @method syncStatusMessage
+    */
+    'syncStatusMessage' : function() {
+        return TemplateVar.get("syncStatusMessageLive");        
     }
 });
 
@@ -140,12 +153,14 @@ Template['popupWindows_onboardingScreen'].events({
         if(TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
+            TemplateVar.set('syncing', null);
         }
     },
    'click .start-testnet': function(e, template){
         if(!TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', true);
             TemplateVar.set('testnet', true);
+            TemplateVar.set('syncing', null);            
         }
 
         TemplateVar.set('currentActive','testnet');

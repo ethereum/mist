@@ -376,7 +376,7 @@ class EthereumNode extends EventEmitter {
                 } else {
                     // START ETH
                     args = (network === 'test') 
-                        ? ['--morden', '--unsafe-transactions']
+                        ? ['--ropstein', '--unsafe-transactions']
 
                         : ['--unsafe-transactions'];
                 }

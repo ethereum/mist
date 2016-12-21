@@ -88,23 +88,18 @@ Template['popupWindows_onboardingScreen'].helpers({
         var template = Template.instance();
         Meteor.clearInterval(template._intervalId);
 
-        TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.startingSync'));
-
         // Create an interval to quickly iterate trough the numbers
         template._intervalId = Meteor.setInterval(function(){
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
             
-            // Calculates a block t display that is always getting 0.1% closer to target
-            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 1000 ) || 0;            
+            // Calculates a block t display that is always getting a few % closer to target
+            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 200 ) || 0;            
 
-            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || syncing.pulledStates/(syncing.knownStates + 1);
+            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
 
             // Calculates progress
-            syncing.progress = syncing._displayBlock / syncing.highestBlock * 100;
-            if (syncing.progress > 95) {
-                TemplateVar.set('readyToLaunch', false);
-            }
+            syncing.progress = 100 * syncing._displayBlock / (Number(syncing.highestBlock)+1);
 
             // Makes fancy strings
             syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
@@ -114,6 +109,11 @@ Template['popupWindows_onboardingScreen'].helpers({
 
             // Saves the data back to the object
             TemplateVar.set(template, 'syncing', syncing);
+
+            // If it's close enough, show the synced button
+            if (Number(syncing.highestBlock) - syncing.currentBlock < 5000 ) {
+                TemplateVar.set(template, 'readyToLaunch', true);
+            }
 
             // Only show states if they are changing
             if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/(syncing.knownStates+1)))) {

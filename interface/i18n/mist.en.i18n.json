@@ -230,7 +230,7 @@
                 "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
+                "description" : "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
                 "goToTestnet" : "Use the test network",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
                 "gotoMainnet" : "Use the main network",

@@ -13,7 +13,7 @@ const ClientBinaryManager = require('./clientBinaryManager');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
-const DEFAULT_MODE = 'full';
+
 
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
 const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
@@ -22,7 +22,7 @@ const NODE_START_WAIT_MS = 3000;
 
 
 /**
- * Ethereum nodes manager.
+ * Etheruem nodes manager.
  */
 class EthereumNode extends EventEmitter {
     constructor() {
@@ -35,7 +35,6 @@ class EthereumNode extends EventEmitter {
         this._node = null;
         this._type = null;
         this._network = null;
-        this._mode = null;
 
         this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
@@ -62,10 +61,6 @@ class EthereumNode extends EventEmitter {
         return this.isOwnNode ? this._network : null;
     }
 
-    get mode() {
-        return this.isOwnNode ? this._mode : null;
-    }
-
     get isEth() {
         return this._type === 'eth';
     }
@@ -80,10 +75,6 @@ class EthereumNode extends EventEmitter {
 
     get isTestNetwork() {
         return this.network === 'test';
-    }
-
-    get isLightClient() {
-        return this.mode === 'light';
     }
 
     get state() {
@@ -139,7 +130,7 @@ class EthereumNode extends EventEmitter {
                 log.info(`Network: ${this.defaultNetwork}`);
 
                 // if not, start node yourself
-                return this._start(this.defaultNodeType, this.defaultNetwork, this.defaultMode)
+                return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
 
@@ -149,20 +140,20 @@ class EthereumNode extends EventEmitter {
     }
 
 
-    restart(newType, newNetwork, newMode) {
+    restart(newType, newNetwork) {
         return Q.try(() => {
             if (!this.isOwnNode) {
                 throw new Error('Cannot restart node since it was started externally');
             }
 
-            log.info('Restart node..', newType, newNetwork, newMode);
+            log.info('Restart node', newType, newNetwork);
 
             return this.stop()
                 .then(() => {
                     Windows.loading.show();
                 })
                 .then(() => {
-                    return this._start(newType || this.type, newNetwork || this.network, newMode || this.nodeMode);
+                    return this._start(newType || this.type, newNetwork || this.network);
                 })
                 .then(() => {
                     Windows.loading.hide();
@@ -190,7 +181,7 @@ class EthereumNode extends EventEmitter {
 
                 this.state = STATES.STOPPING;
 
-                log.info(`Stopping existing node: ${this._type} ${this._network} ${this._mode}`);
+                log.info(`Stopping existing node: ${this._type} ${this._network}`);
 
                 this._node.stderr.removeAllListeners('data');
                 this._node.stdout.removeAllListeners('data');
@@ -252,8 +243,8 @@ class EthereumNode extends EventEmitter {
      * @param  {String} network  network id
      * @return {Promise}
      */
-    _start(nodeType, network, mode) {
-        log.info(`Starting ${nodeType} node on ${network}-network with ${mode} node`);
+    _start(nodeType, network) {
+        log.info(`Start node: ${nodeType} ${network}`);
 
         const isTestNet = (network === 'test');
 
@@ -263,7 +254,7 @@ class EthereumNode extends EventEmitter {
 
         return this.stop()
             .then(() => {
-                return this.__startNode(nodeType, network, mode)
+                return this.__startNode(nodeType, network)
                     .catch((err) => {
                         log.error('Failed to start node', err);
 
@@ -280,7 +271,6 @@ class EthereumNode extends EventEmitter {
 
                 Settings.saveUserData('node', this._type);
                 Settings.saveUserData('network', this._network);
-                Settings.saveUserData('mode', this._mode);
 
                 return this._socket.connect(Settings.rpcConnectConfig, {
                     timeout: 30000, /* 30s */
@@ -319,12 +309,11 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startNode(nodeType, network, mode) {
+    __startNode(nodeType, network) {
         this.state = STATES.STARTING;
 
         this._network = network;
         this._type = nodeType;
-        this._mode = mode;
 
         const client = ClientBinaryManager.getClient(nodeType);
         let binPath;
@@ -338,7 +327,7 @@ class EthereumNode extends EventEmitter {
         log.info(`Start node using ${binPath}`);
 
         return new Q((resolve, reject) => {
-            this.__startProcess(nodeType, network, binPath, mode)
+            this.__startProcess(nodeType, network, binPath)
                 .then(resolve, reject);
         });
     }
@@ -347,7 +336,7 @@ class EthereumNode extends EventEmitter {
     /**
      * @return {Promise}
      */
-    __startProcess(nodeType, network, binPath, mode) {
+    __startProcess(nodeType, network, binPath) {
         return new Q((resolve, reject) => {
             log.trace('Rotate log file');
 
@@ -361,23 +350,16 @@ class EthereumNode extends EventEmitter {
 
                 let args;
 
-                if (nodeType === 'geth') {
-                    if (network === 'test') {
-                        // START GETH TESTNET
-                        args = (mode === 'full')
-                            ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
-                            : ['--testnet', '--light', '--ipcpath', Settings.rpcIpcPath];
-                    } else {
-                        // START GETH MAINNET
-                        args = (mode === 'full')
-                            ? ['--fast', '--cache', '1024' ] 
-                            : ['--light'];
-                    }
-                } else {
-                    // START ETH
-                    args = (network === 'test') 
-                        ? ['--ropsten', '--unsafe-transactions']
-
+                // START TESTNET
+                if (network == 'test') {
+                    args = (nodeType === 'geth')
+                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
+                        : ['--morden', '--unsafe-transactions'];
+                }
+                // START MAINNET
+                else {
+                    args = (nodeType === 'geth')
+                        ? ['--fast', '--cache', '1024']
                         : ['--unsafe-transactions'];
                 }
 
@@ -510,7 +492,6 @@ class EthereumNode extends EventEmitter {
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
-        this.defaultMode = Settings.mode || Settings.loadUserData('mode') || DEFAULT_MODE;
     }
 }
 

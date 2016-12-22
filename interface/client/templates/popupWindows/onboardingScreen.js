@@ -111,12 +111,8 @@ Template['popupWindows_onboardingScreen'].helpers({
 
                 let stepsTilEnd = syncing.downloadSpeed ? ((syncing.highestBlock - syncing.currentBlock)/syncing.downloadSpeed) : 10000;
 
-                var now = new Date();
-                var endTime = new Date(now.getTime() + stepsTilEnd * 50);
-                console.log('\nturns to end', stepsTilEnd, '\nwill finish at', endTime, '\n now:', now, syncing.downloadSpeed, syncing.currentBlock);
-
                 // Calculates a block t display that is always getting a few % closer to target
-                syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / (stepsTilEnd) ) || 0;            
+                syncing._displayBlock = (syncing._displayBlock + 2*(syncing.currentBlock - syncing._displayBlock) / (stepsTilEnd) ) || 0;            
 
                 syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
 

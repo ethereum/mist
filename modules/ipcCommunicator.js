@@ -5,16 +5,10 @@ Window communication
 */
 
 const _ = global._;
+const fs = require('fs');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
-const fs = require('fs');
-<<<<<<<
-
-=======
-
-const app = electron.app; // Module to control application life.
->>>>>>>
 const appMenu = require('./menuItems');
 const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
@@ -181,7 +175,7 @@ ipc.on('backendAction_importWalletFile', function(e, path, pw) {
     fs.readFile(path, 'utf8', function (e, data) {
         if(!e) {
             try {
-                var wallet = JSON.parse(data); 
+                var wallet = JSON.parse(data);
             } catch (err) {
                 log.error("Wallet import: Cannot read file");
                 log.error(err);

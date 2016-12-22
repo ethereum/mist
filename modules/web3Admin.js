@@ -13,7 +13,7 @@ module.exports = {
             property: 'admin',
             methods:
             [
-                insertMethod('addPeer', 'admin_addPeer', 1, [web3._extend.utils.fromDecimal], web3._extend.formatters.formatOutputBool),
+                insertMethod('addPeer', 'admin_addPeer', 1, [web3._extend.utils.formatInputString], web3._extend.formatters.formatOutputBool),
                 insertMethod('exportChain', 'admin_exportChain', 1, [null], null),
                 insertMethod('importChain', 'admin_importChain', 1, [null], null),
                 insertMethod('verbosity', 'admin_verbosity', 1, [web3._extend.utils.formatInputInt], web3._extend.formatters.formatOutputBool),
@@ -69,7 +69,6 @@ module.exports = {
             property: 'network',
             methods:
             [
-                insertMethod('addPeer', 'net_addPeer', 1, [web3._extend.utils.formatInputString], web3._extend.formatters.formatOutputBool),
                 insertMethod('getPeerCount', 'net_peerCount', 0, [], web3._extend.formatters.formatOutputString),
             ],
             properties:

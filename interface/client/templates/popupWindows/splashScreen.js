@@ -188,7 +188,7 @@ Template['popupWindows_splashScreen'].helpers({
             var translationString = TemplateVar.get(template, "syncStatusMessage");
 
             // Calculate average download speed
-            syncData.downloadSpeed = (0.999 * syncData.downloadSpeed || 0 ) + 0.001 * syncData.blocksArrived;
+            syncData.downloadSpeed = (0.9999 * syncData.downloadSpeed || 0 ) + 0.0001 * syncData.blocksArrived;
 
             // Calculate the amount of repetitions like these to finish
             let stepsTilEnd = syncData.downloadSpeed ? ((Number(syncData._highestBlock) - Number(syncData.currentBlock))/syncData.downloadSpeed) : 10000;

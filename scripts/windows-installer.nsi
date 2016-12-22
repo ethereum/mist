@@ -154,8 +154,7 @@ Section Mist MIST_IDX
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SHORTCUTDIR"
-    createShortCut "$SHORTCUTDIR\${APPNAME} - Mainnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
-    createShortCut "$SHORTCUTDIR\${APPNAME} - Testnet (Full).lnk" "$FILEDIR\${APPNAME}.exe" '--testnet --datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SHORTCUTDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
     # create a shortcut for the program uninstaller
     CreateShortCut "$SHORTCUTDIR\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 

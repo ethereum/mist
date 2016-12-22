@@ -107,7 +107,7 @@ exports.mocha = function (_module, options) {
                     '--loglevel', 'debug',
                     '--logfile', logFilePath,
                     '--node-datadir', this.geth.dataDir,
-                    '--ipcpath', path.join(this.geth.dataDir, 'geth.ipc'),
+                    '--rpc', path.join(this.geth.dataDir, 'geth.ipc'),
                 ],
             });
 

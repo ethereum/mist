@@ -414,8 +414,7 @@ gulp.task('wallet-checksums', (cb) => {
 let testApp = (app) => {
     return gulp.src([
         `./tests/${app}/*.test.js`,
-    ])
-    .pipe(mocha({
+    ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',
         reporter: 'spec',

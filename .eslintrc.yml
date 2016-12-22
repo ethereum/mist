@@ -22,9 +22,9 @@ rules:
   comma-dangle:
     - error
     - only-multiline  ## no comma after last item if one line, though allow comma if multiline
-  import/no-extraneous-dependencies:  ## checks for missing modules in packages.json
+  import/no-extraneous-dependencies:  ## checks if required modules are missing in packages.json
     - error
-    - devDependencies:  ## declares files belonging to devDependencies
+    - devDependencies:  ## declares files, whose imports belong to devDependencies
       - "**/scripts/*.js"
       - "**/*.test.js"
 

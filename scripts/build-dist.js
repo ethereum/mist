@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable import/no-extraneous-dependencies */
-
 const builder = require('electron-builder');
 const shell = require('shelljs');
 const Q = require('bluebird');

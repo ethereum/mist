@@ -38,10 +38,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
 
             if(syncing === true) {
                 web3.reset(true);
-                console.log('sync == true')
             } else if(_.isObject(syncing)) {
-                console.log('sync == object')
-
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
                 
@@ -50,10 +47,8 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 }
 
                 TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
-                
 
             } else {
-                console.log('sync == false')
                 TemplateVar.set(template, 'syncing', false);
             }
         }
@@ -102,7 +97,6 @@ Template['popupWindows_onboardingScreen'].helpers({
         template._intervalId = Meteor.setInterval(function(){
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
-            // console.log('syncing', syncing);
 
             if (syncing) {
                 TemplateVar.set(template, 'readyToLaunch', false);

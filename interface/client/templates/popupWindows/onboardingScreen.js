@@ -38,8 +38,10 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
 
             if(syncing === true) {
                 web3.reset(true);
-
+                console.log('sync == true')
             } else if(_.isObject(syncing)) {
+                console.log('sync == object')
+
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
                 
@@ -51,6 +53,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
                 
 
             } else {
+                console.log('sync == false')
                 TemplateVar.set(template, 'syncing', false);
             }
         }
@@ -108,9 +111,9 @@ Template['popupWindows_onboardingScreen'].helpers({
 
                 let stepsTilEnd = syncing.downloadSpeed ? ((syncing.highestBlock - syncing.currentBlock)/syncing.downloadSpeed) : 10000;
 
-                // var now = new Date();
-                // var endTime = new Date(now.getTime() + stepsTilEnd * 50);
-                // console.log('\nturns to end', stepsTilEnd, '\nwill finish at', endTime, '\n now:', now, syncing.downloadSpeed, syncing.currentBlock);
+                var now = new Date();
+                var endTime = new Date(now.getTime() + stepsTilEnd * 50);
+                console.log('\nturns to end', stepsTilEnd, '\nwill finish at', endTime, '\n now:', now, syncing.downloadSpeed, syncing.currentBlock);
 
                 // Calculates a block t display that is always getting a few % closer to target
                 syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / (stepsTilEnd) ) || 0;            
@@ -190,12 +193,18 @@ Template['popupWindows_onboardingScreen'].events({
     },
    'click .goto-tutorial-1': function(){
         TemplateVar.set('currentActive','tutorial-1');
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
    'click .goto-tutorial-2': function(){
         TemplateVar.set('currentActive','tutorial-2');
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
    'click .goto-tutorial-3': function(){
         TemplateVar.set('currentActive','tutorial-3');
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
     /**
     Start the application

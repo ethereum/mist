@@ -155,6 +155,7 @@ Section Mist MIST_IDX
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SHORTCUTDIR"
     createShortCut "$SHORTCUTDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+
     # create a shortcut for the program uninstaller
     CreateShortCut "$SHORTCUTDIR\Uninstall.lnk" "$FILEDIR\uninstall.exe"
 
@@ -228,7 +229,7 @@ Function GetInstalledSize
     SectionGetSize ${MIST_IDX} $0
     IntOp $GetInstalledSize.total $GetInstalledSize.total + $0
     # estimate to accomodate zip compression and duplicate files
-    IntOp $GetInstalledSize.total $GetInstalledSize.total * 1.5
+    IntOp $GetInstalledSize.total $GetInstalledSize.total * 3
   ${endif}
 
   IntFmt $GetInstalledSize.total "0x%08X" $GetInstalledSize.total

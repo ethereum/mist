@@ -189,6 +189,10 @@ Section Mist MIST_IDX
     Call GetInstalledSize
     Pop $0
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "EstimatedSize" "$0"
+
+    # Clean up temporary files
+    Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    Delete "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
 SectionEnd
 
 Function .onInstSuccess

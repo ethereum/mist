@@ -185,10 +185,15 @@ Section Mist MIST_IDX
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "VersionMinor" ${VERSIONMINOR}
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "NoModify" 1
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "NoRepair" 1
-
+    # calculate and store installation size
     Call GetInstalledSize
     Pop $0
     WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}" "EstimatedSize" "$0"
+
+    # write registry strings for current user options
+    WriteRegStr HKCU "Software\${GROUPNAME} ${APPNAME}" "DATADIR" "$DATADIR"
+    WriteRegStr HKCU "Software\${GROUPNAME} ${APPNAME}" "NODEDATADIR" "$NODEDATADIR"
+    WriteRegStr HKCU "Software\${GROUPNAME} ${APPNAME}" "DESKTOPDIR" "$DESKTOPDIR"
 
     # Clean up temporary files
     Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
@@ -206,11 +211,20 @@ functionEnd
  
 # uninstaller section start
 Section "uninstall"
+    # get user settings from registry
+    ClearErrors
+    ReadRegStr $0  HKCU "Software\${GROUPNAME} ${APPNAME}" 'DATADIR'
+    ReadRegStr $1  HKCU "Software\${GROUPNAME} ${APPNAME}" 'NODEDATADIR'
+    ReadRegStr $2  HKCU "Software\${GROUPNAME} ${APPNAME}" 'DESKTOPDIR'
+
+    IfErrors 0 +2
+    MessageBox MB_ICONEXCLAMATION|MB_OK "Unable to read from the registry. Not all shortcuts will be removed"
+
     # remove the link from the start menu
     rmDir /r "$SHORTCUTDIR"
 
     # remove desktop shortcut
-    Delete "$DESKTOPDIR\${APPNAME}.lnk"
+    Delete "$2\${APPNAME}.lnk"
 
     # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"
@@ -226,8 +240,8 @@ SectionEnd
 
 Function un.onUnInstSuccess
   MessageBox MB_OK "Opening leftover data directories (backup before deleting!)"
-  ExecShell "open" "$DATADIR"
-  ExecShell "open" "$NODEDATADIR"
+  ExecShell "open" "$0"
+  ExecShell "open" "$1"
 FunctionEnd
 
 

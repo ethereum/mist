@@ -29,13 +29,12 @@ const createMenu = function (webviews) {
 };
 
 
-const restartNode = function (newType, newNetwork, newMode) {
+const restartNode = function (newType, newNetwork) {
     newNetwork = newNetwork || ethereumNode.network;
-    newMode = newMode || ethereumNode.mode;
 
-    log.info('Switch node type, network and mode', newType, newNetwork, newMode);
+    log.info('Switch node', newType, newNetwork);
 
-    return ethereumNode.restart(newType, newNetwork, newMode)
+    return ethereumNode.restart(newType, newNetwork)
         .then(() => {
             Windows.getByType('main').load(global.interfaceAppUrl);
 
@@ -419,7 +418,7 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'main', ethereumNode.mode);
+                    restartNode(ethereumNode.type, 'main');
                 },
             },
             {
@@ -429,34 +428,10 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'test', ethereumNode.mode);
+                    restartNode(ethereumNode.type, 'test');
                 },
             },
         ] });
-    
-    // add light mode switch
-    devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.nodeMode'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.develop.fullNode'),
-                checked: ethereumNode.isOwnNode && !ethereumNode.isLightClient,
-                enabled: ethereumNode.isOwnNode && ethereumNode.isLightClient,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, ethereumNode.network, 'full');
-                },
-            },
-            {
-                label: i18n.t('mist.applicationMenu.develop.lightNode'),
-                checked: ethereumNode.isOwnNode && ethereumNode.isLightClient,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isLightClient,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, ethereumNode.network, 'light');
-                },
-            },
-        ] });    
 
 
     devToolsMenu.push({

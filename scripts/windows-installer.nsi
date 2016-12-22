@@ -43,6 +43,7 @@ var DATADIR
 var NODEDATADIR
 var ARCHDIR
 var SHORTCUTDIR
+var DESKTOPDIR
 
 # Check for administrative rights
 !macro VerifyUserIsAdmin
@@ -63,6 +64,7 @@ ${EndIf}
     StrCpy $DATADIR "$APPDATA\${APPNAME}"
     StrCpy $NODEDATADIR "$APPDATA\Ethereum"
     StrCpy $SHORTCUTDIR "$SMPROGRAMS\${APPNAME}"
+    StrCpy $DESKTOPDIR "$DESKTOP"
 
     ${If} ${RunningX64}
       StrCpy $FILEDIR "$PROGRAMFILES64\${APPNAME}"
@@ -154,7 +156,10 @@ Section Mist MIST_IDX
  
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SHORTCUTDIR"
-    createShortCut "$SHORTCUTDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--datadir="$DATADIR" --node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SHORTCUTDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+
+    # create desktop shortcut
+    createShortCut "$DESKTOPDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
 
     # create a shortcut for the program uninstaller
     CreateShortCut "$SHORTCUTDIR\Uninstall.lnk" "$FILEDIR\uninstall.exe"
@@ -199,6 +204,9 @@ functionEnd
 Section "uninstall"
     # remove the link from the start menu
     rmDir /r "$SHORTCUTDIR"
+
+    # remove desktop shortcut
+    Delete "$DESKTOPDIR\${APPNAME}.lnk"
 
     # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"

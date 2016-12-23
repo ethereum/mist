@@ -137,6 +137,7 @@ class EthereumNode extends EventEmitter {
 
                 log.info(`Node type: ${this.defaultNodeType}`);
                 log.info(`Network: ${this.defaultNetwork}`);
+                log.info(`Mode: ${this.defaultMode}`);
 
                 // if not, start node yourself
                 return this._start(this.defaultNodeType, this.defaultNetwork, this.defaultMode)
@@ -162,7 +163,7 @@ class EthereumNode extends EventEmitter {
                     Windows.loading.show();
                 })
                 .then(() => {
-                    return this._start(newType || this.type, newNetwork || this.network, newMode || this.nodeMode);
+                    return this._start(newType || this.type(), newNetwork || this.network(), newMode || this.mode());
                 })
                 .then(() => {
                     Windows.loading.hide();

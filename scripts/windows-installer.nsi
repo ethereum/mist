@@ -236,6 +236,7 @@ Section "uninstall"
 
     # delete registry strings
     DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${GROUPNAME} ${APPNAME}"
+    DeleteRegKey HKCU "Software\${GROUPNAME} ${APPNAME}"
 SectionEnd
 
 Function un.onUnInstSuccess

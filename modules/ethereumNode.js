@@ -273,7 +273,7 @@ class EthereumNode extends EventEmitter {
                     });
             })
             .then((proc) => {
-                log.info(`Started node successfully: ${nodeType} ${network}`);
+                log.info(`Started node successfully: ${nodeType} ${network} ${mode}`);
 
                 this._node = proc;
                 this.state = STATES.STARTED;

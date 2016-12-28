@@ -95,6 +95,7 @@ Template['popupWindows_onboardingScreen'].helpers({
             var syncing = TemplateVar.get(template, 'syncing'); 
 
             if (syncing) {
+                // If it's syncing, then it's not ready
                 TemplateVar.set(template, 'readyToLaunch', false);
 
                 // Calculates a block t display that is always getting a few % closer to target

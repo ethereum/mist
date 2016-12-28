@@ -25,10 +25,10 @@ Template['layout_sidebar'].onRendered(function () {
         cursor: 'move',
         delay: 150,
         revert: 200,
-        start(e) {
+        start: function (e) {
             $ul.sortable('refreshPositions');
         },
-        update(e) {
+        update: function (e) {
             console.log('UPDATED');
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function (index, test) {
@@ -48,7 +48,7 @@ Template['layout_sidebar'].helpers({
 
     @method (tabs)
     */
-    tabs() {
+    tabs: function () {
         return Tabs.find({}, { sort: { position: 1 } }).fetch();
     },
     /**
@@ -56,7 +56,7 @@ Template['layout_sidebar'].helpers({
 
     @method (name)
     */
-    name() {
+    name: function () {
         return (this._id === 'browser') ? TAPi18n.__('mist.sidebar.buttons.browser') : this.name;
     },
     /**
@@ -64,7 +64,7 @@ Template['layout_sidebar'].helpers({
 
     @method (icon)
     */
-    icon() {
+    icon: function () {
         return (this._id === 'browser') ? 'icons/browse-icon@2x.png' : this.icon;
     },
     /**
@@ -72,7 +72,7 @@ Template['layout_sidebar'].helpers({
 
     @method (subMenu)
     */
-    subMenu() {
+    subMenu: function () {
         var template = Template.instance();
 
         if (this._id === 'browser') {
@@ -96,7 +96,7 @@ Template['layout_sidebar'].helpers({
 
     @method (isSelected)
     */
-    isSelected() {
+    isSelected: function () {
         var selected = (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
 
         if (this.menuVisible) {
@@ -110,7 +110,7 @@ Template['layout_sidebar'].helpers({
 
     @method (fullTabs)
     */
-    fullTabs() {
+    fullTabs: function () {
         return (LocalStore.get('fullTabs')) ? 'full-tabs' : '';
     }
 });

@@ -17,7 +17,7 @@ Template['popupWindows_requestAccount'].onRendered(function () {
 });
 
 Template['popupWindows_requestAccount'].helpers({
-    passwordInputType() {
+    passwordInputType: function () {
         return TemplateVar.get('showPassword') ? 'text' : 'password';
     }
 });

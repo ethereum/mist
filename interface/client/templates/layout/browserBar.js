@@ -23,7 +23,7 @@ Template['layout_browserBar'].helpers({
 
     @method (breadcrumb)
     */
-    breadcrumb() {
+    breadcrumb: function () {
         if (!this || !this.url) {
             return;
         }
@@ -39,7 +39,7 @@ Template['layout_browserBar'].helpers({
 
     @method (dapp)
     */
-    dapp() {
+    dapp: function () {
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
@@ -47,7 +47,7 @@ Template['layout_browserBar'].helpers({
 
     @method (dappAccounts)
     */
-    dappAccounts() {
+    dappAccounts: function () {
         if (this.permissions) {
             return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
         }
@@ -57,7 +57,7 @@ Template['layout_browserBar'].helpers({
 
     @method (isBrowser)
     */
-    isBrowser() {
+    isBrowser: function () {
         return (LocalStore.get('selectedTab') === 'browser');
     },
     /**
@@ -65,7 +65,7 @@ Template['layout_browserBar'].helpers({
 
     @method (currentWebView)
     */
-    currentWebView() {
+    currentWebView: function () {
         return '.webview webview[data-id="' + LocalStore.get('selectedTab') + '"]';
     }
 });
@@ -147,14 +147,14 @@ Template['layout_browserBar'].events({
 
     @event submit
     */
-    submit(e, template) {
+    submit: function (e, template) {
         var url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
         template.$('.url-input').blur();
 
         // look in tabs
-        var url = Helpers.sanitizeUrl(url);
+        url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
 
         console.log('Submitted new URL:' + url);

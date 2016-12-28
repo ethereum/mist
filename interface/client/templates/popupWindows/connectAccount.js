@@ -64,7 +64,7 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dapp)
     */
-    dapp() {
+    dapp: function () {
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
@@ -72,7 +72,7 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dappFriendlyURL)
     */
-    dappFriendlyURL() {
+    dappFriendlyURL: function () {
         var currentTab = Tabs.findOne(LocalStore.get('selectedTab'));
         if (currentTab && currentTab.url) {
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
@@ -84,7 +84,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method accountNumber
     @return {Number}
     */
-    accountNumber() {
+    accountNumber: function () {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
 
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
@@ -95,7 +95,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method selectedAccounts
     @return {Array}
     */
-    selectedAccounts() {
+    selectedAccounts: function () {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
         return _.intersection(accounts, TemplateVar.get('accounts'));
     },
@@ -105,7 +105,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method selected
     @return {String} "selected"
     */
-    selected() {
+    selected: function () {
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
     }
 });

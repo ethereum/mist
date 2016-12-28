@@ -118,7 +118,7 @@ Template['elements_nodeInfo'].helpers({
     @method (formattedBlockNumber)
     @return {String}
     */
-    formattedBlockNumber() {
+    formattedBlockNumber: function () {
         return numeral(EthBlocks.latest.number).format('0,0');
     },
     /**
@@ -126,7 +126,7 @@ Template['elements_nodeInfo'].helpers({
 
     @method (timeSinceBlock)
     */
-    timeSinceBlock() {
+    timeSinceBlock: function () {
         var timeSince = moment(EthBlocks.latest.timestamp, 'X');
         var now = moment();
         var diff = now.diff(timeSince, 'seconds');

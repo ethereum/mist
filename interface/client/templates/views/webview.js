@@ -80,7 +80,7 @@ Template['views_webview'].helpers({
 
     @method (preloaderFile)
     */
-    preloaderFile() {
+    preloaderFile: function () {
         switch (this._id) {
         case 'browser':
             return 'file://' + Helpers.preloaderDirname + '/browser.js';
@@ -97,7 +97,7 @@ Template['views_webview'].helpers({
 
     @method (isVisible)
     */
-    isVisible() {
+    isVisible: function () {
         return (LocalStore.get('selectedTab') === this._id) ? '' : 'hidden';
     },
     /**
@@ -105,7 +105,7 @@ Template['views_webview'].helpers({
 
     @method (checkedUrl)
     */
-    checkedUrl() {
+    checkedUrl: function () {
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, { fields: { redirect: 1 } });
         var url;

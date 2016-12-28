@@ -154,7 +154,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method mode
     */
-    mode() {
+    mode: function () {
         return window.mistMode;
     },
     /**
@@ -162,7 +162,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method iconPath
     */
-    iconPath() {
+    iconPath: function () {
         return 'file://' + window.dirname + '/icons/' + window.mistMode + '/icon2x.png';
     },
     /**
@@ -170,7 +170,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method syncStatus
     */
-    syncStatus() {
+    syncStatus: function () {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();

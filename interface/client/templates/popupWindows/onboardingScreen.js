@@ -72,7 +72,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
 
 
 Template['popupWindows_onboardingScreen'].helpers({
-    newAccountLowerCase() {
+    newAccountLowerCase: function () {
         var account = TemplateVar.get('newAccount');
         return (account) ? account.toLowerCase() : '';
     },
@@ -81,7 +81,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
     @method syncStatus
     */
-    syncStatus() {
+    syncStatus: function () {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
@@ -197,7 +197,7 @@ Template['popupWindows_onboardingScreen_importAccount'].helpers({
 
     @method showPassword
     */
-    showPassword() {
+    showPassword: function () {
         return TemplateVar.get('showPassword') ? 'text' : 'password';
     }
 });
@@ -326,7 +326,7 @@ Template['popupWindows_onboardingScreen_password'].helpers({
 
     @method showPassword
     */
-    passwordInputType() {
+    passwordInputType: function () {
         return TemplateVar.get('passwordInputType') ? 'text' : 'password';
     }
 });

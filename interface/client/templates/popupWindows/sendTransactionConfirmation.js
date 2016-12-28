@@ -100,8 +100,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function () {
         var data = Session.get('data');
 
         if (data) {
-
-
             // set window size
             setWindowSize(template);
 
@@ -193,7 +191,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (totalAmount)
     */
-    totalAmount() {
+    totalAmount: function () {
         var amount = EthTools.formatBalance(this.value, '0,0.00[0000000000000000]', 'ether');
         var dotPos = (~amount.indexOf('.')) ? amount.indexOf('.') + 3 : amount.indexOf(',') + 3;
 
@@ -204,7 +202,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (estimatedFee)
     */
-    estimatedFee() {
+    estimatedFee: function () {
         var gas = TemplateVar.get('estimatedGas');
         if (gas && this.gasPrice) { return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether'); }
     },
@@ -213,7 +211,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (providedGas)
     */
-    providedGas() {
+    providedGas: function () {
         var gas = TemplateVar.get('providedGas');
         if (gas && this.gasPrice) {
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
@@ -224,7 +222,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (shortenAddress)
     */
-    shortenAddress(address) {
+    shortenAddress: function (address) {
         if (_.isString(address)) {
             return address.substr(0, 6) + '...' + address.substr(-4);
         }
@@ -234,13 +232,13 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (formattedData)
     */
-    formattedData() {
+    formattedData: function () {
         return (TemplateVar.get('toIsContract'))
             ? this.data.replace(/([0]{2,})/g, '<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i, '<span class="function">$1</span>')
             : this.data.replace(/([0]{2,})/g, '<span class="zero">$1</span>');
     },
 
-    params() {
+    params: function () {
         return TemplateVar.get('params');
     },
     /**
@@ -248,7 +246,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (showFormattedParams)
     */
-    showFormattedParams() {
+    showFormattedParams: function () {
         return TemplateVar.get('params') && TemplateVar.get('displayDecodedParams');
     },
     /**
@@ -256,7 +254,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (transactionInvalid)
     */
-    transactionInvalid() {
+    transactionInvalid: function () {
         return TemplateVar.get('estimatedGas') === 'invalid'
                 || TemplateVar.get('estimatedGas') === 0
                 || typeof TemplateVar.get('estimatedGas') === 'undefined';

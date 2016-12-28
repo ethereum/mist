@@ -7,14 +7,13 @@ rules:
   no-var: off
   prefer-arrow-callback: off
   prefer-template: off
+  consistent-return: off
   dot-notation: off
   object-shorthand:
     - error
     - never
   func-names: off
-  no-underscore-dangle:
-    - error
-    - allow: ['_id', '_escape', '__', '_intervalId', '_displayBlock', '_displayStatesDownload']
+  no-underscore-dangle: off
 
 globals:
   Helpers: true

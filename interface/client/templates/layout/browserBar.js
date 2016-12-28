@@ -161,7 +161,7 @@ Template['layout_browserBar'].events({
 
         // update current tab url
         Tabs.update(tabId, { $set: {
-            url,
+            url: url,
             redirect: url
         } });
         LocalStore.set('selectedTab', tabId);

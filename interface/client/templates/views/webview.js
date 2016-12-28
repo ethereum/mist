@@ -68,8 +68,8 @@ Template['views_webview'].onRendered(function () {
 
     // MIST API for installed tabs/dapps
     webview.addEventListener('ipc-message', mistAPIBackend.bind({
-        template,
-        webview
+        template: template,
+        webview: webview
     }));
 });
 
@@ -141,7 +141,7 @@ Template['views_webview'].helpers({
             if (url) {
                 template.url = url;
                 Tabs.update(this._id, { $set: {
-                    url
+                    url: url
                 } });
             }
 

@@ -16,7 +16,7 @@ webviewChangeUrl = function (tabId, e) {
 
     // update the URL
     Tabs.update(tabId, { $set: {
-        url
+        url: url
     } });
 };
 
@@ -39,24 +39,24 @@ webviewLoadStop = function (tabId, e) {
         }))) {
             LastVisitedPages.update(find._id, { $set: {
                 timestamp: moment().unix(),
-                url
+                url: url
             } });
         } else {
             LastVisitedPages.insert({
                 name: title,
-                url,
+                url: url,
                 // icon: '',
                 timestamp: moment().unix()
             });
         }
 
         // ADD to doogle history
-        if (find = History.findOne({ url })) {
+        if (find = History.findOne({ url: url })) {
             History.update(find._id, { $set: { timestamp: moment().unix() } });
         } else {
             History.insert({
                 name: title,
-                url,
+                url: url,
                 // icon: '',
                 timestamp: moment().unix()
             });
@@ -96,7 +96,7 @@ webviewLoadStart = function (currentTabId, e) {
     if (tab.url !== url) {
         Tabs.update(tabId, { $set: {
             redirect: url,
-            url
+            url: url
         } });
     }
     LocalStore.set('selectedTab', tabId);

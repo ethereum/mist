@@ -131,10 +131,11 @@ Get the account name or display the address
 @param {String} address
 */
 Template.registerHelper('accountNameOrAddress', function (address) {
-    var account = EthAccounts.findOne({ address });
+    var account = EthAccounts.findOne({ address: address });
     if (account) {
         return account.name;
-    } else { return address; }
+    }
+    return address;
 });
 
 /**
@@ -145,7 +146,6 @@ Formats a timestamp to any format given.
 @method (formatTime)
 @param {String} time         The timstamp, can be string or unix format
 @param {String} format       the format string, can also be "iso", to format to ISO string, or "fromnow"
-//@param {Boolean} realTime    Whether or not this helper should re-run every 10s
 @return {String} The formated time
 **/
 Template.registerHelper('formatTime', Helpers.formatTime);

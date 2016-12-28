@@ -12,8 +12,8 @@ The sidebar template
 */
 
 Template['layout_sidebar'].onRendered(function () {
-    var template = this,
-        $ul = template.$('nav > ul');
+    var template = this;
+    var $ul = template.$('nav > ul');
 
     $ul.sortable({
         containment: 'aside.sidebar',
@@ -77,7 +77,6 @@ Template['layout_sidebar'].helpers({
 
         if (this._id === 'browser') {
             return LastVisitedPages.find({}, { sort: { timestamp: -1 }, limit: 25 });
-
         } else if (this.menu) {
             var menu = _.toArray(this.menu);
 
@@ -90,6 +89,7 @@ Template['layout_sidebar'].helpers({
 
             return menu;
         }
+        return null;
     },
     /**
     Determines if the current tab is visible
@@ -136,7 +136,7 @@ Template['layout_sidebar'].events({
 
         // browser
         if (tabId === 'browser') {
-            webviewLoadStart.call(webview, tabId, { newURL: this.url, type: 'side-bar-click', preventDefault() {} });
+            webviewLoadStart.call(webview, tabId, { newURL: this.url, type: 'side-bar-click', preventDefault: function () {} });
 
         // dapp tab
         } else if (webview) {

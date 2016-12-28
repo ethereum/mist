@@ -41,10 +41,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
             } else if(_.isObject(syncing)) {
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
-                
-                if (oldData && oldData.currentBlock && syncing && syncing.currentBlock) {
-                    syncing.blocksArrived = syncing.currentBlock - oldData.currentBlock;
-                }
 
                 TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
 
@@ -101,17 +97,13 @@ Template['popupWindows_onboardingScreen'].helpers({
             if (syncing) {
                 TemplateVar.set(template, 'readyToLaunch', false);
 
-                syncing.downloadSpeed = (0.9999 * syncing.downloadSpeed || 0 ) + 0.0001 * syncing.blocksArrived;
-
-                let stepsTilEnd = syncing.downloadSpeed ? ((syncing.highestBlock - syncing.currentBlock)/syncing.downloadSpeed) : 10000;
-
                 // Calculates a block t display that is always getting a few % closer to target
-                syncing._displayBlock = (syncing._displayBlock + 2*(syncing.currentBlock - syncing._displayBlock) / (stepsTilEnd) ) || 0;            
+                syncing._displayBlock = (syncing._displayBlock + 2*(syncing.currentBlock - syncing._displayBlock) / 100 ) || Number(syncing.startingBlock);            
 
                 syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
 
                 // Calculates progress
-                syncing.progress = 100 * syncing._displayBlock / (Number(syncing.highestBlock)+1);
+                syncing.progress = 100 * (syncing._displayBlock - syncing.startingBlock) / (1 + Number(syncing.highestBlock) - syncing.startingBlock);
 
                 // Makes fancy strings
                 syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');

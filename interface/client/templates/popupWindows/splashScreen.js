@@ -98,11 +98,6 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 showNodeLog = false;
                 var translationString = '';
 
-                // Save the amount of blocks that arrived
-                if (lastSyncData && lastSyncData.currentBlock && data && data.currentBlock) {
-                    data.blocksArrived = Number(data.currentBlock) - Number(lastSyncData.currentBlock);
-                }
-
                 // add the data received to the object lastSyncData
                 lastSyncData = _.extend(lastSyncData, data || {});
 
@@ -187,12 +182,6 @@ Template['popupWindows_splashScreen'].helpers({
             var syncData = TemplateVar.get(template, 'lastSyncData', lastSyncData);
             var translationString = TemplateVar.get(template, "syncStatusMessage");
 
-            // Calculate average download speed
-            syncData.downloadSpeed = (0.9999 * syncData.downloadSpeed || 0 ) + 0.0001 * syncData.blocksArrived;
-
-            // Calculate the amount of repetitions like these to finish
-            let stepsTilEnd = syncData.downloadSpeed ? ((Number(syncData._highestBlock) - Number(syncData.currentBlock))/syncData.downloadSpeed) : 10000;
-
             if (!(syncData._displayBlock > -1)) {
                 // initialize the display numbers
                 syncData._displayBlock = Number(syncData.currentBlock);
@@ -200,9 +189,9 @@ Template['popupWindows_splashScreen'].helpers({
                 syncData._displayKnownStates = Number(syncData.knownStates || 0);
             } else {
                 // Increment each them slowly to match target number
-                syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / stepsTilEnd;
-                syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / stepsTilEnd;
-                syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / stepsTilEnd;
+                syncData._displayBlock += (Number(syncData.currentBlock) - syncData._displayBlock) / 100;
+                syncData._displayState += (Number(syncData.pulledStates || 0) - syncData._displayState) / 100;
+                syncData._displayKnownStates += (Number(syncData.knownStates || 0) - syncData._displayKnownStates) / 100;
             }
 
             // Create the fancy strings

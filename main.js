@@ -415,7 +415,7 @@ onReady = () => {
                 splashWindow.show();
             }
 
-            if (Settings.inAutoTestMode) {
+            if (!Settings.inAutoTestMode) {
                 return syncResultPromise;
             }
 

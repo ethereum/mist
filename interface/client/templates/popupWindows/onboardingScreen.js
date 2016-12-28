@@ -263,7 +263,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event submit form
     */
-    'submit form': function (e, template) {
+    'submit form': function (event, template) {
         var pw = template.find('input.password').value;
 
 

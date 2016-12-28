@@ -29,8 +29,9 @@ human readable text signature.
 */
 var lookupFunctionSignature = function (data, remoteLookup) {
     return new Q(function (resolve, reject) {
+        var bytesSignature;
         if (data && data.length > 8) {
-            var bytesSignature = (data.substr(0, 2) === '0x')
+            bytesSignature = (data.substr(0, 2) === '0x')
                 ? data.substr(0, 10)
                 : '0x' + data.substr(0, 8);
 
@@ -51,7 +52,7 @@ var lookupFunctionSignature = function (data, remoteLookup) {
                         }
                     });
                 }).on('error', function (error) {
-                    console.warn('Error querying Function Signature Registry.', err);
+                    console.warn('Error querying Function Signature Registry.', error);
                     reject(bytesSignature);
                 });
             } else if (_.first(window.SIGNATURES[bytesSignature])) {
@@ -166,7 +167,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function () {
                         // set the gas to the estimation, if not provided or lower
                         var gas = TemplateVar.get(template, 'providedGas');
 
-                        if (gas == 0) {
+                        if (gas === 0) {
                             TemplateVar.set(template, 'providedGas', res + 100000);
                             TemplateVar.set(template, 'initialProvidedGas', res + 100000);
                         }
@@ -305,9 +306,9 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
-        if (!gas || !_.isFinite(gas)) { return; } else {
-            data.gas = gas;
-        }
+        if (!gas || !_.isFinite(gas)) { return; }
+
+        data.gas = gas;
 
         TemplateVar.set('unlocking', true);
 

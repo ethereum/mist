@@ -1,5 +1,6 @@
 env:  # don't warn about no-def meteor keywords
   meteor: true
+  browser: true
 
 rules:
   no-undef: off
@@ -7,9 +8,13 @@ rules:
   prefer-arrow-callback: off
   prefer-template: off
   dot-notation: off
+  object-shorthand:
+    - error
+    - never
+  func-names: off
   no-underscore-dangle:
     - error
-    - allow: ['_id', '_escape', '__']
+    - allow: ['_id', '_escape', '__', '_intervalId', '_displayBlock', '_displayStatesDownload']
 
 globals:
   Helpers: true

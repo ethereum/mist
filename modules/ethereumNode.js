@@ -163,7 +163,7 @@ class EthereumNode extends EventEmitter {
                     Windows.loading.show();
                 })
                 .then(() => {
-                    return this._start(newType || this.type(), newNetwork || this.network(), newMode || this.mode());
+                    return this._start(newType || this.type, newNetwork || this.network, newMode || this.mode);
                 })
                 .then(() => {
                     Windows.loading.hide();

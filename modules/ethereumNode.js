@@ -163,7 +163,10 @@ class EthereumNode extends EventEmitter {
                     Windows.loading.show();
                 })
                 .then(() => {
-                    return this._start(newType || this.type, newNetwork || this.network, newMode || this.mode);
+                    return this._start(newType || this.type,
+                        newNetwork || this.network,
+                        newMode || this.mode
+                    );
                 })
                 .then(() => {
                     Windows.loading.hide();
@@ -371,12 +374,12 @@ class EthereumNode extends EventEmitter {
                     } else {
                         // START GETH MAINNET
                         args = (mode === 'full')
-                            ? ['--fast', '--cache', '1024' ] 
+                            ? ['--fast', '--cache', '1024']
                             : ['--light'];
                     }
                 } else {
                     // START ETH
-                    args = (network === 'test') 
+                    args = (network === 'test')
                         ? ['--ropsten', '--unsafe-transactions']
 
                         : ['--unsafe-transactions'];
@@ -481,8 +484,8 @@ class EthereumNode extends EventEmitter {
         // add node type
         nodelog = `Node type: ${nodeType}\n` +
             `Network: ${network}\n` +
-            `Platform: ${process.platform} (Architecure ${process.arch})` + `\n\n${
-            nodelog}`;
+            `Platform: ${process.platform} (Architecure ${process.arch})` +
+            `\n\n${nodelog}`;
 
         dialog.showMessageBox({
             type: 'error',

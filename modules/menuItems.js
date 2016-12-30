@@ -433,7 +433,7 @@ let menuTempl = function (webviews) {
                 },
             },
         ] });
-    
+
     // add light mode switch
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.nodeMode'),
@@ -456,8 +456,7 @@ let menuTempl = function (webviews) {
                     restartNode(ethereumNode.type, ethereumNode.network, 'light');
                 },
             },
-        ] });    
-
+        ] });
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),

@@ -220,11 +220,15 @@ Section "uninstall"
     IfErrors 0 +2
     MessageBox MB_ICONEXCLAMATION|MB_OK "Unable to read from the registry. Not all shortcuts will be removed"
 
+    StrCpy $DATADIR $0
+    StrCpy $NODEDATADIR $1
+    StrCpy $DESKTOPDIR $2
+    
     # remove the link from the start menu
     rmDir /r "$SHORTCUTDIR"
 
     # remove desktop shortcut
-    Delete "$2\${APPNAME}.lnk"
+    Delete "$DESKTOPDIR\${APPNAME}.lnk"
 
     # remove files from installation directory
     rmDir /r /REBOOTOK "$FILEDIR"
@@ -241,8 +245,8 @@ SectionEnd
 
 Function un.onUnInstSuccess
   MessageBox MB_OK "Opening leftover data directories (backup before deleting!)"
-  ExecShell "open" "$0"
-  ExecShell "open" "$1"
+  ExecShell "open" "$DATADIR"
+  ExecShell "open" "$NODEDATADIR"
 FunctionEnd
 
 

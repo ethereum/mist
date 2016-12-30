@@ -10,6 +10,9 @@
 # Include ZipDLL plugin (http://nsis.sourceforge.net/ZipDLL_plug-in)
 !include 'ZipDLL.nsh'
 
+# Include Locate plugin (http://nsis.sourceforge.net/Locate_plugin)
+!include 'locate.nsh'
+
 # Include MoveFileFolder plugin (http://nsis.sourceforge.net/MoveFileFolder)
 !include 'FileFunc.nsh'
 !insertmacro Locate
@@ -223,7 +226,7 @@ Section "uninstall"
     StrCpy $DATADIR $0
     StrCpy $NODEDATADIR $1
     StrCpy $DESKTOPDIR $2
-    
+
     # remove the link from the start menu
     rmDir /r "$SHORTCUTDIR"
 
@@ -257,10 +260,10 @@ Function GetInstalledSize
 
   # TODO This is not a very robust solution. Needs improvement
   ${if} ${SectionIsSelected} ${MIST_IDX}
-    SectionGetSize ${MIST_IDX} $0
+    #SectionGetSize ${MIST_IDX} $0
+    ${locate::GetSize} "$FILEDIR" "/S=Kb" $0 $1 $2
+    # TODO check for return of -1 for error
     IntOp $GetInstalledSize.total $GetInstalledSize.total + $0
-    # estimate to accomodate zip compression and duplicate files
-    IntOp $GetInstalledSize.total $GetInstalledSize.total * 3
   ${endif}
 
   IntFmt $GetInstalledSize.total "0x%08X" $GetInstalledSize.total

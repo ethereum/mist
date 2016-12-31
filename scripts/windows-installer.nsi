@@ -135,7 +135,7 @@ Section Mist MIST_IDX
 
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
-    # include bothj architecture zip files
+    # include both architecture zip files
     file "..\dist_mist\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
     file "..\dist_mist\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
     file "..\dist_mist\build\icon.ico"
@@ -258,9 +258,7 @@ Var GetInstalledSize.total
 Function GetInstalledSize
   StrCpy $GetInstalledSize.total 0
 
-  # TODO This is not a very robust solution. Needs improvement
   ${if} ${SectionIsSelected} ${MIST_IDX}
-    #SectionGetSize ${MIST_IDX} $0
     ${locate::GetSize} "$FILEDIR" "/S=Kb" $0 $1 $2
     # TODO check for return of -1 for error
     IntOp $GetInstalledSize.total $GetInstalledSize.total + $0

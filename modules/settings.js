@@ -156,8 +156,8 @@ class Settings {
         return app.getPath('userData');
     }
 
-    get dbFilePath () {
-        const dbFileName = (!!this.inAutoTestMode)? 'mist.test.lokidb' : 'mist.lokidb';
+    get dbFilePath() {
+        const dbFileName = (!!this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
         return path.join(this.userDataPath, dbFileName);
     }
 

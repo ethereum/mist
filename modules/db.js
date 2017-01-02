@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const Q = require('bluebird');
 const Loki = require('lokijs');
 const Settings = require('./settings');

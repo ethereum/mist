@@ -17,6 +17,7 @@
     "bignumber.js": "^2.1.4",
     "bluebird": "^3.3.5",
     "chai-as-promised": "^6.0.0",
+    "chai-string": "^1.3.0",
     "electron-squirrel-startup": "^1.0.0",
     "ethereum-client-binaries": "^1.6.1",
     "ethereumjs-abi": "^0.6.3",

@@ -29,6 +29,7 @@ Template['layout_sidebar'].onRendered(function(){
             $ul.sortable('refreshPositions');
         },
         update: function(e){
+            console.log('UPDATED');
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function(index, test){
                 var id = $(this).data('tab-id');
@@ -74,7 +75,7 @@ Template['layout_sidebar'].helpers({
         var template = Template.instance();
 
         if(this._id === 'browser') {
-            return DoogleLastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
+            return LastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
 
         } else if(this.menu) {
             var menu = _.toArray(this.menu);
@@ -133,10 +134,7 @@ Template['layout_sidebar'].events({
 
         // browser
         if(tabId === 'browser') {
-            LocalStore.set('selectedTab', 'browser');
-            Tabs.update('browser', {$set: {
-                redirect: this.url
-            }});
+            webviewLoadStart.call(webview, tabId, {newURL: this.url, type: 'side-bar-click', preventDefault: function(){}});
 
         // dapp tab
         } else if(webview) {
@@ -172,9 +170,9 @@ Template['layout_sidebar'].events({
             LocalStore.set('fullTabs', false);
         } else if (isSelected) {
             LocalStore.set('fullTabs', true);
-        } 
+        }
     },
-    /*
+    /**
     Remove the current selected tab
 
     // TODO show popup before to confirm
@@ -184,10 +182,7 @@ Template['layout_sidebar'].events({
     'click button.remove-tab': function(){
         if (LocalStore.get('selectedTab') === this._id)
             LocalStore.set('selectedTab', 'browser');
-        
+
         Tabs.remove(this._id);
-    }
-
+    },
 });
-
-

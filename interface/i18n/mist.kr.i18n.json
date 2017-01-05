@@ -4,8 +4,13 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
+                "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Services",
-                "quit": "__app__ 종료"
+                "quit": "__app__ 종료",
+                "checkForUpdates": "Check for updates...",
+                "hide": "Hide __app__",
+                "hideOthers": "Hide Others",
+                "showAll": "Show All"
             },
             "edit": {
                 "label": "수정",
@@ -18,7 +23,8 @@
             },
             "view": {
                 "label": "보기",
-                "fullscreen": "전체화면으로"
+                "fullscreen": "전체화면으로",
+                "default": "Default"
             },
             "accounts": {
                 "label": "계정",
@@ -40,7 +46,8 @@
                 "network": "네트워크",
                 "mainNetwork": "메인 네트워크",
                 "startMining": "⛏ 채굴 시작(테스트넷만 해당)",
-                "stopMining": "⛏ 채굴 중단"
+                "stopMining": "⛏ 채굴 중단",
+                "externalNode": "using external node"
             },
             "window": {
                 "label": "창",
@@ -49,7 +56,8 @@
                 "toFront": "전면으로 보내기"
             },
             "help": {
-                "label": "도움말"
+                "label": "도움말",
+                "reportBug": "Report an issue on Github"
             }
         },
         "errors": {
@@ -61,6 +69,14 @@
                 "win32": "시스템 설정에 있는 인터넷 시간 설정에서 박스를 체크하세요. 자세한 것은 다음의 가이드를 참조하세요: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 의 방법으로 설치하세요.",
                 "darwin": "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
+            },
+           "nodeChecksumMismatch": {
+                "title": "Checksum mismatch in downloaded node!",
+                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+            },
+            "legacyChain": {
+                "title": "Legacy chain detected",
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -74,7 +90,14 @@
             "blockNumber": "마지막 블럭 번호",
             "timeSinceBlock": "마지막 블럭 이후 경과시간",
             "testnetExplain": "현재 테스트넷 상에 있습니다. 진짜 이더를 이 주소로 절대 보내지 마세요.",
-            "peers": "피어들(peers)"
+            "peers": "피어들(peers)",
+            "checkingWhichNetwork": "Checking network...",
+            "mainNetwork": "Main-net",
+            "testNetwork": "Test-net",
+            "privateNetwork": "Private-net",
+            "mainnetExplain": "You are on the main Ethereum global network",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "unknownnetExplain": "Unable to determine which network you are on"
         },
         "sidebar": {
             "buttons": {
@@ -83,7 +106,8 @@
         },
         "browserBar": {
             "buttons": {
-                "noAccounts": "계정을 선택하지 않음"
+                "noAccounts": "계정을 선택하지 않음",
+                "connect": "Connect"
             }
         },
         "startScreen": {
@@ -95,8 +119,27 @@
             "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
             "nodeSyncInfo": "현재 highestBlock__ 중 __currentBlcok 을 다운로드중",
             "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
-            "nodeSyncProcessing": "블럭들을 처리하고 있습니다, 기다려 주세요...",
-            "privateChainTimeout": "피어 탐색 건너뛰기"
+            "stoppingNode": "Stopping Ethereum node...",
+            "nodeStarting": "Ethereum node starting up...",
+            "nodeStarted": "Ethereum node started",
+            "nodeConnected": "Ethereum node connected",
+            "nodeStopping": "Ethereum node stopping...",
+            "nodeStopped": "Ethereum node stopped",
+            "nodeError": "Ethereum node connection error :'(",
+            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
+            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
+            "nodeSyncingStopped": "Ethereum node sync stopped",
+            "peerSearchTimeout": "Skip peer search",
+            "launchApp": "Launch Application",
+            "clientBinaries": {
+                "scanning": "Checking for node update...",
+                "downloading": "Downloading new node...",
+                "loadConfig": "Loading client config...",
+                "filtering": "Filtering client binaries...",
+                "done": "Ethereum node up-to-date...",
+                "error": "Error running downloaded binary."
+            }
         },
         "popupWindows": {
             "requestAccount": {
@@ -105,7 +148,8 @@
                 "repeatPassword": "암호를 다시 입력하세요",
                 "creating": "계정 만드는 중...",
                 "errors": {
-                    "passwordMismatch": "암호가 일치하지 않습니다."
+                    "passwordMismatch": "암호가 일치하지 않습니다.",
+                    "passwordTooShort": "Make a longer password"
                 }
             },
             "unlockMasterPassword": {
@@ -120,14 +164,14 @@
                 "title": {
                     "sendTransaction": "트랜잭션 보내기",
                     "contractExecution": "컨트랙트 실행",
-                    "createContract": "컨트랙트 만들기"  
+                    "createContract": "컨트랙트 만들기"
                 },
                 "contractExecutionInfo": "컨트랙트 상의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
                 "contractCreationInfo": "주어진 데이터를 가지고 컨트랙트을 만들려고 합니다.",
                 "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
                 "unlocking": "확인 중...",
                 "createContract": "컨트랙트 만들기",
-                "estimatedFee":"예상 수수료 사용량",
+                "estimatedFee": "예상 수수료 사용량",
                 "estimatedGasError": "데이더를 실행할 수 없었습니다. 따라서 제공했던 개스를 모두 소모할 것입니다.",
                 "gasPrice": "개스 가격",
                 "perMillionGas": "백만 개스당 이더수",
@@ -138,38 +182,47 @@
                 },
                 "errors": {
                     "connectionTimeout": "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
-                    "wrongPassword": "암호 불일치"
-                }
+                    "wrongPassword": "암호 불일치",
+                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "sameAccount": "Can't send to itself"
+                },
+                "transactionThrow": "The contract won't allow this transaction to be executed",
+                "noEstimate": "We couldn't estimate the gas.",
+                "parameters": "Parameters",
+                "showRawBytecode": "show raw data",
+                "showDecodedParameters": "show decoded parameters",
+                "lookupData": "Try to decode data",
+                "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "이더리움은 블럭체인상에 앱을 만들기 위한 탈중앙화된 플랫폼이며, 이 블럭체인은 변조방지가능한 소프트웨어로서 가치와 자산을 전송할 수 있고 영구히 존속합니다.",
-                "goToTestnet" : "테스트 네트워크 사용하기",
-                "goToTestnetDescription" : "샌드박스 테스트넷에서 실제 이더를 사용하지 않고 자유롭게 테스트하기.",
-                "gotoMainnet" : "메인 네트워크 사용하기",
-                "gotoMainnetDescription" : "컨트랙트를 만들고 사용하기 위해서는 약간의 이더가 필요합니다. 약간의 이더를 가질 수 있도록 도와줄 수 있습니다.",
-                "doYouHaveAWalletFile" : "지갑 파일을 가지고 있나요?",
-                "walletFileDescription" : "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이란 파일을 가지고 있을 겁니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 겁니다.</p>",
-                "dropFilesHere" : "프리세일 파일을 가져다 놓기",
+                "description": "이더리움은 블럭체인상에 앱을 만들기 위한 탈중앙화된 플랫폼이며, 이 블럭체인은 변조방지가능한 소프트웨어로서 가치와 자산을 전송할 수 있고 영구히 존속합니다.",
+                "goToTestnet": "테스트 네트워크 사용하기",
+                "goToTestnetDescription": "샌드박스 테스트넷에서 실제 이더를 사용하지 않고 자유롭게 테스트하기.",
+                "gotoMainnet": "메인 네트워크 사용하기",
+                "gotoMainnetDescription": "컨트랙트를 만들고 사용하기 위해서는 약간의 이더가 필요합니다. 약간의 이더를 가질 수 있도록 도와줄 수 있습니다.",
+                "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",
+                "walletFileDescription": "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이란 파일을 가지고 있을 겁니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 겁니다.</p>",
+                "dropFilesHere": "프리세일 파일을 가져다 놓기",
                 "creating": "만드는 중...",
                 "importing": "불러오는 중...",
-                "skip" : "이 단계 건너뛰기",
-                "next" : "다음",
-                "protectTitle" : "계정 보호",
-                "protectDescription" : "새 계정를 위한 암호를 선택하세요. 집열쇠를 보관하듯이 강력한 암호를 선택하세요!",
-                "accountTitle" : "구동 시작!",
-                "accountTitleTestnet" : "채굴 성공!",
+                "skip": "이 단계 건너뛰기",
+                "next": "다음",
+                "protectTitle": "계정 보호",
+                "protectDescription": "새 계정를 위한 암호를 선택하세요. 집열쇠를 보관하듯이 강력한 암호를 선택하세요!",
+                "accountTitle": "구동 시작!",
+                "accountTitleTestnet": "채굴 성공!",
                 "etherDescription": "이더리움은 '이더'라는 토큰을 기반으로 하고 있습니다. 이더리움을 사용하기 위해서는 약간의 이더가 필요하게 될 것입니다.",
-                "loadItDescription" : "만일 비트코인이나 다른 암호화 화폐를 가지고 있다면, shapeshift를 이용해 손쉽게 이더로 바꿀 수 있습니다. <br><br> 약 <strong>0.25 to 1 ether</strong> 이더 정도를 바꿀 것을 추천합니다.",
+                "loadItDescription": "만일 비트코인이나 다른 암호화 화폐를 가지고 있다면, shapeshift를 이용해 손쉽게 이더로 바꿀 수 있습니다. <br><br> 약 <strong>0.25 to 1 ether</strong> 이더 정도를 바꿀 것을 추천합니다.",
                 "mineItDescription": "<strong>테스트넷상에서는 <em>개발</em> 메뉴에 있는 <em>채굴 시작</em>을 선택함으로써 이더를 채굴할 수 있습니다. </strong> <br> <strong>이 주소로 진짜 이더를 절대 보내지 마세요.</strong>",
-                "you" : "당신",
-                "etherbase" : "주 계정(이더베이스)",
-                "depositBitcoin" : "비트코인 송금",
-                "learnIt" : "기다리는 동안 학습하기",
+                "you": "당신",
+                "etherbase": "주 계정(이더베이스)",
+                "depositBitcoin": "비트코인 송금",
+                "learnIt": "기다리는 동안 학습하기",
                 "downloadingBlocks": "블럭 다운로드 중",
-                "block": "블럭",
-                "tutorial1Description" : "<p> 이제 남은 것은 다운로드가 끝날 때까지 기다리는 것입니다. 여기에 읽어볼 내용들이 있습니다: </p> <h4>여려분 자신의 화폐 만들기 </h4> <p> 실제 자산을 표현하는 제한된 공급을 가진 암호화 화폐만들기 등등, </p>",
-                "tutorial2Description" : "<h4> 크라우드세일 만들기 </h4> <p> 제3자 없이 완벽히 신뢰할 수 공동의 목표를 위한 펀드 조성. 전통적인 펀딩에서 발생하는 여러가지 장벽들을 피해서, 블럭체인을 사용해서 직접 대상조직에 펀딩.</p>",
-                "tutorial3Description" : "<h4> 블럭체인 조직 </h4> <p> 어떻게 자금이 사용되고, 누가 결정권을 가게 될지 등에 대한 위반할 수 없는 룰들을 가진 자율 조직을 만들 수 있습니다. 어떻게 자금이 사용되어야 할지에 대해 당신의 지지자들에게 적극적인 역할을 부여하세요.</p>",
+                "tutorial1Description": "<p> 이제 남은 것은 다운로드가 끝날 때까지 기다리는 것입니다. 여기에 읽어볼 내용들이 있습니다: </p> <h4>여려분 자신의 화폐 만들기 </h4> <p> 실제 자산을 표현하는 제한된 공급을 가진 암호화 화폐만들기 등등, </p>",
+                "tutorial2Description": "<h4> 크라우드세일 만들기 </h4> <p> 제3자 없이 완벽히 신뢰할 수 공동의 목표를 위한 펀드 조성. 전통적인 펀딩에서 발생하는 여러가지 장벽들을 피해서, 블럭체인을 사용해서 직접 대상조직에 펀딩.</p>",
+                "tutorial3Description": "<h4> 블럭체인 조직 </h4> <p> 어떻게 자금이 사용되고, 누가 결정권을 가게 될지 등에 대한 위반할 수 없는 룰들을 가진 자율 조직을 만들 수 있습니다. 어떻게 자금이 사용되어야 할지에 대해 당신의 지지자들에게 적극적인 역할을 부여하세요.</p>",
                 "buttons": {
                     "showPassword": "암호보기",
                     "importAccount": "계정 불러오기",
@@ -181,12 +234,41 @@
                     "unknownFile": "파일을 인식할 수 없습니다.",
                     "wrongPassword": "암호가 틀렸습니다.",
                     "importFailed": "파일을 가져올 수 없습니다: __error__"
-                }
+                },
+                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+            },
+            "updateAvailable": {
+                "newVersionAvailable": "New __name__ version available",
+                "version": "Version",
+                "downloadURL": "Download URL",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Update and Restart",
+                "download": "Download new version",
+                "skipUpdate": "Skip Update",
+                "notNow": "Ask me later",
+                "checking": "Checking for updates to __name__...",
+                "noUpdateFound": "No update found. You are running the latest version of __name__."
+            },
+            "connectAccount": {
+                "chooseAccountTitle": "Choose account",
+                "createAccount": "Create new account",
+                "pinToSidebar": "Pin app to the sidebar",
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
-        "checksumAlert":"이 주소는 유효해보이지만, 오타 등의 실수로부터 당신을 보호할 수 있는 보안기능이 없습니다. 다시 한 번 맞는지 확인해 보시기 바랍니다. 보안 아이콘이 있는 경우 이것이 일치하는지 확인하시기 바랍니다.",
-        "identiconHelper": "이것은 보안 아이콘입니다. 주소에 어떤 변화라도 생기면, 이 아이콘은 완전히 다른 모양으로 변합니다."
+        "checksumAlert": "이 주소는 유효해보이지만, 오타 등의 실수로부터 당신을 보호할 수 있는 보안기능이 없습니다. 다시 한 번 맞는지 확인해 보시기 바랍니다. 보안 아이콘이 있는 경우 이것이 일치하는지 확인하시기 바랍니다.",
+        "identiconHelper": "이것은 보안 아이콘입니다. 주소에 어떤 변화라도 생기면, 이 아이콘은 완전히 다른 모양으로 변합니다.",
+        "type": {
+            "address": "Address",
+            "bool": "Boolean",
+            "int": "Integer",
+            "uint": "Natural Number",
+            "string": "String",
+            "bytes": "Bytes"
+        }
     }
 }

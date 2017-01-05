@@ -1,5 +1,3 @@
-"use strict";
-
 /**
 The nodeSync module,
 checks the current node whether its synching or not and how much it kept up already.
@@ -10,9 +8,7 @@ checks the current node whether its synching or not and how much it kept up alre
 const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
-const electron = require('electron');
-const app = electron.app;
-const ipc = electron.ipcMain;
+const { ipcMain: ipc } = require('electron');
 const ethereumNode = require('./ethereumNode');
 const log = require('./utils/logger').create('NodeSync');
 
@@ -21,7 +17,7 @@ const SYNC_CHECK_INTERVAL_MS = 2000;
 
 
 class NodeSync extends EventEmitter {
-    constructor () {
+    constructor() {
         super();
 
         ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
@@ -30,7 +26,7 @@ class NodeSync extends EventEmitter {
     /**
      * @return {Promise}
      */
-    start () {
+    start() {
         if (this._syncPromise) {
             log.warn('Sync already in progress, returning Promise');
 
@@ -81,7 +77,7 @@ class NodeSync extends EventEmitter {
     /**
      * @return {Promise}
      */
-    stop () {
+    stop() {
         return Q.try(() => {
             if (!this._syncInProgress) {
                 log.debug('Sync not already in progress.');
@@ -94,23 +90,23 @@ class NodeSync extends EventEmitter {
                     .then(() => {
                         this.emit('stopped');
                     });
-            }                        
+            }
         });
     }
 
 
-    _clearState () {
+    _clearState() {
         ipc.removeAllListeners('backendAction_skipSync');
 
-        this._syncInProgress 
-            = this._syncPromise 
-            = this._onSyncDone 
-            = this._onSyncError 
+        this._syncInProgress
+            = this._syncPromise
+            = this._onSyncDone
+            = this._onSyncError
             = false;
     }
 
 
-    _sync () {
+    _sync() {
         _.delay(() => {
             if (!this._syncInProgress) {
                 log.debug('Sync no longer in progress, so ending sync loop.');
@@ -122,7 +118,7 @@ class NodeSync extends EventEmitter {
 
             ethereumNode.send('eth_syncing', [])
                 .then((ret) => {
-                    let result = ret.result;
+                    const result = ret.result;
 
                     // got a result, check for error
                     if (result) {
@@ -130,47 +126,43 @@ class NodeSync extends EventEmitter {
 
                         // got an error?
                         if (result.error) {
-                            if (-32601 === result.error.code) {
+                            if (result.error.code === -32601) {
                                 log.warn('Sync method not implemented, skipping sync.');
 
                                 return this._onSyncDone();
-                            } else {
-                                throw new Error(`Unexpected error: ${result.error}`);
                             }
-                        } 
-                        // no error, so call again in a bit
-                        else {
+
+                            throw new Error(`Unexpected error: ${result.error}`);
+                        } else {  // no error, so call again in a bit
                             this.emit('nodeSyncing', result);
 
                             return this._sync();
                         }
-                    } 
-                    // got no result, let's check the block number
-                    else {
+                    } else {  // got no result, let's check the block number
                         log.debug('Check latest block number');
 
                         return ethereumNode.send('eth_getBlockByNumber', ['latest', false])
-                            .then((ret) => {
-                                let blockResult = ret.result;
+                            .then((ret2) => {
+                                const blockResult = ret2.result;
 
                                 const now = Math.floor(new Date().getTime() / 1000);
 
                                 const diff = now - +blockResult.timestamp;
 
-                                log.debug(`Last block: ${blockResult.number}, ${diff}s ago`);
+                                log.debug(`Last block: ${Number(blockResult.number)}, ${diff}s ago`);
 
                                 // need sync if > 1 minute
-                                if(diff > 60) {
+                                if (diff > 60) {
                                     this.emit('nodeSyncing', result);
 
                                     log.trace('Keep syncing...');
 
                                     return this._sync();
-                                } else {
-                                    log.info('No more sync necessary');
-
-                                    return this._onSyncDone();
                                 }
+
+                                log.info('No more sync necessary');
+
+                                return this._onSyncDone();
                             });
                     }
                 })
@@ -183,29 +175,26 @@ class NodeSync extends EventEmitter {
     }
 
 
-    _onNodeStateChanged (state) {
-        switch (state) {
+    _onNodeStateChanged(state) {
+        switch (state) {  // eslint-disable-line default-case
             // stop syncing when node about to be stopped
-            case ethereumNode.STATES.STOPPING:
-                log.info('Ethereum node stopping, so stop sync');
+        case ethereumNode.STATES.STOPPING:
+            log.info('Ethereum node stopping, so stop sync');
 
-                this.stop()
-                break;
+            this.stop();
+            break;
             // auto-sync whenever node gets connected
-            case ethereumNode.STATES.CONNECTED:
-                log.info('Ethereum node connected, re-start sync');
+        case ethereumNode.STATES.CONNECTED:
+            log.info('Ethereum node connected, re-start sync');
 
                 // stop syncing, then start again
-                this.stop().then(() => {
-                    this.start();
-                });
-                break;
+            this.stop().then(() => {
+                this.start();
+            });
+            break;
         }
     }
 }
 
 
 module.exports = new NodeSync();
-
-
-

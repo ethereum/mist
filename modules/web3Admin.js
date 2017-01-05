@@ -1,84 +1,33 @@
 module.exports = {
-    extend: function(web3) {
+    extend: (web3) => {
+        function insertMethod(name, call, params, inputFormatter, outputFormatter) {
+            return new web3._extend.Method({ name, call, params, inputFormatter, outputFormatter });
+        }
+
+        function insertProperty(name, getter, outputFormatter) {
+            return new web3._extend.Property({ name, getter, outputFormatter });
+        }
 
         // ADMIN
         web3._extend({
             property: 'admin',
             methods:
             [
-                new web3._extend.Method({
-                    name: 'addPeer',
-                    call: 'admin_addPeer',
-                    params: 1,
-                    inputFormatter: [web3._extend.utils.fromDecimal],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'exportChain',
-                    call: 'admin_exportChain',
-                    params: 1,
-                    inputFormatter: [null],
-                    outputFormatter: function(obj) { return obj; }
-                }),
-                new web3._extend.Method({
-                    name: 'importChain',
-                    call: 'admin_importChain',
-                    params: 1,
-                    inputFormatter: [null],
-                    outputFormatter: function(obj) { return obj; }
-                }),
-                new web3._extend.Method({
-                    name: 'verbosity',
-                    call: 'admin_verbosity',
-                    params: 1,
-                    inputFormatter: [web3._extend.utils.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'setSolc',
-                    call: 'admin_setSolc',
-                    params: 1,
-                    inputFormatter: [null],
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                }),
-                new web3._extend.Method({
-                    name: 'startRPC',
-                    call: 'admin_startRPC',
-                    params: 4,
-                    inputFormatter: [null,web3._extend.utils.formatInputInteger,null,null],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'stopRPC',
-                    call: 'admin_stopRPC',
-                    params: 0,
-                    inputFormatter: [],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                })
+                insertMethod('addPeer', 'admin_addPeer', 1, [web3._extend.utils.fromDecimal], web3._extend.formatters.formatOutputBool),
+                insertMethod('exportChain', 'admin_exportChain', 1, [null], null),
+                insertMethod('importChain', 'admin_importChain', 1, [null], null),
+                insertMethod('verbosity', 'admin_verbosity', 1, [web3._extend.utils.formatInputInt], web3._extend.formatters.formatOutputBool),
+                insertMethod('setSolc', 'admin_setSolc', 1, [null], web3._extend.formatters.formatOutputString),
+                insertMethod('startRPC', 'admin_startRPC', 4, [null, web3._extend.utils.formatInputInteger, null, null], web3._extend.formatters.formatOutputBool),
+                insertMethod('stopRPC', 'admin_stopRPC', 0, [], web3._extend.formatters.formatOutputBool),
             ],
             properties:
             [
-                new web3._extend.Property({
-                    name: 'nodeInfo',
-                    getter: 'admin_nodeInfo',
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                }),
-                new web3._extend.Property({
-                    name: 'peers',
-                    getter: 'admin_peers',
-                    outputFormatter: function(obj) { return obj; }
-                }),
-                new web3._extend.Property({
-                    name: 'datadir',
-                    getter: 'admin_datadir',
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                }),
-                new web3._extend.Property({
-                    name: 'chainSyncStatus',
-                    getter: 'admin_chainSyncStatus',
-                    outputFormatter: function(obj) { return obj; }
-                })
-            ]
+                insertProperty('nodeInfo', 'admin_nodeInfo', web3._extend.formatters.formatOutputString),
+                insertProperty('peers', 'admin_peers', null),
+                insertProperty('datadir', 'admin_datadir', web3._extend.formatters.formatOutputString),
+                insertProperty('chainSyncStatus', 'admin_chainSyncStatus', null),
+            ],
         });
 
         // DEBUG
@@ -86,52 +35,14 @@ module.exports = {
             property: 'debug',
             methods:
             [
-                new web3._extend.Method({
-                    name: 'printBlock',
-                    call: 'debug_printBlock',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                }),
-                new web3._extend.Method({
-                    name: 'getBlockRlp',
-                    call: 'debug_getBlockRlp',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                }),
-                new web3._extend.Method({
-                    name: 'setHead',
-                    call: 'debug_setHead',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'processBlock',
-                    call: 'debug_processBlock',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: function(obj) { return obj; }
-                }),
-                new web3._extend.Method({
-                    name: 'seedHash',
-                    call: 'debug_seedHash',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                })      ,
-                new web3._extend.Method({
-                    name: 'dumpBlock',
-                    call: 'debug_dumpBlock',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: function(obj) { return obj; }
-                })
+                insertMethod('printBlock', 'debug_printBlock', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputString),
+                insertMethod('getBlockRlp', 'debug_getBlockRlp', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputString),
+                insertMethod('setHead', 'debug_setHead', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputBool),
+                insertMethod('processBlock', 'debug_processBlock', 1, [web3._extend.formatters.formatInputInt], null),
+                insertMethod('seedHash', 'debug_seedHash', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputString),
+                insertMethod('dumpBlock', 'debug_dumpBlock', 1, [web3._extend.formatters.formatInputInt], null),
             ],
-            properties:
-            [
-            ]
+            properties: [],
         });
 
         // MINER
@@ -139,64 +50,18 @@ module.exports = {
             property: 'miner',
             methods:
             [
-                new web3._extend.Method({
-                    name: 'start',
-                    call: 'miner_start',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'stop',
-                    call: 'miner_stop',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.formatInputInt],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'setExtra',
-                    call: 'miner_setExtra',
-                    params: 1,
-                    inputFormatter: [web3._extend.utils.formatInputString],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'setGasPrice',
-                    call: 'miner_setGasPrice',
-                    params: 1,
-                    inputFormatter: [web3._extend.utils.formatInputString],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'startAutoDAG',
-                    call: 'miner_startAutoDAG',
-                    params: 0,
-                    inputFormatter: [],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'stopAutoDAG',
-                    call: 'miner_stopAutoDAG',
-                    params: 0,
-                    inputFormatter: [],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'makeDAG',
-                    call: 'miner_makeDAG',
-                    params: 1,
-                    inputFormatter: [web3._extend.formatters.inputDefaultBlockNumberFormatter],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                })
+                insertMethod('start', 'miner_start', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputBool),
+                insertMethod('stop', 'miner_stop', 1, [web3._extend.formatters.formatInputInt], web3._extend.formatters.formatOutputBool),
+                insertMethod('setExtra', 'miner_setExtra', 1, [web3._extend.utils.formatInputString], web3._extend.formatters.formatOutputBool),
+                insertMethod('setGasPrice', 'miner_setGasPrice', 1, [web3._extend.utils.formatInputString], web3._extend.formatters.formatOutputBool),
+                insertMethod('startAutoDAG', 'miner_startAutoDAG', 0, [], web3._extend.formatters.formatOutputBool),
+                insertMethod('stopAutoDAG', 'miner_stopAutoDAG', 0, [], web3._extend.formatters.formatOutputBool),
+                insertMethod('makeDAG', 'miner_makeDAG', 1, [web3._extend.formatters.inputDefaultBlockNumberFormatter], web3._extend.formatters.formatOutputBool),
             ],
             properties:
             [
-                new web3._extend.Property({
-                    name: 'hashrate',
-                    getter: 'miner_hashrate',
-                    outputFormatter: web3._extend.utils.toDecimal
-                })
-            ]
+                insertProperty('hashrate', 'miner_hashrate', web3._extend.utils.toDecimal),
+            ],
         });
 
         // NETWORK
@@ -204,61 +69,26 @@ module.exports = {
             property: 'network',
             methods:
             [
-                new web3._extend.Method({
-                    name: 'addPeer',
-                    call: 'net_addPeer',
-                    params: 1,
-                    inputFormatter: [web3._extend.utils.formatInputString],
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Method({
-                    name: 'getPeerCount',
-                    call: 'net_peerCount',
-                    params: 0,
-                    inputFormatter: [],
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                })
+                insertMethod('addPeer', 'net_addPeer', 1, [web3._extend.utils.formatInputString], web3._extend.formatters.formatOutputBool),
+                insertMethod('getPeerCount', 'net_peerCount', 0, [], web3._extend.formatters.formatOutputString),
             ],
             properties:
             [
-                new web3._extend.Property({
-                    name: 'listening',
-                    getter: 'net_listening',
-                    outputFormatter: web3._extend.formatters.formatOutputBool
-                }),
-                new web3._extend.Property({
-                    name: 'peerCount',
-                    getter: 'net_peerCount',
-                    outputFormatter: web3._extend.utils.toDecimal
-                }),
-                new web3._extend.Property({
-                    name: 'peers',
-                    getter: 'net_peers',
-                    outputFormatter: function(obj) { return obj; }
-                }),
-                new web3._extend.Property({
-                    name: 'version',
-                    getter: 'net_version',
-                    outputFormatter: web3._extend.formatters.formatOutputString
-                })
-            ]
+                insertProperty('listening', 'net_listening', web3._extend.formatters.formatOutputBool),
+                insertProperty('peerCount', 'net_peerCount', web3._extend.utils.toDecimal),
+                insertProperty('peers', 'net_peers', null),
+                insertProperty('version', 'net_version', web3._extend.formatters.formatOutputString),
+            ],
         });
-
 
         // TX POOL
         web3._extend({
             property: 'txpool',
-            methods:
-            [
-            ],
+            methods: [],
             properties:
             [
-                new web3._extend.Property({
-                    name: 'status',
-                    getter: 'txpool_status',
-                    outputFormatter: function(obj) { return obj; }
-                })
-            ]
+                insertProperty('status', 'txpool_status', null),
+            ],
         });
-    }
+    },
 };

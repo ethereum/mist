@@ -1,0 +1,24 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 40  ## default threshold
+  eslint:
+    enabled: true
+    channel: "eslint-3"  ## required for airbnb-base config
+    checks:
+      complexity:
+        enabled: true
+  csslint:
+    enabled: true
+
+ratings:  ## enables GPA rating
+   paths:
+   - "**.css"
+   - "**.js"
+
+exclude_paths:
+- "interface/client/lib/signatures.js"
+- "tests/"

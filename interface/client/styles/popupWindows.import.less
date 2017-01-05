@@ -31,6 +31,8 @@
 
 .popup-windows {
 	text-align: center;
+	height: 100vh;
+
 	a,
 	button {
 		color: @colorLinkActive;
@@ -38,52 +40,87 @@
 	a:focus {
 		color: @colorLinkFocus;
 	}
+
+	h3 {
+		color: @colorGrayDark;
+		a {
+			float: right;
+			font-weight: 400;
+		}
+	}
 	img.left-overlay {
 		position: relative;
 		top: -40px;
-		left: -132%;
-		width: 255%;
+		left: -160%;
+		width: 300%;
+        z-index: 1;
 	}
-	&.update-available {
+
+	footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding: 0 @gridHeight;
+        padding-top: @gridHeight * 3;
+        background: linear-gradient(transparent 0%, @colorGrayLight 20%);
+
+        &.dapp-small {
+            background: linear-gradient(transparent 50%, @colorGrayLight 70%);       
+        }
+	}
+
+	.info.dapp-error{
+		color: @colorError;
+		font-weight: 600;
+	}
+
+	&.update-available {  
+        -webkit-user-select: all;
+
 		.text {
 			text-align: left;
 		}
 		h1 {
 			font-size: 200%;
 			margin-bottom: 20px;
+
 			&.no-update {
 				font-size: 180%;
 			}
 		}
 	}
 	&.tx-info {
+
+		.container {
+			overflow: auto;
+			height: 80vh;
+			padding-bottom: 120px;
+		}
+
 		.transaction-parties {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
 			justify-content: center;
+			margin: 0 @gridWidth;
+
 			> div {
 				// flex: 1 1 auto;
 				color: @colorTextSecondary;
-			}
-			// addresses
-			> div:nth-child(odd) {
 				position: relative;
-				padding: 0 @defaultMargin*3;
-				font-weight: 400;
 			}
-			> div:nth-child(1) {
-				.overlap-icon {
-					right: 32px;
-				}
+
+			div.connection {
+				padding: @gridHeight @gridWidth/2;
 			}
-			> div:nth-child(3) {
-				.overlap-icon {
-					left: 32px;
-				}
+
+			div.amount, div.function-signature {
+				flex: 1 50%;
 			}
+
 			// amount
-			> div.amount {
+			div.amount {
 				position: relative;
 				margin-top: -30px;
 				height: 40px;
@@ -114,9 +151,24 @@
 					font-weight: 600;
 				}
 			}
+            .function-signature {
+                font-weight: 400;
+				font-size: 1.5em;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                text-transform: uppercase;
+                max-width: @gridWidth * 10;
+
+                &.has-signature {
+                    text-transform: none;
+                }
+            }
 		}
 		table,
 		.data,
+		.parameters,
+		.fees,
 		.info {
 			width: 420px;
 			margin: @defaultMargin*2 auto;
@@ -130,10 +182,78 @@
 				font-weight: 400;
 			}
 		}
+
+		// Parameters 
+		.fees,
+		.parameters {
+            font-size: 0.9em;
+            text-align: left;
+            ul, ol {
+                counter-reset: item;
+                padding: 0;
+                list-style-type: none;
+                list-style-position: inside;
+                li {
+                	display: flex;
+                	min-height: @gridHeight * 2;
+                	align-items: center;
+
+                    .allowSelection;
+                    font-weight: 200;
+                    transition: background 0.5s ease-out;
+
+                    &> div {
+                    	padding: 0 @gridWidth/4;
+                    }
+                    .value {
+                    	flex: 1;
+                    	overflow: hidden;
+					    text-overflow: ellipsis;
+					    .icon {
+					    	position: relative;
+					    	top: 1px;
+					    }
+                        &:hover strong {
+                            word-break: break-all;
+                        }
+                        
+                    }
+                    .type {
+                    	text-align: right;
+                    	max-width: @gridWidth * 10;
+                    }
+
+                    &:hover {
+                    	background-color: #FFF;
+                    	transition: background 0.1s ease-in;
+                    }
+                }
+
+                ::selection {
+                    color: #FFF; 
+                    background: @colorLink;
+                }                 
+            }
+
+            ol li::before {
+            	counter-increment: item;
+				content: counter(item);
+				opacity: 0.5;
+				color: @colorGrayDark;
+				font-weight: 400;
+            }
+        }
+
 		.overlap-icon {
 			position: absolute;
-			top: 20px;
-			font-size: 20px;
+			top: 34px;
+			font-size: 18px;
+			text-align: center;
+			color: #FFF;
+		    width: @gridWidth*2;
+		    opacity: 0.75;
+		    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+
 		}
 		.circle-icon {
 			display: inline-block;
@@ -189,8 +309,99 @@
 			margin-bottom: 20px;
 		}
 		.fields-container {
+            // addresses
+            > div:nth-child(odd) {
+                position: relative;
+                padding: 0 @defaultMargin*2;
+                font-weight: 400;
+            }
+            > div:nth-child(1) {
+                .overlap-icon {
+                    right: @defaultMargin * 1.25;
+                }
+            }
+            > div:nth-child(3) {
+                .overlap-icon {
+                    left: @defaultMargin * 1;
+                }
+            }
+            // amount
+            > div.amount {
+                position: relative;
+                margin-top: -30px;
+                height: 40px;
+                width: @defaultMargin * 10;
+                font-size: 1.5em;
+                color: darken(@colorTextSecondary, 8%);
+                border-bottom: 1px solid @colorTextSecondary;
 
-		}
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    right: 0;
+                    border: 5px solid @colorTextSecondary;
+                    border-color: transparent @colorTextSecondary @colorTextSecondary transparent;
+                    .rotate(-45deg);
+                }
+
+                .unit {
+                    font-size: 0.6em;
+                    font-weight: 400;
+                }
+            }
+        }
+
+        table,
+        .data,
+        .info {
+            width: 420px;
+            margin: @defaultMargin*2 auto;
+        }
+        table {
+
+            td:nth-child(1) {
+                text-align: left;
+            }
+            td:nth-child(2) {
+                text-align: right;
+                font-weight: 400;
+            }
+        }
+
+        .overlap-icon {
+            position: absolute;
+            top: 20px;
+            font-size: 20px;
+        }
+        .circle-icon {
+            display: inline-block;
+            background-color: @colorGrayLight;
+            .border-radius(50%);
+            font-size: 33px;
+            padding: @defaultMargin;
+
+            // + span {
+            //     display: inline-block;
+            // }
+        }
+
+        .provided-gas {
+            display: inline;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            color: @colorLink;
+            background-color: transparent;
+            border: 0;
+            text-align: right;
+            border-bottom: 1px dotted @colorLink;
+
+            &:focus {
+                outline: 0;
+            }
+        }
+
 		.show-password-container {
 			width: 300px;
 			margin: 0 auto 0;
@@ -347,8 +558,42 @@
 			font-size: 14px;
 			color: #AEAEAE;
 		}
+
+		.data,
+        .info {
+            text-align: left;
+            padding: 0 @defaultMargin/2;
+            position: relative;
+            .toggle-panel {
+                position: absolute;
+                right: 0;
+                top: 0;
+                font-weight: 500;
+                font-size: 0.8em;
+            }
+        }
+        .data {
+            font-size: 0.9em;
+            
+            pre {
+                margin: 0 -@defaultMargin;
+                overflow: auto;
+                height: 90px;
+                background-color: @colorGrayLight;//lighten(@colorGray, 10%);
+                color: @colorTextPrimary;
+
+                span.zero {
+                    color: fadeout(@colorTextSecondary, 30%);
+                }
+                span.function {
+                    font-weight: 600;
+                }
+            }
+        }
+
 	}
 }
+
 
 body.app-blur .popup-windows.connect-account .cards-container .switch-card ul::after {
 	background: -webkit-linear-gradient(top, rgba(246, 246, 246, 0), rgba(246, 246, 246, 1));

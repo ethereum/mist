@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "Загузка...",
+        "offline": "Не удается подключиться, вы в автономном режиме?",
+        "logginIn": "Вход в систему..."
+    },
+    "error": {
+        "insufficientRights": "Вы не имеете достаточно прав для этого действия."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Отмена",
+        "save": "Сохранить",
+        "edit": "Изменить",
+        "send": "Отправить",
+        "next": "Далее",
+        "previous": "Предыдущий",
+        "back": "Назад",
+        "skip": "Сбросить",
+        "sending": "Отправка...",
+        "create": "Создать",
+        "tryToReconnect": "Переподключить",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
+    },
+    "commonWords": {
+        "you": "Вы",
+        "send": "Отправили",
+        "or": "или",
+        "of": "из",
+        "with": "от",
+        "and": "и",
+        "on": "на",
+        "per": "в"
+    }
+}

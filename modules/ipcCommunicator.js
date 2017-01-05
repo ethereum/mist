@@ -4,19 +4,15 @@ Window communication
 @module ipcCommunicator
 */
 
-const electron = require('electron');
-const shell = electron.shell;
-
-const app = electron.app;  // Module to control application life.
-const appMenu = require('./menuItems');
-const logger = require('./utils/logger');
-const Windows = require('./windows');
-const ipc = electron.ipcMain;
-
 const _ = global._;
+const { app, ipcMain: ipc, shell, webContents } = require('electron');
+const Windows = require('./windows');
+const logger = require('./utils/logger');
+const appMenu = require('./menuItems');
 
 const log = logger.create('ipcCommunicator');
 
+require('./abi.js');
 /*
 
 // windows including webviews
@@ -36,25 +32,25 @@ windows = {
 */
 
 // UI ACTIONS
-ipc.on('backendAction_closeApp', function() {
+ipc.on('backendAction_closeApp', () => {
     app.quit();
 });
 
-ipc.on('backendAction_openExternalUrl', function(e, url) {
+ipc.on('backendAction_openExternalUrl', (e, url) => {
     shell.openExternal(url);
 });
 
-ipc.on('backendAction_closePopupWindow', function(e) {
-    var windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+ipc.on('backendAction_closePopupWindow', (e) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
         senderWindow.close();
     }
 });
-ipc.on('backendAction_setWindowSize', function(e, width, height) {
-    var windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+ipc.on('backendAction_setWindowSize', (e, width, height) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
         senderWindow.window.setSize(width, height);
@@ -62,30 +58,38 @@ ipc.on('backendAction_setWindowSize', function(e, width, height) {
     }
 });
 
-ipc.on('backendAction_sendToOwner', function(e, error, value) {
-    var windowId = e.sender.getId(),
-        senderWindow = Windows.getById(windowId);
+ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
 
-    var mainWindow = Windows.getByType('main');
-
-    if (senderWindow.ownerId) {
-        let ownerWindow = Windows.getById(senderWindow.ownerId);
-
-        if (ownerWindow) {
-            ownerWindow.send('windowMessage', senderWindow.type, error, value);            
-        }
-
-        if (mainWindow) {
-            mainWindow.send('mistUI_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
-        }
+    if (senderWindow.callback) {
+        senderWindow.callback(value1, value2, value3);
     }
-
 });
 
-ipc.on('backendAction_setLanguage', function(e, lang){
-    if(global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0,5), function(err, t){
-            if(!err) {
+ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
+    const windowId = e.sender.id;
+    const senderWindow = Windows.getById(windowId);
+
+    if (senderWindow.ownerId) {
+        const ownerWindow = Windows.getById(senderWindow.ownerId);
+        const mainWindow = Windows.getByType('main');
+
+        if (ownerWindow) {
+            ownerWindow.send('uiAction_windowMessage', senderWindow.type, error, value);
+        }
+
+        // send through the mainWindow to the webviews
+        if (mainWindow) {
+            mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
+        }
+    }
+});
+
+ipc.on('backendAction_setLanguage', (e, lang) => {
+    if (global.language !== lang) {
+        global.i18n.changeLanguage(lang.substr(0, 5), (err) => {
+            if (!err) {
                 global.language = global.i18n.language;
                 log.info('Backend language set to: ', global.language);
                 appMenu(global.webviews);
@@ -94,35 +98,50 @@ ipc.on('backendAction_setLanguage', function(e, lang){
     }
 });
 
+ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
+    console.log('webcontent ID', id);
+    const webContent = webContents.fromId(id);
+
+    if (webContent && !webContent.isDestroyed()) {
+        webContent.stop();
+    }
+
+    e.returnValue = true;
+});
+
 
 // import presale file
-ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
+ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
     const spawn = require('child_process').spawn;
-    const getNodePath = require('./getNodePath.js');
-    var error = false;
+    const ClientBinaryManager = require('./clientBinaryManager');
+    let error = false;
+
+    const binPath = ClientBinaryManager.getClient('geth').binPath;
 
     // start import process
-    var nodeProcess = spawn(getNodePath('geth'), ['wallet', 'import', path]);
+    const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
 
-    nodeProcess.once('error',function(){
+    nodeProcess.once('error', () => {
         error = true;
         e.sender.send('uiAction_importedPresaleFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
-    nodeProcess.stdout.on('data', function(data) {
+    nodeProcess.stdout.on('data', (data) => {
         var data = data.toString();
-        if(data)
+        if (data) {
             log.info('Imported presale: ', data);
+        }
 
-        if(/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
+        if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
             e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');
 
         // if imported, return the address
-        } else if(data.indexOf('Address:') !== -1) {
-            var find = data.match(/\{([a-f0-9]+)\}/i);
-            if(find.length && find[1])
-                e.sender.send('uiAction_importedPresaleFile', null, '0x'+ find[1]);
-            else
+        } else if (data.indexOf('Address:') !== -1) {
+            const find = data.match(/\{([a-f0-9]+)\}/i);
+            if (find.length && find[1]) {
+                e.sender.send('uiAction_importedPresaleFile', null, `0x${find[1]}`);
+            } else {
                 e.sender.send('uiAction_importedPresaleFile', data);
+            }
 
         // if not stop, so we don't kill the process
         } else {
@@ -135,22 +154,21 @@ ipc.on('backendAction_importPresaleFile', function(e, path, pw) {
     });
 
     // file password
-    setTimeout(function(){
-        if(!error) {
-            nodeProcess.stdin.write(pw +"\n");
+    setTimeout(() => {
+        if (!error) {
+            nodeProcess.stdin.write(`${pw}\n`);
             pw = null;
         }
     }, 2000);
 });
 
 
-
-var createAccountPopup = function(e){
+const createAccountPopup = (e) => {
     Windows.createPopup('requestAccount', {
-        ownerId: e.sender.getId(),
+        ownerId: e.sender.id,
         electronOptions: {
-            width: 400, 
-            height: 230, 
+            width: 400,
+            height: 230,
             alwaysOnTop: true,
         },
     });
@@ -159,14 +177,12 @@ var createAccountPopup = function(e){
 // MIST API
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
-ipc.on('mistAPI_requestAccount', function(e) {
-    if (global.mode == 'wallet') {
+ipc.on('mistAPI_requestAccount', (e) => {
+    if (global.mode === 'wallet') {
         createAccountPopup(e);
-    }
-    // Mist
-    else {
+    } else { // Mist
         Windows.createPopup('connectAccount', {
-            ownerId: e.sender.getId(),
+            ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
                 height: 497,
@@ -180,9 +196,9 @@ ipc.on('mistAPI_requestAccount', function(e) {
 
 const uiLoggers = {};
 
-ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
+ipc.on('console_log', (event, id, logLevel, logItemsStr) => {
     try {
-        let loggerId = `(ui: ${id})`;
+        const loggerId = `(ui: ${id})`;
 
         let windowLogger = uiLoggers[loggerId];
 
@@ -190,14 +206,12 @@ ipc.on('console_log', function(event, id, logLevel, logItemsStr) {
             windowLogger = uiLoggers[loggerId] = logger.create(loggerId);
         }
 
-        windowLogger[logLevel].apply(windowLogger, _.toArray(JSON.parse(logItemsStr)));
+        windowLogger[logLevel](..._.toArray(JSON.parse(logItemsStr)));
     } catch (err) {
         log.error(err);
     }
 });
 
-ipc.on('backendAction_reloadSelectedTab', function(event) {
+ipc.on('backendAction_reloadSelectedTab', (event) => {
     event.sender.send('uiAction_reloadSelectedTab');
 });
-
-

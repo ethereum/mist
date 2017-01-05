@@ -14,7 +14,7 @@ If possible add the following to your report:
 
 - Check the console, of Mist (`CTRL/CMD + ALT + i`) and take a screenshot
 
-- Log files (Go to `menu -> accounts -> backup -> application data` and upload as zip-archive):
-  -   osx: `~/Library/Application Support/Mist/node.log` 
-  -   windows: `%APPDATA%/Roaming/Mist/node.log`
-  -   linux: `~/.config/Mist/node.log`
+- Log files 
+  - go to `menu -> accounts -> backup -> application data`
+  - zip and upload `node.log` and all other `node.log.X` files 
+ 

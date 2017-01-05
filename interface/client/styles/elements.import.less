@@ -17,6 +17,22 @@ img {
     }
 }
 
+ul.no-bullets {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    word-wrap: break-word;
+
+    li {
+        margin: 0;
+        margin-bottom: @defaultMargin/2;
+
+        strong {
+            font-weight: 400;
+        }
+    }
+}
+
 
 .node-info { 
     position: absolute;
@@ -33,4 +49,3 @@ img {
     color: @colorWhite;
     background-color: @colorError;
 }
-

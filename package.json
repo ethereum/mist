@@ -1,19 +1,24 @@
 {
   "name": "Mist",
-  "version": "0.8.2",
+  "version": "0.8.8",
   "license": "GPL-3.0",
+  "author": "Ethereum Mist Team <mist@ethereum.org>",
   "repository": {
     "type": "git",
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
+    "postinstall": "cd interface && yarn",
     "ci": "gulp --platform=linux"
   },
   "main": "main.js",
   "dependencies": {
+    "babel-runtime": "^6.18.0",
     "bignumber.js": "^2.1.4",
     "bluebird": "^3.3.5",
-    "deep-extend": "^0.4.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "ethereum-client-binaries": "^1.6.1",
+    "ethereumjs-abi": "^0.6.3",
     "got": "^6.3.0",
     "i18next": "^2.3.4",
     "log-rotate": "^0.2.7",
@@ -23,8 +28,10 @@
     "numeral": "^1.5.3",
     "os-timesync": "^1.0.6",
     "semver": "^5.1.0",
-    "solc": "^0.3.1-1",
+    "solc": "0.4.6",
+    "typescript": "^1.7.3",
     "underscore": "^1.8.3",
+    "underscore-deep-extend": "^1.1.5",
     "uuid": "^2.0.2",
     "web3": "^0.17.0-alpha",
     "yargs": "^4.3.1"
@@ -33,27 +40,22 @@
     "chai": "^3.5.0",
     "co-mocha": "^1.1.2",
     "del": "^1.2.1",
-    "easy-zip": "0.0.4",
-    "electron-packager": "^7.0.4",
+    "electron": "1.3.13",
+    "electron-builder": "=9.1.0",
+    "eslint": "^3.8.0",
+    "eslint-config-airbnb-base": "^8.0.0",
+    "eslint-plugin-import": "^1.16.0",
     "genomatic": "^1.0.0",
     "geth-private": "^1.3.0",
     "gulp": "^3.9.0",
-    "gulp-download-stream": "0.0.13",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.5.4",
+    "gulp-flatten": "^0.3.0",
     "gulp-spawn-mocha": "^2.2.2",
-    "gulp-tap": "^0.1.3",
-    "gulp-zip": "^3.2.0",
     "merge-stream": "^1.0.0",
-    "minimist": "^1.1.3",
-    "rcedit": "^0.3.0",
+    "minimist": "^1.2.0",
+    "optimist": "^0.6.1",
     "run-sequence": "^1.2.1",
     "shelljs": "^0.7.0",
-    "spectron": "^3.2.2"
-  },
-  "engines": {
-    "node": ">4.3.0",
-    "electron": "1.0.1",
-    "atom-shell": "0.36.2"
+    "spectron": "^3.2.2",
+    "sync-request": "^3.0.1"
   }
 }

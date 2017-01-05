@@ -7,9 +7,9 @@
             <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
                 <label for="url-input" class="dapp-info {{#if icon}}has-icon{{/if}}">
                     {{#if icon}}
-                        {{> elements_img src=icon class="app-icon" }}
+                        <img src="{{icon}}" class="app-icon">
                     {{/if}}
-                    <span>{{name}}</span>
+                    <span title="{{nameFull}}">{{name}}</span>
                 </label>
 
                 <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
@@ -17,6 +17,7 @@
                     <div class="url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
 
+                {{#unless permissions.admin}}
                 <button class="accounts">
                     {{#each dappAccounts}}
                         <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
@@ -29,6 +30,7 @@
                         <span class="simptip-position-left simptip-movable no-accounts" data-tooltip="{{i18n 'mist.browserBar.buttons.noAccounts'}}"></span>
                     {{/each}}
                 </button>
+                {{/unless}}
             </div>
     </div>
     {{/with}}    

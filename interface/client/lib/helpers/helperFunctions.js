@@ -13,6 +13,14 @@ The Helpers class containing helper functions
 Helpers = {};
 
 /**
+The preloader dirname
+
+@property preloaderDirname
+**/
+Helpers.preloaderDirname = window.dirname + '/modules/preloader';
+
+
+/**
 Reruns functions reactively, based on an interval. Use it like so:
 
     Helpers.rerun['10s'].tick();
@@ -36,12 +44,39 @@ Helpers.getWebview = function(id){
 };
 
 /**
+Get tab by url and return the id
+
+@method getTabIdByUrl
+@param {String} url
+@return {String} id
+*/
+Helpers.getTabIdByUrl= function(url, returnEmpty){
+    var tabs = Tabs.find().fetch();
+    url = Helpers.sanitizeUrl(url);
+
+    var foundTab = _.find(tabs, function(tab){
+            if(tab._id === 'browser' || !tab.url)
+                return false;
+            var tabOrigin = new URL(tab.url).origin;
+            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+        });
+
+    // switch tab to browser
+    if(foundTab)
+        foundTab = foundTab._id;
+    else
+        foundTab = 'browser';
+
+    return foundTab;
+};
+
+/**
 Format Urls, e.g add a default protocol if on is missing.
 
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){    
+Helpers.formatUrl = function(url){
     // add http:// if no protocol is present
     if(url && url.indexOf('://') === -1)
         url = 'http://'+ url;
@@ -49,17 +84,58 @@ Helpers.formatUrl = function(url){
     return url;
 };
 
+/**
+Sanatizes URLs to prevent phishing and XSS attacks
+
+@method sanitizeUrl
+@param {String} url
+**/
+Helpers.sanitizeUrl = function(url, returnEmptyURL){
+    url = String(url);
+
+    url = url.replace(/[\t\n\r\s]+/g, '');
+    url = url.replace(/^[:\/]{1,3}/i, 'http://');
+
+    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
+        url = false;
+    }
+
+    return url;
+};
+
+/**
+Takes an URL and creates a breadcrumb out of it.
+
+@method generateBreadcrumb
+@return Spacebars.SafeString
+**/
+Helpers.generateBreadcrumb = function (url) {
+    var filteredUrl;
+    var pathname;
+
+    filteredUrl = {
+        protocol: Blaze._escape(url.protocol),
+        host: Blaze._escape(url.host),
+        pathname: Blaze._escape(url.pathname)
+    };
+
+    pathname = _.reject(filteredUrl.pathname.replace(/\/$/g, '').split('/'), function (el) {
+        return el === '';
+    });
+
+    return new Spacebars.SafeString(filteredUrl.protocol +'//'+ _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+};
 
 /**
 Clear localStorage
 
 @method getLocalStorageSize
 **/
-Helpers.getLocalStorageSize = function(){
+Helpers.getLocalStorageSize = function () {
 
     var size = 0;
     if(localStorage) {
-        _.each(Object.keys(localStorage), function(key){
+        _.each(Object.keys(localStorage), function (key) {
             size += localStorage[key].length * 2 / 1024 / 1024;
         });
     }
@@ -67,6 +143,84 @@ Helpers.getLocalStorageSize = function(){
     return size;
 };
 
+/**
+Makes tab with index active
+
+@method selecTabWithIndex
+@param {Integer} index
+*/
+Helpers.selectTabWithIndex = function (index) {
+    var tabList = Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch();
+    if (index < tabList.length) {
+        LocalStore.set('selectedTab', tabList[index]._id);
+    }
+};
+
+/**
+Makes last tab active
+
+@method selecLastTab
+*/
+Helpers.selectLastTab = function () {
+    var lastTab = Tabs.findOne({}, { sort: { position: -1 }, fields: { _id: 1 }, limit: 1 });
+    LocalStore.set('selectedTab', lastTab._id);
+};
+
+/**
+Selects previous or next tab (offset +1 or -1)
+
+@method selectTabWithOffset
+*/
+Helpers.selectTabWithOffset = function (offset) {
+    var tabList;
+    var currentTabIndex;
+    var newTabIndex;
+
+    if (Math.abs(offset) !== 1) {
+        return;
+    }
+    tabList = _.pluck(Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch(), '_id');
+    currentTabIndex = tabList.indexOf(LocalStore.get('selectedTab'));
+
+    newTabIndex = (currentTabIndex + offset) % tabList.length;
+    if (newTabIndex < 0) newTabIndex = tabList.length - 1;
+
+    LocalStore.set('selectedTab', tabList[newTabIndex]);
+};
+
+/**
+Detect Network
+
+@method detectNetwork
+**/
+Helpers.detectNetwork = function (hash) {
+    var network = {};
+
+    switch (hash) {
+    case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
+        console.log('Network is mainnet');
+        network.type = 'mainnet';
+        break;
+
+    case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
+        console.log('Network is Testnet #3 (Ropsten)');
+        network.type = 'testnet';
+        network.name = 'Testnet #3 (Ropsten)';
+        break;
+
+    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
+        console.log('Network is Testnet #2 (Morden)');
+        network.type = 'testnet';
+        network.name = 'Testnet #2 (Morden)';
+        break;
+
+    default:
+        console.log('Network is privatenet');
+        network.type = 'privatenet';
+    }
+
+    return network;
+};
 
 /**
 Displays an error as global notification
@@ -185,7 +339,7 @@ Formats a timestamp to any format given.
 @return {String} The formated time
 **/
 // Helpers.formatTime = function(time, format) { //parameters
-    
+
 //     // make sure not existing values are not Spacebars.kw
 //     if(format instanceof Spacebars.kw)
 //         format = null;

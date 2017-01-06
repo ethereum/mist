@@ -38,12 +38,12 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
 
             if(syncing === true) {
                 web3.reset(true);
-
             } else if(_.isObject(syncing)) {
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
+
                 TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
-                
+
             } else {
                 TemplateVar.set(template, 'syncing', false);
             }
@@ -78,7 +78,7 @@ Template['popupWindows_onboardingScreen'].helpers({
         return (account) ? account.toLowerCase() : '';
     },
     /**
-    Updates the Sync Message live
+    Updates the Sync Data
 
     @method syncStatus
     */
@@ -86,42 +86,60 @@ Template['popupWindows_onboardingScreen'].helpers({
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
+
         Meteor.clearInterval(template._intervalId);
 
         // Create an interval to quickly iterate trough the numbers
         template._intervalId = Meteor.setInterval(function(){
             // load the sync information
             var syncing = TemplateVar.get(template, 'syncing'); 
-            
-            // Calculates a block t display that is always getting 1% closer to target
-            syncing._displayBlock = (syncing._displayBlock + (syncing.currentBlock - syncing._displayBlock) / 100 )|| syncing.currentBlock;            
 
-            syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/syncing.knownStates - syncing._displayStatesDownload) / 100 ) || syncing.pulledStates/syncing.knownStates;
+            if (syncing) {
+                // If it's syncing, then it's not ready
+                TemplateVar.set(template, 'readyToLaunch', false);
+
+                // Calculates a block t display that is always getting a few % closer to target
+                syncing._displayBlock = (syncing._displayBlock + 2*(syncing.currentBlock - syncing._displayBlock) / 100 ) || Number(syncing.startingBlock);            
+
+                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
+
+                // Calculates progress
+                syncing.progress = 100 * (syncing._displayBlock - syncing.startingBlock) / (1 + Number(syncing.highestBlock) - syncing.startingBlock);
+
+                // Makes fancy strings
+                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
+                syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
+                syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
+                syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+
+                // Saves the data back to the object
+                TemplateVar.set(template, 'syncing', syncing);
 
 
-            // Calculates progress
-            syncing.progress = Math.round(((syncing._displayBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
-            
-            // Makes fancy strings
-            syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-            syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
-            syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
-            syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+                // If it's close enough, show the synced button
+                if (Number(syncing.highestBlock) - syncing.currentBlock < 100 ) {
+                    TemplateVar.set(template, 'readyToLaunch', true);
+                }
 
-            // Saves the data back to the object
-            TemplateVar.set(template, 'syncing', syncing);
-
-            // Only show states if they are less than 50% downloaded
-            if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/syncing.knownStates))) {
-                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
-            } else {
-                TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+                // Only show states if they are changing
+                if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/(syncing.knownStates+1)))) {
+                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
+                } else if (syncing.displayBlock == '0') {
+                    TemplateVar.set(template, "syncStatusMessageLive", '');
+                } else {
+                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+                }
             }
 
-
         }, 50);
+    },
+    /**
+    Updates the Sync Message live
 
-        return TemplateVar.get(template, "syncStatusMessageLive");
+    @method syncStatusMessage
+    */
+    'syncStatusMessage' : function() {
+        return TemplateVar.get("syncStatusMessageLive");        
     }
 });
 
@@ -136,12 +154,14 @@ Template['popupWindows_onboardingScreen'].events({
         if(TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
+            TemplateVar.set('syncing', null);
         }
     },
    'click .start-testnet': function(e, template){
         if(!TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', true);
             TemplateVar.set('testnet', true);
+            TemplateVar.set('syncing', null);            
         }
 
         TemplateVar.set('currentActive','testnet');
@@ -156,15 +176,18 @@ Template['popupWindows_onboardingScreen'].events({
     },
    'click .goto-tutorial-1': function(){
         TemplateVar.set('currentActive','tutorial-1');
-        TemplateVar.set('readyToLaunch', true);
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
    'click .goto-tutorial-2': function(){
         TemplateVar.set('currentActive','tutorial-2');
-        TemplateVar.set('readyToLaunch', true);
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
    'click .goto-tutorial-3': function(){
         TemplateVar.set('currentActive','tutorial-3');
-        TemplateVar.set('readyToLaunch', true);
+        if (!TemplateVar.get('syncing')) 
+            TemplateVar.set('readyToLaunch', true);
     },
     /**
     Start the application

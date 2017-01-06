@@ -60,6 +60,10 @@ Template['views_webview'].onRendered(function(){
         webviewLoadStop.call(this, tabId, e);
     });
 
+    // show error pages
+    webview.addEventListener('did-fail-load', showError.bind(webview, tabId));
+    webview.addEventListener('crashed', showError.bind(webview, tabId));
+
     // navigate page, and redirect to browser tab if necessary
     webview.addEventListener('will-navigate', webviewLoadStart.bind(webview, tabId));
     webview.addEventListener('did-get-redirect-request', webviewLoadStart.bind(webview, tabId));
@@ -122,6 +126,10 @@ Template['views_webview'].helpers({
                 }});
             }
 
+            // allow error pages
+            if(url && url.indexOf('file://'+ dirname + '/errorPages/') === 0) {
+                return url;
+            }
 
             // CHECK URL and throw error if not allowed
             if(!Helpers.sanitizeUrl(url, true)) {
@@ -137,7 +145,7 @@ Template['views_webview'].helpers({
                 return 'file://'+ dirname + '/errorPages/400.html';
             }
 
-            // remove redirect
+            // add url
             if(url) {
                 template.url = url;
                 Tabs.update(this._id, {$set: {

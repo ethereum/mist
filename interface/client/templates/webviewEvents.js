@@ -1,4 +1,31 @@
 
+showError = function(tabId, e){
+    if(e.isMainFrame || e.killed) {
+        var url,
+            path = 'file://'+ dirname + '/errorPages/';
+
+        if(e.killed) {
+            e.errorCode = 500;
+        }
+
+        switch(e.errorCode) {
+            case -105:
+                url = path +'404.html';
+                break;
+            case 500:
+                url = path +'500.html';
+                break;
+        }
+
+        if(url) {
+            Tabs.update(tabId, {$set: {
+                redirect: url
+            }});
+        }
+    }
+};
+
+
 webviewChangeUrl = function(tabId, e){
     if(e.type === 'did-navigate-in-page' && !e.isMainFrame)
         return;

@@ -357,6 +357,7 @@ gulp.task('release-dist', ['build-dist'], (done) => {
 });
 
 gulp.task('upload-binaries', (cb) => {
+    // token must be set using travis' ENVs
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
     // query github releases

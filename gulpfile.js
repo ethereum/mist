@@ -367,9 +367,10 @@ gulp.task('upload-binaries', (cb) => {
     // filter draft with current version's tag
     .then((res) => {
         let draft;
-
         res.body.forEach((release) => {
-            if (release.tag_name.match(version) && release.draft === true) {
+            if (release.tag_name.match(version)
+            && release.draft === true
+            ) {
                 draft = release;
             }
         });
@@ -378,6 +379,8 @@ gulp.task('upload-binaries', (cb) => {
     })
     // upload binaries from release folders
     .then((draft) => {
+        if (draft && draft.assets.length !== 0) throw new Error('Github release draft already contains assets; will not upload');
+
         const dirs = ['dist_wallet/release', 'dist_mist/release'];
         const files = [];
         dirs.forEach((dir) => {
@@ -398,6 +401,8 @@ gulp.task('upload-binaries', (cb) => {
     .catch((err) => {
         if (err.message === "Cannot read property 'id' of undefined") {
             console.log(Error(`Couldn't find github release draft for v${version} release tag`));
+        } else {
+            console.log(err);
         }
     });
 });
@@ -444,9 +449,11 @@ gulp.task('download-signatures', (cb) => {
     .catch(cb);
 });
 
-gulp.task('taskQueue', [
-    'release-dist',
-]);
+gulp.task('taskQueue', ['release-dist'], () => {
+    if (process.env.CI) {
+        runSeq('upload-binaries');
+    }
+});
 
 // MIST task
 gulp.task('mist', (cb) => {

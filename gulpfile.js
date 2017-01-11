@@ -21,6 +21,8 @@ const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
 const fs = require('fs');
 const got = require('got');
+const Q = require('bluebird');
+const githubUpload = Q.promisify(require('gh-release-assets'));
 
 const options = minimist(process.argv.slice(2), {
     string: ['platform', 'walletSource'],
@@ -347,6 +349,50 @@ gulp.task('release-dist', ['build-dist'], (done) => {
     done();
 });
 
+gulp.task('upload-binaries', (cb) => {
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+    // query github releases
+    return got(`https://api.github.com/repos/luclu/mist/releases?access_token=${GITHUB_TOKEN}`, {
+        json: true,
+    })
+    // filter draft with current version's tag
+    .then((res) => {
+        let draft;
+
+        res.body.forEach((release) => {
+            if (release.tag_name.match(version) && release.draft === true) {
+                draft = release;
+            }
+        });
+
+        return draft;
+    })
+    // upload binaries from release folders
+    .then((draft) => {
+        const dirs = ['dist_wallet/release', 'dist_mist/release'];
+        const files = [];
+        dirs.forEach((dir) => {
+            files.push(_.map(fs.readdirSync(dir), (file) => { return path.join(dir, file); }));
+        });
+        const binaries = _.flatten(files);
+
+        return githubUpload({
+            url: `https://uploads.github.com/repos/luclu/mist/releases/${draft.id}/assets{?name}`,
+            token: [GITHUB_TOKEN],
+            assets: binaries,
+        }).then((res) => {
+            console.log(`Successfully uploaded ${res}`);
+
+            cb();
+        });
+    })
+    .catch((err) => {
+        if (err.message === "Cannot read property 'id' of undefined") {
+            console.log(Error(`Couldn't find github release draft for v${version} release tag`));
+        }
+    });
+});
 
 gulp.task('get-release-checksums', (done) => {
     const releasePath = `./dist_${type}/release`;

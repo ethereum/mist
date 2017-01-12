@@ -42,7 +42,7 @@ exports.mocha = function (_module, options) {
 
             let appPath,
                 gethPath;
-
+            console.log('options', options);
             switch (platformArch) {
             case 'darwin-x64':
                 appPath = path.join(
@@ -74,7 +74,7 @@ exports.mocha = function (_module, options) {
             }
 
             this.geth = gethPrivate({
-                gethPath: path.join(process.cwd(), 'nodes', 'geth', platformArch, 'geth'),
+                gethPath: '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth',
                 balance: 5,
                 genesisBlock: {
                     difficulty: '0x1',
@@ -93,8 +93,8 @@ exports.mocha = function (_module, options) {
 
             this.app = new Application({
                 requireName: 'electronRequire',
-                startTimeout: 5000,
-                waitTimeout: 5000,
+                startTimeout: 30000,
+                waitTimeout: 30000,
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
@@ -102,7 +102,7 @@ exports.mocha = function (_module, options) {
                     '--loglevel', 'debug',
                     '--logfile', logFilePath,
                     '--node-datadir', this.geth.dataDir,
-                    '--ipcpath', path.join(this.geth.dataDir, 'geth.ipc'),
+                    '--rpc', path.join(this.geth.dataDir, 'geth.ipc'),
                 ],
             });
 
@@ -113,7 +113,7 @@ exports.mocha = function (_module, options) {
             yield this.client.waitUntilWindowLoaded();
 
       // wait a small amount of time to ensure main app window is ready with data
-            yield Q.delay(8000);
+            yield Q.delay(20000);
 
       // console.log(this.app.chromeDriver.logLines);
 

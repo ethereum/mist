@@ -21,6 +21,8 @@ const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
 const fs = require('fs');
 const got = require('got');
+const Q = require('bluebird');
+const githubUpload = Q.promisify(require('gh-release-assets'));
 
 const options = minimist(process.argv.slice(2), {
     string: ['platform', 'walletSource'],
@@ -347,6 +349,52 @@ gulp.task('release-dist', ['build-dist'], (done) => {
     done();
 });
 
+gulp.task('upload-binaries', (cb) => {
+    // token must be set using travis' ENVs
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+    // query github releases
+    return got(`https://api.github.com/repos/luclu/mist/releases?access_token=${GITHUB_TOKEN}`, {
+        json: true,
+    })
+    // filter draft with current version's tag
+    .then((res) => {
+        let draft;
+        res.body.forEach((release) => {
+            if (release.tag_name.match(version)
+            && release.draft === true
+            ) {
+                draft = release;
+            }
+        });
+
+        return draft;
+    })
+    // upload binaries from release folders
+    .then((draft) => {
+        if (draft && draft.assets.length !== 0) throw new Error('Github release draft already contains assets; will not upload');
+
+        const dir = `dist_${type}/release`;
+        const binaries = _.map(fs.readdirSync(dir), (file) => { return path.join(dir, file); });
+
+        return githubUpload({
+            url: `https://uploads.github.com/repos/luclu/mist/releases/${draft.id}/assets{?name}`,
+            token: [GITHUB_TOKEN],
+            assets: binaries,
+        }).then((res) => {
+            console.log(`Successfully uploaded ${res}`);
+
+            cb();
+        });
+    })
+    .catch((err) => {
+        if (err.message === "Cannot read property 'id' of undefined") {
+            console.log(Error(`Couldn't find github release draft for v${version} release tag`));
+        } else {
+            console.log(err);
+        }
+    });
+});
 
 gulp.task('get-release-checksums', (done) => {
     const releasePath = `./dist_${type}/release`;
@@ -388,9 +436,13 @@ gulp.task('download-signatures', (cb) => {
     .catch(cb);
 });
 
-gulp.task('taskQueue', [
-    'release-dist',
-]);
+gulp.task('taskQueue', ['release-dist'], () => {
+    console.log(`TRAVIS_BRANCH: ${process.env.TRAVIS_BRANCH}`)
+    console.log(`TRAVIS_PULL_REQUEST_BRANCH: ${process.env.TRAVIS_PULL_REQUEST_BRANCH}`)
+    if (process.env.CI && process.env.TRAVIS_BRANCH === 'master') {
+        runSeq('upload-binaries');
+    }
+});
 
 // MIST task
 gulp.task('mist', (cb) => {
@@ -399,6 +451,12 @@ gulp.task('mist', (cb) => {
 
 // WALLET task
 gulp.task('wallet', (cb) => {
+    runSeq('set-variables-wallet', 'taskQueue', cb);
+});
+
+// CI task
+gulp.task('ci', (cb) => {
+    runSeq('set-variables-mist', 'taskQueue', cb);
     runSeq('set-variables-wallet', 'taskQueue', cb);
 });
 

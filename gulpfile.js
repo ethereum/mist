@@ -112,8 +112,10 @@ gulp.task('copy-app-source-files', ['clean:dist'], () => {
         './*.js',
         './clientBinaries.json',
         '!gulpfile.js',
-    ], { base: './' })
-        .pipe(gulp.dest(`./dist_${type}/app`));
+    ], {
+        base: './'
+    })
+    .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
 
@@ -136,9 +138,11 @@ gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], ()
     return gulp.src([
         `./icons/${type}/*`,
         './interface/public/images/dmg-background.jpg',
-    ], { base: './' })
-        .pipe(flatten())
-        .pipe(gulp.dest(`./dist_${type}/build`));
+    ], {
+        base: './'
+    })
+    .pipe(flatten())
+    .pipe(gulp.dest(`./dist_${type}/build`));
 });
 
 
@@ -151,7 +155,7 @@ gulp.task('copy-node-folder-files', ['clean:dist'], () => {
             streams.push(gulp.src([
                 `./nodes/eth/${osArch}/*`,
             ])
-                .pipe(gulp.dest(`./dist_${type}/app/nodes/eth/${osArch}`)));
+            .pipe(gulp.dest(`./dist_${type}/app/nodes/eth/${osArch}`)));
         }
     });
 
@@ -190,7 +194,7 @@ gulp.task('bundling-interface', ['switch-production'], (cb) => {
         if (options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
             exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                 `cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`, (err, stdout) => {
+                `cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`, (err, stdout) => {
                 console.log(stdout);
 
                 cb(err);
@@ -198,7 +202,7 @@ gulp.task('bundling-interface', ['switch-production'], (cb) => {
         } else {
             console.log(`Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${options.walletSource} "${options.walletSource}" branch...`);
             exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                 `cd ../dist_${type}/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, (err, stdout) => {
+                `cd ../dist_${type}/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, (err, stdout) => {
                 console.log(stdout);
 
                 cb(err);
@@ -213,8 +217,10 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n',
-    ], { base: './' })
-        .pipe(gulp.dest(`./dist_${type}/app`));
+    ], {
+        base: './'
+    })
+    .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
 
@@ -236,7 +242,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
                 'build-dist.js',
             ],
             extraFiles: [
-                'nodes/eth/${os}-${arch}',  // eslint-disable-line no-template-curly-in-string
+                'nodes/eth/${os}-${arch}', // eslint-disable-line no-template-curly-in-string
             ],
             linux: {
                 target: [
@@ -263,7 +269,8 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
                         x: 441,
                         y: 142,
                         type: 'file',
-                    }],
+                    }
+                ],
             },
         },
         directories: {
@@ -322,7 +329,7 @@ gulp.task('release-dist', ['build-dist'], (done) => {
 
     _.each(osArchList, (osArch) => {
         if (platformIsActive(osArch)) {
-            switch (osArch) {  // eslint-disable-line default-case
+            switch (osArch) { // eslint-disable-line default-case
             case 'win-ia32':
                 // cp(path.join('win-ia32', `${applicationName} Setup ${version}-ia32.exe`), `${appNameHypen}-win32-${versionDashed}.exe`);
                 cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
@@ -402,7 +409,9 @@ gulp.task('get-release-checksums', (done) => {
     const files = fs.readdirSync(releasePath);
 
     for (const file of files) {
-        const sha = shell.exec(`shasum -a 256 "${file}"`, { cwd: releasePath });
+        const sha = shell.exec(`shasum -a 256 "${file}"`, {
+            cwd: releasePath
+        });
 
         if (sha.code !== 0) {
             return done(new Error(`Error executing shasum: ${sha.stderr}`));

@@ -119,9 +119,6 @@ exports.mocha = function (_module, options) {
 
             yield this.client.waitUntilWindowLoaded();
 
-            // wait a small amount of time to ensure main app window is ready with data
-            yield Q.delay(8000);
-
             // console.log(this.app.chromeDriver.logLines);
 
             /*
@@ -130,6 +127,26 @@ exports.mocha = function (_module, options) {
             for (const key in Utils) {
                 this[key] = genomatic.bind(Utils[key], this);
             }
+
+            // Loop over windows trying to select Main Window
+            let app = this;
+            let selectMainWindow = function* (mainWindowSearch) {
+                let windowHandles = (yield app.client.windowHandles()).value;
+
+                for (let handle in windowHandles) {
+                    yield app.client.window(windowHandles[handle]);
+                    const windowUrl = yield app.client.getUrl();
+                    const isMainWindow = mainWindowSearch.test(windowUrl);
+                    if (isMainWindow) return true;
+                }
+
+                // not main window. try again after 1 second.
+                yield Q.delay(1000);
+                yield selectMainWindow(mainWindowSearch);
+            }
+
+            const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
+            yield selectMainWindow(mainWindowSearch);
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
         },

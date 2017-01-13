@@ -9,20 +9,17 @@ const test = require('../_base').mocha(module, {
 });
 
 test['Check for Mist title'] = function* () {
-    yield this.client.window(this.mainWindowHandle);
     (yield this.client.getTitle()).should.eql('Mist');
 };
 
 test['Sanity Check: main window is focused'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     (yield client.getUrl()).should.match(/interface\/index\.html$/);
 };
 
 test['Browser bar should render urls with separators'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     yield client.setValue('#url-input', 'http://example.com/page?param=value');
     yield client.submitForm('form.url');
@@ -36,7 +33,6 @@ test['Browser bar should render urls with separators'] = function* () {
 
 test['Browser bar should not render script tags on breadcrumb view'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     yield client.setValue('#url-input', '<script>alert()</script>');
     yield client.submitForm('form.url');
@@ -51,7 +47,6 @@ test['Browser bar should not render script tags on breadcrumb view'] = function*
 
 test['Browser bar should not render script tags in disguise on breadcrumb view'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
     yield client.submitForm('form.url');
@@ -65,7 +60,6 @@ test['Browser bar should not render script tags in disguise on breadcrumb view']
 
 test['Browser bar should not render arbitrary code as HTML'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     yield client.setValue('#url-input', '<iframe onload="alert(ipc)">');
     yield client.submitForm('form.url');
@@ -79,7 +73,6 @@ test['Browser bar should not render arbitrary code as HTML'] = function* () {
 
 test['Browser bar should not execute JS'] = function* () {
     const client = this.client;
-    yield client.window(this.mainWindowHandle);
 
     yield client.setValue('#url-input', '<script>window.pwned = true</script>');
     yield client.submitForm('form.url');

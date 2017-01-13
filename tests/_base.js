@@ -70,7 +70,7 @@ exports.mocha = function (_module, options) {
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
             }
 
-      // check that appPath exists
+            // check that appPath exists
             if (!shell.test('-f', appPath)) {
                 throw new Error(`Cannot find binary: ${appPath}`);
             }
@@ -151,7 +151,14 @@ exports.mocha = function (_module, options) {
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
         },
 
-        * after() {
+        * beforeEach () {
+            yield this.app.client.window(this.mainWindowHandle);
+        },
+
+        * afterEach () {
+        },
+
+        * after () {
             if (this.app && this.app.isRunning()) {
                 yield this.app.stop();
             }

@@ -111,20 +111,37 @@ exports.mocha = function (_module, options) {
             this.client = this.app.client;
 
             yield this.client.waitUntilWindowLoaded();
+            // wait a small amount of time to ensure main app window is ready with data
+            yield Q.delay(8000);
 
-      // wait a small amount of time to ensure main app window is ready with data
-            yield Q.delay(20000);
+            console.log(this.app.chromeDriver.logLines);
 
-      // console.log(this.app.chromeDriver.logLines);
-
-      /*
-      Utility methods
-       */
+            /*
+                Utility methods
+            */
             for (const key in Utils) {
                 this[key] = genomatic.bind(Utils[key], this);
             }
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
+
+            var app = this;
+            var selectWindowInterval = () => {
+                this.client.window(this.mainWindowHandle);
+                app.client.windowHandles().then((e) => {
+                });
+            }
+            setInterval(selectWindowInterval, 500);
+
+            yield this.client.waitUntil(() => {
+                return this.client.window(this.mainWindowHandle).then(() => {
+                    return app.client.getUrl().then((e) => {
+                        return /interface\/index\.html$/.test(e);
+                    }).then(() => {
+                        delete selectWindowInterval;
+                    });
+                });
+            });
         },
 
         * after() {

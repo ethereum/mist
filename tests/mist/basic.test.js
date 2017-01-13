@@ -2,114 +2,93 @@ const _ = require('underscore');
 const Q = require('bluebird');
 const fs = require('fs');
 const path = require('path');
-
+const should = require('chai').should();
 
 const test = require('../_base').mocha(module, {
     app: 'mist',
 });
 
-
-test.title = function* () {
+test['Check for Mist title'] = function* () {
     yield this.client.window(this.mainWindowHandle);
-
-    (yield this.client.getTitle()).should.eql('Ethereum Wallet');
+    (yield this.client.getTitle()).should.eql('Mist');
 };
 
-
-test['account balances'] = function* () {
-    const web3 = this.web3;
+test['Sanity Check: main window is focused'] = function* () {
     const client = this.client;
-
-    const realBalances = this.getRealAccountBalances();
-    const appBalances = this.getUiAccountBalances();
-
-    appBalances.should.eql(realBalances);
-};
-
-
-// test['create account'] = function*() {
-//   const web3 = this.web3;
-//   const client = this.client;
-
-//   const originalBalances = yield this.getRealAccountBalances();
-
-//   yield _createNewAccount.call(this);
-
-//   const realBalances = yield this.getRealAccountBalances();
-//   const appBalances = yield this.getUiAccountBalances();
-
-//   _.keys(realBalances).length.should.eql(_.keys(originalBalances).length + 1);
-//   appBalances.should.eql(realBalances);
-// };
-
-
-test['deposit into account'] = function* () {
-    const web3 = this.web3;
-    const client = this.client;
-
-    const accounts = web3.eth.accounts;
-
-    yield _createNewAccount.call(this);
-
-    const newAccount = _.difference(web3.eth.accounts, accounts)[0];
-
-    yield this.openAccountInUi(newAccount);
-
-  // links
-    const accLinks = yield this.getUiElements('.dapp-actionbar li');
-    yield client.elementIdClick(accLinks[0].ELEMENT);
-
-  // fill in send form and submit
-    yield _completeSendForm.call(this, 1);
-
-  // do some mining
-    yield this.startMining();
-    yield Q.delay(10000);
-    yield this.stopMining();
-
-  // check balances
-    const realBalances = yield this.getRealAccountBalances();
-
-    realBalances[newAccount].should.eql(1);
-};
-
-
-const _createNewAccount = function* () {
-    const client = this.client;
-
-  // open password window
-    yield this.openAndFocusNewWindow(() => {
-        return client.click('button.create.account');
-    });
-
-  // enter password
-    yield client.setValue('form .password', '1234');
-    yield client.click('form button.ok');
-
-  // re-enter password
-    yield client.setValue('form .password-repeat', '1234');
-    yield client.click('form button.ok');
-
-    yield Q.delay(10000);
-
     yield client.window(this.mainWindowHandle);
+
+    (yield client.getUrl()).should.match(/interface\/index\.html$/);
 };
 
-
-const _completeSendForm = function* (amt) {
+test['Browser bar should render urls with separators'] = function* () {
     const client = this.client;
+    yield client.window(this.mainWindowHandle);
 
-  // enter password
-    yield client.setValue('form input[name=amount]', `${amt}`);
+    yield client.setValue('#url-input', 'http://example.com/page?param=value');
+    yield client.submitForm('form.url');
 
-  // open password window
-    yield this.openAndFocusNewWindow(() => {
-        return client.click('form button[type=submit]');
-    });
-
-  // fill in password and submit
-    yield client.setValue('form input[type=password]', '1234');
-    yield client.click('form button.ok');
-
-    yield Q.delay(5000);
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb').then((e) => {
+            return e === 'example.com ▸ page';
+        });
+    }, 3000, 'expected breadcrumb to render as HTML encoded');
 };
+
+test['Browser bar should not render script tags on breadcrumb view'] = function* () {
+    const client = this.client;
+    yield client.window(this.mainWindowHandle);
+
+    yield client.setValue('#url-input', '<script>alert()</script>');
+    yield client.submitForm('form.url');
+
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb').then((e) => {
+            // HTML encoded version of input
+            return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
+        });
+    }, 1000, 'expected breadcrumb to render as HTML encoded');
+};
+
+test['Browser bar should not render script tags in disguise on breadcrumb view'] = function* () {
+    const client = this.client;
+    yield client.window(this.mainWindowHandle);
+
+    yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
+    yield client.submitForm('form.url');
+
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb').then((e) => {
+            return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
+        });
+    }, 1000, 'expected breadcrumb to render as HTML encoded');
+};
+
+test['Browser bar should not render arbitrary code as HTML'] = function* () {
+    const client = this.client;
+    yield client.window(this.mainWindowHandle);
+
+    yield client.setValue('#url-input', '<iframe onload="alert(ipc)">');
+    yield client.submitForm('form.url');
+
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb', (e) => {
+            return e === '%3Ciframe onload="alert%28%29%"%3E';
+        });
+    }, 1000, 'expected breadcrumb to render as HTML encoded');
+};
+
+test['Browser bar should not execute JS'] = function* () {
+    const client = this.client;
+    yield client.window(this.mainWindowHandle);
+
+    yield client.setValue('#url-input', '<script>window.pwned = true</script>');
+    yield client.submitForm('form.url');
+
+    const mist = yield client.execute(() => { return window.mist }); // checking if execute works
+    const pwned = yield client.execute(() => { return window.pwned });
+
+    should.exist(mist.value);
+    should.not.exist(pwned.value);
+};
+
+

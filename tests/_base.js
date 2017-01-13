@@ -100,7 +100,7 @@ exports.mocha = function (_module, options) {
                 requireName: 'electronRequire',
                 startTimeout: 10000,
                 waitTimeout: 10000,
-                quitTimeout: 10000,
+                quitTimeout: 3000,
                 path: appPath,
                 args: [
                     '--mode', options.app,

@@ -116,6 +116,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
 
                 // If it's close enough, show the synced button
+
                 if (Number(syncing.highestBlock) - syncing.currentBlock < 100 ) {
                     TemplateVar.set(template, 'readyToLaunch', true);
                 }

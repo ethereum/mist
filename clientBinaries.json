@@ -56,7 +56,7 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.5.7-da2a22c3.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.5.7-da2a22c3-mist-fix.zip",
                             "type": "zip",
                             "sha256": "d1643c2b12ccf1dabbd34c545d78fc65081be6eebf8bed4a3a2164d0c45eaecf",
                             "bin": "geth-windows-amd64-1.5.7-da2a22c3\\geth.exe"
@@ -71,7 +71,7 @@
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.5.7-da2a22c3.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.5.7-da2a22c3-mist-fix.zip",
                             "type": "zip",
                             "sha256": "5e25e1056d512cca6e0ff87b1a3172656e556d2fa92f174db2c3f5a0b123faca",
                             "bin": "geth-windows-386-1.5.7-da2a22c3\\geth.exe"

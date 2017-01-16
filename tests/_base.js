@@ -14,6 +14,7 @@ const chai = require('chai');
 
 chai.should();
 
+
 process.env.TEST_MODE = 'true';
 
 exports.mocha = function (_module, options) {
@@ -65,7 +66,6 @@ exports.mocha = function (_module, options) {
 
             this.geth = gethPrivate({
                 gethPath,
-                // gethPath: path.join(process.cwd(), 'nodes', 'geth', platformArch, 'geth'),
                 balance: 5,
                 genesisBlock: {
                     difficulty: '0x1',
@@ -78,6 +78,7 @@ exports.mocha = function (_module, options) {
             });
             yield this.geth.start();
 
+            let ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
             this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
             this.app = new Application({
                 requireName: 'electronRequire',
@@ -90,11 +91,11 @@ exports.mocha = function (_module, options) {
                     '--loglevel', 'debug',
                     '--logfile', logFilePath,
                     '--node-datadir', this.geth.dataDir,
-                    '--rpc', path.join(this.geth.dataDir, 'geth.ipc'),
+                    '--rpc', ipcProviderPath,
                 ],
             });
 
-            console.log('==== App info', this.app);
+            // console.log('==== App info', this.app);
 
             yield this.app.start();
 
@@ -136,6 +137,26 @@ exports.mocha = function (_module, options) {
 
         * beforeEach () {
             yield this.app.client.window(this.mainWindowHandle);
+
+            yield this.client.execute(() => {
+                Tabs.remove({});
+                History.remove({});
+
+                Tabs.insert({
+                    _id: 'browser',
+                    url: 'https://ethereum.org',
+                    redirect: 'https://ethereum.org',
+                    position: 0
+                });
+                Tabs.upsert({_id: 'wallet'}, {$set: {
+                    url: 'https://wallet.ethereum.org',
+                    redirect: 'https://wallet.ethereum.org',
+                    position: 1,
+                    permissions: { admin: true }
+                }});
+            });
+
+            yield Q.delay(3000);
         },
 
         * afterEach () {
@@ -267,6 +288,12 @@ const Utils = {
     },
     * stopMining() {
         yield this.geth.consoleExec('miner.stop();');
+    },
+
+    * selectTab(tabClass) {
+        const tab = yield this.getUiElement(`.sidebar .${tabClass}`);
+        yield this.client.click(`.sidebar .${tabClass} button.main`);
+        return tab;
     },
 };
 

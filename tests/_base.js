@@ -1,7 +1,4 @@
-
-
 require('co-mocha');
-
 const _ = require('underscore');
 const genomatic = require('genomatic');
 const Q = require('bluebird');
@@ -19,7 +16,6 @@ chai.should();
 
 process.env.TEST_MODE = 'true';
 
-
 exports.mocha = function (_module, options) {
     const tests = {};
 
@@ -29,7 +25,7 @@ exports.mocha = function (_module, options) {
 
     _module.exports[options.name || path.basename(_module.filename)] = {
         * before() {
-            this.timeout(10000000);
+            this.timeout(1e7);
 
             this.assert = chai.assert;
             this.expect = chai.expect;
@@ -43,28 +39,17 @@ exports.mocha = function (_module, options) {
 
             // Temporary. needs integration with ClientBinaryManager
             const gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
+
             let appPath;
 
             switch (platformArch) {
             case 'darwin-x64':
-                appPath = path.join(
-            process.cwd(),
-            `dist_${options.app}`,
-            'dist',
-            'mac',
-            `${appFileName}.app`,
-            'Contents',
-            'MacOS',
-            appFileName
-          );
+                appPath = path.join(process.cwd(), `dist_${options.app}`, 'dist', 'mac',
+                    `${appFileName}.app`, 'Contents', 'MacOS', appFileName
+                );
                 break;
             case 'linux-x64':
-                appPath = path.join(
-            process.cwd(),
-            `dist_${options.app}`,
-            `${appFileName}-linux64-${appVers}`,
-            appFileName
-          );
+                appPath = path.join(process.cwd(), `dist_${options.app}`, `${appFileName}-linux64-${appVers}`, appFileName);
                 break;
             default:
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
@@ -77,7 +62,6 @@ exports.mocha = function (_module, options) {
 
             // const clientBinaryManager = ClientBinaryManager.init();
             // console.log(clientBinaryManager);
-
 
             this.geth = gethPrivate({
                 gethPath,
@@ -92,7 +76,6 @@ exports.mocha = function (_module, options) {
                     rpcport: 58545,
                 },
             });
-            console.log(this.geth);
             yield this.geth.start();
 
             this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
@@ -177,10 +160,7 @@ exports.mocha = function (_module, options) {
 
 const Utils = {
     * waitUntil(msg, promiseFn) {
-        yield this.client.waitUntil(promiseFn,
-      10000,
-      msg,
-      500);
+        yield this.client.waitUntil(promiseFn, 10000, msg, 500);
     },
     * getUiElements(selector) {
         const elems = yield this.client.elements(selector);
@@ -207,7 +187,7 @@ const Utils = {
 
         const newHandles = (yield client.windowHandles()).value;
 
-    // focus on new window
+        // focus on new window
         yield client.window(newHandles.pop());
     },
     * execElemsMethod(clientElementIdMethod, selector) {
@@ -250,7 +230,7 @@ const Utils = {
         return _.object(accounts, balances);
     },
     * getUiAccountBalances() {
-    // check balances on the pgetUiAccountsBalancesage
+        // check balances on the pgetUiAccountsBalancesage
         let _accounts = yield this.execElemsMethod('elementIdText', '.wallet-box .account-id');
         let _balances = yield this.execElemsMethod('elementIdText', '.wallet-box .account-balance');
 

@@ -77,11 +77,9 @@ test['Browser bar should not execute JS'] = function* () {
     yield client.setValue('#url-input', '<script>window.pwned = true</script>');
     yield client.submitForm('form.url');
 
-    const mist = yield client.execute(() => { return window.mist }); // checking if execute works
+    const mist = yield client.execute(() => { return window.mist }); // checking if `execute` works
     const pwned = yield client.execute(() => { return window.pwned });
 
     should.exist(mist.value);
     should.not.exist(pwned.value);
 };
-
-

@@ -8,18 +8,11 @@ const test = require('../_base').mocha(module, {
     app: 'wallet',
 });
 
-test['check index html location'] = function* () {
-    const client = this.client;
-    yield client.waitUntilWindowLoaded();
-    (yield client.getWindowCount()).should.eql(2);
-    (yield client.getUrl()).should.have.entriesCount('/interface/index.html', 1);
-};
-
 test['Title test'] = function* () {
     const client = this.client;
 
     yield client.waitUntilWindowLoaded();
-    (yield client.getTitle()).should.eql('Mist');
+    (yield client.getTitle()).should.eql('Ethereum Wallet');
 }
 
 test['account balances'] = function* () {

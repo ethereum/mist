@@ -113,17 +113,22 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     e.returnValue = true;
 });
 
-// check wallet file type
+// check wallet file
 ipc.on('backendAction_checkWalletFile', (e, path) => {
     fs.readFile(path, 'utf8', (event, data) => {
         if (!event) {
             try {
                 const wallet = JSON.parse(data);
                 const result = keyfileRecognizer(wallet);
+                /** result
+                *  [ 'ethersale', undefined ]   Ethersale keyfile
+                *               [ 'web3', 3 ]   web3 (v3) keyfile
+                *                        null   no valid  keyfile
+                */
 
-                if (result[0] === 'ethersale') {
+                if (_.first(result) === 'ethersale') {
                     e.sender.send('uiAction_checkedWalletFile', null, 'presale');
-                } else if (result[0] === 'web3') {
+                } else if (_.first(result) === 'web3') {
                     e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
                     let keystorePath = Settings.userHomePath;
@@ -134,8 +139,7 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
                         } else {
                             keystorePath += '/.web3/keys';
                         }
-
-                        // geth
+                    // geth
                     } else {
                         if (process.platform === 'darwin') keystorePath += '/Library/Ethereum/keystore';
 
@@ -145,15 +149,16 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
 
                         if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
                     }
-                    // TODO write async, naming
-                    fs.writeFileSync(`${keystorePath}/0x${wallet.address}`, data);
+
+                    fs.writeFile(`${keystorePath}/0x${wallet.address}`, data, (err) => {
+                        if (err) throw new Error("Can't write file to disk");
+                    });
                 } else {
-                    log.warn('Wallet import: Cannot recognize format');
+                    throw new Error('Wallet import: Cannot recognize keyfile');
                 }
             } catch (err) {
-                log.error('Wallet import: Cannot parse file, no valid json');
+                e.sender.send('uiAction_checkedWalletFile', null, 'invalid');
                 log.error(err);
-                // TODO UI feedback
             }
         }
     });
@@ -161,44 +166,20 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
 
 
 // import presale wallet
-// TODO naming
 ipc.on('backendAction_importWalletFile', (e, path, pw) => {
-    const spawn = require('child_process').spawn;
-    const ClientBinaryManager = require('./clientBinaryManager');
+    const spawn = require('child_process').spawn;  // eslint-disable-line global-require
+    const ClientBinaryManager = require('./clientBinaryManager');  // eslint-disable-line global-require
     let error = false;
 
     const binPath = ClientBinaryManager.getClient('geth').binPath;
-
-    // start import process
-    fs.readFile(path, 'utf8', (e, data) => {
-        if (!e) {
-            try {
-                let wallet = JSON.parse(data);
-            } catch (err) {
-                log.error('Wallet import: Cannot read file');
-                log.error(err);
-            }
-
-            if (data.indexOf('"ethaddr"') !== -1) {  // Presale wallet
-                console.info('presale');
-            } else if (data.indexOf('"address"') !== -1) {  // web3 secret storage wallet
-                console.info('myether');
-            } else {
-                log.warn('Wallet import: Cannot recognize format');
-            }
-        }
-    });
-
-    return false;  // temporary stopper
-
-/*    var nodeProcess = spawn(getNodePath('geth'), ['wallet', 'import', path]);
+    const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
 
     nodeProcess.once('error', () => {
         error = true;
         e.sender.send('uiAction_importedWalletFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
     nodeProcess.stdout.on('data', (data) => {
-        var data = data.toString();
+        data = data.toString();
         if (data) {
             log.info('Imported presale: ', data);
         }
@@ -208,11 +189,12 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
 
             // if imported, return the address
         } else if (data.indexOf('Address:') !== -1) {
-            var find = data.match(/\{([a-f0-9]+)\}/i);
-            if (find.length && find[1])
+            const find = data.match(/\{([a-f0-9]+)\}/i);
+            if (find.length && find[1]) {
                 e.sender.send('uiAction_importedWalletFile', null, '0x' + find[1]);
-            else
+            } else {
                 e.sender.send('uiAction_importedWalletFile', data);
+            }
 
             // if not stop, so we don't kill the process
         } else {
@@ -230,7 +212,7 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
             nodeProcess.stdin.write(`${pw}\n`);
             pw = null;
         }
-    }, 2000);*/
+    }, 2000);
 });
 
 

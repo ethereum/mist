@@ -3,15 +3,15 @@
 
         {{> elements_networkIndicator}}
 
-        <div class="main-content">    
+        <div class="main-content">
             <div class="onboarding-section onboarding-start">
                 <p class="description">{{i18n "mist.popupWindows.onboarding.description"}}</p>
-                <p> 
-                    <button class="start-testnet"> {{i18n "mist.popupWindows.onboarding.goToTestnet"}} </button> 
+                <p>
+                    <button class="start-testnet"> {{i18n "mist.popupWindows.onboarding.goToTestnet"}} </button>
                     {{i18n "mist.popupWindows.onboarding.goToTestnetDescription"}}
                 </p>
-                <p> 
-                    <button class="goto-import-account"> {{i18n "mist.popupWindows.onboarding.gotoMainnet"}} </button> 
+                <p>
+                    <button class="goto-import-account"> {{i18n "mist.popupWindows.onboarding.gotoMainnet"}} </button>
                     {{i18n "mist.popupWindows.onboarding.gotoMainnetDescription"}}
                 </p>
             </div>
@@ -20,8 +20,8 @@
                 {{> popupWindows_onboardingScreen_importAccount}}
 
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> {{i18n "buttons.back"}} </button> 
-                    <button class="goto-password right-align"> {{i18n "buttons.skip"}} </button> 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>
+                    <button class="goto-password right-align"> {{i18n "buttons.skip"}} </button>
                 </div>
             </div>
 
@@ -66,8 +66,8 @@
                     {{/if}}
                 </div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>
+                    <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>
                 </div>
             </div>
 
@@ -79,8 +79,8 @@
                 </div>
                 <div class="col col-6 tutorial-token"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-2 right-align">  {{i18n "buttons.next"}} </button>                 
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>
+                    <button class="goto-tutorial-2 right-align">  {{i18n "buttons.next"}} </button>
                 </div>
             </div>
 
@@ -90,10 +90,10 @@
                     {{{i18n "mist.popupWindows.onboarding.tutorial2Description"}}}
                     <p><a href="https://www.ethereum.org/crowdsale" class="button" target="_blank">{{i18n "mist.popupWindows.onboarding.buttons.learnReceipt"}}</a></p>
                 </div>
-                <div class="col col-6 tutorial-crowdsale"></div>  
+                <div class="col col-6 tutorial-crowdsale"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-tutorial-1"> {{i18n "buttons.back"}} </button>                 
-                    <button class="goto-tutorial-3 right-align">  {{i18n "buttons.next"}} </button>                 
+                    <button class="goto-tutorial-1"> {{i18n "buttons.back"}} </button>
+                    <button class="goto-tutorial-3 right-align">  {{i18n "buttons.next"}} </button>
                 </div>
             </div>
 
@@ -105,7 +105,7 @@
                 </div>
                 <div class="col col-6 tutorial-dao"></div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-tutorial-2"> {{i18n "buttons.back"}} </button>                 
+                    <button class="goto-tutorial-2"> {{i18n "buttons.back"}} </button>
                 </div>
             </div>
         </div>
@@ -116,8 +116,8 @@
 
             {{#with TemplateVar.get "syncing"}}
                 <div class="status"> {{i18n "mist.popupWindows.onboarding.downloadingBlocks"}} ({{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}})</div>
-                <div class="blocks"> 
-                    
+                <div class="blocks">
+
                     {{ syncStatus }}
 
                 </div>
@@ -135,7 +135,7 @@
                 {{/if}}
             {{/with}}
 
-        </footer>     
+        </footer>
     </div>
 </template>
 
@@ -151,6 +151,9 @@
                 <span class="dapp-identicon dapp-icon-loading"></span>
                 <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.importing"}}</h2>
             {{else}}
+                {{#if TemplateVar.get "invalid"}}
+                    <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.errors.unknownFile"}}</h2>
+                {{else}}
                 <form action="about:blank" target="dapp-form-helper-iframe">
                     <input type="{{showPassword}}" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
                     <br><br>
@@ -159,6 +162,7 @@
                     <br><br>
                     <button type="submit" style="margin-left: 15px;">{{i18n "mist.popupWindows.onboarding.buttons.importAccount"}}</button>
                 </form>
+                {{/if}}
             {{/if}}
         </div>
     {{else}}
@@ -187,11 +191,11 @@
         </div>
 
         <div class="col col-12 footer-buttons">
-            <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>                 
+            <button class="goto-start" type="button">  {{i18n "buttons.back"}}  </button>
             {{#if TemplateVar.get "passwordsNotEmpty"}}
             <button class="create-account right-align" type="submit"> {{i18n "buttons.next"}} </button>
             {{else}}
-            <button class="goto-tutorial-1 right-align"> {{i18n "buttons.skip"}} </button>                 
+            <button class="goto-tutorial-1 right-align"> {{i18n "buttons.skip"}} </button>
             {{/if}}
         </div>
     </form>

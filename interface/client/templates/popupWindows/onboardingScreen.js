@@ -226,25 +226,30 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event drop .dropable
     */
-   'drop .dropable': function(e, template){
+    'drop .dropable': function(e, template) {
         e.preventDefault();
 
-        if(e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
+        if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
             TemplateVar.set('filePath', e.originalEvent.dataTransfer.files[0].path);
 
             ipc.send('backendAction_checkWalletFile', TemplateVar.get('filePath'));
-            
-            ipc.on('uiAction_checkedWalletFile', function(e, error, type){
-                if (type === "presale") {
-                    Tracker.afterFlush(function(){
+
+            ipc.on('uiAction_checkedWalletFile', function(e, error, type) {
+                if (type === 'presale') {
+                    Tracker.afterFlush(function() {
                         template.$('.password').focus();
                     });
-                } else if (type === "web3") {
+                } else if (type === 'web3') {
                     TemplateVar.set(template, 'importing', true);
                     setTimeout(() => {
                         ipc.send('backendAction_closePopupWindow');
                     }, 750);
+                } else if (type === 'invalid') {
+                    TemplateVar.set(template, 'invalid', true);
                 }
+            });
+            ipc.on('uiAction_invalidWalletFile', function(e, error) {
+
             });
         } else {
             GlobalNotification.warning({

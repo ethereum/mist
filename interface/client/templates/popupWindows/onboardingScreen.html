@@ -151,6 +151,9 @@
                 <span class="dapp-identicon dapp-icon-loading"></span>
                 <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.importing"}}</h2>
             {{else}}
+                {{#if TemplateVar.get "invalid"}}
+                    <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.errors.unknownFile"}}</h2>
+                {{else}}
                 <form action="about:blank" target="dapp-form-helper-iframe">
                     <input type="{{showPassword}}" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
                     <br><br>
@@ -159,6 +162,7 @@
                     <br><br>
                     <button type="submit" style="margin-left: 15px;">{{i18n "mist.popupWindows.onboarding.buttons.importAccount"}}</button>
                 </form>
+                {{/if}}
             {{/if}}
         </div>
     {{else}}

@@ -26,6 +26,6 @@ document.addEventListener('click', (e) => {
                 nodeIntegration: false,
             }
         });
-        win.loadURL(node.href, true);
+        win.loadURL(node.href);
     }
 }, false);

@@ -1,3 +1,4 @@
+// Applies to both onboarding and splash screen
 .network-indicator {
     position: absolute;
     top: 10px;
@@ -9,8 +10,10 @@
     opacity: 0.8;
     color: @colorGrey;
     text-transform: uppercase;
+}
 
-    .unknown {
+// Applies only to the splash screen
+.splash-screen .network-indicator .unknown {
         position: absolute;
         top: 155px;
         text-align: center;
@@ -21,5 +24,4 @@
         font-weight: normal;
         text-transform: none;
         color: #fff;
-    }
 }

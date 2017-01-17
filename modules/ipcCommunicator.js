@@ -178,8 +178,8 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
         error = true;
         e.sender.send('uiAction_importedWalletFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
-    nodeProcess.stdout.on('data', (data) => {
-        data = data.toString();
+    nodeProcess.stdout.on('data', (_data) => {
+        const data = _data.toString();
         if (data) {
             log.info('Imported presale: ', data);
         }
@@ -189,11 +189,12 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
 
             // if imported, return the address
         } else if (data.indexOf('Address:') !== -1) {
-            var find = data.match(/\{([a-f0-9]+)\}/i);
-            if (find.length && find[1])
-                e.sender.send('uiAction_importedWalletFile', null, '0x' + find[1]);
-            else
+            const find = data.match(/\{([a-f0-9]+)\}/i);
+            if (find.length && find[1]) {
+                e.sender.send('uiAction_importedWalletFile', null, `0x${find[1]}`);
+            } else {
                 e.sender.send('uiAction_importedWalletFile', data);
+            }
 
             // if not stop, so we don't kill the process
         } else {
@@ -209,7 +210,7 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
     setTimeout(() => {
         if (!error) {
             nodeProcess.stdin.write(`${pw}\n`);
-            pw = null;
+            pw = null;  // eslint-disable-line no-param-reassign
         }
     }, 2000);
 });

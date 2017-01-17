@@ -1318,7 +1318,7 @@ ethereum-client-binaries@^1.6.1:
     node-unzip-2 "^0.2.1"
     tmp "0.0.29"
 
-ethereum-keyfile-recognizer@^1.0.1:
+ethereum-keyfile-recognizer@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ethereum-keyfile-recognizer/-/ethereum-keyfile-recognizer-1.0.2.tgz#c0315f91c77e076621e9f6b5f8099fd370f7a11d"
   dependencies:

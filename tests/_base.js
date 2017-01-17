@@ -14,7 +14,6 @@ const chai = require('chai');
 
 chai.should();
 
-
 process.env.TEST_MODE = 'true';
 
 exports.mocha = function (_module, options) {
@@ -99,6 +98,7 @@ exports.mocha = function (_module, options) {
 
             yield this.app.start();
 
+            this.fixtureBaseUrl = 'http://localhost:8080/';
             this.client = this.app.client;
 
             yield this.client.waitUntilWindowLoaded();
@@ -138,8 +138,9 @@ exports.mocha = function (_module, options) {
         * beforeEach () {
             yield this.app.client.window(this.mainWindowHandle);
 
-            yield this.client.execute(() => {
+            yield this.client.execute(() => { // Code executed in context of browser
                 Tabs.remove({});
+                LastVisitedPages.remove({});
                 History.remove({});
 
                 Tabs.insert({
@@ -154,6 +155,8 @@ exports.mocha = function (_module, options) {
                     position: 1,
                     permissions: { admin: true }
                 }});
+
+                LocalStore.set('selectedTab', 'browser');
             });
 
             yield Q.delay(3000);
@@ -292,8 +295,27 @@ const Utils = {
 
     * selectTab(tabClass) {
         const tab = yield this.getUiElement(`.sidebar .${tabClass}`);
-        yield this.client.click(`.sidebar .${tabClass} button.main`);
+        yield this.client.click(`.sidebar [data-tab-id=${tabClass}] button.main`);
+
+        // TODO: returns window reference
         return tab;
+    },
+    * getActiveWebview() {
+        const webview = '';
+        return webview;
+    },
+    * loadFixture(uri = '') {
+        const client = this.client;
+        yield client.setValue('#url-input', `${this.fixtureBaseUrl}${uri}`);
+        yield client.submitForm('form.url');
+        yield client.waitUntil(() => {
+            return client.getText('.dapp-info span', (e) => {
+                /Fixture/.test(e);
+            });
+        }, 3000, 'expected to properly load fixture');
+    },
+    * getBrowserBarText() {
+        return yield this.client.getText('.url-breadcrumb');
     },
 };
 

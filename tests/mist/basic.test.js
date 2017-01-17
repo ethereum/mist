@@ -21,16 +21,16 @@ test['Sanity Check: main window is focused'] = function* () {
 test['Browser bar should render urls with separators'] = function* () {
     const client = this.client;
 
-    yield client.setValue('#url-input', 'http://example.com/page1/page2?param=value#hash');
+    yield client.setValue('#url-input', 'http://localhost:8080/page1/page2?param=value#hash');
     yield client.submitForm('form.url');
 
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
-            console.log('e', e);
-
-            return e === 'http://example.com ▸ page1 ▸ page2';
+            return e === 'http://localhost:8080 ▸ page1 ▸ page2';
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
+
+    (yield client.getText('.url-breadcrumb')).should.eql('http://localhost:8080 ▸ page1 ▸ page2');
 };
 
 test['Browser bar should not render script tags on breadcrumb view'] = function* () { // ETH-01-001
@@ -43,10 +43,9 @@ test['Browser bar should not render script tags on breadcrumb view'] = function*
         return client.getText('.url-breadcrumb').then((e) => {
             console.log('e', e);
 
-            // HTML encoded version of input
             return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url script'));
@@ -61,9 +60,10 @@ test['Browser bar should not render script tags in disguise on breadcrumb view']
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
             console.log('e', e);
+
             return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
 
     should.not.exist(yield this.getUiElement('form.url script'));
 };
@@ -80,7 +80,7 @@ test['Browser bar should not render script tags in disguise (2) on breadcrumb vi
 
             return e === '%3Csvg%3E%3Cscript%3Ealert%28%29%3C ▸ script%3E%3C ▸ svg%3E';
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url svg'));
@@ -97,7 +97,7 @@ test['Browser bar should not render arbitrary code as HTML'] = function* () { //
         return client.getText('.url-breadcrumb', (e) => {
             return e === '%3Ciframe onload="alert%28%29%"%3E';
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
 };
 
 test['Browser bar should not execute JS'] = function* () { // ETH-01-001
@@ -117,10 +117,9 @@ test['Should select Wallet and Browse tabs properly'] = function* () {
     const client = this.client;
 
     const walletTab = yield this.selectTab('wallet');
-    // walletTab.getAttribute('')
 };
 
-test['Check disallowed protocols'] = function* () {
+test['Load fixture page'] = function* () {
     const client = this.client;
 
     yield this.loadFixture();

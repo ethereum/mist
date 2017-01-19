@@ -225,7 +225,7 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
         description: applicationName,
         homepage: 'https://github.com/ethereum/mist',
         build: {
-            appId: `com.ethereum.mist.${type}`,
+            appId: `com.ethereum.${type}`,
             category: 'public.app-category.productivity',
             asar: true,
             files: [
@@ -250,7 +250,7 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
-                'icon-size': 128,
+                iconSize: 128,
                 contents: [{
                     x: 441,
                     y: 448,

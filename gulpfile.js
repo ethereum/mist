@@ -224,7 +224,7 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
 });
 
 
-gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
+gulp.task('build-dist', ['copy-i18n'], (cb) => {
     console.log('Bundling platforms: ', options.platform);
 
     const appPackageJson = _.extend({}, packJson, {
@@ -233,7 +233,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
         description: applicationName,
         homepage: 'https://github.com/ethereum/mist',
         build: {
-            appId: `com.ethereum.mist.${type}`,
+            appId: `com.ethereum.${type}`,
             category: 'public.app-category.productivity',
             asar: true,
             files: [
@@ -258,7 +258,7 @@ gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
-                'icon-size': 128,
+                iconSize: 128,
                 contents: [{
                     x: 441,
                     y: 448,
@@ -350,6 +350,10 @@ gulp.task('release-dist', ['build-dist'], (done) => {
                 cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
                 break;
             }
+        }
+
+        if (platformIsActive('win')) {
+            runSeq('build-nsis');
         }
     });
 
@@ -464,6 +468,14 @@ gulp.task('mist-checksums', (cb) => {
 });
 gulp.task('wallet-checksums', (cb) => {
     runSeq('set-variables-wallet', 'get-release-checksums', cb);
+});
+
+gulp.task('build-nsis', (cb) => {
+    const versionParts = version.split('.');
+    const versionString = ''.concat('-DVERSIONMAJOR=', versionParts[0], ' -DVERSIONMINOR=', versionParts[1], ' -DVERSIONBUILD=', versionParts[2]);
+    const cmdString = 'makensis'.concat(' -V3 ', versionString, ' scripts/windows-installer.nsi');
+    console.log(cmdString);
+    shell.exec(cmdString, cb);
 });
 
 

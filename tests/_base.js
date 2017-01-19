@@ -10,6 +10,8 @@ const packageJson = require('../package.json');
 const gethPrivate = require('geth-private');
 const Application = require('spectron').Application;
 const chai = require('chai');
+const http = require('http');
+const ecstatic = require('ecstatic');
 // const ClientBinaryManager = require('../modules/clientBinaryManager');
 
 chai.should();
@@ -98,11 +100,18 @@ exports.mocha = function (_module, options) {
 
             yield this.app.start();
 
+            /*
+                Starting HTTP server for HTML fixtures
+            */
+            const serverPort = 8080;
+            this.fixtureServer = http.createServer(
+                ecstatic({root: path.join(__dirname, 'fixtures')})
+            ).listen(serverPort);
+            this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
             this.fixtureBaseUrl = 'http://localhost:8080/';
+
             this.client = this.app.client;
-
             yield this.client.waitUntilWindowLoaded();
-
             // console.log(this.app.chromeDriver.logLines);
 
             /*
@@ -145,8 +154,8 @@ exports.mocha = function (_module, options) {
 
                 Tabs.insert({
                     _id: 'browser',
-                    url: 'https://ethereum.org',
-                    redirect: 'https://ethereum.org',
+                    url: 'http://localhost:8080/',
+                    redirect: 'http://localhost:8080/',
                     position: 0
                 });
                 Tabs.upsert({_id: 'wallet'}, {$set: {

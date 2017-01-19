@@ -49,12 +49,12 @@ matrix:
 
     # MAC
     - os: osx
-      osx_image: xcode8  # currently macOS 10.11 (>= xcode8.1) doesn't support electron-builder codesigning (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
+      osx_image: xcode8  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
       node_js: 6
       env:
           - GULP_PLATFORM=mac
       before_install:
-          - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn
+          - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn yet
 
 cache:
   yarn: true

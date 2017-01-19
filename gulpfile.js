@@ -216,7 +216,7 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
 });
 
 
-gulp.task('build-dist', ['download-signatures', 'copy-i18n'], (cb) => {
+gulp.task('build-dist', ['copy-i18n'], (cb) => {
     console.log('Bundling platforms: ', options.platform);
 
     const appPackageJson = _.extend({}, packJson, {
@@ -342,6 +342,10 @@ gulp.task('release-dist', ['build-dist'], (done) => {
                 break;
             }
         }
+
+        if (platformIsActive('win')) {
+            runSeq('build-nsis');
+        }
     });
 
     done();
@@ -408,6 +412,14 @@ gulp.task('mist-checksums', (cb) => {
 });
 gulp.task('wallet-checksums', (cb) => {
     runSeq('set-variables-wallet', 'get-release-checksums', cb);
+});
+
+gulp.task('build-nsis', (cb) => {
+    const versionParts = version.split('.');
+    const versionString = ''.concat('-DVERSIONMAJOR=', versionParts[0], ' -DVERSIONMINOR=', versionParts[1], ' -DVERSIONBUILD=', versionParts[2]);
+    const cmdString = 'makensis'.concat(' -V3 ', versionString, ' scripts/windows-installer.nsi');
+    console.log(cmdString);
+    shell.exec(cmdString, cb);
 });
 
 

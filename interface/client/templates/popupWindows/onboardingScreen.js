@@ -253,32 +253,32 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     'drop .dropable': function(e, template) {
         e.preventDefault();
 
-        if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length) {
-            TemplateVar.set('filePath', e.originalEvent.dataTransfer.files[0].path);
+        if (e.originalEvent.dataTransfer) files = e.originalEvent.dataTransfer.files;
 
-            ipc.send('backendAction_checkWalletFile', TemplateVar.get('filePath'));
+        if (files.length) {
+            ipc.send('backendAction_checkWalletFile', files[0].path);
 
             ipc.on('uiAction_checkedWalletFile', function(e, error, type) {
-                if (type === 'presale') {
+                switch (type) {
+                case 'presale':
+                    TemplateVar.set(template, 'filePath', files[0].path);
                     Tracker.afterFlush(function() {
                         template.$('.password').focus();
                     });
-                } else if (type === 'web3') {
+                    break;
+                case 'web3':
+                    TemplateVar.set(template, 'filePath', files[0].path);
                     TemplateVar.set(template, 'importing', true);
                     setTimeout(function() {
                         ipc.send('backendAction_closePopupWindow');
                     }, 750);
-                } else if (type === 'invalid') {
-                    TemplateVar.set(template, 'invalid', true);
+                    break;
+                default:
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.unknownFile'),
+                        duration: 4
+                    });
                 }
-            });
-            ipc.on('uiAction_invalidWalletFile', function(e, error) {
-
-            });
-        } else {
-            GlobalNotification.warning({
-                content: TAPi18n.__('mist.popupWindows.onboarding.errors.unknownFile'),
-                duration: 4
             });
         }
 

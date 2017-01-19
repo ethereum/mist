@@ -115,51 +115,51 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
 
 // check wallet file
 ipc.on('backendAction_checkWalletFile', (e, path) => {
+
+    log.warn(111);
     fs.readFile(path, 'utf8', (event, data) => {
-        if (!event) {
-            try {
-                const wallet = JSON.parse(data);
-                const result = keyfileRecognizer(wallet);
-                /** result
-                *  [ 'ethersale', undefined ]   Ethersale keyfile
-                *               [ 'web3', 3 ]   web3 (v3) keyfile
-                *                        null   no valid  keyfile
-                */
+        try {
+            const wallet = JSON.parse(data);
+            const result = keyfileRecognizer(wallet);
+            /** result
+            *  [ 'ethersale', undefined ]   Ethersale keyfile
+            *               [ 'web3', 3 ]   web3 (v3) keyfile
+            *                        null   no valid  keyfile
+            */
 
-                if (_.first(result) === 'ethersale') {
-                    e.sender.send('uiAction_checkedWalletFile', null, 'presale');
-                } else if (_.first(result) === 'web3') {
-                    e.sender.send('uiAction_checkedWalletFile', null, 'web3');
+            if (_.first(result) === 'ethersale') {
+                e.sender.send('uiAction_checkedWalletFile', null, 'presale');
+            } else if (_.first(result) === 'web3') {
+                e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
-                    let keystorePath = Settings.userHomePath;
-                    // eth
-                    if (ethereumNode.isEth) {
-                        if (process.platform === 'win32') {
-                            keystorePath = `${Settings.appDataPath}\\Web3\\keys`;
-                        } else {
-                            keystorePath += '/.web3/keys';
-                        }
-                    // geth
+                let keystorePath = Settings.userHomePath;
+                // eth
+                if (ethereumNode.isEth) {
+                    if (process.platform === 'win32') {
+                        keystorePath = `${Settings.appDataPath}\\Web3\\keys`;
                     } else {
-                        if (process.platform === 'darwin') keystorePath += '/Library/Ethereum/keystore';
-
-                        if (process.platform === 'freebsd' ||
-                            process.platform === 'linux' ||
-                            process.platform === 'sunos') keystorePath += '/.ethereum/keystore';
-
-                        if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                        keystorePath += '/.web3/keys';
                     }
-
-                    fs.writeFile(`${keystorePath}/0x${wallet.address}`, data, (err) => {
-                        if (err) throw new Error("Can't write file to disk");
-                    });
+                // geth
                 } else {
-                    throw new Error('Wallet import: Cannot recognize keyfile');
+                    if (process.platform === 'darwin') keystorePath += '/Library/Ethereum/keystore';
+
+                    if (process.platform === 'freebsd' ||
+                        process.platform === 'linux' ||
+                        process.platform === 'sunos') keystorePath += '/.ethereum/keystore';
+
+                    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
                 }
-            } catch (err) {
-                e.sender.send('uiAction_checkedWalletFile', null, 'invalid');
-                log.error(err);
+
+                fs.writeFile(`${keystorePath}/0x${wallet.address}`, data, (err) => {
+                    if (err) throw new Error("Can't write file to disk");
+                });
+            } else {
+                throw new Error('Wallet import: Cannot recognize keyfile');
             }
+        } catch (err) {
+            e.sender.send('uiAction_checkedWalletFile', null, 'invalid');
+            log.error(err);
         }
     });
 });

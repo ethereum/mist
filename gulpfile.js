@@ -457,11 +457,6 @@ gulp.task('wallet', (cb) => {
     runSeq('set-variables-wallet', 'taskQueue', cb);
 });
 
-// CI task
-gulp.task('ci', (cb) => {
-    runSeq('set-variables-mist', 'taskQueue', 'set-variables-wallet', 'taskQueue', cb);
-});
-
 // WALLET task
 gulp.task('mist-checksums', (cb) => {
     runSeq('set-variables-mist', 'get-release-checksums', cb);

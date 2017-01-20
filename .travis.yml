@@ -65,7 +65,7 @@ install:
   - yarn
 
 script:
-  - if [[ $TRAVIS_BRANCH = "develop" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi  # disable macOS code-signing (production certificate) on develop branch
+  - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi  # disable macOS code-signing (production certificate) on develop branch
   - travis_wait 60 gulp mist --platform $GULP_PLATFORM
 
 after_success:

@@ -18,7 +18,8 @@ chai.should();
 
 process.env.TEST_MODE = 'true';
 
-exports.mocha = function (_module, options) {
+
+exports.mocha = (_module, options) => {
     const tests = {};
 
     options = _.extend({
@@ -41,8 +42,26 @@ exports.mocha = function (_module, options) {
 
             // Temporary. needs integration with ClientBinaryManager
             const gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
+            // const clientBinaryManager = ClientBinaryManager.init();
+            // console.log(clientBinaryManager);
+
+            this.geth = gethPrivate({
+                gethPath,
+                balance: 5,
+                genesisBlock: {
+                    difficulty: '0x1',
+                    extraData: '0x1',
+                },
+                gethOptions: {
+                    port: 58546,
+                    rpcport: 58545,
+                },
+            });
+            yield this.geth.start();
+
 
             let appPath;
+            let ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
 
             switch (platformArch) {
             case 'darwin-x64':
@@ -62,24 +81,6 @@ exports.mocha = function (_module, options) {
                 throw new Error(`Cannot find binary: ${appPath}`);
             }
 
-            // const clientBinaryManager = ClientBinaryManager.init();
-            // console.log(clientBinaryManager);
-
-            this.geth = gethPrivate({
-                gethPath,
-                balance: 5,
-                genesisBlock: {
-                    difficulty: '0x1',
-                    extraData: '0x1',
-                },
-                gethOptions: {
-                    port: 58546,
-                    rpcport: 58545,
-                },
-            });
-            yield this.geth.start();
-
-            let ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
             this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
             this.app = new Application({
                 requireName: 'electronRequire',
@@ -95,9 +96,6 @@ exports.mocha = function (_module, options) {
                     '--rpc', ipcProviderPath,
                 ],
             });
-
-            // console.log('==== App info', this.app);
-
             yield this.app.start();
 
             /*
@@ -108,7 +106,7 @@ exports.mocha = function (_module, options) {
                 ecstatic({root: path.join(__dirname, 'fixtures')})
             ).listen(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
-            this.fixtureBaseUrl = 'http://localhost:8080/';
+
 
             this.client = this.app.client;
             yield this.client.waitUntilWindowLoaded();
@@ -167,8 +165,8 @@ exports.mocha = function (_module, options) {
 
                 LocalStore.set('selectedTab', 'browser');
             });
-
-            yield Q.delay(3000);
+            yield Q.delay(2000);
+            // yield this.client.reload();
         },
 
         * afterEach () {
@@ -181,6 +179,10 @@ exports.mocha = function (_module, options) {
 
             if (this.geth && this.geth.isRunning) {
                 yield this.geth.stop();
+            }
+
+            if (this.fixtureServer && this.fixtureServer.isListening) {
+                yield this.fixtureServer.close();
             }
         },
 
@@ -302,9 +304,9 @@ const Utils = {
         yield this.geth.consoleExec('miner.stop();');
     },
 
-    * selectTab(tabClass) {
-        const tab = yield this.getUiElement(`.sidebar .${tabClass}`);
-        yield this.client.click(`.sidebar [data-tab-id=${tabClass}] button.main`);
+    * selectTab(tabId) {
+        const tab = yield this.getUiElement(`.sidebar [data-tab-id=${tabId}]`);
+        yield this.client.click(`.sidebar [data-tab-id=${tabId}] button.main`);
 
         // TODO: returns window reference
         return tab;
@@ -326,5 +328,10 @@ const Utils = {
     * getBrowserBarText() {
         return yield this.client.getText('.url-breadcrumb');
     },
+    *pinCurrentTab(accounts) {}, // TODO
+    *navigateTo(url) {
+        yield client.setValue('#url-input', url);
+        yield client.submitForm('form.url');
+    }
 };
 

@@ -1,14 +1,19 @@
 env:  # don't warn about no-def meteor keywords
   meteor: true
+  browser: true
 
 rules:
-  no-undef: 0
-  no-var: 0
-  prefer-arrow-callback: 0
-  prefer-template: 0
-  no-underscore-dangle:
+  no-undef: off
+  no-var: off
+  prefer-arrow-callback: off
+  prefer-template: off
+  consistent-return: off
+  dot-notation: off
+  object-shorthand:
     - error
-    - allow: ['_id', '_escape', '__']
+    - never
+  func-names: off
+  no-underscore-dangle: off
 
 globals:
   Helpers: true

@@ -39,8 +39,8 @@ Get the webview from either and ID, or the string "browser"
 @method getWebview
 @param {String} id  The Id of a tab or the string "browser"
 */
-Helpers.getWebview = function(id){
-    return $('webview[data-id="'+ id +'"]')[0];
+Helpers.getWebview = function (id) {
+    return $('webview[data-id="' + id + '"]')[0];
 };
 
 /**
@@ -50,22 +50,20 @@ Get tab by url and return the id
 @param {String} url
 @return {String} id
 */
-Helpers.getTabIdByUrl= function(url, returnEmpty){
+Helpers.getTabIdByUrl = function (url, returnEmpty) {
     var tabs = Tabs.find().fetch();
     url = Helpers.sanitizeUrl(url);
 
-    var foundTab = _.find(tabs, function(tab){
-            if(tab._id === 'browser' || !tab.url)
-                return false;
-            var tabOrigin = new URL(tab.url).origin;
-            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
-        });
+    var foundTab = _.find(tabs, function (tab) {
+        if (tab._id === 'browser' || !tab.url) { return false; }
+        var tabOrigin = new URL(tab.url).origin;
+        return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+    });
 
     // switch tab to browser
-    if(foundTab)
+    if (foundTab) {
         foundTab = foundTab._id;
-    else
-        foundTab = 'browser';
+    } else { foundTab = 'browser'; }
 
     return foundTab;
 };
@@ -76,10 +74,11 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){
+Helpers.formatUrl = function (url) {
     // add http:// if no protocol is present
-    if(url && url.indexOf('://') === -1)
-        url = 'http://'+ url;
+    if (url && url.indexOf('://') === -1) {
+        url = 'http://' + url;
+    }
 
     return url;
 };
@@ -90,13 +89,13 @@ Sanatizes URLs to prevent phishing and XSS attacks
 @method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanitizeUrl = function(url, returnEmptyURL){
+Helpers.sanitizeUrl = function (url, returnEmptyURL) {
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');
     url = url.replace(/^[:\/]{1,3}/i, 'http://');
 
-    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
+    if (returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
         url = false;
     }
 
@@ -128,7 +127,7 @@ Helpers.generateBreadcrumb = function (url) {
         return el === '';
     });
 
-    return new Spacebars.SafeString(filteredUrl.protocol +'//'+ _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+    return new Spacebars.SafeString(filteredUrl.protocol + '//' + _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
 };
 
 /**
@@ -139,7 +138,7 @@ Clear localStorage
 Helpers.getLocalStorageSize = function () {
 
     var size = 0;
-    if(localStorage) {
+    if (localStorage) {
         _.each(Object.keys(localStorage), function (key) {
             size += localStorage[key].length * 2 / 1024 / 1024;
         });

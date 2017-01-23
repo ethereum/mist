@@ -42,6 +42,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Tests durchführen",
                 "logFiles": "Logdatei anzeigen",
+                "browsersol": "Remix öffnen",
                 "ethereumNode": "Ethereum Node",
                 "network": "Netzwerk",
                 "mainNetwork": "Hauptnetzwerk",

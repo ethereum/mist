@@ -41,7 +41,7 @@ ipc.on('backendAction_openExternalUrl', (e, url) => {
 });
 
 ipc.on('backendAction_closePopupWindow', (e) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
@@ -49,7 +49,7 @@ ipc.on('backendAction_closePopupWindow', (e) => {
     }
 });
 ipc.on('backendAction_setWindowSize', (e, width, height) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow) {
@@ -59,16 +59,16 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
 });
 
 ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
-    if(senderWindow.callback) {
+    if (senderWindow.callback) {
         senderWindow.callback(value1, value2, value3);
     }
 });
 
 ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
-    const windowId = e.sender.getId();
+    const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
 
     if (senderWindow.ownerId) {
@@ -98,11 +98,15 @@ ipc.on('backendAction_setLanguage', (e, lang) => {
     }
 });
 
-ipc.on('backendAction_stopFocusedWebviewNavigation', (e, url) => {
-    var webContent = webContents.getFocusedWebContents();
+ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
+    console.log('webcontent ID', id);
+    const webContent = webContents.fromId(id);
 
-    if(webContent && !webContent.isDestroyed())
+    if (webContent && !webContent.isDestroyed()) {
         webContent.stop();
+    }
+
+    e.returnValue = true;
 });
 
 
@@ -123,8 +127,9 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
     });
     nodeProcess.stdout.on('data', (data) => {
         var data = data.toString();
-        if (data)
-            { log.info('Imported presale: ', data); }
+        if (data) {
+            log.info('Imported presale: ', data);
+        }
 
         if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
             e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');
@@ -160,7 +165,7 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
 
 const createAccountPopup = (e) => {
     Windows.createPopup('requestAccount', {
-        ownerId: e.sender.getId(),
+        ownerId: e.sender.id,
         electronOptions: {
             width: 400,
             height: 230,
@@ -177,7 +182,7 @@ ipc.on('mistAPI_requestAccount', (e) => {
         createAccountPopup(e);
     } else { // Mist
         Windows.createPopup('connectAccount', {
-            ownerId: e.sender.getId(),
+            ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
                 height: 497,

@@ -12,8 +12,11 @@ const EventEmitter = require('events').EventEmitter;
 const log = require('./utils/logger').create('ClientBinaryManager');
 
 
+// should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
+    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
 
 class Manager extends EventEmitter {
     constructor() {
@@ -50,12 +53,12 @@ class Manager extends EventEmitter {
         let binariesDownloaded = false;
         let nodeInfo;
 
-        log.info('Checking for new client binaries config...');
+        log.info(`Checking for new client binaries config from: ${BINARY_URL}`);
 
         this._emit('loadConfig', 'Fetching remote client config');
 
         // fetch config
-        return got('https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json', {
+        return got(BINARY_URL, {
             timeout: 3000,
             json: true,
         })
@@ -70,6 +73,8 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
+            if(!latestConfig) return;
+
             let localConfig;
             let skipedVersion;
             const nodeVersion = latestConfig.clients[nodeType].version;
@@ -175,7 +180,9 @@ class Manager extends EventEmitter {
         .then((localConfig) => {
             if (!localConfig) {
                 log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
-                localConfig = require('../clientBinaries.json');
+
+                const localConfigPath = path.join(Settings.userDataPath, 'clientBinaries.json');
+                localConfig = (fs.existsSync(localConfigPath)) ? require(localConfigPath) : require('../clientBinaries.json');  // eslint-disable-line no-param-reassign, global-require, import/no-dynamic-require, import/no-unresolved
             }
 
             // scan for node

@@ -65,6 +65,10 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)",
+                "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",
                 "stopMining": "⛏ Stop Mining"
             },
@@ -227,7 +231,7 @@
                 "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description" : "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
+                "description" : "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
                 "goToTestnet" : "Use the test network",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
                 "gotoMainnet" : "Use the main network",
@@ -254,6 +258,7 @@
                 "downloadingBlocks": "Downloading blocks",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync..",
                 "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
                 "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
                 "tutorial3Description" : "<h4> Create a blockchain organization </h4> <p> Create an autonomous organization with rules on spending money and making decisions for you and your investors.</p>",

@@ -3,6 +3,8 @@
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
 [![Code Climate](https://codeclimate.com/github/ethereum/mist/badges/gpa.svg)](https://codeclimate.com/github/ethereum/mist)
+[![dependencies Status](https://david-dm.org/ethereum/mist/status.svg)](https://david-dm.org/ethereum/mist)
+[![devDependencies Status](https://david-dm.org/ethereum/mist/dev-status.svg)](https://david-dm.org/ethereum/mist?type=dev)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
@@ -32,17 +34,17 @@ Once a Mist version is released the Meteor frontend part is bundled using `meteo
 
 Requirements:
 
-* Electron v1.3.12
+* Electron v1.3.13
 * Node v6.0 or above
 * [Yarn package manager](https://yarnpkg.com/)
 
 To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
 
     $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron@1.3.12
+    $ npm install -g electron@1.3.13
     $ npm install -g gulp
 
-And some futher tools to help with downloading and unzipping client nodes:
+And some further tools to help with downloading and unzipping client nodes:
 
 _Linux:_
 
@@ -72,7 +74,7 @@ It may be preferable to only download platform-specific nodes by passing the `--
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
 In the original window you can then start Mist with:
 
@@ -87,7 +89,7 @@ In the original window you can then start Mist with:
 
 Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd mist/interface && meteor
+    $ cd mist/interface && meteor --no-release-check
 
     // and in another terminal
 

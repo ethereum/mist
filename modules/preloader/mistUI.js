@@ -13,7 +13,6 @@ const Web3 = require('web3');
 const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
 const web3Admin = require('../web3Admin.js');
 
-
 require('./include/setBasePath')('interface');
 
 
@@ -57,11 +56,12 @@ ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
     }
 
     // forward to the webview (TODO: remove and manage in the ipcCommunicator?)
-    var tab = Tabs.findOne({ webviewId: id });
-    if(tab) {
-        webview = $('webview[data-id='+ tab._id +']')[0];
-        if(webview)
+    const tab = Tabs.findOne({ webviewId: id });
+    if (tab) {
+        webview = $(`webview[data-id=${tab._id}]`)[0];
+        if (webview) {
             webview.send('uiAction_windowMessage', type, error, value);
+        }
     }
 
 });
@@ -74,20 +74,22 @@ ipcRenderer.on('uiAction_enableBlurOverlay', (e, value) => {
 ipcRenderer.on('uiAction_toggleWebviewDevTool', (e, id) => {
     const webview = Helpers.getWebview(id);
 
-    if (!webview)
-        { return; }
+    if (!webview) {
+        return;
+    }
 
-    if (webview.isDevToolsOpened())
-        { webview.closeDevTools(); }
-    else
-        { webview.openDevTools(); }
+    if (webview.isDevToolsOpened()) {
+        webview.closeDevTools();
+    } else {
+        webview.openDevTools();
+    }
 });
 
 
 // randomize accounts and drop half
 // also certainly remove the web3.ethbase one
-var randomizeAccounts = (acc, coinbase) => {
-    var accounts = _.shuffle(acc);
+const randomizeAccounts = (acc, coinbase) => {
+    let accounts = _.shuffle(acc);
     accounts = _.rest(accounts, (accounts.length / 2).toFixed(0));
     accounts = _.without(accounts, coinbase);
     return accounts;
@@ -118,7 +120,7 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
 
                 // update the permissions, when accounts change
                 Tracker.autorun(() => {
-                    var accountList = _.pluck(EthAccounts.find({}, { fields:{ address: 1 } }).fetch(), 'address');
+                    const accountList = _.pluck(EthAccounts.find({}, { fields: { address: 1 } }).fetch(), 'address');
 
                     Tabs.update('tests', { $set: {
                         'permissions.accounts': randomizeAccounts(accountList, coinbase),
@@ -148,18 +150,21 @@ const menu = new Menu();
 // menu.append(new MenuItem({ type: 'separator' }));
 menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click() {
     const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview)
-        { webview.reloadIgnoringCache(); }
+    if (webview) {
+        webview.reloadIgnoringCache();
+    }
 } }));
 menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click() {
     const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview)
-        { webview.openDevTools(); }
+    if (webview) {
+        webview.openDevTools();
+    }
 } }));
 menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click() {
     const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview)
-        { webview.inspectElement(currentMousePosition.x, currentMousePosition.y); }
+    if (webview) {
+        webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
+    }
 } }));
 
 
@@ -179,7 +184,8 @@ document.addEventListener('keydown', (e) => {
     // RELOAD current webview
     if (e.metaKey && e.keyCode === 82) {
         const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-        if (webview)
-            { webview.reloadIgnoringCache(); }
+        if (webview) {
+            webview.reloadIgnoringCache();
+        }
     }
 }, false);

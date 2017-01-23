@@ -1,4 +1,31 @@
 
+showError = function(tabId, e){
+    if(e.isMainFrame || e.killed) {
+        var url,
+            path = 'file://'+ dirname + '/errorPages/';
+
+        if(e.killed) {
+            e.errorCode = 500;
+        }
+
+        switch(e.errorCode) {
+            case -105:
+                url = path +'404.html';
+                break;
+            case 500:
+                url = path +'500.html';
+                break;
+        }
+
+        if(url) {
+            Tabs.update(tabId, {$set: {
+                redirect: url
+            }});
+        }
+    }
+};
+
+
 webviewChangeUrl = function(tabId, e){
     if(e.type === 'did-navigate-in-page' && !e.isMainFrame)
         return;
@@ -6,6 +33,11 @@ webviewChangeUrl = function(tabId, e){
     var url = Helpers.sanitizeUrl(e.url || this.getURL());
 
     console.log(e.type, tabId, url);
+
+    if(e.type === 'did-navigate') {
+        // destroy socket when navigating away
+        ipc.send('ipcProvider-destroy', this.getWebContents().id);
+    }
 
     // make sure to not store error pages in history
     if(!url || url.indexOf('mist/errorPages/') !== -1)
@@ -73,8 +105,8 @@ webviewLoadStart = function(currentTabId, e){
     
     // stop this action, as the redirect happens reactive through setting the URL attribute
     e.preventDefault(); // doesnt work
-    webview.stop();
-    ipc.send('backendAction_stopFocusedWebviewNavigation'); // race condition? cant cancel fast enough sometimes?
+    webview.stop(); // doesnt work
+    ipc.sendSync('backendAction_stopWebviewNavigation', webview.getWebContents().id);
     
 
     var url = Helpers.sanitizeUrl(e.newURL || e.url);

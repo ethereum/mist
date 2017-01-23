@@ -34,13 +34,19 @@ module.exports = class extends BaseProcessor {
 
             // validate data
             try {
-                _.each(payload.params[0], (val) => {
+                _.each(payload.params[0], (val, key) => {
                     // if doesn't have hex then leave
                     if (_.isString(val)) {
+
+                        // make sure all data is lowercase and has 0x
+                        val = '0x'+ val.toLowerCase().replace('0x','');
+
                         if (val.match(/[^0-9a-fx]/igm)) {
                             throw this.ERRORS.INVALID_PAYLOAD;
                         }
                     }
+
+                    payload.params[0][key] = val;
                 });
             } catch (err) {
                 return reject(err);
@@ -69,9 +75,8 @@ module.exports = class extends BaseProcessor {
             });
 
             ipc.once('backendAction_unlockedAccountAndSentTransaction', (ev, err, result) => {
-                if (Windows.getById(ev.sender.getId()) === modalWindow
-                        && !modalWindow.isClosed)
-                {
+                if (Windows.getById(ev.sender.id) === modalWindow
+                        && !modalWindow.isClosed) {
                     if (err || !result) {
                         this._log.debug('Confirmation error', err);
 

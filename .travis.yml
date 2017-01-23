@@ -67,9 +67,11 @@ install:
 script:
   - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi  # disable macOS code-signing (production certificate) on develop branch
   - travis_wait 60 gulp mist --platform $GULP_PLATFORM
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp wallet --platform $GULP_PLATFORM; fi  # also build wallet if on master branch
 
 after_success:
   - gulp mist-checksums --platform $GULP_PLATFORM
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp wallet-checksums --platform $GULP_PLATFORM; fi
 
 notifications:
   webhooks:

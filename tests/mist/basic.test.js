@@ -41,9 +41,7 @@ test['Browser bar should not render script tags on breadcrumb view'] = function*
 
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
-            console.log('e', e);
-
-            return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
+            return /404\.html$/.test(e);
         });
     }, 2000, 'expected breadcrumb to render as HTML encoded');
 
@@ -57,14 +55,13 @@ test['Browser bar should not render script tags in disguise on breadcrumb view']
     yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
     yield client.submitForm('form.url');
 
-    yield client.waitUntil(() => {
-        return client.getText('.url-breadcrumb').then((e) => {
-            console.log('e', e);
+    const isUrlBlocked = (yield client.execute(() => { // Code executed in context of browser
+        try { $('form.url').submit(); }
+        catch(e) { return /Invalid URL/.test(e); }
+        return false;
+    })).value;
 
-            return e === '%3Cscript%3Ealert%28%29%3C ▸ script%3E';
-        });
-    }, 2000, 'expected breadcrumb to render as HTML encoded');
-
+    isUrlBlocked.should.be.true;
     should.not.exist(yield this.getUiElement('form.url script'));
 };
 
@@ -76,9 +73,7 @@ test['Browser bar should not render script tags in disguise (2) on breadcrumb vi
 
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
-            console.log('e', e);
-
-            return e === '%3Csvg%3E%3Cscript%3Ealert%28%29%3C ▸ script%3E%3C ▸ svg%3E';
+            return /404\.html$/.test(e);
         });
     }, 2000, 'expected breadcrumb to render as HTML encoded');
 
@@ -135,14 +130,16 @@ test['Check allowed "http://" protocol'] = function* () { // ETH-01-002
         catch(e) { return /Invalid URL/.test(e); }
         return false;
     })).value;
-    console.log('isProtocolBlocked', isProtocolBlocked);
-
     isProtocolBlocked.should.be.false;
 
-    const browserBarText = yield this.getBrowserBarText();
-    yield Q.delay(1000);
-    console.log('browserBarText', browserBarText);
-    browserBarText.should.eql(`http://localhost:8080 ▸ index.html`); // checks that did change displayed URL
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb').then((e) => {
+            return e === 'http://localhost:8080 ▸ index.html';
+        });
+    }, 2000, 'expected breadcrumb to render as HTML encoded');
+
+    const browserBarText = yield this.client.getText('.url-breadcrumb');
+    browserBarText.should.eql('http://localhost:8080 ▸ index.html'); // checks that did change displayed URL
 };
 
 test['Check disallowed "javascript:" protocol'] = function* () { // ETH-01-002
@@ -157,6 +154,7 @@ test['Check disallowed "javascript:" protocol'] = function* () { // ETH-01-002
     })).value;
     isProtocolBlocked.should.be.true;
 
+    yield Q.delay(500);
     const browserBarText = yield this.getBrowserBarText();
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
@@ -173,8 +171,48 @@ test['Check disallowed "data:" protocol'] = function* () { // ETH-01-002
     })).value;
     isProtocolBlocked.should.be.true;
 
+    yield Q.delay(500);
     const browserBarText = yield this.getBrowserBarText();
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
+};
+
+test['Check disallowed "file:///" protocol'] = function* () { // ETH-01-002
+    const client = this.client;
+    yield this.loadFixture();
+    yield client.setValue('#url-input', path.join(__dirname, '..', 'fixtures', 'index.html'));
+
+    const isProtocolBlocked = (yield client.execute(() => { // Code executed in context of browser
+        try { $('form.url').submit(); }
+        catch(e) { return /Invalid URL/.test(e); }
+        return false;
+    })).value;
+    isProtocolBlocked.should.be.false;
+
+    yield Q.delay(500);
+    const browserBarText = yield this.getBrowserBarText();
+    browserBarText.should.eql('file://  ▸ '); // checks that hasn't changed displayed URL
+};
+
+// TODO: test LocalStore.set when selecting tabs
+
+test['Pin tab test'] = function* () { // ETH-01-007
+    const client = this.client;
+
+    const sidebarItems = (yield client.elements('.sidebar nav > ul > li')).value;
+
+    yield this.selectTab('browser');
+
+    yield this.openAndFocusNewWindow(() => {
+        return client.click('span.connect-button');
+    });
+    yield client.click('.dapp-primary-button');
+    yield client.window(this.mainWindowHandle); // select main window again
+
+    yield Q.delay(500);
+    const sidebarItemsAfterAdd = (yield client.elements('.sidebar nav > ul > li')).value;
+
+    sidebarItems.length.should.eql(2);
+    sidebarItemsAfterAdd.length.should.eql(3);
 };
 
 

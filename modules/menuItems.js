@@ -339,27 +339,10 @@ let menuTempl = function (webviews) {
     }
 
     const externalNodeMsg = (ethereumNode.isOwnNode) ? '' : ` (${i18n.t('mist.applicationMenu.develop.externalNode')})`;
-    devToolsMenu = [{
+    devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.devTools'),
         submenu: devtToolsSubMenu,
-    }, {
-        label: i18n.t('mist.applicationMenu.develop.runTests'),
-        enabled: (Settings.uiMode === 'mist'),
-        click() {
-            Windows.getByType('main').send('uiAction_runTests', 'webview');
-        },
-    }, {
-        label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
-        enabled: ethereumNode.isOwnNode,
-        click() {
-            try {
-                shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
-            } catch (e) {
-                log.info(e);
-                log = 'Couldn\'t load log file.';
-            }
-        },
-    }];
+    });
 
     if (Settings.uiMode === 'mist') {
         devToolsMenu.push({
@@ -370,6 +353,27 @@ let menuTempl = function (webviews) {
             },
         });
     }
+
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.runTests'),
+        enabled: (Settings.uiMode === 'mist'),
+        click() {
+            Windows.getByType('main').send('uiAction_runTests', 'webview');
+        },
+    });
+
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
+        enabled: ethereumNode.isOwnNode,
+        click() {
+            try {
+                shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
+            } catch (e) {
+                log.info(e);
+                log = 'Couldn\'t load log file.';
+            }
+        },
+    });
 
     // add node switching menu
     devToolsMenu.push({

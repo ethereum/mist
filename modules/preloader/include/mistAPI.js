@@ -2,6 +2,7 @@
 @module MistAPI
 */
 
+const _ = require('underscore');
 const { ipcRenderer } = require('electron');
 const packageJson = require('./../../../package.json');
 
@@ -9,24 +10,23 @@ const packageJson = require('./../../../package.json');
 module.exports = () => {
     let queue = [];
     const prefix = 'entry_';
-
+    const MIST_SUBMENU_LIMIT = 100;
 
     // todo: error handling
     const filterAdd = (options) => {
-        if (typeof options !== 'object') { return false; }
+        if (!(options instanceof Object)) { return false; }
 
-        return ['position', 'selected', 'name', 'badge'].every((e) => {
-            return e in options;
-        });
+        return ['name'].every(e => e in options);
     };
 
     // filterId the id to only contain a-z A-Z 0-9
     const filterId = (str) => {
+        const filteredStr = String(str);
         let newStr = '';
-        if (str) {
-            for (let i = 0; i < str.length; i += 1) {
-                if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
-                    newStr += str.charAt(i);
+        if (filteredStr) {
+            for (let i = 0; i < filteredStr.length; i += 1) {
+                if (/[a-zA-Z0-9_-]/.test(filteredStr.charAt(i))) {
+                    newStr += filteredStr.charAt(i);
                 }
             }
         }
@@ -41,7 +41,6 @@ module.exports = () => {
     @class mist
     @constructor
     */
-
     const mist = {
         callbacks: {},
         version: packageJson.version,
@@ -56,6 +55,9 @@ module.exports = () => {
             }
 
             ipcRenderer.send('mistAPI_requestAccount');
+        },
+        solidity: {
+            version: packageJson.dependencies.solc,
         },
         sounds: {
             bip: function playSound() {
@@ -103,11 +105,23 @@ module.exports = () => {
             @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             add(id, options, callback) {
+                const args = Array.prototype.slice.call(arguments);
+                callback = _.isFunction(args[args.length - 1]) ? args.pop() : null;
+                options = _.isObject(args[args.length - 1]) ? args.pop() : null;
+                id = _.isString(args[args.length - 1]) || _.isFinite(args[args.length - 1]) ? args.pop() : null;
+
                 if (!filterAdd(options)) { return false; }
 
                 const filteredId = prefix + filterId(id);
+
+                // restricting to 100 menu entries
+                if (!(filteredId in this.entries) &&
+                    Object.keys(this.entries).length >= MIST_SUBMENU_LIMIT) {
+                    return false;
+                }
+
                 const entry = {
-                    id: filteredId,
+                    id: filteredId || 'mist_defaultId',
                     position: options.position,
                     selected: !!options.selected,
                     name: options.name,
@@ -126,6 +140,14 @@ module.exports = () => {
                 this.entries[filteredId] = entry;
                 return true;
             },
+            /**
+            Updates a menu entry from the mist sidebar.
+
+            @method update
+            @param {String} id          The id of the menu, has to be the same accross page reloads.
+            @param {Object} options     The menu options like {badge: 23, name: 'My Entry'}
+            @param {Function} callback  Change the callback to be called when the menu is pressed.
+            */
             update() {
                 this.add.apply(this, arguments);
             },
@@ -134,6 +156,9 @@ module.exports = () => {
 
             @method remove
             @param {String} id
+            @param {String} id          The id of the menu, has to be the same accross page reloads.
+            @param {Object} options     The menu options like {badge: 23, name: 'My Entry'}
+            @param {Function} callback  Change the callback to be called when the menu is pressed.
             */
             remove(id) {
                 const filteredId = prefix + filterId(id);
@@ -146,6 +171,22 @@ module.exports = () => {
                 });
             },
             /**
+            Marks a menu entry as selected
+
+            @method select
+            @param {String} id
+            */
+            select(id) {
+                const filteredId = prefix + filterId(id);
+                queue.push({ action: 'selectMenu', id: filteredId });
+
+                for (const e in this.entries) {
+                    if ({}.hasOwnProperty.call(this.entries, e)) {
+                        this.entries[e].selected = (e === filteredId);
+                    }
+                }
+            },
+            /**
             Removes all menu entries.
 
             @method clear
@@ -153,17 +194,6 @@ module.exports = () => {
             clear() {
                 this.entries = {};
                 queue.push({ action: 'clearMenu' });
-            },
-
-            select(id) {
-                const filteredId = prefix + filterId(id);
-                queue.push({ action: 'selectMenu', id: filteredId });
-
-                for (var e in this.entries) {
-                    if ({}.hasOwnProperty.call(this.entries, e)) {
-                        this.entries[e].selected = (e === filteredId);
-                    }
-                }
             },
         },
     };

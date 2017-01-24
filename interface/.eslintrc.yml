@@ -8,7 +8,10 @@ rules:
   prefer-template: 0
   no-underscore-dangle:
     - error
-    - allow: ['_id', '_escape']
+    - allow: ['_id', '_escape', '__']
 
 globals:
-    Blaze: true
+  Helpers: true
+  Blaze: true
+  EthAccounts: true
+  mist: true

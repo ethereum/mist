@@ -346,10 +346,20 @@ let menuTempl = function (webviews) {
 
     if (Settings.uiMode === 'mist') {
         devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.browsersol'),
+            label: i18n.t('mist.applicationMenu.develop.openRemix'),
             enabled: true,
             click() {
-                Windows.getByType('main').send('uiAction_openBrowserSolidity');
+                Windows.createPopup('remix', {
+                    url: 'https://remix.ethereum.org',
+                    electronOptions: {
+                        width: 1024,
+                        height: 720,
+                        center: true,
+                        frame: true,
+                        resizable: true,
+                        titleBarStyle: 'default',
+                    }
+                });
             },
         });
     }

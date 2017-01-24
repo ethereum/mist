@@ -129,18 +129,6 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
     }
 });
 
-// Open Browser Solidity
-ipcRenderer.on('uiAction_openBrowserSolidity', () => {
-    Tabs.upsert('browserSol', {
-        position: Tabs.find().count(),
-        name: 'Remix',
-        redirect: 'https://ethereum.github.io/browser-solidity/',
-    });
-
-    Tracker.afterFlush(() => LocalStore.set('selectedTab', 'browserSol'));
-});
-
-
 // CONTEXT MENU
 
 const currentMousePosition = { x: 0, y: 0 };

@@ -298,7 +298,7 @@ let menuTempl = function (webviews) {
 
 
     // DEVELOP
-    let devToolsMenu = [];
+    const devToolsMenu = [];
 
     // change for wallet
     if (Settings.uiMode === 'mist') {

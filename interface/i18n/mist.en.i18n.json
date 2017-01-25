@@ -46,7 +46,7 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
+                "importPresale": "Import Accounts",
                 "newAccount": "New account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",

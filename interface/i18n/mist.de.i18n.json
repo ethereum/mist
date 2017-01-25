@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Konten",
-                "importPresale": "Pre-sale-Konto importieren",
+                "importPresale": "Konto importieren",
                 "newAccount": "Neues Konto",
                 "backup": "Sicherung",
                 "backupKeyStore": "Konten",
@@ -202,7 +202,7 @@
                 "gotoMainnet": "Verwende das Hauptnetz",
                 "gotoMainnetDescription": " Sie werden etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden Ihnen helfen, etwas zu bekommen ...",
                 "doYouHaveAWalletFile": "Haben Sie eine Wallet-Datei?",
-                "walletFileDescription": "<p>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
+                "walletFileDescription": "<p>Wallet-Datei zum importieren in dieses Fenster ziehen.<br>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
                 "dropFilesHere": "Pre-sale Datei hochladen",
                 "creating": "Erstellen...",
                 "importing": "Importieren...",

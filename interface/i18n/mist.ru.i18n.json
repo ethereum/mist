@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Аккаунты",
-                "importPresale": "Импорт предпродажных аккаунтов",
+                "importPresale": "Импорт аккаунтов",
                 "newAccount": "Создать аккаунт",
                 "backup": "Резервное копирование",
                 "backupKeyStore": "Аккаунтов",

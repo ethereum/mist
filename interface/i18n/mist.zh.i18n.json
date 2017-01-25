@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "账户",
-                "importPresale": "导入预售账户",
+                "importPresale": "导入账户",
                 "newAccount": "新建账户",
                 "backup": "备份",
                 "backupKeyStore": "账户",

@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "アカウント",
-                "importPresale": "プリセールアカウントを読み込む",
+                "importPresale": "アカウントを読み込む",
                 "newAccount": "新規アカウント",
                 "backup": "バックアップ",
                 "backupKeyStore": "アカウント",

@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Importa Accounts pre-vendita",
+                "importPresale": "Importa Accounts",
                 "newAccount": "Nuovo account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",

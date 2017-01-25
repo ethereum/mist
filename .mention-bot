@@ -1,4 +1,5 @@
 {
+  "actions": ["labeled"],
   "withLabel": "please review",
   "maxReviewers": 3,
   "numFilesToCheck": 5,

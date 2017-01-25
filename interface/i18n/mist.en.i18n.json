@@ -60,6 +60,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
+                "openRemix": "Open Remix IDE",
                 "externalNode": "using external node",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",

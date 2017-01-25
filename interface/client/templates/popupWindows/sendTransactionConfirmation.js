@@ -6,7 +6,7 @@ Template Controllers
 
 var setWindowSize = function(template){
     Tracker.afterFlush(function(){
-        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows').height() + 60);
+        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows').height() + 120);
     });
 }
 
@@ -103,7 +103,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         var data = Session.get('data');
 
         if(data) {
-            
+
 
             // set window size
             setWindowSize(template);
@@ -127,10 +127,10 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 web3.eth.getCode(data.to, function(e, res){
                     if(!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
-                        setWindowSize(template);                        
+                        setWindowSize(template);
                     }
                 });
-                
+
                 if (data.data) {
                     localSignatureLookup(data.data).then(function(textSignature) {
                         // Clean version of function signature. Striping params
@@ -261,7 +261,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (transactionInvalid)
     */
     'transactionInvalid': function() {
-        return TemplateVar.get('estimatedGas') === 'invalid' 
+        return TemplateVar.get('estimatedGas') === 'invalid'
                 || TemplateVar.get('estimatedGas') === 0
                 || typeof TemplateVar.get('estimatedGas') === 'undefined';
     }
@@ -294,7 +294,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     */
    'submit form': function(e, template){
         e.preventDefault();
-        
+
         var data = Session.get('data'),
             pw = template.find('input[type="password"]').value,
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
@@ -373,7 +373,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         remoteSignatureLookup(data.data).then(function(textSignature) {
             TemplateVar.set(template, 'lookingUpFunctionSignature', false);
-            
+
             // Clean version of function signature. Striping params
             TemplateVar.set(template, 'executionFunction', textSignature.replace(/\(.+$/g, ''));
             TemplateVar.set(template, 'hasSignature', true);
@@ -385,10 +385,9 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 ipc.send('backendAction_decodeFunctionSignature', textSignature, data.data);
             }
         }).catch(function(bytesSignature) {
-            TemplateVar.set(template, 'lookingUpFunctionSignature', false);            
+            TemplateVar.set(template, 'lookingUpFunctionSignature', false);
             TemplateVar.set(template, 'executionFunction', bytesSignature);
             TemplateVar.set(template, 'hasSignature', false);
         });
    }
 });
-

@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "계정",
-                "importPresale": "프리세일 계정 추가하기",
+                "importPresale": "계정 추가하기",
                 "newAccount": "새 계정",
                 "backup": "백업",
                 "backupKeyStore": "계정키 백업",

@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Kontoer",
-                "importPresale": "Importer Forhåndssalg Kontoer",
+                "importPresale": "Importer Kontoer",
                 "newAccount": "Ny konto",
                 "backup": "Sikkerhetskopier",
                 "backupKeyStore": "Kontoer",

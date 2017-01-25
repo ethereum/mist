@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Llogari",
-                "importPresale": "Merr llogari të para-shitur",
+                "importPresale": "Merr llogari",
                 "newAccount": "Llogari e re",
                 "backup": "Ruaj një kopje rezervë",
                 "backupKeyStore": "Llogari",

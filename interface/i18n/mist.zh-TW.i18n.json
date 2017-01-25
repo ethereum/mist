@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "帳號",
-                "importPresale": "導入預售帳號",
+                "importPresale": "導入帳號",
                 "newAccount": "新建帳號",
                 "backup": "備份",
                 "backupKeyStore": "帳號",

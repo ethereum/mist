@@ -1322,6 +1322,13 @@ ethereum-client-binaries@^1.6.1:
     node-unzip-2 "^0.2.1"
     tmp "0.0.29"
 
+ethereum-keyfile-recognizer@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ethereum-keyfile-recognizer/-/ethereum-keyfile-recognizer-1.0.2.tgz#c0315f91c77e076621e9f6b5f8099fd370f7a11d"
+  dependencies:
+    json-structure-diff "0.0.2"
+    underscore "^1.8.3"
+
 ethereumjs-abi@^0.6.3:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.4.tgz#9ba1bb056492d00c27279f6eccd4d58275912c1a"
@@ -2466,6 +2473,10 @@ json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
 json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
+
+json-structure-diff@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/json-structure-diff/-/json-structure-diff-0.0.2.tgz#838277f5c0a9562981b9a2af86fe5e90c131b0b3"
 
 jsonfile@^2.1.0, jsonfile@^2.4.0:
   version "2.4.0"

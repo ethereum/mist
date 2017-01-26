@@ -57,8 +57,6 @@ const osArchList = [
 
 
 console.log('You can select a platform like: --platform <mac|win|linux|all>');
-
-console.log('App type:', type);
 console.log('Mist version:', version);
 console.log('Electron version:', electronVersion);
 
@@ -352,7 +350,7 @@ gulp.task('release-dist', ['build-dist'], (done) => {
             }
         }
 
-        if (platformIsActive('win')) {
+        if (platformIsActive('win') && type === 'mist') {
             runSeq('build-nsis');
         }
     });
@@ -467,8 +465,8 @@ gulp.task('wallet-checksums', (cb) => {
 
 gulp.task('build-nsis', (cb) => {
     const versionParts = version.split('.');
-    const versionString = ''.concat('-DVERSIONMAJOR=', versionParts[0], ' -DVERSIONMINOR=', versionParts[1], ' -DVERSIONBUILD=', versionParts[2]);
-    const cmdString = 'makensis'.concat(' -V3 ', versionString, ' scripts/windows-installer.nsi');
+    const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
+    const cmdString = `makensis -V3 ${versionString} scripts/windows-installer.nsi`;
     console.log(cmdString);
     shell.exec(cmdString, cb);
 });

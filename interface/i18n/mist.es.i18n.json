@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Cuentas",
-                "importPresale": "Importar Cuentas de la Pre-venta",
+                "importPresale": "Importar Cuentas",
                 "newAccount": "Nueva cuenta",
                 "backup": "Copia de seguridad",
                 "backupKeyStore": "Cuentas",

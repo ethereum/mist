@@ -173,15 +173,19 @@ exports.mocha = (_module, options) => {
         },
 
         * after () {
+            console.log('After tests triggered');
             if (this.app && this.app.isRunning()) {
+                console.log('Stopping app...');
                 yield this.app.stop();
             }
 
             if (this.geth && this.geth.isRunning) {
+                console.log('Stopping geth...');
                 yield this.geth.stop();
             }
 
             if (this.fixtureServer && this.fixtureServer.isListening) {
+                console.log('Stopping http server...');
                 yield this.fixtureServer.close();
             }
         },
@@ -196,6 +200,14 @@ exports.mocha = (_module, options) => {
 const Utils = {
     * waitUntil(msg, promiseFn) {
         yield this.client.waitUntil(promiseFn, 10000, msg, 500);
+    },
+    * waitForText(selector, text, ms = 500, message = 'Element couldn\'t be found') {
+        const client = this.client;
+        yield client.waitUntil(() => {
+            return client.getText(selector).then((e) => {
+                return e === text;
+            });
+        }, ms, message);
     },
     * getUiElements(selector) {
         const elems = yield this.client.elements(selector);
@@ -307,9 +319,7 @@ const Utils = {
     * selectTab(tabId) {
         const tab = yield this.getUiElement(`.sidebar [data-tab-id=${tabId}]`);
         yield this.client.click(`.sidebar [data-tab-id=${tabId}] button.main`);
-
-        // TODO: returns window reference
-        return tab;
+        // TODO: returns webview reference
     },
     * getActiveWebview() {
         const webview = '';
@@ -328,8 +338,23 @@ const Utils = {
     * getBrowserBarText() {
         return yield this.client.getText('.url-breadcrumb');
     },
-    *pinCurrentTab(accounts) {}, // TODO
+    *pinCurrentTab() {
+        const client = this.client;
+
+        yield this.openAndFocusNewWindow(() => {
+            return client.click('span.connect-button');
+        });
+        yield client.click('.dapp-primary-button');
+
+        yield client.window(this.mainWindowHandle); // selects main window again
+        yield Q.delay(500);
+
+        const pinnedWebview = (yield client.windowHandles()).value.pop();
+        return pinnedWebview;
+
+    },
     *navigateTo(url) {
+        const client = this.client;
         yield client.setValue('#url-input', url);
         yield client.submitForm('form.url');
     }

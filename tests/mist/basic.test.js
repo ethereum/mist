@@ -70,11 +70,10 @@ test['Browser bar should not render arbitrary code as HTML'] = function* () { //
     const client = this.client;
 
     yield client.waitUntil(() => {
-        return client.getText('.url-breadcrumb').then((e) => {
+        return client.getText('.url-breadcrumb', (e) => {
             return e === '%3Ciframe onload="alert%28%29%"%3E';
         });
     }, 2000, 'expected breadcrumb to render as HTML encoded');
-    // yield this.waitForText('.url-breadcrumb', '%3Ciframe onload="alert%28%29%"%3E', 3000);
 };
 
 test['Browser bar should not execute JS'] = function* () { // ETH-01-001
@@ -155,6 +154,7 @@ test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
     yield this.loadFixture();
     yield client.setValue('#url-input', path.join(__dirname, '..', 'fixtures', 'index.html'));
 
+    console.log(path.join(__dirname, '..', 'fixtures', 'index.html'));
     const isProtocolBlocked = (yield client.execute(() => { // Code executed in context of browser
         try { $('form.url').submit(); }
         catch(e) { return /Invalid URL/.test(e); }
@@ -166,8 +166,6 @@ test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
     const browserBarText = yield this.getBrowserBarText();
     browserBarText.should.eql('file://  ▸ '); // checks that hasn't changed displayed URL
 };
-
-// TODO: test LocalStore.set when selecting tabs
 
 test['Pin tab test'] = function* () {
     const client = this.client;
@@ -184,6 +182,44 @@ test['Pin tab test'] = function* () {
 
 test['Browse tab should be changed to pinned tab if the URL is the same'] = function* () { // ETH-01-007
     const client = this.client;
-    yield this.selectTab('wallet');
+    yield this.selectTab('browser');
+
+    yield this.navigateTo('https://wallet.ethereum.org');
+    yield this.waitUntil(() => {
+        return this.getUiElement('.sidebar nav > ul > .selected').then((e) => {
+            return e.getAttribute('data-tab-id') === 'wallet';
+        });
+    }, 2000);
 };
+
+test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = function* () { // ETH-01-007
+    const client = this.client;
+    yield this.selectTab('wallet');
+
+    yield this.navigateTo(`${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
+    yield this.waitUntil(() => {
+        return this.getUiElement('.sidebar nav > ul > .selected').then((e) => {
+            return e.getAttribute('data-tab-id') === 'browser';
+        });
+    }, 2000);
+};
+
+test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = function* () { // ETH-01-007
+    const client = this.client;
+    yield this.selectTab('wallet');
+
+    // Now changing address via JS
+    yield client.setValue('#url-input', `${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
+    const isProtocolBlocked = yield client.execute(() => { // Code executed in context of browser
+        $('form.url').submit();
+    });
+
+    yield this.waitUntil(() => {
+        return this.getUiElement('.sidebar nav > ul > .selected').then((e) => {
+            return e.getAttribute('data-tab-id') === 'browser';
+        });
+    }, 2000);
+};
+
+
 

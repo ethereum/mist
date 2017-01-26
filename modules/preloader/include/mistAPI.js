@@ -57,7 +57,7 @@ module.exports = () => {
             ipcRenderer.send('mistAPI_requestAccount');
         },
         solidity: {
-            version: packageJson.dependencies.solc,
+            version: String(packageJson.dependencies.solc).match(/\d+.\d+.\d+/)[0],
         },
         sounds: {
             bip: function playSound() {

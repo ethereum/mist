@@ -238,7 +238,7 @@ ipc.on('mistAPI_requestAccount', (e) => {
             ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
-                height: 497,
+                height: 520,
                 maximizable: false,
                 minimizable: false,
                 alwaysOnTop: true,

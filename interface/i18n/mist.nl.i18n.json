@@ -272,7 +272,7 @@
                     "unknownFile": "Bestand niet herkent.",
                     "wrongPassword": "Incorrect wachtwoord.",
                     "importFailed": "Kon bestand niet importeren en kreeg: __error__"
-                },
+                }
             },
             "connectAccount": {
                 "chooseAccountTitle": "Kies account",

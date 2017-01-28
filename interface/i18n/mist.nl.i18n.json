@@ -92,7 +92,7 @@
                 "linux": "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Zet tijdssynchronisatie aan door in je instellingen de optie \"Tijd en datum automatisch instellen\" te activeren."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in gedownloade node!",
                 "description": "__algorithm__: __hash__\n\nInstalleer de __type__ node versie __version__ handmatig."
             },

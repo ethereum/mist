@@ -217,5 +217,11 @@ test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = fu
     }, 2000);
 };
 
+test['Links with target _blank or _popup should open inside Mist'] = function* () {
+    const client = this.client;
+    yield this.navigateTo(`${this.fixtureBaseUrl}/fixture-popup.html`);
+    yield this.getWindowByUrl(e => /popup.html$/.test(e));
 
+    // TODO: click on the fixtures' links and assert if they opened on the same page
+};
 

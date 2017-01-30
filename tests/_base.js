@@ -218,7 +218,7 @@ const Utils = {
     * waitUntil(msg, promiseFn) {
         yield this.client.waitUntil(promiseFn, 10000, msg, 500);
     },
-    * waitForText(selector, text, ms = 500, message = 'Element couldn\'t be found') {
+    * waitForText(selector, text, ms = 2000, message = 'Element couldn\'t be found') {
         const client = this.client;
         yield client.waitUntil(() => {
             return client.getText(selector).then((e) => {
@@ -373,6 +373,28 @@ const Utils = {
         const client = this.client;
         yield client.setValue('#url-input', url);
         yield client.submitForm('form.url');
+    },
+
+    /*
+    @method getWindowByUrl
+
+    @param search: function that tells how to search by window
+    @param tries: amount of tries left until give up searching for
+    */
+    *getWindowByUrl(search, tries = 5) {
+        if (tries < 0) throw new Error('Couldn\'t select window using given parameters.');
+
+        let windowHandles = (yield this.client.windowHandles()).value;
+
+        for (let handle in windowHandles) {
+            yield this.client.window(windowHandles[handle]);
+
+            const found = !!search(yield this.client.getUrl());
+            if (found) return true;
+        }
+        yield Q.delay(500);
+        yield this.getWindowByUrl(search, --tries);
     }
+
 };
 

@@ -12,12 +12,50 @@ const Application = require('spectron').Application;
 const chai = require('chai');
 const http = require('http');
 const ecstatic = require('ecstatic');
-// const ClientBinaryManager = require('../modules/clientBinaryManager');
+const ClientBinaryManager = require('ethereum-client-binaries').Manager;
+const Settings = require('../modules/settings');
 
 chai.should();
 
 process.env.TEST_MODE = 'true';
 
+const startGeth = function* () {
+    let gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
+
+    const config = JSON.parse(
+        fs.readFileSync(path.join('..', 'clientBinaries.json')).toString()
+    );
+
+    const manager = new ClientBinaryManager(config);
+    yield manager.init({
+        folders: ['/Users/ev/Tools/geth/']
+    });
+
+    console.log(manager.clients, manager.clients.Geth.state.available);
+
+    if (!manager.clients.Geth.state.available) { // Let's download geth
+        console.log('Downloading geth...');
+        let downloadedGeth = yield manager.download('Geth');
+        gethPath = downloadedGeth.client.activeCli.fullPath;
+        console.log('Geth downloaded at:', gethPath);
+    }
+
+    const geth = gethPrivate({
+        gethPath,
+        balance: 5,
+        genesisBlock: {
+            difficulty: '0x1',
+            extraData: '0x1',
+        },
+        gethOptions: {
+            port: 58546,
+            rpcport: 58545,
+        },
+    });
+    yield geth.start();
+    console.log('geth', geth);
+    return geth;
+};
 
 exports.mocha = (_module, options) => {
     const tests = {};
@@ -36,29 +74,11 @@ exports.mocha = (_module, options) => {
             const logFilePath = path.join(__dirname, 'mist.log');
             shell.rm('-rf', logFilePath);
 
+            this.geth = yield startGeth();
+
             const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
             const appVers = packageJson.version.replace(/\./ig, '-');
             const platformArch = `${process.platform}-${process.arch}`;
-
-            // Temporary. needs integration with ClientBinaryManager
-            const gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
-            // const clientBinaryManager = ClientBinaryManager.init();
-            // console.log(clientBinaryManager);
-
-            this.geth = gethPrivate({
-                gethPath,
-                balance: 5,
-                genesisBlock: {
-                    difficulty: '0x1',
-                    extraData: '0x1',
-                },
-                gethOptions: {
-                    port: 58546,
-                    rpcport: 58545,
-                },
-            });
-            yield this.geth.start();
-
 
             let appPath;
             let ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
@@ -351,7 +371,6 @@ const Utils = {
 
         const pinnedWebview = (yield client.windowHandles()).value.pop();
         return pinnedWebview;
-
     },
     *navigateTo(url) {
         const client = this.client;

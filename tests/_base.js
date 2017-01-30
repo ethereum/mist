@@ -87,7 +87,7 @@ exports.mocha = (_module, options) => {
                 );
                 break;
             case 'linux-x64':
-                appPath = path.join(process.cwd(), `dist_${options.app}`, `${appFileName}-linux64-${appVers}`, appFileName);
+                appPath = path.join(process.cwd(), `dist_${options.app}`, 'dist', 'linux-unpacked', appFileName);
                 break;
             default:
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);

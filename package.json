@@ -8,8 +8,7 @@
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
-    "postinstall": "cd interface && yarn",
-    "ci": "gulp --platform=linux"
+    "postinstall": "cd interface && yarn"
   },
   "main": "main.js",
   "dependencies": {
@@ -20,6 +19,7 @@
     "chai-string": "^1.3.0",
     "electron-squirrel-startup": "^1.0.0",
     "ethereum-client-binaries": "^1.6.1",
+    "ethereum-keyfile-recognizer": "^1.0.2",
     "ethereumjs-abi": "^0.6.3",
     "got": "^6.3.0",
     "i18next": "^2.3.4",
@@ -51,6 +51,7 @@
     "eslint-plugin-import": "^1.16.0",
     "genomatic": "^1.0.0",
     "geth-private": "^1.3.0",
+    "gh-release-assets": "^1.1.0",
     "gulp": "^3.9.0",
     "gulp-flatten": "^0.3.0",
     "gulp-spawn-mocha": "^3.1.0",

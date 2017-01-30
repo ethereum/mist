@@ -116,8 +116,13 @@ Helpers.generateBreadcrumb = function (url) {
     filteredUrl = {
         protocol: Blaze._escape(url.protocol),
         host: Blaze._escape(url.host),
-        pathname: Blaze._escape(url.pathname)
+        pathname: Blaze._escape(url.pathname),
+        search: Blaze._escape(url.search),
+        hash: Blaze._escape(url.hash)
     };
+
+    filteredUrl.pathname += filteredUrl.search.replace(/\?/g, '/');
+    filteredUrl.pathname += filteredUrl.hash.replace(/#/g, '/');
 
     pathname = _.reject(filteredUrl.pathname.replace(/\/$/g, '').split('/'), function (el) {
         return el === '';

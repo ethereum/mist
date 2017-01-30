@@ -24,22 +24,28 @@ test['Browser bar should render urls with separators'] = function* () {
     yield this.navigateTo('http://localhost:8080/page1/page2?param=value#hash');
 
     console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ page1 ▸ page2', 5000);
+    yield Q.delay(5000);
     console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
+    yield Q.delay(5000);
+    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
+    yield Q.delay(5000);
+    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
+    yield Q.delay(5000);
+    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
+    yield Q.delay(5000);
+    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
+    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ page1 ▸ page2', 5000);
 };
 
-// FAILING ON TRAVIS
 test['Browser bar should not render script tags on breadcrumb view'] = function* () { // ETH-01-001
     const client = this.client;
 
     yield this.navigateTo('<script>alert()</script>');
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
             return /404\.html$/.test(e);
         });
     }, 5000, 'expected breadcrumb to render as HTML encoded');
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url script'));
@@ -59,18 +65,15 @@ test['Browser bar should not render script tags in disguise on breadcrumb view']
     should.not.exist(yield this.getUiElement('form.url script'));
 };
 
-// FAILING ON TRAVIS
 test['Browser bar should not render script tags in disguise (2) on breadcrumb view'] = function* () { // ETH-01-001
     const client = this.client;
 
     yield this.navigateTo('<svg><script>alert()</script></svg>');
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
     yield client.waitUntil(() => {
         return client.getText('.url-breadcrumb').then((e) => {
             return /404\.html$/.test(e);
         });
     }, 5000, 'expected breadcrumb to render as HTML encoded');
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url svg'));

@@ -20,24 +20,22 @@ chai.should();
 process.env.TEST_MODE = 'true';
 
 const startGeth = function* () {
-    let gethPath = '/Users/ev/Library/Application Support/Mist/binaries/Geth/unpacked/geth';
+    let gethPath;
 
     const config = JSON.parse(
-        fs.readFileSync(path.join('..', 'clientBinaries.json')).toString()
+        fs.readFileSync(path.join('clientBinaries.json')).toString()
     );
-
     const manager = new ClientBinaryManager(config);
-    yield manager.init({
-        folders: ['/Users/ev/Tools/geth/']
-    });
+    yield manager.init();
 
-    console.log(manager.clients, manager.clients.Geth.state.available);
-
-    if (!manager.clients.Geth.state.available) { // Let's download geth
-        console.log('Downloading geth...');
+    if (manager.clients.Geth.state.available) {
+        gethPath = manager.clients.Geth.activeCli.fullPath;
+    }
+    else {
+        console.info('Downloading geth...');
         let downloadedGeth = yield manager.download('Geth');
         gethPath = downloadedGeth.client.activeCli.fullPath;
-        console.log('Geth downloaded at:', gethPath);
+        console.info('Geth downloaded at:', gethPath);
     }
 
     const geth = gethPrivate({
@@ -53,7 +51,6 @@ const startGeth = function* () {
         },
     });
     yield geth.start();
-    console.log('geth', geth);
     return geth;
 };
 

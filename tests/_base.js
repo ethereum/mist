@@ -119,7 +119,7 @@ exports.mocha = (_module, options) => {
                 Starting HTTP server for HTML fixtures
             */
             const serverPort = 8080;
-            this.fixtureServer = http.createServer(
+            this.httpServer = http.createServer(
                 ecstatic({root: path.join(__dirname, 'fixtures')})
             ).listen(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
@@ -201,9 +201,9 @@ exports.mocha = (_module, options) => {
                 yield this.geth.stop();
             }
 
-            if (this.fixtureServer && this.fixtureServer.isListening) {
+            if (this.httpServer && this.httpServer.isListening) {
                 console.log('Stopping http server...');
-                yield this.fixtureServer.close();
+                yield this.httpServer.close();
             }
         },
 

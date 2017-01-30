@@ -22,19 +22,7 @@ test['Browser bar should render urls with separators'] = function* () {
     const client = this.client;
 
     yield this.navigateTo('http://localhost:8080/page1/page2?param=value#hash');
-
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield Q.delay(5000);
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield Q.delay(5000);
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield Q.delay(5000);
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield Q.delay(5000);
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield Q.delay(5000);
-    console.log('.url-breadcrumb', yield this.execElemsMethod('elementIdText', '.url-breadcrumb'));
-    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ page1 ▸ page2', 5000);
+    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ page1 ▸ page2 ▸ param=value ▸ hash');
 };
 
 test['Browser bar should not render script tags on breadcrumb view'] = function* () { // ETH-01-001
@@ -123,7 +111,7 @@ test['"http://" protocol should be allowed on browser bar'] = function* () { // 
     })).value;
     isProtocolBlocked.should.be.false;
 
-    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ index.html', 2000);
+    yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ index.html');
 
     const browserBarText = yield this.client.getText('.url-breadcrumb');
     browserBarText.should.eql('http://localhost:8080 ▸ index.html'); // checks that did change displayed URL
@@ -165,20 +153,14 @@ test['"data:" protocol should be disallowed on browser bar'] = function* () { //
 
 test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
     const client = this.client;
-    yield this.loadFixture();
-    yield client.setValue('#url-input', path.join(__dirname, '..', 'fixtures', 'index.html'));
+    const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 
-    console.log(path.join(__dirname, '..', 'fixtures', 'index.html'));
-    const isProtocolBlocked = (yield client.execute(() => { // Code executed in context of browser
-        try { $('form.url').submit(); }
-        catch(e) { return /Invalid URL/.test(e); }
-        return false;
-    })).value;
-    isProtocolBlocked.should.be.false;
-
-    yield Q.delay(1000);
-    const browserBarText = yield this.getBrowserBarText();
-    browserBarText.should.eql('file://  ▸ '); // checks that hasn't changed displayed URL
+    yield this.navigateTo(filePath);
+    yield this.waitUntil(() => {
+        return this.getBrowserBarText().then((e) => {
+            return /errorPages\/400.html$/.test(e);
+        });
+    });
 };
 
 test['Pin tab test'] = function* () {

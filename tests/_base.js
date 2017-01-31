@@ -218,7 +218,7 @@ const Utils = {
     * waitUntil(msg, promiseFn) {
         yield this.client.waitUntil(promiseFn, 10000, msg, 500);
     },
-    * waitForText(selector, text, ms = 2000, message = 'Element couldn\'t be found') {
+    * waitForText(selector, text, ms = 5000, message = 'Element couldn\'t be found') {
         const client = this.client;
         yield client.waitUntil(() => {
             return client.getText(selector).then((e) => {

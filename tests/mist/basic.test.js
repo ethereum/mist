@@ -75,7 +75,7 @@ test['Browser bar should not render arbitrary code as HTML'] = function* () { //
         return client.getText('.url-breadcrumb', (e) => {
             return e === '%3Ciframe onload="alert%28%29%"%3E';
         });
-    }, 2000, 'expected breadcrumb to render as HTML encoded');
+    }, 5000, 'expected breadcrumb to render as HTML encoded');
 };
 
 test['Browser bar should not execute JS'] = function* () { // ETH-01-001
@@ -183,7 +183,7 @@ test['Browse tab should be changed to pinned tab if the URL is the same'] = func
         return this.getUiElement('.sidebar nav > ul > .selected').then((e) => {
             return e.getAttribute('data-tab-id') === 'wallet';
         });
-    }, 2000);
+    });
 };
 
 test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = function* () { // ETH-01-007

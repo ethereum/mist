@@ -69,7 +69,7 @@ script:
   - travis_wait 60 gulp mist --platform $GULP_PLATFORM
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp wallet --platform $GULP_PLATFORM; fi  # also build wallet if on master branch
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
-  - if [[ $GULP_PLATFORM != "windows" ]]; then gulp test-mist; fi
+  - if [[ $GULP_PLATFORM != "win" ]]; then gulp test-mist; fi
 
 after_success:
   - gulp mist-checksums --platform $GULP_PLATFORM

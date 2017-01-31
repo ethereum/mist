@@ -156,11 +156,9 @@ test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 
     yield this.navigateTo(filePath);
-    yield this.waitUntil(() => {
-        return this.getBrowserBarText().then((e) => {
-            return /errorPages\/400.html$/.test(e);
-        });
-    });
+    yield Q.delay(1000);
+    const browserBarText = yield this.getBrowserBarText();
+    browserBarText.should.match(/errorPages ▸ 400.html$/);
 };
 
 test['Pin tab test'] = function* () {

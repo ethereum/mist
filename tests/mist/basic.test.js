@@ -151,15 +151,15 @@ test['"data:" protocol should be disallowed on browser bar'] = function* () { //
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
 
-test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
-    const client = this.client;
-    const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
+// test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
+//     const client = this.client;
+//     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 
-    yield this.navigateTo(filePath);
-    yield Q.delay(1000);
-    const browserBarText = yield this.getBrowserBarText();
-    browserBarText.should.match(/errorPages ▸ 400.html$/);
-};
+//     yield this.navigateTo(filePath);
+//     yield Q.delay(1500);
+//     const browserBarText = yield this.getBrowserBarText();
+//     browserBarText.should.match(/errorPages ▸ 400.html$/);
+// };
 
 test['Pin tab test'] = function* () {
     const client = this.client;

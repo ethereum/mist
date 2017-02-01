@@ -39,7 +39,7 @@ module.exports = class extends BaseProcessor {
                     if (_.isString(val)) {
 
                         // make sure all data is lowercase and has 0x
-                        val = '0x'+ val.toLowerCase().replace('0x','');
+                        if (val) val = `0x${val.toLowerCase().replace('0x', '')}`;
 
                         if (val.match(/[^0-9a-fx]/igm)) {
                             throw this.ERRORS.INVALID_PAYLOAD;

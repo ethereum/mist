@@ -149,7 +149,7 @@ class NodeSync extends EventEmitter {
 
                                 const diff = now - +blockResult.timestamp;
 
-                                log.debug(`Last block: ${blockResult.number}, ${diff}s ago`);
+                                log.debug(`Last block: ${Number(blockResult.number)}, ${diff}s ago`);
 
                                 // need sync if > 1 minute
                                 if (diff > 60) {

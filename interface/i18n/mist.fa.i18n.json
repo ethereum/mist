@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
+                "importPresale": "Import Accounts",
                 "newAccount": "New account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
@@ -47,7 +47,11 @@
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "stopMining": "⛏ Stop Mining",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Window",
@@ -70,7 +74,7 @@
                 "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -249,7 +253,8 @@
                     "unknownFile": "File not recognised.",
                     "wrongPassword": "Wrong password.",
                     "importFailed": "Couldn't import the file, got: __error__"
-                }
+                },
+                "startingSync": "Getting ready to sync.."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

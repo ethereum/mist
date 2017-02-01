@@ -18,7 +18,7 @@ ipcRenderer.sendToHost('setWebviewId');
 ipcRenderer.send('ipcProvider-destroy');
 
 // Security
-process.on('loaded',function () {
+process.on('loaded', function () {
     Object.freeze(window.JSON);
     // Object.freeze(window.Function);
     // Object.freeze(window.Function.prototype);

@@ -329,11 +329,9 @@ gulp.task('release-dist', ['build-dist'], (done) => {
         if (platformIsActive(osArch)) {
             switch (osArch) { // eslint-disable-line default-case
             case 'win-ia32':
-                // cp(path.join('win-ia32', `${applicationName} Setup ${version}-ia32.exe`), `${appNameHypen}-win32-${versionDashed}.exe`);
                 cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
                 break;
             case 'win-x64':
-                // cp(path.join('win', `${applicationName} Setup ${version}.exe`), `${appNameHypen}-win64-${versionDashed}.exe`);
                 cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
                 break;
             case 'mac-x64':
@@ -472,15 +470,22 @@ gulp.task('build-nsis', (cb) => {
 });
 
 
-gulp.task('test-wallet', () => {
+const testApp = (app) => {
     return gulp.src([
-        './tests/wallet/*.test.js',
-    ])
-    .pipe(mocha({
+        `./tests/${app}/*.test.js`,
+    ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',
         reporter: 'spec',
     }));
+};
+
+gulp.task('test-wallet', () => {
+    testApp('wallet');
+});
+
+gulp.task('test-mist', () => {
+    testApp('mist');
 });
 
 

@@ -42,7 +42,7 @@ To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteo
     $ npm install -g electron@1.3.13
     $ npm install -g gulp
 
-And some futher tools to help with downloading and unzipping client nodes:
+And some further tools to help with downloading and unzipping client nodes:
 
 _Linux:_
 
@@ -154,7 +154,7 @@ Mist normally.
 To create a binaries you need to install [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#macos):
 
     // tools for the windows binaries
-    $ brew install wine --without-x11 mono
+    $ brew install wine --without-x11 mono makensis
     // tools for the Linux binaries
     $ brew install gnu-tar libicns graphicsmagick xz
     // general dependencies
@@ -223,3 +223,11 @@ It expects installer/zip files to be in the generated folders e.g. `dist_mist/re
 ### Code signing for production
 
 **As of [#972](https://github.com/ethereum/mist/pull/972) we've updated the build process and thus need to redo code-signing.**
+
+
+## Testing
+
+First make sure to build Mist with:
+`gulp mist --platform [mac,linux]` or `gulp wallet --platform [mac,linux]`.
+
+Then run `gulp test-mist` or `gulp test-wallet`, accordingly.

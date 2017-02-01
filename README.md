@@ -3,8 +3,6 @@
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
 [![Code Climate](https://codeclimate.com/github/ethereum/mist/badges/gpa.svg)](https://codeclimate.com/github/ethereum/mist)
-[![dependencies Status](https://david-dm.org/ethereum/mist/status.svg)](https://david-dm.org/ethereum/mist)
-[![devDependencies Status](https://david-dm.org/ethereum/mist/dev-status.svg)](https://david-dm.org/ethereum/mist?type=dev)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 

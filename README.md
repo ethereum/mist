@@ -225,3 +225,11 @@ It expects installer/zip files to be in the generated folders e.g. `dist_mist/re
 ### Code signing for production
 
 **As of [#972](https://github.com/ethereum/mist/pull/972) we've updated the build process and thus need to redo code-signing.**
+
+
+## Testing
+
+First make sure to build Mist with:
+`gulp mist --platform [mac,linux]` or `gulp wallet --platform [mac,linux]`.
+
+Then run `gulp test-mist` or `gulp test-wallet`, accordingly.

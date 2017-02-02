@@ -39,9 +39,9 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.5-ff07d548.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.8-f58fb322.tar.gz",
                             "type": "tar",
-                            "sha256": "a5b3ae5b7e9d91a0ca42ca24b079631578cdccce036cc5b1f0035cd0d9706b53",
+                            "md5": "7ac3eae96132d49564bcf0f352081283",
                             "bin": "geth-darwin-amd64-1.5.8-f58fb322/geth"
                         },
                         "bin": "geth",

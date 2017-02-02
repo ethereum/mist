@@ -23,6 +23,8 @@ const fs = require('fs');
 const got = require('got');
 const Q = require('bluebird');
 const githubUpload = Q.promisify(require('gh-release-assets'));
+const cmp = require('semver-compare');
+const parseJson = require('xml2js').parseString;
 
 const options = minimist(process.argv.slice(2), {
     string: ['platform', 'walletSource'],
@@ -413,6 +415,81 @@ gulp.task('get-release-checksums', (done) => {
     return done();
 });
 
+gulp.task('update-nodes', (cb) => {
+    const clientBinaries = require('./clientBinaries.json'); // eslint-disable-line global-require
+    const clientBinariesGeth = clientBinaries.clients.Geth;
+    const localGethVersion = clientBinariesGeth.version;
+    const newJson = clientBinaries;
+    const geth = newJson.clients.Geth;
+
+    // Query latest geth version
+    got('https://api.github.com/repos/ethereum/go-ethereum/releases/latest', { json: true })
+    .then((response) => {
+        return response.body.tag_name;
+    })
+    // Return tag name (e.g. 'v1.5.0')
+    .then((tagName) => {
+        const latestGethVersion = tagName.match(/\d+\.\d+\.\d+/)[0];
+
+        // Compare to current geth version in clientBinaries.json
+        if (cmp(latestGethVersion, localGethVersion)) {
+            geth.version = latestGethVersion;
+
+            // Query commit hash (first 8 characters)
+            got(`https://api.github.com/repos/ethereum/go-ethereum/commits/${tagName}`, { json: true })
+            .then((response) => {
+                return String(response.body.sha).substr(0, 8);
+            })
+            .then((hash) => {
+                let blobs; // geth blobs
+
+                // Query Azure assets for md5 hashes
+                got('https://gethstore.blob.core.windows.net/builds?restype=container&comp=list', {
+                    xml: true,
+                })
+                .then((response) => {
+                    parseJson(response.body, (err, data) => {
+                        blobs = data.EnumerationResults.Blobs[0].Blob;
+                    });
+
+                    // For each platform/arch in clientBinaries.json
+                    _.keys(geth.platforms).forEach((platform) => {
+                        _.keys(geth.platforms[platform]).forEach((arch) => {
+                            // Update URL
+                            let url = geth.platforms[platform][arch].download.url;
+                            url = url.replace(/\d+\.\d+\.\d+-[a-z0-9]{8}/, `${latestGethVersion}-${hash}`);
+                            geth.platforms[platform][arch].download.url = url;
+
+                            // Update bin name (path in archive)
+                            let bin = geth.platforms[platform][arch].download.bin;
+                            bin = bin.replace(/\d+\.\d+\.\d+-[a-z0-9]{8}/, `${latestGethVersion}-${hash}`);
+                            geth.platforms[platform][arch].download.bin = bin;
+
+                            // Update expected sanity-command version output
+                            geth.platforms[platform][arch].commands.sanity.output[1] =
+                            String(latestGethVersion);
+
+                            // Update md5 checksum
+                            blobs.forEach((blob) => {
+                                if (String(blob.Name) === _.last(geth.platforms[platform][arch].download.url.split('/'))) {
+                                    const sum = new Buffer(blob.Properties[0]['Content-MD5'][0], 'base64');
+
+                                    geth.platforms[platform][arch].download.md5 = sum.toString('hex');
+                                }
+                            });
+                        });
+                    });
+                })
+                // Update clientBinares.json
+                .then(() => {
+                    fs.writeFile('./clientBinaries.json', JSON.stringify(newJson, null, 4));
+                    cb();
+                });
+            });
+        } else cb(); // Already up-to-date
+    })
+    .catch(cb);
+});
 
 gulp.task('download-signatures', (cb) => {
     got('https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at', {

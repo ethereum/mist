@@ -7,20 +7,37 @@
                         <header>
                             <button class="main {{#if badge}}has-badge{{/if}}">
                                 {{#if icon}}
-                                    <!-- <img src="{{icon}}"> -->
+                                    <img src="{{icon}}">
                                 {{else}}
-                                    <!-- <i class="icon-globe"></i> -->
+                                    <i class="icon-globe"></i>
                                 {{/if}}
-                                <span title="{{nameFull}}">{{name}}</span>
+
+                                <!-- <span title="{{nameFull}}">{{name}}</span> -->
                                 {{#if badge}}
                                     <!-- <div class="badge">{{badge}}</div> -->
                                 {{/if}}
                             </button>
 
+                        </header>
+                        <section style="display: none">
                             {{#if $neq _id 'browser'}}
                                 <button class="remove-tab"> &times; </button>
                             {{/if}}
-                        </header>
+                            <ul class="sub-menu">
+                            {{#each subMenu}}
+                                <li>
+                                    <button class="{{#if selected}}selected{{/if}}">
+                                        {{name}}
+                                    </button>
+                                    {{#if badge}}
+                                        <div class="badge">{{badge}}</div>
+                                    {{/if}}
+                                </li>
+                            {{/each}}
+                            <li class="see-all"><button> See All...</button></li>
+                        </ul>
+
+                        </section>
                     </li>
                 {{/each}}
             </ul>

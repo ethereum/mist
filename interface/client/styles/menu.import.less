@@ -2,19 +2,24 @@ aside.newsidebar {
     overflow: hidden;
 
     ul {
-        padding: 0 6px;
+        padding: 0 12px;
+        margin: 6px 0;
     }
     li {
-        border-radius: 6px;
         overflow: hidden;
-        margin-bottom: 3px;
+        margin-bottom: 15px;
+
+        opacity: .6;
+        transition: 100ms opacity linear;
 
         &.selected {
-            box-shadow: 0 1px 0 0px rgba(0, 0, 0, 0.08)
         }
 
-        header:hover { background-color: #F6F6F6; }
-        header:active, &.selected header { background-color: #FFFFFF; }
+        &.selected, &:active, &:hover {
+            opacity: 1;
+        }
+        header:active, &.selected header {
+        }
         header:active {
 
         }
@@ -23,36 +28,72 @@ aside.newsidebar {
 
         header {
             -webkit-transition: 150ms background-color linear;
-            padding: 0 5px 0 10px;
             button.main {
-                height: @gridHeight*2;
-                padding: 1px 0;
-                color: @colorLinkActive;
-                text-align: left;
-                text-transform: uppercase;
-                font-family: @sourceSansPro;
-                font-size: @fontSizeNormal;
-                font-weight: 500;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                width: 85%;
+                height: 54px;
+                width: 54px;
+                display: block;
                 &:focus {
                     outline: 0;
                     border: none;
                 }
                 &:active {
-                    transform: none;
                 }
-                span {
-                    color: #2D2D2D;
+
+                .icon-globe {
+                    font-size: 32px;
+                    text-align: center;
+                    display: block;
+                    background-color: #fff;
+                    padding-top: 10px;
+                }
+
+                img, .icon-globe {
+                    width: 54px;
+                    height: 54px;
+                    -webkit-mask-image: url('icons/mask-icon.svg');
+                    -webkit-mask-size: cover;
+                    // -webkit-mask: url('icons/mask-icon.svg') top/left cover;
                 }
             }
         }
     }
 
+
     .node-info {
-        display: none;
+        display: flex;
+        top: initial;
+        bottom: 11px;
+        left: 8px;
+        right: 8px;
+        flex-flow: row wrap;
+
+        div, span {
+            padding: @gridHeight/2 1px;
+            flex: 1;
+            text-align: center;
+        }
+
+        i {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        progress {
+            flex: 1 100%;
+        }
+
+        .mining-indicator {
+            flex: 3;
+        }
+
+        .block-number {
+            flex: 2;
+        }
+
+        .test-chain {
+            flex: 1 100%;
+            padding: 1px 5px 2px;
+        }
     }
 }
 

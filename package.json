@@ -61,7 +61,9 @@
     "mocha": "^3.2.0",
     "optimist": "^0.6.1",
     "run-sequence": "^1.2.1",
+    "semver-compare": "^1.0.0",
     "shelljs": "^0.7.6",
-    "spectron": "3.3.0"
+    "spectron": "3.3.0",
+    "xml2js": "^0.4.17"
   }
 }

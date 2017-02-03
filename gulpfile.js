@@ -349,21 +349,20 @@ gulp.task('release-dist', ['build-dist'], (done) => {
                 break;
             }
         }
-
-        if (platformIsActive('win') && type === 'mist') {
-            runSeq('build-nsis');
-        }
     });
 
     done();
 });
 
 gulp.task('upload-binaries', () => {
+    // if CI detected only upload if master branch
+    if (process.env.CI && process.env.TRAVIS_BRANCH !== 'master') return;
+
     // token must be set using travis' ENVs
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
     // query github releases
-    return got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, {
+    got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, {
         json: true,
     })
     // filter draft with current version's tag
@@ -514,20 +513,14 @@ gulp.task('download-signatures', (cb) => {
     .catch(cb);
 });
 
-gulp.task('taskQueue', ['release-dist'], (cb) => {
-    if (process.env.TRAVIS_BRANCH === 'master') {
-        runSeq('upload-binaries', cb);
-    }
-});
-
 // MIST task
 gulp.task('mist', (cb) => {
-    runSeq('set-variables-mist', 'taskQueue', cb);
+    runSeq('set-variables-mist', 'release-dist', 'build-nsis', 'upload-binaries', cb);
 });
 
 // WALLET task
 gulp.task('wallet', (cb) => {
-    runSeq('set-variables-wallet', 'taskQueue', cb);
+    runSeq('set-variables-wallet', 'release-dist', 'build-nsis', 'upload-binaries', cb);
 });
 
 // WALLET task
@@ -539,11 +532,15 @@ gulp.task('wallet-checksums', (cb) => {
 });
 
 gulp.task('build-nsis', (cb) => {
-    const versionParts = version.split('.');
-    const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
-    const cmdString = `makensis -V3 ${versionString} scripts/windows-installer.nsi`;
-    console.log(cmdString);
-    shell.exec(cmdString, cb);
+    if (platformIsActive('win')) {
+        const typeString = `-DTYPE=${type}`;
+        const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
+        const versionParts = version.split('.');
+        const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
+        const cmdString = `makensis -V3 ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
+        console.log(cmdString);
+        shell.exec(cmdString, cb);
+    }
 });
 
 

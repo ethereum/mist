@@ -13,7 +13,6 @@ const exec = require('child_process').exec;
 const del = require('del');
 const runSeq = require('run-sequence');
 const merge = require('merge-stream');
-const flatten = require('gulp-flatten');
 const shell = require('shelljs');
 const mocha = require('gulp-spawn-mocha');
 const minimist = require('minimist');
@@ -90,7 +89,7 @@ gulp.task('set-variables-wallet', () => {
 });
 
 
-gulp.task('clean:dist', (cb) => {
+gulp.task('clean-dist', (cb) => {
     return del([
         `./dist_${type}/**/*`,
         './meteor-dapp-wallet',
@@ -100,16 +99,16 @@ gulp.task('clean:dist', (cb) => {
 
 // BUNLDE PROCESS
 
-gulp.task('copy-app-source-files', ['clean:dist'], () => {
+gulp.task('copy-app-source-files', () => {
     return gulp.src([
-        './tests/**/*.*',
-        '!./tests/wallet/*.*',
-        `./icons/${type}/*`,
-        './modules/**/**/**/*',
-        './sounds/*',
-        './*.js',
+        './main.js',
         './clientBinaries.json',
-        '!gulpfile.js',
+        './modules/**',
+        './tests/**/*.*',
+        '!./tests/wallet/*',
+        `./icons/${type}/*`,
+        './sounds/*',
+        // 'customProtocols.js', // TODO test customProtocol.js
     ], {
         base: './'
     })
@@ -117,9 +116,9 @@ gulp.task('copy-app-source-files', ['clean:dist'], () => {
 });
 
 
-gulp.task('copy-app-folder-files', ['copy-app-source-files'], (done) => {
+gulp.task('copy-app-folder-files', (done) => {  // TODO fabian probably needs this for web3.js
     const ret = shell.exec(
-        `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules`
+        `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules` // electron-builder should already do this now
     );
 
     if (ret.code !== 0) {
@@ -132,19 +131,16 @@ gulp.task('copy-app-folder-files', ['copy-app-source-files'], (done) => {
 });
 
 
-gulp.task('copy-build-folder-files', ['clean:dist', 'copy-app-folder-files'], () => {
+gulp.task('copy-build-folder-files', () => {
     return gulp.src([
         `./icons/${type}/*`,
         './interface/public/images/dmg-background.jpg',
-    ], {
-        base: './'
-    })
-    .pipe(flatten())
+    ])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
 
 
-gulp.task('copy-node-folder-files', ['clean:dist'], () => {
+gulp.task('copy-node-folder-files', () => {
     const streams = [];
 
     _.each(osArchList, (osArch) => {
@@ -161,15 +157,7 @@ gulp.task('copy-node-folder-files', ['clean:dist'], () => {
 });
 
 
-gulp.task('copy-files', [
-    'clean:dist',
-    'copy-app-folder-files',
-    'copy-build-folder-files',
-    'copy-node-folder-files',
-]);
-
-
-gulp.task('switch-production', ['copy-files'], (cb) => {
+gulp.task('switch-production', (cb) => {
     fs.writeFileSync(`${__dirname}/dist_${type}/app/config.json`, JSON.stringify({
         production: true,
         mode: type,
@@ -179,7 +167,7 @@ gulp.task('switch-production', ['copy-files'], (cb) => {
 });
 
 
-gulp.task('bundling-interface', ['switch-production'], (cb) => {
+gulp.task('bundling-interface', (cb) => {
     if (type === 'mist') {
         exec(`cd interface && meteor-build-client ../dist_${type}/app/interface -p ""`, (err, stdout) => {
             console.log(stdout);
@@ -211,7 +199,7 @@ gulp.task('bundling-interface', ['switch-production'], (cb) => {
 
 
 // needs to be copied, so the backend can use it
-gulp.task('copy-i18n', ['bundling-interface'], () => {
+gulp.task('copy-i18n', () => {
     return gulp.src([
         './interface/i18n/*.*',
         './interface/project-tap.i18n',
@@ -222,7 +210,7 @@ gulp.task('copy-i18n', ['bundling-interface'], () => {
 });
 
 
-gulp.task('build-dist', ['copy-i18n'], (cb) => {
+gulp.task('build-dist', (cb) => {
     console.log('Bundling platforms: ', options.platform);
 
     const appPackageJson = _.extend({}, packJson, {
@@ -234,14 +222,17 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
             appId: `com.ethereum.${type}`,
             category: 'public.app-category.productivity',
             asar: true,
-            files: [
-                '**/*',
-                '!nodes',
-                'build-dist.js',
-            ],
-            extraFiles: [
-                'nodes/eth/${os}-${arch}', // eslint-disable-line no-template-curly-in-string
-            ],
+            // files: [
+            //     '**/*',
+            // ],
+            // extraFiles: [  // TODO do we want to bundle eth?
+            //                   (for some reason it disappeared in v0.8.9)
+            //     'nodes/eth/${os}-${arch}', // eslint-disable-line no-template-curly-in-string
+            // ],
+            directories: {
+                buildResources: '../build',
+                output: '../dist',
+            },
             linux: {
                 target: [
                     'zip',
@@ -251,7 +242,6 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
             win: {
                 target: [
                     'zip',
-                    //'squirrel',
                 ],
             },
             dmg: {
@@ -270,11 +260,6 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
                     }
                 ],
             },
-        },
-        directories: {
-            buildResources: '../build',
-            app: '.',
-            output: '../dist',
         },
     });
 
@@ -310,7 +295,7 @@ gulp.task('build-dist', ['copy-i18n'], (cb) => {
 });
 
 
-gulp.task('release-dist', ['build-dist'], (done) => {
+gulp.task('release-dist', (done) => {
     const distPath = path.join(__dirname, `dist_${type}`, 'dist');
     const releasePath = path.join(__dirname, `dist_${type}`, 'release');
 
@@ -513,14 +498,35 @@ gulp.task('download-signatures', (cb) => {
     .catch(cb);
 });
 
+
+gulp.task('taskQueue', (cb) => {
+    const tasks = [];
+
+    tasks.push('clean-dist');
+    tasks.push('copy-app-source-files');
+    // tasks.push('copy-app-folder-files');
+    tasks.push('copy-build-folder-files');
+    // tasks.push('copy-node-folder-files');
+    tasks.push('switch-production');
+    tasks.push('bundling-interface');
+    tasks.push('copy-i18n');
+    tasks.push('build-dist');
+    tasks.push('release-dist');
+    tasks.push('build-nsis');
+    tasks.push('get-release-checksums');
+    tasks.push('upload-binaries');
+
+    runSeq.apply(null, _.flatten([tasks, cb]));
+});
+
 // MIST task
 gulp.task('mist', (cb) => {
-    runSeq('set-variables-mist', 'release-dist', 'build-nsis', 'upload-binaries', cb);
+    runSeq('set-variables-mist', 'taskQueue', cb);
 });
 
 // WALLET task
 gulp.task('wallet', (cb) => {
-    runSeq('set-variables-wallet', 'release-dist', 'build-nsis', 'upload-binaries', cb);
+    runSeq('set-variables-wallet', 'taskQueue', cb);
 });
 
 // WALLET task
@@ -539,7 +545,7 @@ gulp.task('build-nsis', (cb) => {
         const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
         const cmdString = `makensis -V3 ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
         exec(cmdString, cb);
-    }
+    } else cb();
 });
 
 

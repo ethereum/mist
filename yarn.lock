@@ -1822,13 +1822,6 @@ growl@1.9.2:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/growl/-/growl-1.9.2.tgz#0ea7743715db8d8de2c5ede1775e1b45ac85c02f"
 
-gulp-flatten@^0.3.0:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/gulp-flatten/-/gulp-flatten-0.3.1.tgz#51e7fec13a33c404578d18c1589d1b5bc45fe1d6"
-  dependencies:
-    gulp-util "^3.0.7"
-    through2 "^2.0.0"
-
 gulp-sourcemaps@1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/gulp-sourcemaps/-/gulp-sourcemaps-1.6.0.tgz#b86ff349d801ceb56e1d9e7dc7bbcb4b7dee600c"
@@ -1847,7 +1840,7 @@ gulp-spawn-mocha@^3.1.0:
     lodash "^4.11.1"
     through "~2.3.4"
 
-gulp-util@*, gulp-util@^3.0.0, gulp-util@^3.0.7, gulp-util@~3.0.7:
+gulp-util@*, gulp-util@^3.0.0, gulp-util@~3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/gulp-util/-/gulp-util-3.0.7.tgz#78925c4b8f8b49005ac01a011c557e6218941cbb"
   dependencies:

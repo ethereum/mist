@@ -24,7 +24,7 @@ if (argv.linux) {
 
 builder.build({
     targets: builder.createTargets(targets, null, 'all'),
-    devMetadata: {
+    devMetadata: {  // TODO deprecated
         build: {
             afterPack(params) {
                 return Q.try(() => {

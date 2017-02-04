@@ -26,6 +26,7 @@ describe('General', function () {
                 'requestAccount',
                 'sounds',
                 'menu',
+                'solidity'
             ];
 
             expect(mist).to.have.all.keys(allowedAttributes);
@@ -34,10 +35,18 @@ describe('General', function () {
         it('should return platform', function () {
             expect(mist.platform).to.be.oneOf(['darwin', 'win32', 'freebsd', 'linux', 'sunos']);
         });
+
+        it('should report solidity version', function () {
+            expect(mist.solidity.version).to.match(/^\d\.\d{1,2}\.\d{1,2}$/); // match examples: 0.4.6, 0.5.10, 0.10.0
+        });
     });
 
     describe('mist.menu', function () {
-        beforeEach(function () {
+        before(function () {
+            mist.menu.clear();
+        });
+
+        afterEach(function () {
             mist.menu.clear();
         });
 

@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Comptes",
-                "importPresale": "Importer les comptes de prévente",
+                "importPresale": "Importer les comptes",
                 "newAccount": "Nouveau compte",
                 "backup": "Sauvegarder",
                 "backupKeyStore": "Comptes",
@@ -47,7 +47,11 @@
                 "mainNetwork": "Réseau principal",
                 "startMining": "⛏ Commencer à miner (seulement pour Testnet)",
                 "stopMining": "⛏ Arrêter de miner",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Fenêtre",
@@ -70,7 +74,7 @@
                 "linux": "Pour activer un serveur de synchronisation de temps, installez \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Pour activer la synchronisation du temps, ouvrez les préférences de temps et cochez \"Régler la date et l'heure automatiquement\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -237,7 +241,8 @@
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",

@@ -131,7 +131,6 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
     }
 });
 
-
 // CONTEXT MENU
 
 const currentMousePosition = { x: 0, y: 0 };

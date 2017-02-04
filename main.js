@@ -1,8 +1,3 @@
-const squirrelStartup = require('electron-squirrel-startup');
-// windows only: don't run app during squirrel-install
-function exit() { return; }
-if (squirrelStartup) exit();
-
 
 global._ = require('./modules/utils/underscore');
 const { app, dialog, ipcMain, shell } = require('electron');

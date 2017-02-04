@@ -3,8 +3,6 @@
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
 [![Code Climate](https://codeclimate.com/github/ethereum/mist/badges/gpa.svg)](https://codeclimate.com/github/ethereum/mist)
-[![dependencies Status](https://david-dm.org/ethereum/mist/status.svg)](https://david-dm.org/ethereum/mist)
-[![devDependencies Status](https://david-dm.org/ethereum/mist/dev-status.svg)](https://david-dm.org/ethereum/mist?type=dev)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
@@ -156,7 +154,7 @@ Mist normally.
 To create a binaries you need to install [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#macos):
 
     // tools for the windows binaries
-    $ brew install wine --without-x11 mono
+    $ brew install wine --without-x11 mono makensis
     // tools for the Linux binaries
     $ brew install gnu-tar libicns graphicsmagick xz
     // general dependencies
@@ -225,3 +223,11 @@ It expects installer/zip files to be in the generated folders e.g. `dist_mist/re
 ### Code signing for production
 
 **As of [#972](https://github.com/ethereum/mist/pull/972) we've updated the build process and thus need to redo code-signing.**
+
+
+## Testing
+
+First make sure to build Mist with:
+`gulp mist --platform [mac,linux]` or `gulp wallet --platform [mac,linux]`.
+
+Then run `gulp test-mist` or `gulp test-wallet`, accordingly.

@@ -1,10 +1,8 @@
 /* eslint-disable
 import/no-extraneous-dependencies,
-no-console,
 strict,
-prefer-spread,
-arrow-body-style,
-import/no-unresolved */
+prefer-spread
+*/
 
 'use strict';
 
@@ -440,12 +438,10 @@ gulp.task('update-nodes', (cb) => {
                 return String(response.body.sha).substr(0, 8);
             })
             .then((hash) => {
-                let blobs; // geth blobs
+                let blobs; // azure blobs
 
                 // Query Azure assets for md5 hashes
-                got('https://gethstore.blob.core.windows.net/builds?restype=container&comp=list', {
-                    xml: true,
-                })
+                got('https://gethstore.blob.core.windows.net/builds?restype=container&comp=list', { xml: true })
                 .then((response) => {
                     parseJson(response.body, (err, data) => {
                         blobs = data.EnumerationResults.Blobs[0].Blob;

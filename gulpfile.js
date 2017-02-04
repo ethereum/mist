@@ -352,17 +352,15 @@ gulp.task('release-dist', ['build-dist'], (done) => {
     done();
 });
 
-gulp.task('upload-binaries', () => {
-    // if CI detected only upload if master branch
+gulp.task('upload-binaries', (cb) => {
+    // if CI detected only upload if on master branch
     if (process.env.CI && process.env.TRAVIS_BRANCH !== 'master') return;
 
-    // token must be set using travis' ENVs
+    // personal access token (public_repo) must be set using travis' ENVs
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
     // query github releases
-    got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, {
-        json: true,
-    })
+    got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, { json: true })
     // filter draft with current version's tag
     .then((res) => {
         const draft = res.body[_.indexOf(_.pluck(res.body, 'tag_name'), `v${version}`)];
@@ -371,26 +369,32 @@ gulp.task('upload-binaries', () => {
 
         return draft;
     })
-    // upload binaries from release folders
-    .then((draft) => {
-        const dir = `dist_${type}/release`;
-        const files = fs.readdirSync(dir);
-        const filePaths = _.map(files, (file) => { return path.join(dir, file); });
+    // upload binaries from release folders if in draft mode
+    .then((draft) => {  // eslint-disable-line consistent-return
+        if (draft.draft === true) {
+            const dir = `dist_${type}/release`;
+            const files = fs.readdirSync(dir);
+            const filePaths = _.map(files, (file) => { return path.join(dir, file); });
 
-        // check if draft already contains target binaries
-        const existingAssets = _.intersection(files, _.pluck(draft.assets, 'name'));
-        if (!_.isEmpty(existingAssets)) throw new Error(`Github release draft already contains assets (${existingAssets}); will not upload, please remove and trigger rebuild`);
+            // check if draft already contains target binaries
+            // note: github replaces spaces in filenames with dots
+            const existingAssets = _.intersection(files.map((file) => { return file.replace(/\s/g, '.'); }), _.pluck(draft.assets, 'name'));
+            if (!_.isEmpty(existingAssets)) throw new Error(`Github release draft already contains assets (${existingAssets}); will not upload, please remove and trigger rebuild`);
 
-        return githubUpload({
-            url: `https://uploads.github.com/repos/ethereum/mist/releases/${draft.id}/assets{?name}`,
-            token: [GITHUB_TOKEN],
-            assets: filePaths,
-        }).then((res) => {
-            console.log(`Successfully uploaded ${res} to v${version} release draft.`);
-        });
+            return githubUpload({
+                url: `https://uploads.github.com/repos/ethereum/mist/releases/${draft.id}/assets{?name}`,
+                token: [GITHUB_TOKEN],
+                assets: filePaths,
+            }).then((res) => {
+                console.log(`Successfully uploaded ${res} to v${version} release draft.`);
+            });
+        }
     })
     .catch((err) => {
         console.log(err);
+    })
+    .then(() => {
+        cb();
     });
 });
 

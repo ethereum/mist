@@ -375,6 +375,16 @@ class EthereumNode extends EventEmitter {
 
                 const proc = spawn(binPath, args);
 
+                // set renice cpu priority on systems with renice
+                if (process.platform === 'linux' || process.platform === 'darwin' ||
+                    process.platform === 'sunos' || process.platform === 'freebsd') {
+                    
+                    let priority = 19; // lowest
+                    let pid = proc.pid;
+                    let reniceArgs = ['-n', priority.toString(), '-p', pid.toString()];
+                    let reniceProc = spawn('renice', reniceArgs);
+                }
+
                 // node has a problem starting
                 proc.once('error', (err) => {
                     if (STATES.STARTING === this.state) {

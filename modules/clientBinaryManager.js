@@ -127,7 +127,7 @@ class Manager extends EventEmitter {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
 
-                    const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
+                    const wnd = Windows.createPopup('clientUpdateAvailable', {
                         useWeb3: false,
                         electronOptions: {
                             width: 600,
@@ -136,7 +136,6 @@ class Manager extends EventEmitter {
                             resizable: false,
                             maximizable: false,
                         },
-                    }, {
                         sendData: {
                             uiAction_sendData: {
                                 name: nodeType,
@@ -146,7 +145,7 @@ class Manager extends EventEmitter {
                                 restart,
                             },
                         },
-                    }), (update) => {
+                    }, (update) => {
                         // update
                         if (update === 'update') {
                             this._writeLocalConfig(latestConfig);

@@ -11,7 +11,7 @@
                         <h1>{{i18n "mist.popupWindows.sendTransactionConfirmation.title.createContract"}}</h1>
                     {{/if}}
                 {{/if}}
-            
+
                 <div class="container">
                 <div class="transaction-parties">
                     <div>
@@ -34,7 +34,7 @@
                             </div>
                         {{/if}}
                     </div>
-                    
+
                     <div>
                         {{#if to}}
                             {{#if TemplateVar.get "toIsContract"}}
@@ -65,45 +65,11 @@
                     {{/unless}}
                 {{/if}}
 
-                {{#if data}}
-
-                    {{#if showFormattedParams}}
-                        <div class="parameters">
-                            <h3>{{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}}
-                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}}</a>
-                            </h3>
-                            <ol>
-                            {{# each param in params}}
-                                <li>{{> dapp_output output=param }}</li>
-                            {{/each}}
-                            </ol>
-                        </div>
-                    {{else}}
-                        <div class="data">
-                            <h3>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}
-                            
-                            {{# if params}}
-                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
-                            {{else}}
-                                {{#if to}}
-                                    {{#unless (TemplateVar.get "lookingUpFunctionSignature")}}
-                                        <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="{{i18n 'mist.popupWindows.sendTransactionConfirmation.lookupDataExplainer'}}"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
-                                        </a>
-                                    {{/unless}}
-                                {{/if}}
-                            {{/if}} 
-                            </h3>                           
-
-                            <pre>{{{formattedData}}}</pre>
-                        </div>
-                    {{/if}}
-                {{/if}}
-
                 <div class="fees">
                     <ul>
                         <li>
                             <div class="value">
-                            {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}} 
+                            {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedFee"}}
                             </div>
                             <div class="type">
                                 {{#if $eq (TemplateVar.get "estimatedGas") "invalid"}}
@@ -120,7 +86,7 @@
 
                                 {{/if}}
                             </div>
-                        </li> 
+                        </li>
                         <li>
                             <div class="value">
                                 {{i18n "mist.popupWindows.sendTransactionConfirmation.gasLimit"}}
@@ -138,23 +104,56 @@
                     </ul>
                 </div>
 
+                {{#if data}}
+                    {{#if showFormattedParams}}
+                        <div class="parameters">
+                            <h3>{{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}}
+                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}}</a>
+                            </h3>
+                            <ol>
+                            {{# each param in params}}
+                                <li>{{> dapp_output output=param }}</li>
+                            {{/each}}
+                            </ol>
+                        </div>
+                    {{else}}
+                        <div class="data">
+                            <h3>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}
+
+                            {{# if params}}
+                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
+                            {{else}}
+                                {{#if to}}
+                                    {{#unless (TemplateVar.get "lookingUpFunctionSignature")}}
+                                        <a class="lookup-function-signature simptip-position-bottom simptip-movable" data-tooltip="{{i18n 'mist.popupWindows.sendTransactionConfirmation.lookupDataExplainer'}}"> {{i18n "mist.popupWindows.sendTransactionConfirmation.lookupData"}}
+                                        </a>
+                                    {{/unless}}
+                                {{/if}}
+                            {{/if}}
+                            </h3>
+
+                            <pre>{{{formattedData}}}</pre>
+                        </div>
+                    {{/if}}
+                {{/if}}
+
                 </div>
                 <footer>
                 {{#if TemplateVar.get "unlocking"}}
                     <h2>{{i18n "mist.popupWindows.sendTransactionConfirmation.unlocking"}}</h2>
                 {{else}}
-                
+
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
 
                     <div class="dapp-modal-buttons">
                         <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
                         <button class="ok dapp-primary-button" type="submit">{{i18n "mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction"}}</button>
                     </div>
-                
+
                 {{/if}}
                 </footer>
             {{/with}}
-            
+
         </form>
     </div>
 </template>

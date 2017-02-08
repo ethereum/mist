@@ -48,6 +48,15 @@ class Manager extends EventEmitter {
         );
     }
 
+    // 1. Downloads latest clientBinary.json from `BINARY_URL`
+    // 2. Loads the local clientBinary.json from `userDataPath`
+    // 3. If both aren't equal, create a window prompting the user to update
+    // 4. If user wants to update, rewrite local `clientBinary.json` with latest
+    // 5. Use the resulting `clientBinary.json` to create `ClientBinaryManager` (separate lib)
+    // 6. That lib will parse the JSON and give us a list of clients
+    // 7. If those clients aren't available on `userDataPath`, download them there
+    // 8. Finally, set `this._availableClients[clientNameLowcase]` to the downloaded clients
+    // 9. This can be accessed with, for example, `clientBinaryManager.getClient("geth")`
     _checkForNewConfig(restart) {
         const nodeType = 'Geth';
         let binariesDownloaded = false;
@@ -276,6 +285,7 @@ class Manager extends EventEmitter {
     }
 
 
+    // Sets `this._availableClients.eth = {binPath: binPath, version: "1.3.0"}`
     _resolveEthBinPath() {
         log.info('Resolving path to Eth client binary ...');
 

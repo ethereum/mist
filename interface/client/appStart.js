@@ -34,8 +34,8 @@ mistInit = function(){
 
         // overwrite wallet on start again, but use $set to dont remove titles
         Tabs.upsert({_id: 'wallet'}, {$set: {
-                url: 'https://wallet.ethereum.org',
-                redirect: 'https://wallet.ethereum.org',
+                url: 'bzz://5d4dd4f08efdf8b10f820b4f93679c016ea4cbe40813fdd9e09f2c86bd1db0ed/index.html',
+                redirect: 'bzz://5d4dd4f08efdf8b10f820b4f93679c016ea4cbe40813fdd9e09f2c86bd1db0ed/index.html',
                 position: 1,
                 permissions: {
                     admin: true

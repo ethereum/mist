@@ -51,6 +51,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -133,6 +134,7 @@ app.on('before-quit', (event) => {
 
                 return db.close();
             })
+            .then(swarmNode.stop())
             .then(() => {
                 app.quit();
             });
@@ -411,6 +413,9 @@ onReady = () => {
             }
 
             return;
+        })
+        .then(function setupSwarm(){
+          return swarmNode.init(ethereumNode);
         })
         .then(function doSync() {
             // we're going to do the sync - so show splash

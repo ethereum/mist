@@ -172,7 +172,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 });
 
 // Allow the Swarm protocol to behave like http://
-protocol.registerStandardSchemes(["bzz"]);
+protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
     // setup DB sync to backend
@@ -183,9 +183,9 @@ onReady = () => {
 
     // Enable the Swarm protocol
     protocol.registerHttpProtocol('bzz', (request, callback) => {
-      const redirectPath = "http://localhost:8500/"+request.url.replace("bzz:/","bzz://");
-      callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-    }, e => { if (e) { console.log(e); } });
+        const redirectPath = 'http://localhost:8500/' + request.url.replace('bzz:/', 'bzz://');
+        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+    }, (e) => { if (e) { console.log(e); } });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
@@ -414,8 +414,8 @@ onReady = () => {
 
             return;
         })
-        .then(function setupSwarm(){
-          return swarmNode.init(ethereumNode);
+        .then(function setupSwarm() {
+            return swarmNode.init(ethereumNode);
         })
         .then(function doSync() {
             // we're going to do the sync - so show splash

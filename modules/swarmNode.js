@@ -1,5 +1,5 @@
 // NODE ABOUT ACCOUNTS
-// 
+//
 // There is currently no account management system.
 // The following account type is used here:
 //
@@ -15,7 +15,7 @@
 // TODO: logging
 
 const db = require('./db.js');
-//const got = require("got");
+// const got = require("got");
 const path = require('path');
 const spawn = require('child_process').spawn;
 const Settings = require('./settings');
@@ -43,7 +43,7 @@ const STATES = {
 };
 
 // Swarm might possibly be already running on this URL
-//const SWARM_URL = 'http://localhost:8500';
+// const SWARM_URL = 'http://localhost:8500';
 
 class SwarmNode extends EventEmitter {
 
@@ -64,7 +64,9 @@ class SwarmNode extends EventEmitter {
         //   .then((res) => {})
         //   .catch(err => {});
 
-        return this.getAccount(ethereumNode).then(this.startProcess.bind(this));
+        this.ethereumNode = ethereumNode;
+
+        return this.getAccount().then(this.startProcess.bind(this));
     }
 
     /**
@@ -72,17 +74,18 @@ class SwarmNode extends EventEmitter {
      *
      * @return {Promise Account}
      */
-    getAccount(ethereumNode) {
+    getAccount() {
         // Get swarm account from DB
         const accounts = db.getCollection('UI_accounts');
-        const swarmAccounts = accounts.find({type: 'swarm'});
+        const swarmAccounts = accounts.find({ type: 'swarm' });
 
         // If it is there, return and resolve
-        if (swarmAccounts.length > 0)
+        if (swarmAccounts.length > 0) {
             return new Promise(resolve => resolve(swarmAccounts[0]));
+        }
 
         // If it is not there, create it
-        return ethereumNode
+        return this.ethereumNode
             .send('personal_newAccount', [ACCOUNT_PASSWORD])
             .then((addressResponse) => {
                 const swarmAccount = {
@@ -99,7 +102,7 @@ class SwarmNode extends EventEmitter {
 
     /**
       * Starts the Swarm process.
-      * 
+      *
       * @return {Promise SwarmNode}
       */
     startProcess(account) {
@@ -114,32 +117,32 @@ class SwarmNode extends EventEmitter {
             this.process = swarmProc;
 
             // Process status
-            var swarmProcStatus = STATES.WAITING_PASSWORD;
+            let swarmProcStatus = STATES.WAITING_PASSWORD;
 
             // Handle Swarm process's stdout
-            function handleProcessOutput(data){
+            function handleProcessOutput(data) {
                 switch (swarmProcStatus) {
 
                 // Initially, we must type the password
                 case STATES.WAITING_PASSWORD:
-                    if ((''+data).indexOf(HOOKS.PASSWORD_PROMPT) !== -1){
+                    if (('' + data).indexOf(HOOKS.PASSWORD_PROMPT) !== -1) {
                         setTimeout(() => {
-                            swarmProc.stdin.write(ACCOUNT_PASSWORD+'\n');
+                            swarmProc.stdin.write(ACCOUNT_PASSWORD + '\n');
                             swarmProcStatus = STATES.STARTING;
                         }, 500);
                     }
-                break;
+                    break;
 
                 // We then resolve the Promise when the process laods
                 case STATES.STARTING:
-                    if ((''+data).indexOf(HOOKS.LISTENING) !== -1) {
+                    if (('' + data).indexOf(HOOKS.LISTENING) !== -1) {
                         swarmProcStatus = STATES.LISTENING;
                         resolve(this);
                     }
-                break;
+                    break;
 
                 default:
-                break;
+                    break;
                 }
             }
             swarmProc.stdout.on('data', handleProcessOutput);
@@ -151,9 +154,9 @@ class SwarmNode extends EventEmitter {
 
             // If Swarm doesn't start after some time, reject
             setTimeout(() => {
-              reject(new Error('Couldn\'t start Swarm.'));
+                reject(new Error('Couldn\'t start Swarm.'));
             }, STARTUP_TIMEOUT_MS);
-            
+
         });
     }
 
@@ -162,9 +165,9 @@ class SwarmNode extends EventEmitter {
      *
      * TODO:
      *   This is almost identical to `ethereumNode.stop`.
-     *   Maybe we could avoid this code repetition by   
+     *   Maybe we could avoid this code repetition by
      *   having a class to deal with spawning?
-     * 
+     *
      * @return {Promise}
      */
     stop() {

@@ -15,35 +15,35 @@
 // TODO: logging
 
 const db = require('./db.js');
-const got = require("got");
+//const got = require("got");
 const path = require('path');
-const spawn = require("child_process").spawn;
+const spawn = require('child_process').spawn;
 const Settings = require('./settings');
 const EventEmitter = require('events').EventEmitter;
 
 // Swarm requires an Ethereum account to work. Since that account has no money
 // in it, it's security isn't important and thus we use a default password.
 // Note this account must under no circumstances be exposed to the user.
-const ACCOUNT_PASSWORD = "swarmAccountPassword";
+const ACCOUNT_PASSWORD = 'swarmAccountPassword';
 
 // Swarm startup timeout
 const STARTUP_TIMEOUT_MS = 10000;
 
 // Process stdout hooks to react accordingly
 const HOOKS = {
-  PASSWORD_PROMPT: "Passphrase",
-  LISTENING: "Swarm HTTP proxy started"
-}
+    PASSWORD_PROMPT: 'Passphrase',
+    LISTENING: 'Swarm HTTP proxy started'
+};
 
 // Process startup status
 const STATES = {
-  WAITING_PASSWORD: 0,
-  STARTING: 1,
-  LISTENING: 2
-}
+    WAITING_PASSWORD: 0,
+    STARTING: 1,
+    LISTENING: 2
+};
 
 // Swarm might possibly be already running on this URL
-const SWARM_URL = "http://localhost:8500";
+//const SWARM_URL = 'http://localhost:8500';
 
 class SwarmNode extends EventEmitter {
 
@@ -74,8 +74,8 @@ class SwarmNode extends EventEmitter {
      */
     getAccount(ethereumNode) {
         // Get swarm account from DB
-        const accounts = db.getCollection("UI_accounts");
-        const swarmAccounts = accounts.find({"type": "swarm"});
+        const accounts = db.getCollection('UI_accounts');
+        const swarmAccounts = accounts.find({type: 'swarm'});
 
         // If it is there, return and resolve
         if (swarmAccounts.length > 0)
@@ -83,18 +83,18 @@ class SwarmNode extends EventEmitter {
 
         // If it is not there, create it
         return ethereumNode
-            .send("personal_newAccount", [ACCOUNT_PASSWORD])
-            .then(addressResponse => {
+            .send('personal_newAccount', [ACCOUNT_PASSWORD])
+            .then((addressResponse) => {
                 const swarmAccount = {
-                    "name": "swarmAccount",
-                    "address": addressResponse.result,
-                    "permissions": [],
-                    "type": "swarm",
-                    "password": ACCOUNT_PASSWORD
+                    name: 'swarmAccount',
+                    address: addressResponse.result,
+                    permissions: [],
+                    type: 'swarm',
+                    password: ACCOUNT_PASSWORD
                 };
                 accounts.insert(swarmAccount);
                 return swarmAccount;
-            })
+            });
     }
 
     /**
@@ -103,55 +103,58 @@ class SwarmNode extends EventEmitter {
       * @return {Promise SwarmNode}
       */
     startProcess(account) {
-      return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
-        // Start Swarm process
-        const swarmPath = path.join(Settings.userDataPath, "binaries", "Geth", "unpacked", "swarm");
-        const swarmProc = spawn(swarmPath, [
-          "--bzzaccount", account.address,
-          "--datadir", path.join(Settings.rpcIpcPath, ".."),
-          "--ethapi", Settings.rpcIpcPath]);
-        this.process = swarmProc;
+            // Start Swarm process
+            const swarmPath = path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked', 'swarm');
+            const swarmProc = spawn(swarmPath, [
+                '--bzzaccount', account.address,
+                '--datadir', path.join(Settings.rpcIpcPath, '..'),
+                '--ethapi', Settings.rpcIpcPath]);
+            this.process = swarmProc;
 
-        // Process status
-        var swarmProcStatus = STATES.WAITING_PASSWORD;
+            // Process status
+            var swarmProcStatus = STATES.WAITING_PASSWORD;
 
-        // Handle Swarm process's stdout
-        function handleProcessOutput(data){
-          switch (swarmProcStatus) {
+            // Handle Swarm process's stdout
+            function handleProcessOutput(data){
+                switch (swarmProcStatus) {
 
-          // Initially, we must type the password
-          case STATES.WAITING_PASSWORD:
-            if ((""+data).indexOf(HOOKS.PASSWORD_PROMPT) !== -1){
-              setTimeout(() => {
-                swarmProc.stdin.write(ACCOUNT_PASSWORD+"\n");
-                swarmProcStatus = STATES.STARTING;
-              }, 500);
+                // Initially, we must type the password
+                case STATES.WAITING_PASSWORD:
+                    if ((''+data).indexOf(HOOKS.PASSWORD_PROMPT) !== -1){
+                        setTimeout(() => {
+                            swarmProc.stdin.write(ACCOUNT_PASSWORD+'\n');
+                            swarmProcStatus = STATES.STARTING;
+                        }, 500);
+                    }
+                break;
+
+                // We then resolve the Promise when the process laods
+                case STATES.STARTING:
+                    if ((''+data).indexOf(HOOKS.LISTENING) !== -1) {
+                        swarmProcStatus = STATES.LISTENING;
+                        resolve(this);
+                    }
+                break;
+
+                default:
+                break;
+                }
             }
-          break;
+            swarmProc.stdout.on('data', handleProcessOutput);
+            swarmProc.stderr.on('data', handleProcessOutput);
 
-          // We then resolve the Promise when the process laods
-          case STATES.STARTING:
-            if ((""+data).indexOf(HOOKS.LISTENING) !== -1) {
-              swarmProcStatus = STATES.LISTENING;
-              resolve(this);
-            }
-          break;
-          }
-        };
-        swarmProc.stdout.on("data", handleProcessOutput);
-        swarmProc.stderr.on("data", handleProcessOutput);
+            // TODO: handle close
+            swarmProc.on('close', () => {
+            });
 
-        // TODO: handle close
-        swarmProc.on("close", (code) => {
+            // If Swarm doesn't start after some time, reject
+            setTimeout(() => {
+              reject(new Error('Couldn\'t start Swarm.'));
+            }, STARTUP_TIMEOUT_MS);
+            
         });
-
-        // If Swarm doesn't start after some time, reject
-        setTimeout(() => {
-          reject(new Error("Couldn't start Swarm."));
-        }, STARTUP_TIMEOUT_MS);
-          
-      });
     }
 
     /**
@@ -165,12 +168,11 @@ class SwarmNode extends EventEmitter {
      * @return {Promise}
      */
     stop() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
 
-            if (!this.process)
+            if (!this.process) {
                 return resolve();
-
-            log.info(`Stopping existing node: ${this._type} ${this._network}`);
+            }
 
             this.process.stderr.removeAllListeners('data');
             this.process.stdout.removeAllListeners('data');

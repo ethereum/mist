@@ -209,6 +209,7 @@
                 "estimatedFee": "Estimated fee consumption",
                 "estimatedGasError": "It seems this transaction will fail. If you submit it, it may consume all the gas you send.",
                 "transactionThrow": "The contract won't allow this transaction to be executed",
+                "gasMightNotBeEnough": "Gas might not be enough to successfully finish this transaction. Increase the gas amount",
                 "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
                 "perMillionGas": "ether per million gas",

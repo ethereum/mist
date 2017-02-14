@@ -13,7 +13,8 @@
                 {{/if}}
 
                 <div class="container">
-                <div class="transaction-parties">
+                <div class="inner-container">
+                    <div class="transaction-parties">
                     <div>
                         {{#if TemplateVar.get "fromIsContract"}}
                             <i class="overlap-icon icon-doc"></i>
@@ -54,15 +55,29 @@
                 </div>
 
                 {{#if transactionInvalid}}
-                    <p class="info dapp-error"> {{{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}} </p>
+                    <p class="info dapp-error"> 
+                    {{{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}} 
+                    </p>
                 {{else}}
-                    {{#if $and data (TemplateVar.get "toIsContract")}}
-                        <p class="info">{{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}}</p>
+                    {{#if isGasEnough}}
+                        {{#if $and data (TemplateVar.get "toIsContract")}}
+                            <p class="info">
+                            {{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}}
+                            </p>
+                        {{/if}}
+
+                        {{#unless to}}
+                            <p class="info">
+                            {{{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}}
+                            </p>
+                        {{/unless}}
+
+                    {{else}}
+                        <p class="info dapp-error">
+                        {{{i18n "mist.popupWindows.sendTransactionConfirmation.gasMightNotBeEnough"}}}
+                        </p>
                     {{/if}}
 
-                    {{#unless to}}
-                        <p class="info">{{{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}}</p>
-                    {{/unless}}
                 {{/if}}
 
                 <div class="fees">
@@ -137,6 +152,7 @@
                     {{/if}}
                 {{/if}}
 
+                </div>
                 </div>
                 <footer>
                 {{#if TemplateVar.get "unlocking"}}

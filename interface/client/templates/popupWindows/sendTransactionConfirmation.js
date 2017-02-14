@@ -6,12 +6,12 @@ Template Controllers
 
 var setWindowSize = function(template){
     Tracker.afterFlush(function(){
-        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows').height() + 120);
+        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows .inner-container').height() + 240);
     });
 }
 
 
-var defaultEstimateGas  = 50000000;
+var defaultEstimateGas  = 5000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -156,7 +156,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 });
             }
 
-            // esitmate gas usage
+            // estimate gas usage
             var estimateData = _.clone(data);
             estimateData.gas = defaultEstimateGas;
             web3.eth.estimateGas(estimateData, function(e, res){
@@ -222,6 +222,14 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         var gas =  TemplateVar.get('providedGas');
         if(gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
+    },
+    /**
+    Calculates if provided gas is enough
+
+    @method (isGasEnough)
+    */
+    'isGasEnough': function() {
+        return Number(TemplateVar.get('providedGas')) >= (Number(TemplateVar.get('estimatedGas')) + 100000);
     },
     /**
     Shortens the address to 0xffff...ffff

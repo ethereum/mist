@@ -100,7 +100,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
     // check reactively if provided gas is enough
     this.autorun(function(){
-        if(TemplateVar.get('estimatedGas') >= Number(TemplateVar.get('providedGas')))
+        if(TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
             TemplateVar.set('gasError', 'notEnoughGas');
         else if(TemplateVar.get('estimatedGas') > 4000000)
             TemplateVar.set('gasError', 'overBlockGasLimit');
@@ -186,7 +186,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                         TemplateVar.set(template, 'estimatedGas', res);
 
 
-                        if(gas == 0) {
+                        if(!gas && res) {
                             TemplateVar.set(template, 'providedGas', res + 100000);
                             TemplateVar.set(template, 'initialProvidedGas', res + 100000);
                         }

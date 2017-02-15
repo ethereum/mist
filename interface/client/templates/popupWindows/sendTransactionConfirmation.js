@@ -11,7 +11,7 @@ var setWindowSize = function(template){
 }
 
 
-var defaultEstimateGas  = 50000000;
+var defaultEstimateGas = 50000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -89,6 +89,7 @@ var signatureLookupCallback = function(textSignature) {
     }
 };
 
+
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
@@ -97,6 +98,18 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         TemplateVar.set(template, 'params', params);
     });
 
+    // check reactively if provided gas is enough
+    this.autorun(function(){
+        if(TemplateVar.get('estimatedGas') >= Number(TemplateVar.get('providedGas')))
+            TemplateVar.set('gasError', 'notEnoughGas');
+        else if(TemplateVar.get('estimatedGas') > 4000000)
+            TemplateVar.set('gasError', 'overBlockGasLimit');
+        else
+            TemplateVar.set('gasError', null);
+    });
+
+
+    // check inital data and gas estimates
     this.autorun(function(){
         TemplateVar.set(template, 'displayDecodedParams', true);
 
@@ -162,15 +175,16 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             web3.eth.estimateGas(estimateData, function(e, res){
                 console.log('Estimated gas: ', res, e);
                 if(!e && res) {
-                    Tracker.nonreactive(function(){
-
-                        if(defaultEstimateGas === res)
-                            return TemplateVar.set(template, 'estimatedGas', 'invalid');
-                        else
-                            TemplateVar.set(template, 'estimatedGas', res);
 
                         // set the gas to the estimation, if not provided or lower
-                        var gas = TemplateVar.get(template, 'providedGas');
+                    Tracker.nonreactive(function(){
+                        var gas = Number(TemplateVar.get(template, 'providedGas'));
+
+                        if(res === defaultEstimateGas)
+                            return TemplateVar.set(template, 'estimatedGas', 'invalid');
+
+                        TemplateVar.set(template, 'estimatedGas', res);
+
 
                         if(gas == 0) {
                             TemplateVar.set(template, 'providedGas', res + 100000);
@@ -222,14 +236,6 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         var gas =  TemplateVar.get('providedGas');
         if(gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
-    },
-    /**
-    Calculates if provided gas is enough
-
-    @method (isGasEnough)
-    */
-    'isGasEnough': function() {
-        return Number(TemplateVar.get('providedGas')) >= (Number(TemplateVar.get('estimatedGas')) + 100000);
     },
     /**
     Shortens the address to 0xffff...ffff
@@ -284,6 +290,16 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     'change .provided-gas, input .provided-gas': function(e, template){
         var gas =  template.$('.provided-gas').text().replace(/[, ]+/g,'');//template.$('.provided-gas').text();
 
+        TemplateVar.set('providedGas', gas);
+    },
+    /**
+    Increase the estimated gas
+
+    @event click .not-enough-gas
+    */
+    'click .not-enough-gas': function(){
+        var gas = Number(TemplateVar.get('estimatedGas')) + 100000;
+        TemplateVar.set('initialProvidedGas', gas);
         TemplateVar.set('providedGas', gas);
     },
     /**

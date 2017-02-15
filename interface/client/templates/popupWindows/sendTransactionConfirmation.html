@@ -56,27 +56,33 @@
 
                 {{#if transactionInvalid}}
                     <p class="info dapp-error"> 
-                    {{{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}} 
+                    {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}
                     </p>
                 {{else}}
-                    {{#if isGasEnough}}
-                        {{#if $and data (TemplateVar.get "toIsContract")}}
-                            <p class="info">
-                            {{{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}}
-                            </p>
+                    {{#unless $eq (TemplateVar.get "gasError") "notEnoughGas"}}
+                        {{#if $eq (TemplateVar.get "gasError") "overBlockGasLimit"}}
+                            <div class="info dapp-error">
+                                {{i18n "mist.popupWindows.sendTransactionConfirmation.overBlockGasLimit"}}
+                            </div>
+                        {{else}}
+                            {{#if $and data (TemplateVar.get "toIsContract")}}
+                                <p class="info">
+                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}
+                                </p>
+                            {{/if}}
+
+                            {{#unless to}}
+                                <p class="info">
+                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}
+                                </p>
+                            {{/unless}}
+
                         {{/if}}
-
-                        {{#unless to}}
-                            <p class="info">
-                            {{{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}}
-                            </p>
-                        {{/unless}}
-
                     {{else}}
-                        <p class="info dapp-error">
-                        {{{i18n "mist.popupWindows.sendTransactionConfirmation.gasMightNotBeEnough"}}}
-                        </p>
-                    {{/if}}
+                        <div class="info dapp-error not-enough-gas" style="cursor: pointer;">
+                            {{{i18n "mist.popupWindows.sendTransactionConfirmation.notEnoughGas"}}}
+                        </div>
+                    {{/unless}}
 
                 {{/if}}
 
@@ -122,8 +128,8 @@
                 {{#if data}}
                     {{#if showFormattedParams}}
                         <div class="parameters">
-                            <h3>{{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}}
-                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}}</a>
+                            <h3>{{i18n "mist.popupWindows.sendTransactionConfirmation.parameters"}}
+                                <a href="#" class="toggle-panel">{{i18n "mist.popupWindows.sendTransactionConfirmation.showRawBytecode"}}</a>
                             </h3>
                             <ol>
                             {{# each param in params}}
@@ -136,7 +142,7 @@
                             <h3>{{i18n "mist.popupWindows.sendTransactionConfirmation.data"}}
 
                             {{# if params}}
-                                <a href="#" class="toggle-panel">{{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}}</a>
+                                <a href="#" class="toggle-panel">{{i18n "mist.popupWindows.sendTransactionConfirmation.showDecodedParameters"}}</a>
                             {{else}}
                                 {{#if to}}
                                     {{#unless (TemplateVar.get "lookingUpFunctionSignature")}}

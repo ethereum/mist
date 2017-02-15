@@ -35,7 +35,7 @@
     "underscore": "^1.8.3",
     "underscore-deep-extend": "^1.1.5",
     "uuid": "^3.0.1",
-    "web3": "^0.17.0-alpha",
+    "web3": "^0.18.2",
     "yargs": "^6.6.0"
   },
   "devDependencies": {

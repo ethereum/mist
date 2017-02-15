@@ -11,7 +11,7 @@ var setWindowSize = function(template){
 }
 
 
-var defaultEstimateGas  = 5000000;
+var defaultEstimateGas  = 50000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -327,7 +327,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         TemplateVar.set('unlocking', true);
 
         // unlock and send transaction!
-        web3.personal.unlockAccountAndSendTransaction(data, pw || '', function(e, res){
+        web3.personal.sendTransaction(data, pw || '', function(e, res){
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 

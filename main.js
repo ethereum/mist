@@ -415,7 +415,7 @@ onReady = () => {
             return;
         })
         .then(function setupSwarm() {
-            return swarmNode.init(ethereumNode);
+            return swarmNode.init();
         })
         .then(function doSync() {
             // we're going to do the sync - so show splash

@@ -1,16 +1,16 @@
-
 {
     "clients": {
         "Geth": {
             "version": "1.5.8",
+            "type": "ethereum",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-1.5.8-f58fb322.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.8-f58fb322.tar.gz",
                             "type": "tar",
-                            "md5": "14d3c5b565e0a7bfb403a4662f5cdf19",
-                            "bin": "geth-alltools-linux-amd64-1.5.8-f58fb322/geth"
+                            "md5": "628cde7015ee4b90a8befbe52ca08e6f",
+                            "bin": "geth-linux-amd64-1.5.8-f58fb322/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -22,10 +22,10 @@
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-386-1.5.8-f58fb322.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.8-f58fb322.tar.gz",
                             "type": "tar",
-                            "md5": "4cae19f48e62269ecd9ceba2d719753a",
-                            "bin": "geth-alltools-linux-386-1.5.8-f58fb322/geth"
+                            "md5": "91170b9010dc1fd96cea700c1242faee",
+                            "bin": "geth-linux-386-1.5.8-f58fb322/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -39,10 +39,10 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-1.5.8-f58fb322.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.8-f58fb322.tar.gz",
                             "type": "tar",
-                            "md5": "5586552249a06d43980c600d785925a8",
-                            "bin": "geth-alltools-darwin-amd64-1.5.8-f58fb322/geth"
+                            "md5": "7ac3eae96132d49564bcf0f352081283",
+                            "bin": "geth-darwin-amd64-1.5.8-f58fb322/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -56,10 +56,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-amd64-1.5.8-f58fb322.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.5.8-f58fb322.zip",
                             "type": "zip",
-                            "md5": "16a7a117079ec16d99144afce3ece0db",
-                            "bin": "geth-alltools-windows-amd64-1.5.8-f58fb322\\geth.exe"
+                            "md5": "935239a6a1910eb17fbc3a483c297086",
+                            "bin": "geth-windows-amd64-1.5.8-f58fb322\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -71,16 +71,103 @@
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-386-1.5.8-f58fb322.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.5.8-f58fb322.zip",
                             "type": "zip",
-                            "md5": "c4f0233cfc4ac86160de7fabfaa4d65f",
-                            "bin": "geth-alltools-windows-386-1.5.8-f58fb322\\geth.exe"
+                            "md5": "587c29eb2c8256505923392e537d0fd1",
+                            "bin": "geth-windows-386-1.5.8-f58fb322\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
                                 "output": [ "Geth", "1.5.8" ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Swarm": {
+            "version": "0.2",
+            "type": "swarm",
+            "platforms": {
+                "linux": {
+                    "x64": {
+                        "download": {
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-amd64-1.5.8-f58fb322.tar.gz",
+                            "type": "tar",
+                            "md5": "14d3c5b565e0a7bfb403a4662f5cdf19",
+                            "bin": "geth-alltools-linux-amd64-1.5.8-f58fb322/swarm"
+                        },
+                        "bin": "swarm",
+                        "commands": {
+                            "sanity": {
+                                "args": ["version"],
+                                "output": [ "Swarm", "0.2" ]
+                            }
+                        }
+                    },
+                    "ia32": {
+                        "download": {
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-linux-386-1.5.8-f58fb322.tar.gz",
+                            "type": "tar",
+                            "md5": "4cae19f48e62269ecd9ceba2d719753a",
+                            "bin": "geth-alltools-linux-386-1.5.8-f58fb322/swarm"
+                        },
+                        "bin": "swarm",
+                        "commands": {
+                            "sanity": {
+                                "args": ["version"],
+                                "output": [ "Swarm", "0.2" ]
+                            }
+                        }
+                    }
+                },
+                "mac": {
+                    "x64": {
+                        "download": {
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-darwin-amd64-1.5.8-f58fb322.tar.gz",
+                            "type": "tar",
+                            "md5": "5586552249a06d43980c600d785925a8",
+                            "bin": "geth-alltools-darwin-amd64-1.5.8-f58fb322/swarm"
+                        },
+                        "bin": "swarm",
+                        "commands": {
+                            "sanity": {
+                                "args": ["version"],
+                                "output": [ "Swarm", "0.2" ]
+                            }
+                        }
+                    }
+                },
+                "win": {
+                    "x64": {
+                        "download": {
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-amd64-1.5.8-f58fb322.zip",
+                            "type": "zip",
+                            "md5": "16a7a117079ec16d99144afce3ece0db",
+                            "bin": "geth-alltools-windows-amd64-1.5.8-f58fb322\\swarm.exe"
+                        },
+                        "bin": "swarm.exe",
+                        "commands": {
+                            "sanity": {
+                                "args": ["version"],
+                                "output": [ "Swarm", "0.2" ]
+                            }
+                        }
+                    },
+                    "ia32": {
+                        "download": {
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-alltools-windows-386-1.5.8-f58fb322.zip",
+                            "type": "zip",
+                            "md5": "c4f0233cfc4ac86160de7fabfaa4d65f",
+                            "bin": "geth-alltools-windows-386-1.5.8-f58fb322\\swarm.exe"
+                        },
+                        "bin": "swarm.exe",
+                        "commands": {
+                            "sanity": {
+                                "args": ["version"],
+                                "output": [ "Swarm", "0.2" ]
                             }
                         }
                     }

@@ -11,9 +11,12 @@ const EventEmitter = require('events').EventEmitter;
 
 const log = require('./utils/logger').create('ClientBinaryManager');
 
+const debug = msg => console.log("::|DEBUG|::", msg); // FIXME remove this
+
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+//const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+const BINARY_URL = 'http://localhost:8080/clientBinaries.json'; // local only...
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
@@ -59,7 +62,6 @@ class Manager extends EventEmitter {
     // 9. This can be accessed with, for example, `clientBinaryManager.getClient("geth")`
     _checkForNewConfig(restart) {
         const nodeType = 'Geth';
-        let binariesDownloaded = false;
         let nodeInfo;
 
         log.info(`Checking for new client binaries config from: ${BINARY_URL}`);
@@ -82,7 +84,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;
@@ -128,15 +130,14 @@ class Manager extends EventEmitter {
                 algorithm,
             };
 
-
             // if new config version available then ask user if they wish to update
             if (latestConfig
                 && JSON.stringify(localConfig) !== JSON.stringify(latestConfig)
                 && nodeVersion !== skipedVersion) {
 
                 return new Q((resolve) => {
-
-                    log.debug('New client binaries config found, asking user if they wish to update...');
+		
+                    log.debug('New client binaries config found, asking user if they wish to update...');		
 
                     const wnd = Windows.createPopup('clientUpdateAvailable', {
                         useWeb3: false,
@@ -186,6 +187,7 @@ class Manager extends EventEmitter {
             return localConfig;
         })
         .then((localConfig) => {
+
             if (!localConfig) {
                 log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
 
@@ -193,43 +195,78 @@ class Manager extends EventEmitter {
                 localConfig = (fs.existsSync(localConfigPath)) ? require(localConfigPath) : require('../clientBinaries.json');  // eslint-disable-line no-param-reassign, global-require, import/no-dynamic-require, import/no-unresolved
             }
 
+
+            debug("localConfig is "+JSON.stringify(localConfig, null, 2));
+
             // scan for node
             const mgr = new ClientBinaryManager(localConfig);
             mgr.logger = log;
 
             this._emit('scanning', 'Scanning for binaries');
 
+            // Starts the `ethereum-client-binaries` package's manager
             return mgr.init({
                 folders: [
+                    path.join(Settings.userDataPath, 'binaries', 'Swarm', 'unpacked'),
                     path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
                     path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
                 ],
             })
+            // Make sure all required clients are availabl
             .then(() => {
-                const clients = mgr.clients;
+                const clients = _.values(mgr.clients);
 
-                this._availableClients = {};
+                debug("Making sure we have all the required binaries.");
 
-                const available = _.filter(clients, c => !!c.state.available);
+                // Clients that are required by Mist
+                const requiredClients = ["swarm", "ethereum"];
+                
+                // Clients that aren't supported on this system
+                const unsupportedClients = _.difference(
+                    requiredClients,
+                    clients.map(c => c.type));
 
-                if (!available.length) {
-                    if (_.isEmpty(clients)) {
-                        throw new Error('No client binaries available for this system!');
-                    }
+                debug("Those clients are not supported on this system: "+JSON.stringify(unsupportedClients, null, 2));
 
+                // If some required clients isn't supported, Mist can't run
+                if (unsupportedClients.length !== 0)
+                    throw new Error(`Mist can't run on this system, because the following clients aren't supported: ${unsupportedClients.join(", ")}.`);
+
+                // Clients that are supported but not currently present
+                const absentClients = _.difference(
+                    requiredClients,
+                    clients.filter((c) => !!c.state.available).map(c => c.type));
+
+                debug("Those clients are supported but not downloaded: "+JSON.stringify(absentClients, null, 2));
+
+                // If some required clients aren't downloaded, download them
+                // Note: if two clients of the same type (ex: geth and eth) are
+                // available, it downloads both. Currently, only geth is supported,
+                // so this doesn't matter. If Parity is added in a future, this
+                // should be updated with some preference criteria.
+                if (absentClients.length > 0) {
                     this._emit('downloading', 'Downloading binaries');
 
-                    return Q.map(_.values(clients), (c) => {
-                        binariesDownloaded = true;
+                    const downloadClients = clients.filter((c) => !c.state.available);
 
-                        return mgr.download(c.id, {
+                    debug("There are absent clients. We'll download those clients now: "+JSON.stringify(downloadClients));
+
+                    function downloadClient(client){
+                        debug("Downloading client "+JSON.stringify(client));
+                        return mgr.download(client.id, {
                             downloadFolder: path.join(Settings.userDataPath, 'binaries'),
-                            urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
+                            urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX
                         });
-                    });
+                    }
+
+                    return Q.map(downloadClients, downloadClient).then(() => true); // Had to download binaries
                 }
+
+                debug("There is no absent client, so we can just move forward.");
+
+                return false; // Didn't have to download binaries
             })
-            .then(() => {
+            .then((hadToDownloadBinaries) => {
                 this._emit('filtering', 'Filtering available clients');
 
                 _.each(mgr.clients, (client) => {
@@ -243,8 +280,8 @@ class Manager extends EventEmitter {
                     }
                 });
 
-                // restart if it downloaded while running
-                if (restart && binariesDownloaded) {
+                // Restart if it we downloaded new binaries while running
+                if (restart && hadToDownloadBinaries) {
                     log.info('Restarting app ...');
                     app.relaunch();
                     app.quit();

@@ -20,6 +20,7 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const Settings = require('./settings');
 const EventEmitter = require('events').EventEmitter;
+const ClientBinaryManager = require('./clientBinaryManager');
 
 // Swarm requires an Ethereum account to work. Since that account has no money
 // in it, it's security isn't important and thus we use a default password.
@@ -108,9 +109,12 @@ class SwarmNode extends EventEmitter {
     startProcess(account) {
         return new Promise((resolve, reject) => {
 
-            // Start Swarm process
-            const swarmPath = path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked', 'swarm');
-            const swarmProc = spawn(swarmPath, [
+            // Start the Swarm process
+            const swarmClient = ClientBinaryManager.getClient("swarm");
+            if (!swarmClient) {
+                throw new Error("Swarm binPath not available.");
+            };
+            const swarmProc = spawn(swarmClient.binPath, [
                 '--bzzaccount', account.address,
                 '--datadir', path.join(Settings.rpcIpcPath, '..'),
                 '--ethapi', Settings.rpcIpcPath]);

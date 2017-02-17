@@ -6,12 +6,12 @@ Template Controllers
 
 var setWindowSize = function(template){
     Tracker.afterFlush(function(){
-        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows').height() + 120);
+        ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows .inner-container').height() + 240);
     });
 }
 
 
-var defaultEstimateGas  = 50000000;
+var defaultEstimateGas = 50000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -89,6 +89,7 @@ var signatureLookupCallback = function(textSignature) {
     }
 };
 
+
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     var template = this;
 
@@ -97,6 +98,18 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
         TemplateVar.set(template, 'params', params);
     });
 
+    // check reactively if provided gas is enough
+    this.autorun(function(){
+        if(TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
+            TemplateVar.set('gasError', 'notEnoughGas');
+        else if(TemplateVar.get('estimatedGas') > 4000000)
+            TemplateVar.set('gasError', 'overBlockGasLimit');
+        else
+            TemplateVar.set('gasError', null);
+    });
+
+
+    // check inital data and gas estimates
     this.autorun(function(){
         TemplateVar.set(template, 'displayDecodedParams', true);
 
@@ -156,23 +169,24 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 });
             }
 
-            // esitmate gas usage
+            // estimate gas usage
             var estimateData = _.clone(data);
             estimateData.gas = defaultEstimateGas;
             web3.eth.estimateGas(estimateData, function(e, res){
                 console.log('Estimated gas: ', res, e);
                 if(!e && res) {
-                    Tracker.nonreactive(function(){
-
-                        if(defaultEstimateGas === res)
-                            return TemplateVar.set(template, 'estimatedGas', 'invalid');
-                        else
-                            TemplateVar.set(template, 'estimatedGas', res);
 
                         // set the gas to the estimation, if not provided or lower
-                        var gas = TemplateVar.get(template, 'providedGas');
+                    Tracker.nonreactive(function(){
+                        var gas = Number(TemplateVar.get(template, 'providedGas'));
 
-                        if(gas == 0) {
+                        if(res === defaultEstimateGas)
+                            return TemplateVar.set(template, 'estimatedGas', 'invalid');
+
+                        TemplateVar.set(template, 'estimatedGas', res);
+
+
+                        if(!gas && res) {
                             TemplateVar.set(template, 'providedGas', res + 100000);
                             TemplateVar.set(template, 'initialProvidedGas', res + 100000);
                         }
@@ -279,6 +293,16 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         TemplateVar.set('providedGas', gas);
     },
     /**
+    Increase the estimated gas
+
+    @event click .not-enough-gas
+    */
+    'click .not-enough-gas': function(){
+        var gas = Number(TemplateVar.get('estimatedGas')) + 100000;
+        TemplateVar.set('initialProvidedGas', gas);
+        TemplateVar.set('providedGas', gas);
+    },
+    /**
     Cancel the transaction confirmation and close the popup
 
     @event click .cancel
@@ -319,7 +343,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         TemplateVar.set('unlocking', true);
 
         // unlock and send transaction!
-        web3.personal.unlockAccountAndSendTransaction(data, pw || '', function(e, res){
+        web3.personal.sendTransaction(data, pw || '', function(e, res){
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 

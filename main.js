@@ -11,6 +11,7 @@ const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
+const windowStateKeeper = require('electron-window-state');
 
 Q.config({
     cancellation: true,
@@ -191,13 +192,20 @@ onReady = () => {
 
     // Create the browser window.
 
+    const defaultWindow = windowStateKeeper({
+        defaultWidth: 1024 + 208,
+        defaultHeight: 720
+    });
+
     // MIST
     if (Settings.uiMode === 'mist') {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1024 + 208,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     nodeIntegration: true, /* necessary for webviews;
                         require will be removed through preloader */
@@ -213,8 +221,10 @@ onReady = () => {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1100,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     preload: `${__dirname}/modules/preloader/walletMain.js`,
                     'overlay-fullscreen-video': true,
@@ -223,6 +233,9 @@ onReady = () => {
             },
         });
     }
+
+    // Delegating events to save window bounds on windowStateKeeper
+    defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) {
         splashWindow = Windows.create('splash', {

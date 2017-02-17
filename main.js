@@ -1,6 +1,6 @@
 
 global._ = require('./modules/utils/underscore');
-const { app, dialog, ipcMain, shell } = require('electron');
+const { app, dialog, ipcMain, shell, protocol } = require('electron');
 const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
@@ -52,6 +52,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -134,6 +135,7 @@ app.on('before-quit', (event) => {
 
                 return db.close();
             })
+            .then(swarmNode.stop())
             .then(() => {
                 app.quit();
             });
@@ -170,6 +172,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
     });
 });
 
+// Allow the Swarm protocol to behave like http://
+protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
     // setup DB sync to backend
@@ -177,6 +181,12 @@ onReady = () => {
 
     // Initialise window mgr
     Windows.init();
+
+    // Enable the Swarm protocol
+    protocol.registerHttpProtocol('bzz', (request, callback) => {
+        const redirectPath = 'http://localhost:8500/' + request.url.replace('bzz:/', 'bzz://');
+        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+    }, (e) => { if (e) { console.log(e); } });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
@@ -416,6 +426,9 @@ onReady = () => {
             }
 
             return;
+        })
+        .then(function setupSwarm() {
+            return swarmNode.init();
         })
         .then(function doSync() {
             // we're going to do the sync - so show splash

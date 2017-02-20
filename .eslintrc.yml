@@ -28,6 +28,7 @@ rules:
       - "**/scripts/build-dist.js"
       - "**/tests/_base.js"
       - "**/*.test.js"
+      - "**/gulpTasks/*.js"
 
 globals:  # don't warn about missing declarations
   i18n: true

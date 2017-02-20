@@ -2345,7 +2345,7 @@ json-stringify-safe@^5.0.1, json-stringify-safe@~5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz#1296a2d58fd45f19a0f6ce01d65701e2c735b6eb"
 
-json-structure-diff@0.0.2:
+json-structure-diff@0.0.2, json-structure-diff@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/json-structure-diff/-/json-structure-diff-0.0.2.tgz#838277f5c0a9562981b9a2af86fe5e90c131b0b3"
 
@@ -3393,6 +3393,10 @@ request@^2.45.0, request@^2.55.0, request@^2.65.0:
     stringstream "~0.0.4"
     tough-cookie "~2.3.0"
     tunnel-agent "~0.4.1"
+
+require-dir@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/require-dir/-/require-dir-0.3.1.tgz#b5a8e28bae0343bb0d0cc38ab1f531e1931b264a"
 
 require-directory@^2.1.1:
   version "2.1.1"

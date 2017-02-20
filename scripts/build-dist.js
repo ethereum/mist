@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const builder = require('electron-builder');
 const shell = require('shelljs');
 const Q = require('bluebird');
@@ -24,28 +25,28 @@ if (argv.linux) {
 
 builder.build({
     targets: builder.createTargets(targets, null, 'all'),
-    devMetadata: {  // TODO deprecated
+    devMetadata: { // TODO deprecated
         build: {
             afterPack(params) {
                 return Q.try(() => {
-                    console.log('Copying LICENSE, AUTHORS, README...');
+                    // console.log('Copying LICENSE, AUTHORS, README...');
 
                     shell.cp(
-              path.join(ROOT_FOLDER, 'LICENSE'),
-              params.appOutDir
-            );
+                        path.join(ROOT_FOLDER, 'LICENSE'),
+                        params.appOutDir
+                    );
 
                     shell.cp(
-              path.join(ROOT_FOLDER, 'AUTHORS'),
-              params.appOutDir
-            );
+                        path.join(ROOT_FOLDER, 'AUTHORS'),
+                        params.appOutDir
+                    );
 
-            // wallet readme
+                    // wallet readme
                     if (argv.type === 'wallet') {
                         shell.cp(
-                path.join(ROOT_FOLDER, 'Wallet-README.txt'),
-                path.join(params.appOutDir, 'README')
-              );
+                            path.join(ROOT_FOLDER, 'Wallet-README.txt'),
+                            path.join(params.appOutDir, 'README')
+                        );
                     }
                 });
             },

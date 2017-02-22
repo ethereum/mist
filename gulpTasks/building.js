@@ -1,10 +1,12 @@
 const _ = require('underscore');
+const builder = require('electron-builder');
 const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const gulp = require('gulp');
 const options = require('../gulpfile.js').options;
 const path = require('path');
+const Q = require('bluebird');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
@@ -133,6 +135,7 @@ gulp.task('build-dist', (cb) => {
                 buildResources: '../build',
                 output: '../dist',
             },
+            npmRebuild: false,  // TODO remove
             linux: {
                 target: [
                     'zip',
@@ -168,32 +171,32 @@ gulp.task('build-dist', (cb) => {
         JSON.stringify(appPackageJson, null, 2),
         'utf-8'
     );
-
-    // Copy build script
-    shell.cp(
-        path.join(__dirname, '../scripts', 'build-dist.js'),
-        path.join(__dirname, `../dist_${type}`, 'app')
-    );
-
     // TODO rename files before packaging
 
-    // run build script
-    let oses = _.keys(_.pick(_.pick(options, osArchList), (value) => { return value; }));
-    if (_.isEmpty(oses)) oses = osArchList;
+    const targets = [];
+    if (options.mac) targets.push(builder.Platform.MAC);
+    if (options.win) targets.push(builder.Platform.WINDOWS);
+    if (options.linux) targets.push(builder.Platform.LINUX);
 
-    const osesString = `--${oses.join(' --')}`;
-
-    const ret = shell.exec(`./build-dist.js --type ${type} ${osesString}`, {
-        cwd: path.join(__dirname, `../dist_${type}`, 'app'),
+    builder.build({
+        targets: builder.createTargets(targets, null, 'all'),
+        projectDir: path.join(__dirname, `../dist_${type}`, 'app'),
+        config: {
+            afterPack(params) {
+                return Q.try(() => {
+                    shell.cp([
+                        path.join(__dirname, '..', 'LICENSE'),
+                        path.join(__dirname, '..', 'README.md'),
+                        path.join(__dirname, '..', 'AUTHORS')],
+                        params.appOutDir
+                    );
+                });
+            },
+        },
+    })
+    .finally(() => {
+        cb();
     });
-
-    if (ret.code !== 0) {
-        console.error(ret.stdout);
-
-        return cb(new Error('Error building distributables'));
-    }
-
-    return cb();
 });
 
 

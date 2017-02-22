@@ -54,7 +54,6 @@ gulp.task('buildQueue', (cb) => {
 
     tasks.push('clean-dist');
     tasks.push('copy-app-source-files');
-    tasks.push('copy-node-folder-files');
     tasks.push('copy-build-folder-files');
     tasks.push('switch-production');
     tasks.push('bundling-interface');

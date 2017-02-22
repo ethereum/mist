@@ -3,7 +3,6 @@ const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const gulp = require('gulp');
-const merge = require('merge-stream');
 const options = require('../gulpfile.js').options;
 const path = require('path');
 const shell = require('shelljs');
@@ -36,7 +35,7 @@ gulp.task('copy-app-source-files', () => {
         '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
-        // 'customProtocols.js', // TODO is this needed?
+        'customProtocols.js',
     ], {
         base: './'
     })
@@ -44,19 +43,19 @@ gulp.task('copy-app-source-files', () => {
 });
 
 
-gulp.task('copy-app-folder-files', (done) => {  // TODO fabian, do you need this for your local web3.js simlinking?
-    const ret = shell.exec(
-        // `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules` // electron-builder should already do this now
-    );
-
-    if (ret.code !== 0) {
-        console.error('Error symlinking node_modules');
-
-        return done(ret.stderr);
-    }
-
-    return done();
-});
+// gulp.task('copy-app-folder-files', (done) => {  // TODO fabian, do you need this for your local web3.js simlinking?
+//     const ret = shell.exec(
+//         `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules` // electron-builder should already do this now
+//     );
+//
+//     if (ret.code !== 0) {
+//         console.error('Error symlinking node_modules');
+//
+//         return done(ret.stderr);
+//     }
+//
+//     return done();
+// });
 
 
 gulp.task('copy-build-folder-files', () => {
@@ -65,25 +64,6 @@ gulp.task('copy-build-folder-files', () => {
         './interface/public/images/dmg-background.jpg',
     ])
     .pipe(gulp.dest(`./dist_${type}/build`));
-});
-
-
-gulp.task('copy-node-folder-files', () => {
-
-    console.log(options)
-    const streams = [];
-
-    _.each(osArchList, (osArch) => {
-        if (options[osArch]) {
-            // copy eth node binaries
-            streams.push(gulp.src([
-                `./nodes/eth/${osArch}-x64/*`,
-            ])
-            .pipe(gulp.dest(`../dist_${type}/app/nodes/eth/${osArch}`)));
-        }
-    });
-
-    return merge(...streams);
 });
 
 
@@ -128,7 +108,6 @@ gulp.task('bundling-interface', (cb) => {
 });
 
 
-// needs to be copied, so the backend can use it
 gulp.task('copy-i18n', () => {
     return gulp.src([
         './interface/i18n/*.*',
@@ -150,13 +129,6 @@ gulp.task('build-dist', (cb) => {
             appId: `com.ethereum.${type}`,
             category: 'public.app-category.productivity',
             asar: true,
-            // files: [
-            //     '**/*',
-            // ],
-            // extraFiles: [  // TODO do we want to bundle eth?
-            //                   (for some reason it disappeared in v0.8.9)
-            //     'nodes/eth/${os}-${arch}', // eslint-disable-line no-template-curly-in-string
-            // ],
             directories: {
                 buildResources: '../build',
                 output: '../dist',

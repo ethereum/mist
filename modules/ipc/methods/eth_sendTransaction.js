@@ -60,6 +60,8 @@ module.exports = class extends BaseProcessor {
                     width: 580,
                     height: 550,
                     alwaysOnTop: true,
+                    enableLargerThanScreen: false,
+                    resizable: true
                 },
             });
 

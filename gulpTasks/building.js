@@ -13,11 +13,6 @@ const version = require('../package.json').version;
 
 const type = options.type;
 const applicationName = (options.wallet) ? 'Ethereum Wallet' : 'Mist';
-const osArchList = [
-    'mac',
-    'linux',
-    'win',
-];
 
 
 gulp.task('clean-dist', (cb) => {
@@ -43,21 +38,6 @@ gulp.task('copy-app-source-files', () => {
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
-
-
-// gulp.task('copy-app-folder-files', (done) => {  // TODO fabian, do you need this for your local web3.js simlinking?
-//     const ret = shell.exec(
-//         `cp -a ${__dirname}/node_modules ${__dirname}/dist_${type}/app/node_modules` // electron-builder should already do this now
-//     );
-//
-//     if (ret.code !== 0) {
-//         console.error('Error symlinking node_modules');
-//
-//         return done(ret.stderr);
-//     }
-//
-//     return done();
-// });
 
 
 gulp.task('copy-build-folder-files', () => {
@@ -215,27 +195,21 @@ gulp.task('release-dist', (done) => {
         shell.cp(path.join(distPath, inputPath), path.join(releasePath, outputPath));
     };
 
-    _.each(osArchList, (osArch) => {
-        if (options[osArch]) {
-            switch (osArch) { // eslint-disable-line default-case
-            case 'win-ia32':
-                cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
-                break;
-            case 'win-x64':
-                cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
-                break;
-            case 'mac-x64':
-                cp(path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
-                break;
-            case 'linux-ia32':
-                cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-                cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-                break;
-            case 'linux-x64':
-                cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
-                cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
-                break;
-            }
+    _.each(options.activePlatforms, (platform) => {
+        switch (platform) { // eslint-disable-line default-case
+        case 'win':
+            cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+            break;
+        case 'mac':
+            cp(path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
+            break;
+        case 'linux':
+            cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+            cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
+            break;
         }
     });
 

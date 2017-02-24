@@ -12,7 +12,6 @@
   },
   "main": "main.js",
   "dependencies": {
-    "babel-runtime": "^6.22.0",
     "bignumber.js": "^4.0.0",
     "bluebird": "^3.4.7",
     "chai-as-promised": "^6.0.0",

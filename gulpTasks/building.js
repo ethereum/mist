@@ -60,31 +60,33 @@ gulp.task('switch-production', (cb) => {
 
 
 gulp.task('bundling-interface', (cb) => {
-    if (type === 'mist') {
-        exec(`cd interface && meteor-build-client ../dist_${type}/app/interface -p ""`, (err, stdout) => {
+    const bundle = (additionalCommands) => {
+        exec(`cd interface;
+            meteor-build-client ../dist_${type}/app/interface -p "";
+            ${additionalCommands || ''}`,
+        (err, stdout) => {
             console.log(stdout);
-
             cb(err);
         });
+    };
+
+    if (type === 'mist') {
+        bundle();
     }
 
     if (type === 'wallet') {
         if (options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
-            exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                `cd ../../meteor-dapp-wallet/app && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`, (err, stdout) => {
-                console.log(stdout);
-
-                cb(err);
-            });
+            bundle(`cd ../../meteor-dapp-wallet/app;
+                meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
         } else {
             console.log(`Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${options.walletSource} "${options.walletSource}" branch...`);
-            exec(`cd interface/ && meteor-build-client ../dist_${type}/app/interface/ -p "" &&` +
-                `cd ../dist_${type}/ && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && cd meteor-dapp-wallet/app && meteor-build-client ../../app/interface/wallet -p "" && cd ../../ && rm -rf meteor-dapp-wallet`, (err, stdout) => {
-                console.log(stdout);
-
-                cb(err);
-            });
+            bundle(`cd ../dist_${type};
+                git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git;
+                cd meteor-dapp-wallet/app;
+                meteor-build-client ../../app/interface/wallet -p "";
+                cd ../../;
+                rm -rf meteor-dapp-wallet`);
         }
     }
 });
@@ -115,7 +117,6 @@ gulp.task('build-dist', (cb) => {
                 buildResources: '../build',
                 output: '../dist',
             },
-            npmRebuild: false,  // TODO remove
             linux: {
                 target: [
                     'zip',

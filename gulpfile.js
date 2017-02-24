@@ -38,7 +38,7 @@ if (_.isEmpty(_.intersection(args, ['--mac', '--linux', '--win']))) {
 }
 
 
-// prepare global variables
+// prepare global variables (shared with other gulp task files)
 options.type = (options.wallet) ? 'wallet' : 'mist';
 options.platforms = platforms;
 options.activePlatforms = _.keys(_.pick(_.pick(options, platforms), (key) => { return key; }));

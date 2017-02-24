@@ -25,7 +25,6 @@ rules:
   import/no-extraneous-dependencies:  ## checks if required modules are missing in packages.json
     - error
     - devDependencies:  ## declares files, whose imports belong to devDependencies
-      - "**/scripts/build-dist.js"
       - "**/tests/_base.js"
       - "**/*.test.js"
       - "**/gulpTasks/*.js"

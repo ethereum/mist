@@ -152,7 +152,6 @@ gulp.task('build-dist', (cb) => {
         JSON.stringify(appPackageJson, null, 2),
         'utf-8'
     );
-    // TODO rename files before packaging
 
     const targets = [];
     if (options.mac) targets.push(builder.Platform.MAC);

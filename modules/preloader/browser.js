@@ -31,6 +31,11 @@ window.mist = mist();
 window.BigNumber = BigNumber;
 window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
 
+// add web3 backwards compatibility
+if(!window.web3.currentProvider.sendAsync) {
+    window.web3.currentProvider.sendAsync = window.web3.currentProvider.send;
+}
+
 // prevent overwriting the Dapps Web3
 delete global.Web3;
 delete window.Web3;

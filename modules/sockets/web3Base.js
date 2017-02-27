@@ -97,7 +97,6 @@ module.exports = class Web3Socket extends Socket {
      * Handle responses from Geth.
      */
     _handleSocketResponse() {
-        this.on('data', console.log);
         oboe(this)
         .done((result) => {
             this._log.trace('JSON response', result);

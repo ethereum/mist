@@ -2,11 +2,9 @@
 @module preloader browser
 */
 require('./include/common')('browser');
+require('./include/ethereumProvider.js');
 const { ipcRenderer } = require('electron');
 const mist = require('./include/mistAPI.js');
-const BigNumber = require('bignumber.js');
-const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const Web3 = require('web3');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/setBasePath')('interface');
@@ -28,13 +26,6 @@ process.on('loaded', function () {
 
 
 window.mist = mist();
-window.BigNumber = BigNumber;
-window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
-
-// add web3 backwards compatibility
-if(!window.web3.currentProvider.sendAsync) {
-    window.web3.currentProvider.sendAsync = window.web3.currentProvider.send;
-}
 
 // prevent overwriting the Dapps Web3
 delete global.Web3;

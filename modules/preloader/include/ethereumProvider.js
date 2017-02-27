@@ -19,5 +19,5 @@ window.web3 = {
     currentProvider: new LegacyWeb3IpcProvider('', ipcProviderWrapper)
 };
 
-// for now still add this
+// for now still add this too: WILL BE REMOVED with web3 1.0
 const web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

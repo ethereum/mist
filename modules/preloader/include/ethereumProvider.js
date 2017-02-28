@@ -20,4 +20,4 @@ window.web3 = {
 };
 
 // for now still add this too: WILL BE REMOVED with web3 1.0
-const web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

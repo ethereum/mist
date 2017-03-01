@@ -42,7 +42,11 @@ describe('General', function () {
     });
 
     describe('mist.menu', function () {
-        beforeEach(function () {
+        before(function () {
+            mist.menu.clear();
+        });
+
+        afterEach(function () {
             mist.menu.clear();
         });
 

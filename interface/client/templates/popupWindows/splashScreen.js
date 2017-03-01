@@ -92,7 +92,6 @@ Template['popupWindows_splashScreen'].onCreated(function(){
         if (status === 'inProgress') {
             TemplateVar.set(template, 'showStartAppButton', true);
             TemplateVar.set(template, 'startAppButtonText', TAPi18n.__('mist.startScreen.launchApp'));
-                                    ipc.send('backendAction_skipSync');
 
             if (data !== false) {
                 // if state is "in progress" and we have data

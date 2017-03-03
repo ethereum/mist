@@ -18,7 +18,7 @@ const applicationName = (options.wallet) ? 'Ethereum Wallet' : 'Mist';
 gulp.task('clean-dist', (cb) => {
     return del([
         `./dist_${type}/**/*`,
-        './meteor-dapp-wallet',
+        './meteor-dapp-wallet'
     ], cb);
 });
 
@@ -32,7 +32,7 @@ gulp.task('copy-app-source-files', () => {
         '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
-        'customProtocols.js',
+        'customProtocols.js'
     ], {
         base: './'
     })
@@ -43,7 +43,7 @@ gulp.task('copy-app-source-files', () => {
 gulp.task('copy-build-folder-files', () => {
     return gulp.src([
         `./icons/${type}/*`,
-        './interface/public/images/dmg-background.jpg',
+        './interface/public/images/dmg-background.jpg'
     ])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
@@ -52,7 +52,7 @@ gulp.task('copy-build-folder-files', () => {
 gulp.task('switch-production', (cb) => {
     fs.writeFile(`./dist_${type}/app/config.json`, JSON.stringify({
         production: true,
-        mode: type,
+        mode: type
     }), cb);
 });
 
@@ -91,7 +91,7 @@ gulp.task('bundling-interface', (cb) => {
 gulp.task('copy-i18n', () => {
     return gulp.src([
         './interface/i18n/*.*',
-        './interface/project-tap.i18n',
+        './interface/project-tap.i18n'
     ], {
         base: './'
     })
@@ -111,18 +111,18 @@ gulp.task('build-dist', (cb) => {
             asar: true,
             directories: {
                 buildResources: '../build',
-                output: '../dist',
+                output: '../dist'
             },
             linux: {
                 target: [
                     'zip',
-                    'deb',
-                ],
+                    'deb'
+                ]
             },
             win: {
                 target: [
-                    'zip',
-                ],
+                    'zip'
+                ]
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
@@ -131,16 +131,16 @@ gulp.task('build-dist', (cb) => {
                     x: 441,
                     y: 448,
                     type: 'link',
-                    path: '/Applications',
+                    path: '/Applications'
                 },
                 {
                     x: 441,
                     y: 142,
-                    type: 'file',
+                    type: 'file'
                 }
-                ],
-            },
-        },
+                ]
+            }
+        }
     });
 
     fs.writeFileSync(
@@ -168,8 +168,8 @@ gulp.task('build-dist', (cb) => {
                         params.appOutDir
                     );
                 });
-            },
-        },
+            }
+        }
     })
     .finally(() => {
         cb();

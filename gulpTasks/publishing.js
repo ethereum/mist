@@ -82,7 +82,7 @@ gulp.task('upload-binaries', (cb) => {
             return githubUpload({
                 url: `https://uploads.github.com/repos/ethereum/mist/releases/${draft.id}/assets{?name}`,
                 token: [GITHUB_TOKEN],
-                assets: filePaths,
+                assets: filePaths
             }).then((res) => {
                 console.log(`Successfully uploaded ${res} to v${version} release draft.`);
             })

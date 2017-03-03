@@ -42,7 +42,9 @@ gulp.task('update-nodes', (cb) => {
                 // Query Azure assets for md5 hashes
                 got('https://gethstore.blob.core.windows.net/builds?restype=container&comp=list', { xml: true })
                 .then((response) => {
-                    parseJson(response.body, (err, data) => {
+                    parseJson(response.body, (err, data) => {  // eslint-disable-line
+                        if (err) return cb(err);
+
                         blobs = data.EnumerationResults.Blobs[0].Blob;
                     });
 
@@ -80,7 +82,7 @@ gulp.task('update-nodes', (cb) => {
                     cb();
                 });
             });
-        } else cb(); // Already up-to-date
+        } else return cb(); // Already up-to-date
     })
     .catch(cb);
 });
@@ -88,7 +90,7 @@ gulp.task('update-nodes', (cb) => {
 
 gulp.task('download-signatures', (cb) => {
     got('https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at', {
-        json: true,
+        json: true
     })
     .then((res) => {
         if (res.statusCode !== 200) {
@@ -165,6 +167,6 @@ gulp.task('update-i18n', (cb) => {
     } catch (e) {
         console.log(e);
     } finally {
-        cb();
+        cb();  // eslint-disable-line callback-return
     }
 });

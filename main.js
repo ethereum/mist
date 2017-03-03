@@ -52,6 +52,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -355,6 +356,9 @@ onReady = () => {
         })
         .then(() => {
             return ethereumNode.init();
+        })
+        .then(() => {
+            return swarmNode.init();
         })
         .then(function sanityCheck() {
             if (!ethereumNode.isIpcConnected) {

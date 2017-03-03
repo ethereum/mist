@@ -16,11 +16,25 @@ const type = options.type;
 
 gulp.task('checksums', (cb) => {
     const releasePath = `./dist_${type}/release`;
-
     const files = fs.readdirSync(releasePath);
 
+    let command;
+    let argument = '';
+
+    switch (process.platform) {
+    case 'darwin':
+        command = 'md5';
+        break;
+    case 'win32':
+        command = 'certUtil -hashfile';
+        argument = 'md5';
+        break;
+    default:
+        command = 'md5sum';
+    }
+
     files.forEach((file) => {
-        const sum = shell.exec(`md5 "${file}"`, {
+        const sum = shell.exec(`${command} "${file}" ${argument}`, {
             cwd: releasePath
         });
 
@@ -28,6 +42,7 @@ gulp.task('checksums', (cb) => {
             Error(`Error executing shasum: ${sum.stderr}`);
         }
 
+        // store checksums for 'upload-binaries' task
         checksums.push(sum.stdout);
     });
 

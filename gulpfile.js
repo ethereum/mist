@@ -30,10 +30,10 @@ console.log('Mist version:', require('./package.json').version);
 console.log('Electron version:', require('electron/package.json').version);
 
 if (_.isEmpty(_.intersection(args, ['--type', 'wallet', 'mist']))) {
-    console.log('Many gulp tasks can affect the wallet using:  --type wallet');
+    console.log('Many gulp tasks can be run in wallet mode using:  --wallet');
 }
 if (_.isEmpty(_.intersection(args, ['--mac', '--linux', '--win']))) {
-    console.log('You can specify a platform (default: all) with:  --mac --win --linux');
+    console.log('To specify a platform (default: all) use:  --mac --win --linux');
     _.each(platforms, (platform) => { options[platform] = true; }); // activate all platform flags
 }
 

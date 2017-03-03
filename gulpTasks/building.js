@@ -50,44 +50,40 @@ gulp.task('copy-build-folder-files', () => {
 
 
 gulp.task('switch-production', (cb) => {
-    fs.writeFileSync(`./dist_${type}/app/config.json`, JSON.stringify({
+    fs.writeFile(`./dist_${type}/app/config.json`, JSON.stringify({
         production: true,
         mode: type,
-    }));
-
-    cb();
+    }), cb);
 });
 
 
 gulp.task('bundling-interface', (cb) => {
     const bundle = (additionalCommands) => {
-        exec(`cd interface;
-            meteor-build-client ../dist_${type}/app/interface -p "";
-            ${additionalCommands || ''}`,
+        exec(`cd interface \
+            && meteor-build-client ${path.join('..', `dist_${type}`, 'app', 'interface')} -p "" \
+            ${additionalCommands}`,
         (err, stdout) => {
             console.log(stdout);
             cb(err);
         });
     };
 
-    if (type === 'mist') {
-        bundle();
-    }
-
     if (type === 'wallet') {
         if (options.walletSource === 'local') {
             console.log('Use local wallet at ../meteor-dapp-wallet/app');
-            bundle(`cd ../../meteor-dapp-wallet/app;
-                meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
+            bundle(`&& cd ../../meteor-dapp-wallet/app \
+                && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
         } else {
             console.log(`Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${options.walletSource} "${options.walletSource}" branch...`);
-            bundle(`cd ../dist_${type};
-                git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git;
-                cd meteor-dapp-wallet/app;
-                meteor-build-client ../../app/interface/wallet -p "";
-                cd ../../;
-                rm -rf meteor-dapp-wallet`);
+            bundle(`&& cd ../dist_${type} \
+                && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
+                && cd meteor-dapp-wallet/app \
+                && meteor-build-client ../../app/interface/wallet -p "" \
+                && cd ../../ \
+                && rm -rf meteor-dapp-wallet`);
         }
+    } else {
+        bundle();
     }
 });
 
@@ -149,8 +145,7 @@ gulp.task('build-dist', (cb) => {
 
     fs.writeFileSync(
         path.join(__dirname, `../dist_${type}`, 'app', 'package.json'),
-        JSON.stringify(appPackageJson, null, 2),
-        'utf-8'
+        JSON.stringify(appPackageJson, null, 2), 'utf-8'
     );
 
     const targets = [];
@@ -164,10 +159,12 @@ gulp.task('build-dist', (cb) => {
         config: {
             afterPack(params) {
                 return Q.try(() => {
-                    shell.cp([
-                        path.join(__dirname, '..', 'LICENSE'),
-                        path.join(__dirname, '..', 'README.md'),
-                        path.join(__dirname, '..', 'AUTHORS')],
+                    shell.cp(
+                        [
+                            path.join(__dirname, '..', 'LICENSE'),
+                            path.join(__dirname, '..', 'README.md'),
+                            path.join(__dirname, '..', 'AUTHORS')
+                        ],
                         params.appOutDir
                     );
                 });
@@ -198,17 +195,24 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
-            cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+            cp(
+                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+            cp(
+                `${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
         case 'mac':
-            cp(path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
+            cp(
+                path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-            cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
-            cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
+            cp(
+                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(
+                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+            cp(
+                `${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+            cp(
+                `${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }
     });
@@ -222,6 +226,8 @@ gulp.task('build-nsis', (cb) => {
     const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
     const versionParts = version.split('.');
     const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
+
     const cmdString = `makensis -V3 ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
+
     exec(cmdString, cb);
 });

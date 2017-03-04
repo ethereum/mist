@@ -1,17 +1,41 @@
 const Swarm = require('swarm-js');
 const fsp = require("fs-promise");
 const Q = require("bluebird");
+const Settings = require("./settings.js");
 
 class SwarmNode {
-    constructor(swarmURL) {
-        this.swarm = null;
+    constructor() {
+        this._swarm = null;
+        this._stop = null;
     }
 
-    // TODO: start node if swarmURL is null
-    init(swarmURL) {
+    init() {
+        console.log("Starting Swarm node.");
         return new Q((resolve, reject) => {
-            this.swarm = Swarm.at(swarmURL);
-            resolve(this);
+            // Start local node
+            if (Settings.swarmURL === "http://localhost:8500") {
+                console.log("Starting local Swarm node.");
+                // TODO: use user account
+                const config = {
+                    account: 'd849168d52ea5c40de1b0b973cfd96873c961963',
+                    password: 'sap',
+                    dataDir: process.env.HOME + '/Library/Ethereum/testnet',
+                    ethApi: process.env.HOME + '/Library/Ethereum/testnet/geth.ipc'
+                }
+                return Swarm.local(config)(swarm => new Q((stop) => {
+                    console.log("Local Swarm node started.");
+                    this._stop = stop;
+                    this._swarm = swarm;
+                    resolve(this);
+                }));
+
+            // Use a gatewway
+            } else {
+                console.log("Using Swarm gateway: "+Settings.swarmURL);
+                this._swarm = Swarm.at(Settings.swarmURL);
+                this._stop = () => {};
+                resolve(this);
+            }
         });
     }
 
@@ -27,32 +51,10 @@ class SwarmNode {
      * @return {Promise String}
      */
     upload(pathOrContents, defaultFile) {
-        if (!this.swarm)
-            Q.reject(new Error("Swarm not initialized. Did you call .init()?"));
+        if (!this._swarm)
+            return Q.reject(new Error('Swarm not initialized. Did you call swarmNode.init()?'));
 
-        // Upload raw data (buffer)
-        if (pathOrContents instanceof Buffer) {
-            return this.swarm.uploadData(pathOrContents);
-
-        // Upload JSON
-        } else if (pathOrContents instanceof Object) {
-            return this.swarm.uploadDirectory(pathOrContents);
-
-        // Upload directory/file from disk
-        } else if (typeof pathOrContents === "string") {
-            const path = dirPathOrContents;
-            return fsp.lstat(path).then(stat => {
-                if (stat.isDirectory()) {
-                    return defaultFile 
-                        ? this.swarm.uploadDirectoryFromDiskWithDefaultPath(path, defaultFile)
-                        : this.swarm.uploadDirectoryFromDisk(path);
-                } else {
-                    return this.swarm.uploadFileFromDisk(path);
-                }
-            });
-        }
-
-        return Q.reject(new Error("Bad arguments"));
+        return this._swarm.upload(pathOrContents, defaultFile);
     }
 
 }

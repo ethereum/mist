@@ -361,6 +361,7 @@ onReady = () => {
             return swarmNode.init();
         })
         .then(function sanityCheck() {
+            console.log("Swarm node started");
             if (!ethereumNode.isIpcConnected) {
                 throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
             }

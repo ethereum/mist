@@ -817,6 +817,10 @@ deep-eql@^0.1.3:
   dependencies:
     type-detect "0.1.1"
 
+deep-equal@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/deep-equal/-/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
+
 deep-extend@~0.4.0:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.4.1.tgz#efe4113d08085f4e6f9687759810f807469e2253"
@@ -1044,6 +1048,14 @@ electron-squirrel-startup@^1.0.0:
   resolved "https://registry.yarnpkg.com/electron-squirrel-startup/-/electron-squirrel-startup-1.0.0.tgz#19b4e55933fa0ef8f556784b9c660f772546a0b8"
   dependencies:
     debug "^2.2.0"
+
+electron-window-state:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/electron-window-state/-/electron-window-state-4.0.1.tgz#8f3ccd96b6288aa78e903eb40c6a363874ee0830"
+  dependencies:
+    deep-equal "^1.0.1"
+    jsonfile "^2.2.3"
+    mkdirp "^0.5.1"
 
 electron@1.3.13:
   version "1.3.13"
@@ -1966,6 +1978,10 @@ hosted-git-info@^2.1.4, hosted-git-info@^2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.1.5.tgz#0ba81d90da2e25ab34a332e6ec77936e1598118b"
 
+http-https@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/http-https/-/http-https-1.0.0.tgz#2f908dd5f1db4068c058cd6e6d4ce392c913389b"
+
 http-signature@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.1.1.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"
@@ -2360,7 +2376,7 @@ json3@3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/json3/-/json3-3.3.2.tgz#3c0434743df93e2f5c42aee7b19bcb483575f4e1"
 
-jsonfile@^2.1.0:
+jsonfile@^2.1.0, jsonfile@^2.2.3:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/jsonfile/-/jsonfile-2.4.0.tgz#3736a2b428b87bbda0cc83b53fa3d633a35c2ae8"
   optionalDependencies:
@@ -2930,6 +2946,12 @@ object.omit@^2.0.0:
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
+
+oboe@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/oboe/-/oboe-2.1.3.tgz#2b4865dbd46be81225713f4e9bfe4bcf4f680a4f"
+  dependencies:
+    http-https "^1.0.0"
 
 once@1.x, once@^1.3.0:
   version "1.4.0"
@@ -4231,13 +4253,14 @@ wdio-dot-reporter@^0.0.6:
   dependencies:
     babel-runtime "^5.8.25"
 
-web3@^0.17.0-alpha:
-  version "0.17.0-beta"
-  resolved "https://registry.yarnpkg.com/web3/-/web3-0.17.0-beta.tgz#57af38245bff7a32099f7ce5780fad5bbc00da5b"
+web3@^0.18.2:
+  version "0.18.2"
+  resolved "https://registry.yarnpkg.com/web3/-/web3-0.18.2.tgz#61b1a6edf5056820e22e1ef082f54c279f4bf758"
   dependencies:
     bignumber.js "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
+    xhr2 "*"
     xmlhttprequest "*"
 
 webdriverio@^4.0.4:
@@ -4334,6 +4357,10 @@ xdg-basedir@^2.0.0:
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-2.0.0.tgz#edbc903cc385fc04523d966a335504b5504d1bd2"
   dependencies:
     os-homedir "^1.0.0"
+
+xhr2@*:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/xhr2/-/xhr2-0.1.4.tgz#7f87658847716db5026323812f818cadab387a5f"
 
 xml2js@^0.4.17:
   version "0.4.17"

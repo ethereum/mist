@@ -195,9 +195,9 @@ Options are:
 
 ##### walletSource
 
-With the `walletSource` you can specify the branch to use, default ist `master`:
+With the `walletSource` you can specify the Wallet branch to use, default is `master`:
 
-    $ gulp mist --walletSource develop
+    $ gulp --wallet --walletSource develop
 
 
 Options are:
@@ -205,6 +205,8 @@ Options are:
 - `master`
 - `develop`
 - `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
+
+*Note: applicable only when combined with `--wallet`*
 
 ##### mist-checksums | wallet-checksums
 

@@ -548,8 +548,12 @@ gulp.task('build-nsis', (cb) => {
 
 
 const testApp = (app) => {
+    // gulp test-mist --test=[FILENAME]
+    const testNameSearch = process.argv.filter(function(e){ return /^--test=/.test(e) });
+    const testFileName = (testNameSearch.length > 0)? testNameSearch[0].replace(/^--test=/, '') : 'basic';
+
     return gulp.src([
-        `./tests/${app}/*.test.js`,
+        `./tests/${app}/${testFileName}.test.js`,
     ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',

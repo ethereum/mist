@@ -151,15 +151,15 @@ test['"data:" protocol should be disallowed on browser bar'] = function* () { //
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
 
-// test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
-//     const client = this.client;
-//     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
+test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
+    const client = this.client;
+    const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 
-//     yield this.navigateTo(filePath);
-//     yield Q.delay(1500);
-//     const browserBarText = yield this.getBrowserBarText();
-//     browserBarText.should.match(/errorPages ▸ 400.html$/);
-// };
+    yield this.navigateTo(filePath);
+    yield Q.delay(1500);
+    const browserBarText = yield this.getBrowserBarText();
+    browserBarText.should.match(/errorPages ▸ 400.html$/);
+};
 
 test['Pin tab test'] = function* () {
     const client = this.client;
@@ -174,53 +174,49 @@ test['Pin tab test'] = function* () {
     sidebarItemsAfterAdd.length.should.eql(3);
 };
 
-// test['Browse tab should be changed to pinned tab if the URL is the same'] = function* () { // ETH-01-007
-//     const client = this.client;
-//     yield this.selectTab('browser');
+test['Browse tab should be changed to pinned tab if URLs are the same'] = function* () { // ETH-01-007
+    const client = this.client;
+    yield this.selectTab('browser');
 
-//     yield this.navigateTo('https://wallet.ethereum.org' );
-//     yield Q.delay(1000);
-//     const el = (yield client.element('.sidebar nav > ul > .selected'));
-//     console.log('el', el);
-//     console.log('getUiElement', yield client.getUiElement('.sidebar nav > ul > .selected'));
-//     console.log('element', yield client.element('.sidebar nav > ul > .selected'));
+    yield this.navigateTo('https://wallet.ethereum.org');
+    yield Q.delay(1000);
+    const selectedTab = (yield client.execute(() => { // code executed in browser context
+        return LocalStore.get('selectedTab');
+    })).value;
 
-//     el.getAttribute('data-tab-id').should.eql('wallet');
+    selectedTab.should.eql('wallet');
+};
 
-// };
+test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = function* () { // ETH-01-007
+    const client = this.client;
+    const app = this;
+    yield this.selectTab('wallet');
 
-// test['Wallet tab shouldn\'t have the page replaced if URLs does not match'] = function* () { // ETH-01-007
-//     const client = this.client;
-//     const app = this;
-//     yield this.selectTab('wallet');
+    yield this.navigateTo(`${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
+    yield client.waitUntil(() => {
+        return client.execute(() => {
+            return LocalStore.get('selectedTab') === 'browser';
+        });
+    }, 2000);
+};
 
-//     yield this.navigateTo(`${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
-//     yield client.waitUntil(() => {
-//         return client.element('.sidebar nav > ul > .selected').then((e) => {
-//             console.log('e', e);
-//             return e.getAttribute('data-tab-id') === 'browse';
-//         });
-//     }, 2000);
-// };
+test['Wallet tab shouldn\'t have the page replaced if URLs does not match - 2'] = function* () { // ETH-01-007
+    const client = this.client;
+    const app = this;
+    yield this.selectTab('wallet');
 
-// test['Wallet tab shouldn\'t have the page replaced if URLs does not match - 2'] = function* () { // ETH-01-007
-//     const client = this.client;
-//     const app = this;
-//     yield this.selectTab('wallet');
+    // Now changing address via JS
+    yield client.setValue('#url-input', `${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
+    const isProtocolBlocked = yield client.execute(() => { // Code executed in context of browser
+        $('form.url').submit();
+    });
 
-//     // Now changing address via JS
-//     yield client.setValue('#url-input', `${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`);
-//     const isProtocolBlocked = yield client.execute(() => { // Code executed in context of browser
-//         $('form.url').submit();
-//     });
-
-//     yield client.waitUntil(() => {
-//         return client.element('.sidebar nav > ul > .selected').then((e) => {
-//             console.log('e', e);
-//             return e.getAttribute('data-tab-id') === 'browser';
-//         });
-//     }, 2000);
-// };
+    yield client.waitUntil(() => {
+        return client.execute(() => {
+            return LocalStore.get('selectedTab') === 'browser';
+        });
+    }, 2000);
+};
 
 test['Links with target _blank should open inside Mist'] = function* () {
     const client = this.client;
@@ -246,4 +242,18 @@ test['Links with target _popup should open inside Mist'] = function* () {
             return /index.html$/.test(url);
         })
     });
+};
+
+// ETH-01-005
+test['Mist main webview should not redirect to arbitrary addresses'] = function* () {
+    const client = this.client;
+    const initialURL = yield client.getUrl();
+    console.log('initialURL', initialURL);
+
+    yield client.execute(() => { // code executed in context of browser
+        window.location.href = 'http://google.com';
+    });
+
+    yield Q.delay(1000);
+    (yield client.getUrl()).should.eql(initialURL);
 };

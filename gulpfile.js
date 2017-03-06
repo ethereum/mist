@@ -14,7 +14,7 @@ const runSeq = require('run-sequence');
 
 // parse commandline arguments
 const args = process.argv.slice(2);
-const platforms = ['mac', 'linux', 'win'];
+const platforms = (process.platform === 'darwin') ? ['mac', 'linux', 'win'] : ['linux', 'win'];
 const options = minimist(args, {
     string: ['walletSource'],
     boolean: _.flatten(['wallet', platforms]),
@@ -32,8 +32,10 @@ console.log('Electron version:', require('electron/package.json').version);
 if (_.isEmpty(_.intersection(args, ['--wallet']))) {
     console.log('Many gulp tasks can be run in wallet mode using:  --wallet');
 }
-if (_.isEmpty(_.intersection(args, ['--mac', '--linux', '--win']))) {
-    console.log('To specify a platform (default: all) use:  --mac --win --linux');
+
+const platformFlags = platforms.map((platform) => { return `--${platform}`; });
+if (_.isEmpty(_.intersection(args, platformFlags))) {
+    console.log(`To specify a platform (default: all) use:  ${platformFlags.join(' ')}`);
     _.each(platforms, (platform) => { options[platform] = true; }); // activate all platform flags
 }
 

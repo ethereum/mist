@@ -29,7 +29,7 @@ const options = minimist(args, {
 console.log('Mist version:', require('./package.json').version);
 console.log('Electron version:', require('electron/package.json').version);
 
-if (_.isEmpty(_.intersection(args, ['--type', 'wallet', 'mist']))) {
+if (_.isEmpty(_.intersection(args, ['--wallet']))) {
     console.log('Many gulp tasks can be run in wallet mode using:  --wallet');
 }
 if (_.isEmpty(_.intersection(args, ['--mac', '--linux', '--win']))) {

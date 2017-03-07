@@ -12,19 +12,19 @@
                                     <i class="icon-globe"></i>
                                 {{/if}}
 
-                                <!-- <span title="{{nameFull}}">{{name}}</span> -->
-                                {{#if badge}}
-                                    <!-- <div class="badge">{{badge}}</div> -->
-                                {{/if}}
                             </button>
-
                         </header>
-                        <section style="display: none">
+                        <section>
+                            <span title="{{nameFull}}">{{name}}</span>
+                            {{#if badge}}
+                                <div class="badge">{{badge}}</div>
+                            {{/if}}
+
                             {{#if $neq _id 'browser'}}
                                 <button class="remove-tab"> &times; </button>
                             {{/if}}
                             <ul class="sub-menu">
-                            {{#each subMenu}}
+                                {{#each subMenu}}
                                 <li>
                                     <button class="{{#if selected}}selected{{/if}}">
                                         {{name}}
@@ -33,16 +33,15 @@
                                         <div class="badge">{{badge}}</div>
                                     {{/if}}
                                 </li>
-                            {{/each}}
-                            <li class="see-all"><button> See All...</button></li>
-                        </ul>
-
+                                {{/each}}
+                                <li class="see-all"><button> See All...</button></li>
+                            </ul>
                         </section>
                     </li>
                 {{/each}}
             </ul>
-            {{> elements_nodeInfo}}
         </nav>
+        {{> elements_nodeInfo}}
     </aside>
 
     <aside class="sidebar {{fullTabs}}">

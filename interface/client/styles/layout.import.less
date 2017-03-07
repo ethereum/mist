@@ -32,6 +32,7 @@
 .darwin {
         aside {
             top: @gridHeight * 2;
+            height: calc(100% - @gridHeight * 2);
         }
 
         div.browser-bar {
@@ -78,24 +79,11 @@ button h1, button h2, button h3, button p {
 aside {
     z-index: 4;
     position: absolute;
-    top: @gridHeight * 2;
+    top: @gridHeight;
     left: 0;
     bottom: 0;
     // padding-top: @gridHeight/2;
     width: @widthSideBar;
-
-
-    &:before {
-        content: " ";
-        display: block;
-        position: absolute;
-        z-index: 2;
-        top: 0;
-        left: @widthSideBar;
-        width: 10px;
-        bottom: 0;
-        // box-shadow: @shadowStandard;
-    }
 }
 .linux aside {
     top: 0;

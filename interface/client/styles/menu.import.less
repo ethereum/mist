@@ -1,71 +1,125 @@
+.gradient-tip {
+    content: '';
+    display: block;
+    width: 100%;
+    height: @gridHeight * 0.75;
+    left: 0px;
+    position: absolute;
+    pointer-events: none;
+}
+
 aside.newsidebar {
-    overflow: hidden;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
 
-    ul {
-        padding: 0 12px;
-        margin: 6px 0;
+    > * { // debug
+        // background-color: rgba(0,0,0,0.2);
     }
-    li {
-        overflow: hidden;
-        margin-bottom: 15px;
 
-        opacity: .6;
-        transition: 100ms opacity linear;
+    &::after {
+        .gradient-tip();
+        top: @gridHeight;
+        height: 8px;
+        background-image: linear-gradient(to top, rgba(241, 241, 241, 0) 0%, rgba(241, 241, 241, 1) 100%);
+    }
 
-        &.selected {
+    nav {
+        position: relative;
+        margin-top: @gridHeight;
+        padding: 0 12px 0;
+        overflow: scroll;
+        min-height: 0;
+
+        ul {
+            margin: 6px 0;
+            padding: 0;
         }
+        li {
+            overflow: hidden;
+            margin-bottom: 15px;
+            opacity: .6;
+            transition: 100ms opacity linear;
 
-        &.selected, &:active, &:hover {
-            opacity: 1;
-        }
-        header:active, &.selected header {
-        }
-        header:active {
+            &.selected {}
 
-        }
-        header:hover button {
-        }
+            &.selected, &:active, &:hover, &:focus {
+                opacity: 1;
+            }
 
-        header {
-            -webkit-transition: 150ms background-color linear;
-            button.main {
-                height: 54px;
-                width: 54px;
-                display: block;
-                &:focus {
-                    outline: 0;
-                    border: none;
-                }
-                &:active {
-                }
+            header:active, &.selected header {}
+            header:active {}
+            header:hover button {}
 
-                .icon-globe {
-                    font-size: 32px;
-                    text-align: center;
-                    display: block;
-                    background-color: #fff;
-                    padding-top: 10px;
-                }
-
-                img, .icon-globe {
-                    width: 54px;
+            header {
+                -webkit-transition: 150ms background-color linear;
+                button.main {
                     height: 54px;
-                    -webkit-mask-image: url('icons/mask-icon.svg');
-                    -webkit-mask-size: cover;
-                    // -webkit-mask: url('icons/mask-icon.svg') top/left cover;
+                    width: 54px;
+                    display: block;
+                    &:focus {
+                        outline: 0;
+                        border: none;
+                    }
+                    &:active {}
+
+                    .icon-globe {
+                        font-size: 32px;
+                        text-align: center;
+                        display: block;
+                        background-color: #fff;
+                        padding-top: 10px;
+                    }
+
+                    img, .icon-globe {
+                        width: 54px;
+                        height: 54px;
+                        -webkit-mask-image: url('icons/mask-icon.svg');
+                        -webkit-mask-size: cover;
+                        // -webkit-mask: url('icons/mask-icon.svg') top/left cover;
+                    }
+                }
+            }
+
+            section {
+                display: none;
+                opacity: 0;
+                transition: 150ms linear all;
+                transition-delay: 200ms;
+                background-color: #fff;
+                width: 220px;
+                border-radius: 12px;
+                position: fixed;
+                left: 74px;
+                top: 110px;
+                padding: 8px;
+                box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+            }
+
+            &:hover {
+                section {
+                    opacity: 1;
+                    // display: block;
                 }
             }
         }
     }
 
-
     .node-info {
+        position: relative;
+        &::after {
+            .gradient-tip();
+            height: 20px;
+            top: -(20px - 1);
+            background-image: linear-gradient(to bottom, rgba(241, 241, 241, 0) 0%, rgba(241, 241, 241, 1) 100%);
+        }
+
         display: flex;
-        top: initial;
-        bottom: 11px;
-        left: 8px;
-        right: 8px;
         flex-flow: row wrap;
+        flex-shrink: 0;
+        padding: 8px;
+        font-size: 0.9em;
+        color: @colorTextSecondary;
 
         div, span {
             padding: @gridHeight/2 1px;
@@ -97,7 +151,6 @@ aside.newsidebar {
     }
 }
 
-
 aside.sidebar {
     overflow: hidden;
     display: none;
@@ -127,10 +180,8 @@ aside.sidebar {
                 margin: 5px 0;
             }
 
-            &.selected,
-            &.slided-out {
+            &.selected, &.slided-out {
                 height: 100%;
-
 
                 ul.sub-menu li {
                     height: floor(@gridHeight * 2);
@@ -158,13 +209,10 @@ aside.sidebar {
                 }
             }
 
-
-            &.selected + li,
-            &:first-child {
+            &.selected + li, &:first-child {
                 border-top: 0;
                 margin-top: 1px;
             }
-
 
             &.browser {
                 .sub-menu {
@@ -185,7 +233,6 @@ aside.sidebar {
                 font-family: @sourceSansPro;
                 font-size: @fontSizeNormal;
                 font-weight: 500;
-
 
                 &:focus {
                     border: 0;
@@ -326,12 +373,9 @@ aside.sidebar {
                         color: @colorLinkFocus;
                     }
 
-
                     &.selected {
                         color: @colorLinkBlur;
                     }
-
-
                 }
 
                 .badge {
@@ -364,7 +408,6 @@ aside.sidebar {
                 }
             }
         }
-
     }
 
     &.full-tabs {
@@ -423,7 +466,7 @@ aside.sidebar {
         }
 
         .block-number {
-            flex: 2;
+            flex: 1;
         }
 
         .test-chain {
@@ -437,5 +480,9 @@ aside.sidebar {
 // Remove tab button related code
 aside.full-tabs button.remove-tab {
     display: none;
+}
+
+.app-blur aside.newsidebar nav::after {
+    background-image: linear-gradient(to bottom, rgba(246, 246, 246, 0) 0%, rgba(246, 246, 246, 1) 100%);
 }
 

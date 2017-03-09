@@ -9,15 +9,15 @@ const ipcProviderWrapper = require('../../ipc/ipcProviderWrapper.js');
 const LegacyWeb3IpcProvider = require('./legacyWeb3IpcProvider.js');
 
 
-// SET ETHEREUM PROVIDER
-window.ethereumProvider = new Web3.providers.IpcProvider('', ipcProviderWrapper);
+// SET ETHEREUM PROVIDER !!!! define better provider EthereumProvider send, on, off etc... also improve IPC and WS
+// window.ethereumProvider = new Web3.providers.IpcProvider('', new ipcProviderWrapper());
 
 
 // LEGACY
 window.BigNumber = BigNumber;
 window.web3 = {
-    currentProvider: new LegacyWeb3IpcProvider('', ipcProviderWrapper)
+    currentProvider: new LegacyWeb3IpcProvider('', new ipcProviderWrapper())
 };
 
 // for now still add this too: WILL BE REMOVED with web3 1.0
-window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
+window.web3 = new Web3(new Web3.providers.IpcProvider('', new ipcProviderWrapper()));

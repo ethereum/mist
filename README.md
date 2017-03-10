@@ -44,7 +44,7 @@ To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteo
 
 And some further tools to help with downloading and unzipping client nodes:
 
-_Linux:_
+_Ubuntu:_
 
     $ apt-get install unzip
 

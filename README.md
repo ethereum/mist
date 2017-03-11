@@ -183,9 +183,16 @@ The generated binaries will be under `dist_mist/release` or `dist_wallet/release
 
 ##### platform
 
-To build binaries for specific platforms (default: all) use the following flags:
+To build binaries for specific platforms (default: all available) use the following flags:
 
-    $ gulp --mac --win --linux
+    // on mac
+    $ gulp --win --linux --mac
+
+    // on linux
+    $ gulp --win --linux
+
+    // on win
+    $ gulp --win
 
 ##### walletSource
 

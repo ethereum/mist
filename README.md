@@ -172,7 +172,7 @@ To generate the binaries for Mist run:
 
     $ gulp
 
-To generate the Ethereum Wallet (this will pack the one DApp from https://github.com/ethereum/meteor-dapp-wallet):
+To generate the Ethereum Wallet (this will pack the one Ðapp from https://github.com/ethereum/meteor-dapp-wallet):
 
     $ gulp --wallet
 

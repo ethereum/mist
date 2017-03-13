@@ -248,7 +248,6 @@ test['Links with target _popup should open inside Mist'] = function* () {
 test['Mist main webview should not redirect to arbitrary addresses'] = function* () {
     const client = this.client;
     const initialURL = yield client.getUrl();
-    console.log('initialURL', initialURL);
 
     yield client.execute(() => { // code executed in context of browser
         window.location.href = 'http://google.com';
@@ -256,4 +255,19 @@ test['Mist main webview should not redirect to arbitrary addresses'] = function*
 
     yield Q.delay(1000);
     (yield client.getUrl()).should.eql(initialURL);
+};
+
+
+// ETH-01-008
+test['Mist main webview should not redirect to local files'] = function* () {
+    const client = this.client;
+    const initialURL = yield client.getUrl();
+
+    yield this.navigateTo('https://cure53.de/exchange/8743653459838/ETH-01-008.php');
+
+    yield client.waitUntil(() => {
+        return client.getText('.url-breadcrumb').then((e) => {
+            return /400\.html$/.test(e);
+        });
+    }, 5000, 'expected a URL not allowed as a result');
 };

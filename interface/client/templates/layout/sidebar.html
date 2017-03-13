@@ -14,28 +14,29 @@
 
                             </button>
                         </header>
-                        <section>
-                            <span title="{{nameFull}}">{{name}}</span>
-                            {{#if badge}}
-                                <div class="badge">{{badge}}</div>
-                            {{/if}}
+                        <section class="submenu-container">
+                            <section>
+                                <span title="{{nameFull}}">{{name}}</span>
+                                {{#if badge}}
+                                    <div class="badge">{{badge}}</div>
+                                {{/if}}
 
-                            {{#if $neq _id 'browser'}}
-                                <button class="remove-tab"> &times; </button>
-                            {{/if}}
-                            <ul class="sub-menu">
-                                {{#each subMenu}}
-                                <li>
-                                    <button class="{{#if selected}}selected{{/if}}">
-                                        {{name}}
-                                    </button>
-                                    {{#if badge}}
-                                        <div class="badge">{{badge}}</div>
-                                    {{/if}}
-                                </li>
-                                {{/each}}
-                                <li class="see-all"><button> See All...</button></li>
-                            </ul>
+                                {{#if $neq _id 'browser'}}
+                                    <button class="remove-tab"> &times; </button>
+                                {{/if}}
+                                <ul class="sub-menu">
+                                    {{#each subMenu}}
+                                    <li>
+                                        <button class="{{#if selected}}selected{{/if}}">
+                                            {{name}}
+                                            {{#if badge}}
+                                                <span class="badge">{{badge}}</span>
+                                            {{/if}}
+                                        </button>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                            </section>
                         </section>
                     </li>
                 {{/each}}

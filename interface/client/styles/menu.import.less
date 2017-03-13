@@ -81,25 +81,40 @@ aside.newsidebar {
                 }
             }
 
-            section {
-                display: none;
+            .submenu-container {
+                visibility: hidden;
                 opacity: 0;
                 transition: 150ms linear all;
                 transition-delay: 200ms;
-                background-color: #fff;
                 width: 220px;
-                border-radius: 12px;
                 position: fixed;
-                left: 74px;
+                left: 82px;
                 top: 110px;
                 padding: 8px;
-                box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+                border-radius: 5px;
+                backdrop-filter: blur(0);
+
+                section {
+                    background-color: rgba(0, 0, 0, 0.78);
+                    backdrop-filter: blur(5px);
+                    width: 200px;
+                    border-radius: 5px;
+                    color: #fff;
+
+                    span {
+                        font-weight: 400;
+                    }
+                    a, button {
+                        color: #fff;
+                    }
+                }
+
             }
 
             &:hover {
-                section {
+                .submenu-container {
                     opacity: 1;
-                    // display: block;
+                    visibility: visible;
                 }
             }
         }

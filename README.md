@@ -203,7 +203,6 @@ Options are:
 *Note: applicable only when combined with `--wallet`*
 
 #### Checksums
->>>>>>> e9e2edffa4350ab3c4c5445d9b1317da19b9ab47
 
 Spits out the MD5 checksums of distributables.
 

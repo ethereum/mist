@@ -126,6 +126,7 @@ describe("Permissions", function() {
         it('should only contain allowed attributes', function (){
             var allowedAttributes = [
                 '_requestManager',
+                'bzz',
                 'currentProvider',
                 'eth',
                 'db',

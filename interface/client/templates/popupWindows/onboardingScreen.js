@@ -124,7 +124,7 @@ Template['popupWindows_onboardingScreen'].helpers({
                 // Only show states if they are changing
                 if (Math.round(1000 * Number(syncing._displayStatesDownload)) !== Math.round(1000 * Number(syncing.pulledStates / (syncing.knownStates + 1)))) {
                     TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
-                } else if (syncing.displayBlock == '0') {
+                } else if (syncing.displayBlock === '0') {
                     TemplateVar.set(template, 'syncStatusMessageLive', '');
                 } else {
                     TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));

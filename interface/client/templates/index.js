@@ -26,7 +26,7 @@ Template.body.helpers({
 
             if (renderWindow.length>0)
                 return 'popupWindows_' + renderWindow[1];
-            else 
+            else
                 return false;
         }
     }

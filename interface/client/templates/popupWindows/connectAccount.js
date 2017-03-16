@@ -128,7 +128,7 @@ Template['popupWindows_connectAccount'].events({
 
         TemplateVar.set(template, 'accounts', accounts);
     },
-    /** 
+    /**
     Closes the popup
 
     @event click .cancel
@@ -145,13 +145,13 @@ Template['popupWindows_connectAccount'].events({
         e.preventDefault();
 
         var accounts = TemplateVar.get('accounts');
-        
+
         // Pin to sidebar, if needed
         if ($('#pin-to-sidebar')[0].checked) {
             pinToSidebar();
         }
 
-        accounts = _.unique(_.flatten(accounts)); 
+        accounts = _.unique(_.flatten(accounts));
 
         // reload the webview
         ipc.send('backendAction_windowMessageToOwner', null, accounts);

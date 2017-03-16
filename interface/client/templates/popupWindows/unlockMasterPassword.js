@@ -51,5 +51,5 @@ Template['popupWindows_unlockMasterPassword'].events({
 
         template.find('input.password').value = '';
         pw = null;
-    } 
+    }
 });

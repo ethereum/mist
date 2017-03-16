@@ -55,7 +55,7 @@ Template['popupWindows_requestAccount'].events({
                 TemplateVar.set(template, 'creating', false);
                 ipc.send('backendAction_closePopupWindow');
             });
-        
+
         } else {
             template.$('.password').focus();
 
@@ -69,5 +69,5 @@ Template['popupWindows_requestAccount'].events({
         template.find('input.password-repeat').value = '';
         template.find('input.password').value = '';
         pw = pwRepeat = null;
-    } 
+    }
 });

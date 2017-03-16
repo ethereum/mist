@@ -47,7 +47,7 @@ Template['popupWindows_updateAvailable'].events({
             ipc.send('backendAction_openExternalUrl', update.url);
         }
     }
-});    
+});
 
 
 

@@ -24,13 +24,13 @@ var checkNetworkType = function(template) {
     try {
         web3.eth.getBlock(0, function(e, res) {
             console.trace('Get block 0', e, res);
-            
+
             if (e) {
                 console.error('Got error fetching block 0', e);
             } else {
-                TemplateVar.set(template, 'network', Helpers.detectNetwork(res.hash).type); 
+                TemplateVar.set(template, 'network', Helpers.detectNetwork(res.hash).type);
             }
-        });        
+        });
     } catch (err) {
         console.error('Unable to get block 0', err);
     }
@@ -55,7 +55,7 @@ Template['elements_networkIndicator'].onRendered(function(){
             console.debug('Node status changing, reset network type indicator');
 
             TemplateVar.set(template, 'network', 'unknown');
-           
+
             break;
         }
     });
@@ -66,7 +66,7 @@ Template['elements_networkIndicator'].onRendered(function(){
         if ('inProgress' === status && TemplateVar.get(template, 'network') === 'unknown') {
             console.debug('Node syncing, re-check network type.');
 
-            checkNetworkType(template);            
+            checkNetworkType(template);
         }
     });
 });

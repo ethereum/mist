@@ -81,7 +81,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
     @method syncStatus
     */
-    'syncStatus' : function () {
+    'syncStatus': function () {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
@@ -138,7 +138,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
     @method syncStatusMessage
     */
-    'syncStatusMessage' : function () {
+    'syncStatusMessage': function () {
         return TemplateVar.get('syncStatusMessageLive');
     }
 });

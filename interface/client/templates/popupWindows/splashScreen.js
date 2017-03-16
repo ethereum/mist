@@ -170,7 +170,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method syncStatus
     */
-    'syncStatus' : function () {
+    'syncStatus': function () {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();

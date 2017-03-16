@@ -8,7 +8,7 @@ var setWindowSize = function (template) {
     Tracker.afterFlush(function () {
         ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows .inner-container').height() + 240);
     });
-}
+};
 
 
 var defaultEstimateGas = 50000000;
@@ -65,7 +65,7 @@ var lookupFunctionSignature = function (data, remoteLookup) {
             reject(undefined);
         }
     });
-}
+};
 
 var localSignatureLookup = function (data) {
     return lookupFunctionSignature(data, false);

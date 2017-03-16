@@ -27,7 +27,7 @@ Template['popupWindows_requestAccount'].events({
         ipc.send('backendAction_closePopupWindow');
     },
     'click .show-password': function (e) {
-        TemplateVar.set('showPassword', e.currentTarget.checked)
+        TemplateVar.set('showPassword', e.currentTarget.checked);
     },
     'submit form': function (e, template) {
         e.preventDefault();

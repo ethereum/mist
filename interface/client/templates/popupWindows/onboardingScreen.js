@@ -68,7 +68,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
     this.autorun(function () {
         TemplateVar.set('lastActive', TemplateVar.get('currentActive'));
     });
-})
+});
 
 
 Template['popupWindows_onboardingScreen'].helpers({
@@ -227,7 +227,7 @@ Template['popupWindows_onboardingScreen_importAccount'].helpers({
     'showPassword': function () {
         return TemplateVar.get('showPassword') ? 'text' : 'password';
     }
-})
+});
 
 
 Template['popupWindows_onboardingScreen_importAccount'].events({
@@ -302,7 +302,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     @event click .show-password
     */
     'click .show-password': function (e) {
-        TemplateVar.set('showPassword', e.currentTarget.checked)
+        TemplateVar.set('showPassword', e.currentTarget.checked);
     },
     /**
     Checks the password match sends the file path and password to the mist backend to import
@@ -375,7 +375,7 @@ Template['popupWindows_onboardingScreen_password'].helpers({
     'passwordInputType': function () {
         return TemplateVar.get('passwordInputType') ? 'text' : 'password';
     }
-})
+});
 
 
 Template['popupWindows_onboardingScreen_password'].events({
@@ -394,7 +394,7 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event click .show-password
     */
     'click .show-password': function (e) {
-        TemplateVar.set('passwordInputType', e.currentTarget.checked)
+        TemplateVar.set('passwordInputType', e.currentTarget.checked);
     },
     /**
     Password checks

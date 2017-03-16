@@ -32,7 +32,7 @@ var lookupFunctionSignature = function(data, remoteLookup) {
         if (data && data.length > 8) {
             var bytesSignature = (data.substr(0, 2) === '0x')
                 ? data.substr(0, 10)
-                : '0x'+ data.substr(0, 8);
+                : '0x' + data.substr(0, 8);
 
             if (remoteLookup) {
                 https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, function(response) {
@@ -129,7 +129,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
             if (!data.gasPrice) {
                 web3.eth.getGasPrice(function(e, res) {
                     if (!e) {
-                        data.gasPrice = '0x'+ res.toString(16);
+                        data.gasPrice = '0x' + res.toString(16);
                         Session.set('data', data);
                     }
                 });
@@ -215,7 +215,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
         var amount = EthTools.formatBalance(this.value, '0,0.00[0000000000000000]', 'ether');
         var dotPos = (~amount.indexOf('.')) ? amount.indexOf('.') + 3 : amount.indexOf(',') + 3;
 
-        return amount ? amount.substr(0, dotPos) + '<small style="font-size: 0.5em;">'+ amount.substr(dotPos) +'</small>' : '0';
+        return amount ? amount.substr(0, dotPos) + '<small style="font-size: 0.5em;">' + amount.substr(dotPos) + '</small>' : '0';
     },
     /**
     Calculates the fee used for this transaction in ether
@@ -244,7 +244,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'shortenAddress': function(address) {
         if (_.isString(address)) {
-            return address.substr(0,6) +'...'+ address.substr(-4);
+            return address.substr(0,6) + '...' + address.substr(-4);
         }
     },
     /**

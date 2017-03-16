@@ -40,7 +40,7 @@ Get the webview from either and ID, or the string "browser"
 @param {String} id  The Id of a tab or the string "browser"
 */
 Helpers.getWebview = function(id) {
-    return $('webview[data-id="'+ id +'"]')[0];
+    return $('webview[data-id="' + id + '"]')[0];
 };
 
 /**
@@ -50,7 +50,7 @@ Get tab by url and return the id
 @param {String} url
 @return {String} id
 */
-Helpers.getTabIdByUrl= function(url, returnEmpty) {
+Helpers.getTabIdByUrl = function(url, returnEmpty) {
     var tabs = Tabs.find().fetch();
     url = Helpers.sanitizeUrl(url);
 
@@ -79,7 +79,7 @@ Format Urls, e.g add a default protocol if on is missing.
 Helpers.formatUrl = function(url) {
     // add http:// if no protocol is present
     if (url && url.indexOf('://') === -1)
-        url = 'http://'+ url;
+        url = 'http://' + url;
 
     return url;
 };
@@ -128,7 +128,7 @@ Helpers.generateBreadcrumb = function (url) {
         return el === '';
     });
 
-    return new Spacebars.SafeString(filteredUrl.protocol +'//'+ _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
+    return new Spacebars.SafeString(filteredUrl.protocol + '//' + _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(' ▸ '));
 };
 
 /**

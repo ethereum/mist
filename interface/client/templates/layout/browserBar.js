@@ -65,7 +65,7 @@ Template['layout_browserBar'].helpers({
     @method (currentWebView)
     */
     'currentWebView': function() {
-        return '.webview webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+        return '.webview webview[data-id="' + LocalStore.get('selectedTab') + '"]';
     }
 });
 
@@ -154,7 +154,7 @@ Template['layout_browserBar'].events({
         var url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
 
-        console.log('Submitted new URL:'+ url);
+        console.log('Submitted new URL:' + url);
 
         // update current tab url
         Tabs.update(tabId, {$set: {

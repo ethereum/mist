@@ -34,7 +34,7 @@ Template['layout_sidebar'].onRendered(function() {
             $ul.find('> li').each(function(index, test) {
                 var id = $(this).data('tab-id');
                 if (id)
-                    Tabs.update(id, {$set: {position: index+1}});
+                    Tabs.update(id, {$set: {position: index + 1}});
             });
         }
     });
@@ -130,7 +130,7 @@ Template['layout_sidebar'].events({
     */
     'click nav ul.sub-menu button': function(e, template) {
         var tabId = $(e.currentTarget).parent().parents('li').data('tab-id');
-        var webview = $('webview[data-id="'+ tabId +'"]')[0];
+        var webview = $('webview[data-id="' + tabId + '"]')[0];
 
         // browser
         if (tabId === 'browser') {

@@ -42,7 +42,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function() {
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
 
-                TemplateVar.set(template, 'syncing', _.extend(oldData||{}, syncing||{}));
+                TemplateVar.set(template, 'syncing', _.extend(oldData || {}, syncing || {}));
 
             } else {
                 TemplateVar.set(template, 'syncing', false);
@@ -99,9 +99,9 @@ Template['popupWindows_onboardingScreen'].helpers({
                 TemplateVar.set(template, 'readyToLaunch', false);
 
                 // Calculates a block t display that is always getting a few % closer to target
-                syncing._displayBlock = (syncing._displayBlock + 2*(syncing.currentBlock - syncing._displayBlock) / 100 ) || Number(syncing.startingBlock);
+                syncing._displayBlock = (syncing._displayBlock + 2 * (syncing.currentBlock - syncing._displayBlock) / 100 ) || Number(syncing.startingBlock);
 
-                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates/(1 +syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates)/Number(syncing.knownStates + 1);
+                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates / (1 + syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates) / Number(syncing.knownStates + 1);
 
                 // Calculates progress
                 syncing.progress = 100 * (syncing._displayBlock - syncing.startingBlock) / (1 + Number(syncing.highestBlock) - syncing.startingBlock);
@@ -110,7 +110,7 @@ Template['popupWindows_onboardingScreen'].helpers({
                 syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
                 syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
                 syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
-                syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload*10000)/100).format('0.00');
+                syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload * 10000) / 100).format('0.00');
 
                 // Saves the data back to the object
                 TemplateVar.set(template, 'syncing', syncing);
@@ -123,7 +123,7 @@ Template['popupWindows_onboardingScreen'].helpers({
                 }
 
                 // Only show states if they are changing
-                if (Math.round(1000*Number(syncing._displayStatesDownload)) !== Math.round(1000*Number(syncing.pulledStates/(syncing.knownStates+1)))) {
+                if (Math.round(1000 * Number(syncing._displayStatesDownload)) !== Math.round(1000 * Number(syncing.pulledStates / (syncing.knownStates + 1)))) {
                     TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
                 } else if (syncing.displayBlock == '0') {
                     TemplateVar.set(template, "syncStatusMessageLive", '');
@@ -223,7 +223,7 @@ Template['popupWindows_onboardingScreen_importAccount'].helpers({
     @method showPassword
     */
     'showPassword': function() {
-        return TemplateVar.get('showPassword')? 'text' : 'password' ;
+        return TemplateVar.get('showPassword') ? 'text' : 'password' ;
     }
 })
 
@@ -370,7 +370,7 @@ Template['popupWindows_onboardingScreen_password'].helpers({
     @method showPassword
     */
     'passwordInputType': function() {
-        return TemplateVar.get('passwordInputType')? 'text' : 'password' ;
+        return TemplateVar.get('passwordInputType') ? 'text' : 'password' ;
     }
 })
 

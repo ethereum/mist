@@ -2,7 +2,7 @@
 showError = function(tabId, e) {
     if (e.isMainFrame || e.killed) {
         var url,
-            path = 'file://'+ dirname + '/errorPages/';
+            path = 'file://' + dirname + '/errorPages/';
 
         if (e.killed) {
             e.errorCode = 500;
@@ -10,10 +10,10 @@ showError = function(tabId, e) {
 
         switch (e.errorCode) {
         case -105:
-            url = path +'404.html';
+            url = path + '404.html';
             break;
         case 500:
-            url = path +'500.html';
+            url = path + '500.html';
             break;
         }
 

@@ -87,13 +87,13 @@ Template['views_webview'].helpers({
     'preloaderFile': function() {
         switch (this._id) {
         case 'browser':
-            return 'file://'+ Helpers.preloaderDirname +'/browser.js';
+            return 'file://' + Helpers.preloaderDirname + '/browser.js';
         case 'wallet':
-            return 'file://'+ Helpers.preloaderDirname +'/wallet.js';
+            return 'file://' + Helpers.preloaderDirname + '/wallet.js';
         case 'tests':
-            return 'file://'+ Helpers.preloaderDirname +'/tests.js';
+            return 'file://' + Helpers.preloaderDirname + '/tests.js';
         default:
-            return 'file://'+ Helpers.preloaderDirname +'/dapps.js';
+            return 'file://' + Helpers.preloaderDirname + '/dapps.js';
         }
     },
     /**
@@ -127,7 +127,7 @@ Template['views_webview'].helpers({
             }
 
             // allow error pages
-            if (url && url.indexOf('file://'+ dirname + '/errorPages/') === 0) {
+            if (url && url.indexOf('file://' + dirname + '/errorPages/') === 0) {
                 return url;
             }
 
@@ -141,8 +141,8 @@ Template['views_webview'].helpers({
                     webview.clearHistory();
                 }
 
-                console.warn('Not allowed URL: '+ template.url);
-                return 'file://'+ dirname + '/errorPages/400.html';
+                console.warn('Not allowed URL: ' + template.url);
+                return 'file://' + dirname + '/errorPages/400.html';
             }
 
             // add url

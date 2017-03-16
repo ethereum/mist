@@ -12,7 +12,6 @@ The onboardingScreen template
 */
 
 
-
 /**
 Update the peercount
 
@@ -25,7 +24,6 @@ var getPeerCount = function (template) {
         }
     });
 };
-
 
 
 Template['popupWindows_onboardingScreen'].onCreated(function () {
@@ -359,7 +357,6 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         pw = null;
     }
 });
-
 
 
 /**

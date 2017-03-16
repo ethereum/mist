@@ -179,7 +179,3 @@ Formats a number.
 Template.registerHelper('formatBalance', Helpers.formatBalance);
 
 
-
-
-
-

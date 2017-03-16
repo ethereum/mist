@@ -12,7 +12,6 @@ The networkIndicator template
 */
 
 
-
 /**
 Check network type.
 
@@ -35,7 +34,6 @@ var checkNetworkType = function (template) {
         console.error('Unable to get block 0', err);
     }
 };
-
 
 
 Template['elements_networkIndicator'].onRendered(function () {

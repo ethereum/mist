@@ -50,4 +50,3 @@ Template['popupWindows_updateAvailable'].events({
 });
 
 
-

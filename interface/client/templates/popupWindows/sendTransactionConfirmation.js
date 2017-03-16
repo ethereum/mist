@@ -54,13 +54,11 @@ var lookupFunctionSignature = function (data, remoteLookup) {
                     console.warn('Error querying Function Signature Registry.', err);
                     reject(bytesSignature);
                 });
-            } else {
-                if (_.first(window.SIGNATURES[bytesSignature])) {
+            } else if (_.first(window.SIGNATURES[bytesSignature])) {
                     resolve(_.first(window.SIGNATURES[bytesSignature]));
                 } else {
                     reject(bytesSignature);
                 }
-            }
         } else {
             reject(undefined);
         }

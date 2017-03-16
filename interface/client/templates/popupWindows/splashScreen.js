@@ -208,7 +208,7 @@ Template['popupWindows_splashScreen'].helpers({
                 stateProgress = (lastSyncData._displayState / lastSyncData._displayKnownStates) * 100;
             }
 
-            var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100 ;
+            var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100;
 
             // Saves data back to templates
             TemplateVar.set(template, 'syncStatusMessageLive', translatedMessage);

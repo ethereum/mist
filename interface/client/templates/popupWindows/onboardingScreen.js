@@ -225,7 +225,7 @@ Template['popupWindows_onboardingScreen_importAccount'].helpers({
     @method showPassword
     */
     'showPassword': function () {
-        return TemplateVar.get('showPassword') ? 'text' : 'password' ;
+        return TemplateVar.get('showPassword') ? 'text' : 'password';
     }
 })
 
@@ -373,7 +373,7 @@ Template['popupWindows_onboardingScreen_password'].helpers({
     @method showPassword
     */
     'passwordInputType': function () {
-        return TemplateVar.get('passwordInputType') ? 'text' : 'password' ;
+        return TemplateVar.get('passwordInputType') ? 'text' : 'password';
     }
 })
 

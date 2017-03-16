@@ -53,7 +53,7 @@ var updateSelectedTabAccounts = function (accounts) {
 Template['popupWindows_connectAccount'].onCreated(function () {
     this.autorun(function () {
         var tab = Tabs.findOne(LocalStore.get('selectedTab'), { fields: { 'permissions.accounts': 1 } });
-        var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
+        var accounts = (tab && tab.permissions && tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
     });
 });

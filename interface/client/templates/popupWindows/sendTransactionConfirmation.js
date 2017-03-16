@@ -223,7 +223,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (estimatedFee)
     */
     'estimatedFee': function () {
-        var gas =  TemplateVar.get('estimatedGas');
+        var gas = TemplateVar.get('estimatedGas');
         if (gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether');
     },
@@ -233,7 +233,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (providedGas)
     */
     'providedGas': function () {
-        var gas =  TemplateVar.get('providedGas');
+        var gas = TemplateVar.get('providedGas');
         if (gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
     },
@@ -288,7 +288,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event change .provided-gas, input .provided-gas
     */
     'change .provided-gas, input .provided-gas': function (e, template) {
-        var gas =  template.$('.provided-gas').text().replace(/[, ]+/g,'');//template.$('.provided-gas').text();
+        var gas = template.$('.provided-gas').text().replace(/[, ]+/g,'');//template.$('.provided-gas').text();
 
         TemplateVar.set('providedGas', gas);
     },

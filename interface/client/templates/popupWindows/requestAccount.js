@@ -32,7 +32,7 @@ Template['popupWindows_requestAccount'].events({
     'submit form': function (e, template) {
         e.preventDefault();
         var pw = template.find('input.password').value;
-        var pwRepeat =  template.find('input.password-repeat').value;
+        var pwRepeat = template.find('input.password-repeat').value;
 
         // ask for password repeat
         if (!pwRepeat) {

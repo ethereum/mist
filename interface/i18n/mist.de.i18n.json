@@ -5,7 +5,7 @@
                 "label": "__app__",
                 "about": "Über __app__",
                 "checkForUpdates": "Nach Aktualisierungen suchen...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
+                "checkForNodeUpdates": "Nach Ethereum Node Aktualisierungen suchen...",
                 "services": "Dienste",
                 "hide": "__app__ ausblenden",
                 "hideOthers": "Andere ausblenden",
@@ -24,7 +24,7 @@
             "view": {
                 "label": "Ansicht",
                 "fullscreen": "Vollbildmodus",
-                "default": "Default"
+                "default": "Standard"
             },
             "accounts": {
                 "label": "Konten",
@@ -48,7 +48,7 @@
                 "mainNetwork": "Hauptnetzwerk",
                 "startMining": "⛏ Mining starten (nur auf Testnetz)",
                 "stopMining": "⛏ Mining stoppen",
-                "externalNode": "using external node",
+                "externalNode": "externer Node aktiv",
                 "nodeMode": "Chain download",
                 "fullNode": "Store full blockchain",
                 "lightNode": "Use light Node (experimental!)"
@@ -61,7 +61,7 @@
             },
             "help": {
                 "label": "Hilfe",
-                "reportBug": "Report an issue on Github"
+                "reportBug": "Ein Problem melden"
             }
         },
         "errors": {
@@ -75,8 +75,8 @@
                 "darwin": "Um Zeit Synchronisation einzuschalten, öffne die System Einstellungen und checke \"Zeit Datum automatisch\"."
             },
             "nodeChecksumMismatch": {
-                "title": "Checksum mismatch in downloaded node!",
-                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+                "title": "Prüfsumme des heruntergeladen Nodes stimmt nicht überein!",
+                "description": "__algorithm__: __hash__\n\nBitte installiere __type__ Node Version __version__ manuell."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
@@ -124,22 +124,21 @@
             "nodeSyncInfo": "Block __displayBlock__ von __highestBlock__ wird heruntergeladen.",
             "nodeSyncConnecting": "Suche nach Peers...",
             "peerSearchTimeout": "Peer-Suche überspringen",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
-            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
-            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
-            "launchApp": "Launch Application",
+            "stoppingNode": "Stoppe Ethereum Node...",
+            "nodeStarting": "Ethereum Node startet...",
+            "nodeStarted": "Ethereum Node gestartet",
+            "nodeConnected": "Ethereum Node verbunden",
+            "nodeStopping": "Ethereum Node stoppt...",
+            "nodeStopped": "Ethereum Node gestoppt",
+            "nodeError": "Verbindungsproblem zu Ethereum Node :'(",
+            "unableToBindPort": "Ethereum Node kann nicht gestartet werden. Läuft bereits eine andere Instanz?",
+            "nodeSyncInfoStates": "Lade Block __displayBlock__ von __highestBlock__, <br> Lade chain structure __displayState__ von __displayKnownStates__",
+            "nodeSyncFoundPeers": "Verbinde mit __peers__ Peers...",
+            "launchApp": "Starte die Anwendung",
             "clientBinaries": {
-                "scanning": "Checking for node update...",
-                "downloading": "Downloading new node...",
-                "loadConfig": "Loading client config...",
+                "scanning": "Suche nach Node Aktualisierung...",
+                "downloading": "Lade neue Node-Version herunter...",
+                "loadConfig": "Lade Node Konfiguration...",
                 "filtering": "Filtering client binaries...",
                 "done": "Ethereum node up-to-date...",
                 "error": "Error running downloaded binary."
@@ -153,7 +152,7 @@
                 "creating": "Konto wird angelegt...",
                 "errors": {
                     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
-                    "passwordTooShort": "Make a longer password"
+                    "passwordTooShort": "Wähle ein längeres Passwort..."
                 }
             },
             "unlockMasterPassword": {
@@ -188,10 +187,10 @@
                     "wrongPassword": "Falsches Passwort",
                     "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
-                    "sameAccount": "Can't send to itself"
+                    "sameAccount": "Kann nicht zum selben Konto schicken."
                 },
-                "transactionThrow": "The contract won't allow this transaction to be executed",
-                "noEstimate": "We couldn't estimate the gas.",
+                "transactionThrow": "Der Vertrag wird diese Transaktion nicht ausführen können",
+                "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
                 "gasLimit": "Provide maximum fee",
                 "parameters": "Parameters",
                 "showRawBytecode": "show raw data",

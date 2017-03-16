@@ -104,7 +104,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
                 // Select the appropriate message
                 if (web3.net.peerCount > 0) {
                     // Check which state we are
-                    if ( 0 < lastSyncData._displayKnownStates && (
+                    if (0 < lastSyncData._displayKnownStates && (
                             Number(lastSyncData.pulledStates) !== Math.round(lastSyncData._displayState)
                         || Number(lastSyncData.knownStates) !== Math.round(lastSyncData._displayKnownStates))
                     ) {

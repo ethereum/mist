@@ -98,9 +98,9 @@ Template['popupWindows_onboardingScreen'].helpers({
                 TemplateVar.set(template, 'readyToLaunch', false);
 
                 // Calculates a block t display that is always getting a few % closer to target
-                syncing._displayBlock = (syncing._displayBlock + 2 * (syncing.currentBlock - syncing._displayBlock) / 100 ) || Number(syncing.startingBlock);
+                syncing._displayBlock = (syncing._displayBlock + 2 * (syncing.currentBlock - syncing._displayBlock) / 100) || Number(syncing.startingBlock);
 
-                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates / (1 + syncing.knownStates) - syncing._displayStatesDownload) / 100 ) || Number(syncing.pulledStates) / Number(syncing.knownStates + 1);
+                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates / (1 + syncing.knownStates) - syncing._displayStatesDownload) / 100) || Number(syncing.pulledStates) / Number(syncing.knownStates + 1);
 
                 // Calculates progress
                 syncing.progress = 100 * (syncing._displayBlock - syncing.startingBlock) / (1 + Number(syncing.highestBlock) - syncing.startingBlock);
@@ -117,7 +117,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
                 // If it's close enough, show the synced button
 
-                if (Number(syncing.highestBlock) - syncing.currentBlock < 100 ) {
+                if (Number(syncing.highestBlock) - syncing.currentBlock < 100) {
                     TemplateVar.set(template, 'readyToLaunch', true);
                 }
 
@@ -418,7 +418,7 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        if ( pw !== pwRepeat) {
+        if (pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3

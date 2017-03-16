@@ -341,7 +341,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
                     });
                 } else {
                     GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', {error: error}),
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', { error: error }),
                         duration: 4
                     });
                 }

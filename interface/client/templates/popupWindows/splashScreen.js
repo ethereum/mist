@@ -136,7 +136,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
                     translationString = 'mist.startScreen.nodeSyncConnecting';
                 }
 
-                TemplateVar.set(template, 'lastSyncData', {'peers': web3.net.peerCount});
+                TemplateVar.set(template, 'lastSyncData', { 'peers': web3.net.peerCount });
 
             }
 

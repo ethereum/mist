@@ -18,9 +18,9 @@ showError = function (tabId, e) {
         }
 
         if (url) {
-            Tabs.update(tabId, {$set: {
+            Tabs.update(tabId, { $set: {
                 redirect: url
-            }});
+            } });
         }
     }
 };
@@ -44,9 +44,9 @@ webviewChangeUrl = function (tabId, e) {
         return;
 
     // update the URL
-    Tabs.update(tabId, {$set: {
+    Tabs.update(tabId, { $set: {
         url: url
-    }});
+    } });
 };
 
 // fired by "did-stop-loading"
@@ -66,10 +66,10 @@ webviewLoadStop = function (tabId, e) {
             var historyEntryOrigin = new URL(historyEntry.url).origin;
             return (url.indexOf(historyEntryOrigin) !== -1);
         })))
-            LastVisitedPages.update(find._id, {$set: {
+            LastVisitedPages.update(find._id, { $set: {
                 timestamp: moment().unix(),
                 url: url
-            }});
+            } });
         else
             LastVisitedPages.insert({
                 name: title,
@@ -79,8 +79,8 @@ webviewLoadStop = function (tabId, e) {
             });
 
         // ADD to doogle history
-        if (find = History.findOne({url: url}))
-            History.update(find._id, {$set: {timestamp: moment().unix()}});
+        if (find = History.findOne({ url: url }))
+            History.update(find._id, { $set: { timestamp: moment().unix() } });
         else
             History.insert({
                 name: title,
@@ -119,10 +119,10 @@ webviewLoadStart = function (currentTabId, e) {
     var tab = Tabs.findOne(tabId);
 
     if (tab.url !== url) {
-        Tabs.update(tabId, {$set: {
+        Tabs.update(tabId, { $set: {
             redirect: url,
             url: url
-        }});
+        } });
     }
     LocalStore.set('selectedTab', tabId);
 };

@@ -51,11 +51,11 @@ Template['views_webview'].onRendered(function () {
         }
 
         // update the title
-        Tabs.update(tabId, {$set: {
+        Tabs.update(tabId, { $set: {
             name: title,
             nameFull: titleFull,
             // url: webview.getURL(),
-        }});
+        } });
 
         webviewLoadStop.call(this, tabId, e);
     });
@@ -111,7 +111,7 @@ Template['views_webview'].helpers({
     */
     'checkedUrl': function () {
         var template = Template.instance();
-        var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
+        var tab = Tabs.findOne(this._id, { fields: { redirect: 1 } });
         var url;
 
         if (tab) {
@@ -121,9 +121,9 @@ Template['views_webview'].helpers({
                 url = tab.redirect;
 
                 // remove redirect
-                Tabs.update(this._id, {$unset: {
+                Tabs.update(this._id, { $unset: {
                     redirect: ''
-                }});
+                } });
             }
 
             // allow error pages
@@ -148,9 +148,9 @@ Template['views_webview'].helpers({
             // add url
             if (url) {
                 template.url = url;
-                Tabs.update(this._id, {$set: {
+                Tabs.update(this._id, { $set: {
                     url: url
-                }});
+                } });
             }
 
             return Helpers.formatUrl(url);

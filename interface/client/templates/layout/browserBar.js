@@ -49,7 +49,7 @@ Template['layout_browserBar'].helpers({
     */
     'dappAccounts': function () {
         if (this.permissions)
-            return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
+            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -116,9 +116,9 @@ Template['layout_browserBar'].events({
 
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function () {
-                Tabs.update(tabId, {$set: {
+                Tabs.update(tabId, { $set: {
                     'permissions.accounts': addresses
-                }});
+                } });
             });
 
         });
@@ -157,10 +157,10 @@ Template['layout_browserBar'].events({
         console.log('Submitted new URL:' + url);
 
         // update current tab url
-        Tabs.update(tabId, {$set: {
+        Tabs.update(tabId, { $set: {
             url: url,
             redirect: url
-        }});
+        } });
         LocalStore.set('selectedTab', tabId);
     }
 });

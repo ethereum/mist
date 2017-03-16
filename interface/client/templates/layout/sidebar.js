@@ -34,7 +34,7 @@ Template['layout_sidebar'].onRendered(function () {
             $ul.find('> li').each(function (index, test) {
                 var id = $(this).data('tab-id');
                 if (id)
-                    Tabs.update(id, {$set: {position: index + 1}});
+                    Tabs.update(id, { $set: { position: index + 1 } });
             });
         }
     });
@@ -48,7 +48,7 @@ Template['layout_sidebar'].helpers({
     @method (tabs)
     */
     'tabs': function () {
-        return Tabs.find({}, {sort: {position: 1}}).fetch();
+        return Tabs.find({}, { sort: { position: 1 } }).fetch();
     },
     /**
     Return the correct name
@@ -75,7 +75,7 @@ Template['layout_sidebar'].helpers({
         var template = Template.instance();
 
         if (this._id === 'browser') {
-            return LastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
+            return LastVisitedPages.find({},{ sort: { timestamp: -1 }, limit: 25 });
 
         } else if (this.menu) {
             var menu = _.toArray(this.menu);
@@ -134,7 +134,7 @@ Template['layout_sidebar'].events({
 
         // browser
         if (tabId === 'browser') {
-            webviewLoadStart.call(webview, tabId, {newURL: this.url, type: 'side-bar-click', preventDefault: function () {}});
+            webviewLoadStart.call(webview, tabId, { newURL: this.url, type: 'side-bar-click', preventDefault: function () {} });
 
         // dapp tab
         } else if (webview) {
@@ -155,7 +155,7 @@ Template['layout_sidebar'].events({
         } else if (isSelected) {
             LocalStore.set('fullTabs', true);
         } else {
-            Tabs.update(this._id, {$set: {menuVisible: !this.menuVisible}});
+            Tabs.update(this._id, { $set: { menuVisible: !this.menuVisible } });
         }
     },
     /**

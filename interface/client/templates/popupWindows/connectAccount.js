@@ -28,7 +28,7 @@ var pinToSidebar = function () {
             var sameLastPage;
 
             // move the current browser tab to the last visited page
-            var lastPageItems = LastVisitedPages.find({}, {limit: 2, sort: {timestamp: -1}}).fetch();
+            var lastPageItems = LastVisitedPages.find({}, { limit: 2, sort: { timestamp: -1 } }).fetch();
             var lastPage = lastPageItems.pop();
             var lastPageURL = lastPage ? lastPage.url : 'http://about:blank';
             Tabs.update('browser', {
@@ -37,7 +37,7 @@ var pinToSidebar = function () {
             });
 
             // remove last page form last pages
-            if (sameLastPage = LastVisitedPages.findOne({url: selectedTab.url}))
+            if (sameLastPage = LastVisitedPages.findOne({ url: selectedTab.url }))
                 LastVisitedPages.remove(sameLastPage._id);
         }
     }
@@ -45,14 +45,14 @@ var pinToSidebar = function () {
 
 var updateSelectedTabAccounts = function (accounts) {
     var tabId = LocalStore.get('selectedTab');
-    Tabs.update(tabId, {$set: {
+    Tabs.update(tabId, { $set: {
         'permissions.accounts': accounts
-    }});
+    } });
 };
 
 Template['popupWindows_connectAccount'].onCreated(function () {
     this.autorun(function () {
-        var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}});
+        var tab = Tabs.findOne(LocalStore.get('selectedTab'), { fields: { 'permissions.accounts': 1 } });
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
     });

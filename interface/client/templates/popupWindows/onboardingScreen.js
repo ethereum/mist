@@ -145,10 +145,10 @@ Template['popupWindows_onboardingScreen'].helpers({
 });
 
 Template['popupWindows_onboardingScreen'].events({
-   'click .goto-start': function(e){
+    'click .goto-start': function(e){
         TemplateVar.set('currentActive','start');
     },
-   'click .goto-import-account': function(){
+    'click .goto-import-account': function(){
         TemplateVar.set('currentActive','import-account');
 
         // if testnet, make sure to switch to the mainnet
@@ -158,7 +158,7 @@ Template['popupWindows_onboardingScreen'].events({
             TemplateVar.set('syncing', null);
         }
     },
-   'click .start-testnet': function(e, template){
+    'click .start-testnet': function(e, template){
         if(!TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', true);
             TemplateVar.set('testnet', true);
@@ -168,24 +168,24 @@ Template['popupWindows_onboardingScreen'].events({
         TemplateVar.set('currentActive','testnet');
         template.$('.onboarding-testnet input.password').focus();
     },
-   'click .goto-password': function(e, template){
+    'click .goto-password': function(e, template){
         TemplateVar.set('currentActive','password');
         template.$('.onboarding-password input.password').focus();
     },
-   'click .goto-account': function(){
+    'click .goto-account': function(){
         TemplateVar.set('currentActive','account');
     },
-   'click .goto-tutorial-1': function(){
+    'click .goto-tutorial-1': function(){
         TemplateVar.set('currentActive','tutorial-1');
         if (!TemplateVar.get('syncing'))
             TemplateVar.set('readyToLaunch', true);
     },
-   'click .goto-tutorial-2': function(){
+    'click .goto-tutorial-2': function(){
         TemplateVar.set('currentActive','tutorial-2');
         if (!TemplateVar.get('syncing'))
             TemplateVar.set('readyToLaunch', true);
     },
-   'click .goto-tutorial-3': function(){
+    'click .goto-tutorial-3': function(){
         TemplateVar.set('currentActive','tutorial-3');
         if (!TemplateVar.get('syncing'))
             TemplateVar.set('readyToLaunch', true);
@@ -203,7 +203,7 @@ Template['popupWindows_onboardingScreen'].events({
 
     @event dragover .onboarding-screen, drop .onboarding-screen
     */
-   'dragover .onboarding-screen, drop .onboarding-screen': function(e){
+    'dragover .onboarding-screen, drop .onboarding-screen': function(e){
         e.preventDefault();
     }
 });
@@ -234,7 +234,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event dragenter .dropable
     */
-   'dragenter .dropable': function(e){
+    'dragenter .dropable': function(e){
         $(e.currentTarget).addClass('active');
     },
     /**
@@ -242,7 +242,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event dragleave .dropable
     */
-   'dragleave .dropable': function(e){
+    'dragleave .dropable': function(e){
         $(e.currentTarget).removeClass('active');
     },
     /**
@@ -289,7 +289,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event dragover .dropable
     */
-   'dragover .dropable': function(e){
+    'dragover .dropable': function(e){
         e.preventDefault();
     },
     /**
@@ -297,7 +297,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
     @event click .show-password
     */
-   'click .show-password': function(e){
+    'click .show-password': function(e){
         TemplateVar.set('showPassword', e.currentTarget.checked)
     },
     /**
@@ -381,7 +381,7 @@ Template['popupWindows_onboardingScreen_password'].events({
 
     @event click button[type="button"]
     */
-   'click button[type="button"]': function(e, template){
+    'click button[type="button"]': function(e, template){
         template.find('input.password').value = '';
         template.find('input.password-repeat').value = '';
     },
@@ -390,7 +390,7 @@ Template['popupWindows_onboardingScreen_password'].events({
 
     @event click .show-password
     */
-   'click .show-password': function(e){
+    'click .show-password': function(e){
         TemplateVar.set('passwordInputType', e.currentTarget.checked)
     },
     /**
@@ -398,7 +398,7 @@ Template['popupWindows_onboardingScreen_password'].events({
 
     @event click button[type="button"]
     */
-   'input input, change input': function(e, template){
+    'input input, change input': function(e, template){
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 

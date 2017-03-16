@@ -55,11 +55,11 @@ Helpers.getTabIdByUrl= function(url, returnEmpty){
     url = Helpers.sanitizeUrl(url);
 
     var foundTab = _.find(tabs, function(tab){
-            if(tab._id === 'browser' || !tab.url)
-                return false;
-            var tabOrigin = new URL(tab.url).origin;
-            return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
-        });
+        if(tab._id === 'browser' || !tab.url)
+            return false;
+        var tabOrigin = new URL(tab.url).origin;
+        return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
+    });
 
     // switch tab to browser
     if(foundTab)

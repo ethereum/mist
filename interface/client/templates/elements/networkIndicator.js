@@ -49,12 +49,12 @@ Template['elements_networkIndicator'].onRendered(function(){
         console.trace('Node status', status);
 
         switch (status) {
-            case 'starting':
-            case 'stopping':
-            case 'connected':
-                console.debug('Node status changing, reset network type indicator');
+        case 'starting':
+        case 'stopping':
+        case 'connected':
+            console.debug('Node status changing, reset network type indicator');
 
-                TemplateVar.set(template, 'network', 'unknown');
+            TemplateVar.set(template, 'network', 'unknown');
            
             break;
         }

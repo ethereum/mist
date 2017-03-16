@@ -63,7 +63,7 @@ var lookupFunctionSignature = function(data, remoteLookup) {
                 }
             }
         } else {
-           reject(undefined);
+            reject(undefined);
         }
     });
 }
@@ -316,7 +316,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event submit form
     */
-   'submit form': function(e, template){
+    'submit form': function(e, template){
         e.preventDefault();
 
         var data = Session.get('data'),
@@ -383,15 +383,15 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 }
             }
         });
-   },
+    },
 
-   'click .data .toggle-panel': function() {
+    'click .data .toggle-panel': function() {
         TemplateVar.set('displayDecodedParams', true);
-   },
-   'click .parameters .toggle-panel': function() {
+    },
+    'click .parameters .toggle-panel': function() {
         TemplateVar.set('displayDecodedParams', false);
-   },
-   'click .lookup-function-signature': function(e, template) {
+    },
+    'click .lookup-function-signature': function(e, template) {
         var data = Session.get('data');
         TemplateVar.set('lookingUpFunctionSignature', true);
 
@@ -413,5 +413,5 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             TemplateVar.set(template, 'executionFunction', bytesSignature);
             TemplateVar.set(template, 'hasSignature', false);
         });
-   }
+    }
 });

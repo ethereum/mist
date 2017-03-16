@@ -40,7 +40,7 @@ Template['popupWindows_updateAvailable'].onCreated(function(){
 
 
 Template['popupWindows_updateAvailable'].events({
-   'click .get-update': function(e){
+    'click .get-update': function(e){
         var update = TemplateVar.get('update');
 
         if (update && update.url) {

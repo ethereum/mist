@@ -9,12 +9,12 @@ showError = function(tabId, e){
         }
 
         switch(e.errorCode) {
-            case -105:
-                url = path +'404.html';
-                break;
-            case 500:
-                url = path +'500.html';
-                break;
+        case -105:
+            url = path +'404.html';
+            break;
+        case 500:
+            url = path +'500.html';
+            break;
         }
 
         if(url) {
@@ -62,10 +62,10 @@ webviewLoadStop = function(tabId, e){
 
         // ADD to doogle last visited pages
         if((find = _.find(LastVisitedPages.find().fetch(), function(historyEntry){
-                if(!historyEntry.url) return;
-                var historyEntryOrigin = new URL(historyEntry.url).origin;
-                return (url.indexOf(historyEntryOrigin) !== -1);
-            })))
+            if(!historyEntry.url) return;
+            var historyEntryOrigin = new URL(historyEntry.url).origin;
+            return (url.indexOf(historyEntryOrigin) !== -1);
+        })))
             LastVisitedPages.update(find._id, {$set: {
                 timestamp: moment().unix(),
                 url: url

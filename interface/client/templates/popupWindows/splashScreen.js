@@ -45,42 +45,42 @@ Template['popupWindows_splashScreen'].onCreated(function(){
 
     ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
         switch (status) {
-            case 'starting':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarting'));
-                showNodeLog = true;
-                TemplateVar.set(template, 'logText', null);
-                TemplateVar.set(template, 'showProgressBar', false);
-                TemplateVar.set(template, 'showStartAppButton', false);
-                break;
+        case 'starting':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarting'));
+            showNodeLog = true;
+            TemplateVar.set(template, 'logText', null);
+            TemplateVar.set(template, 'showProgressBar', false);
+            TemplateVar.set(template, 'showStartAppButton', false);
+            break;
 
-            case 'started':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarted'));
-                break;
+        case 'started':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarted'));
+            break;
 
-            case 'connected':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnected'));
-                lastSyncData = {};
-                break;
+        case 'connected':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnected'));
+            lastSyncData = {};
+            break;
 
-            case 'stopping':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopping'));
-                TemplateVar.set(template, 'showProgressBar', false);
-                TemplateVar.set(template, 'showStartAppButton', false);
-                break;
+        case 'stopping':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopping'));
+            TemplateVar.set(template, 'showProgressBar', false);
+            TemplateVar.set(template, 'showStartAppButton', false);
+            break;
 
-            case 'stopped':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopped'));
-                break;
+        case 'stopped':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStopped'));
+            break;
 
-            case 'connectionTimeout':
-                TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnectionTimeout'));
-                break;
+        case 'connectionTimeout':
+            TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeConnectionTimeout'));
+            break;
 
-            case 'error':
-                errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
+        case 'error':
+            errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
 
-                TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
-                break;
+            TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
+            break;
         }
     });
 
@@ -232,7 +232,7 @@ Template['popupWindows_splashScreen'].helpers({
 
 
 Template['popupWindows_splashScreen'].events({
-   'click .start-app': function(){
+    'click .start-app': function(){
         ipc.send('backendAction_skipSync');
-   }
+    }
 });

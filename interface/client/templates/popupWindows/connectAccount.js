@@ -133,9 +133,9 @@ Template['popupWindows_connectAccount'].events({
 
     @event click .cancel
     */
-	'click .cancel': function(e) {
-		ipc.send('backendAction_closePopupWindow');
-	},
+    'click .cancel': function(e) {
+        ipc.send('backendAction_closePopupWindow');
+    },
     /**
     - Confirm or cancel the accounts available for this dapp and reload the dapp.
 

@@ -23,13 +23,13 @@ Template['popupWindows_requestAccount'].helpers({
 });
 
 Template['popupWindows_requestAccount'].events({
-   'click .cancel': function(){
+    'click .cancel': function(){
         ipc.send('backendAction_closePopupWindow');
-   },
-   'click .show-password': function(e){
+    },
+    'click .show-password': function(e){
         TemplateVar.set('showPassword', e.currentTarget.checked)
     },
-   'submit form': function(e, template){
+    'submit form': function(e, template){
         e.preventDefault();
         var pw = template.find('input.password').value;
         var pwRepeat =  template.find('input.password-repeat').value;
@@ -69,5 +69,5 @@ Template['popupWindows_requestAccount'].events({
         template.find('input.password-repeat').value = '';
         template.find('input.password').value = '';
         pw = pwRepeat = null;
-   } 
+    } 
 });

@@ -1,5 +1,5 @@
 
-showError = function(tabId, e){
+showError = function(tabId, e) {
     if (e.isMainFrame || e.killed) {
         var url,
             path = 'file://'+ dirname + '/errorPages/';
@@ -26,7 +26,7 @@ showError = function(tabId, e){
 };
 
 
-webviewChangeUrl = function(tabId, e){
+webviewChangeUrl = function(tabId, e) {
     if (e.type === 'did-navigate-in-page' && !e.isMainFrame)
         return;
 
@@ -50,7 +50,7 @@ webviewChangeUrl = function(tabId, e){
 };
 
 // fired by "did-stop-loading"
-webviewLoadStop = function(tabId, e){
+webviewLoadStop = function(tabId, e) {
     var webview = this,
         url = Helpers.sanitizeUrl(webview.getURL()),
         title = webview.getTitle();
@@ -61,7 +61,7 @@ webviewLoadStop = function(tabId, e){
     if (tabId === 'browser') {
 
         // ADD to doogle last visited pages
-        if ((find = _.find(LastVisitedPages.find().fetch(), function(historyEntry){
+        if ((find = _.find(LastVisitedPages.find().fetch(), function(historyEntry) {
             if (!historyEntry.url) return;
             var historyEntryOrigin = new URL(historyEntry.url).origin;
             return (url.indexOf(historyEntryOrigin) !== -1);
@@ -95,7 +95,7 @@ webviewLoadStop = function(tabId, e){
 // fired by "did-get-redirect-request"
 // fired by "new-window"
 // fired by "will-navigate"
-webviewLoadStart = function(currentTabId, e){
+webviewLoadStart = function(currentTabId, e) {
     var webview = this;
 
     if (e.type === 'did-get-redirect-request' && !e.isMainFrame)

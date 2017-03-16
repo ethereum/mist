@@ -12,7 +12,7 @@ The tab template
 @constructor
 */
 
-Template['views_webview'].onRendered(function(){
+Template['views_webview'].onRendered(function() {
     var template = this,
         tabId = template.data._id,
         webview = template.find('webview');
@@ -20,16 +20,16 @@ Template['views_webview'].onRendered(function(){
 
     ipc.on('uiAction_reloadSelectedTab', function(e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
-        if (LocalStore.get('selectedTab') === this._id){
+        if (LocalStore.get('selectedTab') === this._id) {
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
             webview.reload();
         }
     });
 
-    webview.addEventListener('did-start-loading', function(e){
+    webview.addEventListener('did-start-loading', function(e) {
         TemplateVar.set(template, 'loading', true);
     });
-    webview.addEventListener('did-stop-loading', function(e){
+    webview.addEventListener('did-stop-loading', function(e) {
         TemplateVar.set(template, 'loading', false);
     });
 
@@ -40,7 +40,7 @@ Template['views_webview'].onRendered(function(){
     webview.addEventListener('did-stop-loading', webviewChangeUrl.bind(webview, tabId));
 
     // set page history
-    webview.addEventListener('dom-ready', function(e){
+    webview.addEventListener('dom-ready', function(e) {
 
         var titleFull = webview.getTitle(),
             title = titleFull;
@@ -84,7 +84,7 @@ Template['views_webview'].helpers({
 
     @method (preloaderFile)
     */
-    'preloaderFile': function(){
+    'preloaderFile': function() {
         switch (this._id) {
         case 'browser':
             return 'file://'+ Helpers.preloaderDirname +'/browser.js';
@@ -101,7 +101,7 @@ Template['views_webview'].helpers({
 
     @method (isVisible)
     */
-    'isVisible': function(){
+    'isVisible': function() {
         return (LocalStore.get('selectedTab') === this._id) ? '' : 'hidden';
     },
     /**
@@ -109,7 +109,7 @@ Template['views_webview'].helpers({
 
     @method (checkedUrl)
     */
-    'checkedUrl': function(){
+    'checkedUrl': function() {
         var template = Template.instance();
         var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
         var url;

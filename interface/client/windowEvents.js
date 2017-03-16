@@ -1,6 +1,6 @@
 
 // add the platform to the HTML tag
-setTimeout(function(){
+setTimeout(function() {
     document.getElementsByTagName('html')[0].className =  window.mist.platform;
 
     if (window.basePathHref) {
@@ -14,10 +14,10 @@ setTimeout(function(){
 }, 200);
 
 
-$(window).on('blur', function(e){
+$(window).on('blur', function(e) {
     $('body').addClass('app-blur');
 });
-$(window).on('focus', function(e){
+$(window).on('focus', function(e) {
     $('body').removeClass('app-blur');
 });
 

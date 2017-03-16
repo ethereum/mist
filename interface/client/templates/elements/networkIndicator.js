@@ -38,7 +38,7 @@ var checkNetworkType = function(template) {
 
 
 
-Template['elements_networkIndicator'].onRendered(function(){
+Template['elements_networkIndicator'].onRendered(function() {
     var template = this;
 
     TemplateVar.set(template, 'network', 'unknown');

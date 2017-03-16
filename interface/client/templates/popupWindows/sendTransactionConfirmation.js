@@ -4,8 +4,8 @@ Template Controllers
 @module Templates
 */
 
-var setWindowSize = function(template){
-    Tracker.afterFlush(function(){
+var setWindowSize = function(template) {
+    Tracker.afterFlush(function() {
         ipc.send('backendAction_setWindowSize', 580, template.$('.popup-windows .inner-container').height() + 240);
     });
 }
@@ -38,11 +38,11 @@ var lookupFunctionSignature = function(data, remoteLookup) {
                 https.get('https://www.4byte.directory/api/v1/signatures/?hex_signature=' + bytesSignature, function(response) {
                     var body = '';
 
-                    response.on('data', function(chunk){
+                    response.on('data', function(chunk) {
                         body += chunk;
                     });
 
-                    response.on('end', function(){
+                    response.on('end', function() {
                         var responseData = JSON.parse(body);
                         if (responseData.results.length) {
                             resolve(responseData.results[0].text_signature);
@@ -68,11 +68,11 @@ var lookupFunctionSignature = function(data, remoteLookup) {
     });
 }
 
-var localSignatureLookup = function(data){
+var localSignatureLookup = function(data) {
     return lookupFunctionSignature(data, false);
 };
 
-var remoteSignatureLookup = function(data){
+var remoteSignatureLookup = function(data) {
     return lookupFunctionSignature(data, true);
 };
 
@@ -90,7 +90,7 @@ var signatureLookupCallback = function(textSignature) {
 };
 
 
-Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
+Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
     var template = this;
 
     ipc.on('uiAction_decodedFunctionSignatures', function(event, params) {
@@ -99,7 +99,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     });
 
     // check reactively if provided gas is enough
-    this.autorun(function(){
+    this.autorun(function() {
         if (TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
             TemplateVar.set('gasError', 'notEnoughGas');
         else if (TemplateVar.get('estimatedGas') > 4000000)
@@ -110,7 +110,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
 
     // check inital data and gas estimates
-    this.autorun(function(){
+    this.autorun(function() {
         TemplateVar.set(template, 'displayDecodedParams', true);
 
         var data = Session.get('data');
@@ -127,7 +127,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
             // add gasPrice if not set
             if (!data.gasPrice) {
-                web3.eth.getGasPrice(function(e, res){
+                web3.eth.getGasPrice(function(e, res) {
                     if (!e) {
                         data.gasPrice = '0x'+ res.toString(16);
                         Session.set('data', data);
@@ -137,7 +137,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
             // check if to is a contract
             if (data.to) {
-                web3.eth.getCode(data.to, function(e, res){
+                web3.eth.getCode(data.to, function(e, res) {
                     if (!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
                         setWindowSize(template);
@@ -162,7 +162,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                 }
             }
             if (data.from) {
-                web3.eth.getCode(data.from, function(e, res){
+                web3.eth.getCode(data.from, function(e, res) {
                     if (!e && res && res.length > 2) {
                         TemplateVar.set(template, 'fromIsContract', true);
                     }
@@ -172,12 +172,12 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             // estimate gas usage
             var estimateData = _.clone(data);
             estimateData.gas = defaultEstimateGas;
-            web3.eth.estimateGas(estimateData, function(e, res){
+            web3.eth.estimateGas(estimateData, function(e, res) {
                 console.log('Estimated gas: ', res, e);
                 if (!e && res) {
 
                         // set the gas to the estimation, if not provided or lower
-                    Tracker.nonreactive(function(){
+                    Tracker.nonreactive(function() {
                         var gas = Number(TemplateVar.get(template, 'providedGas'));
 
                         if (res === defaultEstimateGas)
@@ -197,10 +197,10 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
     });
 });
 
-Template['popupWindows_sendTransactionConfirmation'].onRendered(function(){
+Template['popupWindows_sendTransactionConfirmation'].onRendered(function() {
     var template = this;
 
-    Meteor.setTimeout(function(){
+    Meteor.setTimeout(function() {
         template.$('input[type="password"]').focus();
     }, 200);
 });
@@ -211,7 +211,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (totalAmount)
     */
-    'totalAmount': function(){
+    'totalAmount': function() {
         var amount = EthTools.formatBalance(this.value, '0,0.00[0000000000000000]', 'ether');
         var dotPos = (~amount.indexOf('.')) ? amount.indexOf('.') + 3 : amount.indexOf(',') + 3;
 
@@ -242,7 +242,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (shortenAddress)
     */
-    'shortenAddress': function(address){
+    'shortenAddress': function(address) {
         if (_.isString(address)) {
             return address.substr(0,6) +'...'+ address.substr(-4);
         }
@@ -252,7 +252,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
 
     @method (formattedData)
     */
-    'formattedData': function(){
+    'formattedData': function() {
         return (TemplateVar.get('toIsContract'))
             ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
             : this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>');
@@ -287,7 +287,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event change .provided-gas, input .provided-gas
     */
-    'change .provided-gas, input .provided-gas': function(e, template){
+    'change .provided-gas, input .provided-gas': function(e, template) {
         var gas =  template.$('.provided-gas').text().replace(/[, ]+/g,'');//template.$('.provided-gas').text();
 
         TemplateVar.set('providedGas', gas);
@@ -297,7 +297,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event click .not-enough-gas
     */
-    'click .not-enough-gas': function(){
+    'click .not-enough-gas': function() {
         var gas = Number(TemplateVar.get('estimatedGas')) + 100000;
         TemplateVar.set('initialProvidedGas', gas);
         TemplateVar.set('providedGas', gas);
@@ -307,7 +307,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event click .cancel
     */
-    'click .cancel': function(){
+    'click .cancel': function() {
         ipc.send('backendAction_unlockedAccountAndSentTransaction', 'Transaction not confirmed');
         ipc.send('backendAction_closePopupWindow');
     },
@@ -316,7 +316,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event submit form
     */
-    'submit form': function(e, template){
+    'submit form': function(e, template) {
         e.preventDefault();
 
         var data = Session.get('data'),
@@ -343,7 +343,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         TemplateVar.set('unlocking', true);
 
         // unlock and send transaction!
-        web3.personal.sendTransaction(data, pw || '', function(e, res){
+        web3.personal.sendTransaction(data, pw || '', function(e, res) {
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 
@@ -351,7 +351,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                 ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
 
             } else {
-                Tracker.afterFlush(function(){
+                Tracker.afterFlush(function() {
                     template.find('input[type="password"]').value = '';
                     template.$('input[type="password"]').focus();
                 });

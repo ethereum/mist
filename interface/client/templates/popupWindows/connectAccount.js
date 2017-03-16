@@ -43,7 +43,7 @@ var pinToSidebar = function() {
     }
 };
 
-var updateSelectedTabAccounts = function(accounts){
+var updateSelectedTabAccounts = function(accounts) {
     var tabId = LocalStore.get('selectedTab');
     Tabs.update(tabId, {$set: {
         'permissions.accounts': accounts
@@ -51,7 +51,7 @@ var updateSelectedTabAccounts = function(accounts){
 };
 
 Template['popupWindows_connectAccount'].onCreated(function() {
-    this.autorun(function(){
+    this.autorun(function() {
         var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}});
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
@@ -65,7 +65,7 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dapp)
     */
-    dapp: function(){
+    dapp: function() {
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
@@ -73,9 +73,9 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dappFriendlyURL)
     */
-    dappFriendlyURL: function(){
+    dappFriendlyURL: function() {
         var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
-        if (currentTab && currentTab.url){
+        if (currentTab && currentTab.url) {
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
     },
@@ -85,7 +85,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method accountNumber
     @return {Number}
     */
-    'accountNumber': function(){
+    'accountNumber': function() {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
 
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
@@ -106,7 +106,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method selected
     @return {String} "selected"
     */
-    'selected': function(){
+    'selected': function() {
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
     }
 });
@@ -155,7 +155,7 @@ Template['popupWindows_connectAccount'].events({
 
         // reload the webview
         ipc.send('backendAction_windowMessageToOwner', null, accounts);
-        setTimeout(function(){
+        setTimeout(function() {
             ipc.send('backendAction_closePopupWindow');
         }, 600);
     },
@@ -164,7 +164,7 @@ Template['popupWindows_connectAccount'].events({
 
     @event click button.create-account
     */
-    'click button.create-account': function(e, template){
+    'click button.create-account': function(e, template) {
         ipc.send('mistAPI_createAccount');
     }
 });

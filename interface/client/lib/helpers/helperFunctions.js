@@ -39,7 +39,7 @@ Get the webview from either and ID, or the string "browser"
 @method getWebview
 @param {String} id  The Id of a tab or the string "browser"
 */
-Helpers.getWebview = function(id){
+Helpers.getWebview = function(id) {
     return $('webview[data-id="'+ id +'"]')[0];
 };
 
@@ -50,11 +50,11 @@ Get tab by url and return the id
 @param {String} url
 @return {String} id
 */
-Helpers.getTabIdByUrl= function(url, returnEmpty){
+Helpers.getTabIdByUrl= function(url, returnEmpty) {
     var tabs = Tabs.find().fetch();
     url = Helpers.sanitizeUrl(url);
 
-    var foundTab = _.find(tabs, function(tab){
+    var foundTab = _.find(tabs, function(tab) {
         if (tab._id === 'browser' || !tab.url)
             return false;
         var tabOrigin = new URL(tab.url).origin;
@@ -76,7 +76,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @method formatUrl
 @param {String} url
 **/
-Helpers.formatUrl = function(url){
+Helpers.formatUrl = function(url) {
     // add http:// if no protocol is present
     if (url && url.indexOf('://') === -1)
         url = 'http://'+ url;
@@ -90,7 +90,7 @@ Sanatizes URLs to prevent phishing and XSS attacks
 @method sanitizeUrl
 @param {String} url
 **/
-Helpers.sanitizeUrl = function(url, returnEmptyURL){
+Helpers.sanitizeUrl = function(url, returnEmptyURL) {
     url = String(url);
 
     url = url.replace(/[\t\n\r\s]+/g, '');

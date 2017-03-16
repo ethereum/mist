@@ -123,11 +123,11 @@ Template['popupWindows_onboardingScreen'].helpers({
 
                 // Only show states if they are changing
                 if (Math.round(1000 * Number(syncing._displayStatesDownload)) !== Math.round(1000 * Number(syncing.pulledStates / (syncing.knownStates + 1)))) {
-                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
+                    TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
                 } else if (syncing.displayBlock == '0') {
-                    TemplateVar.set(template, "syncStatusMessageLive", '');
+                    TemplateVar.set(template, 'syncStatusMessageLive', '');
                 } else {
-                    TemplateVar.set(template, "syncStatusMessageLive", TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
+                    TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
                 }
             }
 
@@ -139,7 +139,7 @@ Template['popupWindows_onboardingScreen'].helpers({
     @method syncStatusMessage
     */
     'syncStatusMessage' : function () {
-        return TemplateVar.get("syncStatusMessageLive");
+        return TemplateVar.get('syncStatusMessageLive');
     }
 });
 

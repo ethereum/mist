@@ -180,7 +180,7 @@ Template['popupWindows_splashScreen'].helpers({
         template._intervalId = Meteor.setInterval(function () {
             // loads data from templates
             var syncData = TemplateVar.get(template, 'lastSyncData', lastSyncData);
-            var translationString = TemplateVar.get(template, "syncStatusMessage");
+            var translationString = TemplateVar.get(template, 'syncStatusMessage');
 
             if (!(syncData._displayBlock > -1)) {
                 // initialize the display numbers
@@ -211,7 +211,7 @@ Template['popupWindows_splashScreen'].helpers({
             var progress = ((lastSyncData._displayBlock - Number(lastSyncData.startingBlock)) / (Number(lastSyncData._highestBlock) - Number(lastSyncData.startingBlock))) * 100 ;
 
             // Saves data back to templates
-            TemplateVar.set(template, "syncStatusMessageLive", translatedMessage);
+            TemplateVar.set(template, 'syncStatusMessageLive', translatedMessage);
             TemplateVar.set(template, 'lastSyncData', syncData);
 
             // set progress value
@@ -226,7 +226,7 @@ Template['popupWindows_splashScreen'].helpers({
 
         }, 10);
 
-        return TemplateVar.get(template, "syncStatusMessageLive");
+        return TemplateVar.get(template, 'syncStatusMessageLive');
     }
 });
 

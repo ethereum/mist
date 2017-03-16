@@ -6,5 +6,5 @@ if (typeof web3 !== 'undefined') {
 } else {
     console.info('Web3 not yet initialized, doing so now with HttpProvider.');
 
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 }

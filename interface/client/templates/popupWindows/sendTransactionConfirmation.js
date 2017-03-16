@@ -247,7 +247,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'shortenAddress': function (address) {
         if (_.isString(address)) {
-            return address.substr(0,6) + '...' + address.substr(-4);
+            return address.substr(0, 6) + '...' + address.substr(-4);
         }
     },
     /**
@@ -257,8 +257,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'formattedData': function () {
         return (TemplateVar.get('toIsContract'))
-            ? this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i,'<span class="function">$1</span>')
-            : this.data.replace(/([0]{2,})/g,'<span class="zero">$1</span>');
+            ? this.data.replace(/([0]{2,})/g, '<span class="zero">$1</span>').replace(/(0x[a-f0-9]{8})/i, '<span class="function">$1</span>')
+            : this.data.replace(/([0]{2,})/g, '<span class="zero">$1</span>');
     },
 
     'params': function () {
@@ -291,7 +291,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event change .provided-gas, input .provided-gas
     */
     'change .provided-gas, input .provided-gas': function (e, template) {
-        var gas = template.$('.provided-gas').text().replace(/[, ]+/g,'');// template.$('.provided-gas').text();
+        var gas = template.$('.provided-gas').text().replace(/[, ]+/g, '');// template.$('.provided-gas').text();
 
         TemplateVar.set('providedGas', gas);
     },

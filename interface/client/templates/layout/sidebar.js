@@ -76,7 +76,7 @@ Template['layout_sidebar'].helpers({
         var template = Template.instance();
 
         if (this._id === 'browser') {
-            return LastVisitedPages.find({},{ sort: { timestamp: -1 }, limit: 25 });
+            return LastVisitedPages.find({}, { sort: { timestamp: -1 }, limit: 25 });
 
         } else if (this.menu) {
             var menu = _.toArray(this.menu);

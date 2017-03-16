@@ -145,10 +145,10 @@ Template['popupWindows_onboardingScreen'].helpers({
 
 Template['popupWindows_onboardingScreen'].events({
     'click .goto-start': function (e) {
-        TemplateVar.set('currentActive','start');
+        TemplateVar.set('currentActive', 'start');
     },
     'click .goto-import-account': function () {
-        TemplateVar.set('currentActive','import-account');
+        TemplateVar.set('currentActive', 'import-account');
 
         // if testnet, make sure to switch to the mainnet
         if (TemplateVar.get('testnet')) {
@@ -164,30 +164,30 @@ Template['popupWindows_onboardingScreen'].events({
             TemplateVar.set('syncing', null);
         }
 
-        TemplateVar.set('currentActive','testnet');
+        TemplateVar.set('currentActive', 'testnet');
         template.$('.onboarding-testnet input.password').focus();
     },
     'click .goto-password': function (e, template) {
-        TemplateVar.set('currentActive','password');
+        TemplateVar.set('currentActive', 'password');
         template.$('.onboarding-password input.password').focus();
     },
     'click .goto-account': function () {
-        TemplateVar.set('currentActive','account');
+        TemplateVar.set('currentActive', 'account');
     },
     'click .goto-tutorial-1': function () {
-        TemplateVar.set('currentActive','tutorial-1');
+        TemplateVar.set('currentActive', 'tutorial-1');
         if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
         }
     },
     'click .goto-tutorial-2': function () {
-        TemplateVar.set('currentActive','tutorial-2');
+        TemplateVar.set('currentActive', 'tutorial-2');
         if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
         }
     },
     'click .goto-tutorial-3': function () {
-        TemplateVar.set('currentActive','tutorial-3');
+        TemplateVar.set('currentActive', 'tutorial-3');
         if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
         }

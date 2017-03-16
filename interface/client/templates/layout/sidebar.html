@@ -1,3 +1,4 @@
+
 <template name="layout_sidebar">
     <aside class="newsidebar {{fullTabs}}">
         <nav>
@@ -24,6 +25,16 @@
                                 {{#if $neq _id 'browser'}}
                                     <button class="remove-tab"> &times; </button>
                                 {{/if}}
+
+                                <div class="accounts">
+                                    {{#if dappAccounts}}
+                                        {{dappAccounts}}
+                                    {{else}}
+                                        <button class="connect">Connect Accounts</button>
+                                    {{/if}}
+                                </div>
+
+                                {{# if subMenu}}
                                 <ul class="sub-menu">
                                     {{#each subMenu}}
                                     <li>
@@ -36,6 +47,7 @@
                                     </li>
                                     {{/each}}
                                 </ul>
+                                {{/if}}
                             </section>
                         </section>
                     </li>
@@ -45,7 +57,7 @@
         {{> elements_nodeInfo}}
     </aside>
 
-    <aside class="sidebar {{fullTabs}}">
+    <aside class="sidebar {{fullTabs}}" style="display: none">
         <nav>
             <ul>
                 {{#each tabs}}

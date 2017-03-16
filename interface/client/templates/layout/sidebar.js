@@ -12,6 +12,7 @@ The sidebar template
 */
 
 Template['layout_sidebar'].onRendered(function(){
+    console.log('accounts', TemplateVar.get('accounts'));
     var template = this,
         $ul = template.$('nav > ul');
 
@@ -89,6 +90,19 @@ Template['layout_sidebar'].helpers({
 
             return menu;
         }
+    },
+    /**
+    Returns connected accounts for dapp
+
+    @method (dappAccounts)
+    */
+    'dappAccounts': function () {
+        console.log('dapp', this);
+        if (this.permissions) {
+            var accounts = _.pluck(EthAccounts.find({address: {$in: this.permissions.accounts || []}}).fetch(), 'address');
+            return _.intersection(accounts, TemplateVar.get('accounts'));
+        }
+        return null;
     },
     /**
     Determines if the current tab is visible

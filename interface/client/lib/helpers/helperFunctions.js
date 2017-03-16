@@ -55,17 +55,19 @@ Helpers.getTabIdByUrl = function (url, returnEmpty) {
     url = Helpers.sanitizeUrl(url);
 
     var foundTab = _.find(tabs, function (tab) {
-        if (tab._id === 'browser' || !tab.url)
+        if (tab._id === 'browser' || !tab.url) {
             return false;
+        }
         var tabOrigin = new URL(tab.url).origin;
         return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
     });
 
     // switch tab to browser
-    if (foundTab)
+    if (foundTab) {
         foundTab = foundTab._id;
-    else
+    } else {
         foundTab = 'browser';
+    }
 
     return foundTab;
 };
@@ -78,8 +80,9 @@ Format Urls, e.g add a default protocol if on is missing.
 **/
 Helpers.formatUrl = function (url) {
     // add http:// if no protocol is present
-    if (url && url.indexOf('://') === -1)
+    if (url && url.indexOf('://') === -1) {
         url = 'http://' + url;
+    }
 
     return url;
 };
@@ -188,7 +191,9 @@ Helpers.selectTabWithOffset = function (offset) {
     currentTabIndex = tabList.indexOf(LocalStore.get('selectedTab'));
 
     newTabIndex = (currentTabIndex + offset) % tabList.length;
-    if (newTabIndex < 0) newTabIndex = tabList.length - 1;
+    if (newTabIndex < 0) {
+        newTabIndex = tabList.length - 1;
+    }
 
     LocalStore.set('selectedTab', tabList[newTabIndex]);
 };

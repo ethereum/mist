@@ -33,8 +33,9 @@ Template['layout_sidebar'].onRendered(function () {
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function (index, test) {
                 var id = $(this).data('tab-id');
-                if (id)
+                if (id) {
                     Tabs.update(id, { $set: { position: index + 1 } });
+                }
             });
         }
     });
@@ -82,8 +83,12 @@ Template['layout_sidebar'].helpers({
 
             // sort by position
             menu.sort(function (a, b) {
-                if (a.position < b.position) return -1;
-                if (a.position > b.position) return 1;
+                if (a.position < b.position) {
+                    return -1;
+                }
+                if (a.position > b.position) {
+                    return 1;
+                }
                 return 0;
             });
 
@@ -98,8 +103,9 @@ Template['layout_sidebar'].helpers({
     'isSelected': function () {
         var selected = (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
 
-        if (this.menuVisible)
+        if (this.menuVisible) {
             selected += ' slided-out';
+        }
 
         return selected;
     },
@@ -180,8 +186,9 @@ Template['layout_sidebar'].events({
     @event click button.remove-tab
     */
     'click button.remove-tab': function () {
-        if (LocalStore.get('selectedTab') === this._id)
+        if (LocalStore.get('selectedTab') === this._id) {
             LocalStore.set('selectedTab', 'browser');
+        }
 
         Tabs.remove(this._id);
     },

@@ -37,8 +37,9 @@ var pinToSidebar = function () {
             });
 
             // remove last page form last pages
-            if (sameLastPage = LastVisitedPages.findOne({ url: selectedTab.url }))
+            if (sameLastPage = LastVisitedPages.findOne({ url: selectedTab.url })) {
                 LastVisitedPages.remove(sameLastPage._id);
+            }
         }
     }
 };
@@ -121,10 +122,11 @@ Template['popupWindows_connectAccount'].events({
         e.preventDefault();
         var accounts = TemplateVar.get('accounts');
 
-        if (!_.contains(accounts, this.address))
+        if (!_.contains(accounts, this.address)) {
             accounts.push(this.address);
-        else
+        } else {
             accounts = _.without(accounts, this.address);
+        }
 
         TemplateVar.set(template, 'accounts', accounts);
     },

@@ -47,10 +47,11 @@ Template['popupWindows_requestAccount'].events({
 
             TemplateVar.set('creating', true);
             web3.personal.newAccount(pwRepeat, function (e, res) {
-                if (!e)
+                if (!e) {
                     ipc.send('backendAction_windowMessageToOwner', null, res);
-                else
+                } else {
                     ipc.send('backendAction_windowMessageToOwner', e);
+                }
 
                 TemplateVar.set(template, 'creating', false);
                 ipc.send('backendAction_closePopupWindow');

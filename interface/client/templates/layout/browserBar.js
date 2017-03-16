@@ -48,8 +48,9 @@ Template['layout_browserBar'].helpers({
     @method (dappAccounts)
     */
     'dappAccounts': function () {
-        if (this.permissions)
+        if (this.permissions) {
             return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
+        }
     },
     /**
     Show the add button, when on a dapp and in doogle
@@ -78,8 +79,9 @@ Template['layout_browserBar'].events({
     'click button.back': function () {
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if (webview && webview.canGoBack())
+        if (webview && webview.canGoBack()) {
             webview.goBack();
+        }
     },
     /*
     Reload the current webview
@@ -89,8 +91,9 @@ Template['layout_browserBar'].events({
     'click button.reload': function () {
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if (webview)
+        if (webview) {
             webview.reload();
+        }
     },
     /*
     Remove the current selected tab

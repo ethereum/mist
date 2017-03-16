@@ -20,8 +20,9 @@ Update the peercount
 */
 var getPeerCount = function (template) {
     web3.net.getPeerCount(function (e, res) {
-        if (!e)
+        if (!e) {
             TemplateVar.set(template, 'peerCount', res);
+        }
     });
 };
 
@@ -177,18 +178,21 @@ Template['popupWindows_onboardingScreen'].events({
     },
     'click .goto-tutorial-1': function () {
         TemplateVar.set('currentActive','tutorial-1');
-        if (!TemplateVar.get('syncing'))
+        if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
+        }
     },
     'click .goto-tutorial-2': function () {
         TemplateVar.set('currentActive','tutorial-2');
-        if (!TemplateVar.get('syncing'))
+        if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
+        }
     },
     'click .goto-tutorial-3': function () {
         TemplateVar.set('currentActive','tutorial-3');
-        if (!TemplateVar.get('syncing'))
+        if (!TemplateVar.get('syncing')) {
             TemplateVar.set('readyToLaunch', true);
+        }
     },
     /**
     Start the application
@@ -253,7 +257,9 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     'drop .dropable': function (e, template) {
         e.preventDefault();
 
-        if (e.originalEvent.dataTransfer) files = e.originalEvent.dataTransfer.files;
+        if (e.originalEvent.dataTransfer) {
+            files = e.originalEvent.dataTransfer.files;
+        }
 
         if (files.length) {
             ipc.send('backendAction_checkWalletFile', files[0].path);

@@ -24,10 +24,11 @@ Template.body.helpers({
         } else {
             var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
-            if (renderWindow.length > 0)
+            if (renderWindow.length > 0) {
                 return 'popupWindows_' + renderWindow[1];
-            else
+            } else {
                 return false;
+            }
         }
     }
 });

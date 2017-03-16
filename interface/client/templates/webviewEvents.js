@@ -27,8 +27,9 @@ showError = function (tabId, e) {
 
 
 webviewChangeUrl = function (tabId, e) {
-    if (e.type === 'did-navigate-in-page' && !e.isMainFrame)
+    if (e.type === 'did-navigate-in-page' && !e.isMainFrame) {
         return;
+    }
 
     var url = Helpers.sanitizeUrl(e.url || this.getURL());
 
@@ -40,8 +41,9 @@ webviewChangeUrl = function (tabId, e) {
     }
 
     // make sure to not store error pages in history
-    if (!url || url.indexOf('mist/errorPages/') !== -1)
+    if (!url || url.indexOf('mist/errorPages/') !== -1) {
         return;
+    }
 
     // update the URL
     Tabs.update(tabId, { $set: {
@@ -62,32 +64,36 @@ webviewLoadStop = function (tabId, e) {
 
         // ADD to doogle last visited pages
         if ((find = _.find(LastVisitedPages.find().fetch(), function (historyEntry) {
-            if (!historyEntry.url) return;
+            if (!historyEntry.url) {
+                return;
+            }
             var historyEntryOrigin = new URL(historyEntry.url).origin;
             return (url.indexOf(historyEntryOrigin) !== -1);
-        })))
+        }))) {
             LastVisitedPages.update(find._id, { $set: {
                 timestamp: moment().unix(),
                 url: url
             } });
-        else
+        } else {
             LastVisitedPages.insert({
                 name: title,
                 url: url,
                 // icon: '',
                 timestamp: moment().unix()
             });
+        }
 
         // ADD to doogle history
-        if (find = History.findOne({ url: url }))
+        if (find = History.findOne({ url: url })) {
             History.update(find._id, { $set: { timestamp: moment().unix() } });
-        else
+        } else {
             History.insert({
                 name: title,
                 url: url,
                 // icon: '',
                 timestamp: moment().unix()
             });
+        }
     }
 };
 
@@ -98,8 +104,9 @@ webviewLoadStop = function (tabId, e) {
 webviewLoadStart = function (currentTabId, e) {
     var webview = this;
 
-    if (e.type === 'did-get-redirect-request' && !e.isMainFrame)
+    if (e.type === 'did-get-redirect-request' && !e.isMainFrame) {
         return;
+    }
 
     console.log(e.type, currentTabId, e);
 
@@ -113,8 +120,9 @@ webviewLoadStart = function (currentTabId, e) {
     var tabId = Helpers.getTabIdByUrl(url);
 
     // if new window (_blank) open in tab, or browser
-    if (e.type === 'new-window' && tabId === currentTabId)
+    if (e.type === 'new-window' && tabId === currentTabId) {
         tabId = 'browser';
+    }
 
     var tab = Tabs.findOne(tabId);
 

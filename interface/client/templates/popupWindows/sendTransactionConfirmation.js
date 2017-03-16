@@ -57,8 +57,7 @@ var lookupFunctionSignature = function (data, remoteLookup) {
             } else {
                 if (_.first(window.SIGNATURES[bytesSignature])) {
                     resolve(_.first(window.SIGNATURES[bytesSignature]));
-                }
-                else {
+                } else {
                     reject(bytesSignature);
                 }
             }
@@ -100,12 +99,13 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function () {
 
     // check reactively if provided gas is enough
     this.autorun(function () {
-        if (TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
+        if (TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas'))) {
             TemplateVar.set('gasError', 'notEnoughGas');
-        else if (TemplateVar.get('estimatedGas') > 4000000)
+        } else if (TemplateVar.get('estimatedGas') > 4000000) {
             TemplateVar.set('gasError', 'overBlockGasLimit');
-        else
+        } else {
             TemplateVar.set('gasError', null);
+        }
     });
 
 
@@ -180,8 +180,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function () {
                     Tracker.nonreactive(function () {
                         var gas = Number(TemplateVar.get(template, 'providedGas'));
 
-                        if (res === defaultEstimateGas)
+                        if (res === defaultEstimateGas) {
                             return TemplateVar.set(template, 'estimatedGas', 'invalid');
+                        }
 
                         TemplateVar.set(template, 'estimatedGas', res);
 
@@ -224,8 +225,9 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'estimatedFee': function () {
         var gas = TemplateVar.get('estimatedGas');
-        if (gas && this.gasPrice)
+        if (gas && this.gasPrice) {
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether');
+        }
     },
     /**
     Calculates the provided gas amount in ether
@@ -234,8 +236,9 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'providedGas': function () {
         var gas = TemplateVar.get('providedGas');
-        if (gas && this.gasPrice)
+        if (gas && this.gasPrice) {
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
+        }
     },
     /**
     Shortens the address to 0xffff...ffff
@@ -335,10 +338,11 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
-        if (!gas || !_.isFinite(gas))
+        if (!gas || !_.isFinite(gas)) {
             return;
-        else
+        } else {
             data.gas = gas;
+        }
 
         TemplateVar.set('unlocking', true);
 

@@ -17,7 +17,6 @@ test['Sanity Check: main window is focused'] = function* () {
     (yield client.getUrl()).should.match(/interface\/index\.html$/);
 };
 
-// FAILING ON TRAVIS
 test['Browser bar should render urls with separators'] = function* () {
     const client = this.client;
 
@@ -151,7 +150,7 @@ test['"data:" protocol should be disallowed on browser bar'] = function* () { //
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
 
-test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-002
+test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-012
     const client = this.client;
     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 

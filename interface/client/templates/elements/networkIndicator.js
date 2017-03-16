@@ -18,11 +18,11 @@ Check network type.
 
 @method checkNetworkType
 */
-var checkNetworkType = function(template) {
+var checkNetworkType = function (template) {
     console.trace('Check network type...');
 
     try {
-        web3.eth.getBlock(0, function(e, res) {
+        web3.eth.getBlock(0, function (e, res) {
             console.trace('Get block 0', e, res);
 
             if (e) {
@@ -38,14 +38,14 @@ var checkNetworkType = function(template) {
 
 
 
-Template['elements_networkIndicator'].onRendered(function() {
+Template['elements_networkIndicator'].onRendered(function () {
     var template = this;
 
     TemplateVar.set(template, 'network', 'unknown');
 
     checkNetworkType(template);
 
-    ipc.on('uiAction_nodeStatus', function(e, status) {
+    ipc.on('uiAction_nodeStatus', function (e, status) {
         console.trace('Node status', status);
 
         switch (status) {
@@ -60,7 +60,7 @@ Template['elements_networkIndicator'].onRendered(function() {
         }
     });
 
-    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+    ipc.on('uiAction_nodeSyncStatus', function (e, status, data) {
         console.trace('Node sync status', status);
 
         if ('inProgress' === status && TemplateVar.get(template, 'network') === 'unknown') {

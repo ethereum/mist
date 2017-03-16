@@ -22,11 +22,11 @@ var lastSyncData = {},
     showNodeLog = true;
 
 
-Template['popupWindows_splashScreen'].onCreated(function() {
+Template['popupWindows_splashScreen'].onCreated(function () {
     var template = this;
     template._intervalId = null;
 
-    ipc.on('uiAction_nodeLogText', function(e, text, data) {
+    ipc.on('uiAction_nodeLogText', function (e, text, data) {
         if (showNodeLog && data) {
             TemplateVar.set(template, 'logText', data);
             TemplateVar.set(template, 'syncStatusMessage', false);
@@ -34,7 +34,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         }
     });
 
-    ipc.on('uiAction_clientBinaryStatus', function(e, status) {
+    ipc.on('uiAction_clientBinaryStatus', function (e, status) {
         TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.clientBinaries.' + status));
         TemplateVar.set(template, 'showNetworkIndicator', status === 'done');
         TemplateVar.set(template, 'showProgressBar', false);
@@ -43,7 +43,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
     });
 
 
-    ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
+    ipc.on('uiAction_nodeStatus', function (e, status, errorTag) {
         switch (status) {
         case 'starting':
             TemplateVar.set(template, 'text', TAPi18n.__('mist.startScreen.nodeStarting'));
@@ -84,7 +84,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         }
     });
 
-    ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+    ipc.on('uiAction_nodeSyncStatus', function (e, status, data) {
         console.trace('Node sync status', status, data);
 
         TemplateVar.set(template, 'smallClass', 'small');
@@ -154,7 +154,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method mode
     */
-    'mode': function() {
+    'mode': function () {
         return window.mistMode;
     },
     /**
@@ -162,7 +162,7 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method iconPath
     */
-    'iconPath': function() {
+    'iconPath': function () {
         return 'file://' + window.dirname + '/icons/' + window.mistMode + '/icon2x.png';
     },
     /**
@@ -170,14 +170,14 @@ Template['popupWindows_splashScreen'].helpers({
 
     @method syncStatus
     */
-    'syncStatus' : function() {
+    'syncStatus' : function () {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
         Meteor.clearInterval(template._intervalId);
 
         // Create an interval to quickly iterate trough the numbers
-        template._intervalId = Meteor.setInterval(function() {
+        template._intervalId = Meteor.setInterval(function () {
             // loads data from templates
             var syncData = TemplateVar.get(template, 'lastSyncData', lastSyncData);
             var translationString = TemplateVar.get(template, "syncStatusMessage");
@@ -232,7 +232,7 @@ Template['popupWindows_splashScreen'].helpers({
 
 
 Template['popupWindows_splashScreen'].events({
-    'click .start-app': function() {
+    'click .start-app': function () {
         ipc.send('backendAction_skipSync');
     }
 });

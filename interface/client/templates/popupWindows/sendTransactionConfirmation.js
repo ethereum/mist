@@ -29,7 +29,7 @@ human readable text signature.
 */
 var lookupFunctionSignature = function(data, remoteLookup) {
     return new Q(function(resolve, reject) {
-        if(data && data.length > 8) {
+        if (data && data.length > 8) {
             var bytesSignature = (data.substr(0, 2) === '0x')
                 ? data.substr(0, 10)
                 : '0x'+ data.substr(0, 8);
@@ -100,9 +100,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
     // check reactively if provided gas is enough
     this.autorun(function(){
-        if(TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
+        if (TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas')))
             TemplateVar.set('gasError', 'notEnoughGas');
-        else if(TemplateVar.get('estimatedGas') > 4000000)
+        else if (TemplateVar.get('estimatedGas') > 4000000)
             TemplateVar.set('gasError', 'overBlockGasLimit');
         else
             TemplateVar.set('gasError', null);
@@ -115,7 +115,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
 
         var data = Session.get('data');
 
-        if(data) {
+        if (data) {
 
 
             // set window size
@@ -126,9 +126,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             TemplateVar.set('initialProvidedGas', data.gas || 0);
 
             // add gasPrice if not set
-            if(!data.gasPrice) {
+            if (!data.gasPrice) {
                 web3.eth.getGasPrice(function(e, res){
-                    if(!e) {
+                    if (!e) {
                         data.gasPrice = '0x'+ res.toString(16);
                         Session.set('data', data);
                     }
@@ -136,9 +136,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             }
 
             // check if to is a contract
-            if(data.to) {
+            if (data.to) {
                 web3.eth.getCode(data.to, function(e, res){
-                    if(!e && res && res.length > 2) {
+                    if (!e && res && res.length > 2) {
                         TemplateVar.set(template, 'toIsContract', true);
                         setWindowSize(template);
                     }
@@ -161,9 +161,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
                     });
                 }
             }
-            if(data.from) {
+            if (data.from) {
                 web3.eth.getCode(data.from, function(e, res){
-                    if(!e && res && res.length > 2) {
+                    if (!e && res && res.length > 2) {
                         TemplateVar.set(template, 'fromIsContract', true);
                     }
                 });
@@ -174,19 +174,19 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function(){
             estimateData.gas = defaultEstimateGas;
             web3.eth.estimateGas(estimateData, function(e, res){
                 console.log('Estimated gas: ', res, e);
-                if(!e && res) {
+                if (!e && res) {
 
                         // set the gas to the estimation, if not provided or lower
                     Tracker.nonreactive(function(){
                         var gas = Number(TemplateVar.get(template, 'providedGas'));
 
-                        if(res === defaultEstimateGas)
+                        if (res === defaultEstimateGas)
                             return TemplateVar.set(template, 'estimatedGas', 'invalid');
 
                         TemplateVar.set(template, 'estimatedGas', res);
 
 
-                        if(!gas && res) {
+                        if (!gas && res) {
                             TemplateVar.set(template, 'providedGas', res + 100000);
                             TemplateVar.set(template, 'initialProvidedGas', res + 100000);
                         }
@@ -224,7 +224,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'estimatedFee': function() {
         var gas =  TemplateVar.get('estimatedGas');
-        if(gas && this.gasPrice)
+        if (gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000] unit', 'ether');
     },
     /**
@@ -234,7 +234,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
     'providedGas': function() {
         var gas =  TemplateVar.get('providedGas');
-        if(gas && this.gasPrice)
+        if (gas && this.gasPrice)
             return EthTools.formatBalance(new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)), '0,0.0[0000000]', 'ether');
     },
     /**
@@ -243,7 +243,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     @method (shortenAddress)
     */
     'shortenAddress': function(address){
-        if(_.isString(address)) {
+        if (_.isString(address)) {
             return address.substr(0,6) +'...'+ address.substr(-4);
         }
     },
@@ -335,7 +335,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         console.log('Choosen Gas: ', gas, TemplateVar.get('providedGas'));
 
-        if(!gas || !_.isFinite(gas))
+        if (!gas || !_.isFinite(gas))
             return;
         else
             data.gas = gas;
@@ -347,7 +347,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             pw = null;
             TemplateVar.set(template, 'unlocking', false);
 
-            if(!e && res) {
+            if (!e && res) {
                 ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
 
             } else {
@@ -355,22 +355,22 @@ Template['popupWindows_sendTransactionConfirmation'].events({
                     template.find('input[type="password"]').value = '';
                     template.$('input[type="password"]').focus();
                 });
-                if(e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
+                if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
                         duration: 5
                     });
-                } else if(e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
+                } else if (e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
                         duration: 3
                     });
-                } else if(e.message.indexOf('multiple keys match address') !== -1) {
+                } else if (e.message.indexOf('multiple keys match address') !== -1) {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
                         duration: 10
                     });
-                } else if(e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
+                } else if (e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
                         duration: 5

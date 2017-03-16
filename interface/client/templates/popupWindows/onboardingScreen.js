@@ -20,7 +20,7 @@ Update the peercount
 */
 var getPeerCount = function(template) {
     web3.net.getPeerCount(function(e, res) {
-        if(!e)
+        if (!e)
             TemplateVar.set(template, 'peerCount', res);
     });
 };
@@ -34,11 +34,11 @@ Template['popupWindows_onboardingScreen'].onCreated(function(){
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
-        if(!error) {
+        if (!error) {
 
-            if(syncing === true) {
+            if (syncing === true) {
                 web3.reset(true);
-            } else if(_.isObject(syncing)) {
+            } else if (_.isObject(syncing)) {
                 // loads syncing data and adds it to old by using 'extend'
                 var oldData = TemplateVar.get(template, 'syncing');
 
@@ -152,14 +152,14 @@ Template['popupWindows_onboardingScreen'].events({
         TemplateVar.set('currentActive','import-account');
 
         // if testnet, make sure to switch to the mainnet
-        if(TemplateVar.get('testnet')) {
+        if (TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', false);
             TemplateVar.set('testnet', false);
             TemplateVar.set('syncing', null);
         }
     },
     'click .start-testnet': function(e, template){
-        if(!TemplateVar.get('testnet')) {
+        if (!TemplateVar.get('testnet')) {
             ipc.send('onBoarding_changeNet', true);
             TemplateVar.set('testnet', true);
             TemplateVar.set('syncing', null);
@@ -316,12 +316,12 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
             TemplateVar.set(template, 'importing', false);
             TemplateVar.set(template, 'filePath', false);
 
-            if(address) {
+            if (address) {
                 ipc.removeAllListeners('uiAction_importedWalletFile');
                 console.log('Imported account: ', address);
 
                 // move to add account screen, when in the onboarding window
-                if($('.onboarding-start')[0]) {
+                if ($('.onboarding-start')[0]) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(address));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 
@@ -334,7 +334,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
             } else {
                 console.log('Import failed', error);
 
-                if(error === 'Decryption Failed') {
+                if (error === 'Decryption Failed') {
                     GlobalNotification.warning({
                         content: TAPi18n.__('mist.popupWindows.onboarding.errors.wrongPassword'),
                         duration: 4
@@ -415,7 +415,7 @@ Template['popupWindows_onboardingScreen_password'].events({
         var pw = template.find('input.password').value,
             pwRepeat = template.find('input.password-repeat').value;
 
-        if( pw !== pwRepeat) {
+        if ( pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
@@ -430,7 +430,7 @@ Template['popupWindows_onboardingScreen_password'].events({
             web3.personal.newAccount(pw, function(e, res){
                 TemplateVar.set(template, 'creatingPassword', false);
 
-                if(!e) {
+                if (!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 

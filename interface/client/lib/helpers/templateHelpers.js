@@ -110,12 +110,12 @@ Return the right wallet icon
 Template.registerHelper('walletIcon', function(){
     var icon = '';
 
-    if(this.type === 'wallet') {
-        if(Helpers.isWatchOnly(this._id))
+    if (this.type === 'wallet') {
+        if (Helpers.isWatchOnly(this._id))
             icon = '<i class="icon-eye" title="Watch only"></i>';
         else
             icon = '<i class="icon-wallet" title="Wallet"></i>';
-    } else if(this.type === 'account')
+    } else if (this.type === 'account')
         icon = '<i class="icon-key" title="Account"></i>';
 
     return new Spacebars.SafeString(icon);
@@ -130,7 +130,7 @@ Get the account name or display the address
 */
 Template.registerHelper('accountNameOrAddress', function(address){
     var account = EthAccounts.findOne({address: address});
-    if(account)
+    if (account)
         return account.name;
     else
         return address;

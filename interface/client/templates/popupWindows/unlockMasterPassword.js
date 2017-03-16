@@ -19,7 +19,7 @@ Template['popupWindows_unlockMasterPassword'].onRendered(function(){
     template.autorun(function(){
         var data = Session.get('data');
 
-        if(data && data.masterPasswordWrong) {
+        if (data && data.masterPasswordWrong) {
             TemplateVar.set('unlocking', false);
 
             Tracker.afterFlush(function(){

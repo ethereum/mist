@@ -35,7 +35,7 @@ Template['popupWindows_requestAccount'].events({
         var pwRepeat =  template.find('input.password-repeat').value;
 
         // ask for password repeat
-        if(!pwRepeat) {
+        if (!pwRepeat) {
             TemplateVar.set('password-repeat', true);
             template.$('input.password-repeat').focus();
 
@@ -43,11 +43,11 @@ Template['popupWindows_requestAccount'].events({
             return;
 
         // check passwords
-        } else if(pwRepeat === pw) {
+        } else if (pwRepeat === pw) {
 
             TemplateVar.set('creating', true);
             web3.personal.newAccount(pwRepeat, function(e, res){
-                if(!e)
+                if (!e)
                     ipc.send('backendAction_windowMessageToOwner', null, res);
                 else
                     ipc.send('backendAction_windowMessageToOwner', e);

@@ -20,7 +20,7 @@ Template['views_webview'].onRendered(function(){
 
     ipc.on('uiAction_reloadSelectedTab', function(e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
-        if(LocalStore.get('selectedTab') === this._id){
+        if (LocalStore.get('selectedTab') === this._id){
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
             webview.reload();
         }
@@ -45,7 +45,7 @@ Template['views_webview'].onRendered(function(){
         var titleFull = webview.getTitle(),
             title = titleFull;
 
-        if(titleFull && titleFull.length > 40) {
+        if (titleFull && titleFull.length > 40) {
             title = titleFull.substr(0, 40);
             title += '…';
         }
@@ -85,7 +85,7 @@ Template['views_webview'].helpers({
     @method (preloaderFile)
     */
     'preloaderFile': function(){
-        switch(this._id) {
+        switch (this._id) {
         case 'browser':
             return 'file://'+ Helpers.preloaderDirname +'/browser.js';
         case 'wallet':
@@ -114,10 +114,10 @@ Template['views_webview'].helpers({
         var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
         var url;
 
-        if(tab) {
+        if (tab) {
 
             // set url only once
-            if(tab.redirect) {
+            if (tab.redirect) {
                 url = tab.redirect;
 
                 // remove redirect
@@ -127,15 +127,15 @@ Template['views_webview'].helpers({
             }
 
             // allow error pages
-            if(url && url.indexOf('file://'+ dirname + '/errorPages/') === 0) {
+            if (url && url.indexOf('file://'+ dirname + '/errorPages/') === 0) {
                 return url;
             }
 
             // CHECK URL and throw error if not allowed
-            if(!Helpers.sanitizeUrl(url, true)) {
+            if (!Helpers.sanitizeUrl(url, true)) {
 
                 // Prevent websites usingt the history back attacks
-                if(template.view.isRendered) {
+                if (template.view.isRendered) {
                     // get the current webview
                     var webview = template.find('webview');
                     webview.clearHistory();
@@ -146,7 +146,7 @@ Template['views_webview'].helpers({
             }
 
             // add url
-            if(url) {
+            if (url) {
                 template.url = url;
                 Tabs.update(this._id, {$set: {
                     url: url

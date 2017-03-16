@@ -48,7 +48,7 @@ Template['layout_browserBar'].helpers({
     @method (dappAccounts)
     */
     'dappAccounts': function(){
-        if(this.permissions)
+        if (this.permissions)
             return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
     },
     /**
@@ -78,7 +78,7 @@ Template['layout_browserBar'].events({
     'click button.back': function(){
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if(webview && webview.canGoBack())
+        if (webview && webview.canGoBack())
             webview.goBack();
     },
     /*
@@ -89,7 +89,7 @@ Template['layout_browserBar'].events({
     'click button.reload': function(){
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if(webview)
+        if (webview)
             webview.reload();
     },
     /*

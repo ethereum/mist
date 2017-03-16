@@ -1,14 +1,14 @@
 
 showError = function(tabId, e){
-    if(e.isMainFrame || e.killed) {
+    if (e.isMainFrame || e.killed) {
         var url,
             path = 'file://'+ dirname + '/errorPages/';
 
-        if(e.killed) {
+        if (e.killed) {
             e.errorCode = 500;
         }
 
-        switch(e.errorCode) {
+        switch (e.errorCode) {
         case -105:
             url = path +'404.html';
             break;
@@ -17,7 +17,7 @@ showError = function(tabId, e){
             break;
         }
 
-        if(url) {
+        if (url) {
             Tabs.update(tabId, {$set: {
                 redirect: url
             }});
@@ -27,20 +27,20 @@ showError = function(tabId, e){
 
 
 webviewChangeUrl = function(tabId, e){
-    if(e.type === 'did-navigate-in-page' && !e.isMainFrame)
+    if (e.type === 'did-navigate-in-page' && !e.isMainFrame)
         return;
 
     var url = Helpers.sanitizeUrl(e.url || this.getURL());
 
     console.log(e.type, tabId, url);
 
-    if(e.type === 'did-navigate') {
+    if (e.type === 'did-navigate') {
         // destroy socket when navigating away
         ipc.send('ipcProvider-destroy', this.getWebContents().id);
     }
 
     // make sure to not store error pages in history
-    if(!url || url.indexOf('mist/errorPages/') !== -1)
+    if (!url || url.indexOf('mist/errorPages/') !== -1)
         return;
 
     // update the URL
@@ -58,11 +58,11 @@ webviewLoadStop = function(tabId, e){
     console.log(e.type, tabId, url);
 
     // IS BROWSER
-    if(tabId === 'browser') {
+    if (tabId === 'browser') {
 
         // ADD to doogle last visited pages
-        if((find = _.find(LastVisitedPages.find().fetch(), function(historyEntry){
-            if(!historyEntry.url) return;
+        if ((find = _.find(LastVisitedPages.find().fetch(), function(historyEntry){
+            if (!historyEntry.url) return;
             var historyEntryOrigin = new URL(historyEntry.url).origin;
             return (url.indexOf(historyEntryOrigin) !== -1);
         })))
@@ -79,7 +79,7 @@ webviewLoadStop = function(tabId, e){
             });
 
         // ADD to doogle history
-        if(find = History.findOne({url: url}))
+        if (find = History.findOne({url: url}))
             History.update(find._id, {$set: {timestamp: moment().unix()}});
         else
             History.insert({
@@ -98,7 +98,7 @@ webviewLoadStop = function(tabId, e){
 webviewLoadStart = function(currentTabId, e){
     var webview = this;
 
-    if(e.type === 'did-get-redirect-request' && !e.isMainFrame)
+    if (e.type === 'did-get-redirect-request' && !e.isMainFrame)
         return;
 
     console.log(e.type, currentTabId, e);
@@ -113,12 +113,12 @@ webviewLoadStart = function(currentTabId, e){
     var tabId = Helpers.getTabIdByUrl(url);
 
     // if new window (_blank) open in tab, or browser
-    if(e.type === 'new-window' && tabId === currentTabId)
+    if (e.type === 'new-window' && tabId === currentTabId)
         tabId = 'browser';
 
     var tab = Tabs.findOne(tabId);
 
-    if(tab.url !== url) {
+    if (tab.url !== url) {
         Tabs.update(tabId, {$set: {
             redirect: url,
             url: url

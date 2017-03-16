@@ -18,7 +18,7 @@ Template.body.helpers({
     @method renderApp
     */
     'renderApp': function(){
-        if(_.isEmpty(location.hash)) {
+        if (_.isEmpty(location.hash)) {
             $('title').text('Mist');
             return 'layout_main';
         } else {

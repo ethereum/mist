@@ -33,7 +33,7 @@ Template['layout_sidebar'].onRendered(function(){
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function(index, test){
                 var id = $(this).data('tab-id');
-                if(id)
+                if (id)
                     Tabs.update(id, {$set: {position: index+1}});
             });
         }
@@ -74,16 +74,16 @@ Template['layout_sidebar'].helpers({
     'subMenu': function(){
         var template = Template.instance();
 
-        if(this._id === 'browser') {
+        if (this._id === 'browser') {
             return LastVisitedPages.find({},{sort: {timestamp: -1}, limit: 25});
 
-        } else if(this.menu) {
+        } else if (this.menu) {
             var menu = _.toArray(this.menu);
 
             // sort by position
             menu.sort(function(a, b){
-                if(a.position < b.position) return -1;
-                if(a.position > b.position) return 1;
+                if (a.position < b.position) return -1;
+                if (a.position > b.position) return 1;
                 return 0;
             });
 
@@ -98,7 +98,7 @@ Template['layout_sidebar'].helpers({
     'isSelected': function(){
         var selected = (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
 
-        if(this.menuVisible)
+        if (this.menuVisible)
             selected += ' slided-out';
 
         return selected;
@@ -133,11 +133,11 @@ Template['layout_sidebar'].events({
         var webview = $('webview[data-id="'+ tabId +'"]')[0];
 
         // browser
-        if(tabId === 'browser') {
+        if (tabId === 'browser') {
             webviewLoadStart.call(webview, tabId, {newURL: this.url, type: 'side-bar-click', preventDefault: function(){}});
 
         // dapp tab
-        } else if(webview) {
+        } else if (webview) {
             webview.send('mistAPI_callMenuFunction', this.id);
             LocalStore.set('selectedTab', tabId);
         }

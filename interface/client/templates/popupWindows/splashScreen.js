@@ -102,7 +102,7 @@ Template['popupWindows_splashScreen'].onCreated(function(){
                 lastSyncData = _.extend(lastSyncData, data || {});
 
                 // Select the appropriate message
-                if(web3.net.peerCount > 0) {
+                if (web3.net.peerCount > 0) {
                     // Check which state we are
                     if  (   0 < lastSyncData._displayKnownStates && (
                             Number(lastSyncData.pulledStates) !== Math.round(lastSyncData._displayState)
@@ -215,7 +215,7 @@ Template['popupWindows_splashScreen'].helpers({
             TemplateVar.set(template, 'lastSyncData', syncData);
 
             // set progress value
-            if(_.isFinite(progress)) {
+            if (_.isFinite(progress)) {
                 TemplateVar.set(template, 'showProgressBar', true);
                 TemplateVar.set(template, 'progress', progress);
                 if (null !== stateProgress) {

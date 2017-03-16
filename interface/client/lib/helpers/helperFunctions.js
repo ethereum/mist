@@ -55,14 +55,14 @@ Helpers.getTabIdByUrl= function(url, returnEmpty){
     url = Helpers.sanitizeUrl(url);
 
     var foundTab = _.find(tabs, function(tab){
-        if(tab._id === 'browser' || !tab.url)
+        if (tab._id === 'browser' || !tab.url)
             return false;
         var tabOrigin = new URL(tab.url).origin;
         return (url && new URL(url).origin.indexOf(tabOrigin) === 0);
     });
 
     // switch tab to browser
-    if(foundTab)
+    if (foundTab)
         foundTab = foundTab._id;
     else
         foundTab = 'browser';
@@ -78,7 +78,7 @@ Format Urls, e.g add a default protocol if on is missing.
 **/
 Helpers.formatUrl = function(url){
     // add http:// if no protocol is present
-    if(url && url.indexOf('://') === -1)
+    if (url && url.indexOf('://') === -1)
         url = 'http://'+ url;
 
     return url;
@@ -96,7 +96,7 @@ Helpers.sanitizeUrl = function(url, returnEmptyURL){
     url = url.replace(/[\t\n\r\s]+/g, '');
     url = url.replace(/^[:\/]{1,3}/i, 'http://');
 
-    if(returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
+    if (returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
         url = false;
     }
 
@@ -139,7 +139,7 @@ Clear localStorage
 Helpers.getLocalStorageSize = function () {
 
     var size = 0;
-    if(localStorage) {
+    if (localStorage) {
         _.each(Object.keys(localStorage), function (key) {
             size += localStorage[key].length * 2 / 1024 / 1024;
         });

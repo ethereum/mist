@@ -20,5 +20,4 @@ ratings:  ## enables GPA rating
    - "**.js"
 
 exclude_paths:
-- "interface/client/lib/signatures.js"
 - "tests/"

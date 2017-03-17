@@ -158,18 +158,20 @@ aside.newsidebar {
                             padding: 3px 0;
                         }
                         .display {
+                            @identiconHeight: 17px;
                             text-align: left;
-                            line-height: 21px;
+                            line-height: @identiconHeight;
 
                             .dapp-identicon-container {
                                 float: right;
+                                height: @identiconHeight;
                             }
 
                             .dapp-identicon {
                                 margin-right: 0px;
-                                width: 19px;
-                                height: 19px;
-                                &:not(:first-child) {
+                                width: @identiconHeight;
+                                height: @identiconHeight;
+                                &:not(:last-child) {
                                     margin-right: 4px;
                                 }
                             }

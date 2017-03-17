@@ -40,6 +40,7 @@ aside.newsidebar {
             margin-bottom: 15px;
             opacity: .6;
             transition: 100ms opacity linear;
+            transition-delay: 200ms;
 
             &.selected {}
 
@@ -82,27 +83,24 @@ aside.newsidebar {
             }
 
             .submenu-container {
-                button:active, button:focus {
-                    transform: none;
-                    border: none;
-                }
-
                 visibility: hidden;
                 opacity: 0;
-                transition: 150ms linear all;
+                transition: 150ms linear all, 1ms linear top;
                 transition-delay: 200ms;
                 width: 185px;
                 position: fixed;
                 left: 90px;
-                top: 118px;
+                top: 120px;
+                transform: translateY(-11px);
                 border-radius: 5px;
                 backdrop-filter: blur(0);
+                z-index: 1000;
 
                 &::before {
                     @tipSize: 8px;
                     content: '';
                     margin-left: -@tipSize;
-                    margin-top: 16px;
+                    margin-top: 19px + 11px;
                     display: block;
                     position: absolute;
                     width: 0px;
@@ -112,6 +110,11 @@ aside.newsidebar {
                     border-left: 0;
                     border-right-color: rgba(0,0,0,0.78);
                 }
+                button:active, button:focus {
+                    transform: none;
+                    border: none;
+                }
+
                 section {
                     padding: 8px 11px 11px;
                     background-color: rgba(0, 0, 0, 0.78);

@@ -96,13 +96,13 @@ Template['layout_sidebar'].helpers({
 
     @method (dappAccounts)
     */
-    'dappAccounts': function () {
-        console.log('dapp', this);
-        if (this.permissions) {
-            var accounts = _.pluck(EthAccounts.find({address: {$in: this.permissions.accounts || []}}).fetch(), 'address');
-            return _.intersection(accounts, TemplateVar.get('accounts'));
+    'dappAccounts': function(limit) {
+        if(this.permissions){
+            if (limit)
+                return EthAccounts.find({address: {$in: this.permissions.accounts || []}}, {limit: limit});
+            else
+                return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
         }
-        return null;
     },
     /**
     Determines if the current tab is visible
@@ -199,4 +199,22 @@ Template['layout_sidebar'].events({
 
         Tabs.remove(this._id);
     },
+    /**
+    Show connect account popup
+
+    @event click .app-bar > button.accounts'
+    */
+    'click .accounts button': function(e, template) {
+        mist.requestAccount(function(e, addresses){
+            var tabId = LocalStore.get('selectedTab');
+
+            dbSync.syncDataFromBackend(LastVisitedPages);
+            dbSync.syncDataFromBackend(Tabs).then(function(){
+                Tabs.update(tabId, {$set: {
+                    'permissions.accounts': addresses
+                }});
+            });
+        });
+    },
+
 });

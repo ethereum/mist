@@ -120,7 +120,6 @@ Template['layout_browserBar'].events({
                     'permissions.accounts': addresses
                 }});
             });
-
         });
     },
     /*

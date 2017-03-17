@@ -143,14 +143,34 @@ aside.newsidebar {
 
                     .accounts {
                         margin-top: 11px;
+                        button {
+                            font-size: 12px;
+                            font-weight: 300;
+                            text-transform: uppercase;
+                            width: 100%;
+                        }
                         .connect {
                             background-color: #4C92E6;
                             border-radius: 4px;
-                            width: 100%;
-                            font-size: 11px;
-                            font-weight: 300;
-                            text-transform: uppercase;
                             padding: 3px 0;
+                        }
+                        .display {
+                            text-align: left;
+                            line-height: 21px;
+
+                            .dapp-identicon-container {
+                                float: right;
+                            }
+
+                            .dapp-identicon {
+                                margin-right: 0px;
+                                width: 19px;
+                                height: 19px;
+                                &:not(:first-child) {
+                                    margin-right: 4px;
+                                }
+                            }
+
                         }
                     }
                 }

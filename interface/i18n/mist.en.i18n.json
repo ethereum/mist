@@ -126,6 +126,10 @@
         "sidebar": {
             "buttons": {
                 "browser": "Browse"
+            },
+            "submenu": {
+                "account": "Account",
+                "account_plural": "Accounts"
             }
         },
         "browserBar": {

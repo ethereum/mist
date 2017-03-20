@@ -98,7 +98,7 @@ test['Load fixture page'] = function* () {
     yield this.loadFixture();
 };
 
-test['"http://" protocol should be allowed on browser bar'] = function* () { // ETH-01-002
+test['"http" protocol should be allowed on browser bar'] = function* () { // ETH-01-002
     const client = this.client;
     yield this.loadFixture();
 
@@ -116,7 +116,7 @@ test['"http://" protocol should be allowed on browser bar'] = function* () { // 
     browserBarText.should.eql('http://localhost:8080 ▸ index.html'); // checks that did change displayed URL
 };
 
-test['"javascript:" protocol should be disallowed on browser bar'] = function* () { // ETH-01-002
+test['"javascript" protocol should be disallowed on browser bar'] = function* () { // ETH-01-002
     const client = this.client;
     yield this.loadFixture();
     yield client.setValue('#url-input', 'javascript:window.close()');
@@ -133,7 +133,7 @@ test['"javascript:" protocol should be disallowed on browser bar'] = function* (
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
 
-test['"data:" protocol should be disallowed on browser bar'] = function* () { // ETH-01-002
+test['"data" protocol should be disallowed on browser bar'] = function* () { // ETH-01-002
     const client = this.client;
     yield this.loadFixture();
     yield client.setValue('#url-input', 'data:text/plain;charset=utf-8;base64,dGhpcyB0ZXN0IGlzIG9uIGZpcmU=');
@@ -150,7 +150,7 @@ test['"data:" protocol should be disallowed on browser bar'] = function* () { //
     browserBarText.should.eql('http://localhost:8080'); // checks that hasn't changed displayed URL
 };
 
-test['"file:///" protocol should be disallowed'] = function* () { // ETH-01-012
+test['"file" protocol should be disallowed on browser bar'] = function* () { // ETH-01-012
     const client = this.client;
     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 

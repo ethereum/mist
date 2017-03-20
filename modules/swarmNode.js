@@ -1,4 +1,4 @@
-const Swarm = require('swarm-js');
+const Swarm = require("swarm-js");
 const fsp = require("fs-promise");
 const Q = require("bluebird");
 const Settings = require("./settings.js");

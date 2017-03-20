@@ -278,23 +278,23 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = lang_code => function (menuItem, browserWindow) {
+    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
         browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${lang_code}");`
+            `TAPi18n.setLanguage("${langCode}");`
         );
-        ipc.emit('backendAction_setLanguage', {}, lang_code);
+        ipc.emit('backendAction_setLanguage', {}, langCode);
     };
     const currentLanguage = i18n.getBestMatchedLangCode(global.language);
 
     const languageMenu =
     Object.keys(i18n.options.resources)
-    .filter(lang_code => lang_code !== 'dev')
-    .map((lang_code) => {
-        menuItem = {
-            label: i18n.t(`mist.applicationMenu.view.langCodes.${lang_code}`),
+    .filter(langCode => langCode !== 'dev')
+    .map((langCode) => {
+        const menuItem = {
+            label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === lang_code),
-            click: genSwitchLanguageFunc(lang_code),
+            checked: (currentLanguage === langCode),
+            click: genSwitchLanguageFunc(langCode),
         };
         return menuItem;
     });

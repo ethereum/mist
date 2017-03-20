@@ -38,7 +38,7 @@ mistAPIBackend = function (event) {
     // console.trace('mistAPIBackend event', event);
 
     if (event.channel === 'setWebviewId') {
-        Tabs.update(template.data._id, { $set: { webviewId: webview.getWebContents().id }});
+        Tabs.update(template.data._id, { $set: { webviewId: webview.getWebContents().id } });
     }
 
     // Send TEST DATA

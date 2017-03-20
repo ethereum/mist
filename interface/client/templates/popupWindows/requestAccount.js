@@ -41,9 +41,20 @@ Template['popupWindows_requestAccount'].events({
 
             // stop here so we dont set the password repeat to false
             return;
+        }
 
         // check passwords
-        } else if(pwRepeat === pw) {
+         if ( pw !== pwRepeat) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
+                duration: 3
+            });
+        } else if (pw && pw.length < 8) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        } else if (pw && pw.length >= 8) {
 
             TemplateVar.set('creating', true);
             web3.personal.newAccount(pwRepeat, function(e, res){
@@ -53,21 +64,18 @@ Template['popupWindows_requestAccount'].events({
                     ipc.send('backendAction_windowMessageToOwner', e);
 
                 TemplateVar.set(template, 'creating', false);
+
+                // notifiy about backing up!
+                alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
+
                 ipc.send('backendAction_closePopupWindow');
             });
         
-        } else {
-            template.$('.password').focus();
-
-            GlobalNotification.warning({
-                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
-                duration: 3
-            });
         }
 
         TemplateVar.set('password-repeat', false);
         template.find('input.password-repeat').value = '';
         template.find('input.password').value = '';
         pw = pwRepeat = null;
-   } 
+   }
 });

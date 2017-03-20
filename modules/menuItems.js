@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Windows = require('./windows');
@@ -6,6 +6,8 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
+const swarmNode = require('./swarmNode.js');
+const mimetype = require('mimetype');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -203,6 +205,37 @@ let menuTempl = function (webviews) {
                 ],
             },
         ],
+    });
+
+    // SWARM
+    menu.push({
+        label: i18n.t('mist.applicationMenu.swarm.label'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.swarm.uploadFile'),
+                click() {
+
+                    const focusedWindow = BrowserWindow.getFocusedWindow(); //Windows.getByType('main');
+                    //const focusedWindow = Windows.getByType('main');
+                    const paths = dialog.showOpenDialog(focusedWindow, {
+                        properties: ['openFile', 'openDirectory']
+                    });
+                    if (paths && paths.length === 1) {
+                      const filePath = paths[0];
+                      swarmNode.upload({path: filePath, kind: "file"}).then(hash => {
+                        const Tabs = global.db.getCollection('UI_tabs');
+                        console.log("uploaded",hash);
+                        focusedWindow.webContents.executeJavaScript(`
+                          Tabs.update('browser', {$set: {
+                              url: "bzz://${hash}",
+                              redirect: "bzz://${hash}"
+                          }});
+                        `);
+                      }).catch(e => console.log(e));
+                    };
+                },
+            }
+        ]
     });
 
     // EDIT

@@ -41,8 +41,14 @@ Template['layout_sidebar'].onRendered(function(){
     });
 
     template.$('[data-tab-id]').on('mouseover', function(){
-        $this = $(this);
-        $this.find('.submenu-container').css('top', $this.offset().top + 'px');
+        var $this = $(this);
+        var tabTopOffset = $this.offset().top;
+        var $submenu = $this.find('.submenu-container');
+        var windowHeight = $(window).outerHeight();
+
+        $submenu.css('top', tabTopOffset + 'px');
+        console.log('dimensions', windowHeight, tabTopOffset, windowHeight - tabTopOffset);
+        $submenu.css('max-height', (windowHeight - tabTopOffset) + 'px');
     });
 });
 

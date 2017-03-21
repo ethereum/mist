@@ -17,29 +17,31 @@
                         </header>
                         <section class="submenu-container">
                             <section>
-                                <span title="{{nameFull}}">{{name}}</span>
-                                {{#if badge}}
-                                    <div class="badge">{{badge}}</div>
-                                {{/if}}
-
-                                {{#if $neq _id 'browser'}}
-                                    <button class="remove-tab"> &times; </button>
-                                {{/if}}
-
-                                <div class="accounts">
-                                    {{#if dappAccounts.count}}
-                                        <button class="display">
-                                            <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
-                                                <span class="dapp-identicon-container">
-                                                {{#each (dappAccounts 3)}}
-                                                    {{> dapp_identicon identity=address class="dapp-tiny"}}
-                                                {{/each}}
-                                            </span>
-                                        </button>
-                                    {{else}}
-                                        <button class="connect">Connect Accounts</button>
+                                <header>
+                                    <span title="{{nameFull}}">{{name}}</span>
+                                    {{#if badge}}
+                                        <div class="badge">{{badge}}</div>
                                     {{/if}}
-                                </div>
+
+                                    {{#if $neq _id 'browser'}}
+                                        <button class="remove-tab"> &times; </button>
+                                    {{/if}}
+
+                                    <div class="accounts">
+                                        {{#if dappAccounts.count}}
+                                            <button class="display">
+                                                <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
+                                                    <span class="dapp-identicon-container">
+                                                    {{#each (dappAccounts 3)}}
+                                                        {{> dapp_identicon identity=address class="dapp-tiny"}}
+                                                    {{/each}}
+                                                </span>
+                                            </button>
+                                        {{else}}
+                                            <button class="connect">Connect Accounts</button>
+                                        {{/if}}
+                                    </div>
+                                </header>
 
                                 {{# if subMenu}}
                                 <ul class="sub-menu">

@@ -42,15 +42,9 @@ aside.newsidebar {
             transition: 100ms opacity linear;
             transition-delay: 200ms;
 
-            &.selected {}
-
             &.selected, &:active, &:hover, &:focus {
                 opacity: 1;
             }
-
-            header:active, &.selected header {}
-            header:active {}
-            header:hover button {}
 
             header {
                 -webkit-transition: 150ms background-color linear;
@@ -58,11 +52,11 @@ aside.newsidebar {
                     height: 54px;
                     width: 54px;
                     display: block;
+
                     &:focus {
                         outline: 0;
                         border: none;
                     }
-                    &:active {}
 
                     .icon-globe {
                         font-size: 32px;
@@ -77,7 +71,6 @@ aside.newsidebar {
                         height: 54px;
                         -webkit-mask-image: url('icons/mask-icon.svg');
                         -webkit-mask-size: cover;
-                        // -webkit-mask: url('icons/mask-icon.svg') top/left cover;
                     }
                 }
             }

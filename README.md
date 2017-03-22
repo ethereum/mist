@@ -41,6 +41,7 @@ To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteo
     $ curl https://install.meteor.com/ | sh
     $ npm install -g electron@1.3.13
     $ npm install -g gulp
+    $ npm install -g yarn
 
 And some further tools to help with downloading and unzipping client nodes:
 

@@ -1,14 +1,17 @@
 
 <template name="layout_sidebar">
-    <aside class="newsidebar {{fullTabs}}">
+    <aside class="sidebar {{fullTabs}}">
         <nav>
             <ul>
                 {{#each tabs}}
-                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+                    <li
+                        class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}"
+                        data-tab-id="{{_id}}"
+                        draggable="{{#if $eq _id 'browser'}}false{{/if}}">
                         <header>
                             <button class="main {{#if badge}}has-badge{{/if}}">
                                 {{#if icon}}
-                                    <img src="{{icon}}">
+                                    <img src="{{icon}}" draggable="false">
                                 {{else}}
                                     <i class="icon-globe"></i>
                                 {{/if}}

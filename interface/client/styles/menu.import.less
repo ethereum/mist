@@ -32,55 +32,52 @@ aside.newsidebar {
         overflow: scroll;
         min-height: 0;
 
-        ul {
+        > ul {
             margin: 6px 0;
             padding: 0;
-        }
-        li {
-            overflow: hidden;
-            margin-bottom: 15px;
-            opacity: .6;
-            transition: 100ms opacity linear;
-            transition-delay: 200ms;
 
-            &.selected, &:active, &:hover, &:focus {
-                opacity: 1;
-            }
+            > li {
+                overflow: hidden;
+                margin-bottom: 15px;
+                transition-delay: 200ms;
 
-            &:hover {
-                .submenu-container {
-                    opacity: 1;
-                    visibility: visible;
-                }
-            }
 
-            header {
-                -webkit-transition: 150ms background-color linear;
-            }
-
-            button.main {
-                height: 54px;
-                width: 54px;
-                display: block;
-
-                &:focus {
-                    outline: 0;
-                    border: none;
+                &:hover {
+                    .submenu-container {
+                        opacity: 1;
+                        visibility: visible;
+                    }
                 }
 
-                .icon-globe {
-                    font-size: 32px;
-                    text-align: center;
-                    display: block;
-                    background-color: #fff;
-                    padding-top: 10px;
-                }
-
-                img, .icon-globe {
-                    width: 54px;
+                button.main {
                     height: 54px;
-                    -webkit-mask-image: url('icons/mask-icon.svg');
-                    -webkit-mask-size: cover;
+                    width: 54px;
+                    display: block;
+                    opacity: .6;
+                    transition: 100ms opacity linear;
+
+                    &.selected, &:active, &:hover, &:focus {
+                        opacity: 1;
+                    }
+                    &:focus {
+                        outline: 0;
+                        border: none;
+                    }
+
+                    .icon-globe {
+                        font-size: 32px;
+                        text-align: center;
+                        display: block;
+                        background-color: #fff;
+                        padding-top: 10px;
+                    }
+
+                    img, .icon-globe {
+                        width: 54px;
+                        height: 54px;
+                        -webkit-mask-image: url('icons/mask-icon.svg');
+                        -webkit-mask-size: cover;
+                    }
                 }
             }
         }
@@ -190,6 +187,8 @@ aside.newsidebar {
             }
 
             .sub-menu {
+                margin: 6px 0;
+                padding: 0;
                 border-top: 1px solid rgba(255, 255, 255, 0.2);
                 overflow: scroll;
                 padding-bottom: 0.1em;

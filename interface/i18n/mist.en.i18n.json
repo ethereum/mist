@@ -129,7 +129,8 @@
             },
             "submenu": {
                 "account": "Account",
-                "account_plural": "Accounts"
+                "account_plural": "Accounts",
+                "connectAccounts": "Connect Accounts"
             }
         },
         "browserBar": {

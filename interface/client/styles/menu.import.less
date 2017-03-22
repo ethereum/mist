@@ -95,11 +95,10 @@ aside.newsidebar {
             visibility: hidden;
             opacity: 0;
 
-            overflow: scroll;
             transition: 150ms linear all, 1ms linear top;
             transition-delay: 200ms;
             transform: translateY(-11px);
-            backdrop-filter: blur(0);
+            // backdrop-filter: blur(0);
 
             &::before {
                 @tipSize: 8px;
@@ -124,7 +123,7 @@ aside.newsidebar {
             section {
                 padding: 8px 0 0;
                 background-color: rgba(0, 0, 0, 0.78);
-                backdrop-filter: blur(5px);
+                // backdrop-filter: blur(5px);
                 width: 100%;
                 border-radius: 5px;
                 color: #fff;
@@ -192,6 +191,7 @@ aside.newsidebar {
 
             .sub-menu {
                 border-top: 1px solid rgba(255, 255, 255, 0.2);
+                overflow: scroll;
                 padding-bottom: 0.1em;
                 margin-top: 2px;
                 margin-bottom: 0;

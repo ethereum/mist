@@ -27,20 +27,22 @@
                                         <button class="remove-tab"> &times; </button>
                                     {{/if}}
 
-                                    <div class="accounts">
-                                        {{#if dappAccounts.count}}
-                                            <button class="display">
-                                                <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
-                                                    <span class="dapp-identicon-container">
-                                                    {{#each (dappAccounts 3)}}
-                                                        {{> dapp_identicon identity=address class="dapp-tiny"}}
-                                                    {{/each}}
-                                                </span>
-                                            </button>
-                                        {{else}}
-                                            <button class="connect">Connect Accounts</button>
-                                        {{/if}}
-                                    </div>
+                                    {{#if $neq _id 'wallet'}}
+                                        <div class="accounts">
+                                            {{#if dappAccounts.count}}
+                                                <button class="display">
+                                                    <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
+                                                        <span class="dapp-identicon-container">
+                                                        {{#each (dappAccounts 3)}}
+                                                            {{> dapp_identicon identity=address class="dapp-tiny"}}
+                                                        {{/each}}
+                                                    </span>
+                                                </button>
+                                            {{else}}
+                                                <button class="connect">{{i18n 'mist.sidebar.submenu.connectAccounts'}}</button>
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
                                 </header>
 
                                 {{# if subMenu}}

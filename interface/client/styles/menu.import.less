@@ -56,6 +56,11 @@ aside.sidebar {
                     }
                 }
 
+                &.selected, &:active, &:hover, &:focus {
+                    button.main {
+                        opacity: 1;
+                    }
+                }
                 button.main {
                     height: 54px;
                     width: 54px;
@@ -63,9 +68,6 @@ aside.sidebar {
                     opacity: .6;
                     transition: 100ms opacity linear;
 
-                    &.selected, &:active, &:hover, &:focus {
-                        opacity: 1;
-                    }
                     &:focus {
                         outline: 0;
                         border: none;

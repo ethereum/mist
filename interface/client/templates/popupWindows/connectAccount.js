@@ -1,7 +1,7 @@
 
 
 var pinToSidebar = function() {
-    var selectedTab = Tabs.findOne(LocalStore.get('selectedTab'));
+    var selectedTab = TemplateVar.get('tab');
 
     if(selectedTab) {
         var existingUserTab = Helpers.getTabIdByUrl(selectedTab.url);
@@ -44,7 +44,7 @@ var pinToSidebar = function() {
 };
 
 var updateSelectedTabAccounts = function(accounts){
-    var tabId = LocalStore.get('selectedTab');
+    var tabId = TemplateVar.get('tab')._id;
     Tabs.update(tabId, {$set: {
         'permissions.accounts': accounts
     }});
@@ -52,7 +52,9 @@ var updateSelectedTabAccounts = function(accounts){
 
 Template['popupWindows_connectAccount'].onCreated(function() {
     this.autorun(function(){
-        var tab = Tabs.findOne(LocalStore.get('selectedTab'), {fields: {'permissions.accounts': 1}});
+        TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
+
+        var tab = TemplateVar.get('tab');
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
     });
@@ -66,7 +68,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dapp)
     */
     dapp: function(){
-        return Tabs.findOne(LocalStore.get('selectedTab'));
+        return TemplateVar.get('tab');
     },
     /**
     Returns a cleaner version of URL
@@ -74,7 +76,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dappFriendlyURL)
     */
     dappFriendlyURL: function(){
-        var currentTab = Tabs.findOne(LocalStore.get('selectedTab'))
+        var currentTab = TemplateVar.get('tab');
         if (currentTab && currentTab.url){
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
@@ -128,7 +130,7 @@ Template['popupWindows_connectAccount'].events({
 
         TemplateVar.set(template, 'accounts', accounts);
     },
-    /** 
+    /**
     Closes the popup
 
     @event click .cancel
@@ -145,13 +147,13 @@ Template['popupWindows_connectAccount'].events({
         e.preventDefault();
 
         var accounts = TemplateVar.get('accounts');
-        
+
         // Pin to sidebar, if needed
         if ($('#pin-to-sidebar')[0].checked) {
             pinToSidebar();
         }
 
-        accounts = _.unique(_.flatten(accounts)); 
+        accounts = _.unique(_.flatten(accounts));
 
         // reload the webview
         ipc.send('backendAction_windowMessageToOwner', null, accounts);

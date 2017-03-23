@@ -44,7 +44,7 @@ var pinToSidebar = function() {
 };
 
 var updateSelectedTabAccounts = function(accounts){
-    var tabId = TemplateVar.get('tab')._id;
+    var tabId = TemplateVar.get('chosenTab')._id;
     Tabs.update(tabId, {$set: {
         'permissions.accounts': accounts
     }});
@@ -52,7 +52,7 @@ var updateSelectedTabAccounts = function(accounts){
 
 Template['popupWindows_connectAccount'].onCreated(function() {
     this.autorun(function(){
-        TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
+        TemplateVar.set('tab', Tabs.findOne(LocalStore.get('chosenTab')));
 
         var tab = TemplateVar.get('tab');
         var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];

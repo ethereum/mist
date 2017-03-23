@@ -208,12 +208,10 @@ Template['layout_sidebar'].events({
     @event click .accounts button'
     */
     'click .accounts button': function(e, template) {
-            var tabId = this._id;
-            console.log('tabId', tabId);
+        tabId = this._id;
+        LocalStore.set('chosenTab', this._id);
+        console.log('chosenTab', tabId);
         mist.requestAccount(function(e, addresses){
-            var tabId = this._id;
-            console.log('tabId', tabId);
-
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function(){
                 Tabs.update(tabId, {$set: {

@@ -41,15 +41,6 @@ Template['layout_sidebar'].onRendered(function(){
     });
 
     template.$('[data-tab-id]').on('mouseover', function(){
-        var $this = $(this);
-        var tabTopOffset = $this.offset().top;
-        var $submenuContainer = $this.find('.submenu-container');
-        var $submenu = $this.find('.sub-menu');
-        var submenuHeaderHeight = $this.find('header').outerHeight();
-        var windowHeight = $(window).outerHeight();
-
-        $submenuContainer.css('top', tabTopOffset + 'px');
-        $submenu.css('max-height', (windowHeight - tabTopOffset - submenuHeaderHeight - 30) + 'px');
     });
 });
 
@@ -214,11 +205,14 @@ Template['layout_sidebar'].events({
     /**
     Show connect account popup
 
-    @event click .app-bar > button.accounts'
+    @event click .accounts button'
     */
     'click .accounts button': function(e, template) {
+            var tabId = this._id;
+            console.log('tabId', tabId);
         mist.requestAccount(function(e, addresses){
-            var tabId = LocalStore.get('selectedTab');
+            var tabId = this._id;
+            console.log('tabId', tabId);
 
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function(){
@@ -229,4 +223,21 @@ Template['layout_sidebar'].events({
         });
     },
 
+    /**
+    Shows dapp submenu
+
+    @event mouseenter .sidebar-menu > li
+    */
+    'mouseenter .sidebar-menu > li': function(e, template) {
+        var $this = $(e.currentTarget);
+        var tabTopOffset = $this.offset().top;
+        var $submenuContainer = $this.find('.submenu-container');
+        var $submenu = $this.find('.sub-menu');
+        var submenuHeaderHeight = $this.find('header').outerHeight();
+        var windowHeight = $(window).outerHeight();
+
+        console.log('heights', windowHeight, tabTopOffset, submenuHeaderHeight);
+        $submenuContainer.css('top', tabTopOffset + 'px');
+        $submenu.css('max-height', (windowHeight - tabTopOffset - submenuHeaderHeight - 30) + 'px');
+    },
 });

@@ -29,12 +29,16 @@ aside.sidebar {
         position: relative;
         margin-top: @gridHeight;
         padding: 0 12px 0;
-        overflow: scroll;
+        overflow: hidden;
         min-height: 0;
+        &:hover {
+            overflow-y: auto;
+        }
 
         > ul {
             margin: 6px 0;
             padding: 0;
+            width: 55px;
 
             > li {
                 overflow: hidden;
@@ -198,7 +202,8 @@ aside.sidebar {
                 margin: 6px 0;
                 padding: 0;
                 border-top: 1px solid rgba(255, 255, 255, 0.2);
-                overflow: scroll;
+                overflow-y: auto;
+                overflow-x: hidden;
                 padding-bottom: 0.1em;
                 margin-top: 2px;
                 margin-bottom: 0;

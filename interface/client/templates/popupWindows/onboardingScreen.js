@@ -423,17 +423,20 @@ Template['popupWindows_onboardingScreen_password'].events({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
             });
-        } else if (pw && pw.length > 1 && pw.length < 9) {
+        } else if (pw && pw.length < 8) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
                 duration: 3
             });
-        } else if (pw && pw.length >= 9) {
+        } else if (pw && pw.length >= 8) {
             TemplateVar.set('creatingPassword', true);
             web3.personal.newAccount(pw, function (e, res) {
                 TemplateVar.set(template, 'creatingPassword', false);
 
-                if (!e) {
+                // notifiy about backing up!
+                alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
+
+                if(!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 

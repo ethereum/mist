@@ -1,9 +1,3 @@
-
-
-// STOP here if not MAIN WINDOW
-if(location.hash)
-    return;
-
 /**
 The init function of Mist
 
@@ -17,7 +11,7 @@ mistInit = function(){
     Tabs.onceSynced.then(function() {
         if (0 <= location.search.indexOf('reset-tabs')) {
             console.info('Resetting UI tabs');
-            
+
             Tabs.remove({});
         }
 
@@ -56,13 +50,15 @@ mistInit = function(){
 Meteor.startup(function(){
     console.info('Meteor starting up...');
 
-    EthAccounts.init();
-    mistInit();
+    if (!location.hash) {
+        EthAccounts.init();
+        mistInit();
+    }
 
     console.debug('Setting language');
 
     // SET default language
-    if(Cookie.get('TAPi18next')) {        
+    if(Cookie.get('TAPi18next')) {
         TAPi18n.setLanguage(Cookie.get('TAPi18next'));
     } else {
         var userLang = navigator.language || navigator.userLanguage,
@@ -87,4 +83,3 @@ Meteor.startup(function(){
         }
     });
 });
-

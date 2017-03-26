@@ -17,17 +17,18 @@ Template.body.helpers({
 
     @method renderApp
     */
-    'renderApp': function(){
-        if(_.isEmpty(location.hash)) {
+    'renderApp': function () {
+        if (_.isEmpty(location.hash)) {
             $('title').text('Mist');
             return 'layout_main';
         } else {
             var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
-            if (renderWindow.length>0)
+            if (renderWindow.length > 0) {
                 return 'popupWindows_' + renderWindow[1];
-            else 
+            } else {
                 return false;
+            }
         }
     }
 });

@@ -11,18 +11,18 @@ The request account popup window template
 @constructor
 */
 
-Template['popupWindows_unlockMasterPassword'].onRendered(function(){
+Template['popupWindows_unlockMasterPassword'].onRendered(function () {
     var template = this;
 
     template.$('input.password').focus();
 
-    template.autorun(function(){
+    template.autorun(function () {
         var data = Session.get('data');
 
-        if(data && data.masterPasswordWrong) {
+        if (data && data.masterPasswordWrong) {
             TemplateVar.set('unlocking', false);
 
-            Tracker.afterFlush(function(){
+            Tracker.afterFlush(function () {
                 template.$('input.password').focus();
             });
 
@@ -38,10 +38,10 @@ Template['popupWindows_unlockMasterPassword'].onRendered(function(){
 
 
 Template['popupWindows_unlockMasterPassword'].events({
-   'click .cancel': function(){
+    'click .cancel': function () {
         ipc.send('backendAction_closePopupWindow');
-   },
-   'submit form': function(e, template){
+    },
+    'submit form': function (e, template) {
         e.preventDefault();
         var pw = template.find('input.password').value;
 
@@ -51,5 +51,5 @@ Template['popupWindows_unlockMasterPassword'].events({
 
         template.find('input.password').value = '';
         pw = null;
-   } 
+    }
 });

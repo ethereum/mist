@@ -42,3 +42,4 @@ standard-minifier-css@1.3.2
 standard-minifier-js@1.2.1
 tap:i18n-bundler
 shell-server
+ecmascript

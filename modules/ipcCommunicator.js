@@ -115,21 +115,23 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
 
 // check wallet file
 ipc.on('backendAction_checkWalletFile', (e, path) => {
-
-    log.warn(111);
     fs.readFile(path, 'utf8', (event, data) => {
         try {
-            const wallet = JSON.parse(data);
-            const result = keyfileRecognizer(wallet);
+            const keyfile = JSON.parse(data);
+            const result = keyfileRecognizer(keyfile);
             /** result
             *  [ 'ethersale', undefined ]   Ethersale keyfile
             *               [ 'web3', 3 ]   web3 (v3) keyfile
             *                        null   no valid  keyfile
             */
 
-            if (_.first(result) === 'ethersale') {
+            const type = _.first(result);
+
+            log.debug(`Importing ${type} account...`);
+
+            if (type === 'ethersale') {
                 e.sender.send('uiAction_checkedWalletFile', null, 'presale');
-            } else if (_.first(result) === 'web3') {
+            } else if (type === 'web3') {
                 e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
                 let keystorePath = Settings.userHomePath;
@@ -151,15 +153,19 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
                     if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
                 }
 
-                fs.writeFile(`${keystorePath}/0x${wallet.address}`, data, (err) => {
+                fs.writeFile(`${keystorePath}/0x${keyfile.address}`, data, (err) => {
                     if (err) throw new Error("Can't write file to disk");
                 });
             } else {
-                throw new Error('Wallet import: Cannot recognize keyfile');
+                throw new Error('Account import: Cannot recognize keyfile (invalid)');
             }
         } catch (err) {
             e.sender.send('uiAction_checkedWalletFile', null, 'invalid');
-            log.error(err);
+            if (/Unexpected token . in JSON at position 0/.test(err.message) === true) {
+                log.error('Account import: Cannot recognize keyfile (no JSON)');
+            } else {
+                log.error(err);
+            }
         }
     });
 });

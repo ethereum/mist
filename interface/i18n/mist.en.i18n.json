@@ -152,7 +152,6 @@
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncConnecting": "Looking for peers...",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
             "clientBinaries": {
@@ -182,6 +181,7 @@
                 "enterPassword": "Enter password",
                 "repeatPassword": "Repeat password",
                 "creating": "Generating account...",
+                "backupHint": "Make sure you backup your keyfiles AND password!\n\nYou can find your keyfiles folder using the main menu -> Accounts -> Backup -> Accounts. Keep a copy of the \"keystore\" folder where you can't loose it!",
                 "errors": {
                     "passwordMismatch": "Your passwords don't match.",
                     "passwordTooShort": "Make a longer password"

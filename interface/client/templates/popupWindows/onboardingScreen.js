@@ -265,12 +265,14 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
             ipc.on('uiAction_checkedWalletFile', function (e, error, type) {
                 switch (type) {
                 case 'presale':
+                    console.log(`Imported ${type} account`);
                     TemplateVar.set(template, 'filePath', files[0].path);
                     Tracker.afterFlush(function () {
                         template.$('.password').focus();
                     });
                     break;
                 case 'web3':
+                    console.log(`Imported ${type} account`);
                     TemplateVar.set(template, 'filePath', files[0].path);
                     TemplateVar.set(template, 'importing', true);
                     setTimeout(function () {

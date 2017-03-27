@@ -13,21 +13,40 @@
     padding-right: 11px;
 }
 
+// OS-specific styles
+html.darwin aside.sidebar {
+    top: @gridHeight;
+
+    &::after {
+        top: @gridHeight;
+    }
+    nav {
+        margin-top: @gridHeight;
+    }
+}
+
 aside.sidebar {
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
 
+    z-index: 4;
+    position: absolute;
+    top: @gridHeight / 2;
+    left: 0;
+    bottom: 0;
+    width: @widthSideBar;
+
     &::after {
         .gradient-tip();
-        top: @gridHeight;
+        top: @gridHeight / 2;
         height: 8px;
         background-image: linear-gradient(to top, rgba(241, 241, 241, 0) 0%, rgba(241, 241, 241, 1) 100%);
     }
 
     nav {
         position: relative;
-        margin-top: @gridHeight;
+        margin-top: @gridHeight / 2;
         padding: 0 12px 0;
         overflow: hidden;
         min-height: 0;

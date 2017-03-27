@@ -131,7 +131,6 @@
             "nodeSyncing": "Ethereum-node trenger å synkroniseres, vennligst vent...",
             "nodeSyncInfo": "Laster ned blokk __currentBlock__ av __highestBlock__.",
             "nodeSyncConnecting": "Leter etter peers...",
-            "nodeSyncingStopped": "Ethereum-node synkronisering stoppet",
             "peerSearchTimeout": "Hopp over peer søk",
             "launchApp": "Start Applikasjonen",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
@@ -197,7 +196,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum er en desentralisert plattform for å bygge applikasjoner på en blokkjede: sabotasjesikker programvare som kan overføre verdi og eiendom, og som lever evig",

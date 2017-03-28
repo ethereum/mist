@@ -148,7 +148,7 @@ To create a binaries you need to install [`electron-builder` dependencies](https
     // tools for the windows binaries
     $ brew install wine --without-x11 mono makensis
     // tools for the Linux binaries
-    $ brew install gnu-tar libicns graphicsmagick xz
+    $ brew install gnu-tar libicns graphicsmagick xz libicns
     // general dependencies
     $ npm install -g meteor-build-client
 

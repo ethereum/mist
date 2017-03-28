@@ -1,7 +1,7 @@
-const Swarm = require("swarm-js");
-const fsp = require("fs-promise");
-const Q = require("bluebird");
-const Settings = require("./settings.js");
+const Swarm = require('swarm-js');
+const fsp = require('fs-promise');
+const Q = require('bluebird');
+const Settings = require('./settings.js');
 
 class SwarmNode {
     constructor() {
@@ -10,11 +10,11 @@ class SwarmNode {
     }
 
     init() {
-        console.log("Starting Swarm node.");
+        console.log('Starting Swarm node.');
         return new Q((resolve, reject) => {
             // Start local node
-            if (Settings.swarmURL === "http://localhost:8500") {
-                console.log("Starting local Swarm node.");
+            if (Settings.swarmURL === 'http://localhost:8500') {
+                console.log('Starting local Swarm node.');
                 // TODO: use user account
                 const config = {
                     account: 'd849168d52ea5c40de1b0b973cfd96873c961963',
@@ -23,7 +23,7 @@ class SwarmNode {
                     ethApi: process.env.HOME + '/Library/Ethereum/testnet/geth.ipc'
                 }
                 return Swarm.local(config)(swarm => new Q((stop) => {
-                    console.log("Local Swarm node started.");
+                    console.log('Local Swarm node started.');
                     this._stop = stop;
                     this._swarm = swarm;
                     resolve(this);
@@ -31,7 +31,7 @@ class SwarmNode {
 
             // Use a gatewway
             } else {
-                console.log("Using Swarm gateway: "+Settings.swarmURL);
+                console.log('Using Swarm gateway: ' + Settings.swarmURL);
                 this._swarm = Swarm.at(Settings.swarmURL);
                 this._stop = () => {};
                 resolve(this);

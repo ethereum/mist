@@ -27,10 +27,11 @@ const cmp = require('semver-compare');
 const parseJson = require('xml2js').parseString;
 
 const options = minimist(process.argv.slice(2), {
-    string: ['platform', 'walletSource'],
+    string: ['platform', 'walletSource', 'test'],
     default: {
         platform: 'all',
         walletSource: 'master',
+        test: 'basic',
     },
 });
 
@@ -548,8 +549,9 @@ gulp.task('build-nsis', (cb) => {
 
 
 const testApp = (app) => {
+    // gulp test-mist [--test TESTFILEPREFIX]
     return gulp.src([
-        `./tests/${app}/*.test.js`,
+        `./tests/${app}/${options.test}.test.js`,
     ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',

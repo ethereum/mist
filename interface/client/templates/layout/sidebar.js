@@ -21,7 +21,7 @@ Template['layout_sidebar'].onRendered(function () {
         // tolerance: 'pointer',
         items: '> li:not(.browser)',
         handle: 'button.main',
-        cancel: '',
+        cancel: 'li.browser',
         cursor: 'move',
         delay: 150,
         revert: 200,

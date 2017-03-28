@@ -3,13 +3,13 @@
 var pinToSidebar = function() {
     var selectedTab = TemplateVar.get('tab');
 
-    if(selectedTab) {
+    if (selectedTab) {
         var existingUserTab = Helpers.getTabIdByUrl(selectedTab.url);
 
         console.log(existingUserTab);
         console.log(selectedTab);
 
-        if(existingUserTab === 'browser') {
+        if (existingUserTab === 'browser') {
             var newTabId = Tabs.insert({
                 url: selectedTab.url,
                 redirect: selectedTab.url,
@@ -20,7 +20,7 @@ var pinToSidebar = function() {
             });
             LocalStore.set('selectedTab', newTabId);
 
-        } else if(existingUserTab) {
+        } else if (existingUserTab) {
             LocalStore.set('selectedTab', existingUserTab);
         }
 
@@ -28,7 +28,7 @@ var pinToSidebar = function() {
             var sameLastPage;
 
             // move the current browser tab to the last visited page
-            var lastPageItems = LastVisitedPages.find({}, {limit: 2, sort: {timestamp: -1}}).fetch();
+            var lastPageItems = LastVisitedPages.find({}, { limit: 2, sort: { timestamp: -1 } }).fetch();
             var lastPage = lastPageItems.pop();
             var lastPageURL = lastPage ? lastPage.url : 'http://about:blank';
             Tabs.update('browser', {
@@ -37,21 +37,22 @@ var pinToSidebar = function() {
             });
 
             // remove last page form last pages
-            if(sameLastPage = LastVisitedPages.findOne({url: selectedTab.url}))
+            if (sameLastPage = LastVisitedPages.findOne({ url: selectedTab.url })) {
                 LastVisitedPages.remove(sameLastPage._id);
+            }
         }
     }
 };
 
 var updateSelectedTabAccounts = function(accounts){
     var tabId = TemplateVar.get('chosenTab')._id;
-    Tabs.update(tabId, {$set: {
+    Tabs.update(tabId, { $set: {
         'permissions.accounts': accounts
-    }});
+    } });
 };
 
 Template['popupWindows_connectAccount'].onCreated(function() {
-    this.autorun(function(){
+    this.autorun(function () {
         TemplateVar.set('tab', Tabs.findOne(LocalStore.get('chosenTab')));
 
         var tab = TemplateVar.get('tab');
@@ -67,7 +68,7 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dapp)
     */
-    dapp: function(){
+    dapp: function () {
         return TemplateVar.get('tab');
     },
     /**
@@ -75,9 +76,9 @@ Template['popupWindows_connectAccount'].helpers({
 
     @method (dappFriendlyURL)
     */
-    dappFriendlyURL: function(){
+    dappFriendlyURL: function () {
         var currentTab = TemplateVar.get('tab');
-        if (currentTab && currentTab.url){
+        if (currentTab && currentTab.url) {
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }
     },
@@ -87,7 +88,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method accountNumber
     @return {Number}
     */
-    'accountNumber': function(){
+    'accountNumber': function () {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
 
         return _.intersection(accounts, TemplateVar.get('accounts')).length;
@@ -98,7 +99,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method selectedAccounts
     @return {Array}
     */
-    'selectedAccounts': function() {
+    'selectedAccounts': function () {
         var accounts = _.pluck(EthAccounts.find().fetch(), 'address');
         return _.intersection(accounts, TemplateVar.get('accounts'));
     },
@@ -108,7 +109,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method selected
     @return {String} "selected"
     */
-    'selected': function(){
+    'selected': function () {
         return (_.contains(TemplateVar.get('accounts'), this.address)) ? 'selected' : '';
     }
 });
@@ -119,14 +120,15 @@ Template['popupWindows_connectAccount'].events({
 
     @event click .dapp-account-list button
     */
-    'click .dapp-account-list button': function(e, template) {
+    'click .dapp-account-list button': function (e, template) {
         e.preventDefault();
         var accounts = TemplateVar.get('accounts');
 
-        if(!_.contains(accounts, this.address))
+        if (!_.contains(accounts, this.address)) {
             accounts.push(this.address);
-        else
+        } else {
             accounts = _.without(accounts, this.address);
+        }
 
         TemplateVar.set(template, 'accounts', accounts);
     },
@@ -135,15 +137,15 @@ Template['popupWindows_connectAccount'].events({
 
     @event click .cancel
     */
-	'click .cancel': function(e) {
-		ipc.send('backendAction_closePopupWindow');
-	},
+    'click .cancel': function (e) {
+        ipc.send('backendAction_closePopupWindow');
+    },
     /**
     - Confirm or cancel the accounts available for this dapp and reload the dapp.
 
     @event click button.confirm, click button.cancel
     */
-    'click .ok, click .stay-anonymous': function(e) {
+    'click .ok, click .stay-anonymous': function (e) {
         e.preventDefault();
 
         var accounts = TemplateVar.get('accounts');
@@ -157,7 +159,7 @@ Template['popupWindows_connectAccount'].events({
 
         // reload the webview
         ipc.send('backendAction_windowMessageToOwner', null, accounts);
-        setTimeout(function(){
+        setTimeout(function () {
             ipc.send('backendAction_closePopupWindow');
         }, 600);
     },
@@ -166,7 +168,7 @@ Template['popupWindows_connectAccount'].events({
 
     @event click button.create-account
     */
-    'click button.create-account': function(e, template){
+    'click button.create-account': function (e, template) {
         ipc.send('mistAPI_createAccount');
     }
 });

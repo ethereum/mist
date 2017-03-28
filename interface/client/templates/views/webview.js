@@ -12,24 +12,24 @@ The tab template
 @constructor
 */
 
-Template['views_webview'].onRendered(function(){
+Template['views_webview'].onRendered(function () {
     var template = this,
         tabId = template.data._id,
         webview = template.find('webview');
 
 
-    ipc.on('uiAction_reloadSelectedTab', function(e) {
+    ipc.on('uiAction_reloadSelectedTab', function (e) {
         console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
-        if(LocalStore.get('selectedTab') === this._id){
+        if (LocalStore.get('selectedTab') === this._id) {
             var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
             webview.reload();
         }
     });
 
-    webview.addEventListener('did-start-loading', function(e){
+    webview.addEventListener('did-start-loading', function (e) {
         TemplateVar.set(template, 'loading', true);
     });
-    webview.addEventListener('did-stop-loading', function(e){
+    webview.addEventListener('did-stop-loading', function (e) {
         TemplateVar.set(template, 'loading', false);
     });
 
@@ -40,22 +40,22 @@ Template['views_webview'].onRendered(function(){
     webview.addEventListener('did-stop-loading', webviewChangeUrl.bind(webview, tabId));
 
     // set page history
-    webview.addEventListener('dom-ready', function(e){
+    webview.addEventListener('dom-ready', function (e) {
 
         var titleFull = webview.getTitle(),
             title = titleFull;
 
-        if(titleFull && titleFull.length > 40) {
+        if (titleFull && titleFull.length > 40) {
             title = titleFull.substr(0, 40);
             title += '…';
         }
 
         // update the title
-        Tabs.update(tabId, {$set: {
+        Tabs.update(tabId, { $set: {
             name: title,
             nameFull: titleFull,
             // url: webview.getURL(),
-        }});
+        } });
 
         webviewLoadStop.call(this, tabId, e);
     });
@@ -84,16 +84,16 @@ Template['views_webview'].helpers({
 
     @method (preloaderFile)
     */
-    'preloaderFile': function(){
-        switch(this._id) {
-            case 'browser':
-                return 'file://'+ Helpers.preloaderDirname +'/browser.js';
-            case 'wallet':
-                return 'file://'+ Helpers.preloaderDirname +'/wallet.js';
-            case 'tests':
-                return 'file://'+ Helpers.preloaderDirname +'/tests.js';
-            default:
-                return 'file://'+ Helpers.preloaderDirname +'/dapps.js';
+    'preloaderFile': function () {
+        switch (this._id) {
+        case 'browser':
+            return 'file://' + Helpers.preloaderDirname + '/browser.js';
+        case 'wallet':
+            return 'file://' + Helpers.preloaderDirname + '/wallet.js';
+        case 'tests':
+            return 'file://' + Helpers.preloaderDirname + '/tests.js';
+        default:
+            return 'file://' + Helpers.preloaderDirname + '/dapps.js';
         }
     },
     /**
@@ -101,7 +101,7 @@ Template['views_webview'].helpers({
 
     @method (isVisible)
     */
-    'isVisible': function(){
+    'isVisible': function () {
         return (LocalStore.get('selectedTab') === this._id) ? '' : 'hidden';
     },
     /**
@@ -109,48 +109,48 @@ Template['views_webview'].helpers({
 
     @method (checkedUrl)
     */
-    'checkedUrl': function(){
+    'checkedUrl': function () {
         var template = Template.instance();
-        var tab = Tabs.findOne(this._id, {fields: {redirect: 1}});
+        var tab = Tabs.findOne(this._id, { fields: { redirect: 1 } });
         var url;
 
-        if(tab) {
+        if (tab) {
 
             // set url only once
-            if(tab.redirect) {
+            if (tab.redirect) {
                 url = tab.redirect;
 
                 // remove redirect
-                Tabs.update(this._id, {$unset: {
+                Tabs.update(this._id, { $unset: {
                     redirect: ''
-                }});
+                } });
             }
 
             // allow error pages
-            if(url && url.indexOf('file://'+ dirname + '/errorPages/') === 0) {
+            if (url && url.indexOf('file://' + dirname + '/errorPages/') === 0) {
                 return url;
             }
 
             // CHECK URL and throw error if not allowed
-            if(!Helpers.sanitizeUrl(url, true)) {
+            if (!Helpers.sanitizeUrl(url, true)) {
 
                 // Prevent websites usingt the history back attacks
-                if(template.view.isRendered) {
+                if (template.view.isRendered) {
                     // get the current webview
                     var webview = template.find('webview');
                     webview.clearHistory();
                 }
 
-                console.warn('Not allowed URL: '+ template.url);
-                return 'file://'+ dirname + '/errorPages/400.html';
+                console.warn('Not allowed URL: ' + template.url);
+                return 'file://' + dirname + '/errorPages/400.html';
             }
 
             // add url
-            if(url) {
+            if (url) {
                 template.url = url;
-                Tabs.update(this._id, {$set: {
+                Tabs.update(this._id, { $set: {
                     url: url
-                }});
+                } });
             }
 
             return Helpers.formatUrl(url);

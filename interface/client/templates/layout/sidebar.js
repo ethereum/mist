@@ -21,7 +21,7 @@ Template['layout_sidebar'].onRendered(function () {
         // tolerance: 'pointer',
         items: '> li:not(.browser)',
         handle: 'button.main',
-        cancel: 'li.browser',
+        cancel: '.browser',
         cursor: 'move',
         delay: 150,
         revert: 200,
@@ -29,7 +29,6 @@ Template['layout_sidebar'].onRendered(function () {
             $ul.sortable('refreshPositions');
         },
         update: function (e) {
-            console.log('UPDATED');
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function (index, test) {
                 var id = $(this).data('tab-id');
@@ -216,7 +215,6 @@ Template['layout_sidebar'].events({
     'click .accounts button': function(e, template) {
         tabId = this._id;
         LocalStore.set('chosenTab', this._id);
-        console.log('chosenTab', tabId);
         mist.requestAccount(function(e, addresses){
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function(){
@@ -242,7 +240,6 @@ Template['layout_sidebar'].events({
         var submenuHeaderHeight = $this.find('header').outerHeight();
         var windowHeight = $(window).outerHeight();
 
-        console.log('heights', windowHeight, tabTopOffset, submenuHeaderHeight);
         $submenuContainer.css('top', tabTopOffset + 'px');
         $submenu.css('max-height', (windowHeight - tabTopOffset - submenuHeaderHeight - 30) + 'px');
     },

@@ -11,16 +11,16 @@ const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
 
-
 // parse commandline arguments
 const args = process.argv.slice(2);
 const platforms = (process.platform === 'darwin') ? ['mac', 'linux', 'win'] : ['linux', 'win'];
 const options = minimist(args, {
-    string: ['walletSource'],
+    string: ['walletSource', 'test'],
     boolean: _.flatten(['wallet', platforms]),
     default: {
         wallet: false,
         walletSource: 'master',
+        test: 'basic',
     },
 });
 

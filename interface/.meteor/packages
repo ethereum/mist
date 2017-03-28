@@ -14,7 +14,6 @@ frozeman:template-var
 frozeman:reactive-timer
 frozeman:storage
 frozeman:global-notifications
-numeral:numeral
 reactive-var@1.0.11
 sacha:spin
 chuangbo:cookie
@@ -43,3 +42,5 @@ standard-minifier-js@1.2.1
 tap:i18n-bundler
 shell-server
 ecmascript
+numeral:numeral
+numeral:languages

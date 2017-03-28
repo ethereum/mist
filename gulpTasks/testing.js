@@ -5,7 +5,7 @@ const options = require('../gulpfile.js').options;
 
 gulp.task('test', () => {
     return gulp.src([
-        `./tests/${options.type}/*.test.js`
+        `./tests/${options.type}/${options.test}.test.js`
     ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',

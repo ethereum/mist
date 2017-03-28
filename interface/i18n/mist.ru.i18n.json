@@ -133,7 +133,6 @@
             "nodeSyncInfoStates": "Загружено блоков __displayBlock__ из __highestBlock__, <br> Загружено частей структуры блокчейна __displayState__ из __displayKnownStates__",
             "nodeSyncConnecting": "Поиск пиров...",
             "nodeSyncFoundPeers": "Количество подключеных пиров __peers__...",
-            "nodeSyncingStopped": "Остановилась синхронизация Ethereum-ноды",
             "peerSearchTimeout": "Пропустить поиск пиров",
             "launchApp": "Запуск приложения",
             "clientBinaries": {
@@ -199,7 +198,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Etherium представляет собой децентрализованную платформу основанную на блокчейне для создания надежных и децентрализованных приложений",

@@ -214,9 +214,11 @@ Template['layout_sidebar'].events({
         mist.requestAccount(function(e, addresses){
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function(){
-                Tabs.update(tabId, {$set: {
-                    'permissions.accounts': addresses
-                }});
+                Tabs.update(tabId, {
+                    $set: {
+                        'permissions.accounts': addresses
+                    }
+                });
             });
         });
     },

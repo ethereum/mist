@@ -34,6 +34,10 @@
                 "backupKeyStore": "账户",
                 "backupMist": "应用程序数据"
             },
+            "swarm": {
+                "label": "Swarm",
+                "upload": "Upload"
+            },
             "develop": {
                 "label": "开发",
                 "devTools": "切换开发者工具",

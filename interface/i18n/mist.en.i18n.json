@@ -54,7 +54,7 @@
             },
             "swarm": {
                 "label": "Swarm",
-                "uploadFile": "Upload File"
+                "upload": "Upload"
             },
             "develop": {
                 "label": "Develop",

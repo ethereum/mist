@@ -184,6 +184,7 @@ onReady = () => {
     // Enable the Swarm protocol
     protocol.registerHttpProtocol('bzz', (request, callback) => {
       const redirectPath = Settings.swarmURL + '/' + request.url.replace('bzz:/', 'bzz://');
+      //callback({ mimeType: 'text/html', data: new Buffer('<h5>Response</h5>') })
       callback({ method: request.method, referrer: request.referrer, url: redirectPath });
     }, (e) => { if (e) console.log(e); });
 
@@ -308,6 +309,21 @@ onReady = () => {
             );
         });
 
+        // starting swarm
+        swarmNode.on('starting', () => {
+            Windows.broadcast('uiAction_swarmStatus', 'starting');
+        });
+
+        // swarm download progress
+        swarmNode.on('downloadProgress', (progress) => {
+            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+        });
+
+        // started swarm
+        swarmNode.on('started', (isLocal) => {
+            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+        });
+
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
@@ -361,7 +377,8 @@ onReady = () => {
             return swarmNode.init();
         })
         .then(function sanityCheck() {
-            console.log("Swarm node started");
+            console.log("STARTED SWARM");
+
             if (!ethereumNode.isIpcConnected) {
                 throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
             }

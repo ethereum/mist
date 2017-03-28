@@ -221,14 +221,19 @@ let menuTempl = function (webviews) {
                         properties: ['openFile', 'openDirectory']
                     });
                     if (paths && paths.length === 1) {
-                      const filePath = paths[0];
-                      swarmNode.upload({path: filePath, kind: "file"}).then(hash => {
+                      const isDir = fs.lstatSync(paths[0]).isDirectory();
+                      const defaultPath = path.join(paths[0], 'index.html');
+                      const uploadConfig = {
+                        path: paths[0],
+                        kind: isDir ? 'directory' : 'file',
+                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                      };
+                      swarmNode.upload(uploadConfig).then(hash => {
                         const Tabs = global.db.getCollection('UI_tabs');
-                        console.log("uploaded",hash);
                         focusedWindow.webContents.executeJavaScript(`
                           Tabs.update('browser', {$set: {
-                              url: "bzz://${hash}",
-                              redirect: "bzz://${hash}"
+                              url: 'bzz://${hash}',
+                              redirect: 'bzz://${hash}'
                           }});
                         `);
                       }).catch(e => console.log(e));

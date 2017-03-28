@@ -34,6 +34,10 @@
                 "backupKeyStore": "アカウント",
                 "backupMist": "アプリケーションデータ"
             },
+            "swarm": {
+                "label": "Swarm",
+                "upload": "Upload"
+            },
             "develop": {
                 "label": "Develop",
                 "devTools": "開発者用ツールをトグルする",

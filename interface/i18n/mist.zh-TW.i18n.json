@@ -34,6 +34,10 @@
                 "backupKeyStore": "帳號",
                 "backupMist": "應用程序數據"
             },
+            "swarm": {
+                "label": "Swarm",
+                "upload": "Upload"
+            },
             "develop": {
                 "label": "開發",
                 "devTools": "切換開發者工具",

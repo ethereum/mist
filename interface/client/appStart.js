@@ -25,6 +25,14 @@ mistInit = function () {
                 position: 0
             });
         }
+        else {
+            Tabs.upsert(
+                { _id: 'browser' },
+                {
+                    $set: { position: 0 }
+                }
+            );
+        }
 
         // overwrite wallet on start again, but use $set to dont remove titles
         Tabs.upsert(

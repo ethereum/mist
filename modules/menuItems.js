@@ -212,7 +212,7 @@ let menuTempl = function (webviews) {
         label: i18n.t('mist.applicationMenu.swarm.label'),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.swarm.uploadFile'),
+                label: i18n.t('mist.applicationMenu.swarm.upload'),
                 click() {
 
                     const focusedWindow = BrowserWindow.getFocusedWindow(); //Windows.getByType('main');

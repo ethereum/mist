@@ -43,7 +43,7 @@ class SwarmNode extends EventEmitter {
             });
     }
 
-    startLocalNode() {
+    startUsingLocalNode() {
         return this.getAccount().then((account) => {
           let totalSize = 26397454; // TODO: to config file?
           let totalDownloaded = 0;
@@ -80,29 +80,18 @@ class SwarmNode extends EventEmitter {
         this.emit('starting');
 
         if (Settings.swarmURL === 'http://localhost:8500') {
-            return this.startLocalNode();
+            return this.startUsingLocalNode();
         }
         else {
             return this.startUsingGateway();
         }
     }
 
-    /**
-     * Uploads data to Swarm netork.
-     * If pathOrContents is a buffer, uploads it.
-     * If it is an object mapping paths to buffers, uploads that directory.
-     * If it is a string, uploads the file/directory at that path.
-     * In that case, defaultFile can be set to define the directory root.
-     *
-     * @param  {(Buffer|Object|String)} pathOrContents
-     * @param  {String} [defaultFile]
-     * @return {Promise String}
-     */
-    upload(pathOrContents, defaultFile) {
+    upload(arg) {
         if (!this._swarm)
             return Q.reject(new Error('Swarm not initialized. Did you call swarmNode.init()?'));
 
-        return this._swarm.upload(pathOrContents, defaultFile);
+        return this._swarm.upload(arg);
     }
 
 }

@@ -28,8 +28,6 @@ matrix:
         - sudo dpkg --add-architecture i386 && sudo add-apt-repository ppa:ubuntu-wine/ppa -y
         - sudo apt-get update -q
         - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
-      after_script:
-        - makensis -V2 scripts/windows-installer.nsi
 
 
     # LINUX

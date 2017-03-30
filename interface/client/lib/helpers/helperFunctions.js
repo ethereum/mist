@@ -79,7 +79,7 @@ Format Urls, e.g add a default protocol if on is missing.
 @param {String} url
 **/
 Helpers.formatUrl = function (url) {
-    if (url && url.length == 64 && !!url.match(/^[0-9a-f]+$/)) {
+    if (url && url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
         // if the url looks like a hash, add bzz
         url = 'bzz://' + url;
     } else if (url && url.indexOf('://') === -1) {

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const Q = require('bluebird');
 const Loki = require('lokijs');
-const Settings = require('./settings');
 const log = require('./utils/logger').create('Db');
 
 
@@ -9,6 +8,9 @@ let db;
 
 
 exports.init = () => {
+
+    log.warn('init db')
+    const Settings = require('./settings');
     const filePath = Settings.dbFilePath;
 
     return Q.try(() => {

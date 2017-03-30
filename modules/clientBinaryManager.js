@@ -13,7 +13,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/luclu_dynamic-node-settings/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
@@ -73,7 +73,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;
@@ -105,7 +105,7 @@ class Manager extends EventEmitter {
             }
 
             // prepare node info
-            const platform = process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+            const platform = Settings.platform;
             const binaryVersion = latestConfig.clients[nodeType].platforms[platform][process.arch];
             const checksums = _.pick(binaryVersion.download, 'sha256', 'md5');
             const algorithm = _.keys(checksums)[0].toUpperCase();
@@ -181,8 +181,7 @@ class Manager extends EventEmitter {
             if (!localConfig) {
                 log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
 
-                const localConfigPath = path.join(Settings.userDataPath, 'clientBinaries.json');
-                localConfig = (fs.existsSync(localConfigPath)) ? require(localConfigPath) : require('../clientBinaries.json');  // eslint-disable-line no-param-reassign, global-require, import/no-dynamic-require, import/no-unresolved
+                localConfig = Settings.clientBinariesJSON;  // eslint-disable-line no-param-reassign
             }
 
             // scan for node

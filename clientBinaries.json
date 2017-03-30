@@ -50,6 +50,18 @@
                                 "args": ["version"],
                                 "output": [ "Geth", "1.5.9" ]
                             }
+                        },
+                        "paths": {
+                            "main": {
+                                "dataDir": "Library/Ethereum",
+                                "keystore": "keystore",
+                                "ipcFile": "geth.ipc"
+                            },
+                            "test": {
+                                "dataDir": "Library/Ethereum/testnet",
+                                "keystore": "keystore",
+                                "ipcFile": "geth.ipc"
+                            }
                         }
                     }
                 },

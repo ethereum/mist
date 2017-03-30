@@ -12,6 +12,13 @@ const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
+const db = require('./modules/db.js');
+
+global.db = db;
+
+let mainWindow;
+let splashWindow;
+let startMainWindow;
 
 Q.config({
     cancellation: true,
@@ -24,154 +31,15 @@ const log = logger.create('main');
 
 Settings.init();
 
-if (Settings.cli.version) {
-    log.info(Settings.appVersion);
-
-    process.exit(0);
-}
-
-if (Settings.cli.ignoreGpuBlacklist) {
-    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
-}
-
-if (Settings.inAutoTestMode) {
-    log.info('AUTOMATED TESTING');
-}
-
-log.info(`Running in production mode: ${Settings.inProductionMode}`);
-
-if (Settings.rpcMode === 'http') {
-    log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
-}
-
-// db
-const db = global.db = require('./modules/db');
-
-
 require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
-global.webviews = [];
+const onReady = () => {
+    global.config = db.getCollection('SYS_config');
 
-global.mining = false;
-
-global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
-global.mode = Settings.uiMode;
-global.dirname = __dirname;
-
-global.language = 'en';
-global.i18n = i18n; // TODO: detect language switches somehow
-
-
-// INTERFACE PATHS
-// - WALLET
-if (Settings.uiMode === 'wallet') {
-    log.info('Starting in Wallet mode');
-
-    global.interfaceAppUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
-        : 'http://localhost:3050';
-    global.interfacePopupsUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-// - MIST
-} else {
-    log.info('Starting in Mist mode');
-
-    let url = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-    if (Settings.cli.resetTabs) {
-        url += '?reset-tabs=true';
-    }
-
-    global.interfaceAppUrl = global.interfacePopupsUrl = url;
-}
-
-
-// prevent crashed and close gracefully
-process.on('uncaughtException', (error) => {
-    log.error('UNCAUGHT EXCEPTION', error);
-    app.quit();
-});
-
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    app.quit();
-});
-
-// Listen to custom protocole incoming messages, needs registering of URL schemes
-app.on('open-url', (e, url) => {
-    log.info('Open URL', url);
-});
-
-
-let killedSocketsAndNodes = false;
-
-app.on('before-quit', (event) => {
-    if (!killedSocketsAndNodes) {
-        log.info('Defer quitting until sockets and node are shut down');
-
-        event.preventDefault();
-
-        // sockets manager
-        Sockets.destroyAll()
-            .catch(() => {
-                log.error('Error shutting down sockets');
-            });
-
-        // delay quit, so the sockets can close
-        setTimeout(() => {
-            ethereumNode.stop()
-            .then(() => {
-                killedSocketsAndNodes = true;
-
-                return db.close();
-            })
-            .then(() => {
-                app.quit();
-            });
-        }, 500);
-    } else {
-        log.info('About to quit...');
-    }
-});
-
-
-let mainWindow;
-let splashWindow;
-let onReady;
-let startMainWindow;
-
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
-app.on('ready', () => {
-    // if using HTTP RPC then inform user
-    if (Settings.rpcMode === 'http') {
-        dialog.showErrorBox('Insecure RPC connection', `
-WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
-
-This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
-
-Only do this if you have secured your HTTP connection or you know what you are doing.
-`);
-    }
-
-    // initialise the db
-    global.db.init().then(onReady).catch((err) => {
-        log.error(err);
-        app.quit();
-    });
-});
-
-
-onReady = () => {
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -363,7 +231,7 @@ onReady = () => {
             return ethereumNode.send('eth_accounts', []);
         })
         .then(function onboarding(resultData) {
-            
+
             if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
                 log.info('No accounts setup yet, lets do onboarding first.');
 
@@ -444,6 +312,136 @@ onReady = () => {
         kickStart();
     }
 }; /* onReady() */
+
+// initialise the db
+db.init().then(onReady).catch((err) => {
+    this._log.error(err);
+    app.quit();
+});
+
+
+if (Settings.cli.version) {
+    log.info(Settings.appVersion);
+
+    process.exit(0);
+}
+
+if (Settings.cli.ignoreGpuBlacklist) {
+    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
+}
+
+if (Settings.inAutoTestMode) {
+    log.info('AUTOMATED TESTING');
+}
+
+log.info(`Running in production mode: ${Settings.inProductionMode}`);
+
+if (Settings.rpcMode === 'http') {
+    log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
+}
+
+
+global.webviews = [];
+
+global.mining = false;
+
+global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
+global.mode = Settings.uiMode;
+global.dirname = __dirname;
+global.i18n = i18n;
+
+// INTERFACE PATHS
+// - WALLET
+if (Settings.uiMode === 'wallet') {
+    log.info('Starting in Wallet mode');
+
+    global.interfaceAppUrl = (Settings.inProductionMode)
+        ? `file://${__dirname}/interface/wallet/index.html`
+        : 'http://localhost:3050';
+    global.interfacePopupsUrl = (Settings.inProductionMode)
+        ? `file://${__dirname}/interface/index.html`
+        : 'http://localhost:3000';
+
+// - MIST
+} else {
+    log.info('Starting in Mist mode');
+
+    let url = (Settings.inProductionMode)
+        ? `file://${__dirname}/interface/index.html`
+        : 'http://localhost:3000';
+
+    if (Settings.cli.resetTabs) {
+        url += '?reset-tabs=true';
+    }
+
+    global.interfaceAppUrl = global.interfacePopupsUrl = url;
+}
+
+
+// prevent crashed and close gracefully
+process.on('uncaughtException', (error) => {
+    log.error('UNCAUGHT EXCEPTION', error);
+    app.quit();
+});
+
+
+// Quit when all windows are closed.
+app.on('window-all-closed', () => {
+    app.quit();
+});
+
+// Listen to custom protocole incoming messages, needs registering of URL schemes
+app.on('open-url', (e, url) => {
+    log.info('Open URL', url);
+});
+
+
+let killedSocketsAndNodes = false;
+
+app.on('before-quit', (event) => {
+    if (!killedSocketsAndNodes) {
+        log.info('Defer quitting until sockets and node are shut down');
+
+        event.preventDefault();
+
+        // sockets manager
+        Sockets.destroyAll()
+            .catch(() => {
+                log.error('Error shutting down sockets');
+            });
+
+        // delay quit, so the sockets can close
+        setTimeout(() => {
+            ethereumNode.stop()
+            .then(() => {
+                killedSocketsAndNodes = true;
+
+                return global.db.close();
+            })
+            .then(() => {
+                app.quit();
+            });
+        }, 500);
+    } else {
+        log.info('About to quit...');
+    }
+});
+
+
+// This method will be called when Electron has done everything
+// initialization and ready for creating browser windows.
+app.on('ready', () => {
+    // if using HTTP RPC then inform user
+    if (Settings.rpcMode === 'http') {
+        dialog.showErrorBox('Insecure RPC connection', `
+WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
+
+This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
+
+Only do this if you have secured your HTTP connection or you know what you are doing.
+`);
+    }
+});
 
 
 /**

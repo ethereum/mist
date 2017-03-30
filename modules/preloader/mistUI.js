@@ -36,10 +36,6 @@ delete window.require;
 // delete window.Web3;
 
 
-// set the langauge for the electron interface
-// ipcRenderer.send('setLanguage', navigator.language.substr(0,2));
-
-
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
     console.log(type, id, error, value);

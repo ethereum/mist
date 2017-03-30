@@ -32,6 +32,8 @@ const createMenu = function (webviews) {
 
 const restartNode = function (newType, newNetwork) {
     newNetwork = newNetwork || ethereumNode.network;
+    Settings.nodeType = newType;
+    Settings.network = newNetwork;
 
     log.info('Switch node', newType, newNetwork);
 
@@ -246,12 +248,18 @@ let menuTempl = function (webviews) {
     });
 
     const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
-        browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${langCode}");`
-        );
-        ipc.emit('backendAction_setLanguage', {}, langCode);
+        try {
+            browserWindow.webContents.executeJavaScript(
+                `TAPi18n.setLanguage("${langCode}");`
+            );
+        } catch (err) {
+            log.error(err);
+        } finally {
+            Settings.language = langCode;
+            ipc.emit('backendAction_setLanguage');
+        }
     };
-    const currentLanguage = i18n.getBestMatchedLangCode(global.language);
+    const currentLanguage = Settings.language;
 
     const languageMenu =
     Object.keys(i18n.options.resources)
@@ -265,10 +273,10 @@ let menuTempl = function (webviews) {
         };
         return menuItem;
     });
-    const defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
+
     languageMenu.unshift({
         label: i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(defaultLang),
+        click: genSwitchLanguageFunc(Settings.language),
     }, {
         type: 'separator',
     });
@@ -441,7 +449,7 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'main');
+                    restartNode(Settings.nodeType, 'main');
                 },
             },
             {
@@ -451,7 +459,7 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'test');
+                    restartNode(Settings.nodeType, 'test');
                 },
             },
         ] });

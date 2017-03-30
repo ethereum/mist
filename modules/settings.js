@@ -80,6 +80,14 @@ const argv = require('yargs')
             type: 'boolean',
             group: 'Mist options:',
         },
+        clientbinaries: {
+            demand: false,
+            describe: 'Path to clientBinaries.json file to use instead of default.',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         'reset-tabs': {
             demand: false,
             describe: 'Reset Mist tabs to their default settings.',
@@ -149,6 +157,7 @@ class Settings {
         logger.setup(argv);
 
         this._log = logger.create('Settings');
+        this._log.warn('init settings')
     }
 
     get userDataPath() {
@@ -207,14 +216,15 @@ class Settings {
     }
 
     get rpcMode() {
-        if (argv.rpc && argv.rpc.indexOf('http') === 0)
+        if (argv.rpc && argv.rpc.indexOf('http') === 0) {
             return 'http';
+        }
         if (argv.rpc && argv.rpc.indexOf('ws:') === 0) {
             this._log.warn('Websockets are not yet supported by Mist, using default IPC connection');
             argv.rpc = null;
             return 'ipc';
-        } else
-            return 'ipc';
+        }
+        return 'ipc';
     }
 
     get rpcConnectConfig() {
@@ -233,44 +243,143 @@ class Settings {
         return (this.rpcMode === 'http') ? argv.rpc : null;
     }
 
+    get clientBinariesJSON() {
+        if (argv.clientbinaries) {
+            return require(path.resolve(argv.clientbinaries));
+        }
+
+        const downloadedConfig = path.join(this.userDataPath, 'clientBinaries.json');
+        const config = (fs.existsSync(downloadedConfig)) ? require(downloadedConfig) : require('../clientBinaries.json');  // eslint-disable-line global-require, import/no-dynamic-require
+        return config;
+    }
+
+    get nodeDataPath() {
+        // console.log(global.config.find('nodeDataPath'));
+        const json = this.clientBinariesJSON.clients;
+        const config = json.Geth.platforms[this.platform][process.arch];
+        const dataDir = path.join(this.userHomePath, config.paths.mainnet.dataDir);
+
+        return dataDir;
+    }
+
+    get platform() {
+        return process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+    }
+
+
     get rpcIpcPath() {
-        let ipcPath = (this.rpcMode === 'ipc') ? argv.rpc : null;
+        const ipcPaths = [];
+        if (argv.rpc && this.rpcMode === 'ipc') ipcPaths.push(argv.rpc);
 
-        if (ipcPath) {
-            return ipcPath;
+        if (!_.isEmpty(ipcPaths)) {
+            return ipcPaths[0];
         }
 
-        ipcPath = this.userHomePath;
+        const json = this.clientBinariesJSON.clients;
 
-        if (process.platform === 'darwin') {
-            ipcPath += '/Library/Ethereum/geth.ipc';
-        } else if (process.platform === 'freebsd' ||
-       process.platform === 'linux' ||
-       process.platform === 'sunos') {
-            ipcPath += '/.ethereum/geth.ipc';
-        } else if (process.platform === 'win32') {
-            ipcPath = '\\\\.\\pipe\\geth.ipc';
+        const config = json.Geth.platforms[this.platform][process.arch].paths;
+
+        _.each(config, (network) => {
+            const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
+            if (fs.existsSync(tmpPath)) ipcPaths.push(tmpPath);
+        });
+
+        if (_.isEmpty(ipcPaths)) {
+            this._log.warn(config[this.network])
+            const tmpPath = path.join(this.userHomePath,
+                config[this.network].dataDir,
+                config[this.network].ipcFile
+            );
+            return tmpPath;
         }
 
-        this._log.debug(`IPC path: ${ipcPath}`);
+        // TODO windows compatibility
+        // TODO array/string
 
-        return ipcPath;
-    }
 
-    get nodeType() {
-        return argv.node;
-    }
+        // TODO doesn't catch edge case:
+        // mainnet geth crashed leaving dead IPC file +
+        // valid external instance for testnet running (won't connect)
 
-    get network() {
-        return argv.network;
+        this._log.debug(`IPC path: ${ipcPaths}`);
+
+        return ipcPaths[0];
     }
 
     get nodeOptions() {
         return argv.nodeOptions;
     }
 
-    loadUserData(path) {
-        const fullPath = this.constructUserDataPath(path);
+    get nodeType() {
+        return (argv.node) ? argv.node : this.loadConfig('node.type');
+    }
+
+    set nodeType(type) {
+        this.saveConfig('node.type', type);
+    }
+
+    get network() {
+        return (argv.network) ? argv.network : this.loadConfig('node.network');
+    }
+
+    set network(network) {
+        this.saveConfig('node.network', network);
+    }
+
+    get language() {
+        return this.loadConfig('i18n');
+    }
+
+    set language(langCode) {
+        this.saveConfig('i18n', langCode);
+    }
+
+    initConfig() {
+        global.config.insert({
+            i18n: i18n.getBestMatchedLangCode(app.getLocale()),
+            node: {
+                type: 'geth',
+                network: 'main'
+            }
+        });
+    }
+
+    saveConfig(key, value) {
+        const query = {};
+        query[key] = {
+            $ne: ''
+        };
+
+        let obj = global.config.findOne(query);
+
+        if (!obj) {
+            this.initConfig();
+
+            obj = global.config.findOne(query);
+        } else if (eval(`obj.${key}`) !== value) {
+            eval(`obj.${key} = '${value}'`);
+            global.config.update(obj);
+        }
+    }
+
+    loadConfig(key) {
+        const query = {};
+        query[key] = {
+            $ne: ''
+        };
+
+        const obj = global.config.findOne(query);
+
+        if (!obj) {
+            this.initConfig();
+            return this.loadConfig(key);
+        }
+
+        return eval(`obj.${key}`);
+    }
+
+    loadUserData(path2) {
+        const fullPath = this.constructUserDataPath(path2);
 
         this._log.trace('Load user data', fullPath);
 

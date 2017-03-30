@@ -8,7 +8,7 @@ require('./include/setBasePath')('interface');
 
 
 // get and set language
-ipcRenderer.send('backendAction_setLanguage', navigator.language);
+ipcRenderer.send('backendAction_setLanguage');
 
 // disable pinch zoom
 webFrame.setZoomLevelLimits(1, 1);

@@ -237,7 +237,7 @@ let menuTempl = function (webviews) {
                           }});
                         `);
                       }).catch(e => console.log(e));
-                    };
+                    }
                 },
             }
         ]

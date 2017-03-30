@@ -2,12 +2,122 @@
 @module preloader browser
 */
 require('./include/common')('browser');
-require('./include/ethereumProvider.js');
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, webFrame, remote } = require('electron');
 const mist = require('./include/mistAPI.js');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/setBasePath')('interface');
+const packageJson = require('./../../package.json');
+const fs = remote.require('fs');
+const path = remote.require('path');
+
+
+// Wait for post messages
+window.addEventListener('message', function message(event) {
+    var data;
+    try {
+        data = JSON.parse(event.data);
+    } catch(e){
+        data = event.data;
+    }
+
+
+    if (typeof data !== 'object') {
+        return;
+    }
+
+    // EthereumProvider: connect
+    if (data.type === 'create') {
+        ipcRenderer.send('ipcProvider-create');
+
+    // EthereumProvider: write
+    } else if (data.type === 'write') {
+        // only accept valid JSON rpc requests
+        if(!Object.prototype.hasOwnProperty.call(data.message, 'method') ||
+            !Object.prototype.hasOwnProperty.call(data.message, 'id') ||
+            !Object.prototype.hasOwnProperty.call(data.message, 'params') ||
+            !Object.prototype.hasOwnProperty.call(data.message, 'jsonrpc')) {
+            return;
+        }
+
+        // make sure we only send allowed properties
+        ipcRenderer.send('ipcProvider-write', JSON.stringify({
+            jsonrpc: data.message.jsonrpc,
+            id: data.message.id,
+            method: data.message.method,
+            params: data.message.params
+        }));
+
+    // mistAPI
+    } else if (/^mistAPI_[a-z]/i.test(data.type)) {
+
+        if (data.type === 'mistAPI_requestAccount') {
+            ipcRenderer.send(data.type, data.message);
+        } else {
+            ipcRenderer.sendToHost(data.type, data.message);
+        }
+    }
+
+
+});
+
+var postMessage = function(payload) {
+    if(typeof payload === 'object') {
+        payload = JSON.stringify(payload);
+    }
+
+    window.postMessage(payload, (!location.origin || location.origin === "null" ) ? '*' : location.origin);
+};
+
+// custom Events
+['uiAction_windowMessage', 'mistAPI_callMenuFunction'].forEach(function (type) {
+    ipcRenderer.on(type, function onIpcRenderer(e, result) {
+
+        // this type needs special packaging
+        if(type === 'uiAction_windowMessage') {
+            result = {
+                type: arguments[1],
+                error: arguments[2],
+                value: arguments[3]
+            };
+        }
+
+        postMessage({
+            type: type,
+            message: result
+        });
+    });
+});
+
+// add IPCbackend events
+['data', 'error', 'end', 'timeout', 'connect'].forEach(function (type) {
+    ipcRenderer.on(`ipcProvider-`+ type, function onIpcRenderer(e, result) {
+        postMessage({
+            type: type,
+            message: JSON.parse(result)
+        });
+    });
+});
+
+
+// load ethereumProvider
+const bignumber = fs.readFileSync(path.resolve('./modules/preloader/injected/BigNumber.js')).toString();
+const eventEmitter3 = fs.readFileSync(path.resolve('./modules/preloader/injected/EventEmitter3.js')).toString();
+let mistAPI = fs.readFileSync(path.resolve('./modules/preloader/injected/mistAPI.js')).toString();
+const ethereumProvider = fs.readFileSync(path.resolve('./modules/preloader/injected/EthereumProvider.js')).toString();
+
+mistAPI = mistAPI.replace('__version__', packageJson.version)
+        .replace('__license__', packageJson.license)
+        .replace('__platform__', process.platform)
+        .replace('__solidityVersion__', String(packageJson.dependencies.solc).match(/\d+\.\d+\.\d+/)[0]);
+
+webFrame.executeJavaScript(
+    mistAPI +
+    bignumber +
+    eventEmitter3 +
+    ethereumProvider
+);
+
 
 // notifiy the tab to store the webview id
 ipcRenderer.sendToHost('setWebviewId');
@@ -15,18 +125,4 @@ ipcRenderer.sendToHost('setWebviewId');
 // destroy the old socket
 ipcRenderer.send('ipcProvider-destroy');
 
-// Security
-process.on('loaded', function () {
-    Object.freeze(window.JSON);
-    // Object.freeze(window.Function);
-    // Object.freeze(window.Function.prototype);
-    // Object.freeze(window.Array);
-    // Object.freeze(window.Array.prototype);
-});
 
-
-window.mist = mist();
-
-// prevent overwriting the Dapps Web3
-delete global.Web3;
-delete window.Web3;

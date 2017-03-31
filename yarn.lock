@@ -1057,9 +1057,9 @@ electron-window-state:
     jsonfile "^2.2.3"
     mkdirp "^0.5.1"
 
-electron@1.3.13:
-  version "1.3.13"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.3.13.tgz#a927783bfe3a689eb832a713ef515d31c8a2e406"
+electron@1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.6.2.tgz#b0ccd7703f86d09c4d2a7273455c3f993f158994"
   dependencies:
     electron-download "^3.0.1"
     extract-zip "^1.0.3"

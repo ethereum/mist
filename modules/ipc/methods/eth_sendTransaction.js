@@ -36,7 +36,7 @@ module.exports = class extends BaseProcessor {
             try {
                 _.each(payload.params[0], (val, key) => {
                     // if doesn't have hex then leave
-                    if (_.isString(val)) {
+                    if (_.isString(val) || _.isNumber(val)) {
 
                         // make sure all data is lowercase and has 0x
                         if (val) val = `0x${val.toLowerCase().replace('0x', '')}`;
@@ -44,6 +44,8 @@ module.exports = class extends BaseProcessor {
                         if (val.match(/[^0-9a-fx]/igm)) {
                             throw this.ERRORS.INVALID_PAYLOAD;
                         }
+                    } else {
+                        throw this.ERRORS.INVALID_PAYLOAD;
                     }
 
                     payload.params[0][key] = val;

@@ -249,6 +249,12 @@ let menuTempl = function (webviews) {
 
     const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
         try {
+            const session = browserWindow.webContents.session;
+            session.setUserAgent(session.getUserAgent(), Settings.language);
+
+            // TODO
+            // browserWindow.reload();
+
             browserWindow.webContents.executeJavaScript(
                 `TAPi18n.setLanguage("${langCode}");`
             );

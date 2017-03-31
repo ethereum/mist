@@ -177,5 +177,3 @@ Formats a number.
 @return {String} The formatted number
 **/
 Template.registerHelper('formatBalance', Helpers.formatBalance);
-
-

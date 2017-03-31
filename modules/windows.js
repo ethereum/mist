@@ -43,6 +43,10 @@ class Window extends EventEmitter {
 
         this.window = new BrowserWindow(electronOptions);
 
+        this.session = this.window.webContents.session;
+
+        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+
         this.webContents = this.window.webContents;
 
         this.webContents.once('did-finish-load', () => {
@@ -111,6 +115,13 @@ class Window extends EventEmitter {
         this._log.debug(`Load URL: ${url}`);
 
         this.window.loadURL(url);
+    }
+
+    reload() {
+        this._log.error('FAT error');
+        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+
+        this.window.reload();
     }
 
     send() {

@@ -25,7 +25,7 @@ CRCCheck on
 # Require admin privledges when UAC is on
 RequestExecutionLevel admin
 
-!define APPNAME "Mist"
+!searchreplace APPNAMENOHYPEN ${APPNAME} "-" " "
 !define GROUPNAME "Ethereum"
 !define HELPURL "https://github.com/ethereum/mist/releases/issues"
 !define UPDATEURL "https://github.com/ethereum/mist/releases"
@@ -39,8 +39,8 @@ RequestExecutionLevel admin
 
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
-Icon "..\dist_mist\build\icon.ico"
-OutFile "..\dist_mist\release\mist-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
+Icon "..\dist_${TYPE}\build\icon.ico"
+OutFile "..\dist_${TYPE}\release\${APPNAME}-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
 var FILEDIR
 var DATADIR
 var NODEDATADIR
@@ -66,7 +66,7 @@ ${EndIf}
     SetShellVarContext current
     StrCpy $DATADIR "$APPDATA\${APPNAME}"
     StrCpy $NODEDATADIR "$APPDATA\Ethereum"
-    StrCpy $SHORTCUTDIR "$SMPROGRAMS\${APPNAME}"
+    StrCpy $SHORTCUTDIR "$SMPROGRAMS\${APPNAMENOHYPEN}"
     StrCpy $DESKTOPDIR "$DESKTOP"
 
     ${If} ${RunningX64}
@@ -136,9 +136,9 @@ Section Mist MIST_IDX
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
     # include both architecture zip files
-    file "..\dist_mist\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-    file "..\dist_mist\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-    file "..\dist_mist\build\icon.ico"
+    file "..\dist_${TYPE}\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    file "..\dist_${TYPE}\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    file "..\dist_${TYPE}\build\icon.ico"
 
     # Extract the zip file from TEMP to the user's selected installation directory
     ${If} ${RunningX64}
@@ -148,21 +148,21 @@ Section Mist MIST_IDX
       ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
       StrCpy $ARCHDIR "win-ia32-unpacked"
     ${Endif}
-    
+
     # Move files out of subfolder
     !insertmacro MoveFolder "$FILEDIR\$ARCHDIR" "$FILEDIR" "*.*"
     # Copy icon from installer (not included in zip)
     !insertmacro MoveFile "$TEMP\icon.ico" "$FILEDIR\logo.ico"
- 
+
     # create the uninstaller
     WriteUninstaller "$FILEDIR\uninstall.exe"
- 
+
     # create shortcuts with flags in the start menu programs directory
     createDirectory "$SHORTCUTDIR"
-    createShortCut "$SHORTCUTDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$SHORTCUTDIR\${APPNAMENOHYPEN}.lnk" "$FILEDIR\${APPNAMENOHYPEN}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAMENOHYPEN}.exe" 0
 
     # create desktop shortcut
-    createShortCut "$DESKTOPDIR\${APPNAME}.lnk" "$FILEDIR\${APPNAME}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAME}.exe" 0
+    createShortCut "$DESKTOPDIR\${APPNAMENOHYPEN}.lnk" "$FILEDIR\${APPNAMENOHYPEN}.exe" '--node-datadir="$NODEDATADIR"' "$FILEDIR\${APPNAMENOHYPEN}.exe" 0
 
     # create a shortcut for the program uninstaller
     CreateShortCut "$SHORTCUTDIR\Uninstall.lnk" "$FILEDIR\uninstall.exe"
@@ -211,7 +211,7 @@ function un.onInit
   call un.setenv
   !insertmacro VerifyUserIsAdmin
 functionEnd
- 
+
 # uninstaller section start
 Section "uninstall"
     # get user settings from registry

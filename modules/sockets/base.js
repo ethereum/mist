@@ -104,6 +104,17 @@ class Socket extends EventEmitter {
             });
     }
 
+    resume() {
+        this._socket.resume.apply(this, arguments);
+    }
+
+    pause() {
+        this._socket.pause.apply(this, arguments);
+    }
+
+    pipe() {
+        this._socket.pipe.apply(this, arguments);
+    }
 
     /**
      * Disconnect from socket.

@@ -156,6 +156,11 @@ class Settings {
         return app.getPath('userData');
     }
 
+    get dbFilePath() {
+        const dbFileName = (this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
+        return path.join(this.userDataPath, dbFileName);
+    }
+
     get appDataPath() {
     // Application Support/
         return app.getPath('appData');
@@ -202,7 +207,14 @@ class Settings {
     }
 
     get rpcMode() {
-        return (argv.rpc && argv.rpc.indexOf('.ipc') < 0) ? 'http' : 'ipc';
+        if (argv.rpc && argv.rpc.indexOf('http') === 0)
+            return 'http';
+        if (argv.rpc && argv.rpc.indexOf('ws:') === 0) {
+            this._log.warn('Websockets are not yet supported by Mist, using default IPC connection');
+            argv.rpc = null;
+            return 'ipc';
+        } else
+            return 'ipc';
     }
 
     get rpcConnectConfig() {

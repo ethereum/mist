@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Cuentas",
-                "importPresale": "Importar Cuentas de la Pre-venta",
+                "importPresale": "Importar Cuentas",
                 "newAccount": "Nueva cuenta",
                 "backup": "Copia de seguridad",
                 "backupKeyStore": "Cuentas",
@@ -47,7 +47,11 @@
                 "mainNetwork": "Red principal",
                 "startMining": "⛏ Empezar a minar (sólo Testnet)",
                 "stopMining": "⛏ Parar de minar",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Ventana",
@@ -70,7 +74,7 @@
                 "linux": "Para permitir la sincronización con un servidor de tiempo instale \"ntp\" vía \"apt-get install ntp\".",
                 "darwin": "Para habilitar la sincronización del tiempo, abra las preferencias de tiempo y marque \"Ajuste la hora y la fecha automáticamente\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -130,7 +134,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "launchApp": "Launch Application",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -193,7 +196,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum es una plataforma descentralizada para la construcción de aplicaciones en una blockchain: segura y a prueba de manipulaciones que puede transferir valor, propiedad y vive para siempre",
@@ -237,7 +242,8 @@
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Elegir sus cuentas",

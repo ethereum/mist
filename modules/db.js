@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const Q = require('bluebird');
 const Loki = require('lokijs');
 const Settings = require('./settings');
@@ -10,7 +9,7 @@ let db;
 
 
 exports.init = () => {
-    const filePath = path.join(Settings.userDataPath, 'mist.lokidb');
+    const filePath = Settings.dbFilePath;
 
     return Q.try(() => {
         // if db file doesn't exist then create it

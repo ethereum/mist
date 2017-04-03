@@ -8,13 +8,12 @@ const test = require('../_base').mocha(module, {
     app: 'wallet',
 });
 
+test['Title test'] = function* () {
+    const client = this.client;
 
-test.title = function* () {
-    yield this.client.window(this.mainWindowHandle);
-
-    (yield this.client.getTitle()).should.eql('Ethereum Wallet');
-};
-
+    yield client.waitUntilWindowLoaded();
+    (yield client.getTitle()).should.eql('Ethereum Wallet');
+}
 
 test['account balances'] = function* () {
     const web3 = this.web3;
@@ -23,6 +22,8 @@ test['account balances'] = function* () {
     const realBalances = this.getRealAccountBalances();
     const appBalances = this.getUiAccountBalances();
 
+    realBalances.should.not.be.null;
+    realBalances.should.eql('5');
     appBalances.should.eql(realBalances);
 };
 

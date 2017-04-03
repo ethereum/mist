@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Kontoer",
-                "importPresale": "Importer Forhåndssalg Kontoer",
+                "importPresale": "Importer Kontoer",
                 "newAccount": "Ny konto",
                 "backup": "Sikkerhetskopier",
                 "backupKeyStore": "Kontoer",
@@ -47,7 +47,11 @@
                 "mainNetwork": "Hovednettverk",
                 "startMining": "⛏ Start Mining (Kun testnett)",
                 "stopMining": "⛏ Stopp Mining",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Vindu",
@@ -70,7 +74,7 @@
                 "linux": "For å aktivere en tidssynkroniseringsserver installer \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "For å aktivere tidssynkronisering, åpne tidsinnstillinger og velg \"Angi klokkeslett og dato automatisk\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -127,7 +131,6 @@
             "nodeSyncing": "Ethereum-node trenger å synkroniseres, vennligst vent...",
             "nodeSyncInfo": "Laster ned blokk __currentBlock__ av __highestBlock__.",
             "nodeSyncConnecting": "Leter etter peers...",
-            "nodeSyncingStopped": "Ethereum-node synkronisering stoppet",
             "peerSearchTimeout": "Hopp over peer søk",
             "launchApp": "Start Applikasjonen",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
@@ -193,7 +196,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum er en desentralisert plattform for å bygge applikasjoner på en blokkjede: sabotasjesikker programvare som kan overføre verdi og eiendom, og som lever evig",
@@ -237,7 +242,8 @@
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",

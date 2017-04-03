@@ -374,13 +374,14 @@ class EthereumNode extends EventEmitter {
                     } else {
                         // START GETH MAINNET
                         args = (mode === 'full')
-                            ? ['--fast', '--cache', '1024']
+                            ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
                             : ['--light'];
                     }
                 } else {
                     // START ETH
                     args = (network === 'test')
                         ? ['--ropsten', '--unsafe-transactions']
+
 
                         : ['--unsafe-transactions'];
                 }

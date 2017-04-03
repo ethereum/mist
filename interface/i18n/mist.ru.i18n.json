@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "Аккаунты",
-                "importPresale": "Импорт предпродажных аккаунтов",
+                "importPresale": "Импорт аккаунтов",
                 "newAccount": "Создать аккаунт",
                 "backup": "Резервное копирование",
                 "backupKeyStore": "Аккаунтов",
@@ -47,7 +47,11 @@
                 "mainNetwork": "Основная сеть",
                 "startMining": "⛏ Запустить майнинг (только для тестовой сети)",
                 "stopMining": "⛏ Остановить майнинг",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Окно",
@@ -70,7 +74,7 @@
                 "linux": "Чтобы использовать сервер синхронизации времени установите \"ntp\" через команду \"apt-get install ntp\".",
                 "darwin": "Для включения синхронизации времени откройте системные настройки и укажите: \"Устанавливать время и дату автоматически\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -129,7 +133,6 @@
             "nodeSyncInfoStates": "Загружено блоков __displayBlock__ из __highestBlock__, <br> Загружено частей структуры блокчейна __displayState__ из __displayKnownStates__",
             "nodeSyncConnecting": "Поиск пиров...",
             "nodeSyncFoundPeers": "Количество подключеных пиров __peers__...",
-            "nodeSyncingStopped": "Остановилась синхронизация Ethereum-ноды",
             "peerSearchTimeout": "Пропустить поиск пиров",
             "launchApp": "Запуск приложения",
             "clientBinaries": {
@@ -195,7 +198,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Etherium представляет собой децентрализованную платформу основанную на блокчейне для создания надежных и децентрализованных приложений",
@@ -239,19 +244,24 @@
                     "wrongPassword": "Неверный пароль.",
                     "importFailed": "Не удалось импортировать файл, дополнительно: __error__"
                 },
-                "accountTitleTestnet": "Mine some!"
-            },
-            "clientUpdateAvailable": {
-                "downloadAndRestart": "Update and Restart",
-                "download": "Update",
-                "skipUpdate": "Skip Update",
-                "newVersionAvailable": "New Ethereum node versions are available!"
+                "accountTitleTestnet": "Mine some!",
+                "startingSync": "Getting ready to sync.."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",
                 "createAccount": "Create new account",
                 "pinToSidebar": "Pin app to the sidebar",
                 "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
+            },
+            "requestAccount": {
+                "title": "Create account",
+                "enterPassword": "Enter password",
+                "repeatPassword": "Repeat password",
+                "creating": "Generating account...",
+                "errors": {
+                    "passwordMismatch": "Your passwords don't match.",
+                    "passwordTooShort": "Make a longer password"
+                }
             }
         }
     },

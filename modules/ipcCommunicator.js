@@ -5,10 +5,14 @@ Window communication
 */
 
 const _ = global._;
+const fs = require('fs');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
+const Settings = require('./settings');
+const ethereumNode = require('./ethereumNode.js');
+const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
 const log = logger.create('ipcCommunicator');
 
@@ -109,41 +113,96 @@ ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     e.returnValue = true;
 });
 
+// check wallet file
+ipc.on('backendAction_checkWalletFile', (e, path) => {
+    fs.readFile(path, 'utf8', (event, data) => {
+        try {
+            const keyfile = JSON.parse(data);
+            const result = keyfileRecognizer(keyfile);
+            /** result
+            *  [ 'ethersale', undefined ]   Ethersale keyfile
+            *               [ 'web3', 3 ]   web3 (v3) keyfile
+            *                        null   no valid  keyfile
+            */
 
-// import presale file
-ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
-    const spawn = require('child_process').spawn;
-    const ClientBinaryManager = require('./clientBinaryManager');
+            const type = _.first(result);
+
+            log.debug(`Importing ${type} account...`);
+
+            if (type === 'ethersale') {
+                e.sender.send('uiAction_checkedWalletFile', null, 'presale');
+            } else if (type === 'web3') {
+                e.sender.send('uiAction_checkedWalletFile', null, 'web3');
+
+                let keystorePath = Settings.userHomePath;
+                // eth
+                if (ethereumNode.isEth) {
+                    if (process.platform === 'win32') {
+                        keystorePath = `${Settings.appDataPath}\\Web3\\keys`;
+                    } else {
+                        keystorePath += '/.web3/keys';
+                    }
+                // geth
+                } else {
+                    if (process.platform === 'darwin') keystorePath += '/Library/Ethereum/keystore';
+
+                    if (process.platform === 'freebsd' ||
+                        process.platform === 'linux' ||
+                        process.platform === 'sunos') keystorePath += '/.ethereum/keystore';
+
+                    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                }
+
+                fs.writeFile(`${keystorePath}/0x${keyfile.address}`, data, (err) => {
+                    if (err) throw new Error("Can't write file to disk");
+                });
+            } else {
+                throw new Error('Account import: Cannot recognize keyfile (invalid)');
+            }
+        } catch (err) {
+            e.sender.send('uiAction_checkedWalletFile', null, 'invalid');
+            if (/Unexpected token . in JSON at position 0/.test(err.message) === true) {
+                log.error('Account import: Cannot recognize keyfile (no JSON)');
+            } else {
+                log.error(err);
+            }
+        }
+    });
+});
+
+
+// import presale wallet
+ipc.on('backendAction_importWalletFile', (e, path, pw) => {
+    const spawn = require('child_process').spawn;  // eslint-disable-line global-require
+    const ClientBinaryManager = require('./clientBinaryManager');  // eslint-disable-line global-require
     let error = false;
 
     const binPath = ClientBinaryManager.getClient('geth').binPath;
-
-    // start import process
     const nodeProcess = spawn(binPath, ['wallet', 'import', path]);
 
     nodeProcess.once('error', () => {
         error = true;
-        e.sender.send('uiAction_importedPresaleFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
+        e.sender.send('uiAction_importedWalletFile', 'Couldn\'t start the "geth wallet import <file.json>" process.');
     });
-    nodeProcess.stdout.on('data', (data) => {
-        var data = data.toString();
+    nodeProcess.stdout.on('data', (_data) => {
+        const data = _data.toString();
         if (data) {
             log.info('Imported presale: ', data);
         }
 
         if (/Decryption failed|not equal to expected addr|could not decrypt/.test(data)) {
-            e.sender.send('uiAction_importedPresaleFile', 'Decryption Failed');
+            e.sender.send('uiAction_importedWalletFile', 'Decryption Failed');
 
-        // if imported, return the address
+            // if imported, return the address
         } else if (data.indexOf('Address:') !== -1) {
             const find = data.match(/\{([a-f0-9]+)\}/i);
             if (find.length && find[1]) {
-                e.sender.send('uiAction_importedPresaleFile', null, `0x${find[1]}`);
+                e.sender.send('uiAction_importedWalletFile', null, `0x${find[1]}`);
             } else {
-                e.sender.send('uiAction_importedPresaleFile', data);
+                e.sender.send('uiAction_importedWalletFile', data);
             }
 
-        // if not stop, so we don't kill the process
+            // if not stop, so we don't kill the process
         } else {
             return;
         }
@@ -157,7 +216,7 @@ ipc.on('backendAction_importPresaleFile', (e, path, pw) => {
     setTimeout(() => {
         if (!error) {
             nodeProcess.stdin.write(`${pw}\n`);
-            pw = null;
+            pw = null;  // eslint-disable-line no-param-reassign
         }
     }, 2000);
 });
@@ -185,7 +244,7 @@ ipc.on('mistAPI_requestAccount', (e) => {
             ownerId: e.sender.id,
             electronOptions: {
                 width: 460,
-                height: 497,
+                height: 520,
                 maximizable: false,
                 minimizable: false,
                 alwaysOnTop: true,

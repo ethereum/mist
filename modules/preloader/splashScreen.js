@@ -1,8 +1,7 @@
 require('./include/common')('splashscreen');
+require('./include/ethereumProvider.js');
 const mist = require('./include/mistAPI.js');
 const { ipcRenderer, remote, webFrame } = require('electron');
-const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const Web3 = require('web3');
 
 require('./include/openExternal.js');
 require('./include/setBasePath')('interface');
@@ -18,4 +17,3 @@ window.ipc = ipcRenderer;
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
-window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));

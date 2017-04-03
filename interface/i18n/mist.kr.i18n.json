@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "계정",
-                "importPresale": "프리세일 계정 추가하기",
+                "importPresale": "계정 추가하기",
                 "newAccount": "새 계정",
                 "backup": "백업",
                 "backupKeyStore": "계정키 백업",
@@ -47,7 +47,11 @@
                 "mainNetwork": "메인 네트워크",
                 "startMining": "⛏ 채굴 시작(테스트넷만 해당)",
                 "stopMining": "⛏ 채굴 중단",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "창",
@@ -70,7 +74,7 @@
                 "linux": "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 의 방법으로 설치하세요.",
                 "darwin": "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -129,7 +133,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
             "clientBinaries": {
@@ -193,7 +196,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "이더리움은 블럭체인상에 앱을 만들기 위한 탈중앙화된 플랫폼이며, 이 블럭체인은 변조방지가능한 소프트웨어로서 가치와 자산을 전송할 수 있고 영구히 존속합니다.",
@@ -237,7 +242,8 @@
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",

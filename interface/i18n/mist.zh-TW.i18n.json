@@ -28,7 +28,7 @@
             },
             "accounts": {
                 "label": "帳號",
-                "importPresale": "導入預售帳號",
+                "importPresale": "導入帳號",
                 "newAccount": "新建帳號",
                 "backup": "備份",
                 "backupKeyStore": "帳號",
@@ -47,7 +47,11 @@
                 "mainNetwork": "主網路",
                 "startMining": "⛏ 開啓挖礦（僅限Testnet網路）",
                 "stopMining": "⛏ 停止挖礦",
-                "externalNode": "using external node"
+                "externalNode": "using external node",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "視窗",
@@ -70,7 +74,7 @@
                 "linux": "爲開啓時間同步伺服器，請通過\"apt-get install ntp\"安裝\"ntp\"。",
                 "darwin": "爲開啓時間同步，打開時間選項並勾選\"Set the time and date automatically\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
@@ -130,7 +134,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "launchApp": "Launch Application",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -193,7 +196,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "以太坊是一個用於在區塊鏈上創建應用的去中心化平台：一種用於轉移價值和資產，永遠存在並且無法被篡改的軟體",
@@ -237,7 +242,8 @@
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",

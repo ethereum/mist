@@ -5,7 +5,7 @@
                 "label": "__app__",
                 "about": "Über __app__",
                 "checkForUpdates": "Nach Aktualisierungen suchen...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
+                "checkForNodeUpdates": "Nach Ethereum Softwareknoten Aktualisierungen suchen...",
                 "services": "Dienste",
                 "hide": "__app__ ausblenden",
                 "hideOthers": "Andere ausblenden",
@@ -24,11 +24,11 @@
             "view": {
                 "label": "Ansicht",
                 "fullscreen": "Vollbildmodus",
-                "default": "Default"
+                "default": "Standard"
             },
             "accounts": {
                 "label": "Konten",
-                "importPresale": "Pre-sale-Konto importieren",
+                "importPresale": "Konto importieren",
                 "newAccount": "Neues Konto",
                 "backup": "Sicherung",
                 "backupKeyStore": "Konten",
@@ -42,12 +42,16 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Tests durchführen",
                 "logFiles": "Logdatei anzeigen",
-                "ethereumNode": "Ethereum Node",
+                "openRemix": "Remix IDE öffnen",
+                "ethereumNode": "Ethereum Softwareknoten",
                 "network": "Netzwerk",
                 "mainNetwork": "Hauptnetzwerk",
                 "startMining": "⛏ Mining starten (nur auf Testnetz)",
                 "stopMining": "⛏ Mining stoppen",
-                "externalNode": "using external node"
+                "externalNode": "externer Softwareknoten aktiv",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Fenster",
@@ -57,12 +61,12 @@
             },
             "help": {
                 "label": "Hilfe",
-                "reportBug": "Report an issue on Github"
+                "reportBug": "Ein Problem melden"
             }
         },
         "errors": {
-            "nodeConnect": "Es konnte keine Verbindung mit dem Node hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",
-            "nodeStartup": "Anscheinend konnte der Node nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",
+            "nodeConnect": "Es konnte keine Verbindung mit dem Softwareknoten hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",
+            "nodeStartup": "Anscheinend konnte der Softwareknoten nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",
             "timeSync": {
                 "title": "Deine Computer Uhr ist nicht synchronisiert!",
                 "description": "Um mit dem Ethereum netzwerk zu synchronisieren muss deine Computer Uhr mit einem Zeit-Server synchronisiert werden.",
@@ -70,9 +74,9 @@
                 "linux": "Um Zeit Synchronisation einzuschalten installiere \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Um Zeit Synchronisation einzuschalten, öffne die System Einstellungen und checke \"Zeit Datum automatisch\"."
             },
-           "nodeChecksumMismatch": {
-                "title": "Checksum mismatch in downloaded node!",
-                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+            "nodeChecksumMismatch": {
+                "title": "Prüfsumme des heruntergeladenen Softwareknotens stimmt nicht überein!",
+                "description": "__algorithm__: __hash__\n\nBitte installiere den Softwareknoten __type__ in Version __version__ manuell."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
@@ -111,34 +115,33 @@
             }
         },
         "startScreen": {
-            "runningNodeFound": "Laufender Ethereum Node gefunden!",
-            "startingNode": "Starte Ethereum Node...",
+            "runningNodeFound": "Laufender Ethereum Softwareknoten gefunden!",
+            "startingNode": "Starte Ethereum Softwareknoten...",
             "startedNode": "Starte Anwendung...",
-            "nodeConnectionTimeout": "Ethereum Node konnte nicht gestartet werden!<br><small>Wenn Sie <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert haben,</a>, verwenden Sie bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder senden Sie einen Fehlerreport</a></small>",
-            "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Node gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starten Sie den Ethereum Node manuell. </a> </small>",
-            "nodeSyncing": "Ethereum Node muss synchronisiert werden, bitte warten...",
+            "nodeConnectionTimeout": "Ethereum Softwareknoten konnte nicht gestartet werden!<br><small>Wenn Sie <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert haben,</a>, verwenden Sie bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder senden Sie einen Fehlerreport</a></small>",
+            "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Softwareknoten gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starten Sie den Ethereum Softwareknoten manuell. </a> </small>",
+            "nodeSyncing": "Ethereum Softwareknoten muss synchronisieren, bitte warten...",
             "nodeSyncInfo": "Block __displayBlock__ von __highestBlock__ wird heruntergeladen.",
             "nodeSyncConnecting": "Suche nach Peers...",
             "peerSearchTimeout": "Peer-Suche überspringen",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
-            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
-            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
-            "launchApp": "Launch Application",
+            "stoppingNode": "Stoppe Ethereum Softwareknoten...",
+            "nodeStarting": "Ethereum Softwareknoten startet...",
+            "nodeStarted": "Ethereum Softwareknoten gestartet",
+            "nodeConnected": "Ethereum Softwareknoten verbunden",
+            "nodeStopping": "Ethereum Softwareknoten stoppt...",
+            "nodeStopped": "Ethereum Softwareknoten gestoppt",
+            "nodeError": "Verbindungsproblem zum Ethereum Softwareknoten :'(",
+            "unableToBindPort": "Ethereum Softwareknoten kann nicht gestartet werden. Läuft bereits eine andere Instanz?",
+            "nodeSyncInfoStates": "Lade Block __displayBlock__ von __highestBlock__, <br> Lade chain structure __displayState__ von __displayKnownStates__",
+            "nodeSyncFoundPeers": "Verbinde mit __peers__ Peers...",
+            "launchApp": "Starte die Anwendung",
             "clientBinaries": {
-                "scanning": "Checking for node update...",
-                "downloading": "Downloading new node...",
-                "loadConfig": "Loading client config...",
+                "scanning": "Suche nach Softwareknoten Aktualisierung...",
+                "downloading": "Lade neue Softwareknoten-Version herunter...",
+                "loadConfig": "Lade Softwareknoten Konfiguration...",
                 "filtering": "Filtering client binaries...",
-                "done": "Ethereum node up-to-date...",
-                "error": "Error running downloaded binary."
+                "done": "Ethereum Softwareknoten aktuell...",
+                "error": "Ethereum Softwareknoten konnte nicht gestartet werden."
             }
         },
         "popupWindows": {
@@ -149,7 +152,7 @@
                 "creating": "Konto wird angelegt...",
                 "errors": {
                     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
-                    "passwordTooShort": "Make a longer password"
+                    "passwordTooShort": "Wähle ein längeres Passwort..."
                 }
             },
             "unlockMasterPassword": {
@@ -180,14 +183,14 @@
                     "sendTransaction": "Transaktion absenden"
                 },
                 "errors": {
-                    "connectionTimeout": "Eine Verbindung mit dem Node war nicht möglich, eventuell ist der Node im Hintergrund abgestürzt?",
+                    "connectionTimeout": "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
                     "wrongPassword": "Falsches Passwort",
                     "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
-                    "sameAccount": "Can't send to itself"
+                    "sameAccount": "Kann nicht zum gleichen Konto schicken."
                 },
-                "transactionThrow": "The contract won't allow this transaction to be executed",
-                "noEstimate": "We couldn't estimate the gas.",
+                "transactionThrow": "Der Vertrag wird diese Transaktion nicht ausführen können",
+                "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
                 "gasLimit": "Provide maximum fee",
                 "parameters": "Parameters",
                 "showRawBytecode": "show raw data",
@@ -202,8 +205,8 @@
                 "gotoMainnet": "Verwende das Hauptnetz",
                 "gotoMainnetDescription": " Sie werden etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden Ihnen helfen, etwas zu bekommen ...",
                 "doYouHaveAWalletFile": "Haben Sie eine Wallet-Datei?",
-                "walletFileDescription": "<p>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
-                "dropFilesHere": "Pre-sale Datei hochladen",
+                "walletFileDescription": "<p>Wallet-Datei zum importieren in dieses Fenster ziehen.<br>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
+                "dropFilesHere": "Pre-sale Datei laden",
                 "creating": "Erstellen...",
                 "importing": "Importieren...",
                 "skip": "Diesen Schritt überspringen",
@@ -230,14 +233,15 @@
                     "learnReceipt": "Lernen Sie dieses Rezept kennen"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Warten Sie noch einige Sekunden, bis der Node gestartet ist, und versuchen Sie es dann noch einmal",
+                    "nodeNotStartedYet": "Warten Sie noch einige Sekunden, bis der Softwareknoten gestartet ist, und versuchen Sie es dann noch einmal",
                     "unknownFile": "Datei nicht erkannt.",
                     "wrongPassword": "Falsches Passwort.",
                     "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
                 },
                 "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)"
+                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
+                "startingSync": "Getting ready to sync.."
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",

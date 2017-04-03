@@ -131,7 +131,13 @@ Template['layout_sidebar'].helpers({
     */
     'fullTabs': function () {
         return (LocalStore.get('fullTabs')) ? 'full-tabs' : '';
-    }
+    },
+    /**
+
+    */
+    'tabShouldBeRemovable': function () {
+        return !_.contains(['browser', 'wallet'], this._id);
+    },
 });
 
 

@@ -6,9 +6,6 @@ var pinToSidebar = function() {
     if (selectedTab) {
         var existingUserTab = Helpers.getTabIdByUrl(selectedTab.url);
 
-        console.log(existingUserTab);
-        console.log(selectedTab);
-
         if (existingUserTab === 'browser') {
             var newTabId = Tabs.insert({
                 url: selectedTab.url,

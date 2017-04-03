@@ -24,7 +24,7 @@
                                         <div class="badge">{{badge}}</div>
                                     {{/if}}
 
-                                    {{#if $neq _id 'browser'}}
+                                    {{#if tabShouldBeRemovable}}
                                         <button class="remove-tab"> &times; </button>
                                     {{/if}}
 

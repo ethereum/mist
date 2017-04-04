@@ -118,10 +118,8 @@ describe('Permissions', function () {
     describe('web3 parameter validation', function () {
 
         it('shouldn\'t allow RegExp (possible XSS)', function () {
-            var payload = 'document.body.innerHTML=\'Your accounts:\' +web3.personal.listAccounts.join(\'<li>\');return false;';
-            var xss = '</pre></div><button onclick="' + payload + '">AAA</button></div>';
             var add = '0x0000000000000000000000000000000000000000';
-            expect(function () { web3.eth.sendTransaction({ from: add, to: add, data: new RegExp(xss) }); }).to.throw('Payload, or some of its content properties are invalid. Please check if they are valid HEX with \'0x\' prefix.');
+            expect(function () { web3.eth.sendTransaction({ from: add, to: add, data: new RegExp('') }); }).to.throw('Payload, or some of its content properties are invalid. Please check if they are valid HEX with \'0x\' prefix.');
         });
     });
 

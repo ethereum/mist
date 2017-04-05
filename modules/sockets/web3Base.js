@@ -1,6 +1,6 @@
 const _ = global._;
 const Q = require('bluebird');
-const Dechunker = require('../ipc/dechunker.js');
+const oboe = require('oboe');
 const SocketBase = require('./base');
 
 const Socket = SocketBase.Socket;
@@ -10,11 +10,9 @@ module.exports = class Web3Socket extends Socket {
     constructor(socketMgr, id) {
         super(socketMgr, id);
 
-        this.dechunker = new Dechunker();
-
         this._sendRequests = {};
 
-        this.on('data', _.bind(this._handleSocketResponse, this));
+        this._handleSocketResponse();
     }
 
 
@@ -98,64 +96,66 @@ module.exports = class Web3Socket extends Socket {
     /**
      * Handle responses from Geth.
      */
-    _handleSocketResponse(data) {
-        this.dechunker.dechunk(data, (err, result) => {
-            this._log.trace('Dechunked response', result);
+    _handleSocketResponse() {
+        oboe(this)
+        .done((result) => {
+            this._log.trace('JSON response', result);
 
             try {
-                if (err) {
-                    this._log.error('Socket response error', err);
+           
+                const isBatch = _.isArray(result);
 
-                    _.each(this._sendRequests, (req) => {
-                        req.reject(err);
-                    });
+                const firstItem = isBatch ? result[0] : result;
 
-                    this._sendRequests = {};
-                } else {
-                    const isBatch = _.isArray(result);
+                const req = firstItem.id ? this._sendRequests[firstItem.id] : null;
 
-                    const firstItem = isBatch ? result[0] : result;
+                if (req) {
+                    this._log.trace(
+                        isBatch ? 'Batch response' : 'Response',
+                        firstItem.id, result
+                    );
 
-                    const req = firstItem.id ? this._sendRequests[firstItem.id] : null;
-
-                    if (req) {
-                        this._log.trace(
-                            isBatch ? 'Batch response' : 'Response',
-                            firstItem.id, result
-                        );
-
-                        // if we don't want full JSON result, send just the result
-                        if (!_.get(req, 'options.fullResult')) {
-                            if (isBatch) {
-                                result = _.map(result, r => r.result);
-                            } else {
-                                result = result.result;
-                            }
+                    // if we don't want full JSON result, send just the result
+                    if (!_.get(req, 'options.fullResult')) {
+                        if (isBatch) {
+                            result = _.map(result, r => r.result);
                         } else {
-                            // restore original ids
-                            if (isBatch) {
-                                req.origId.forEach((id, idx) => {
-                                    if (result[idx]) {
-                                        result[idx].id = id;
-                                    }
-                                });
-                            } else {
-                                result.id = req.origId;
-                            }
+                            result = result.result;
                         }
-
-                        req.resolve({
-                            isBatch,
-                            result,
-                        });
                     } else {
-                        // not a response to a request so pass it on as a notification
-                        this.emit('data-notification', result);
+                        // restore original ids
+                        if (isBatch) {
+                            req.origId.forEach((id, idx) => {
+                                if (result[idx]) {
+                                    result[idx].id = id;
+                                }
+                            });
+                        } else {
+                            result.id = req.origId;
+                        }
                     }
+
+                    req.resolve({
+                        isBatch,
+                        result,
+                    });
+                } else {
+                    // not a response to a request so pass it on as a notification
+                    this.emit('data-notification', result);
                 }
+
             } catch (err) {
                 this._log.error('Error handling socket response', err);
             }
+        })
+        .fail((err) => {
+            this._log.error('Socket response error', err);
+
+            _.each(this._sendRequests, (req) => {
+                req.reject(err);
+            });
+
+            this._sendRequests = {};
         });
     }
 };

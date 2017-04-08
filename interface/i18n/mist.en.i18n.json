@@ -246,7 +246,7 @@
                 "skip" : "Skip this step",
                 "next" : "Next",
                 "protectTitle" : "Protect your account",
-                "protectDescription" : "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
+                "protectDescription" : "Choose a password for your main account (etherbase). This one is a special account which will be used to pay the gas (computational fee) for contract executions. Make it as strong as if it would protect your house keys!",
                 "accountTitle" : "Load it up!",
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",

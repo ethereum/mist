@@ -133,8 +133,6 @@ for (const optIdx in argv) {
         if (argv[optIdx] !== true) {
             argv.nodeOptions.push(argv[optIdx]);
         }
-
-        break;
     }
 }
 

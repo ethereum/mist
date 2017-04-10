@@ -8,8 +8,8 @@
                 "checkForNodeUpdates": "Check for Ethereum node updates...",
                 "services": "Services",
                 "hide": "Hide __app__",
-                "hideOthers": "Hide Others",
-                "showAll": "Show All",
+                "hideOthers": "Hide others",
+                "showAll": "Show all",
                 "quit": "Quit __app__"
             },
             "edit": {
@@ -23,7 +23,7 @@
             },
             "view": {
                 "label": "View",
-                "fullscreen": "Toggle Fullscreen",
+                "fullscreen": "Toggle full screen",
                 "languages": "Change language",
                 "default": "Default",
                 "langCodes" : {
@@ -46,15 +46,15 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Accounts",
+                "importPresale": "Import accounts",
                 "newAccount": "New account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
-                "backupMist": "Application Data"
+                "backupMist": "Application data"
             },
             "develop": {
                 "label": "Develop",
-                "devTools": "Toggle Developer Tools",
+                "devTools": "Toggle developer tools",
                 "devToolsMistUI": "Mist UI",
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
@@ -68,15 +68,15 @@
                 "nodeMode": "Chain download",
                 "fullNode": "Store full blockchain",
                 "lightNode": "Use light Node (experimental!)",
-                "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "mainNetwork": "Main network",
+                "startMining": "⛏ Start mining (Testnet only)",
+                "stopMining": "⛏ Stop mining"
             },
             "window": {
                 "label": "Window",
                 "minimize": "Minimize",
                 "close": "Close",
-                "toFront": "Bring All to Front"
+                "toFront": "Bring all to front"
             },
             "help": {
                 "label": "Help",
@@ -85,12 +85,12 @@
         },
         "errors": {
             "nodeConnect": "Couldn't connect to node? See the logs for more:",
-            "nodeStartup": "It seems like the node couldn't be started, do you already have one running? Is it upgrading the database right now?",
+            "nodeStartup": "It seems like the node couldn't be started.  Do you already have one running? Is it upgrading the database right now?",
             "timeSync": {
                 "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network you need to sync your computer's clock with a time sync server.",
+                "description": "To successfully synchronize with the Ethereum network, you need to sync your computer's clock with a time sync server.",
                 "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
+                "linux": "To enable a time sync server, install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
             },
            "nodeChecksumMismatch": {
@@ -99,17 +99,17 @@
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain, use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
             "reload": "Reload",
-            "openDevTools": "Open Developer Tools",
-            "inspectElements": "Inspect Element"
+            "openDevTools": "Open developer tools",
+            "inspectElements": "Inspect element"
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "New Block Received",
+            "blockReceived": "New block received",
             "blockNumber": "Your latest block number",
             "timeSinceBlock": "Elapsed time since last block",
             "checkingWhichNetwork": "Checking network...",
@@ -117,8 +117,8 @@
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
             "mainnetExplain": "You are on the main Ethereum global network",
-            "testnetExplain": "You are on the __name__, DO NOT SEND any real ether to these addresses",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "testnetExplain": "You are on the __name__. DO NOT SEND any real Ether to these addresses",
+            "privatenetExplain": "You are on a private net. DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on",
             "peers": "peers"
         },
@@ -192,7 +192,7 @@
                 "enterPassword": "Enter master password",
                 "unlocking": "Unlocking...",
                 "errors": {
-                    "wrongPassword": "Password is wrong, try again."
+                    "wrongPassword": "Password is wrong.  Try again."
                 }
             },
             "sendTransactionConfirmation": {
@@ -223,7 +223,7 @@
                 "errors": {
                     "connectionTimeout": "Couldn't connect to the node, did it crash in the background?",
                     "wrongPassword": "Wrong password",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "multipleKeysMatchAddress": "Multiple keys match address.  Please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
                 },
@@ -235,23 +235,23 @@
             "onboarding": {
                 "description" : "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
                 "goToTestnet" : "Use the test network",
-                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real ether.",
+                "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real Ether.",
                 "gotoMainnet" : "Use the main network",
-                "gotoMainnetDescription" : "You’ll need some Ether in order to create and execute contracts. Don't worry, we'll help you get some...",
+                "gotoMainnetDescription" : "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",
                 "doYouHaveAWalletFile" : "Do you have a wallet file?",
-                "walletFileDescription" : "<p>Move any wallet file here to import.<br>If you participated on the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
+                "walletFileDescription" : "<p>Move any wallet file here to import.<br>If you participated in the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
                 "dropFilesHere" : "Drop wallet file",
                 "creating": "Creating...",
                 "importing": "Importing...",
                 "skip" : "Skip this step",
                 "next" : "Next",
                 "protectTitle" : "Protect your account",
-                "protectDescription" : "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
+                "protectDescription" : "Choose a password for your new account. Make it as strong as if it were to protect your house keys!",
                 "accountTitle" : "Load it up!",
                 "accountTitleTestnet" : "Mine some!",
-                "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
-                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
+                "etherDescription": "The ethereum network is based on a token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
+                "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using Shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
+                "mineItDescription": "<strong>On the testnet you can mine Ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit using Bitcoin",
@@ -261,7 +261,7 @@
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
                 "startingSync": "Getting ready to sync..",
-                "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
+                "tutorial1Description" : "<p> Now the only thing left to do is wait for the download to finish. Here are some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
                 "tutorial2Description" : "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
                 "tutorial3Description" : "<h4> Create a blockchain organization </h4> <p> Create an autonomous organization with rules on spending money and making decisions for you and your investors.</p>",
                 "buttons": {
@@ -281,13 +281,13 @@
                 "chooseAccountTitle": "Choose account",
                 "createAccount": "Create new account",
                 "pinToSidebar": "Pin app to the sidebar",
-                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
+                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information related to your accounts, including balances connected to it."
             }
         }
     },
     "elements": {
         "checksumAlert":"This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one",
+        "identiconHelper": "This is a security icon.  If there were any change to the address, the resulting icon would be a completely different one",
         "type": {
             "address" : "Address",
             "bool" : "Boolean",

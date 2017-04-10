@@ -225,7 +225,7 @@ babel-runtime@^5.8.25:
   dependencies:
     core-js "^1.0.0"
 
-babel-runtime@^6.22.0, babel-runtime@^6.9.2:
+babel-runtime@^6.9.2:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.22.0.tgz#1cf8b4ac67c77a4ddb0db2ae1f74de52ac4ca611"
   dependencies:
@@ -2627,9 +2627,9 @@ log4js@^1.1.0:
     semver "^5.3.0"
     streamroller "^0.2.1"
 
-lokijs@^1.4.2:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/lokijs/-/lokijs-1.4.2.tgz#0f176380f9930d117946fc7c15ccb4ca001ddb4a"
+lokijs@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/lokijs/-/lokijs-1.4.3.tgz#f2a47ba8d6991c92d6da6a5b35be79b674453abb"
 
 longest@^1.0.1:
   version "1.0.1"

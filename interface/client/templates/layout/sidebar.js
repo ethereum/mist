@@ -221,9 +221,9 @@ Template['layout_sidebar'].events({
     */
     'click .accounts button': function (e, template) {
         var initialTabCount = Tabs.find().fetch().length;
+        LocalStore.set('selectedTab', this._id);
         var initialTabId = this._id;
 
-        LocalStore.set('chosenTab', this._id);
         mist.requestAccount(function(e, addresses) {
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function () {

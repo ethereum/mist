@@ -110,6 +110,7 @@
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocks left",
             "blockReceived": "New Block Received",
+            "blockReceivedShort": "New block",
             "blockNumber": "Your latest block number",
             "timeSinceBlock": "Elapsed time since last block",
             "checkingWhichNetwork": "Checking network...",
@@ -125,6 +126,11 @@
         "sidebar": {
             "buttons": {
                 "browser": "Browse"
+            },
+            "submenu": {
+                "account": "Account",
+                "account_plural": "Accounts",
+                "connectAccounts": "Connect Accounts"
             }
         },
         "browserBar": {

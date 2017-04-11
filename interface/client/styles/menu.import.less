@@ -123,6 +123,7 @@ aside.sidebar {
             z-index: 1000;
             visibility: hidden;
             opacity: 0;
+            cursor: default;
 
             transition: 150ms linear all, 1ms linear top;
             transition-delay: 200ms;
@@ -263,6 +264,8 @@ aside.sidebar {
 
     .node-info {
         position: relative;
+        cursor: default;
+
         &::after {
             .gradient-tip();
             height: 20px;

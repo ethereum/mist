@@ -155,7 +155,7 @@ test['"file" protocol should be disallowed on browser bar'] = function* () { // 
     const filePath = 'file://' + path.join(__dirname, '..', 'fixtures', 'index.html');
 
     yield this.navigateTo(filePath);
-    yield Q.delay(1500);
+    yield Q.delay(2500);
     const browserBarText = yield this.getBrowserBarText();
     browserBarText.should.match(/errorPages ▸ 400.html$/);
 };

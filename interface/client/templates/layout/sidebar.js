@@ -219,11 +219,21 @@ Template['layout_sidebar'].events({
     @event click .accounts button'
     */
     'click .accounts button': function(e, template) {
-        tabId = this._id;
+        var initialTabCount = Tabs.find().fetch().length;
+        var initialTabId = this._id;
+
         LocalStore.set('chosenTab', this._id);
         mist.requestAccount(function(e, addresses){
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function(){
+                var tabCount = Tabs.find().fetch().length;
+                var tabId;
+                if (tabCount > initialTabCount) { // browse tab was pinned
+                    tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1});
+                }
+                else {
+                    tabId = initialTabId;
+                }
                 Tabs.update(tabId, {
                     $set: {
                         'permissions.accounts': addresses

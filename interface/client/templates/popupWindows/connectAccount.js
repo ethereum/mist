@@ -48,12 +48,12 @@ var updateSelectedTabAccounts = function(accounts){
     } });
 };
 
-Template['popupWindows_connectAccount'].onCreated(function() {
+Template['popupWindows_connectAccount'].onCreated(function () {
     this.autorun(function () {
         TemplateVar.set('tab', Tabs.findOne(LocalStore.get('chosenTab')));
 
         var tab = TemplateVar.get('tab');
-        var accounts = (tab && tab.permissions &&  tab.permissions.accounts) ? tab.permissions.accounts : [];
+        var accounts = (tab && tab.permissions && tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
     });
 });

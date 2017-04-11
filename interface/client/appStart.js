@@ -24,8 +24,7 @@ mistInit = function () {
                 redirect: 'https://ethereum.org',
                 position: 0
             });
-        }
-        else {
+        } else {
             Tabs.upsert(
                 { _id: 'browser' },
                 {

@@ -145,6 +145,3 @@ Template['elements_nodeInfo'].helpers({
         }
     }
 });
-
-
-

@@ -39,7 +39,7 @@ Template['layout_sidebar'].onRendered(function () {
         }
     });
 
-    template.$('[data-tab-id]').on('mouseover', function(){
+    template.$('[data-tab-id]').on('mouseover', function () {
     });
 });
 
@@ -102,12 +102,13 @@ Template['layout_sidebar'].helpers({
 
     @method (dappAccounts)
     */
-    'dappAccounts': function(limit) {
-        if(this.permissions){
-            if (limit)
-                return EthAccounts.find({address: {$in: this.permissions.accounts || []}}, {limit: limit});
-            else
-                return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
+    'dappAccounts': function (limit) {
+        if (this.permissions) {
+            if (limit) {
+                return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } },
+                    { limit: limit });
+            }
+            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
         }
     },
     /**
@@ -218,18 +219,18 @@ Template['layout_sidebar'].events({
 
     @event click .accounts button'
     */
-    'click .accounts button': function(e, template) {
+    'click .accounts button': function (e, template) {
         var initialTabCount = Tabs.find().fetch().length;
         var initialTabId = this._id;
 
         LocalStore.set('chosenTab', this._id);
-        mist.requestAccount(function(e, addresses){
+        mist.requestAccount(function(e, addresses) {
             dbSync.syncDataFromBackend(LastVisitedPages);
-            dbSync.syncDataFromBackend(Tabs).then(function(){
+            dbSync.syncDataFromBackend(Tabs).then(function () {
                 var tabCount = Tabs.find().fetch().length;
                 var tabId;
                 if (tabCount > initialTabCount) { // browse tab was pinned
-                    tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1});
+                    tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
                 }
                 else {
                     tabId = initialTabId;
@@ -248,7 +249,7 @@ Template['layout_sidebar'].events({
 
     @event mouseenter .sidebar-menu > li
     */
-    'mouseenter .sidebar-menu > li': function(e, template) {
+    'mouseenter .sidebar-menu > li': function (e, template) {
         var $this = $(e.currentTarget);
         var tabTopOffset = $this.offset().top;
         var $submenuContainer = $this.find('.submenu-container');

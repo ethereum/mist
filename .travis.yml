@@ -68,8 +68,8 @@ install:
 
 script:
   - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi  # disable macOS code-signing (production certificate) on develop branch
-  - if [[ $GULP_PLATFORM == "mac" ]]; travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
-  - if [[ $GULP_PLATFORM != "mac" ]]; gulp --$GULP_PLATFORM; fi
+  - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
+  - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi  # also build wallet if on master branch
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi  # prepare for integration testing
   - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi

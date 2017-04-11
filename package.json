@@ -24,7 +24,7 @@
     "i18next": "^6.1.1",
     "log-rotate": "^0.2.7",
     "log4js": "^1.1.0",
-    "lokijs": "^1.4.2",
+    "lokijs": "^1.4.3",
     "minimongo-standalone": "^1.1.0-3",
     "numeral": "^2.0.4",
     "oboe": "^2.1.3",

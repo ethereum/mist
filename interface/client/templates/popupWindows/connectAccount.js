@@ -1,6 +1,6 @@
 
 
-var pinToSidebar = function() {
+var pinToSidebar = function () {
     var selectedTab = TemplateVar.get('tab');
 
     if (selectedTab) {
@@ -41,7 +41,7 @@ var pinToSidebar = function() {
     }
 };
 
-var updateSelectedTabAccounts = function(accounts){
+var updateSelectedTabAccounts = function (accounts) {
     var tabId = TemplateVar.get('selectedTab')._id;
     Tabs.update(tabId, { $set: {
         'permissions.accounts': accounts

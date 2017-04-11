@@ -224,15 +224,14 @@ Template['layout_sidebar'].events({
         LocalStore.set('selectedTab', this._id);
         var initialTabId = this._id;
 
-        mist.requestAccount(function(e, addresses) {
+        mist.requestAccount(function (ev, addresses) {
             dbSync.syncDataFromBackend(LastVisitedPages);
             dbSync.syncDataFromBackend(Tabs).then(function () {
                 var tabCount = Tabs.find().fetch().length;
                 var tabId;
                 if (tabCount > initialTabCount) { // browse tab was pinned
                     tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
-                }
-                else {
+                } else {
                     tabId = initialTabId;
                 }
                 Tabs.update(tabId, {

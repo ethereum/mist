@@ -2,11 +2,11 @@ const EventEmitter = require('events').EventEmitter;
 const Q = require('bluebird');
 const Settings = require('./settings.js');
 const Swarm = require('swarm-js');
-const db = require('./db.js');
 const ethereumNode = require('./ethereumNode.js');
 const fsp = require('fs-promise');
 const log = require('./utils/logger').create('Swarm');
 const path = require('path');
+const fs = require('fs');
 
 class SwarmNode extends EventEmitter {
     constructor() {
@@ -17,54 +17,47 @@ class SwarmNode extends EventEmitter {
         this._accountPassword = 'SAP';
     }
 
-    getAccount() {
-        // Get swarm account from DB
-        const accounts = db.getCollection('UI_accounts');
-        const swarmAccounts = accounts.find({ type: 'swarm' });
-
-        // If it is there, return and resolve
-        if (swarmAccounts.length > 0) {
-            return new Promise(resolve => resolve(swarmAccounts[0]));
+    getKeyPath() {
+        // TODO: replace by web3.utils.randomHex when we use it
+        function randomHex(bytes) {
+            let hex = '';
+            for (let i = 0; i < bytes * 2; ++i) {
+                hex += (Math.random() * 16 | 0).toString(16);
+            }
+            return hex;
         }
 
-        // If it is not there, create it
-        return ethereumNode
-            .send('personal_newAccount', [this._accountPassword])
-            .then((addressResponse) => {
-                const swarmAccount = {
-                    name: 'swarmAccount',
-                    address: addressResponse.result,
-                    permissions: [],
-                    type: 'swarm',
-                    password: this._accountPassword
-                };
-                accounts.insert(swarmAccount);
-                return swarmAccount;
-            });
+        // Gets Swarm Key path
+        const swarmKeyDir = path.dirname(Settings.rpcIpcPath);
+        const swarmKeyPath = path.join(swarmKeyDir, 'swarmKey');
+
+        // Generates the key if not there
+        if (!fs.existsSync(swarmKeyPath)) {
+            fs.writeFileSync(swarmKeyPath, randomHex(32));
+        }
+
+        return swarmKeyPath;
     }
 
     startUsingLocalNode() {
-        return this.getAccount().then((account) => {
-          let totalSize = 26397454; // TODO: to config file?
-          let totalDownloaded = 0;
+        let totalSize = 26397454; // TODO: to config file?
+        let totalDownloaded = 0;
 
-          const config = {
-              account: account.address,
-              password: this._accountPassword,
-              dataDir: path.dirname(Settings.rpcIpcPath),
-              ethApi: Settings.rpcIpcPath,
-              onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)
-          }
+        const config = {
+            privateKey: this.getKeyPath(),
+            dataDir: path.dirname(Settings.rpcIpcPath),
+            ethApi: Settings.rpcIpcPath,
+            onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)
+        }
 
-          return new Q((resolve, reject) => {
-              Swarm.local(config)(swarm => new Q((stop) => {
-                  this.emit('started', true);
-                  this._stop = stop;
-                  this._swarm = swarm;
-                  resolve(this);
-              }));
-          });
-      });
+        return new Q((resolve, reject) => {
+            Swarm.local(config)(swarm => new Q((stop) => {
+                this.emit('started', true);
+                this._stop = stop;
+                this._swarm = swarm;
+                resolve(this);
+            }));
+        });
     }
 
     startUsingGateway() {

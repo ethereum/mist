@@ -247,18 +247,21 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
+    const switchLang = langCode => function (menuItem, browserWindow) {
         try {
             // set Accept_Language header
             const session = browserWindow.webContents.session;
             session.setUserAgent(session.getUserAgent(), langCode);
 
-            browserWindow.webContents.reload();
-
+            // set navigator.language (console only)
             // browserWindow.webContents.executeJavaScript(
-            //     // `TAPi18n.setLanguage("${langCode}");`
-            //     'webview.reload();'
+            //     `navigator.__defineGetter__('language', function () {
+            //         return ${langCode};
+            //     });`
             // );
+
+            // reload browserWindow to apply language change
+            // browserWindow.webContents.reload();
         } catch (err) {
             log.error(err);
         } finally {
@@ -266,24 +269,22 @@ let menuTempl = function (webviews) {
             ipc.emit('backendAction_setLanguage');
         }
     };
-    const currentLanguage = Settings.language;
 
-    const languageMenu =
-    Object.keys(i18n.options.resources)
+    const languageMenu = Object.keys(i18n.options.resources)
     .filter(langCode => langCode !== 'dev')
     .map((langCode) => {
         const menuItem = {
             label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === langCode),
-            click: genSwitchLanguageFunc(langCode),
+            checked: (langCode === Settings.language),
+            click: switchLang(langCode),
         };
         return menuItem;
     });
 
     languageMenu.unshift({
         label: i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(Settings.language),
+        click: switchLang(i18n.getBestMatchedLangCode(app.getLocale())),
     }, {
         type: 'separator',
     });

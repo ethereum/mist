@@ -101,7 +101,7 @@ ipc.on('backendAction_setLanguage', (e) => {
 });
 
 ipc.on('backendAction_getLanguage', (e) => {
-    e.sender.send('uiAction_getLanguage', Settings.language);
+    e.returnValue = Settings.language;
 });
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {

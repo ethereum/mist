@@ -67,10 +67,7 @@ Meteor.startup(function () {
 
     console.debug('Setting language');
 
-    ipc.send('backendAction_getLanguage');
-    ipc.on('uiAction_getLanguage', (e, lang) => {
-        TAPi18n.setLanguage(lang);
-    });
+    TAPi18n.setLanguage(ipc.sendSync('backendAction_getLanguage'));
 
     // change moment and numeral language, when language changes
     Tracker.autorun(function () {

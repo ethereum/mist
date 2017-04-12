@@ -7,7 +7,7 @@ require('./include/openExternal.js');
 require('./include/setBasePath')('interface');
 
 
-// get and set language
+// set appmenu language
 ipcRenderer.send('backendAction_setLanguage');
 
 // disable pinch zoom

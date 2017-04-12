@@ -34,11 +34,8 @@
                 "backupKeyStore": "Accounts",
                 "backupMist": "Dati applicativi"
             },
-            "swarm": {
-                "label": "Swarm",
-                "upload": "Upload"
-            },
             "develop": {
+                "uploadToSwarm": "Carica a Swarm",
                 "label": "Sviluppo",
                 "devTools": "Strumenti di sviluppo",
                 "devToolsMistUI": "Mist UI",

@@ -34,11 +34,8 @@
                 "backupKeyStore": "Kontoer",
                 "backupMist": "Applikasjonsdata"
             },
-            "swarm": {
-                "label": "Swarm",
-                "upload": "Upload"
-            },
             "develop": {
+                "uploadToSwarm": "Opplasting til Swarm",
                 "label": "Utvikle",
                 "devTools": "Veksle Mellom Utviklerverktøy",
                 "devToolsMistUI": "Mist UI",

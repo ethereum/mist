@@ -155,7 +155,6 @@ class Settings {
         logger.setup(argv);
 
         this._log = logger.create('Settings');
-        this._log.warn('init settings')
     }
 
     get userDataPath() {
@@ -229,6 +228,7 @@ class Settings {
         if (this.rpcMode === 'ipc') {
             return {
                 path: this.rpcIpcPath,
+                ownNode: this._ownNode
             };
         }
 
@@ -243,7 +243,7 @@ class Settings {
 
     get clientBinariesJSON() {
         if (argv.clientbinaries) {
-            return require(path.resolve(argv.clientbinaries));
+            return require(path.resolve(argv.clientbinaries));  // eslint-disable-line
         }
 
         const downloadedConfig = path.join(this.userDataPath, 'clientBinaries.json');
@@ -267,38 +267,31 @@ class Settings {
 
     get rpcIpcPath() {
         const ipcPaths = [];
+        this._ownNode = null;
+
+        // if declared use user specified IPC endpoint
         if (argv.rpc && this.rpcMode === 'ipc') ipcPaths.push(argv.rpc);
 
-        if (!_.isEmpty(ipcPaths)) {
-            return ipcPaths[0];
-        }
-
-        const json = this.clientBinariesJSON.clients;
-
-        const config = json.Geth.platforms[this.platform][process.arch].paths;
-
-        _.each(config, (network) => {
-            const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
-            if (fs.existsSync(tmpPath)) ipcPaths.push(tmpPath);
-        });
-
         if (_.isEmpty(ipcPaths)) {
-            this._log.warn(config[this.network])
-            const tmpPath = path.join(this.userHomePath,
-                config[this.network].dataDir,
-                config[this.network].ipcFile
-            );
-            return tmpPath;
+            // load possible IPC endpoint paths from clientBinaries.json
+            const json = this.clientBinariesJSON.clients;
+            const config = json.Geth.platforms[this.platform][process.arch].paths;
+
+            // check for existing IPC endpoints
+            _.each(config, (network) => {
+                const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
+                if (fs.existsSync(tmpPath)) ipcPaths.push(tmpPath);
+            });
+
+            if (_.isEmpty(ipcPaths)) {
+                // set IPC endpoint path for own node (read network from config)
+                ipcPaths.push(path.join(this.userHomePath,
+                    config[this.network].dataDir,
+                    config[this.network].ipcFile
+                ));
+                this._ownNode = true;
+            }
         }
-
-        // TODO windows compatibility
-        // TODO array/string
-
-
-        // TODO doesn't catch edge case:
-        // mainnet geth crashed leaving dead IPC file +
-        // valid external instance for testnet running (won't connect)
-
         this._log.debug(`IPC path: ${ipcPaths}`);
 
         return ipcPaths[0];
@@ -354,7 +347,6 @@ class Settings {
             this.deepEval(obj, key, value);
             global.config.update(obj);
         }
-        console.log(global.config.data)
     }
 
     loadConfig(key) {
@@ -372,7 +364,7 @@ class Settings {
         if (typeof is === 'string') {
             return this.deepEval(obj, is.split('.'), value);
         } else if (is.length === 1 && value !== undefined) {
-            return obj[is[0]] = value;
+            return obj[is[0]] = value;  // eslint-disable-line no-return-assign, no-param-reassign
         } else if (is.length === 0) {
             return obj;
         }

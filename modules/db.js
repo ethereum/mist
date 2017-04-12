@@ -9,7 +9,6 @@ let db;
 
 exports.init = () => {
 
-    log.warn('init db')
     const Settings = require('./settings');
     const filePath = Settings.dbFilePath;
 

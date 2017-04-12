@@ -25,8 +25,6 @@ class EthereumNode extends EventEmitter {
     constructor() {
         super();
 
-        log.warn('init ethereumNode')
-        // throw new Error();
         this.STATES = STATES;
 
         this._node = null;
@@ -114,6 +112,15 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init() {
+        if (Settings.rpcConnectConfig.ownNode) {
+            return this._start(Settings.nodeType, Settings.network)
+                .catch((err) => {
+                    log.error('Failed to start node', err);
+
+                    throw err;
+                });
+        }
+
         return this._socket.connect(Settings.rpcConnectConfig)
             .then(() => {
                 this.state = STATES.CONNECTED;

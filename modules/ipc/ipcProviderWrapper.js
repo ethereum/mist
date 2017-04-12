@@ -10,7 +10,14 @@ The IPC provider wrapper to communicate to the backend
 */
 
 const { ipcRenderer } = require('electron');
+const Socket = require('net').Socket;
+const inherits = require('util').inherits;
 
+
+module.exports = ipcProviderWrapper;
+
+
+inherits(ipcProviderWrapper, Socket);
 
 /**
 Gets the writable property.
@@ -24,8 +31,12 @@ ipcRenderer.on('ipcProvider-setWritable', (e, writable) => {
 });
 
 
-const ipcProviderWrapper = {
-    writable: false,
+function ipcProviderWrapper(){
+    Socket.call(this);
+};
+
+// const ipcProviderWrapper = {
+    // writable: false,
 
     /**
     Connects the IPC on the backend to the geth node
@@ -35,13 +46,14 @@ const ipcProviderWrapper = {
 
     @method connect
     */
-    connect(path) {
+    ipcProviderWrapper.prototype.connect = function(path) {
         // console.debug('ipcProviderWrapper: connect');
 
         ipcRenderer.send('ipcProvider-create', path);
 
         return this;
-    },
+    };
+
     /**
     Returns data from the IPC through the backend
 
@@ -49,13 +61,15 @@ const ipcProviderWrapper = {
     @param {String} name `connect`, `error`, `end`, `timeout` or `data`
     @param  {Funciton} callback
     */
-    on(name, callback) {
+    ipcProviderWrapper.prototype.on = function(name, callback) {
         // console.debug('ipcProviderWrapper: add listener', name);
 
         ipcRenderer.on(`ipcProvider-${name}`, (e, result) => {
+
             callback(result);
         });
-    },
+    };
+    ipcProviderWrapper.prototype.addListener = ipcProviderWrapper.prototype.on;
     /**
     Returns data from the IPC through the backend
 
@@ -63,30 +77,30 @@ const ipcProviderWrapper = {
     @param {String} name `connect`, `error`, `end`, `timeout` or `data`
     @param  {Funciton} callback
     */
-    once(name, callback) {
+    ipcProviderWrapper.prototype.once = function(name, callback) {
         // console.debug('ipcProviderWrapper: add listener', name);
 
         ipcRenderer.once(`ipcProvider-${name}`, (e, result) => {
             callback(result);
         });
-    },
+    };
     /**
     Removes listener
 
     @method removeListener
     */
-    removeListener(name, callback) {
+    ipcProviderWrapper.prototype.removeListener = function(name, callback) {
         // console.debug('ipcProviderWrapper: remove listener', name);
 
         ipcRenderer.removeListener(`ipcProvider-${name}`, callback);
-    },
+    };
 
     /**
     Removes all listeners
 
     @method removeAllListeners
     */
-    removeAllListeners(name) {
+    ipcProviderWrapper.prototype.removeAllListeners = function(name) {
         // console.debug('ipcProviderWrapper: remove all listeners', name);
 
         if (name) {
@@ -97,29 +111,27 @@ const ipcProviderWrapper = {
             ipcRenderer.removeAllListeners('ipcProvider-timeout');
             ipcRenderer.removeAllListeners('ipcProvider-connect');
         }
-    },
+    };
     /**
     Write to the IPC connection through the backend
 
     @method write
     */
-    write(payload) {
+    ipcProviderWrapper.prototype.write = function(payload) {
         // console.debug('ipcProviderWrapper: write payload');
 
         ipcRenderer.send('ipcProvider-write', payload);
-    },
+    };
     /**
     Write synchronous to the IPC connection through the backend
 
+    DEPRECATED
+
     @method writeSync
     */
-    writeSync(payload) {
+    ipcProviderWrapper.prototype.writeSync = function(payload) {
         // console.debug('ipcProviderWrapper: write payload (sync)');
 
         return ipcRenderer.sendSync('ipcProvider-writeSync', payload);
-    },
+    };
 
-};
-
-
-module.exports = ipcProviderWrapper;

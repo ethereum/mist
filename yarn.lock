@@ -4389,6 +4389,12 @@ wdio-dot-reporter@^0.0.6:
   dependencies:
     babel-runtime "^5.8.25"
 
+web3-stream-provider@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/web3-stream-provider/-/web3-stream-provider-2.0.8.tgz#0203719fd5eda16c2caf5850fa4aed5518edeeaa"
+  dependencies:
+    readable-stream "^2.0.5"
+
 web3@^0.18.2:
   version "0.18.2"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.18.2.tgz#61b1a6edf5056820e22e1ef082f54c279f4bf758"

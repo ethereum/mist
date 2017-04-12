@@ -34,11 +34,8 @@
                 "backupKeyStore": "Contas",
                 "backupMist": "Carteiras, contratos e etc"
             },
-            "swarm": {
-                "label": "Swarm",
-                "upload": "Upload"
-            },
             "develop": {
+                "uploadToSwarm": "Upload no Swarm",
                 "label": "Desenvolvimento",
                 "devTools": "Mostrar ferramentas de desenvolvedor",
                 "devToolsMistUI": "Interface Mist",

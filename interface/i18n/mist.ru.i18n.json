@@ -34,11 +34,8 @@
                 "backupKeyStore": "Аккаунтов",
                 "backupMist": "Данных приложения"
             },
-            "swarm": {
-                "label": "Swarm",
-                "upload": "Upload"
-            },
             "develop": {
+                "uploadToSwarm": "Загрузить в Swarm",
                 "label": "Дополнительно",
                 "devTools": "Выбрать инструмент разработчика",
                 "devToolsMistUI": "Mist UI",

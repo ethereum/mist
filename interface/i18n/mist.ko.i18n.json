@@ -34,11 +34,8 @@
                 "backupKeyStore": "계정키 백업",
                 "backupMist": "어플리케이션 데이터"
             },
-            "swarm": {
-                "label": "Swarm",
-                "upload": "Upload"
-            },
             "develop": {
+                "uploadToSwarm": "Swarm에 업로드",
                 "label": "개발",
                 "devTools": "개발도구 전환",
                 "devToolsMistUI": "미스트 UI",

@@ -343,37 +343,40 @@ class Settings {
     }
 
     saveConfig(key, value) {
-        const query = {};
-        query[key] = {
-            $ne: ''
-        };
-
-        let obj = global.config.findOne(query);
+        let obj = global.config.get(1);
 
         if (!obj) {
             this.initConfig();
+            obj = global.config.get(1);
+        }
 
-            obj = global.config.findOne(query);
-        } else if (eval(`obj.${key}`) !== value) {
-            eval(`obj.${key} = '${value}'`);
+        if (this.deepEval(obj, key) !== value) {
+            this.deepEval(obj, key, value);
             global.config.update(obj);
         }
+        console.log(global.config.data)
     }
 
     loadConfig(key) {
-        const query = {};
-        query[key] = {
-            $ne: ''
-        };
-
-        const obj = global.config.findOne(query);
+        const obj = global.config.get(1);
 
         if (!obj) {
             this.initConfig();
             return this.loadConfig(key);
         }
 
-        return eval(`obj.${key}`);
+        return this.deepEval(obj, key);
+    }
+
+    deepEval(obj, is, value) {
+        if (typeof is === 'string') {
+            return this.deepEval(obj, is.split('.'), value);
+        } else if (is.length === 1 && value !== undefined) {
+            return obj[is[0]] = value;
+        } else if (is.length === 0) {
+            return obj;
+        }
+        return this.deepEval(obj[is[0]], is.slice(1), value);
     }
 
     loadUserData(path2) {

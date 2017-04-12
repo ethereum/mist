@@ -117,13 +117,6 @@ class Window extends EventEmitter {
         this.window.loadURL(url);
     }
 
-    reload() {
-        this._log.error('FAT error');
-        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
-
-        this.window.reload();
-    }
-
     send() {
         if (this.isClosed || !this.isContentReady) {
             return;

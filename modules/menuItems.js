@@ -249,15 +249,16 @@ let menuTempl = function (webviews) {
 
     const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
         try {
+            // set Accept_Language header
             const session = browserWindow.webContents.session;
-            session.setUserAgent(session.getUserAgent(), Settings.language);
+            session.setUserAgent(session.getUserAgent(), langCode);
 
-            // TODO
-            // browserWindow.reload();
+            browserWindow.webContents.reload();
 
-            browserWindow.webContents.executeJavaScript(
-                `TAPi18n.setLanguage("${langCode}");`
-            );
+            // browserWindow.webContents.executeJavaScript(
+            //     // `TAPi18n.setLanguage("${langCode}");`
+            //     'webview.reload();'
+            // );
         } catch (err) {
             log.error(err);
         } finally {

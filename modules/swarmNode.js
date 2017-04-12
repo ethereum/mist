@@ -43,10 +43,14 @@ class SwarmNode extends EventEmitter {
         let totalSize = 26397454; // TODO: to config file?
         let totalDownloaded = 0;
 
+        const swarmBinDir = path.dirname(Settings.rpcIpcPath);
+        const swarmBinPath = path.join(swarmBinDir, 'swarm');
+
         const config = {
             privateKey: this.getKeyPath(),
             dataDir: path.dirname(Settings.rpcIpcPath),
             ethApi: Settings.rpcIpcPath,
+            binPath: swarmBinPath,
             onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)
         }
 

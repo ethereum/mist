@@ -1,7 +1,7 @@
 
 {
     "clients": {
-        "Geth": {
+        "geth": {
             "version": "1.5.9",
             "platforms": {
                 "linux": {

@@ -13,7 +13,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/0281a97d6140a6dadd4c49b668398312711f9281/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
@@ -49,7 +49,7 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
-        const nodeType = 'Geth';
+        const nodeType = 'geth';
         let binariesDownloaded = false;
         let nodeInfo;
 
@@ -191,12 +191,11 @@ class Manager extends EventEmitter {
 
             this._emit('scanning', 'Scanning for binaries');
 
-            return mgr.init({
-                folders: [
-                    path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
-                    path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
-                ],
-            })
+            const folders = [];
+            _.keys(localConfig.clients).forEach((client) => {
+                folders.push(path.join(Settings.userDataPath, 'binaries', client, 'unpacked'));
+            });
+            return mgr.init({ folders })
             .then(() => {
                 const clients = mgr.clients;
 

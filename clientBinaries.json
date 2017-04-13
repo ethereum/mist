@@ -1,7 +1,11 @@
 
 {
+    "defaults": {
+        "nodeType": "geth",
+        "networkPriority": ["1", "3"]
+    },
     "clients": {
-        "Geth": {
+        "geth": {
             "version": "1.5.9",
             "platforms": {
                 "linux": {
@@ -51,16 +55,20 @@
                                 "output": [ "Geth", "1.5.9" ]
                             }
                         },
-                        "paths": {
-                            "main": {
+                        "networks": {
+                            "1": {
+                                "name": "mainnet",
                                 "dataDir": "Library/Ethereum",
                                 "keystore": "keystore",
-                                "ipcFile": "geth.ipc"
+                                "ipcFile": "geth.ipc",
+                                "args": ["fast"]
                             },
-                            "test": {
+                            "3": {
+                                "name": "ropsten",
                                 "dataDir": "Library/Ethereum/testnet",
                                 "keystore": "keystore",
-                                "ipcFile": "geth.ipc"
+                                "ipcFile": "geth.ipc",
+                                "args": ["fast", "testnet"]
                             }
                         }
                     }

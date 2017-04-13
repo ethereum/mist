@@ -357,7 +357,7 @@ class EthereumNode extends EventEmitter {
                 // START TESTNET
                 if (network === 'test') {
                     args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
+                        ? ['--testnet', '--fast']
                         : ['--morden', '--unsafe-transactions'];
                 }
                 // START MAINNET

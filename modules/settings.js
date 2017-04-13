@@ -254,7 +254,7 @@ class Settings {
     get nodeDataPath() {
         // console.log(global.config.find('nodeDataPath'));
         const json = this.clientBinariesJSON.clients;
-        const config = json.Geth.platforms[this.platform][process.arch];
+        const config = json[this.nodeType].platforms[this.platform][process.arch];
         const dataDir = path.join(this.userHomePath, config.paths.mainnet.dataDir);
 
         return dataDir;
@@ -275,10 +275,10 @@ class Settings {
         if (_.isEmpty(ipcPaths)) {
             // load possible IPC endpoint paths from clientBinaries.json
             const json = this.clientBinariesJSON.clients;
-            const config = json.Geth.platforms[this.platform][process.arch].paths;
+            const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
 
             // check for existing IPC endpoints
-            _.each(config, (network) => {
+            _.each(networks, (network) => {
                 const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
                 if (fs.existsSync(tmpPath)) ipcPaths.push(tmpPath);
             });
@@ -286,8 +286,8 @@ class Settings {
             if (_.isEmpty(ipcPaths)) {
                 // set IPC endpoint path for own node (read network from config)
                 ipcPaths.push(path.join(this.userHomePath,
-                    config[this.network].dataDir,
-                    config[this.network].ipcFile
+                    networks[this.network].dataDir,
+                    networks[this.network].ipcFile
                 ));
                 this._ownNode = true;
             }
@@ -302,7 +302,15 @@ class Settings {
     }
 
     get nodeType() {
-        return (argv.node) ? argv.node : this.loadConfig('node.type');
+        if (argv.node) return argv.node;
+
+        const json = this.clientBinariesJSON;
+
+        _.keys(json.clients).forEach((client) => {  // eslint-disable-line consistent-return
+            if (client === this.loadConfig('node.type')) return client;
+        });
+
+        return json.defaults.nodeType;
     }
 
     set nodeType(type) {
@@ -310,7 +318,15 @@ class Settings {
     }
 
     get network() {
-        return (argv.network) ? argv.network : this.loadConfig('node.network');
+        if (argv.network) return argv.network;
+
+        const json = this.clientBinariesJSON.clients;
+        const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
+        _.keys(networks).forEach((network) => {  // eslint-disable-line consistent-return
+            if (network === this.loadConfig('node.network')) return network;
+        });
+
+        return _.keys(networks)[0];
     }
 
     set network(network) {
@@ -327,11 +343,7 @@ class Settings {
 
     initConfig() {
         global.config.insert({
-            i18n: i18n.getBestMatchedLangCode(app.getLocale()),
-            node: {
-                type: 'geth',
-                network: 'main'
-            }
+            i18n: i18n.getBestMatchedLangCode(app.getLocale())
         });
     }
 
@@ -346,6 +358,9 @@ class Settings {
         if (this.deepEval(obj, key) !== value) {
             this.deepEval(obj, key, value);
             global.config.update(obj);
+
+            this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.trace(global.config.data);
         }
     }
 
@@ -367,6 +382,13 @@ class Settings {
             return obj[is[0]] = value;  // eslint-disable-line no-return-assign, no-param-reassign
         } else if (is.length === 0) {
             return obj;
+        }
+        if (!obj[is[0]]) {
+            if (value) {
+                obj[is[0]] = {};  // eslint-disable-line no-param-reassign
+            } else {
+                return;  // eslint-disable-line consistent-return
+            }
         }
         return this.deepEval(obj[is[0]], is.slice(1), value);
     }

@@ -20,22 +20,12 @@ aside.sidebar {
                 // ANIMATION
                 transition: max-width @animationSpeed;
             }
-
-        } 
-    }
-
-    &.full-tabs {
-        nav > ul > li:not(.selected) {
-            transform: translate3d(-100%,0,0);
-        }
-        nav > ul > li.selected button.slide-out {
-            transition: none;
         }
     }
 }
 
 
-// Browser bar 
+// Browser bar
 .browser-bar {
     .url-input {
         transition: opacity 0.1s;
@@ -52,7 +42,7 @@ aside.sidebar {
         transition-timing-function:  ease-out;
         transition-timing-function:  cubic-bezier(0.000, 1.125, 0.335, 1.650);
         height: @gridHeight*1.5;
-        
+
         &>* {
             position: absolute;
             left: @gridWidth*2;
@@ -61,11 +51,11 @@ aside.sidebar {
         }
 
         .password-repeat {
-            transform: rotateX( 180deg );  
+            transform: rotateX( 180deg );
         }
-    
+
         &.repeat-field {
-            transform: rotateX( 180deg );            
+            transform: rotateX( 180deg );
         }
     }
 }

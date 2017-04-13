@@ -12,7 +12,6 @@ var pinToSidebar = function () {
                 redirect: selectedTab.url,
                 name: selectedTab.name,
                 menu: {},
-                menuVisible: false,
                 position: Tabs.find().count() + 1
             });
             LocalStore.set('selectedTab', newTabId);

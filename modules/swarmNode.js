@@ -7,6 +7,7 @@ const fsp = require('fs-promise');
 const log = require('./utils/logger').create('Swarm');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 class SwarmNode extends EventEmitter {
     constructor() {
@@ -28,7 +29,7 @@ class SwarmNode extends EventEmitter {
         }
 
         // Gets Swarm Key path
-        const swarmKeyDir = path.dirname(Settings.rpcIpcPath);
+        const swarmKeyDir = path.dirname(Settings.userDataPath);
         const swarmKeyPath = path.join(swarmKeyDir, 'swarmKey');
 
         // Generates the key if not there
@@ -40,15 +41,16 @@ class SwarmNode extends EventEmitter {
     }
 
     startUsingLocalNode() {
-        let totalSize = 26397454; // TODO: to config file?
+        let totalSize = 7406937; // TODO: hardcoded & innacurate, use archives.json instead
         let totalDownloaded = 0;
 
-        const swarmBinDir = path.dirname(Settings.rpcIpcPath);
-        const swarmBinPath = path.join(swarmBinDir, 'swarm');
+        const swarmBinDir = path.dirname(Settings.userDataPath);
+        const swarmBinExt = os.platform() === 'win32' ? '.exe' : '';
+        const swarmBinPath = path.join(swarmBinDir, 'swarm' + swarmBinExt);
 
         const config = {
             privateKey: this.getKeyPath(),
-            dataDir: path.dirname(Settings.rpcIpcPath),
+            dataDir: path.dirname(Settings.userDataPath),
             ethApi: Settings.rpcIpcPath,
             binPath: swarmBinPath,
             onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)

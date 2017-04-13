@@ -28,8 +28,8 @@ const startGeth = function* () {
     const manager = new ClientBinaryManager(config);
     yield manager.init();
 
-    if (manager.clients.Geth.state.available) {
-        gethPath = manager.clients.Geth.activeCli.fullPath;
+    if (manager.clients.geth.state.available) {
+        gethPath = manager.clients.geth.activeCli.fullPath;
     }
     else {
         console.info('Downloading geth...');
@@ -397,4 +397,3 @@ const Utils = {
     }
 
 };
-

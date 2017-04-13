@@ -31,11 +31,11 @@ class Manager extends EventEmitter {
         // check every hour
         setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
 
-        this._resolveEthBinPath();
         return this._checkForNewConfig(restart);
     }
 
     getClient(clientId) {
+        console.log(1, this._availableClients)
         return this._availableClients[clientId.toLowerCase()];
     }
 
@@ -230,7 +230,7 @@ class Manager extends EventEmitter {
 
                         this._availableClients[idlcase] = {
                             binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
-                            version: client.version,
+                            version: client.version,  //TODO wrong version if using --gethpath
                         };
                     }
                 });
@@ -278,48 +278,6 @@ class Manager extends EventEmitter {
         log.debug(`Status: ${status} - ${msg}`);
 
         this.emit('status', status, msg);
-    }
-
-
-    _resolveEthBinPath() {
-        log.info('Resolving path to Eth client binary ...');
-
-        let platform = process.platform;
-
-        // "win32" -> "win" (because nodes are bundled by electron-builder)
-        if (platform.indexOf('win') === 0) {
-            platform = 'win';
-        } else if (platform.indexOf('darwin') === 0) {
-            platform = 'mac';
-        }
-
-        log.debug(`Platform: ${platform}`);
-
-        let binPath = path.join(
-            __dirname,
-            '..',
-            'nodes',
-            'eth',
-            `${platform}-${process.arch}`
-        );
-
-        if (Settings.inProductionMode) {
-            // get out of the ASAR
-            binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
-        }
-
-        binPath = path.join(path.resolve(binPath), 'eth');
-
-        if (platform === 'win') {
-            binPath += '.exe';
-        }
-
-        log.info(`Eth client binary path: ${binPath}`);
-
-        this._availableClients.eth = {
-            binPath,
-            version: '1.3.0',
-        };
     }
 }
 

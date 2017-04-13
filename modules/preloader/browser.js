@@ -124,5 +124,3 @@ ipcRenderer.sendToHost('setWebviewId');
 
 // destroy the old socket
 ipcRenderer.send('ipcProvider-destroy');
-
-

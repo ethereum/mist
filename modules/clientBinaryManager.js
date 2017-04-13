@@ -35,7 +35,6 @@ class Manager extends EventEmitter {
     }
 
     getClient(clientId) {
-        console.log(1, this._availableClients)
         return this._availableClients[clientId.toLowerCase()];
     }
 
@@ -73,7 +72,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;
@@ -187,14 +186,20 @@ class Manager extends EventEmitter {
 
             // scan for node
             const mgr = new ClientBinaryManager(localConfig);
+            const folders = [];
             mgr.logger = log;
 
             this._emit('scanning', 'Scanning for binaries');
 
-            const folders = [];
             _.keys(localConfig.clients).forEach((client) => {
                 folders.push(path.join(Settings.userDataPath, 'binaries', client, 'unpacked'));
             });
+
+            // TODO scan user specifed bin
+            // if (Settings[`${idlcase}Path`]) {
+            //     folders.push(path.join(Settings.userDataPath, 'binaries', client, 'unpacked'));
+            // }
+
             return mgr.init({ folders })
             .then(() => {
                 const clients = mgr.clients;
@@ -226,11 +231,10 @@ class Manager extends EventEmitter {
                 _.each(mgr.clients, (client) => {
                     if (client.state.available) {
                         const idlcase = client.id.toLowerCase();
-
                         this._availableClients[idlcase] = {
                             binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
-                            version: client.version,  //TODO wrong version if using --gethpath
-                        };
+                            version: (Settings[`${idlcase}Path`]) ? '' : client.activeCli.version
+                        };  //TODO scan user specifed bin
                     }
                 });
 

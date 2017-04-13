@@ -13,10 +13,10 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/0281a97d6140a6dadd4c49b668398312711f9281/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/f12235657927f5e420d97bffdc5da13e9b98c069/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
+    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/)(?:.+)/;  // eslint-disable-line max-len
 
 class Manager extends EventEmitter {
     constructor() {

@@ -247,6 +247,7 @@ let menuTempl = function (webviews) {
         ],
     });
 
+    // LANGUAGE (VIEW)
     const switchLang = langCode => function (menuItem, browserWindow) {
         try {
             // set Accept_Language header

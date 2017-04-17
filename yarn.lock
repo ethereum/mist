@@ -991,14 +991,6 @@ electron-macos-sign@~1.5.0:
     isbinaryfile "^3.0.2"
     plist "^2.0.1"
 
-electron-version@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/electron-version/-/electron-version-1.1.0.tgz#14899e16c4ff49a13720ae151a6469cb159f2e22"
-  dependencies:
-    bl "^1.0.0"
-    once "^1.3.2"
-    semver "^5.0.3"
-
 electron-window-state@^4.0.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/electron-window-state/-/electron-window-state-4.1.1.tgz#6b34fdc31b38514dfec8b7c8f7b5d4addb67632d"
@@ -1007,9 +999,9 @@ electron-window-state@^4.0.1:
     jsonfile "^2.2.3"
     mkdirp "^0.5.1"
 
-electron@1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.6.2.tgz#b0ccd7703f86d09c4d2a7273455c3f993f158994"
+electron@1.3.13:
+  version "1.3.13"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.3.13.tgz#a927783bfe3a689eb832a713ef515d31c8a2e406"
   dependencies:
     electron-download "^3.0.1"
     extract-zip "^1.0.3"
@@ -2899,7 +2891,7 @@ oboe@^2.1.3:
   dependencies:
     http-https "^1.0.0"
 
-once@1.x, once@^1.3.0, once@^1.3.1, once@^1.3.2, once@^1.4.0:
+once@1.x, once@^1.3.0, once@^1.3.1, once@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/once/-/once-1.4.0.tgz#583b1aa775961d4b113ac17d9c50baef9dd76bd1"
   dependencies:
@@ -3706,15 +3698,13 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-spectron@3.6.1:
-  version "3.6.1"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.6.1.tgz#42edfcc74eab15176b5a3fb6ac1e1f705dc98ac9"
+spectron@3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.6.0.tgz#ed231301524ef7658e41f947b59455a4bc0c2d1a"
   dependencies:
     dev-null "^0.1.1"
     electron-chromedriver "~1.6.0"
-    electron-version "^1.1.0"
     request "^2.65.0"
-    semver "^5.3.0"
     split "^1.0.0"
     webdriverio "^4.0.4"
 

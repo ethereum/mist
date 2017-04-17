@@ -106,7 +106,6 @@ exports.mocha = (_module, options) => {
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
-                    '--mode', options.app,
                     '--loglevel', 'debug',
                     '--logfile', logFilePath,
                     '--node-datadir', this.geth.dataDir,

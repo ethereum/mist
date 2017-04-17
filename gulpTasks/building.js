@@ -227,7 +227,7 @@ gulp.task('build-nsis', (cb) => {
     const versionParts = version.split('.');
     const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
 
-    const cmdString = `makensis -V3 ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
+    const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
     exec(cmdString, cb);
 });

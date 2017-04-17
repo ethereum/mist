@@ -19,6 +19,10 @@ rules:
   arrow-body-style: off
   prefer-arrow-callback: off
   no-underscore-dangle: off
+  object-curly-spacing: off
+  func-names: off
+  global-require: off
+  class-methods-use-this: off
   comma-dangle:
     - error
     - only-multiline  ## no comma after last item if one line, though allow comma if multiline

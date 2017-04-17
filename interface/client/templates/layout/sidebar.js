@@ -21,7 +21,7 @@ Template['layout_sidebar'].onRendered(function () {
         // tolerance: 'pointer',
         items: '> li:not(.browser)',
         handle: 'button.main',
-        cancel: '',
+        cancel: '.browser',
         cursor: 'move',
         delay: 150,
         revert: 200,
@@ -29,7 +29,6 @@ Template['layout_sidebar'].onRendered(function () {
             $ul.sortable('refreshPositions');
         },
         update: function (e) {
-            console.log('UPDATED');
             // iterate over the lis and reposition the items
             $ul.find('> li').each(function (index, test) {
                 var id = $(this).data('tab-id');
@@ -38,6 +37,9 @@ Template['layout_sidebar'].onRendered(function () {
                 }
             });
         }
+    });
+
+    template.$('[data-tab-id]').on('mouseover', function () {
     });
 });
 
@@ -96,27 +98,35 @@ Template['layout_sidebar'].helpers({
         }
     },
     /**
+    Returns connected accounts for dapp
+
+    @method (dappAccounts)
+    */
+    'dappAccounts': function (limit) {
+        if (this.permissions) {
+            if (limit) {
+                return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } },
+                    { limit: limit });
+            }
+            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
+        }
+    },
+    /**
     Determines if the current tab is visible
 
     @method (isSelected)
     */
     'isSelected': function () {
-        var selected = (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
-
-        if (this.menuVisible) {
-            selected += ' slided-out';
-        }
-
-        return selected;
+        return (LocalStore.get('selectedTab') === (this._id || 'browser')) ? 'selected' : '';
     },
     /**
-    Determines if the current tab is visible
+    It defines which tabs will have a remove button on the interface
 
-    @method (fullTabs)
+    @method (tabShouldBeRemovable)
     */
-    'fullTabs': function () {
-        return (LocalStore.get('fullTabs')) ? 'full-tabs' : '';
-    }
+    'tabShouldBeRemovable': function () {
+        return !_.contains(['browser', 'wallet'], this._id);
+    },
 });
 
 
@@ -149,36 +159,6 @@ Template['layout_sidebar'].events({
         }
     },
     /**
-    Slide out
-
-    @event button.slide-out
-    */
-    'click button.slide-out': function (e, template) {
-        var isSelected = (LocalStore.get('selectedTab') === (this._id || 'browser'));
-
-        if (isSelected && LocalStore.get('fullTabs')) {
-            LocalStore.set('fullTabs', false);
-        } else if (isSelected) {
-            LocalStore.set('fullTabs', true);
-        } else {
-            Tabs.update(this._id, { $set: { menuVisible: !this.menuVisible } });
-        }
-    },
-    /**
-    See all
-
-    @event .see-all button
-    */
-    'click li.see-all > button': function (e, template) {
-        var isSelected = (LocalStore.get('selectedTab') === (this._id || 'browser'));
-
-        if (isSelected && LocalStore.get('fullTabs')) {
-            LocalStore.set('fullTabs', false);
-        } else if (isSelected) {
-            LocalStore.set('fullTabs', true);
-        }
-    },
-    /**
     Remove the current selected tab
 
     // TODO show popup before to confirm
@@ -191,5 +171,50 @@ Template['layout_sidebar'].events({
         }
 
         Tabs.remove(this._id);
+    },
+    /**
+    Show connect account popup
+
+    @event click .accounts button'
+    */
+    'click .accounts button': function (e, template) {
+        var initialTabCount = Tabs.find().fetch().length;
+        LocalStore.set('selectedTab', this._id);
+        var initialTabId = this._id;
+
+        mist.requestAccount(function (ev, addresses) {
+            dbSync.syncDataFromBackend(LastVisitedPages);
+            dbSync.syncDataFromBackend(Tabs).then(function () {
+                var tabCount = Tabs.find().fetch().length;
+                var tabId;
+                if (tabCount > initialTabCount) { // browse tab was pinned
+                    tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
+                } else {
+                    tabId = initialTabId;
+                }
+                Tabs.update(tabId, {
+                    $set: {
+                        'permissions.accounts': addresses
+                    }
+                });
+            });
+        });
+    },
+
+    /**
+    Shows dapp submenu
+
+    @event mouseenter .sidebar-menu > li
+    */
+    'mouseenter .sidebar-menu > li': function (e, template) {
+        var $this = $(e.currentTarget);
+        var tabTopOffset = $this.offset().top;
+        var $submenuContainer = $this.find('.submenu-container');
+        var $submenu = $this.find('.sub-menu');
+        var submenuHeaderHeight = $this.find('header').outerHeight();
+        var windowHeight = $(window).outerHeight();
+
+        $submenuContainer.css('top', tabTopOffset + 'px');
+        $submenu.css('max-height', (windowHeight - tabTopOffset - submenuHeaderHeight - 30) + 'px');
     },
 });

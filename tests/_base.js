@@ -131,7 +131,6 @@ exports.mocha = (_module, options) => {
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
 
             this.client = this.app.client;
-            yield this.client.waitUntilWindowLoaded();
 
             /*
                 Utility methods

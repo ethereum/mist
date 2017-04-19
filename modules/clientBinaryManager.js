@@ -49,7 +49,7 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
-        const nodeType = 'Geth';
+        let nodeType = 'Geth';
         let binariesDownloaded = false;
         let nodeInfo;
 
@@ -73,10 +73,16 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;
+
+            // enable graceful switch of clientBinaries.client.Geth
+            // to lowercase 'geth' without breaking <=0.8.9 installations
+            // TODO remove in 0.9.3
+            if (latestConfig.clients.geth) nodeType = 'geth';
+
             const nodeVersion = latestConfig.clients[nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');

@@ -332,8 +332,7 @@ class Settings {
         if (argv.network) return argv.network;
 
         const savedNetwork = this.loadConfig('node.network');
-        const json = this.clientBinariesJSON.clients;
-        const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
+        const networks = this.networks;
         let network;
 
         _.keys(networks).forEach((net) => {  // eslint-disable-line consistent-return
@@ -348,6 +347,11 @@ class Settings {
 
     set network(network) {
         this.saveConfig('node.network', network);
+    }
+
+    get networks() {
+        const json = this.clientBinariesJSON.clients;
+        return json[this.nodeType].platforms[this.platform][process.arch].networks;
     }
 
     get language() {

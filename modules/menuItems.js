@@ -406,72 +406,51 @@ let menuTempl = function (webviews) {
         type: 'separator',
     });
     // add node switch
-    if (process.platform === 'darwin' || process.platform === 'win32') {
-        const nodeSubmenu = [];
+    const nodeSubmenu = [];
+    _.keys(Settings.clientBinariesJSON.clients).forEach((client) => {
+        const config = ClientBinaryManager.getClient(client);
 
-        const ethClient = ClientBinaryManager.getClient('eth');
-        const gethClient = ClientBinaryManager.getClient('geth');
-
-        if (gethClient) {
+        if (config) {
             nodeSubmenu.push(
                 {
-                    label: `Geth ${gethClient.version} (Go)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                    label: `${client} (${config.version})`,
+                    checked: Settings.nodeType === client,
                     enabled: ethereumNode.isOwnNode,
                     type: 'checkbox',
                     click() {
-                        restartNode('geth');
+                        restartNode(client);
                     },
                 }
             );
         }
+    });
 
-        if (ethClient) {
-            nodeSubmenu.push(
-                {
-                    label: `Eth ${ethClient.version} (C++)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isEth,
-                    enabled: ethereumNode.isOwnNode,
-                    // enabled: false,
-                    type: 'checkbox',
-                    click() {
-                        restartNode('eth');
-                    },
-                }
-            );
-        }
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
+        submenu: nodeSubmenu,
+    });
 
-        devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: nodeSubmenu,
-        });
-    }
 
     // add network switch
+    const networkSubmenu = [];
+    const networks = Settings.networks;
+
+    _.keys(networks).forEach((network) => {
+        networkSubmenu.push({
+            label: networks[network].name, // i18n.t('mist.applicationMenu.develop.mainNetwork'),
+            checked: (Settings.network === network),
+            enabled: ethereumNode.isOwnNode,
+            type: 'checkbox',
+            click() {
+                restartNode(Settings.nodeType, network);
+            },
+        });
+    });
+
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.network'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-                accelerator: 'CommandOrControl+Shift+1',
-                checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
-                type: 'checkbox',
-                click() {
-                    restartNode(Settings.nodeType, '1');
-                },
-            },
-            {
-                label: 'Testnet',
-                accelerator: 'CommandOrControl+Shift+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
-                type: 'checkbox',
-                click() {
-                    restartNode(Settings.nodeType, '3');
-                },
-            },
-        ] });
+        submenu: networkSubmenu,
+    });
 
 
     devToolsMenu.push({

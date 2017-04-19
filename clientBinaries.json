@@ -24,7 +24,7 @@
                         },
                         "networks": {
                             "1": {
-                                "name": "mainnet",
+                                "name": "Mainnet",
                                 "dataDir": ".ethereum",
                                 "ipcFile": "geth.ipc"
                             }
@@ -85,14 +85,14 @@
                         },
                         "networks": {
                             "1": {
-                                "name": "mainnet",
+                                "name": "Mainnet",
                                 "dataDir": "Library/Ethereum",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",
                                 "args": []
                             },
                             "3": {
-                                "name": "ropsten",
+                                "name": "Ropsten",
                                 "dataDir": "Library/Ethereum/testnet",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",

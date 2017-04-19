@@ -60,7 +60,6 @@ class Manager extends EventEmitter {
 
         this._emit('loadConfig', 'Fetching remote client config');
 
-        console.log(1)
         // fetch config
         return got(BINARY_URL, {
             timeout: 3000,
@@ -81,9 +80,6 @@ class Manager extends EventEmitter {
 
             let localConfig;
             let skipedVersion;
-            console.log(latestConfig)
-            console.log(nodeType)
-            console.log(latestConfig.clients[Settings.nodeType])
             const nodeVersion = latestConfig.clients[Settings.nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');

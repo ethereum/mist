@@ -301,9 +301,10 @@ class EthereumNode extends EventEmitter {
                 this.state = STATES.ERROR;
 
                 // if unable to start eth node then write geth to defaults
-                if (nodeType === 'eth') {
-                    Settings.nodeType('geth');
-                }
+                // if (nodeType === 'eth') {
+                //     Settings.nodeType = 'geth';
+                // }
+                // TODO
 
                 throw err;
             });

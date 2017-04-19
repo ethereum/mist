@@ -242,6 +242,10 @@ class Settings {
         return (this.rpcMode === 'http') ? argv.rpc : null;
     }
 
+    get clientBinaries() {
+        return (argv.clientbinaries);
+    }
+
     get clientBinariesJSON() {
         if (argv.clientbinaries) {
             return require(path.resolve(argv.clientbinaries));  // eslint-disable-line
@@ -268,7 +272,7 @@ class Settings {
 
     get rpcIpcPath() {
         const ipcPaths = [];
-        this._ownNode = null;
+        this._ownNode = false;
 
         // if declared use user specified IPC endpoint
         if (argv.rpc && this.rpcMode === 'ipc') ipcPaths.push(argv.rpc);

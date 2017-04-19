@@ -28,10 +28,13 @@ class Manager extends EventEmitter {
     init(restart) {
         log.info('Initializing...');
 
-        // check every hour
+        // when --clientbinaries specified, don't check for remote, start directly
+        if (Settings.clientBinaries) return this._init();
+
+        // otherwise check every hour for new config
         setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
 
-        this._resolveEthBinPath();
+        // and use it
         return this._checkForNewConfig(restart);
     }
 
@@ -49,14 +52,14 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
-        const nodeType = 'Geth';
-        let binariesDownloaded = false;
+        const nodeType = 'geth';
         let nodeInfo;
 
         log.info(`Checking for new client binaries config from: ${BINARY_URL}`);
 
         this._emit('loadConfig', 'Fetching remote client config');
 
+        console.log(1)
         // fetch config
         return got(BINARY_URL, {
             timeout: 3000,
@@ -77,7 +80,10 @@ class Manager extends EventEmitter {
 
             let localConfig;
             let skipedVersion;
-            const nodeVersion = latestConfig.clients[nodeType].version;
+            console.log(latestConfig)
+            console.log(nodeType)
+            console.log(latestConfig.clients[Settings.nodeType])
+            const nodeVersion = latestConfig.clients[Settings.nodeType].version;
 
             this._emit('loadConfig', 'Fetching local config');
 
@@ -175,74 +181,7 @@ class Manager extends EventEmitter {
                 });
             }
 
-            return localConfig;
-        })
-        .then((localConfig) => {
-            if (!localConfig) {
-                log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
-
-                localConfig = Settings.clientBinariesJSON;  // eslint-disable-line no-param-reassign
-            }
-
-            // scan for node
-            const mgr = new ClientBinaryManager(localConfig);
-            mgr.logger = log;
-
-            this._emit('scanning', 'Scanning for binaries');
-
-            return mgr.init({
-                folders: [
-                    path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
-                    path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
-                ],
-            })
-            .then(() => {
-                const clients = mgr.clients;
-
-                this._availableClients = {};
-
-                const available = _.filter(clients, c => !!c.state.available);
-
-                if (!available.length) {
-                    if (_.isEmpty(clients)) {
-                        throw new Error('No client binaries available for this system!');
-                    }
-
-                    this._emit('downloading', 'Downloading binaries');
-
-                    return Q.map(_.values(clients), (c) => {
-                        binariesDownloaded = true;
-
-                        return mgr.download(c.id, {
-                            downloadFolder: path.join(Settings.userDataPath, 'binaries'),
-                            urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
-                        });
-                    });
-                }
-            })
-            .then(() => {
-                this._emit('filtering', 'Filtering available clients');
-
-                _.each(mgr.clients, (client) => {
-                    if (client.state.available) {
-                        const idlcase = client.id.toLowerCase();
-
-                        this._availableClients[idlcase] = {
-                            binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
-                            version: client.version,
-                        };
-                    }
-                });
-
-                // restart if it downloaded while running
-                if (restart && binariesDownloaded) {
-                    log.info('Restarting app ...');
-                    app.relaunch();
-                    app.quit();
-                }
-
-                this._emit('done');
-            });
+            this._init(localConfig, restart);
         })
         .catch((err) => {
             log.error(err);
@@ -273,6 +212,76 @@ class Manager extends EventEmitter {
     }
 
 
+    _init(localConfig, restart) {
+        if (!localConfig) {
+            log.info('No config for the ClientBinaryManager could be loaded, using local clientBinaries.json.');
+
+            localConfig = Settings.clientBinariesJSON;  // eslint-disable-line no-param-reassign
+        }
+
+        // scan for node
+        let binariesDownloaded = false;
+        const mgr = new ClientBinaryManager(localConfig);
+        mgr.logger = log;
+
+        this._emit('scanning', 'Scanning for binaries');
+
+        return mgr.init({
+            folders: [
+                path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
+                path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
+            ],
+        })
+        .then(() => {
+            const clients = mgr.clients;
+
+            this._availableClients = {};
+
+            const available = _.filter(clients, c => !!c.state.available);
+
+            if (!available.length) {
+                if (_.isEmpty(clients)) {
+                    throw new Error('No client binaries available for this system!');
+                }
+
+                this._emit('downloading', 'Downloading binaries');
+
+                return Q.map(_.values(clients), (c) => {
+                    binariesDownloaded = true;
+
+                    return mgr.download(c.id, {
+                        downloadFolder: path.join(Settings.userDataPath, 'binaries'),
+                        urlRegex: ALLOWED_DOWNLOAD_URLS_REGEX,
+                    });
+                });
+            }
+        })
+        .then(() => {
+            this._emit('filtering', 'Filtering available clients');
+
+            _.each(mgr.clients, (client) => {
+                if (client.state.available) {
+                    const idlcase = client.id.toLowerCase();
+
+                    this._availableClients[idlcase] = {
+                        binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
+                        version: client.version,
+                    };
+                }
+            });
+
+            // restart if it downloaded while running
+            if (restart && binariesDownloaded) {
+                log.info('Restarting app ...');
+                app.relaunch();
+                app.quit();
+            }
+
+            this._emit('done');
+        });
+    }
+
+
     _emit(status, msg) {
         log.debug(`Status: ${status} - ${msg}`);
 
@@ -280,46 +289,46 @@ class Manager extends EventEmitter {
     }
 
 
-    _resolveEthBinPath() {
-        log.info('Resolving path to Eth client binary ...');
-
-        let platform = process.platform;
-
-        // "win32" -> "win" (because nodes are bundled by electron-builder)
-        if (platform.indexOf('win') === 0) {
-            platform = 'win';
-        } else if (platform.indexOf('darwin') === 0) {
-            platform = 'mac';
-        }
-
-        log.debug(`Platform: ${platform}`);
-
-        let binPath = path.join(
-            __dirname,
-            '..',
-            'nodes',
-            'eth',
-            `${platform}-${process.arch}`
-        );
-
-        if (Settings.inProductionMode) {
-            // get out of the ASAR
-            binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
-        }
-
-        binPath = path.join(path.resolve(binPath), 'eth');
-
-        if (platform === 'win') {
-            binPath += '.exe';
-        }
-
-        log.info(`Eth client binary path: ${binPath}`);
-
-        this._availableClients.eth = {
-            binPath,
-            version: '1.3.0',
-        };
-    }
+    // _resolveEthBinPath() {
+    //     log.info('Resolving path to Eth client binary ...');
+    //
+    //     let platform = process.platform;
+    //
+    //     // "win32" -> "win" (because nodes are bundled by electron-builder)
+    //     if (platform.indexOf('win') === 0) {
+    //         platform = 'win';
+    //     } else if (platform.indexOf('darwin') === 0) {
+    //         platform = 'mac';
+    //     }
+    //
+    //     log.debug(`Platform: ${platform}`);
+    //
+    //     let binPath = path.join(
+    //         __dirname,
+    //         '..',
+    //         'nodes',
+    //         'eth',
+    //         `${platform}-${process.arch}`
+    //     );
+    //
+    //     if (Settings.inProductionMode) {
+    //         // get out of the ASAR
+    //         binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
+    //     }
+    //
+    //     binPath = path.join(path.resolve(binPath), 'eth');
+    //
+    //     if (platform === 'win') {
+    //         binPath += '.exe';
+    //     }
+    //
+    //     log.info(`Eth client binary path: ${binPath}`);
+    //
+    //     this._availableClients.eth = {
+    //         binPath,
+    //         version: '1.3.0',
+    //     };
+    // }
 }
 
 

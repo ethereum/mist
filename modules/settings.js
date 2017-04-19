@@ -4,6 +4,7 @@ const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
+const lodash = require('lodash');
 
 
 // try loading in config file
@@ -285,7 +286,8 @@ class Settings {
 
             if (_.isEmpty(ipcPaths)) {
                 // set IPC endpoint path for own node (read network from config)
-                ipcPaths.push(path.join(this.userHomePath,
+                ipcPaths.push(path.join(
+                    this.userHomePath,
                     networks[this.network].dataDir,
                     networks[this.network].ipcFile
                 ));
@@ -322,6 +324,7 @@ class Settings {
 
         const json = this.clientBinariesJSON.clients;
         const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
+
         _.keys(networks).forEach((network) => {  // eslint-disable-line consistent-return
             if (network === this.loadConfig('node.network')) return network;
         });
@@ -355,8 +358,8 @@ class Settings {
             obj = global.config.get(1);
         }
 
-        if (this.deepEval(obj, key) !== value) {
-            this.deepEval(obj, key, value);
+        if (lodash.get(obj, key) !== value) {
+            lodash.set(obj, key, value);
             global.config.update(obj);
 
             this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
@@ -372,26 +375,28 @@ class Settings {
             return this.loadConfig(key);
         }
 
-        return this.deepEval(obj, key);
+        this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+
+        return lodash.get(obj, key);
     }
 
-    deepEval(obj, is, value) {
-        if (typeof is === 'string') {
-            return this.deepEval(obj, is.split('.'), value);
-        } else if (is.length === 1 && value !== undefined) {
-            return obj[is[0]] = value;  // eslint-disable-line no-return-assign, no-param-reassign
-        } else if (is.length === 0) {
-            return obj;
-        }
-        if (!obj[is[0]]) {
-            if (value) {
-                obj[is[0]] = {};  // eslint-disable-line no-param-reassign
-            } else {
-                return;  // eslint-disable-line consistent-return
-            }
-        }
-        return this.deepEval(obj[is[0]], is.slice(1), value);
-    }
+    // deepEval(obj, is, value) {
+    //     if (typeof is === 'string') {
+    //         return this.deepEval(obj, is.split('.'), value);
+    //     } else if (is.length === 1 && value !== undefined) {
+    //         return obj[is[0]] = value;  // eslint-disable-line no-return-assign, no-param-reassign
+    //     } else if (is.length === 0) {
+    //         return obj;
+    //     }
+    //     if (!obj[is[0]]) {
+    //         if (value) {
+    //             obj[is[0]] = {};  // eslint-disable-line no-param-reassign
+    //         } else {
+    //             return;  // eslint-disable-line consistent-return
+    //         }
+    //     }
+    //     return this.deepEval(obj[is[0]], is.slice(1), value);
+    // }
 
     loadUserData(path2) {
         const fullPath = this.constructUserDataPath(path2);

@@ -35,6 +35,7 @@
                 "backupMist": "應用程序數據"
             },
             "develop": {
+                "uploadToSwarm": "上传到Swarm",
                 "label": "開發",
                 "devTools": "切換開發者工具",
                 "devToolsMistUI": "Mist界面",

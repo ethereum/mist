@@ -35,6 +35,7 @@
                 "backupMist": "어플리케이션 데이터"
             },
             "develop": {
+                "uploadToSwarm": "Swarm에 업로드",
                 "label": "개발",
                 "devTools": "개발도구 전환",
                 "devToolsMistUI": "미스트 UI",

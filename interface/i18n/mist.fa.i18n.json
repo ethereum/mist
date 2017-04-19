@@ -35,6 +35,7 @@
                 "backupMist": "Application Data"
             },
             "develop": {
+                "uploadToSwarm": "Upload to Swarm",
                 "label": "Develop",
                 "devTools": "Toggle Developer Tools",
                 "devToolsMistUI": "Mist UI",

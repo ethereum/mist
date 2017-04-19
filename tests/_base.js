@@ -42,8 +42,11 @@ const startGeth = function* () {
         gethPath,
         balance: 5,
         genesisBlock: {
-            difficulty: '0x1',
-            extraData: '0x1',
+            config: {
+                chainId: 33333,
+            },
+            difficulty: '0x01',
+            extraData: '0x01',
         },
         gethOptions: {
             port: 58546,
@@ -397,4 +400,3 @@ const Utils = {
     }
 
 };
-

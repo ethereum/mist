@@ -13,7 +13,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/6f2adff22569447a84639314e77379852cd273bc/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len

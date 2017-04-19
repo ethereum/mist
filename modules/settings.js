@@ -310,12 +310,17 @@ class Settings {
     get nodeType() {
         if (argv.node) return argv.node;
 
+        const savedClient = this.loadConfig('node.type');
         const json = this.clientBinariesJSON;
+        let nodeType;
 
         _.keys(json.clients).forEach((client) => {  // eslint-disable-line consistent-return
-            if (client === this.loadConfig('node.type')) return client;
+            if (client === savedClient) nodeType = client;
         });
 
+        if (nodeType) return nodeType;
+
+        this.saveConfig('node.type', json.defaults.nodeType);
         return json.defaults.nodeType;
     }
 
@@ -326,13 +331,18 @@ class Settings {
     get network() {
         if (argv.network) return argv.network;
 
+        const savedNetwork = this.loadConfig('node.network');
         const json = this.clientBinariesJSON.clients;
         const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
+        let network;
 
-        _.keys(networks).forEach((network) => {  // eslint-disable-line consistent-return
-            if (network === this.loadConfig('node.network')) return network;
+        _.keys(networks).forEach((net) => {  // eslint-disable-line consistent-return
+            if (net === savedNetwork) network = net;
         });
 
+        if (network) return network;
+
+        this.saveConfig('node.network', _.keys(networks)[0]);
         return _.keys(networks)[0];
     }
 
@@ -366,6 +376,7 @@ class Settings {
             lodash.set(obj, key, value);
             global.config.update(obj);
 
+            this._log.warn(`Settings: saveConfig('${key}', '${value}')`);
             this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
             this._log.trace(global.config.data);
         }
@@ -379,28 +390,11 @@ class Settings {
             return this.loadConfig(key);
         }
 
+        this._log.warn(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
         this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
 
         return lodash.get(obj, key);
     }
-
-    // deepEval(obj, is, value) {
-    //     if (typeof is === 'string') {
-    //         return this.deepEval(obj, is.split('.'), value);
-    //     } else if (is.length === 1 && value !== undefined) {
-    //         return obj[is[0]] = value;  // eslint-disable-line no-return-assign, no-param-reassign
-    //     } else if (is.length === 0) {
-    //         return obj;
-    //     }
-    //     if (!obj[is[0]]) {
-    //         if (value) {
-    //             obj[is[0]] = {};  // eslint-disable-line no-param-reassign
-    //         } else {
-    //             return;  // eslint-disable-line consistent-return
-    //         }
-    //     }
-    //     return this.deepEval(obj[is[0]], is.slice(1), value);
-    // }
 
     loadUserData(path2) {
         const fullPath = this.constructUserDataPath(path2);

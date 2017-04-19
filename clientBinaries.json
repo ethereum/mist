@@ -1,8 +1,7 @@
 
 {
     "defaults": {
-        "nodeType": "eth",
-        "networkPriority": ["1", "3"]
+        "nodeType": "geth"
     },
     "clients": {
         "eth": {
@@ -90,14 +89,14 @@
                                 "dataDir": "Library/Ethereum",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",
-                                "args": ["fast"]
+                                "args": []
                             },
                             "3": {
                                 "name": "ropsten",
                                 "dataDir": "Library/Ethereum/testnet",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",
-                                "args": ["fast", "testnet"]
+                                "args": ["--testnet"]
                             }
                         }
                     }

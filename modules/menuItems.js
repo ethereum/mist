@@ -31,7 +31,7 @@ const createMenu = function (webviews) {
 
 
 const restartNode = function (newType, newNetwork) {
-    newNetwork = newNetwork || ethereumNode.network;
+    newNetwork = newNetwork || Settings.network;
     Settings.nodeType = newType;
     Settings.network = newNetwork;
 
@@ -458,7 +458,7 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(Settings.nodeType, 'main');
+                    restartNode(Settings.nodeType, '1');
                 },
             },
             {
@@ -468,7 +468,7 @@ let menuTempl = function (webviews) {
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
                 type: 'checkbox',
                 click() {
-                    restartNode(Settings.nodeType, 'test');
+                    restartNode(Settings.nodeType, '3');
                 },
             },
         ] });

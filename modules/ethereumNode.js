@@ -353,20 +353,11 @@ class EthereumNode extends EventEmitter {
                     return reject(err);
                 }
 
-                let args;
-
-                // START TESTNET
-                if (network === 'test') {
-                    args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast']
-                        : ['--morden', '--unsafe-transactions'];
-                }
-                // START MAINNET
-                else {
-                    args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
-                        : ['--unsafe-transactions'];
-                }
+                const node = Settings.clientBinariesJSON.clients[Settings.nodeType];
+                const networks = node.platforms[Settings.platform][process.arch].networks;
+                let args = networks[Settings.network].args;
+                console.log(1, networks[Settings.network])
+                console.log(2, args)
 
                 const nodeOptions = Settings.nodeOptions;
 

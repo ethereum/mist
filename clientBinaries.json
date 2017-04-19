@@ -15,7 +15,8 @@
                         "bin": "geth",
                         "commands": {
                             "sanity": {
-                                "args": ["version"]
+                                "args": ["version"],
+                                "output": [ "Geth", "1.5.9" ]
                             }
                         }
                     },
@@ -29,7 +30,8 @@
                         "bin": "geth",
                         "commands": {
                             "sanity": {
-                                "args": ["version"]
+                                "args": ["version"],
+                                "output": [ "Geth", "1.5.9" ]
                             }
                         }
                     }
@@ -45,7 +47,8 @@
                         "bin": "geth",
                         "commands": {
                             "sanity": {
-                                "args": ["version"]
+                                "args": ["version"],
+                                "output": [ "Geth", "1.5.9" ]
                             }
                         }
                     }
@@ -61,7 +64,8 @@
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
-                                "args": ["version"]
+                                "args": ["version"],
+                                "output": [ "Geth", "1.5.9" ]
                             }
                         }
                     },
@@ -75,7 +79,8 @@
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
-                                "args": ["version"]
+                                "args": ["version"],
+                                "output": [ "Geth", "1.5.9" ]
                             }
                         }
                     }

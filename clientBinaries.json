@@ -5,6 +5,35 @@
         "networkPriority": ["1", "3"]
     },
     "clients": {
+        "eth": {
+            "version": "1.3.0",
+            "platforms": {
+                "mac": {
+                    "x64": {
+                        "download": {
+                            "url": "https://github.com/luclu/mist/releases/download/v1.0.0/eth-v1.0.0.tar.gz",
+                            "type": "tar",
+                            "md5": "f863ce5b4051d68e9a3e626da998f0fc",
+                            "bin": "eth"
+                        },
+                        "bin": "eth",
+                        "commands": {
+                            "sanity": {
+                                "args": ["--version"],
+                                "output": [ "eth", "1.3.0" ]
+                            }
+                        },
+                        "networks": {
+                            "1": {
+                                "name": "mainnet",
+                                "dataDir": ".ethereum",
+                                "ipcFile": "geth.ipc"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "geth": {
             "version": "1.5.9",
             "platforms": {

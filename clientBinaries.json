@@ -1,7 +1,7 @@
 
 {
     "defaults": {
-        "nodeType": "geth"
+        "nodeType": "Geth"
     },
     "clients": {
         "eth": {
@@ -33,7 +33,7 @@
                 }
             }
         },
-        "geth": {
+        "Geth": {
             "version": "1.5.9",
             "platforms": {
                 "linux": {
@@ -89,14 +89,14 @@
                                 "dataDir": "Library/Ethereum",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",
-                                "args": []
+                                "args": ["--cache", "1024"]
                             },
                             "3": {
                                 "name": "Ropsten",
                                 "dataDir": "Library/Ethereum/testnet",
                                 "keystore": "keystore",
                                 "ipcFile": "geth.ipc",
-                                "args": ["--testnet"]
+                                "args": ["--testnet", "--cache", "1024"]
                             }
                         }
                     }

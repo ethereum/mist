@@ -136,6 +136,7 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
             } else if (type === 'web3') {
                 e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
+                // TODO
                 let keystorePath = Settings.userHomePath;
                 // eth
                 if (ethereumNode.isEth) {

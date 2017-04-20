@@ -279,8 +279,7 @@ class Settings {
 
         if (_.isEmpty(ipcPaths)) {
             // load possible IPC endpoint paths from clientBinaries.json
-            const json = this.clientBinariesJSON.clients;
-            const networks = json[this.nodeType].platforms[this.platform][process.arch].networks;
+            const networks = this.networks;
 
             // check for existing IPC endpoints
             _.each(networks, (network) => {
@@ -305,6 +304,35 @@ class Settings {
 
     get nodeOptions() {
         return argv.nodeOptions;
+    }
+
+    set dataDir(userDataDir) {
+        this.saveConfig(`clients.${this.nodeType}.dataDir`, userDataDir);
+    }
+
+    get dataDir() {
+        const userDataDir = this.loadConfig(`clients.${this.nodeType}.dataDir`);
+
+        if (userDataDir) {
+            return userDataDir;
+        }
+
+        return path.join(this.userHomePath, this.networks[this.network].dataDir);
+
+    }
+
+    set keystore(userKeystore) {
+        this.saveConfig(`clients.${this.nodeType}.keystore`, userKeystore);
+    }
+
+    get keystore() {
+        const userKeystore = this.loadConfig(`clients.${this.nodeType}.keystore`);
+
+        if (userKeystore) {
+            return userKeystore;
+        }
+
+        return path.join(this.dataDir, Settings.networks[Settings.network].keystore);
     }
 
     get nodeType() {

@@ -14,7 +14,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
 // const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/6f2adff22569447a84639314e77379852cd273bc/clientBinaries.json';
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/b50d3f6a1536b7211c22824b51ed14ee3516b2c8/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
     /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
@@ -53,7 +53,7 @@ class Manager extends EventEmitter {
     }
 
     _checkForNewConfig(restart) {
-        const nodeType = 'geth';
+        const nodeType = 'Geth';
         let nodeInfo;
 
         log.info(`Checking for new client binaries config from: ${BINARY_URL}`);

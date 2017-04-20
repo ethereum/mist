@@ -85,6 +85,7 @@ let menuTempl = function (webviews) {
                         path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
                         '' // write no version
                     );
+                    // TODO
 
                     // true = will restart after updating and user consent
                     ClientBinaryManager.init(true);
@@ -167,34 +168,7 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
                         click() {
-                            let userPath = Settings.userHomePath;
-
-                            // eth
-                            if (ethereumNode.isEth) {
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Web3\\keys`;
-                                } else {
-                                    userPath += '/.web3/keys';
-                                }
-
-                            // geth
-                            } else {
-                                if (process.platform === 'darwin') {
-                                    userPath += '/Library/Ethereum/keystore';
-                                }
-
-                                if (process.platform === 'freebsd' ||
-                                process.platform === 'linux' ||
-                                process.platform === 'sunos') {
-                                    userPath += '/.ethereum/keystore';
-                                }
-
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
-                                }
-                            }
-
-                            shell.showItemInFolder(userPath);
+                            shell.showItemInFolder(Settings.keystore);
                         },
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),

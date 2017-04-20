@@ -184,9 +184,10 @@ onReady = () => {
     // Enable the Swarm protocol
     protocol.registerHttpProtocol('bzz', (request, callback) => {
       const redirectPath = Settings.swarmURL + '/' + request.url.replace('bzz:/', 'bzz://');
-      //callback({ mimeType: 'text/html', data: new Buffer('<h5>Response</h5>') })
       callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-    }, (e) => { if (e) console.log(e); });
+    }, (e) => {
+      log.error(e);
+    });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();

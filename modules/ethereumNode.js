@@ -112,14 +112,7 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init() {
-        if (Settings.rpcConnectConfig.ownNode) {
-            return this._start(Settings.nodeType, Settings.network)
-                .catch((err) => {
-                    log.error('Failed to start node', err);
-
-                    throw err;
-                });
-        }
+        if (Settings.rpcConnectConfig.ownNode) this.start();
 
         return this._socket.connect(Settings.rpcConnectConfig)
             .then(() => {
@@ -128,21 +121,23 @@ class EthereumNode extends EventEmitter {
                 this.emit('runningNodeFound');
             })
             .catch((err) => {
-                log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
-
-                log.info(`Node type: ${Settings.nodeType}`);
-                log.info(`Network: ${Settings.network}`);
-
-                // if not, start node yourself
-                return this._start(Settings.nodeType, Settings.network)
-                    .catch((err) => {
-                        log.error('Failed to start node', err);
-
-                        throw err;
-                    });
+                this.start();
             });
     }
 
+    start() {
+        log.warn('Could not connect to node. Let\'s start our own...');
+
+        log.info(`Node type: ${Settings.nodeType}, Network ID: ${Settings.network}`);
+
+        // if not, start node yourself
+        return this._start(Settings.nodeType, Settings.network)
+            .catch((err) => {
+                log.error('Failed to start node', err);
+
+                throw err;
+            });
+    }
 
     restart(newType, newNetwork) {
         return Q.try(() => {

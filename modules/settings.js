@@ -408,7 +408,7 @@ class Settings {
             lodash.set(obj, key, value);
             global.config.update(obj);
 
-            this._log.warn(`Settings: saveConfig('${key}', '${value}')`);
+            // this._log.warn(`Settings: saveConfig('${key}', '${value}')`);
             this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
             this._log.trace(global.config.data);
         }
@@ -422,7 +422,7 @@ class Settings {
             return this.loadConfig(key);
         }
 
-        this._log.warn(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+        // this._log.warn(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
         this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
 
         return lodash.get(obj, key);

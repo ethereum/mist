@@ -14,10 +14,10 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
 // const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/6f2adff22569447a84639314e77379852cd273bc/clientBinaries.json';
-const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json';
+const BINARY_URL = 'https://raw.githubusercontent.com/ethereum/mist/a145fe24e0e98bdfd36275b4e36ca10d8781639b/clientBinaries.json';
 
 const ALLOWED_DOWNLOAD_URLS_REGEX =
-    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/|bintray\.com\/artifact\/download\/karalabe\/ethereum\/)(?:.+)/;  // eslint-disable-line max-len
+    /^https:\/\/(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)?ethereum\.org\/|gethstore\.blob\.core\.windows\.net\/)(?:.+)/;  // eslint-disable-line max-len
 
 class Manager extends EventEmitter {
     constructor() {
@@ -178,7 +178,7 @@ class Manager extends EventEmitter {
                 });
             }
 
-            this._init(localConfig, restart);
+            return this._init(localConfig, restart);
         })
         .catch((err) => {
             log.error(err);
@@ -219,15 +219,17 @@ class Manager extends EventEmitter {
         // scan for node
         let binariesDownloaded = false;
         const mgr = new ClientBinaryManager(localConfig);
+        const folders = [];
         mgr.logger = log;
 
         this._emit('scanning', 'Scanning for binaries');
 
+        _.keys(localConfig.clients).forEach((client) => {
+            folders.push(path.join(Settings.userDataPath, 'binaries', client, 'unpacked'));
+        });
+
         return mgr.init({
-            folders: [
-                path.join(Settings.userDataPath, 'binaries', 'Geth', 'unpacked'),
-                path.join(Settings.userDataPath, 'binaries', 'Eth', 'unpacked'),
-            ],
+            folders
         })
         .then(() => {
             const clients = mgr.clients;
@@ -262,7 +264,7 @@ class Manager extends EventEmitter {
 
                     this._availableClients[idlcase] = {
                         binPath: Settings[`${idlcase}Path`] || client.activeCli.fullPath,
-                        version: client.version,
+                        version: (Settings[`${idlcase}Path`]) ? '' : client.activeCli.version
                     };
                 }
             });
@@ -284,48 +286,6 @@ class Manager extends EventEmitter {
 
         this.emit('status', status, msg);
     }
-
-
-    // _resolveEthBinPath() {
-    //     log.info('Resolving path to Eth client binary ...');
-    //
-    //     let platform = process.platform;
-    //
-    //     // "win32" -> "win" (because nodes are bundled by electron-builder)
-    //     if (platform.indexOf('win') === 0) {
-    //         platform = 'win';
-    //     } else if (platform.indexOf('darwin') === 0) {
-    //         platform = 'mac';
-    //     }
-    //
-    //     log.debug(`Platform: ${platform}`);
-    //
-    //     let binPath = path.join(
-    //         __dirname,
-    //         '..',
-    //         'nodes',
-    //         'eth',
-    //         `${platform}-${process.arch}`
-    //     );
-    //
-    //     if (Settings.inProductionMode) {
-    //         // get out of the ASAR
-    //         binPath = binPath.replace('nodes', path.join('..', '..', 'nodes'));
-    //     }
-    //
-    //     binPath = path.join(path.resolve(binPath), 'eth');
-    //
-    //     if (platform === 'win') {
-    //         binPath += '.exe';
-    //     }
-    //
-    //     log.info(`Eth client binary path: ${binPath}`);
-    //
-    //     this._availableClients.eth = {
-    //         binPath,
-    //         version: '1.3.0',
-    //     };
-    // }
 }
 
 

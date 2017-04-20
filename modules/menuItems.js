@@ -35,6 +35,8 @@ const restartNode = function (newType, newNetwork) {
     Settings.nodeType = newType;
     Settings.network = newNetwork;
 
+    createMenu(webviews);
+
     log.info('Switch node', newType, newNetwork);
 
     return ethereumNode.restart(newType, newNetwork)
@@ -168,7 +170,10 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
                         click() {
-                            shell.showItemInFolder(Settings.keystore);
+                            if (Settings.keystore) {
+                                console.log(Settings.keystore)
+                                shell.openItem(Settings.keystore);
+                            }
                         },
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
@@ -383,12 +388,12 @@ let menuTempl = function (webviews) {
     const nodeSubmenu = [];
     _.keys(Settings.clientBinariesJSON.clients).forEach((client) => {
         const config = ClientBinaryManager.getClient(client);
-
         if (config) {
+            const version = (config.version) ? ` (${config.version})` : ''; // TODO
             nodeSubmenu.push(
                 {
-                    label: `${client} (${config.version})`,
-                    checked: Settings.nodeType === client,
+                    label: `${client} ${version}`,
+                    checked: ethereumNode.isOwnNode && Settings.nodeType === client,
                     enabled: ethereumNode.isOwnNode,
                     type: 'checkbox',
                     click() {
@@ -412,7 +417,7 @@ let menuTempl = function (webviews) {
     _.keys(networks).forEach((network) => {
         networkSubmenu.push({
             label: networks[network].name, // i18n.t('mist.applicationMenu.develop.mainNetwork'),
-            checked: (Settings.network === network),
+            checked: ethereumNode.isOwnNode && Settings.network === network,
             enabled: ethereumNode.isOwnNode,
             type: 'checkbox',
             click() {

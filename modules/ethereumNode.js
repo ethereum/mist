@@ -112,9 +112,11 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init() {
-        if (Settings.rpcConnectConfig.ownNode) this.start();
+        const rpcConfig = Settings.rpcConnectConfig;
 
-        return this._socket.connect(Settings.rpcConnectConfig)
+        if (rpcConfig.ownNode) return this.start();
+
+        return this._socket.connect(rpcConfig)
             .then(() => {
                 this.state = STATES.CONNECTED;
 
@@ -351,8 +353,6 @@ class EthereumNode extends EventEmitter {
                 const node = Settings.clientBinariesJSON.clients[Settings.nodeType];
                 const networks = node.platforms[Settings.platform][process.arch].networks;
                 let args = networks[Settings.network].args;
-                console.log(1, networks[Settings.network])
-                console.log(2, args)
 
                 const nodeOptions = Settings.nodeOptions;
 

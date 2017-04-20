@@ -215,6 +215,9 @@ const onReady = () => {
             return ClientBinaryManager.init();
         })
         .then(() => {
+            appMenu();
+        })
+        .then(() => {
             return ethereumNode.init();
         })
         .then(function sanityCheck() {

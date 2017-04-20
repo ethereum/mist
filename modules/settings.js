@@ -154,6 +154,7 @@ if (argv.ipcpath) {
 class Settings {
     init() {
         logger.setup(argv);
+        this._ownNode = null;
 
         this._log = logger.create('Settings');
     }
@@ -271,33 +272,39 @@ class Settings {
 
 
     get rpcIpcPath() {
-        const ipcPaths = [];
-        this._ownNode = false;
-
         // if declared use user specified IPC endpoint
-        if (argv.rpc && this.rpcMode === 'ipc') ipcPaths.push(argv.rpc);
+        if (argv.rpc && this.rpcMode === 'ipc') {
+            this._ownNode = true;
+            return argv.rpc;
+        }
 
-        if (_.isEmpty(ipcPaths)) {
-            // load possible IPC endpoint paths from clientBinaries.json
-            const networks = this.networks;
+        // load possible IPC endpoint paths from clientBinaries.json
+        const clients = this.clientBinariesJSON.clients;
+        const ipcPaths = [];
 
-            // check for existing IPC endpoints
+        // check for existing IPC endpoints
+        _.each(clients, (client) => {
+            const networks = client.platforms[this.platform][process.arch].networks;
             _.each(networks, (network) => {
                 const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
-                if (fs.existsSync(tmpPath)) ipcPaths.push(tmpPath);
+                if (fs.existsSync(tmpPath)) {
+                    ipcPaths.push(tmpPath);
+                    if (!this._ownNode) this._ownNode = false;
+                }
             });
+        });
 
-            if (_.isEmpty(ipcPaths)) {
-                // set IPC endpoint path for own node (read network from config)
-                ipcPaths.push(path.join(
-                    this.userHomePath,
-                    networks[this.network].dataDir,
-                    networks[this.network].ipcFile
-                ));
-                this._ownNode = true;
-            }
+        if (_.isEmpty(ipcPaths)) {
+            // set IPC endpoint path for own node (read network from config)
+            ipcPaths.push(path.join(
+                this.userHomePath,
+                this.networks[this.network].dataDir,
+                this.networks[this.network].ipcFile
+            ));
+            this._ownNode = true;
         }
-        this._log.debug(`IPC path: ${ipcPaths}`);
+
+        this._log.debug(`IPC path: ${ipcPaths[0]}`);
 
         return ipcPaths[0];
     }
@@ -332,7 +339,7 @@ class Settings {
             return userKeystore;
         }
 
-        return path.join(this.dataDir, Settings.networks[Settings.network].keystore);
+        return path.join(this.dataDir, this.networks[this.network].keystore);
     }
 
     get nodeType() {

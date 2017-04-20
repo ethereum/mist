@@ -26,7 +26,8 @@
                             "1": {
                                 "name": "Mainnet",
                                 "dataDir": ".ethereum",
-                                "ipcFile": "geth.ipc"
+                                "ipcFile": "geth.ipc",
+                                "keystore": "."
                             }
                         }
                     }

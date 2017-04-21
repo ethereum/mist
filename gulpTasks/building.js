@@ -107,13 +107,13 @@ gulp.task('build-dist', (cb) => {
         homepage: 'https://github.com/ethereum/mist',
         build: {
             appId: `com.ethereum.${type}`,
-            category: 'public.app-category.productivity',
             asar: true,
             directories: {
                 buildResources: '../build',
                 output: '../dist'
             },
             linux: {
+                category: 'WebBrowser',
                 target: [
                     'zip',
                     'deb'
@@ -123,6 +123,9 @@ gulp.task('build-dist', (cb) => {
                 target: [
                     'zip'
                 ]
+            },
+            mac: {
+                category: 'public.app-category.productivity',
             },
             dmg: {
                 background: '../build/dmg-background.jpg',
@@ -202,7 +205,7 @@ gulp.task('release-dist', (done) => {
             break;
         case 'mac':
             cp(
-                path.join('mac', `${applicationName}-${version}.dmg`), `${appNameHypen}-macosx-${versionDashed}.dmg`);
+                `${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
             cp(

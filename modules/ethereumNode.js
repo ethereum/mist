@@ -11,9 +11,6 @@ const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
 
-const DEFAULT_NODE_TYPE = 'geth';
-const DEFAULT_NETWORK = 'main';
-
 
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
 const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
@@ -29,8 +26,6 @@ class EthereumNode extends EventEmitter {
         super();
 
         this.STATES = STATES;
-
-        this._loadDefaults();
 
         this._node = null;
         this._type = null;
@@ -117,28 +112,34 @@ class EthereumNode extends EventEmitter {
      * @return {Promise}
      */
     init() {
-        return this._socket.connect(Settings.rpcConnectConfig)
+        const rpcConfig = Settings.rpcConnectConfig;
+
+        if (rpcConfig.ownNode) return this.start();
+
+        return this._socket.connect(rpcConfig)
             .then(() => {
                 this.state = STATES.CONNECTED;
 
                 this.emit('runningNodeFound');
             })
             .catch((err) => {
-                log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
-
-                log.info(`Node type: ${this.defaultNodeType}`);
-                log.info(`Network: ${this.defaultNetwork}`);
-
-                // if not, start node yourself
-                return this._start(this.defaultNodeType, this.defaultNetwork)
-                    .catch((err) => {
-                        log.error('Failed to start node', err);
-
-                        throw err;
-                    });
+                this.start();
             });
     }
 
+    start() {
+        log.warn('Could not connect to node. Let\'s start our own...');
+
+        log.info(`Node type: ${Settings.nodeType}, Network ID: ${Settings.network}`);
+
+        // if not, start node yourself
+        return this._start(Settings.nodeType, Settings.network)
+            .catch((err) => {
+                log.error('Failed to start node', err);
+
+                throw err;
+            });
+    }
 
     restart(newType, newNetwork) {
         return Q.try(() => {
@@ -269,8 +270,8 @@ class EthereumNode extends EventEmitter {
                 this._node = proc;
                 this.state = STATES.STARTED;
 
-                Settings.saveUserData('node', this._type);
-                Settings.saveUserData('network', this._network);
+                Settings.nodeType = this._type;
+                Settings.network = this._network;
 
                 return this._socket.connect(Settings.rpcConnectConfig, {
                     timeout: 30000, /* 30s */
@@ -297,9 +298,10 @@ class EthereumNode extends EventEmitter {
                 this.state = STATES.ERROR;
 
                 // if unable to start eth node then write geth to defaults
-                if (nodeType === 'eth') {
-                    Settings.saveUserData('node', 'geth');
-                }
+                // if (nodeType === 'eth') {
+                //     Settings.nodeType = 'geth';
+                // }
+                // TODO
 
                 throw err;
             });
@@ -348,20 +350,9 @@ class EthereumNode extends EventEmitter {
                     return reject(err);
                 }
 
-                let args;
-
-                // START TESTNET
-                if (network == 'test') {
-                    args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
-                        : ['--morden', '--unsafe-transactions'];
-                }
-                // START MAINNET
-                else {
-                    args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
-                        : ['--unsafe-transactions'];
-                }
+                const node = Settings.clientBinariesJSON.clients[Settings.nodeType];
+                const networks = node.platforms[Settings.platform][process.arch].networks;
+                let args = networks[Settings.network].args;
 
                 const nodeOptions = Settings.nodeOptions;
 
@@ -484,14 +475,6 @@ class EthereumNode extends EventEmitter {
         if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
             this.emit('nodeLog', data);
         }
-    }
-
-
-    _loadDefaults() {
-        log.trace('Load defaults');
-
-        this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
-        this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
     }
 }
 

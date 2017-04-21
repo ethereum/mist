@@ -90,16 +90,18 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     }
 });
 
-ipc.on('backendAction_setLanguage', (e, lang) => {
-    if (global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0, 5), (err) => {
-            if (!err) {
-                global.language = global.i18n.language;
-                log.info('Backend language set to: ', global.language);
-                appMenu(global.webviews);
-            }
-        });
-    }
+ipc.on('backendAction_setLanguage', (e) => {
+    global.i18n.changeLanguage(Settings.language.substr(0, 5), (err) => {
+        if (!err) {
+            global.language = global.i18n.language;
+            log.info('Backend language set to: ', global.language);
+            appMenu(global.webviews);
+        }
+    });
+});
+
+ipc.on('backendAction_getLanguage', (e) => {
+    e.returnValue = Settings.language;
 });
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
@@ -134,6 +136,7 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
             } else if (type === 'web3') {
                 e.sender.send('uiAction_checkedWalletFile', null, 'web3');
 
+                // TODO
                 let keystorePath = Settings.userHomePath;
                 // eth
                 if (ethereumNode.isEth) {

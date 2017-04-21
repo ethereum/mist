@@ -4,6 +4,7 @@ const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
+const lodash = require('lodash');
 
 
 // try loading in config file
@@ -80,6 +81,14 @@ const argv = require('yargs')
             type: 'boolean',
             group: 'Mist options:',
         },
+        clientbinaries: {
+            demand: false,
+            describe: 'Path to clientBinaries.json file to use instead of default.',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         'reset-tabs': {
             demand: false,
             describe: 'Reset Mist tabs to their default settings.',
@@ -145,6 +154,7 @@ if (argv.ipcpath) {
 class Settings {
     init() {
         logger.setup(argv);
+        this._ownNode = null;
 
         this._log = logger.create('Settings');
     }
@@ -205,20 +215,22 @@ class Settings {
     }
 
     get rpcMode() {
-        if (argv.rpc && argv.rpc.indexOf('http') === 0)
+        if (argv.rpc && argv.rpc.indexOf('http') === 0) {
             return 'http';
+        }
         if (argv.rpc && argv.rpc.indexOf('ws:') === 0) {
             this._log.warn('Websockets are not yet supported by Mist, using default IPC connection');
             argv.rpc = null;
             return 'ipc';
-        } else
-            return 'ipc';
+        }
+        return 'ipc';
     }
 
     get rpcConnectConfig() {
         if (this.rpcMode === 'ipc') {
             return {
                 path: this.rpcIpcPath,
+                ownNode: this._ownNode
             };
         }
 
@@ -231,44 +243,200 @@ class Settings {
         return (this.rpcMode === 'http') ? argv.rpc : null;
     }
 
+    get clientBinaries() {
+        return (argv.clientbinaries);
+    }
+
+    get clientBinariesJSON() {
+        if (argv.clientbinaries) {
+            return require(path.resolve(argv.clientbinaries));  // eslint-disable-line
+        }
+
+        const downloadedConfig = path.join(this.userDataPath, 'clientBinaries.json');
+        const config = (fs.existsSync(downloadedConfig)) ? require(downloadedConfig) : require('../clientBinaries.json');  // eslint-disable-line global-require, import/no-dynamic-require
+        return config;
+    }
+
+    get nodeDataPath() {
+        // console.log(global.config.find('nodeDataPath'));
+        const json = this.clientBinariesJSON.clients;
+        const config = json[this.nodeType].platforms[this.platform][process.arch];
+        const dataDir = path.join(this.userHomePath, config.paths.mainnet.dataDir);
+
+        return dataDir;
+    }
+
+    get platform() {
+        return process.platform.replace('darwin', 'mac').replace('win32', 'win').replace('freebsd', 'linux').replace('sunos', 'linux');
+    }
+
+
     get rpcIpcPath() {
-        let ipcPath = (this.rpcMode === 'ipc') ? argv.rpc : null;
-
-        if (ipcPath) {
-            return ipcPath;
+        // if declared use user specified IPC endpoint
+        if (argv.rpc && this.rpcMode === 'ipc') {
+            this._ownNode = true;
+            return argv.rpc;
         }
 
-        ipcPath = this.userHomePath;
+        // load possible IPC endpoint paths from clientBinaries.json
+        const clients = this.clientBinariesJSON.clients;
+        const ipcPaths = [];
 
-        if (process.platform === 'darwin') {
-            ipcPath += '/Library/Ethereum/geth.ipc';
-        } else if (process.platform === 'freebsd' ||
-       process.platform === 'linux' ||
-       process.platform === 'sunos') {
-            ipcPath += '/.ethereum/geth.ipc';
-        } else if (process.platform === 'win32') {
-            ipcPath = '\\\\.\\pipe\\geth.ipc';
+        // check for existing IPC endpoints
+        _.each(clients, (client) => {
+            const networks = client.platforms[this.platform][process.arch].networks;
+            _.each(networks, (network) => {
+                const tmpPath = path.join(this.userHomePath, network.dataDir, network.ipcFile);
+                if (fs.existsSync(tmpPath)) {
+                    ipcPaths.push(tmpPath);
+                    if (!this._ownNode) this._ownNode = false;
+                }
+            });
+        });
+
+        if (_.isEmpty(ipcPaths)) {
+            // set IPC endpoint path for own node (read network from config)
+            ipcPaths.push(path.join(
+                this.userHomePath,
+                this.networks[this.network].dataDir,
+                this.networks[this.network].ipcFile
+            ));
+            this._ownNode = true;
         }
 
-        this._log.debug(`IPC path: ${ipcPath}`);
+        this._log.debug(`IPC path: ${ipcPaths[0]}`);
 
-        return ipcPath;
-    }
-
-    get nodeType() {
-        return argv.node;
-    }
-
-    get network() {
-        return argv.network;
+        return ipcPaths[0];
     }
 
     get nodeOptions() {
         return argv.nodeOptions;
     }
 
-    loadUserData(path) {
-        const fullPath = this.constructUserDataPath(path);
+    set dataDir(userDataDir) {
+        this.saveConfig(`clients.${this.nodeType}.dataDir`, userDataDir);
+    }
+
+    get dataDir() {
+        const userDataDir = this.loadConfig(`clients.${this.nodeType}.dataDir`);
+
+        if (userDataDir) {
+            return userDataDir;
+        }
+
+        return path.join(this.userHomePath, this.networks[this.network].dataDir);
+
+    }
+
+    set keystore(userKeystore) {
+        this.saveConfig(`clients.${this.nodeType}.keystore`, userKeystore);
+    }
+
+    get keystore() {
+        const userKeystore = this.loadConfig(`clients.${this.nodeType}.keystore`);
+
+        if (userKeystore) {
+            return userKeystore;
+        }
+
+        return path.join(this.dataDir, this.networks[this.network].keystore);
+    }
+
+    get nodeType() {
+        if (argv.node) return argv.node;
+
+        const savedClient = this.loadConfig('node.type');
+        const json = this.clientBinariesJSON;
+        let nodeType;
+
+        _.keys(json.clients).forEach((client) => {  // eslint-disable-line consistent-return
+            if (client === savedClient) nodeType = client;
+        });
+
+        if (nodeType) return nodeType;
+
+        this.saveConfig('node.type', json.defaults.nodeType);
+        return json.defaults.nodeType;
+    }
+
+    set nodeType(type) {
+        this.saveConfig('node.type', type);
+    }
+
+    get network() {
+        if (argv.network) return argv.network;
+
+        const savedNetwork = this.loadConfig('node.network');
+        const networks = this.networks;
+        let network;
+
+        _.keys(networks).forEach((net) => {  // eslint-disable-line consistent-return
+            if (net === savedNetwork) network = net;
+        });
+
+        if (network) return network;
+
+        this.saveConfig('node.network', _.keys(networks)[0]);
+        return _.keys(networks)[0];
+    }
+
+    set network(network) {
+        this.saveConfig('node.network', network);
+    }
+
+    get networks() {
+        const json = this.clientBinariesJSON.clients;
+        return json[this.nodeType].platforms[this.platform][process.arch].networks;
+    }
+
+    get language() {
+        return this.loadConfig('i18n');
+    }
+
+    set language(langCode) {
+        this.saveConfig('i18n', langCode);
+    }
+
+    initConfig() {
+        global.config.insert({
+            i18n: i18n.getBestMatchedLangCode(app.getLocale())
+        });
+    }
+
+    saveConfig(key, value) {
+        let obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            obj = global.config.get(1);
+        }
+
+        if (lodash.get(obj, key) !== value) {
+            lodash.set(obj, key, value);
+            global.config.update(obj);
+
+            // this._log.warn(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.trace(global.config.data);
+        }
+    }
+
+    loadConfig(key) {
+        const obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            return this.loadConfig(key);
+        }
+
+        // this._log.warn(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+        this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+
+        return lodash.get(obj, key);
+    }
+
+    loadUserData(path2) {
+        const fullPath = this.constructUserDataPath(path2);
 
         this._log.trace('Load user data', fullPath);
 

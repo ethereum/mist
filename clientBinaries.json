@@ -1,6 +1,39 @@
 
 {
+    "defaults": {
+        "nodeType": "Geth"
+    },
     "clients": {
+        "eth": {
+            "version": "1.3.0",
+            "platforms": {
+                "mac": {
+                    "x64": {
+                        "download": {
+                            "url": "https://github.com/luclu/mist/releases/download/v1.0.0/eth-v1.0.0.tar.gz",
+                            "type": "tar",
+                            "md5": "f863ce5b4051d68e9a3e626da998f0fc",
+                            "bin": "eth"
+                        },
+                        "bin": "eth",
+                        "commands": {
+                            "sanity": {
+                                "args": ["--version"],
+                                "output": [ "eth", "1.3.0" ]
+                            }
+                        },
+                        "networks": {
+                            "1": {
+                                "name": "Mainnet",
+                                "dataDir": ".ethereum",
+                                "ipcFile": "geth.ipc",
+                                "keystore": "."
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "Geth": {
             "version": "1.6.0",
             "platforms": {
@@ -49,6 +82,22 @@
                             "sanity": {
                                 "args": ["version"],
                                 "output": [ "Geth", "1.6.0" ]
+                            }
+                        },
+                        "networks": {
+                            "1": {
+                                "name": "Mainnet",
+                                "dataDir": "Library/Ethereum",
+                                "keystore": "keystore",
+                                "ipcFile": "geth.ipc",
+                                "args": ["--cache", "1024"]
+                            },
+                            "3": {
+                                "name": "Ropsten",
+                                "dataDir": "Library/Ethereum/testnet",
+                                "keystore": "keystore",
+                                "ipcFile": "geth.ipc",
+                                "args": ["--testnet", "--cache", "1024"]
                             }
                         }
                     }

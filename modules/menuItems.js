@@ -31,7 +31,11 @@ const createMenu = function (webviews) {
 
 
 const restartNode = function (newType, newNetwork) {
-    newNetwork = newNetwork || ethereumNode.network;
+    newNetwork = newNetwork || Settings.network;
+    Settings.nodeType = newType;
+    Settings.network = newNetwork;
+
+    createMenu(webviews);
 
     log.info('Switch node', newType, newNetwork);
 
@@ -83,6 +87,7 @@ let menuTempl = function (webviews) {
                         path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
                         '' // write no version
                     );
+                    // TODO
 
                     // true = will restart after updating and user consent
                     ClientBinaryManager.init(true);
@@ -165,34 +170,10 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
                         click() {
-                            let userPath = Settings.userHomePath;
-
-                            // eth
-                            if (ethereumNode.isEth) {
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Web3\\keys`;
-                                } else {
-                                    userPath += '/.web3/keys';
-                                }
-
-                            // geth
-                            } else {
-                                if (process.platform === 'darwin') {
-                                    userPath += '/Library/Ethereum/keystore';
-                                }
-
-                                if (process.platform === 'freebsd' ||
-                                process.platform === 'linux' ||
-                                process.platform === 'sunos') {
-                                    userPath += '/.ethereum/keystore';
-                                }
-
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
-                                }
+                            if (Settings.keystore) {
+                                console.log(Settings.keystore)
+                                shell.openItem(Settings.keystore);
                             }
-
-                            shell.showItemInFolder(userPath);
                         },
                     }, {
                         label: i18n.t('mist.applicationMenu.accounts.backupMist'),
@@ -245,30 +226,45 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
-        browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${langCode}");`
-        );
-        ipc.emit('backendAction_setLanguage', {}, langCode);
-    };
-    const currentLanguage = i18n.getBestMatchedLangCode(global.language);
+    // LANGUAGE (VIEW)
+    const switchLang = langCode => function (menuItem, browserWindow) {
+        try {
+            // set Accept_Language header
+            const session = browserWindow.webContents.session;
+            session.setUserAgent(session.getUserAgent(), langCode);
 
-    const languageMenu =
-    Object.keys(i18n.options.resources)
+            // set navigator.language (console only)
+            // browserWindow.webContents.executeJavaScript(
+            //     `navigator.__defineGetter__('language', function () {
+            //         return ${langCode};
+            //     });`
+            // );
+
+            // reload browserWindow to apply language change
+            // browserWindow.webContents.reload();
+        } catch (err) {
+            log.error(err);
+        } finally {
+            Settings.language = langCode;
+            ipc.emit('backendAction_setLanguage');
+        }
+    };
+
+    const languageMenu = Object.keys(i18n.options.resources)
     .filter(langCode => langCode !== 'dev')
     .map((langCode) => {
         const menuItem = {
             label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === langCode),
-            click: genSwitchLanguageFunc(langCode),
+            checked: (langCode === Settings.language),
+            click: switchLang(langCode),
         };
         return menuItem;
     });
-    const defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
+
     languageMenu.unshift({
         label: i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(defaultLang),
+        click: switchLang(i18n.getBestMatchedLangCode(app.getLocale())),
     }, {
         type: 'separator',
     });
@@ -389,72 +385,51 @@ let menuTempl = function (webviews) {
         type: 'separator',
     });
     // add node switch
-    if (process.platform === 'darwin' || process.platform === 'win32') {
-        const nodeSubmenu = [];
-
-        const ethClient = ClientBinaryManager.getClient('eth');
-        const gethClient = ClientBinaryManager.getClient('geth');
-
-        if (gethClient) {
+    const nodeSubmenu = [];
+    _.keys(Settings.clientBinariesJSON.clients).forEach((client) => {
+        const config = ClientBinaryManager.getClient(client);
+        if (config) {
+            const version = (config.version) ? ` (${config.version})` : ''; // TODO
             nodeSubmenu.push(
                 {
-                    label: `Geth ${gethClient.version} (Go)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                    label: `${client} ${version}`,
+                    checked: ethereumNode.isOwnNode && Settings.nodeType === client,
                     enabled: ethereumNode.isOwnNode,
                     type: 'checkbox',
                     click() {
-                        restartNode('geth');
+                        restartNode(client);
                     },
                 }
             );
         }
+    });
 
-        if (ethClient) {
-            nodeSubmenu.push(
-                {
-                    label: `Eth ${ethClient.version} (C++)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isEth,
-                    enabled: ethereumNode.isOwnNode,
-                    // enabled: false,
-                    type: 'checkbox',
-                    click() {
-                        restartNode('eth');
-                    },
-                }
-            );
-        }
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
+        submenu: nodeSubmenu,
+    });
 
-        devToolsMenu.push({
-            label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
-            submenu: nodeSubmenu,
-        });
-    }
 
     // add network switch
+    const networkSubmenu = [];
+    const networks = Settings.networks;
+
+    _.keys(networks).forEach((network) => {
+        networkSubmenu.push({
+            label: networks[network].name, // i18n.t('mist.applicationMenu.develop.mainNetwork'),
+            checked: ethereumNode.isOwnNode && Settings.network === network,
+            enabled: ethereumNode.isOwnNode,
+            type: 'checkbox',
+            click() {
+                restartNode(Settings.nodeType, network);
+            },
+        });
+    });
+
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.network'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-                accelerator: 'CommandOrControl+Shift+1',
-                checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, 'main');
-                },
-            },
-            {
-                label: 'Testnet',
-                accelerator: 'CommandOrControl+Shift+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, 'test');
-                },
-            },
-        ] });
+        submenu: networkSubmenu,
+    });
 
 
     devToolsMenu.push({

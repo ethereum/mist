@@ -25,6 +25,7 @@ gulp.task('clean-dist', (cb) => {
 
 gulp.task('copy-app-source-files', () => {
     return gulp.src([
+        'node_modules/*/*',
         './main.js',
         './clientBinaries.json',
         './modules/**',
@@ -173,6 +174,9 @@ gulp.task('build-dist', (cb) => {
                 });
             }
         }
+    })
+    .catch((err) => {
+        throw new Error(err);
     })
     .finally(() => {
         cb();

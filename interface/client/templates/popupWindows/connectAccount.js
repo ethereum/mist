@@ -1,13 +1,10 @@
 
 
 var pinToSidebar = function () {
-    var selectedTab = Tabs.findOne(LocalStore.get('selectedTab'));
+    var selectedTab = TemplateVar.get('tab');
 
     if (selectedTab) {
         var existingUserTab = Helpers.getTabIdByUrl(selectedTab.url);
-
-        console.log(existingUserTab);
-        console.log(selectedTab);
 
         if (existingUserTab === 'browser') {
             var newTabId = Tabs.insert({
@@ -15,7 +12,6 @@ var pinToSidebar = function () {
                 redirect: selectedTab.url,
                 name: selectedTab.name,
                 menu: {},
-                menuVisible: false,
                 position: Tabs.find().count() + 1
             });
             LocalStore.set('selectedTab', newTabId);
@@ -45,7 +41,7 @@ var pinToSidebar = function () {
 };
 
 var updateSelectedTabAccounts = function (accounts) {
-    var tabId = LocalStore.get('selectedTab');
+    var tabId = TemplateVar.get('selectedTab')._id;
     Tabs.update(tabId, { $set: {
         'permissions.accounts': accounts
     } });
@@ -53,7 +49,9 @@ var updateSelectedTabAccounts = function (accounts) {
 
 Template['popupWindows_connectAccount'].onCreated(function () {
     this.autorun(function () {
-        var tab = Tabs.findOne(LocalStore.get('selectedTab'), { fields: { 'permissions.accounts': 1 } });
+        TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
+
+        var tab = TemplateVar.get('tab');
         var accounts = (tab && tab.permissions && tab.permissions.accounts) ? tab.permissions.accounts : [];
         TemplateVar.set('accounts', accounts);
     });
@@ -67,7 +65,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dapp)
     */
     dapp: function () {
-        return Tabs.findOne(LocalStore.get('selectedTab'));
+        return TemplateVar.get('tab');
     },
     /**
     Returns a cleaner version of URL
@@ -75,7 +73,7 @@ Template['popupWindows_connectAccount'].helpers({
     @method (dappFriendlyURL)
     */
     dappFriendlyURL: function () {
-        var currentTab = Tabs.findOne(LocalStore.get('selectedTab'));
+        var currentTab = TemplateVar.get('tab');
         if (currentTab && currentTab.url) {
             return currentTab.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
         }

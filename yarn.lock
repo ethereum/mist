@@ -4036,9 +4036,9 @@ supports-color@^3.1.0, supports-color@^3.1.2:
   dependencies:
     has-flag "^1.0.0"
 
-swarm-js@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/swarm-js/-/swarm-js-0.1.13.tgz#e1a1d8eac171aec3f21fd3686dca8a66c7efe0a4"
+swarm-js@^0.1.14:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/swarm-js/-/swarm-js-0.1.14.tgz#2ceca17959abe57a2f7b1b6574b4ceb281090c11"
   dependencies:
     bluebird "^3.4.7"
     buffer "^5.0.5"

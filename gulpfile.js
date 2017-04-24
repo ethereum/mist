@@ -61,6 +61,7 @@ gulp.task('buildQueue', (cb) => {
 
     tasks.push('clean-dist');
     tasks.push('copy-app-source-files');
+    tasks.push('copy-app-folder-files');
     tasks.push('copy-build-folder-files');
     tasks.push('switch-production');
     tasks.push('bundling-interface');
@@ -81,4 +82,3 @@ gulp.task('uploadQueue', (cb) => {
 
     runSeq.apply(null, _.flatten([tasks, cb]));
 });
-

@@ -34,6 +34,7 @@
     "solc": "^0.4.10",
     "swarm-js": "^0.1.13",
     "typescript": "^2.2.2",
+    "swarm-js": "^0.1.14",
     "underscore": "^1.8.3",
     "underscore-deep-extend": "^1.1.5",
     "uuid": "^3.0.1",

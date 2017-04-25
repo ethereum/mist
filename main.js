@@ -185,8 +185,9 @@ onReady = () => {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
       const redirectPath = Settings.swarmURL + '/' + request.url.replace('bzz:/', 'bzz://');
       callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-    }, (e) => {
-      log.error(e);
+    }, (error) => {
+      if (error)
+        log.error(error);
     });
 
     // check for update

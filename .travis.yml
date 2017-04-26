@@ -28,8 +28,6 @@ matrix:
         - sudo dpkg --add-architecture i386 && sudo add-apt-repository ppa:ubuntu-wine/ppa -y
         - sudo apt-get update -q
         - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
-      after_script:
-        - makensis -V2 scripts/windows-installer.nsi
 
 
     # LINUX
@@ -71,14 +69,14 @@ install:
 
 script:
   - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi  # disable macOS code-signing (production certificate) on develop branch
-  - travis_wait 60 gulp mist --platform $GULP_PLATFORM
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp wallet --platform $GULP_PLATFORM; fi  # also build wallet if on master branch
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
-  - if [[ $GULP_PLATFORM != "win" ]]; then gulp test-mist; fi
+  - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
+  - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi  # also build wallet if on master branch
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi  # prepare for integration testing
+  - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
-  - gulp mist-checksums --platform $GULP_PLATFORM
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp wallet-checksums --platform $GULP_PLATFORM; fi
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM; fi
 
 notifications:
   webhooks:

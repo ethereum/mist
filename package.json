@@ -45,7 +45,7 @@
     "del": "^2.2.2",
     "ecstatic": "^2.1.0",
     "electron": "1.3.13",
-    "electron-builder": "^12.2.2",
+    "electron-builder": "^17.0.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.3",
     "eslint-plugin-import": "^2.2.0",

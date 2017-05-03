@@ -48,7 +48,7 @@ matrix:
     # MAC
     - os: osx
       osx_image: xcode8  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
-      node_js: 6
+      node_js: 7
       env:
           - GULP_PLATFORM=mac
       before_install:

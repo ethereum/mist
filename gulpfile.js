@@ -11,9 +11,18 @@ const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
 
+// available crossplatform builds
+let platforms;
+if (process.platform === 'darwin') {
+    platforms = ['mac', 'linux', 'win'];
+} else if (process.platform === 'win32') {
+    platforms = ['win'];
+} else {
+    platforms = ['linux', 'win'];
+}
+
 // parse commandline arguments
 const args = process.argv.slice(2);
-const platforms = (process.platform === 'darwin') ? ['mac', 'linux', 'win'] : ['linux', 'win'];
 const options = minimist(args, {
     string: ['walletSource', 'test'],
     boolean: _.flatten(['wallet', platforms]),

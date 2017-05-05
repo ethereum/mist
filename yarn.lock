@@ -3805,9 +3805,9 @@ sntp@1.x.x:
   dependencies:
     hoek "2.x.x"
 
-solc@^0.4.10:
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.10.tgz#92094789d33bae4be94b4977b1d1bfa432271cd2"
+solc@^0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.11.tgz#2522eb43e7c0419bac2060b96e20a2593bfb5e8b"
   dependencies:
     fs-extra "^0.30.0"
     memorystream "^0.3.1"

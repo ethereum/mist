@@ -162,6 +162,7 @@ gulp.task('build-dist', (cb) => {
     builder.build({
         targets: builder.createTargets(targets, null, 'all'),
         projectDir: path.join(__dirname, `../dist_${type}`, 'app'),
+        publish: 'never',
         config: {
             afterPack(params) {
                 return Q.try(() => {

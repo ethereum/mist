@@ -133,17 +133,18 @@ gulp.task('build-dist', (cb) => {
             dmg: {
                 background: '../build/dmg-background.jpg',
                 iconSize: 128,
-                contents: [{
-                    x: 441,
-                    y: 448,
-                    type: 'link',
-                    path: '/Applications'
-                },
-                {
-                    x: 441,
-                    y: 142,
-                    type: 'file'
-                }
+                contents: [
+                    {
+                        x: 441,
+                        y: 448,
+                        type: 'link',
+                        path: '/Applications'
+                    },
+                    {
+                        x: 441,
+                        y: 142,
+                        type: 'file'
+                    }
                 ]
             }
         }
@@ -162,6 +163,7 @@ gulp.task('build-dist', (cb) => {
     builder.build({
         targets: builder.createTargets(targets, null, 'all'),
         projectDir: path.join(__dirname, `../dist_${type}`, 'app'),
+        publish: 'never',
         config: {
             afterPack(params) {
                 return Q.try(() => {

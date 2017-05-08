@@ -82,7 +82,7 @@ script:
   - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM; fi
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
 
 notifications:
   webhooks:

@@ -32,7 +32,7 @@ test['Browser bar should not render script tags on breadcrumb view'] = function*
         return client.getText('.url-breadcrumb').then((e) => {
             return /404\.html$/.test(e);
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 8000, 'expected breadcrumb to render as HTML encoded');
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url script'));
@@ -60,7 +60,7 @@ test['Browser bar should not render script tags in disguise (2) on breadcrumb vi
         return client.getText('.url-breadcrumb').then((e) => {
             return /404\.html$/.test(e);
         });
-    }, 5000, 'expected breadcrumb to render as HTML encoded');
+    }, 8000, 'expected breadcrumb to render as HTML encoded');
 
     should.exist(yield this.getUiElement('form.url'));
     should.not.exist(yield this.getUiElement('form.url svg'));

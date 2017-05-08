@@ -133,17 +133,18 @@ gulp.task('build-dist', (cb) => {
             dmg: {
                 background: '../build/dmg-background.jpg',
                 iconSize: 128,
-                contents: [{
-                    x: 441,
-                    y: 448,
-                    type: 'link',
-                    path: '/Applications'
-                },
-                {
-                    x: 441,
-                    y: 142,
-                    type: 'file'
-                }
+                contents: [
+                    {
+                        x: 441,
+                        y: 448,
+                        type: 'link',
+                        path: '/Applications'
+                    },
+                    {
+                        x: 441,
+                        y: 142,
+                        type: 'file'
+                    }
                 ]
             }
         }

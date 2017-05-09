@@ -26,6 +26,7 @@ process.on('loaded', function () {
 
 
 window.mist = mist();
+window.mistMode = 'mist';
 
 // prevent overwriting the Dapps Web3
 delete global.Web3;

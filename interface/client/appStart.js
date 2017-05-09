@@ -91,7 +91,7 @@ Meteor.startup(function () {
             try {
                 numeral.language(lang);
             } catch (err) {
-                console.error(`numeral.js couldn't set number formating: ${err.message}`);
+                console.warn(`numeral.js couldn't set number formating: ${err.message}`);
             }
             EthTools.setLocale(lang);
         }

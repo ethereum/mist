@@ -91,6 +91,7 @@ gulp.task('upload-binaries', (cb) => {
                 if (draft.body && checksums) {
                     got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
+                            tag_name: `v${version}`,
                             body: `${draft.body}\n\n## Checksums\n\`\`\`\n${checksums.join('')}\`\`\``
                         })
                     });

@@ -10,7 +10,7 @@ For the Mist API see the [MISTAPI.md](MISTAPI.md).
 
 ## Installation
 
-If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
+If you want to install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
 you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
@@ -19,14 +19,14 @@ For updating simply download the new version and copy it over the old one (keep 
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
-- macOS `~/Library/Application Support/Mist`
+- macOS `~/Library/Application\ Support/Mist`
 - Linux `~/.config/Mist`
 
 
 ## Development
 
-For development, a Meteor server will to be started to assist with live reload and CSS injection.
-Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
+For development, a Meteor server will need to be started to assist with live reload and CSS injection.
+Once a Mist version is released the Meteor frontend part is bundled using the `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 
@@ -38,7 +38,7 @@ To run mist in development you need:
 - [Electron](http://electron.atom.io/) `v1.3.13` cross platform desktop app framework
 - [Gulp](http://gulpjs.com/) build and automation system
 
-Install the later ones via:
+Install the latter ones via:
 
     $ curl https://install.meteor.com/ | sh
     $ curl -o- -L https://yarnpkg.com/install.sh | bash

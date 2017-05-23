@@ -12,7 +12,7 @@ The browserBar template
 */
 
 
-Template['layout_browserBar'].onRendered(function(){
+Template['layout_browserBar'].onRendered(function () {
     var template = this;
 });
 
@@ -39,7 +39,7 @@ Template['layout_browserBar'].helpers({
 
     @method (dapp)
     */
-    'dapp': function(){
+    'dapp': function () {
         return Tabs.findOne(LocalStore.get('selectedTab'));
     },
     /**
@@ -47,16 +47,17 @@ Template['layout_browserBar'].helpers({
 
     @method (dappAccounts)
     */
-    'dappAccounts': function(){
-        if(this.permissions)
-            return EthAccounts.find({address: {$in: this.permissions.accounts || []}});
+    'dappAccounts': function () {
+        if (this.permissions) {
+            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
+        }
     },
     /**
     Show the add button, when on a dapp and in doogle
 
     @method (isBrowser)
     */
-    'isBrowser': function(){
+    'isBrowser': function () {
         return (LocalStore.get('selectedTab') === 'browser');
     },
     /**
@@ -64,8 +65,8 @@ Template['layout_browserBar'].helpers({
 
     @method (currentWebView)
     */
-    'currentWebView': function(){
-        return '.webview webview[data-id="'+ LocalStore.get('selectedTab') +'"]';
+    'currentWebView': function () {
+        return '.webview webview[data-id="' + LocalStore.get('selectedTab') + '"]';
     }
 });
 
@@ -75,22 +76,24 @@ Template['layout_browserBar'].events({
 
     @event click button.back
     */
-    'click button.back': function(){
+    'click button.back': function () {
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if(webview && webview.canGoBack())
+        if (webview && webview.canGoBack()) {
             webview.goBack();
+        }
     },
     /*
     Reload the current webview
 
     @event click button.reload
     */
-    'click button.reload': function(){
+    'click button.reload': function () {
         var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
 
-        if(webview)
+        if (webview) {
             webview.reload();
+        }
     },
     /*
     Remove the current selected tab
@@ -99,7 +102,7 @@ Template['layout_browserBar'].events({
 
     @event click button.remove-tab
     */
-    'click button.remove-tab': function(){
+    'click button.remove-tab': function () {
         var tabId = LocalStore.get('selectedTab');
 
         Tabs.remove(tabId);
@@ -110,17 +113,17 @@ Template['layout_browserBar'].events({
 
     @event click .app-bar > button.accounts'
     */
-    'click .app-bar > button.accounts': function(e, template) {
-        mist.requestAccount(function(e, addresses){
+    'click .app-bar > button.accounts': function (e, template) {
+        LocalStore.set('chosenTab', LocalStore.get('selectedTab')); // needed by connectAccount
+        mist.requestAccount(function (e, addresses) {
             var tabId = LocalStore.get('selectedTab');
 
             dbSync.syncDataFromBackend(LastVisitedPages);
-            dbSync.syncDataFromBackend(Tabs).then(function(){
-                Tabs.update(tabId, {$set: {
+            dbSync.syncDataFromBackend(Tabs).then(function () {
+                Tabs.update(tabId, { $set: {
                     'permissions.accounts': addresses
-                }});
+                } });
             });
-
         });
     },
     /*
@@ -128,7 +131,7 @@ Template['layout_browserBar'].events({
 
     @event blur
     */
-    'blur .app-bar > form.url .url-input': function(e, template) {
+    'blur .app-bar > form.url .url-input': function (e, template) {
         template.$('.app-bar').removeClass('show-bar');
     },
     /*
@@ -136,7 +139,7 @@ Template['layout_browserBar'].events({
 
     @event mouseenter .app-bar
     */
-    'mouseenter .app-bar': function(e, template){
+    'mouseenter .app-bar': function (e, template) {
         clearTimeout(TemplateVar.get('timeoutId'));
     },
     /*
@@ -144,7 +147,7 @@ Template['layout_browserBar'].events({
 
     @event submit
     */
-    'submit': function(e, template){
+    'submit': function (e, template) {
         var url = Helpers.formatUrl(template.$('.url-input')[0].value);
 
         // remove focus from url input
@@ -154,13 +157,13 @@ Template['layout_browserBar'].events({
         var url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
 
-        console.log('Submitted new URL:'+ url);
+        console.log('Submitted new URL:' + url);
 
         // update current tab url
-        Tabs.update(tabId, {$set: {
+        Tabs.update(tabId, { $set: {
             url: url,
             redirect: url
-        }});
+        } });
         LocalStore.set('selectedTab', tabId);
     }
 });

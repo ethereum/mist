@@ -56,6 +56,9 @@ module.exports = () => {
 
             ipcRenderer.send('mistAPI_requestAccount');
         },
+        solidity: {
+            version: String(packageJson.dependencies.solc).match(/\d+\.\d+\.\d+/)[0],
+        },
         sounds: {
             bip: function playSound() {
                 ipcRenderer.sendToHost('mistAPI_sound', `file://${__dirname}/../../../sounds/bip.mp3`);
@@ -202,6 +205,7 @@ module.exports = () => {
     });
 
     ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
+        console.log('uiAction_windowMessage',type, error, value);
         if (mist.callbacks[type]) {
             mist.callbacks[type].forEach((cb) => {
                 cb(error, value);

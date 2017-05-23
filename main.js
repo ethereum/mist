@@ -1,11 +1,6 @@
-const squirrelStartup = require('electron-squirrel-startup');
-// windows only: don't run app during squirrel-install
-function exit() { return; }
-if (squirrelStartup) exit();
-
 
 global._ = require('./modules/utils/underscore');
-const { app, dialog, ipcMain, shell } = require('electron');
+const { app, dialog, ipcMain, shell, protocol } = require('electron');
 const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
@@ -16,6 +11,7 @@ const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
+const windowStateKeeper = require('electron-window-state');
 
 Q.config({
     cancellation: true,
@@ -56,6 +52,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -174,6 +171,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
     });
 });
 
+// Allows the Swarm protocol to behave like http
+protocol.registerStandardSchemes(["bzz"]);
 
 onReady = () => {
     // setup DB sync to backend
@@ -181,6 +180,15 @@ onReady = () => {
 
     // Initialise window mgr
     Windows.init();
+
+    // Enable the Swarm protocol
+    protocol.registerHttpProtocol('bzz', (request, callback) => {
+      const redirectPath = Settings.swarmURL + '/' + request.url.replace('bzz:/', 'bzz://');
+      callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+    }, (error) => {
+      if (error)
+        log.error(error);
+    });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
@@ -196,19 +204,27 @@ onReady = () => {
 
     // Create the browser window.
 
+    const defaultWindow = windowStateKeeper({
+        defaultWidth: 1024 + 208,
+        defaultHeight: 720
+    });
+
     // MIST
     if (Settings.uiMode === 'mist') {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1024 + 208,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     nodeIntegration: true, /* necessary for webviews;
                         require will be removed through preloader */
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
+                    experimentalFeatures: true,
                 },
             },
         });
@@ -218,8 +234,10 @@ onReady = () => {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1100,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     preload: `${__dirname}/modules/preloader/walletMain.js`,
                     'overlay-fullscreen-video': true,
@@ -228,6 +246,9 @@ onReady = () => {
             },
         });
     }
+
+    // Delegating events to save window bounds on windowStateKeeper
+    defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) {
         splashWindow = Windows.create('splash', {
@@ -291,6 +312,21 @@ onReady = () => {
             );
         });
 
+        // starting swarm
+        swarmNode.on('starting', () => {
+            Windows.broadcast('uiAction_swarmStatus', 'starting');
+        });
+
+        // swarm download progress
+        swarmNode.on('downloadProgress', (progress) => {
+            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+        });
+
+        // started swarm
+        swarmNode.on('started', (isLocal) => {
+            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+        });
+
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
@@ -340,6 +376,9 @@ onReady = () => {
         .then(() => {
             return ethereumNode.init();
         })
+        .then(() => {
+            return swarmNode.init();
+        })
         .then(function sanityCheck() {
             if (!ethereumNode.isIpcConnected) {
                 throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
@@ -355,7 +394,8 @@ onReady = () => {
             return ethereumNode.send('eth_accounts', []);
         })
         .then(function onboarding(resultData) {
-            if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+            
+            if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
                 log.info('No accounts setup yet, lets do onboarding first.');
 
                 return new Q((resolve, reject) => {

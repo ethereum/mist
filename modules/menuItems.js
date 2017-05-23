@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Windows = require('./windows');
@@ -6,6 +6,8 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
+const swarmNode = require('./swarmNode.js');
+const mimetype = require('mimetype');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -16,6 +18,7 @@ const switchForSystem = function (options) {
     } else if ('default' in options) {
         return options.default;
     }
+    return null;
 };
 
 
@@ -245,23 +248,23 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = lang_code => function (menuItem, browserWindow) {
+    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
         browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${lang_code}");`
+            `TAPi18n.setLanguage("${langCode}");`
         );
-        ipc.emit('backendAction_setLanguage', {}, lang_code);
+        ipc.emit('backendAction_setLanguage', {}, langCode);
     };
     const currentLanguage = i18n.getBestMatchedLangCode(global.language);
 
     const languageMenu =
     Object.keys(i18n.options.resources)
-    .filter(lang_code => lang_code !== 'dev')
-    .map((lang_code) => {
-        menuItem = {
-            label: i18n.t(`mist.applicationMenu.view.langCodes.${lang_code}`),
+    .filter(langCode => langCode !== 'dev')
+    .map((langCode) => {
+        const menuItem = {
+            label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === lang_code),
-            click: genSwitchLanguageFunc(lang_code),
+            checked: (currentLanguage === langCode),
+            click: genSwitchLanguageFunc(langCode),
         };
         return menuItem;
     });
@@ -298,7 +301,7 @@ let menuTempl = function (webviews) {
 
 
     // DEVELOP
-    let devToolsMenu = [];
+    const devToolsMenu = [];
 
     // change for wallet
     if (Settings.uiMode === 'mist') {
@@ -338,16 +341,40 @@ let menuTempl = function (webviews) {
     }
 
     const externalNodeMsg = (ethereumNode.isOwnNode) ? '' : ` (${i18n.t('mist.applicationMenu.develop.externalNode')})`;
-    devToolsMenu = [{
+    devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.devTools'),
         submenu: devtToolsSubMenu,
-    }, {
+    });
+
+    if (Settings.uiMode === 'mist') {
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.openRemix'),
+            enabled: true,
+            click() {
+                Windows.createPopup('remix', {
+                    url: 'https://remix.ethereum.org',
+                    electronOptions: {
+                        width: 1024,
+                        height: 720,
+                        center: true,
+                        frame: true,
+                        resizable: true,
+                        titleBarStyle: 'default',
+                    }
+                });
+            },
+        });
+    }
+
+    devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.runTests'),
         enabled: (Settings.uiMode === 'mist'),
         click() {
             Windows.getByType('main').send('uiAction_runTests', 'webview');
         },
-    }, {
+    });
+
+    devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
         enabled: ethereumNode.isOwnNode,
         click() {
@@ -358,14 +385,43 @@ let menuTempl = function (webviews) {
                 log = 'Couldn\'t load log file.';
             }
         },
-    },
-    ];
-
+    });
 
     // add node switching menu
     devToolsMenu.push({
         type: 'separator',
     });
+
+    // SWARM
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.uploadToSwarm'),
+        click() {
+            const focusedWindow = BrowserWindow.getFocusedWindow();
+            const paths = dialog.showOpenDialog(focusedWindow, {
+                properties: ['openFile', 'openDirectory']
+            });
+            if (paths && paths.length === 1) {
+              const isDir = fs.lstatSync(paths[0]).isDirectory();
+              const defaultPath = path.join(paths[0], 'index.html');
+              const uploadConfig = {
+                path: paths[0],
+                kind: isDir ? 'directory' : 'file',
+                defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+              };
+              swarmNode.upload(uploadConfig).then(hash => {
+                const Tabs = global.db.getCollection('UI_tabs');
+                focusedWindow.webContents.executeJavaScript(`
+                  Tabs.update('browser', {$set: {
+                      url: 'bzz://${hash}',
+                      redirect: 'bzz://${hash}'
+                  }});
+                `);
+              }).catch(e => console.log(e));
+            }
+        },
+    });
+
+
     // add node switch
     if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];

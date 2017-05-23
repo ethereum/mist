@@ -34,13 +34,20 @@ module.exports = class extends BaseProcessor {
 
             // validate data
             try {
-                _.each(payload.params[0], (val) => {
+                _.each(payload.params[0], (val, key) => {
                     // if doesn't have hex then leave
-                    if (_.isString(val)) {
-                        if (val.match(/[^0-9a-fx]/igm)) {
+                    if (!_.isString(val)) {
+                        throw this.ERRORS.INVALID_PAYLOAD;
+                    } else {
+                        // make sure all data is lowercase and has 0x
+                        if (val) val = `0x${val.toLowerCase().replace(/^0x/, '')}`;
+
+                        if (val.substr(2).match(/[^0-9a-f]/igm)) {
                             throw this.ERRORS.INVALID_PAYLOAD;
                         }
                     }
+
+                    payload.params[0][key] = val;
                 });
             } catch (err) {
                 return reject(err);
@@ -54,6 +61,8 @@ module.exports = class extends BaseProcessor {
                     width: 580,
                     height: 550,
                     alwaysOnTop: true,
+                    enableLargerThanScreen: false,
+                    resizable: true
                 },
             });
 

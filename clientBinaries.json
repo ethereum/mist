@@ -2,36 +2,36 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.5.5",
+            "version": "1.6.0",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.5.5-ff07d548.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.6.0-facc47cb.tar.gz",
                             "type": "tar",
-                            "sha256": "4f36d6df25c37eb33829407d8bf2cea209cc412b3443319e2430db18581c7c01",
-                            "bin": "geth-linux-amd64-1.5.5-ff07d548/geth"
+                            "md5": "048b0618696b040f6d3ff18ee2e5763a",
+                            "bin": "geth-linux-amd64-1.6.0-facc47cb/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.6.0" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.5.5-ff07d548.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.6.0-facc47cb.tar.gz",
                             "type": "tar",
-                            "sha256": "6767651e4e5b34acaa6c53079d66a9047acb74e80fd25f570bf63da87d0ce863",
-                            "bin": "geth-linux-386-1.5.5-ff07d548/geth"
+                            "md5": "44215076b4d50e079878bcabeaae2117",
+                            "bin": "geth-linux-386-1.6.0-facc47cb/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.6.0" ]
                             }
                         }
                     }
@@ -39,16 +39,16 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.5.5-ff07d548.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.6.0-facc47cb.tar.gz",
                             "type": "tar",
-                            "sha256": "a5b3ae5b7e9d91a0ca42ca24b079631578cdccce036cc5b1f0035cd0d9706b53",
-                            "bin": "geth-darwin-amd64-1.5.5-ff07d548/geth"
+                            "md5": "446308f1d702bf5d30892bda43c25d23",
+                            "bin": "geth-darwin-amd64-1.6.0-facc47cb/geth"
                         },
                         "bin": "geth",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.6.0" ]
                             }
                         }
                     }
@@ -56,31 +56,31 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-amd64-1.5.5-ff07d548-mist-fix.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.6.0-facc47cb.zip",
                             "type": "zip",
-                            "sha256": "6b9e65ccac8a07535fbfd003662cdd4f69289f93947689c715d10c6486e703d7",
-                            "bin": "geth-windows-amd64-1.5.5-ff07d548\\geth.exe"
+                            "md5": "e4bb82c4d7078269a932cb7d46c5acb4",
+                            "bin": "geth-windows-amd64-1.6.0-facc47cb\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.6.0" ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/mist/geth-windows-386-1.5.5-ff07d548-mist-fix.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.6.0-facc47cb.zip",
                             "type": "zip",
-                            "sha256": "74ef8372ae7748c1016a8fcfe2d49574b52a2780913081cf0184fb197f26f01c",
-                            "bin": "geth-windows-386-1.5.5-ff07d548\\geth.exe"
+                            "md5": "0935e22c5626c73b9f0b556b3323c71a",
+                            "bin": "geth-windows-386-1.6.0-facc47cb\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
                             "sanity": {
                                 "args": ["version"],
-                                "output": [ "Geth", "1.5.5" ]
+                                "output": [ "Geth", "1.6.0" ]
                             }
                         }
                     }

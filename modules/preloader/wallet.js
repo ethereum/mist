@@ -2,6 +2,8 @@
 @module preloader wallet
 */
 
+const { webFrame } = require('electron');
+
 require('./dapps.js');
 
-window.mistMode = 'mist';
+webFrame.executeJavaScript("window.mistMode = 'mist';");

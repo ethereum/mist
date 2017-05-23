@@ -10015,5 +10015,176 @@ window.SIGNATURES = {
     ],
     "0x38bbfa50": [
         "__callback(bytes32,string,bytes)"
+    ],
+    "0xbc08afd9": [
+        "WebOfTrustToken(address,uint256)"
+    ],
+    "0xa5bfa9a9": [
+        "claimToken(bytes32)"
+    ],
+    "0x5669c94f": [
+        "issueToken(address,string)"
+    ],
+    "0xcdcd77c0": [
+        "baz(uint32,bool)"
+    ],
+    "0x0b811cb6": [
+        "executeProposal(uint256,bytes32)"
+    ],
+    "0x1f5d0b4c": [
+        "address(address,address,uint256)"
+    ],
+    "0x8ac0ca36": [
+        "buyViaJohan()"
+    ],
+    "0xc1246d39": [
+        "simulatePathwayFromBeneficiary()"
+    ],
+    "0x59e148fc": [
+        "getLastOfferId()"
+    ],
+    "0x152583de": [
+        "getAttributes()"
+    ],
+    "0x446d5aa4": [
+        "getAttributes(address)"
+    ],
+    "0x88782386": [
+        "UnicornMilk()"
+    ],
+    "0x13df7091": [
+        "mintAll(int256)"
+    ],
+    "0xfa9acb05": [
+        "addressInArray(address,address)"
+    ],
+    "0xb76e4890": [
+        "Tester()"
+    ],
+    "0x0d2560ee": [
+        "addMe()"
+    ],
+    "0x8894dd2b": [
+        "addEther()"
+    ],
+    "0x1e9ea66a": [
+        "balanceEther10000000(uint256)"
+    ],
+    "0xe5bf93b9": [
+        "balanceEther(uint256)"
+    ],
+    "0xcd9f05b8": [
+        "balanceEtherAddress(address)"
+    ],
+    "0xfd7ac203": [
+        "TestToken()"
+    ],
+    "0x35b09a6e": [
+        "someFunction()"
+    ],
+    "0x8f2c44a2": [
+        "UnicornMilker()"
+    ],
+    "0xc26aa3c9": [
+        "lockUnicorn(uint256)"
+    ],
+    "0xff556ecb": [
+        "releaseUnicorn(uint256)"
+    ],
+    "0x27e8c2d8": [
+        "burnUnicornShares()"
+    ],
+    "0xfff3c457": [
+        "readMessages(uint256)"
+    ],
+    "0x6a226a49": [
+        "addMessage(string)"
+    ],
+    "0x200ebe34": [
+        "addTokensToGive(address)"
+    ],
+    "0x7a427d98": [
+        "forceReturn()"
+    ],
+    "0xe53e04a5": [
+        "refillGas()"
+    ],
+    "0x323082d7": [
+        "Vote(string)"
+    ],
+    "0x90cf581c": [
+        "voteYes()"
+    ],
+    "0x41c12a70": [
+        "voteNo()"
+    ],
+    "0x49aa4ee2": [
+        "removeVote()"
+    ],
+    "0xa48bdb7c": [
+        "results()"
+    ],
+    "0x9832ee65": [
+        "resultsWeightedByTokens()"
+    ],
+    "0x9dcb5c65": [
+        "resultsWeightedByEther()"
+    ],
+    "0x49407a44": [
+        "claimEther(uint256)"
+    ],
+    "0x509f8633": [
+        "create_account()"
+    ],
+    "0x32fefb4c": [
+        "add_account(address,address)"
+    ],
+    "0x9b5adea2": [
+        "setMinter()"
+    ],
+    "0x0ecaea73": [
+        "create(address,uint256)"
+    ],
+    "0xa24835d1": [
+        "destroy(address,uint256)"
+    ],
+    "0x36f66528": [
+        "EtherDelta(address,uint256,uint256)"
+    ],
+    "0x338b5dea": [
+        "depositToken(address,uint256)"
+    ],
+    "0x9e281a98": [
+        "withdrawToken(address,uint256)"
+    ],
+    "0xf7888aec": [
+        "balanceOf(address,address)"
+    ],
+    "0x93f0bb51": [
+        "order(address,uint256,address,uint256,uint256,uint256,uint8,bytes32,bytes32)"
+    ],
+    "0x0a19b14a": [
+        "trade(address,uint256,address,uint256,uint256,uint256,address,uint8,bytes32,bytes32,uint256)"
+    ],
+    "0x6c86888b": [
+        "testTrade(address,uint256,address,uint256,uint256,uint256,address,uint8,bytes32,bytes32,uint256,address)"
+    ],
+    "0xfb6e155f": [
+        "availableVolume(address,uint256,address,uint256,uint256,uint256,address,uint8,bytes32,bytes32)"
+    ],
+    "0xbb8be064": [
+        "HardwareToken()"
+    ],
+    "0x57a373a1": [
+        "uintInArray(uint256,uint256,int256,uint256[],uint256)"
+    ],
+    "0x32afa2f9": [
+        "claimEtherOwner(uint256)"
+    ],
+    "0xa2a8336f": [
+        "claimEtherSigner(uint256)"
+    ],
+    "0x4e077f2a": [
+        "addGasEther()"
     ]
 };

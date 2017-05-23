@@ -71,6 +71,7 @@ mongo@1.1.14
 mongo-id@1.0.6
 mrt:jquery-ui-sortable@1.10.3
 npm-mongo@2.2.11_2
+numeral:languages@1.5.3
 numeral:numeral@1.5.3_1
 observe-sequence@1.0.14
 ordered-dict@1.0.9

@@ -28,13 +28,14 @@
             },
             "accounts": {
                 "label": "Accounts",
-                "importPresale": "Import Pre-sale Accounts",
+                "importPresale": "Import Accounts",
                 "newAccount": "New account",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
                 "backupMist": "Application Data"
             },
             "develop": {
+                "uploadToSwarm": "Upload to Swarm",
                 "label": "Develop",
                 "devTools": "Toggle Developer Tools",
                 "devToolsMistUI": "Mist UI",
@@ -47,7 +48,11 @@
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining (Testnet only)",
-                "stopMining": "⛏ Stop Mining"
+                "stopMining": "⛏ Stop Mining",
+                "openRemix": "Open Remix IDE",
+                "nodeMode": "Chain download",
+                "fullNode": "Store full blockchain",
+                "lightNode": "Use light Node (experimental!)"
             },
             "window": {
                 "label": "Window",
@@ -70,13 +75,13 @@
                 "linux": "To enable a time sync server install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
             },
-           "nodeChecksumMismatch": {
+            "nodeChecksumMismatch": {
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the Ethereum Classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -94,8 +99,8 @@
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
             "mainnetExplain": "You are on the main Ethereum global network",
-            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
+            "testnetExplain": "You are on the testnet, DO NOT SEND any real Ether to these addresses",
+            "privatenetExplain": "You are on a private net, DO NOT SEND any real Ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on",
             "peers": "peers"
         },
@@ -129,7 +134,6 @@
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncConnecting": "Looking for peers...",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
             "clientBinaries": {
@@ -205,7 +209,9 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum is a public blockchain that features a turing complete programming for building solid, decentralized applications.",
@@ -249,7 +255,8 @@
                     "unknownFile": "File not recognised.",
                     "wrongPassword": "Wrong password.",
                     "importFailed": "Couldn't import the file, got: __error__"
-                }
+                },
+                "startingSync": "Getting ready to sync.."
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

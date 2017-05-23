@@ -4,13 +4,13 @@
             "app": {
                 "label": "__app__",
                 "about": "__app__에 대하여",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
-                "services": "Services",
+                "checkForNodeUpdates": "이더리움 노드 업데이트 확인...",
+                "services": "서비스",
                 "quit": "__app__ 종료",
-                "checkForUpdates": "Check for updates...",
+                "checkForUpdates": "업데이트 확인...",
                 "hide": "Hide __app__",
-                "hideOthers": "Hide Others",
-                "showAll": "Show All"
+                "hideOthers": "다른 창 숨기기",
+                "showAll": "모두 보기"
             },
             "edit": {
                 "label": "수정",
@@ -24,7 +24,7 @@
             "view": {
                 "label": "보기",
                 "fullscreen": "전체화면으로",
-                "default": "Default"
+                "default": "기본"
             },
             "accounts": {
                 "label": "계정",
@@ -47,10 +47,10 @@
                 "mainNetwork": "메인 네트워크",
                 "startMining": "⛏ 채굴 시작(테스트넷만 해당)",
                 "stopMining": "⛏ 채굴 중단",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
+                "externalNode": "외부 노드 사용",
+                "openRemix": "Remix IDE 열기",
+                "nodeMode": "체인 다운로드",
+                "fullNode": "전체 블록체인 저장",
                 "lightNode": "Use light Node (experimental!)"
             },
             "window": {
@@ -61,7 +61,7 @@
             },
             "help": {
                 "label": "도움말",
-                "reportBug": "Report an issue on Github"
+                "reportBug": "깃허브에 이슈 리포트"
             }
         },
         "errors": {
@@ -75,11 +75,11 @@
                 "darwin": "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
             },
             "nodeChecksumMismatch": {
-                "title": "Checksum mismatch in downloaded node!",
+                "title": "다운로드 한 노드에서 체크섬 불일치!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
             "legacyChain": {
-                "title": "Legacy chain detected",
+                "title": "레거시 체인 감시",
                 "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
@@ -95,11 +95,11 @@
             "timeSinceBlock": "마지막 블럭 이후 경과시간",
             "testnetExplain": "현재 테스트넷 상에 있습니다. 진짜 이더를 이 주소로 절대 보내지 마세요.",
             "peers": "피어들(peers)",
-            "checkingWhichNetwork": "Checking network...",
+            "checkingWhichNetwork": "네트워크 확인중...",
             "mainNetwork": "Main-net",
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
+            "mainnetExplain": "Ethereum의 메인 글로벌 네트워크에 연결되었습니다.",
             "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on"
         },
@@ -111,7 +111,7 @@
         "browserBar": {
             "buttons": {
                 "noAccounts": "계정을 선택하지 않음",
-                "connect": "Connect"
+                "connect": "연결"
             }
         },
         "startScreen": {
@@ -123,25 +123,25 @@
             "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
             "nodeSyncInfo": "현재 highestBlock__ 중 __currentBlcok 을 다운로드중",
             "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
+            "stoppingNode": "이더리움 노드 중지중...",
+            "nodeStarting": "이더리움 노드 시작중...",
+            "nodeStarted": "이더리움 노드 시작됨",
+            "nodeConnected": "이더리움 노드 연결됨",
             "nodeStopping": "Ethereum node stopping...",
             "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "nodeError": "이더리움 노드 연결 에러 :'(",
+            "unableToBindPort": "이더리움 노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "peerSearchTimeout": "Skip peer search",
-            "launchApp": "Launch Application",
+            "peerSearchTimeout": "피어 검색 건너뛰기",
+            "launchApp": "어플리케이션 실행",
             "clientBinaries": {
-                "scanning": "Checking for node update...",
-                "downloading": "Downloading new node...",
-                "loadConfig": "Loading client config...",
-                "filtering": "Filtering client binaries...",
+                "scanning": "노드 업데이트 확인중...",
+                "downloading": "새로운 노드 다운로드중...",
+                "loadConfig": "클라이언트 설정 로딩중...",
+                "filtering": "클라이언트 바이너리 필터링중...",
                 "done": "Ethereum node up-to-date...",
-                "error": "Error running downloaded binary."
+                "error": "다운로드 된 바이너리 실행 중 오류."
             }
         },
         "popupWindows": {
@@ -152,7 +152,7 @@
                 "creating": "계정 만드는 중...",
                 "errors": {
                     "passwordMismatch": "암호가 일치하지 않습니다.",
-                    "passwordTooShort": "Make a longer password"
+                    "passwordTooShort": "암호가 너무 짧습니다."
                 }
             },
             "unlockMasterPassword": {
@@ -258,8 +258,8 @@
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
             "connectAccount": {
-                "chooseAccountTitle": "Choose account",
-                "createAccount": "Create new account",
+                "chooseAccountTitle": "계정 선택",
+                "createAccount": "새 계정 생성",
                 "pinToSidebar": "Pin app to the sidebar",
                 "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
             }

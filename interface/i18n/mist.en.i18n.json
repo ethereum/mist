@@ -187,7 +187,7 @@
                 "enterPassword": "Enter password",
                 "repeatPassword": "Repeat password",
                 "creating": "Generating account...",
-                "backupHint": "Make sure you backup your keyfiles AND password!\n\nYou can find your keyfiles folder using the main menu -> Accounts -> Backup -> Accounts. Keep a copy of the \"keystore\" folder where you can't loose it!",
+                "backupHint": "Make sure you backup your keyfiles AND password!\n\nYou can find your keyfiles folder using the main menu -> Accounts -> Backup -> Accounts. Keep a copy of the \"keystore\" folder where you can't lose it!",
                 "errors": {
                     "passwordMismatch": "Your passwords don't match.",
                     "passwordTooShort": "Make a longer password"

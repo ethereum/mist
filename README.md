@@ -37,7 +37,7 @@ To run mist in development you need:
 - [Node.js](https://nodejs.org) `v6.x` (use the prefered installation method for your OS)
 - [Meteor](https://www.meteor.com/install) javascript app framework
 - [Yarn](https://yarnpkg.com/) package manager
-- [Electron](http://electron.atom.io/) `v1.3.13` cross platform desktop app framework
+- [Electron](https://electron.atom.io/) `v1.3.13` cross platform desktop app framework
 - [Gulp](http://gulpjs.com/) build and automation system
 
 Install the later ones via:

@@ -390,16 +390,18 @@ class Settings {
     }
 
     get language() {
-        return this.loadConfig('i18n');
+        return this.loadConfig('ui.i18n');
     }
 
     set language(langCode) {
-        this.saveConfig('i18n', langCode);
+        this.saveConfig('ui.i18n', langCode);
     }
 
     initConfig() {
         global.config.insert({
-            i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            ui: {
+                i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            }
         });
     }
 

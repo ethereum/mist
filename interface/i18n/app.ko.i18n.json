@@ -21,7 +21,7 @@
         "create": "만들기",
         "tryToReconnect": "재연결 시도",
         "stayAnonymous": "Stay anonymous",
-        "authorize": "Authorize"
+        "authorize": "권한 인증"
     },
     "commonWords": {
         "you": "당신",

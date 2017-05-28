@@ -121,7 +121,7 @@
             "nodeConnectionTimeout": "이더리움 노드를 시작할 수 없었습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
             "nodeBinaryNotFound": "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
             "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
-            "nodeSyncInfo": "현재 highestBlock__ 중 __currentBlcok 을 다운로드중",
+            "nodeSyncInfo": "현재 __highestBlock__ 중 __currentBlcok__ 을 다운로드중",
             "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
             "stoppingNode": "이더리움 노드를 정지중...",
             "nodeStarting": "이더리움 노드를 시작중...",
@@ -131,8 +131,8 @@
             "nodeStopped": "이더이룸 노드가 정지됨",
             "nodeError": "이더리움 노드 연결 에러 :'(",
             "unableToBindPort": "이더리움 노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
-            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
-            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
+            "nodeSyncInfoStates": "블록 다운로드 중 __highestBlock__ 중 __displayBlock__, <br> 체인구조 다운로드 __displayKnownStates__ 중 __displayState__",
+            "nodeSyncFoundPeers": "__peers__ 피어에 연결중...",
             "peerSearchTimeout": "피어 검색 건너뛰기",
             "launchApp": "어플리케이션 실행",
             "clientBinaries": {
@@ -241,8 +241,8 @@
                     "importFailed": "파일을 가져올 수 없습니다: __error__"
                 },
                 "viaShapeshift": "<a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>를 통한 빠른 전환",
-                "syncMessage": "블록 __displayBlock__ 중 __highestBlockString__",
-                "syncMessageWithStates": "블록 __displayBlock__ 중 __highestBlockString__ (체인 구조 __statesPercent__%)",
+                "syncMessage": "블록 __highestBlockString__ 중 __displayBlock__",
+                "syncMessageWithStates": "블록 __highestBlockString__ 중 __displayBlock__ (체인 구조 __statesPercent__%)",
                 "startingSync": "동기화 준비중.."
             },
             "updateAvailable": {

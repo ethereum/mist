@@ -4,13 +4,52 @@
 	input[type=eth-address].is-invalid {
 	background-color: #fdd;
 }
+:invalid {
+	background-color: #fdd;
+}
+
+:valid {
+	background-color: #dfd;
+}
 </style>
 </head>
 
 <body>
 
-<p><input type="text" name="i1" id="i1" value="test 1">
- - 
-<input type="eth-address" name="i2" id="i2" value="test 2"></p>
+<p><input type="text" name="i1" id="i1" value="test 1"  pattern="^((0x)?[a-f0-9]+)|\d+.eth$">
+ -
+<input type="eth-address" name="i2" id="i2" value="test 2"  pattern="[a-f0-9]+" >
+<input type="text" name="" value="">
+</p>
+
+
+<p>
+	<input list="browsers" name="myBrowser" /></label>
+	<datalist id="browsers">
+	  <option value="0x12543647586597578654322">
+	  <option value="everton.eth">
+	  <option value="0xfabfbfabafabf1231231231">
+	  <option value="0x88888888888888888888888">
+	  <option value="0x99999999999999999999999">
+	</datalist>
+
+</p>
 </body>
 </html>
+
+
+
+
+
+
+<!--
+var validAddress = function(value) {
+	return /^0x[0-9a-f]{40}$/gi.test(value);
+};
+var validAddressWithoutPrefix = function(value) {
+	return /^[0-9a-f]{40}$/gi.test(value);
+};
+var validName = function(value) {
+	return /^(.+)\.eth$/g.test(value);
+};
+ -->

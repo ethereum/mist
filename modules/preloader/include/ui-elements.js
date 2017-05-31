@@ -29,7 +29,7 @@ module.export = (function() {
       element.classList.remove('is-invalid');
     };
 
-    const inputs = document.querySelectorAll('input[type=eth-address]');
+    const inputs = document.querySelectorAll('input[type=eth-address], input[data-type=eth-address]');
     console.log('inputs', inputs);
 
     inputs.forEach(function(input) {

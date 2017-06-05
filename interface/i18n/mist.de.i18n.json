@@ -49,9 +49,9 @@
                 "startMining": "⛏ Mining starten (nur auf Testnetz)",
                 "stopMining": "⛏ Mining stoppen",
                 "externalNode": "externer Softwareknoten aktiv",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "nodeMode": "Chain herunterladen",
+                "fullNode": "Komplette Blockchain speichern",
+                "lightNode": "Vereinfachte Blockchain speichern (experimentell!)"
             },
             "window": {
                 "label": "Fenster",
@@ -65,11 +65,11 @@
             }
         },
         "errors": {
-            "nodeConnect": "Es konnte keine Verbindung mit dem Softwareknoten hergestellt werden. Weitere Informatinen finden sich in den Logdateien.",
+            "nodeConnect": "Es konnte keine Verbindung mit dem Softwareknoten hergestellt werden. Weitere Informationen finden sich in den Logdateien.",
             "nodeStartup": "Anscheinend konnte der Softwareknoten nicht gestartet werden, läuft evtl. schon eine andere Instanz? Oder läuft eventuell gerade ein Datenbank-Update?",
             "timeSync": {
-                "title": "Deine Computer Uhr ist nicht synchronisiert!",
-                "description": "Um mit dem Ethereum netzwerk zu synchronisieren muss deine Computer Uhr mit einem Zeit-Server synchronisiert werden.",
+                "title": "Deine Computeruhr ist nicht synchronisiert!",
+                "description": "Um mit dem Ethereum-Netzwerk zu synchronisieren muss deine Computeruhr mit einem Zeitserver synchronisiert werden.",
                 "win32": "Gehe dazu in deine Internet Zeit Einstellungen in deinen System Einstellungen and checke die Box. Siehe diese Anleitung für Details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Um Zeit Synchronisation einzuschalten installiere \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "Um Zeit Synchronisation einzuschalten, öffne die System Einstellungen und checke \"Zeit Datum automatisch\"."
@@ -79,8 +79,8 @@
                 "description": "__algorithm__: __hash__\n\nBitte installiere den Softwareknoten __type__ in Version __version__ manuell."
             },
             "legacyChain": {
-                "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "title": "Veraltete Chain erkannt",
+                "description": "Dein Softwareknoten ist zur Zeit auf der nicht unterstützten Ethereum Classic Chain. Um diese Chain zu nutzen, verwende die Tools vom Ethereum Classic Project unter\nhttps://ethereumclassic.github.io.\n\nUm zur Hauptchain von Ethereum zurückzukehren, folge den Schritten in diesem Tutorial:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -95,13 +95,13 @@
             "blockNumber": "Ihre letzte Blocknummer",
             "testnetExplain": "Sie sind mit dem Testnetz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
             "peers": "Peers",
-            "checkingWhichNetwork": "Checking network...",
-            "mainNetwork": "Main-net",
-            "testNetwork": "Test-net",
-            "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
-            "unknownnetExplain": "Unable to determine which network you are on"
+            "checkingWhichNetwork": "Überprüfe Netzwerk...",
+            "mainNetwork": "Hauptnetzwerk",
+            "testNetwork": "Testnetzwerk",
+            "privateNetwork": "Privates Netzwerk",
+            "mainnetExplain": "Sie sind mit dem globalen Hauptnetz von Ethereum verbunden",
+            "privatenetExplain": "Sie sind mit einem privaten Netz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
+            "unknownnetExplain": "Es konnte nicht bestimmt werden, welches Netzwerk Sie nutzen"
         },
         "sidebar": {
             "buttons": {
@@ -111,7 +111,7 @@
         "browserBar": {
             "buttons": {
                 "noAccounts": "Keine Konten vorhanden",
-                "connect": "Connect"
+                "connect": "Verbinden"
             }
         },
         "startScreen": {
@@ -185,18 +185,18 @@
                 "errors": {
                     "connectionTimeout": "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
                     "wrongPassword": "Falsches Passwort",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
-                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
+                    "multipleKeysMatchAddress": "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Konten -> Sicherung -> Konten)",
+                    "insufficientFundsForGas": "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
                     "sameAccount": "Kann nicht zum gleichen Konto schicken."
                 },
                 "transactionThrow": "Der Vertrag wird diese Transaktion nicht ausführen können",
                 "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
-                "gasLimit": "Provide maximum fee",
-                "parameters": "Parameters",
-                "showRawBytecode": "show raw data",
-                "showDecodedParameters": "show decoded parameters",
-                "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "gasLimit": "Stelle Maximalgebühr ein",
+                "parameters": "Parameter",
+                "showRawBytecode": "Zeige Rohdaten",
+                "showDecodedParameters": "Zeige dekodierte Parameter",
+                "lookupData": "Versuche die Daten zu dekodieren",
+                "lookupDataExplainer": "Schaue dies im Internet nach"
             },
             "onboarding": {
                 "description": "Ethereum ist eine dezentrale Plattform, um Anwendungen auf einer Blockchain zu bauen: Fälschungssichere Software, die Werte und Vermögen übertragen kann und für immer besteht",
@@ -214,7 +214,7 @@
                 "protectTitle": "Schützen Sie Ihr Konto",
                 "protectDescription": "Wählen Sie ein Passwort für Ihr Konto. Machen Sie es so stark, als wären es Ihre Hausschlüssel!",
                 "accountTitle": "Laden Sie die Datei hoch!",
-                "accountTitleTestnet": "Minen etwas Ether!",
+                "accountTitleTestnet": "Minen Sie etwas Ether!",
                 "etherDescription": "Das Ethereum Netz basiert auf einem Tokan namens “Ether”. Sie benötigen eine kleine Menge davon, um irgendetwas auf dem Ethereum-Netz zu tun.",
                 "loadItDescription": "Wenn Sie bereits über Bitcoin oder eine andere Kryptowährung verfügen, können Sie diese mit Shapeshift einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
                 "mineItDescription": "<strong>Auf dem Testnetz können Sie selbst Ether minen. Bitte gehen Sie dazu in den Menüpunkt <em>Entwicklung</em> menu und wählen Sie <em>Mining starten</em>. </strong> <br> <strong> VERSUCHEN SIE NICHT, ECHTE ETHER AN DIESE ADRESSE ZU SENDEN! </strong>",
@@ -224,7 +224,7 @@
                 "learnIt": "Lernen Sie Ethereum kennen, während Sie warten",
                 "downloadingBlocks": "Blöcke werden heruntergeladen",
                 "tutorial1Description": "<p> Nun müssen Sie lediglich warten, bis der Download abgeschlossen ist. Hier finden Sie weitere Informationen:</p> <h4>Make your own money </h4> <p> Erstellen Sie eine eigene Kryptowährung mit einer festen Geldmenge, Token, die reale Vermögenswerte darstellen, und so weiter ...</p>",
-                "tutorial2Description": "<h4> Erstellen Sie ein Crowdsale</h4> <p> Sammeln Sie Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinden Sie die Hürden von traditionellen Crowdfunding-Systemen und gehen Sie direkt an die Quellen, indem Sie Ihre Organisation über die Blockchain mit Mitteln versorgen.</p>",
+                "tutorial2Description": "<h4> Erstellen Sie einen Crowdsale</h4> <p> Sammeln Sie Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinden Sie die Hürden von traditionellen Crowdfunding-Systemen und gehen Sie direkt an die Quellen, indem Sie Ihre Organisation über die Blockchain mit Mitteln versorgen.</p>",
                 "tutorial3Description": "<h4> Blockchain-Organisation </h4> <p> Schaffen Sie eine autonome Organisation, deren Grundsätze über Geldverwendung und Entscheidungen nicht gebrochen werden können. Geben Sie Ihren Unterstützern eine aktive Rolle, wie die Mittel verwendet werden sollen</p>",
                 "buttons": {
                     "showPassword": "Passwort anzeigen",
@@ -238,28 +238,28 @@
                     "wrongPassword": "Falsches Passwort.",
                     "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
+                "viaShapeshift": "Sofortige Konversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "syncMessage": "Block __displayBlock__ von __highestBlockString__",
+                "syncMessageWithStates": "Block __displayBlock__ von __highestBlockString__ (Chain Struktur __statesPercent__%)",
+                "startingSync": "Bereite Synchronisation vor.."
             },
             "updateAvailable": {
-                "newVersionAvailable": "New __name__ version available",
+                "newVersionAvailable": "Neue __name__ Version verfügbar",
                 "version": "Version",
                 "downloadURL": "Download URL",
-                "checksum": "Checksum",
-                "downloadAndRestart": "Update and Restart",
-                "download": "Download new version",
-                "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
-                "checking": "Checking for updates to __name__...",
-                "noUpdateFound": "No update found. You are running the latest version of __name__."
+                "checksum": "Prüfsumme",
+                "downloadAndRestart": "Update und Neustart",
+                "download": "Neue Version herunterladen",
+                "skipUpdate": "Update überspringen",
+                "notNow": "Später erinnern",
+                "checking": "Suche nach Updates für __name__...",
+                "noUpdateFound": "Kein Update gefunden. Du verwendest die aktuellste Version von __name__."
             },
             "connectAccount": {
-                "chooseAccountTitle": "Choose account",
-                "createAccount": "Create new account",
-                "pinToSidebar": "Pin app to the sidebar",
-                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
+                "chooseAccountTitle": "Wähle ein Konto",
+                "createAccount": "Erstelle ein neues Konto",
+                "pinToSidebar": "App an die Seitenleiste pinnen",
+                "connectAccountDescription": "Du teilst deine Identität mit __dappName__. Das erlaubt der App jegliche öffentliche Informationen deiner Konten sowie den damit verbundenen Bilanzen zu sehen."
             }
         }
     },

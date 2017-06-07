@@ -43,6 +43,21 @@ gulp.task('copy-app-source-files', () => {
 });
 
 
+gulp.task('copy-app-folder-files', (cb) => {
+    const ret = shell.exec(
+        `cp -a ${__dirname}/../node_modules ${__dirname}/../dist_${type}/app/node_modules`
+    );
+
+    if (ret.code !== 0) {
+        console.error('Error symlinking node_modules');
+
+        return cb(ret.stderr);
+    }
+
+    return cb();
+});
+
+
 gulp.task('copy-build-folder-files', () => {
     return gulp.src([
         `./icons/${type}/*`,

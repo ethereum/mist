@@ -8,6 +8,8 @@ The Mist browser is the tool of choice to browse and use Ðapps.
 
 For the Mist API see the [MISTAPI.md](MISTAPI.md).
 
+Please note that this repository is the Electron host for the Meteor based wallet dapp whose repository is located here: https://github.com/ethereum/meteor-dapp-wallet.
+
 ## Installation
 
 If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),

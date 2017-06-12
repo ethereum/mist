@@ -1,49 +1,71 @@
 <template name="layout_sidebar">
-    <aside class="sidebar {{fullTabs}}">
+    <aside class="sidebar">
         <nav>
-            <ul>
+            <ul class="sidebar-menu">
                 {{#each tabs}}
-                    <li class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}" data-tab-id="{{_id}}">
+                    <li
+                        class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}"
+                        data-tab-id="{{_id}}"
+                        draggable="{{#if $eq _id 'browser'}}false{{/if}}">
                         <header>
-                            {{#if $neq _id 'browser'}}
-                                <button class="remove-tab">
-                                    <i class="icon-close"></i>
-                                </button>
-                            {{/if}}
-
                             <button class="main {{#if badge}}has-badge{{/if}}">
                                 {{#if icon}}
-                                    <img src="{{icon}}">
+                                    <img src="{{icon}}" draggable="false">
                                 {{else}}
                                     <i class="icon-globe"></i>
                                 {{/if}}
-                                <span title="{{nameFull}}">{{name}}</span>
-                                {{#if badge}}
-                                    <div class="badge">{{badge}}</div>
-                                {{/if}}
                             </button>
-
-                            {{#if subMenu}}
-                                <button title="{{#if menuVisible}}Show less{{else}}Show more{{/if}}" class="slide-out arrow-{{#if menuVisible}}up{{else}}down{{/if}}"></button>
-                            {{/if}}
                         </header>
-                        <ul class="sub-menu">
-                            {{#each subMenu}}
-                                <li>
-                                    <button class="{{#if selected}}selected{{/if}}">
-                                        {{name}} 
-                                    </button>
+                        <section class="submenu-container">
+                            <section>
+                                <header>
+                                    <span title="{{nameFull}}">{{name}}</span>
                                     {{#if badge}}
                                         <div class="badge">{{badge}}</div>
                                     {{/if}}
-                                </li>
-                            {{/each}}
-                            <li class="see-all"><button> See All...</button></li>
-                        </ul>
+
+                                    {{#if tabShouldBeRemovable}}
+                                        <button class="remove-tab"> &times; </button>
+                                    {{/if}}
+
+                                    {{#if $neq _id 'wallet'}}
+                                        <div class="accounts">
+                                            {{#if dappAccounts.count}}
+                                                <button class="display">
+                                                    <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
+                                                        <span class="dapp-identicon-container">
+                                                        {{#each (dappAccounts 3)}}
+                                                            {{> dapp_identicon identity=address class="dapp-tiny"}}
+                                                        {{/each}}
+                                                    </span>
+                                                </button>
+                                            {{else}}
+                                                <button class="connect">{{i18n 'mist.sidebar.submenu.connectAccounts'}}</button>
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                </header>
+
+                                {{# if subMenu}}
+                                <ul class="sub-menu">
+                                    {{#each subMenu}}
+                                    <li>
+                                        <button class="{{#if selected}}selected{{/if}}">
+                                            {{name}}
+                                            {{#if badge}}
+                                                <span class="badge">{{badge}}</span>
+                                            {{/if}}
+                                        </button>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                                {{/if}}
+                            </section>
+                        </section>
                     </li>
                 {{/each}}
             </ul>
-            {{> elements_nodeInfo}}
         </nav>
+        {{> elements_nodeInfo}}
     </aside>
 </template>

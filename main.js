@@ -224,6 +224,7 @@ onReady = () => {
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
+                    experimentalFeatures: true,
                 },
             },
         });

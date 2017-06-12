@@ -32,6 +32,7 @@
 .darwin {
         aside {
             top: @gridHeight * 2;
+            height: calc(100% - @gridHeight * 2);
         }
 
         div.browser-bar {
@@ -75,31 +76,6 @@ button h1, button h2, button h3, button p {
     cursor: pointer;
 }
 
-aside {
-    z-index: 4;
-    position: absolute;
-    top: @gridHeight * 2;
-    left: 0;
-    bottom: 0;
-    // padding-top: @gridHeight/2;
-    width: @widthSideBar;
-
-
-    &:before {
-        content: " ";
-        display: block;
-        position: absolute;
-        z-index: 2;
-        top: 0;
-        left: @widthSideBar;
-        width: 10px;
-        bottom: 0;
-        // box-shadow: @shadowStandard;
-    }
-}
-.linux aside {
-    top: 0;
-}
 
 
 main {
@@ -141,12 +117,11 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    box-shadow: @shadowStandard;
+    border-left: 1px solid #E2E2E2;
     background: #FFF;
     overflow: hidden;
     opacity: 1;
     z-index:10;
-    border-top-left-radius: 3px;
 
     &.hidden {
         visibility: hidden;
@@ -176,4 +151,54 @@ webview {
 }
 .linux webview {
     top: 0;
+}
+
+
+// Scrollbars
+// Reference: https://gist.github.com/devinrhode2/2573411
+aside.sidebar {
+    ::-webkit-scrollbar {
+      width: 7px;
+      background-color: rgba(0,0,0,0);
+      -webkit-border-radius: 100px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.09);
+    }
+
+    ::-webkit-scrollbar-thumb:vertical {
+      background: rgba(0,0,0,0.5);
+      -webkit-border-radius: 100px;
+    }
+    ::-webkit-scrollbar-thumb:vertical:active {
+      background: rgba(0,0,0,0.61);
+      -webkit-border-radius: 100px;
+      background-clip: padding-box;
+      border: 2px solid rgba(0, 0, 0, 0);
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:vertical {
+        background-clip: padding-box;
+        border: 2px solid rgba(0, 0, 0, 0);
+        min-height: 30px;
+    }
+
+    .submenu-container {
+        ::-webkit-scrollbar-thumb:vertical {
+            background: rgba(255,255,255,0.5);
+            border: 2px solid rgba(0, 0, 0, 0);
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:vertical:active {
+            background: rgba(255,255,255,0.61);
+            border: 2px solid rgba(0, 0, 0, 0);
+            background-clip: padding-box;
+        }
+
+    }
+
 }

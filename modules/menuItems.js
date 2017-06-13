@@ -207,6 +207,38 @@ let menuTempl = function (webviews) {
         ],
     });
 
+    // Swarm
+    menu.push({
+        label: i18n.t('mist.applicationMenu.swarm.label'),
+        submenu: [{
+            label: i18n.t('mist.applicationMenu.swarm.upload'),
+            click() {
+                const focusedWindow = BrowserWindow.getFocusedWindow();
+                const paths = dialog.showOpenDialog(focusedWindow, {
+                    properties: ['openFile', 'openDirectory']
+                });
+                if (paths && paths.length === 1) {
+                    const isDir = fs.lstatSync(paths[0]).isDirectory();
+                    const defaultPath = path.join(paths[0], 'index.html');
+                    const uploadConfig = {
+                        path: paths[0],
+                        kind: isDir ? 'directory' : 'file',
+                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                    };
+                    swarmNode.upload(uploadConfig).then(hash => {
+                        const Tabs = global.db.getCollection('UI_tabs');
+                        focusedWindow.webContents.executeJavaScript(`
+                          Tabs.update('browser', {$set: {
+                              url: 'bzz://${hash}',
+                              redirect: 'bzz://${hash}'
+                          }});
+                        `);
+                    }).catch(e => console.log(e));
+                }
+            }
+        }]
+    });
+
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -389,35 +421,6 @@ let menuTempl = function (webviews) {
     // add node switching menu
     devToolsMenu.push({
         type: 'separator',
-    });
-
-    // SWARM
-    devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.uploadToSwarm'),
-        click() {
-            const focusedWindow = BrowserWindow.getFocusedWindow();
-            const paths = dialog.showOpenDialog(focusedWindow, {
-                properties: ['openFile', 'openDirectory']
-            });
-            if (paths && paths.length === 1) {
-              const isDir = fs.lstatSync(paths[0]).isDirectory();
-              const defaultPath = path.join(paths[0], 'index.html');
-              const uploadConfig = {
-                path: paths[0],
-                kind: isDir ? 'directory' : 'file',
-                defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-              };
-              swarmNode.upload(uploadConfig).then(hash => {
-                const Tabs = global.db.getCollection('UI_tabs');
-                focusedWindow.webContents.executeJavaScript(`
-                  Tabs.update('browser', {$set: {
-                      url: 'bzz://${hash}',
-                      redirect: 'bzz://${hash}'
-                  }});
-                `);
-              }).catch(e => console.log(e));
-            }
-        },
     });
 
 

@@ -12,6 +12,10 @@
                 "showAll": "Show all",
                 "quit": "Quit __app__"
             },
+            "swarm": {
+                "label": "Swarm",
+                "upload": "Upload"
+            },
             "edit": {
                 "label": "Edit",
                 "undo": "Undo",
@@ -24,7 +28,7 @@
             "view": {
                 "label": "View",
                 "fullscreen": "Toggle full screen",
-                "languages": "Change language",
+                "languages": "Language",
                 "default": "Default",
                 "langCodes" : {
                     "de": "Deutsch",
@@ -53,7 +57,6 @@
                 "backupMist": "Application data"
             },
             "develop": {
-                "uploadToSwarm": "Upload to Swarm",
                 "label": "Develop",
                 "devTools": "Toggle developer tools",
                 "devToolsMistUI": "Mist UI",

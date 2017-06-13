@@ -34,18 +34,14 @@ mistInit = function () {
         }
 
         // overwrite wallet on start again, but use $set to dont remove titles
-        Tabs.upsert(
-            { _id: 'wallet' },
-            {
-                $set: {
-                    url: 'https://wallet.ethereum.org',
-                    redirect: 'https://wallet.ethereum.org',
-                    position: 1,
-                    permissions: {
-                        admin: true
-                    }
+        Tabs.upsert({_id: 'wallet'}, {$set: {
+                url: 'https://wallet.ethereum.org/index.html',
+                redirect: 'https://wallet.ethereum.org/index.html',
+                position: 1,
+                permissions: {
+                    admin: true
                 }
-            });
+            }});
 
         // Sets browser as default tab if:
         // 1) there's no record of selected tab

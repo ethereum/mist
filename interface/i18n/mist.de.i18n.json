@@ -35,6 +35,7 @@
                 "backupMist": "Anwendungsdaten"
             },
             "develop": {
+                "uploadToSwarm": "Upload zum Swarm",
                 "label": "Entwicklung",
                 "devTools": "Entwicklerwerkzeuge",
                 "devToolsMistUI": "Mist UI",

@@ -35,8 +35,9 @@
                 "backupMist": "Të Dhënat e Aplikimit"
             },
             "develop": {
+                "uploadToSwarm": "Swarm Upload",
                 "label": "Zhvillo",
-                "devTools": "Kalo tek Mjetet e Zhvilluesit",
+                "devTools": "Ngarko në Swarm",
                 "devToolsMistUI": "Mist UI",
                 "devToolsWalletUI": "Kuletë UI",
                 "devToolsWebview": "__webview__",

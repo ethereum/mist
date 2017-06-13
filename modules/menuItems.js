@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Windows = require('./windows');
@@ -6,6 +6,8 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
+const swarmNode = require('./swarmNode.js');
+const mimetype = require('mimetype');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -205,6 +207,38 @@ let menuTempl = function (webviews) {
         ],
     });
 
+    // Swarm
+    menu.push({
+        label: i18n.t('mist.applicationMenu.swarm.label'),
+        submenu: [{
+            label: i18n.t('mist.applicationMenu.swarm.upload'),
+            click() {
+                const focusedWindow = BrowserWindow.getFocusedWindow();
+                const paths = dialog.showOpenDialog(focusedWindow, {
+                    properties: ['openFile', 'openDirectory']
+                });
+                if (paths && paths.length === 1) {
+                    const isDir = fs.lstatSync(paths[0]).isDirectory();
+                    const defaultPath = path.join(paths[0], 'index.html');
+                    const uploadConfig = {
+                        path: paths[0],
+                        kind: isDir ? 'directory' : 'file',
+                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                    };
+                    swarmNode.upload(uploadConfig).then(hash => {
+                        const Tabs = global.db.getCollection('UI_tabs');
+                        focusedWindow.webContents.executeJavaScript(`
+                          Tabs.update('browser', {$set: {
+                              url: 'bzz://${hash}',
+                              redirect: 'bzz://${hash}'
+                          }});
+                        `);
+                    }).catch(e => console.log(e));
+                }
+            }
+        }]
+    });
+
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -388,6 +422,8 @@ let menuTempl = function (webviews) {
     devToolsMenu.push({
         type: 'separator',
     });
+
+
     // add node switch
     if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];

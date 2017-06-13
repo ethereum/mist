@@ -35,6 +35,7 @@
                 "backupMist": "Данных приложения"
             },
             "develop": {
+                "uploadToSwarm": "Загрузить в Swarm",
                 "label": "Дополнительно",
                 "devTools": "Выбрать инструмент разработчика",
                 "devToolsMistUI": "Mist UI",

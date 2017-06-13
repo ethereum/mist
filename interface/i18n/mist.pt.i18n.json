@@ -35,6 +35,7 @@
                 "backupMist": "Carteiras, contratos e etc"
             },
             "develop": {
+                "uploadToSwarm": "Upload no Swarm",
                 "label": "Desenvolvimento",
                 "devTools": "Mostrar ferramentas de desenvolvedor",
                 "devToolsMistUI": "Interface Mist",

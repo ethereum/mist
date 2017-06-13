@@ -53,6 +53,7 @@
                 "backupMist": "Applicatie Data"
             },
             "develop": {
+                "uploadToSwarm": "Uploaden naar Swarm",
                 "label": "Ontwikkelen",
                 "devTools": "Ontwikkelaars Opties Inschakelen",
                 "devToolsMistUI": "Mist UI",

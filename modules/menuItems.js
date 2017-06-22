@@ -232,6 +232,7 @@ let menuTempl = function (webviews) {
                               url: 'bzz://${hash}',
                               redirect: 'bzz://${hash}'
                           }});
+                          LocalStore.set('selectedTab', 'browser');
                         `);
                     }).catch(e => console.log(e));
                 }

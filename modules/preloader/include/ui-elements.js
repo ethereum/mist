@@ -16,6 +16,11 @@ module.export = (function() {
     var validName = function(value) {
       return /^(.+)\.eth$/g.test(value);
     };
+
+    var fetchENSEntry = function(element) {
+      setAddress(element, '0x0000000000000000000000000000000000000000');
+    };
+
     var setAddress = function(element, address) {
       element.dataset.address = address;
     };
@@ -24,13 +29,14 @@ module.export = (function() {
     };
     var setInvalid = function(element) {
       element.classList.add('is-invalid');
+      element.setCustomValidity('Invalid address');
     };
     var setValid = function(element) {
       element.classList.remove('is-invalid');
+      element.setCustomValidity('');
     };
 
     const inputs = document.querySelectorAll('input[type=eth-address], input[data-type=eth-address]');
-    console.log('inputs', inputs);
 
     inputs.forEach(function(input) {
         input.addEventListener('input', function(inputEvent) {
@@ -41,6 +47,7 @@ module.export = (function() {
           if (validName(element.value)) {
             console.log('valid name found');
             setValid(element);
+            fetchENSEntry(element);
           }
           else if (validAddress(element.value)) {
             console.log('valid address found');
@@ -56,6 +63,20 @@ module.export = (function() {
 
     });
   }
+
+  render = function() {
+
+  }
+
+  state = {
+    value: ''
+  }
+
+  input.addEventListener('input', function(inputEvent) {
+    render();
+  })
+
+
 
   document.addEventListener('DOMContentLoaded', inputTypeEthAddress, false);
 }());

@@ -11,18 +11,53 @@
 :valid {
 	background-color: #dfd;
 }
+
+input[type=eth-address][data-address]::after {
+	content: attr(data-address);
+	position: relative;
+	display: block;
+	top: 12px;
+	left: 0;
+}
+
 </style>
 </head>
 
 <body>
 
-<p><input type="text" name="i1" id="i1" value="test 1"  pattern="^((0x)?[a-f0-9]+)|\d+.eth$">
- -
-<input type="eth-address" name="i2" id="i2" value="test 2"  pattern="[a-f0-9]+" >
-<input type="text" name="" value="">
-</p>
+<h2>Input type eth-address</h2>
 
 
+	<input type="eth-address">
+
+
+
+	<span for="i2">0x83925de9986d157f6b586bde2a0b0003a13c07c6</span>
+
+	<br>
+
+	<input
+		type="eth-address"
+		name="i2"
+		id="i2"
+		value="test 2"
+		size="44">
+
+
+
+
+<hr>
+<h2>Input [pattern]</h2>
+	<input type="text"
+		name="i1"
+		id="i1"
+		value="test 1"
+		pattern="^(0x[a-fA-F0-9]{40})|([\d-]+\.eth)$"
+		size="44">
+
+
+<hr>
+<h2>Input list</h2>
 <p>
 	<input list="browsers" name="myBrowser" /></label>
 	<datalist id="browsers">
@@ -34,6 +69,13 @@
 	</datalist>
 
 </p>
+
+
+<h3>Test data</h3>
+<p>
+	0x83925de9986d157f6b586bde2a0b0003a13c07c6
+</p>
+
 </body>
 </html>
 

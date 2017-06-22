@@ -212,6 +212,7 @@ let menuTempl = function (webviews) {
         label: i18n.t('mist.applicationMenu.swarm.label'),
         submenu: [{
             label: i18n.t('mist.applicationMenu.swarm.upload'),
+            accelerator: 'Shift+CommandOrControl+U',
             click() {
                 const focusedWindow = BrowserWindow.getFocusedWindow();
                 const paths = dialog.showOpenDialog(focusedWindow, {

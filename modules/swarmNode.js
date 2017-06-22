@@ -19,7 +19,7 @@ class SwarmNode extends EventEmitter {
         // TODO: replace by web3.utils.randomHex when we use it
         function randomHex(bytes) {
             let hex = '';
-            for (let i = 0; i < bytes * 2; ++i) {
+            for (let i = 0; i < bytes * 2; i = i + 1) {
                 hex += (Math.random() * 16 | 0).toString(16);
             }
             return hex;
@@ -41,7 +41,7 @@ class SwarmNode extends EventEmitter {
     }
 
     startUsingLocalNode() {
-        let totalSize = 7406937; // TODO: hardcoded & innacurate, use archives.json instead
+        const totalSize = 7406937; // TODO: hardcoded & innacurate, use archives.json instead
         let totalDownloaded = 0;
 
         const swarmBinDir = path.join(Settings.userDataPath, 'swarmjs', 'bin');

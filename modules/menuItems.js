@@ -225,7 +225,7 @@ let menuTempl = function (webviews) {
                         kind: isDir ? 'directory' : 'file',
                         defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
                     };
-                    swarmNode.upload(uploadConfig).then(hash => {
+                    swarmNode.upload(uploadConfig).then((hash) => {
                         focusedWindow.webContents.executeJavaScript(`
                           Tabs.update('browser', {$set: {
                               url: 'bzz://${hash}',

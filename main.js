@@ -172,7 +172,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 });
 
 // Allows the Swarm protocol to behave like http
-protocol.registerStandardSchemes(["bzz"]);
+protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
     // setup DB sync to backend
@@ -183,11 +183,12 @@ onReady = () => {
 
     // Enable the Swarm protocol
     protocol.registerHttpProtocol('bzz', (request, callback) => {
-      const redirectPath = Settings.swarmURL + '/' + request.url.replace('bzz:/', 'bzz://');
-      callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+        const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
+        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
     }, (error) => {
-      if (error)
-        log.error(error);
+        if (error) {
+            log.error(error);
+        }
     });
 
     // check for update
@@ -394,7 +395,7 @@ onReady = () => {
             return ethereumNode.send('eth_accounts', []);
         })
         .then(function onboarding(resultData) {
-            
+
             if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
                 log.info('No accounts setup yet, lets do onboarding first.');
 

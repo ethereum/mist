@@ -56,7 +56,7 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
-        'swarmurl': {
+        swarmurl: {
             demand: false,
             default: "http://localhost:8500",
             describe: 'URL serving the Swarm HTTP API. If null, Mist will open a local node.',

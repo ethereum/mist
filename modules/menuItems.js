@@ -7,7 +7,6 @@ const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
 const swarmNode = require('./swarmNode.js');
-const mimetype = require('mimetype');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -227,7 +226,6 @@ let menuTempl = function (webviews) {
                         defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
                     };
                     swarmNode.upload(uploadConfig).then(hash => {
-                        const Tabs = global.db.getCollection('UI_tabs');
                         focusedWindow.webContents.executeJavaScript(`
                           Tabs.update('browser', {$set: {
                               url: 'bzz://${hash}',

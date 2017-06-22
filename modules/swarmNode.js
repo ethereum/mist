@@ -2,9 +2,6 @@ const EventEmitter = require('events').EventEmitter;
 const Q = require('bluebird');
 const Settings = require('./settings.js');
 const Swarm = require('swarm-js');
-const ethereumNode = require('./ethereumNode.js');
-const fsp = require('fs-promise');
-const log = require('./utils/logger').create('Swarm');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -29,7 +26,7 @@ class SwarmNode extends EventEmitter {
         }
 
         // Gets Swarm Key path
-        const swarmKeyDir = path.join(Settings.userDataPath, "swarmjs");
+        const swarmKeyDir = path.join(Settings.userDataPath, 'swarmjs');
         const swarmKeyPath = path.join(swarmKeyDir, 'swarmKey');
 
         // Generates the key if not there
@@ -47,17 +44,17 @@ class SwarmNode extends EventEmitter {
         let totalSize = 7406937; // TODO: hardcoded & innacurate, use archives.json instead
         let totalDownloaded = 0;
 
-        const swarmBinDir = path.join(Settings.userDataPath, "swarmjs", "bin");
+        const swarmBinDir = path.join(Settings.userDataPath, 'swarmjs', 'bin');
         const swarmBinExt = os.platform() === 'win32' ? '.exe' : '';
-        const swarmBinPath = path.join(swarmBinDir, 'swarm' + swarmBinExt);
+        const swarmBinPath = path.join(swarmBinDir, `swarm${swarmBinExt}`);
 
         const config = {
             privateKey: this.getKeyPath(),
-            dataDir: path.join(Settings.userDataPath, "swarmjs"),
+            dataDir: path.join(Settings.userDataPath, 'swarmjs'),
             ethApi: Settings.rpcIpcPath,
             binPath: swarmBinPath,
             onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)
-        }
+        };
 
         return new Q((resolve, reject) => {
             Swarm.local(config)(swarm => new Q((stop) => {
@@ -84,14 +81,13 @@ class SwarmNode extends EventEmitter {
         if (Settings.swarmURL === 'http://localhost:8500') {
             return this.startUsingLocalNode();
         }
-        else {
-            return this.startUsingGateway();
-        }
+        return this.startUsingGateway();
     }
 
     upload(arg) {
-        if (!this._swarm)
-            return Q.reject(new Error('Swarm not initialized. Did you call swarmNode.init()?'));
+        if (!this._swarm) {
+            return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
+        }
 
         return this._swarm.upload(arg);
     }

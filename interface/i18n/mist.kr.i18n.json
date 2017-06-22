@@ -26,7 +26,7 @@
                 "fullscreen": "전체화면으로",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "계정",
                 "importPresale": "계정 추가하기",
                 "newAccount": "새 계정",

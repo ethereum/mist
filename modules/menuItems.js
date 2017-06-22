@@ -133,10 +133,10 @@ let menuTempl = function (webviews) {
 
     // ACCOUNTS
     menu.push({
-        label: i18n.t('mist.applicationMenu.accounts.label'),
+        label: i18n.t('mist.applicationMenu.file.label'),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.accounts.newAccount'),
+                label: i18n.t('mist.applicationMenu.file.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click() {
                     Windows.createPopup('requestAccount', {
@@ -147,7 +147,7 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
                 click() {
@@ -162,10 +162,10 @@ let menuTempl = function (webviews) {
                 type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.backup'),
+                label: i18n.t('mist.applicationMenu.file.backup'),
                 submenu: [
                     {
-                        label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
+                        label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
                             let userPath = Settings.userHomePath;
 
@@ -197,46 +197,47 @@ let menuTempl = function (webviews) {
                             shell.showItemInFolder(userPath);
                         },
                     }, {
-                        label: i18n.t('mist.applicationMenu.accounts.backupMist'),
+                        label: i18n.t('mist.applicationMenu.file.backupMist'),
                         click() {
                             shell.openItem(Settings.userDataPath);
                         },
                     },
                 ],
             },
-        ],
-    });
-
-    // Swarm
-    menu.push({
-        label: i18n.t('mist.applicationMenu.swarm.label'),
-        submenu: [{
-            label: i18n.t('mist.applicationMenu.swarm.upload'),
-            click() {
-                const focusedWindow = BrowserWindow.getFocusedWindow();
-                const paths = dialog.showOpenDialog(focusedWindow, {
-                    properties: ['openFile', 'openDirectory']
-                });
-                if (paths && paths.length === 1) {
-                    const isDir = fs.lstatSync(paths[0]).isDirectory();
-                    const defaultPath = path.join(paths[0], 'index.html');
-                    const uploadConfig = {
-                        path: paths[0],
-                        kind: isDir ? 'directory' : 'file',
-                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-                    };
-                    swarmNode.upload(uploadConfig).then(hash => {
-                        const Tabs = global.db.getCollection('UI_tabs');
-                        focusedWindow.webContents.executeJavaScript(`
-                          Tabs.update('browser', {$set: {
-                              url: 'bzz://${hash}',
-                              redirect: 'bzz://${hash}'
-                          }});
-                        `);
-                    }).catch(e => console.log(e));
-                }
+            {
+                type: 'separator',
+            },
+            {
+                label: i18n.t('mist.applicationMenu.file.swarm.label'),
+                submenu: [{
+                    label: i18n.t('mist.applicationMenu.file.swarm.upload'),
+                    click() {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        const paths = dialog.showOpenDialog(focusedWindow, {
+                            properties: ['openFile', 'openDirectory']
+                        });
+                        if (paths && paths.length === 1) {
+                            const isDir = fs.lstatSync(paths[0]).isDirectory();
+                            const defaultPath = path.join(paths[0], 'index.html');
+                            const uploadConfig = {
+                                path: paths[0],
+                                kind: isDir ? 'directory' : 'file',
+                                defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                            };
+                            swarmNode.upload(uploadConfig).then(hash => {
+                                const Tabs = global.db.getCollection('UI_tabs');
+                                focusedWindow.webContents.executeJavaScript(`
+                                  Tabs.update('browser', {$set: {
+                                      url: 'bzz://${hash}',
+                                      redirect: 'bzz://${hash}'
+                                  }});
+                                `);
+                            }).catch(e => console.log(e));
+                        }
+                    }
+                }]
             }
-        }]
+        ],
     });
 
     // EDIT

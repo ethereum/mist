@@ -44,7 +44,7 @@
                     "zh-TW": "國語"
                 }
             },
-            "accounts": {
+            "file": {
                 "label": "Accounts",
                 "importPresale": "Importeer Accounts",
                 "newAccount": "Nieuw account",

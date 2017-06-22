@@ -12,6 +12,18 @@
                 "showAll": "Mostrar Todos",
                 "quit": "Fechar __app__"
             },
+            "file": {
+                "label": "Arquivos",
+                "importPresale": "Importar conta",
+                "newAccount": "Nova conta",
+                "backup": "Cópia de segurança",
+                "backupKeyStore": "Contas",
+                "backupMist": "Carteiras, contratos e etc",
+                "swarm": {
+                    "label": "Swarm",
+                    "upload": "Upload"
+                }
+            },
             "edit": {
                 "label": "Editar",
                 "undo": "Desfazer",
@@ -25,14 +37,6 @@
                 "label": "Ver",
                 "fullscreen": "Modo de tela cheia",
                 "default": "Default"
-            },
-            "accounts": {
-                "label": "Contas",
-                "importPresale": "Importar conta",
-                "newAccount": "Nova conta",
-                "backup": "Cópia de segurança",
-                "backupKeyStore": "Contas",
-                "backupMist": "Carteiras, contratos e etc"
             },
             "develop": {
                 "uploadToSwarm": "Upload no Swarm",

@@ -26,8 +26,8 @@
                 "fullscreen": "Basculer en mode plein écran",
                 "default": "Default"
             },
-            "accounts": {
-                "label": "Comptes",
+            "file": {
+                "label": "Fichier",
                 "importPresale": "Importer les comptes",
                 "newAccount": "Nouveau compte",
                 "backup": "Sauvegarder",

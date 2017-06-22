@@ -26,7 +26,7 @@
                 "fullscreen": "全螢幕",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "帳號",
                 "importPresale": "導入帳號",
                 "newAccount": "新建帳號",

@@ -51,7 +51,7 @@
                 "externalNode": "externer Softwareknoten aktiv",
                 "nodeMode": "Chain herunterladen",
                 "fullNode": "Komplette Blockchain speichern",
-                "lightNode": "Vereinfachte Blockchain speichern (experimentell!)"
+                "lightNode": "Light Node speichern (experimentell!)"
             },
             "window": {
                 "label": "Fenster",
@@ -93,15 +93,15 @@
             "blockReceived": "Neuer Block empfangen",
             "timeSinceBlock": "Abgelaufene Zeit seit dem letzten Block",
             "blockNumber": "Ihre letzte Blocknummer",
-            "testnetExplain": "Sie sind mit dem Testnetz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
+            "testnetExplain": "Du bist mit dem Testnetz verbunden, SENDE KEINE echten Ether an diese Adressen",
             "peers": "Peers",
             "checkingWhichNetwork": "Überprüfe Netzwerk...",
             "mainNetwork": "Hauptnetzwerk",
             "testNetwork": "Testnetzwerk",
             "privateNetwork": "Privates Netzwerk",
-            "mainnetExplain": "Sie sind mit dem globalen Hauptnetz von Ethereum verbunden",
-            "privatenetExplain": "Sie sind mit einem privaten Netz verbunden, SENDEN SIE KEINE echten Ether an diese Adressen",
-            "unknownnetExplain": "Es konnte nicht bestimmt werden, welches Netzwerk Sie nutzen"
+            "mainnetExplain": "Du bist mit dem globalen Hauptnetz von Ethereum verbunden",
+            "privatenetExplain": "Du bist mit einem privaten Netz verbunden, SENDE KEINE echten Ether an diese Adressen",
+            "unknownnetExplain": "Es konnte nicht bestimmt werden, welches Netzwerk du nutzt"
         },
         "sidebar": {
             "buttons": {
@@ -118,8 +118,8 @@
             "runningNodeFound": "Laufender Ethereum Softwareknoten gefunden!",
             "startingNode": "Starte Ethereum Softwareknoten...",
             "startedNode": "Starte Anwendung...",
-            "nodeConnectionTimeout": "Ethereum Softwareknoten konnte nicht gestartet werden!<br><small>Wenn Sie <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert haben,</a>, verwenden Sie bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder senden Sie einen Fehlerreport</a></small>",
-            "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Softwareknoten gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starten Sie den Ethereum Softwareknoten manuell. </a> </small>",
+            "nodeConnectionTimeout": "Ethereum Softwareknoten konnte nicht gestartet werden!<br><small>Wenn du <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth installiert hast,</a>, verwende bitte diesen Befehl, um Geth zu starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>oder sende einen Fehlerreport</a></small>",
+            "nodeBinaryNotFound": "Keine Programmdatei für den Ethereum Softwareknoten gefunden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Bitte starte den Ethereum Softwareknoten manuell. </a> </small>",
             "nodeSyncing": "Ethereum Softwareknoten muss synchronisieren, bitte warten...",
             "nodeSyncInfo": "Block __displayBlock__ von __highestBlock__ wird heruntergeladen.",
             "nodeSyncConnecting": "Suche nach Peers...",
@@ -157,7 +157,7 @@
             },
             "unlockMasterPassword": {
                 "title": "Master-Passwort eingeben",
-                "enterPassword": "Geben Sie das Master-Passwort ein",
+                "enterPassword": "Gib das Master-Passwort ein",
                 "unlocking": "Entschlüsseln...",
                 "errors": {
                     "wrongPassword": "Passwort falsch, bitte nochmals versuchen."
@@ -169,9 +169,9 @@
                     "contractExecution": "Vertrag ausführen",
                     "createContract": "Vertrag anlegen"
                 },
-                "contractExecutionInfo": "Sie sind dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
-                "contractCreationInfo": "Sie sind dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
-                "enterPassword": "Bitte geben Sie das Passwort ein, um die Transaktion durchzuführen.",
+                "contractExecutionInfo": "Du bist dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
+                "contractCreationInfo": "Du bist dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
+                "enterPassword": "Bitte gib das Passwort ein, um die Transaktion durchzuführen.",
                 "unlocking": "Warten auf Bestätigung...",
                 "createContract": "Vertrag anlegen",
                 "estimatedFee": "Geschätzter Gebührenbetrag",
@@ -191,7 +191,7 @@
                 },
                 "transactionThrow": "Der Vertrag wird diese Transaktion nicht ausführen können",
                 "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
-                "gasLimit": "Stelle Maximalgebühr ein",
+                "gasLimit": "Maximal bereitgestellte Gebühr",
                 "parameters": "Parameter",
                 "showRawBytecode": "Zeige Rohdaten",
                 "showDecodedParameters": "Zeige dekodierte Parameter",
@@ -203,37 +203,37 @@
                 "goToTestnet": "Verwende das Testnetz",
                 "goToTestnetDescription": "Teste die Technologie frei in der Testnetz-Sandbox, ",
                 "gotoMainnet": "Verwende das Hauptnetz",
-                "gotoMainnetDescription": " Sie werden etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden Ihnen helfen, etwas zu bekommen ...",
-                "doYouHaveAWalletFile": "Haben Sie eine Wallet-Datei?",
-                "walletFileDescription": "<p>Wallet-Datei zum importieren in dieses Fenster ziehen.<br>Wenn Sie 2014 am Ethereum-Pre-sale teilgenommen haben, sollten Sie über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und Ihnen auch per E-Mail geschickt.</p>",
+                "gotoMainnetDescription": " Du wirst etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden dir helfen, etwas zu bekommen ...",
+                "doYouHaveAWalletFile": "Hast du eine Wallet-Datei?",
+                "walletFileDescription": "<p>Wallet-Datei zum importieren in dieses Fenster ziehen.<br>Wenn du 2014 am Ethereum-Pre-sale teilgenommen hast, solltest du über eine Datei mit dem Dateinamen <code>ethereum_wallet_backup.json</code> verfügen. Sie wurde nach dem Kauf heruntergeladen und dir auch per E-Mail geschickt.</p>",
                 "dropFilesHere": "Pre-sale Datei laden",
                 "creating": "Erstellen...",
                 "importing": "Importieren...",
                 "skip": "Diesen Schritt überspringen",
                 "next": "Nächster",
-                "protectTitle": "Schützen Sie Ihr Konto",
-                "protectDescription": "Wählen Sie ein Passwort für Ihr Konto. Machen Sie es so stark, als wären es Ihre Hausschlüssel!",
-                "accountTitle": "Laden Sie die Datei hoch!",
-                "accountTitleTestnet": "Minen Sie etwas Ether!",
-                "etherDescription": "Das Ethereum Netz basiert auf einem Tokan namens “Ether”. Sie benötigen eine kleine Menge davon, um irgendetwas auf dem Ethereum-Netz zu tun.",
-                "loadItDescription": "Wenn Sie bereits über Bitcoin oder eine andere Kryptowährung verfügen, können Sie diese mit Shapeshift einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
-                "mineItDescription": "<strong>Auf dem Testnetz können Sie selbst Ether minen. Bitte gehen Sie dazu in den Menüpunkt <em>Entwicklung</em> menu und wählen Sie <em>Mining starten</em>. </strong> <br> <strong> VERSUCHEN SIE NICHT, ECHTE ETHER AN DIESE ADRESSE ZU SENDEN! </strong>",
-                "you": "SIE",
+                "protectTitle": "Schütze dein Konto",
+                "protectDescription": "Wähle ein Passwort für dein Konto. Mache es so stark, als wären es deine Hausschlüssel!",
+                "accountTitle": "Lade die Datei hoch!",
+                "accountTitleTestnet": "Ether minen!",
+                "etherDescription": "Das Ethereum Netz basiert auf einem Tokan namens “Ether”. Du benötigst eine kleine Menge davon, um irgendetwas auf dem Ethereum-Netz zu tun.",
+                "loadItDescription": "Wenn du bereits über Bitcoin oder eine andere Kryptowährung verfügst, kannst du diese mit Shapeshift einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
+                "mineItDescription": "<strong>Auf dem Testnetz kannst du selbst Ether minen. Bitte gehe dazu in den Menüpunkt <em>Entwicklung</em> menu und wähle <em>Mining starten</em>. </strong> <br> <strong> VERSUCHE NICHT, ECHTE ETHER AN DIESE ADRESSE ZU SENDEN! </strong>",
+                "you": "DU",
                 "etherbase": "Hauptkonto (etherbase)",
                 "depositBitcoin": "Bitcoin eintauschen",
-                "learnIt": "Lernen Sie Ethereum kennen, während Sie warten",
+                "learnIt": "Lerne Ethereum kennen, während du wartest",
                 "downloadingBlocks": "Blöcke werden heruntergeladen",
-                "tutorial1Description": "<p> Nun müssen Sie lediglich warten, bis der Download abgeschlossen ist. Hier finden Sie weitere Informationen:</p> <h4>Make your own money </h4> <p> Erstellen Sie eine eigene Kryptowährung mit einer festen Geldmenge, Token, die reale Vermögenswerte darstellen, und so weiter ...</p>",
-                "tutorial2Description": "<h4> Erstellen Sie einen Crowdsale</h4> <p> Sammeln Sie Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinden Sie die Hürden von traditionellen Crowdfunding-Systemen und gehen Sie direkt an die Quellen, indem Sie Ihre Organisation über die Blockchain mit Mitteln versorgen.</p>",
-                "tutorial3Description": "<h4> Blockchain-Organisation </h4> <p> Schaffen Sie eine autonome Organisation, deren Grundsätze über Geldverwendung und Entscheidungen nicht gebrochen werden können. Geben Sie Ihren Unterstützern eine aktive Rolle, wie die Mittel verwendet werden sollen</p>",
+                "tutorial1Description": "<p> Nun musst du lediglich warten, bis der Download abgeschlossen ist. Hier findest du weitere Informationen:</p> <h4>Make your own money </h4> <p> Erstelle eine eigene Kryptowährung mit einer festen Geldmenge, Token, die reale Vermögenswerte darstellen, und so weiter ...</p>",
+                "tutorial2Description": "<h4> Erstelle einen Crowdsale</h4> <p> Sammle Mittel für ein gemeinsames Ziel, vollkommen vertrauenswürdig ohne einen weiteren Dritten. Überwinde die Hürden von traditionellen Crowdfunding-Systemen und gehe direkt an die Quellen, indem du deine Organisation über die Blockchain mit Mitteln versorgst.</p>",
+                "tutorial3Description": "<h4> Blockchain-Organisation </h4> <p> Schaffe eine autonome Organisation, deren Grundsätze über Geldverwendung und Entscheidungen nicht gebrochen werden können. Gib deinen Unterstützern eine aktive Rolle, wie die Mittel verwendet werden sollen</p>",
                 "buttons": {
                     "showPassword": "Passwort anzeigen",
                     "importAccount": "Konto importieren",
                     "launchApp": "Anwendung wird gestartet!",
-                    "learnReceipt": "Lernen Sie dieses Rezept kennen"
+                    "learnReceipt": "Lerne dieses Rezept kennen"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Warten Sie noch einige Sekunden, bis der Softwareknoten gestartet ist, und versuchen Sie es dann noch einmal",
+                    "nodeNotStartedYet": "Warte noch einige Sekunden, bis der Softwareknoten gestartet ist, und versuche es dann noch einmal",
                     "unknownFile": "Datei nicht erkannt.",
                     "wrongPassword": "Falsches Passwort.",
                     "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
@@ -264,7 +264,7 @@
         }
     },
     "elements": {
-        "checksumAlert": "Diese Adresse sieht gültig aus, aber ihr fehlen einige Sicherheits-Features, die Sie z.B. gegen Tippfehler schützen könnten. Bitte prüfen Sie daher nochmals, ob Sie die Adresse richtig eingegeben haben. Sofern vorhanden, prüfen Sie bitte auch, ob das Sicherheits-Icon übereinstimmt. ",
+        "checksumAlert": "Diese Adresse sieht gültig aus, aber ihr fehlen einige Sicherheits-Features, die dich z.B. gegen Tippfehler schützen könnten. Bitte prüfe daher nochmals, ob du die Adresse richtig eingegeben hast. Sofern vorhanden, prüfe bitte auch, ob das Sicherheits-Icon übereinstimmt. ",
         "identiconHelper": "Dies ist ein Sicherheits-Icon. Bei einer abweichenden Adresse sollte das Sicherheits-Icon völlig anders aussehen.",
         "type": {
             "address": "Address",

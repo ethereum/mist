@@ -1,5 +1,3 @@
-#### System information
-
 <!-- Please fill in these information below: -->
 ``````
 Version: `0.0.0`
@@ -10,9 +8,10 @@ Number of blocks synchronized: 0
 
 <!--
 
-Please check the already existing issues to keep duplicates at a minimum.
+Check the already existing issues to keep duplicates at a minimum.
 
-Some common issues are:
+
+You'll find possible solutions for these common issues below on Mist Wiki: https://github.com/ethereum/mist/wiki.
 
 - Ether is not shown in the wallet
 - I send ether to the wallet contract but it doesn't show up
@@ -24,9 +23,8 @@ Some common issues are:
 - Unable to import pre-sale wallet
 - Bind address already in use
 
-You'll find possible solutions for those on Mist Wiki: https://github.com/ethereum/mist/wiki
 
-If possible add the following to your report:
+When creating this issue, if possible add the following to your report:
 - Screenshots
 - Check the console, of Mist (`CTRL/CMD + ALT + i`) and take a screenshot
 - Log files

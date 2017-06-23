@@ -241,15 +241,22 @@ balanced-match@^0.4.1:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-0.4.2.tgz#cb3f3e3c732dc0f01ee70b403f302e61d7709838"
 
+<<<<<<< HEAD
 base64-js@^1.0.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.2.0.tgz#a39992d723584811982be5e290bb6a53d86700f1"
 
+=======
+>>>>>>> origin/swarm_integration_only
 base64-js@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-0.0.8.tgz#1101e9544f4a76b1bc3b26d452ca96d7a35e7978"
 
+<<<<<<< HEAD
 base64-js@1.1.2:
+=======
+base64-js@1.1.2, base64-js@^1.0.2:
+>>>>>>> origin/swarm_integration_only
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.1.2.tgz#d6400cac1c4c660976d90d07a04351d89395f5e8"
 
@@ -604,7 +611,11 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
+<<<<<<< HEAD
 commander@^2.8.1, commander@2.9.0:
+=======
+commander@2.9.0, commander@^2.8.1:
+>>>>>>> origin/swarm_integration_only
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.9.0.tgz#9c99094176e12240cb22d6c5146098400fe0f7d4"
   dependencies:
@@ -3028,7 +3039,11 @@ mkdirp-promise@^5.0.1:
   dependencies:
     mkdirp "*"
 
+<<<<<<< HEAD
 mkdirp@*, mkdirp@^0.5.0, mkdirp@^0.5.1, "mkdirp@>=0.5 0", mkdirp@~0.5.1, mkdirp@0.5, mkdirp@0.5.1, mkdirp@0.5.x:
+=======
+mkdirp@*, mkdirp@0.5, mkdirp@0.5.1, mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
+>>>>>>> origin/swarm_integration_only
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -3888,7 +3903,11 @@ set-blocking@^2.0.0, set-blocking@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/set-blocking/-/set-blocking-2.0.0.tgz#045f9782d011ae9a6803ddd382b24392b3d890f7"
 
+<<<<<<< HEAD
 setimmediate@^1.0.5, "setimmediate@>= 1.0.2 < 2", setimmediate@~1.0.1:
+=======
+"setimmediate@>= 1.0.2 < 2", setimmediate@^1.0.5, setimmediate@~1.0.1:
+>>>>>>> origin/swarm_integration_only
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
 
@@ -4221,12 +4240,15 @@ supports-color@^3.1.0, supports-color@~3.2.3:
   dependencies:
     has-flag "^1.0.0"
 
+<<<<<<< HEAD
 supports-color@3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-3.1.2.tgz#72a262894d9d408b956ca05ff37b2ed8a6e2a2d5"
   dependencies:
     has-flag "^1.0.0"
 
+=======
+>>>>>>> origin/swarm_integration_only
 swarm-js@^0.1.13:
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/swarm-js/-/swarm-js-0.1.15.tgz#a155acbb10a497b97852b09bd515bd18560528c8"
@@ -4263,7 +4285,7 @@ tar-fs@^1.13.0:
     pump "^1.0.0"
     tar-stream "^1.1.2"
 
-tar-stream@^1.1.1, tar-stream@^1.1.2, tar-stream@^1.5.0:
+tar-stream@^1.1.1, tar-stream@^1.1.2, tar-stream@^1.5.0, tar-stream@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/tar-stream/-/tar-stream-1.5.2.tgz#fbc6c6e83c1a19d4cb48c7d96171fc248effc7bf"
   dependencies:
@@ -4272,6 +4294,7 @@ tar-stream@^1.1.1, tar-stream@^1.1.2, tar-stream@^1.5.0:
     readable-stream "^2.0.0"
     xtend "^4.0.0"
 
+<<<<<<< HEAD
 tar-stream@^1.5.2:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/tar-stream/-/tar-stream-1.5.4.tgz#36549cf04ed1aee9b2a30c0143252238daf94016"
@@ -4281,6 +4304,8 @@ tar-stream@^1.5.2:
     readable-stream "^2.0.0"
     xtend "^4.0.0"
 
+=======
+>>>>>>> origin/swarm_integration_only
 tar.gz@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/tar.gz/-/tar.gz-1.0.5.tgz#e1ada7e45ef2241b4b1ee58123c8f40b5d3c1bc4"

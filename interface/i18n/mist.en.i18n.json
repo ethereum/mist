@@ -19,10 +19,7 @@
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
                 "backupMist": "Application data",
-                "swarm": {
-                    "label": "Swarm",
-                    "upload": "Upload"
-                }
+                "swarmUpload": "Upload to Swarm..."
             },
             "edit": {
                 "label": "Edit",

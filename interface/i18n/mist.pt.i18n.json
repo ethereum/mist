@@ -19,10 +19,7 @@
                 "backup": "Cópia de segurança",
                 "backupKeyStore": "Contas",
                 "backupMist": "Carteiras, contratos e etc",
-                "swarm": {
-                    "label": "Swarm",
-                    "upload": "Upload"
-                }
+                "swarmUpload": "Subir arquivo para Swarm..."
             },
             "edit": {
                 "label": "Editar",

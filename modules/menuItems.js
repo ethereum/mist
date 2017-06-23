@@ -7,7 +7,6 @@ const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
 const swarmNode = require('./swarmNode.js');
-const mimetype = require('mimetype');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -208,38 +207,35 @@ let menuTempl = function (webviews) {
                 type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.file.swarm.label'),
-                submenu: [{
-                    label: i18n.t('mist.applicationMenu.file.swarm.upload'),
-                    click() {
-                        const focusedWindow = BrowserWindow.getFocusedWindow();
-                        const paths = dialog.showOpenDialog(focusedWindow, {
-                            properties: ['openFile', 'openDirectory']
-                        });
-                        if (paths && paths.length === 1) {
-                            const isDir = fs.lstatSync(paths[0]).isDirectory();
-                            const defaultPath = path.join(paths[0], 'index.html');
-                            const uploadConfig = {
-                                path: paths[0],
-                                kind: isDir ? 'directory' : 'file',
-                                defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-                            };
-                            swarmNode.upload(uploadConfig).then(hash => {
-                                const Tabs = global.db.getCollection('UI_tabs');
-                                focusedWindow.webContents.executeJavaScript(`
-                                  Tabs.update('browser', {$set: {
-                                      url: 'bzz://${hash}',
-                                      redirect: 'bzz://${hash}'
-                                  }});
-                                `);
-                            }).catch(e => console.log(e));
-                        }
+                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+                accelerator: 'Shift+CommandOrControl+U',
+                click() {
+                    const focusedWindow = BrowserWindow.getFocusedWindow();
+                    const paths = dialog.showOpenDialog(focusedWindow, {
+                        properties: ['openFile', 'openDirectory']
+                    });
+                    if (paths && paths.length === 1) {
+                        const isDir = fs.lstatSync(paths[0]).isDirectory();
+                        const defaultPath = path.join(paths[0], 'index.html');
+                        const uploadConfig = {
+                            path: paths[0],
+                            kind: isDir ? 'directory' : 'file',
+                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                        };
+                        swarmNode.upload(uploadConfig).then((hash) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                              Tabs.update('browser', {$set: {
+                                  url: 'bzz://${hash}',
+                                  redirect: 'bzz://${hash}'
+                              }});
+                              LocalStore.set('selectedTab', 'browser');
+                            `);
+                        }).catch(e => console.log(e));
                     }
-                }]
-            }
-        ],
-    });
-
+                }
+            }]
+        });
+        
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),

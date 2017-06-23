@@ -1,0 +1,97 @@
+<html>
+<head>
+<style>
+	input[type=eth-address].is-invalid {
+	background-color: #fdd;
+}
+:invalid {
+	background-color: #fdd;
+}
+
+:valid {
+	background-color: #dfd;
+}
+
+input[type=eth-address][data-address]::after {
+	content: attr(data-address);
+	position: relative;
+	display: block;
+	top: 12px;
+	left: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>Input type eth-address</h2>
+
+
+	<input type="eth-address">
+
+
+
+	<span for="i2">0x83925de9986d157f6b586bde2a0b0003a13c07c6</span>
+
+	<br>
+
+	<input
+		type="eth-address"
+		name="i2"
+		id="i2"
+		value="test 2"
+		size="44">
+
+
+
+
+<hr>
+<h2>Input [pattern]</h2>
+	<input type="text"
+		name="i1"
+		id="i1"
+		value="test 1"
+		pattern="^(0x[a-fA-F0-9]{40})|([\d-]+\.eth)$"
+		size="44">
+
+
+<hr>
+<h2>Input list</h2>
+<p>
+	<input list="browsers" name="myBrowser" /></label>
+	<datalist id="browsers">
+	  <option value="0x12543647586597578654322">
+	  <option value="everton.eth">
+	  <option value="0xfabfbfabafabf1231231231">
+	  <option value="0x88888888888888888888888">
+	  <option value="0x99999999999999999999999">
+	</datalist>
+
+</p>
+
+
+<h3>Test data</h3>
+<p>
+	0x83925de9986d157f6b586bde2a0b0003a13c07c6
+</p>
+
+</body>
+</html>
+
+
+
+
+
+
+<!--
+var validAddress = function(value) {
+	return /^0x[0-9a-f]{40}$/gi.test(value);
+};
+var validAddressWithoutPrefix = function(value) {
+	return /^[0-9a-f]{40}$/gi.test(value);
+};
+var validName = function(value) {
+	return /^(.+)\.eth$/g.test(value);
+};
+ -->

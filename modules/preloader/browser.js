@@ -8,6 +8,7 @@ const mist = require('./include/mistAPI.js');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/setBasePath')('interface');
+require('./include/ui-elements.js');
 
 // notifiy the tab to store the webview id
 ipcRenderer.sendToHost('setWebviewId');

@@ -172,6 +172,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 
 onReady = () => {
+    global.config = db.getCollection('SYS_config');
+
     // setup DB sync to backend
     dbSync.backendSyncInit();
 

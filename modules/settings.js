@@ -4,6 +4,7 @@ const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
+const lodash = require('lodash');
 
 
 // try loading in config file
@@ -265,6 +266,46 @@ class Settings {
 
     get nodeOptions() {
         return argv.nodeOptions;
+    }
+
+    initConfig() {
+        global.config.insert({
+            ui: {
+                i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            }
+        });
+    }
+
+    saveConfig(key, value) {
+        let obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            obj = global.config.get(1);
+        }
+
+        if (lodash.get(obj, key) !== value) {
+            lodash.set(obj, key, value);
+            global.config.update(obj);
+
+            // this._log.warn(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.trace(global.config.data);
+        }
+    }
+
+    loadConfig(key) {
+        const obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            return this.loadConfig(key);
+        }
+
+        // this._log.warn(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+        this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+
+        return lodash.get(obj, key);
     }
 
     loadUserData(path) {

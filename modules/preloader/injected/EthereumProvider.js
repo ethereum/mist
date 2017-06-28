@@ -21,7 +21,7 @@
         this.responseCallbacks = {};
 
         // fire the connect
-        this.connect();
+        this._connect();
         this._reconnectCheck();
 
 
@@ -57,12 +57,13 @@
 
                 // notification
                 if(!id && result.method && result.method.indexOf('_subscription') !== -1) {
-                    _this.listeners('data').forEach(function(callback){
-                        if(typeof callback === 'function')
-                            callback(null, result);
-                    });
+                    // _this.listeners('data').forEach(function(callback){
+                    //     if(typeof callback === 'function')
+                    //         callback(null, result);
+                    // });
+                    _this.emit('data', result);
 
-                    // fire the callback
+                // fire the callback
                 } else if(_this.responseCallbacks[id]) {
                     _this.responseCallbacks[id](null, result);
                     delete _this.responseCallbacks[id];
@@ -70,10 +71,12 @@
 
             // make all other events listenable
             } else if(data.type) {
-                _this.listeners(data.type).forEach(function(callback){
-                    if(typeof callback === 'function')
-                        callback(null, data.message);
-                });
+                // _this.listeners(data.type).forEach(function(callback){
+                //     if(typeof callback === 'function')
+                //         callback(null, data.message);
+                // });
+                // TODO check if secure
+                _this.emit('data.type', data.message);
             }
         });
     }
@@ -111,7 +114,7 @@
 
         this.on('end', function () {
             reconnectIntervalId = setInterval(function () {
-                _this.connect();
+                _this._connect();
             }, 500);
         });
 
@@ -127,7 +130,7 @@
 
      @method connect
      */
-    EthereumProvider.prototype.connect = function(payload, callback) {
+    EthereumProvider.prototype._connect = function(payload, callback) {
         postMessage({
             type: 'create'
         });
@@ -140,6 +143,7 @@
      @param {Object} payload    example: {id: 1, jsonrpc: '2.0', 'method': 'eth_someMethod', params: []}
      @param {Function} callback the callback to call
      */
+    // TODO transform to: send(method, params, callback)
     EthereumProvider.prototype.send = function send(payload, callback) {
 
         this._addResponseCallback(payload, callback);
@@ -153,12 +157,13 @@
 
 
     delete window.EventEmitter;
-    window.ethereumProvider = new EthereumProvider();
+    // TODO set real ethereum provider
+    // window.ethereum = new EthereumProvider();
 
 
     // For backwards compatibility of web3.currentProvider;
     EthereumProvider.prototype.sendSync = function () {
-        return {jsonrpc: '2.0', error: {"code": -32603, message: 'Sync calls are not supported in Mist.'}};
+        return {jsonrpc: '2.0', error: {"code": -32603, message: 'Sync calls are not anymore supported in Mist :\\'}};
     };
     EthereumProvider.prototype.sendAsync = EthereumProvider.prototype.send;
     EthereumProvider.prototype.isConnected = function () {

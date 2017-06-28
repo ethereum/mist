@@ -24,6 +24,13 @@ mistInit = function () {
                 redirect: 'https://ethereum.org',
                 position: 0
             });
+        } else {
+            Tabs.upsert(
+                { _id: 'browser' },
+                {
+                    $set: { position: 0 }
+                }
+            );
         }
 
         // overwrite wallet on start again, but use $set to dont remove titles
@@ -84,7 +91,7 @@ Meteor.startup(function () {
             try {
                 numeral.language(lang);
             } catch (err) {
-                console.error(`numeral.js couldn't set number formating: ${err.message}`);
+                console.warn(`numeral.js couldn't set number formating: ${err.message}`);
             }
             EthTools.setLocale(lang);
         }

@@ -153,6 +153,10 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
                     if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
                 }
 
+                if (!/^[0-9a-fA-F]{40}$/.test(keyfile.address)) {
+                    throw new Error('Invalid Address format.');
+                }
+
                 fs.writeFile(`${keystorePath}/0x${keyfile.address}`, data, (err) => {
                     if (err) throw new Error("Can't write file to disk");
                 });

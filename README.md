@@ -10,6 +10,10 @@ For the Mist API see the [MISTAPI.md](MISTAPI.md).
 
 Please note that this repository is the Electron host for the Meteor based wallet dapp whose repository is located here: https://github.com/ethereum/meteor-dapp-wallet.
 
+## Help and troubleshooting
+
+Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki) for help.
+
 ## Installation
 
 If you want to install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
@@ -126,13 +130,19 @@ $ electron . --rpc /my/geth.ipc
 $ electron . --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
 ```
 
+### Creating a local private net
+
+See this guide to quickly set up a local private network on your computer:
+https://gist.github.com/evertonfraga/9d65a9f3ea399ac138b3e40641accf23
+
+
 ### Using Mist with a privatenet
 
 To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
-$ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
+$ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234 --node-datadir ~/Library/Ethereum/privatenet
 ```
 
 _NOTE: since `ipcpath` is also a Mist option you do not need to also include a

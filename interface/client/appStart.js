@@ -67,22 +67,8 @@ Meteor.startup(function () {
 
     console.debug('Setting language');
 
-    // SET default language
-    if (Cookie.get('TAPi18next')) {
-        TAPi18n.setLanguage(Cookie.get('TAPi18next'));
-    } else {
-        const userLang = navigator.language || navigator.userLanguage;
-        const availLang = TAPi18n.getLanguages();
+    TAPi18n.setLanguage(ipc.sendSync('backendAction_getLanguage'));
 
-        // set default language
-        if (_.isObject(availLang) && availLang[userLang]) {
-            TAPi18n.setLanguage(userLang);
-        } else if (_.isObject(availLang) && availLang[userLang.substr(0, 2)]) {
-            TAPi18n.setLanguage(userLang.substr(0, 2));
-        } else {
-            TAPi18n.setLanguage('en');
-        }
-    }
     // change moment and numeral language, when language changes
     Tracker.autorun(function () {
         if (_.isString(TAPi18n.getLanguage())) {

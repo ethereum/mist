@@ -245,30 +245,37 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
-        browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${langCode}");`
-        );
-        ipc.emit('backendAction_setLanguage', {}, langCode);
+    // LANGUAGE (VIEW)
+    const switchLang = langCode => function (menuItem, browserWindow) {
+        try {
+            // update i18next instance in browserWindow (Mist meteor interface)
+            browserWindow.webContents.executeJavaScript(
+               `TAPi18n.setLanguage("${langCode}");`
+            );
+        } catch (err) {
+            log.error(err);
+        } finally {
+            Settings.language = langCode;
+            ipc.emit('backendAction_setLanguage');
+        }
     };
-    const currentLanguage = i18n.getBestMatchedLangCode(global.language);
 
-    const languageMenu =
-    Object.keys(i18n.options.resources)
+    const currentLanguage = Settings.language;
+    const languageMenu = Object.keys(i18n.options.resources)
     .filter(langCode => langCode !== 'dev')
     .map((langCode) => {
         const menuItem = {
             label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === langCode),
-            click: genSwitchLanguageFunc(langCode),
+            checked: (langCode === currentLanguage),
+            click: switchLang(langCode),
         };
         return menuItem;
     });
-    const defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
+
     languageMenu.unshift({
         label: i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(defaultLang),
+        click: switchLang(i18n.getBestMatchedLangCode(app.getLocale())),
     }, {
         type: 'separator',
     });

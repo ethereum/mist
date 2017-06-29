@@ -268,6 +268,14 @@ class Settings {
         return argv.nodeOptions;
     }
 
+    get language() {
+        return this.loadConfig('ui.i18n');
+    }
+
+    set language(langCode) {
+        this.saveConfig('ui.i18n', langCode);
+    }
+
     initConfig() {
         global.config.insert({
             ui: {

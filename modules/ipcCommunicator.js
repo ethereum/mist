@@ -93,8 +93,7 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
 ipc.on('backendAction_setLanguage', (e) => {
     global.i18n.changeLanguage(Settings.language.substr(0, 5), (err) => {
         if (!err) {
-            global.language = global.i18n.language;
-            log.info('Backend language set to: ', global.language);
+            log.info('Backend language set to: ', global.i18n.language);
             appMenu(global.webviews);
         }
     });

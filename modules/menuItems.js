@@ -252,6 +252,13 @@ let menuTempl = function (webviews) {
             browserWindow.webContents.executeJavaScript(
                `TAPi18n.setLanguage("${langCode}");`
             );
+
+            // set navigator.language (dev console only)
+            // browserWindow.webContents.executeJavaScript(
+            //     `Object.defineProperty(navigator, 'language, {
+            //         get() { return ${langCode}; }
+            //     });`
+            // );
         } catch (err) {
             log.error(err);
         } finally {

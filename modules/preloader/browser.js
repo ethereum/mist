@@ -9,6 +9,11 @@ require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/setBasePath')('interface');
 
+// set navigator.language
+Object.defineProperty(navigator, 'language', {
+    get() { return ipcRenderer.sendSync('backendAction_getLanguage'); }
+});
+
 // notifiy the tab to store the webview id
 ipcRenderer.sendToHost('setWebviewId');
 

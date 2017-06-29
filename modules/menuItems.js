@@ -253,12 +253,19 @@ let menuTempl = function (webviews) {
                `TAPi18n.setLanguage("${langCode}");`
             );
 
+            // set Accept_Language header
+            const session = browserWindow.webContents.session;
+            session.setUserAgent(session.getUserAgent(), langCode);
+
             // set navigator.language (dev console only)
             // browserWindow.webContents.executeJavaScript(
             //     `Object.defineProperty(navigator, 'language, {
             //         get() { return ${langCode}; }
             //     });`
             // );
+
+            // reload browserWindow to apply language change
+            // browserWindow.webContents.reload();
         } catch (err) {
             log.error(err);
         } finally {

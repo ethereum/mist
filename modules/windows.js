@@ -43,6 +43,10 @@ class Window extends EventEmitter {
 
         this.window = new BrowserWindow(electronOptions);
 
+        // set Accept_Language header
+        this.session = this.window.webContents.session;
+        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+
         this.webContents = this.window.webContents;
 
         this.webContents.once('did-finish-load', () => {

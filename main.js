@@ -189,6 +189,9 @@ onReady = () => {
     // instantiate custom protocols
     // require('./customProtocols.js');
 
+    // change to user language now that global.config object is ready
+    i18n.changeLanguage(Settings.language);
+
     // add menu already here, so we have copy and past functionality
     appMenu();
 

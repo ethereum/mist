@@ -1,20 +1,34 @@
-#### System information
+<!-- Please fill in these information below: -->
 ``````
 Version: `0.0.0`
 OS & Version: windows/linux/osx
-Node type: `eth/geth(default)`
+Node type: `eth/geth`
+Number of blocks synchronized: 0
 ``````
 
-#### Please check the **already existing** issues to keep duplicates at a minimum.
-Furthermore several **work-arounds** have been collected in the [Mist-Troubleshooting-Guide](https://github.com/ethereum/wiki/wiki/Mist-Troubleshooting-Guide).
+<!--
 
-If possible add the following to your report:
+Check the already existing issues to keep duplicates at a minimum.
 
+
+You'll find possible solutions for these common issues below on Mist Wiki: https://github.com/ethereum/mist/wiki.
+
+- Ether is not shown in the wallet
+- I send ether to the wallet contract but it doesn't show up
+- Mist is synchronized but is stuck during the last part
+- "Your computers time is out of sync!" error
+- Unable to find peers
+- My transaction is not confirmed
+- Account can't be unlocked
+- Unable to import pre-sale wallet
+- Bind address already in use
+
+
+When creating this issue, if possible add the following to your report:
 - Screenshots
-
 - Check the console, of Mist (`CTRL/CMD + ALT + i`) and take a screenshot
-
-- Log files 
+- Log files
   - go to `menu -> accounts -> backup -> application data`
-  - zip and upload `node.log` and all other `node.log.X` files 
- 
+  - zip and upload `node.log` and all other `node.log.X` files
+
+ -->

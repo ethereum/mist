@@ -8,9 +8,15 @@ The Mist browser is the tool of choice to browse and use Ðapps.
 
 For the Mist API see the [MISTAPI.md](MISTAPI.md).
 
+Please note that this repository is the Electron host for the Meteor based wallet dapp whose repository is located here: https://github.com/ethereum/meteor-dapp-wallet.
+
+## Help and troubleshooting
+
+Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki) for help.
+
 ## Installation
 
-If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
+If you want to install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
 you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
@@ -19,14 +25,14 @@ For updating simply download the new version and copy it over the old one (keep 
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
-- macOS `~/Library/Application Support/Mist`
+- macOS `~/Library/Application\ Support/Mist`
 - Linux `~/.config/Mist`
 
 
 ## Development
 
-For development, a Meteor server will to be started to assist with live reload and CSS injection.
-Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
+For development, a Meteor server will need to be started to assist with live reload and CSS injection.
+Once a Mist version is released the Meteor frontend part is bundled using the `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 
@@ -35,10 +41,10 @@ To run mist in development you need:
 - [Node.js](https://nodejs.org) `v6.x` (use the prefered installation method for your OS)
 - [Meteor](https://www.meteor.com/install) javascript app framework
 - [Yarn](https://yarnpkg.com/) package manager
-- [Electron](http://electron.atom.io/) `v1.3.13` cross platform desktop app framework
+- [Electron](https://electron.atom.io/) `v1.3.13` cross platform desktop app framework
 - [Gulp](http://gulpjs.com/) build and automation system
 
-Install the later ones via:
+Install the latter ones via:
 
     $ curl https://install.meteor.com/ | sh
     $ curl -o- -L https://yarnpkg.com/install.sh | bash
@@ -124,13 +130,19 @@ $ electron . --rpc /my/geth.ipc
 $ electron . --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
 ```
 
+### Creating a local private net
+
+See this guide to quickly set up a local private network on your computer:
+https://gist.github.com/evertonfraga/9d65a9f3ea399ac138b3e40641accf23
+
+
 ### Using Mist with a privatenet
 
 To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
-$ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234  --node-datadir ~/Library/Ethereum/privatenet
+$ electron . --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234 --node-datadir ~/Library/Ethereum/privatenet
 ```
 
 _NOTE: since `ipcpath` is also a Mist option you do not need to also include a

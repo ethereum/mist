@@ -99,8 +99,8 @@ module.exports = class BaseProcessor {
         // prevent dapps from acccesing admin endpoints
         if (!/^eth_|^bzz_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
             delete payload.result;
-            const err = this.ERRORS.METHOD_DENIED;
-            err.message = err.message.replace(/__method__/, payload.method);
+            const err = _.clone(this.ERRORS.METHOD_DENIED);
+            err.message = err.message.replace('__method__', payload.method);
             payload.error = err;
         }
     }

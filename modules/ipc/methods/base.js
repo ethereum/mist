@@ -100,7 +100,7 @@ module.exports = class BaseProcessor {
         if (!/^eth_|^bzz_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
             delete payload.result;
             const err = _.clone(this.ERRORS.METHOD_DENIED);
-            err.message = err.message.replace('__method__', payload.method);
+            err.message = err.message.replace('__method__', `"${payload.method}"`);
             payload.error = err;
         }
     }

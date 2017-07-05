@@ -1,5 +1,5 @@
 require('./include/common')('splashscreen');
-require('./include/ethereumProvider.js');
+require('./include/web3CurrentProvider.js');
 const mist = require('./include/mistAPI.js');
 const { ipcRenderer, remote, webFrame } = require('electron');
 

@@ -10,7 +10,7 @@ const LegacyWeb3IpcProvider = require('./legacyWeb3IpcProvider.js');
 
 
 // SET ETHEREUM PROVIDER
-window.ethereumProvider = new Web3.providers.IpcProvider('', ipcProviderWrapper);
+// window.ethereumProvider = new Web3.providers.IpcProvider('', ipcProviderWrapper);
 
 
 // LEGACY

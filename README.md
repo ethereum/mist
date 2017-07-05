@@ -41,14 +41,14 @@ To run mist in development you need:
 - [Node.js](https://nodejs.org) `v6.x` (use the prefered installation method for your OS)
 - [Meteor](https://www.meteor.com/install) javascript app framework
 - [Yarn](https://yarnpkg.com/) package manager
-- [Electron](https://electron.atom.io/) `v1.3.13` cross platform desktop app framework
+- [Electron](http://electron.atom.io/) `v1.4.15` cross platform desktop app framework
 - [Gulp](http://gulpjs.com/) build and automation system
 
 Install the latter ones via:
 
     $ curl https://install.meteor.com/ | sh
     $ curl -o- -L https://yarnpkg.com/install.sh | bash
-    $ yarn global add electron@1.3.13
+    $ yarn global add electron@1.4.15
     $ yarn global add gulp
 
 ### Initialisation

@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.8.10",
+  "version": "0.9.0",
   "license": "GPL-3.0",
   "author": "Ethereum Mist Team <mist@ethereum.org>",
   "repository": {
@@ -44,7 +44,7 @@
     "co-mocha": "^1.2.0",
     "del": "^2.2.2",
     "ecstatic": "^2.1.0",
-    "electron": "1.6.2",
+    "electron": "1.4.15",
     "electron-builder": "^12.2.2",
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.0.1",

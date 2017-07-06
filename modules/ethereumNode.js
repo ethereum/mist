@@ -350,17 +350,35 @@ class EthereumNode extends EventEmitter {
 
                 let args;
 
-                // START TESTNET
-                if (network == 'test') {
+                switch (network) {
+                  // STARTS ROPSTEN
+                  case 'test':
+                    args = (nodeType === 'geth') ? [
+                        '--testnet',
+                        '--fast',
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                      ] : [
+                        '--morden',
+                        '--unsafe-transactions'
+                      ];
+                      break;
+
+                  // STARTS RINKEBY
+                  case 'rinkeby':
+                    args = [
+                      '--rinkeby',
+                      '--fast',
+                      '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                      '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
+
+                  // STARTS MAINNET
+                  default:
                     args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
-                        : ['--morden', '--unsafe-transactions'];
-                }
-                // START MAINNET
-                else {
-                    args = (nodeType === 'geth')
-                        ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
-                        : ['--unsafe-transactions'];
+                      ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
+                      : ['--unsafe-transactions'];
                 }
 
                 const nodeOptions = Settings.nodeOptions;

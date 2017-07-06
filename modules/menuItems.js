@@ -445,13 +445,23 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Testnet',
+                label: 'Ropsten - Test network',
                 accelerator: 'CommandOrControl+Shift+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
+                checked: ethereumNode.isOwnNode && ethereumNode.network == 'test',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network != 'test',
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'test');
+                },
+            },
+            {
+                label: 'Rinkeby - Test network',
+                accelerator: 'CommandOrControl+Shift+3',
+                checked: ethereumNode.isOwnNode && ethereumNode.network == 'rinkeby',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network != 'rinkeby',
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'rinkeby');
                 },
             },
         ] });

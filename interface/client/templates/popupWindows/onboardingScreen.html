@@ -7,12 +7,12 @@
             <div class="onboarding-section onboarding-start">
                 <p class="description">{{i18n "mist.popupWindows.onboarding.description"}}</p>
                 <p>
-                    <button class="start-testnet"> {{i18n "mist.popupWindows.onboarding.goToTestnet"}} </button>
-                    {{i18n "mist.popupWindows.onboarding.goToTestnetDescription"}}
+                  <button class="goto-import-account"> {{i18n "mist.popupWindows.onboarding.gotoMainnet"}} </button>
+                  {{i18n "mist.popupWindows.onboarding.gotoMainnetDescription"}}
                 </p>
                 <p>
-                    <button class="goto-import-account"> {{i18n "mist.popupWindows.onboarding.gotoMainnet"}} </button>
-                    {{i18n "mist.popupWindows.onboarding.gotoMainnetDescription"}}
+                    <button class="start-testnet"> {{i18n "mist.popupWindows.onboarding.goToTestnet"}} </button>
+                    {{i18n "mist.popupWindows.onboarding.goToTestnetDescription"}}
                 </p>
             </div>
 
@@ -35,7 +35,7 @@
 
             <div class="onboarding-section onboarding-account row">
                 {{#if TemplateVar.get "testnet"}}
-                    <h1>{{i18n "mist.popupWindows.onboarding.accountTitleTestnet"}} </h1>
+                    <h1>{{i18n "mist.popupWindows.onboarding.learnIt"}} </h1>
                 {{else}}
                     <h1>{{i18n "mist.popupWindows.onboarding.accountTitle"}} </h1>
                 {{/if}}
@@ -46,7 +46,7 @@
                     </p>
 
                     {{#if TemplateVar.get "testnet"}}
-                        <p>{{{i18n "mist.popupWindows.onboarding.mineItDescription"}}}</p>
+                        <p>{{{i18n "mist.popupWindows.onboarding.FaucetDescription"}}}</p>
                     {{else}}
                         <p>{{{i18n "mist.popupWindows.onboarding.loadItDescription"}}}</p>
                     {{/if}}

@@ -257,7 +257,7 @@
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on a token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
                 "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using Shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine Ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
+                "FaucetDescription": "The Rinkeby testnet uses Clique Proof of Authority as a consensus mechanism, therefore there's no mining. If you want to get some test ether, head to the Rinkeby Faucet: https://faucet.rinkeby.io.",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit using Bitcoin",

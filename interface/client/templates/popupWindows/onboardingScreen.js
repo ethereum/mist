@@ -152,14 +152,14 @@ Template['popupWindows_onboardingScreen'].events({
 
         // if testnet, make sure to switch to the mainnet
         if (TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', false);
+            ipc.send('onBoarding_changeNet', /* isTestNet: */ false);
             TemplateVar.set('testnet', false);
             TemplateVar.set('syncing', null);
         }
     },
     'click .start-testnet': function (e, template) {
         if (!TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', true);
+          ipc.send('onBoarding_changeNet', /* isMainNet: */ true);
             TemplateVar.set('testnet', true);
             TemplateVar.set('syncing', null);
         }

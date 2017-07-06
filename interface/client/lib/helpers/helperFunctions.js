@@ -208,25 +208,31 @@ Helpers.detectNetwork = function (hash) {
 
     switch (hash) {
     case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
-        console.log('Network is mainnet');
-        network.type = 'mainnet';
-        break;
+      console.log('Network is mainnet');
+      network.type = 'mainnet';
+      break;
 
     case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
-        console.log('Network is Testnet #3 (Ropsten)');
-        network.type = 'testnet';
-        network.name = 'Testnet #3 (Ropsten)';
-        break;
+      console.log('Network is Testnet #3 (Ropsten)');
+      network.type = 'testnet';
+      network.name = 'Testnet #3 (Ropsten)';
+      break;
+
+    case '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177':
+      console.log('Network is Testnet #4 (Rinkeby)');
+      network.type = 'testnet';
+      network.name = 'Testnet #4 (Rinkeby)';
+      break;
 
     case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
-        console.log('Network is Testnet #2 (Morden)');
-        network.type = 'testnet';
-        network.name = 'Testnet #2 (Morden)';
-        break;
+      console.log('Network is Testnet #2 (Morden)');
+      network.type = 'testnet';
+      network.name = 'Testnet #2 (Morden)';
+      break;
 
     default:
-        console.log('Network is privatenet');
-        network.type = 'privatenet';
+      console.log('Network is privatenet');
+      network.type = 'privatenet';
     }
 
     return network;

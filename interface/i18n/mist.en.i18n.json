@@ -240,7 +240,7 @@
             },
             "onboarding": {
                 "description" : "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
-                "goToTestnet" : "Use the test network",
+                "goToTestnet" : "Use the test network (Rinkeby)",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real Ether.",
                 "gotoMainnet" : "Use the main network",
                 "gotoMainnetDescription" : "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",

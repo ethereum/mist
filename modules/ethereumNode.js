@@ -206,20 +206,18 @@ class EthereumNode extends EventEmitter {
                     resolve();
                 });
             })
-                .then(() => {
-                    this.state = STATES.STOPPED;
-                    this._stopPromise = null;
-                });
-
+            .then(() => {
+                this.state = STATES.STOPPED;
+                this._stopPromise = null;
+            });
+        }
         log.debug('Disconnection already in progress, returning Promise.');
         return this._stopPromise;
-    };
+    }
 
-
-    function getLog() {
+    getLog() {
         return Settings.loadUserData('node.log');
-    };
-
+    }
 
     /**
      * Send Web3 command to socket.
@@ -232,7 +230,7 @@ class EthereumNode extends EventEmitter {
             method,
             params,
         });
-    };
+    }
 
 
     /**
@@ -349,8 +347,8 @@ class EthereumNode extends EventEmitter {
                 let args;
 
                 switch (network) {
-                    // STARTS ROPSTEN
-                    case 'test':
+                // STARTS ROPSTEN
+                case 'test':
                     args = (nodeType === 'geth') ? [
                         '--testnet',
                         '--fast',
@@ -362,21 +360,21 @@ class EthereumNode extends EventEmitter {
                     ];
                     break;
 
-                  // STARTS RINKEBY
-                  case 'rinkeby':
+                // STARTS RINKEBY
+                case 'rinkeby':
                     args = [
-                      '--rinkeby',
-                      '--fast',
-                      '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                      '--ipcpath', Settings.rpcIpcPath
+                        '--rinkeby',
+                        '--fast',
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
                     ];
                     break;
 
-                  // STARTS MAINNET
-                  default:
+                // STARTS MAINNET
+                default:
                     args = (nodeType === 'geth')
-                      ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
-                      : ['--unsafe-transactions'];
+                        ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
+                        : ['--unsafe-transactions'];
                 }
 
                 const nodeOptions = Settings.nodeOptions;

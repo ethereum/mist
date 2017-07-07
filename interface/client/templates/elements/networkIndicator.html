@@ -8,7 +8,7 @@
 
         {{#if $eq (TemplateVar.get "network") "testnet"}}
             <div class="testnet indicator" title="This is the global Morden test network">
-                {{i18n "mist.nodeInfo.testNetwork"}} 
+                {{TemplateVar.get "networkName"}} 
             </div>
         {{/if}}
 

@@ -62,8 +62,7 @@ global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
 global.mode = Settings.uiMode;
 global.dirname = __dirname;
 
-global.language = 'en';
-global.i18n = i18n; // TODO: detect language switches somehow
+global.i18n = i18n;
 
 
 // INTERFACE PATHS
@@ -172,6 +171,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 
 onReady = () => {
+    global.config = db.getCollection('SYS_config');
+
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -186,6 +187,9 @@ onReady = () => {
 
     // instantiate custom protocols
     // require('./customProtocols.js');
+
+    // change to user language now that global.config object is ready
+    i18n.changeLanguage(Settings.language);
 
     // add menu already here, so we have copy and past functionality
     appMenu();

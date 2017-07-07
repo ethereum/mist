@@ -11,6 +11,13 @@ const packageJson = require('./../../package.json');
 const fs = remote.require('fs');
 const path = remote.require('path');
 
+// set navigator.language
+Object.defineProperty(navigator, 'language', {
+    get() { return ipcRenderer.sendSync('backendAction_getLanguage'); }
+});
+
+// notifiy the tab to store the webview id
+ipcRenderer.sendToHost('setWebviewId');
 
 // Wait for post messages
 window.addEventListener('message', function message(event) {

@@ -42,3 +42,6 @@ globals:  # don't warn about missing declarations
   Tabs: true
   Tracker: true
   _: true
+  window: true
+  location: true
+

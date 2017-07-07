@@ -71,8 +71,13 @@ exports.mocha = (_module, options) => {
             this.assert = chai.assert;
             this.expect = chai.expect;
 
-            const logFilePath = path.join(__dirname, 'mist.log');
-            shell.rm('-rf', logFilePath);
+            const mistLogFile = path.join(__dirname, 'mist.log');
+            const webdriverLogFile = path.join(__dirname, 'webdriver.log');
+            const chromeLogFile = path.join(__dirname, 'chrome.log');
+
+            _.each([mistLogFile, webdriverLogFile, chromeLogFile], (e) => {
+                shell.rm('-f', e);
+            });
 
             this.geth = yield startGeth();
 
@@ -109,12 +114,13 @@ exports.mocha = (_module, options) => {
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
-                    '--mode', options.app,
                     '--loglevel', 'debug',
-                    '--logfile', logFilePath,
+                    '--logfile', mistLogFile,
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
                 ],
+                webdriverLogPath: webdriverLogFile,
+                chromeDriverLogPath: chromeLogFile,
             });
             yield this.app.start();
 
@@ -127,10 +133,7 @@ exports.mocha = (_module, options) => {
             ).listen(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
 
-
             this.client = this.app.client;
-            yield this.client.waitUntilWindowLoaded();
-            // console.log(this.app.chromeDriver.logLines);
 
             /*
                 Utility methods
@@ -193,7 +196,6 @@ exports.mocha = (_module, options) => {
         },
 
         * after () {
-            console.log('After tests triggered');
             if (this.app && this.app.isRunning()) {
                 console.log('Stopping app...');
                 yield this.app.stop();

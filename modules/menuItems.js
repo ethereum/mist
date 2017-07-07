@@ -485,13 +485,23 @@ let menuTempl = function (webviews) {
                     restartNode(ethereumNode.type, 'rinkeby');
                 },
             },
+            {
+                label: 'Private network',
+                accelerator: 'CommandOrControl+Shift+4',
+                checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
+                enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'dev');
+                },
+            }
         ] });
-
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+Shift+M',
-        enabled: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+        enabled: ethereumNode.isOwnNode &&
+                (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork),
         click() {
             if (!global.mining) {
                 ethereumNode.send('miner_start', [1])
@@ -549,7 +559,6 @@ let menuTempl = function (webviews) {
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                role: 'arrangeInFront:',
                 role: 'front',
             },
         ],

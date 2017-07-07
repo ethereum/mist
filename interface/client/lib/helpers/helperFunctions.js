@@ -234,6 +234,7 @@ Helpers.detectNetwork = function (hash) {
     default:
         console.log('Network is privatenet');
         network.type = 'privatenet';
+        network.name = 'Private';
     }
 
     return network;

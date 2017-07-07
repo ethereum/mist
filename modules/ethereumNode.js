@@ -83,6 +83,14 @@ class EthereumNode extends EventEmitter {
         return this.network === 'test';
     }
 
+    get isRinkebyNetwork() {
+        return this.network === 'rinkeby';
+    }
+
+    get isDevNetwork() {
+        return this.network === 'dev';
+    }
+
     get state() {
         return this._state;
     }
@@ -373,6 +381,13 @@ class EthereumNode extends EventEmitter {
                         '--rinkeby',
                         '--fast',
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
+
+                case 'dev':
+                    args = [
+                        '--dev',
                         '--ipcpath', Settings.rpcIpcPath
                     ];
                     break;

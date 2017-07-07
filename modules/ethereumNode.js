@@ -14,11 +14,17 @@ const ClientBinaryManager = require('./clientBinaryManager');
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
 
-
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
-const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
-const PASSWORD_WRONG_ERROR = 'badPassword';
 const NODE_START_WAIT_MS = 3000;
+
+const STATES = {
+    STARTING: 0, /* Node about to be started */
+    STARTED: 1, /* Node started */
+    CONNECTED: 2, /* IPC connected - all ready */
+    STOPPING: 3, /* Node about to be stopped */
+    STOPPED: 4, /* Node stopped */
+    ERROR: -1, /* Unexpected error */
+};
 
 
 /**
@@ -95,8 +101,9 @@ class EthereumNode extends EventEmitter {
             return 'stopped';
         case STATES.ERROR:
             return 'error';
+        default:
+            return false;
         }
-        return false;
     }
 
     set state(newState) {
@@ -476,7 +483,7 @@ class EthereumNode extends EventEmitter {
         // add node type
         nodelog = `Node type: ${nodeType}\n` +
             `Network: ${network}\n` +
-            `Platform: ${process.platform} (Architecure ${process.arch})` + `\n\n${
+            `Platform: ${process.platform} (Architecure ${process.arch})\n\n${
             nodelog}`;
 
         dialog.showMessageBox({
@@ -489,14 +496,13 @@ class EthereumNode extends EventEmitter {
 
 
     _logNodeData(data) {
-        data = data.toString().replace(/[\r\n]+/, '');
-
+        const cleanData = data.toString().replace(/[\r\n]+/, '');
         const nodeType = (this.type || 'node').toUpperCase();
 
-        log.trace(`${nodeType}: ${data}`);
+        log.trace(`${nodeType}: ${cleanData}`);
 
-        if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
-            this.emit('nodeLog', data);
+        if (!/^-*$/.test(cleanData) && !_.isEmpty(cleanData)) {
+            this.emit('nodeLog', cleanData);
         }
     }
 
@@ -509,15 +515,6 @@ class EthereumNode extends EventEmitter {
     }
 }
 
-
-const STATES = {
-    STARTING: 0, /* Node about to be started */
-    STARTED: 1, /* Node started */
-    CONNECTED: 2, /* IPC connected - all ready */
-    STOPPING: 3, /* Node about to be stopped */
-    STOPPED: 4, /* Node stopped */
-    ERROR: -1, /* Unexpected error */
-};
 
 
 EthereumNode.STARTING = 0;

@@ -26,8 +26,9 @@ var checkNetworkType = function (template) {
 
             if (e) {
                 console.error('Got error fetching block 0', e);
-            } else {
+            } else {                
                 TemplateVar.set(template, 'network', Helpers.detectNetwork(res.hash).type);
+                TemplateVar.set(template, 'networkName', Helpers.detectNetwork(res.hash).name);
             }
         });
     } catch (err) {

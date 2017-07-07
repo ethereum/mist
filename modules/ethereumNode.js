@@ -96,6 +96,7 @@ class EthereumNode extends EventEmitter {
         case STATES.ERROR:
             return 'error';
         }
+        return false;
     }
 
     set state(newState) {
@@ -109,7 +110,7 @@ class EthereumNode extends EventEmitter {
     }
 
     set lastError(err) {
-        return this._lastErr = err;
+        this._lastErr = err;
     }
 
     /**
@@ -123,7 +124,7 @@ class EthereumNode extends EventEmitter {
 
                 this.emit('runningNodeFound');
             })
-            .catch((err) => {
+            .catch(() => {
                 log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
 
                 log.info(`Node type: ${this.defaultNodeType}`);
@@ -133,7 +134,6 @@ class EthereumNode extends EventEmitter {
                 return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
-
                         throw err;
                     });
             });
@@ -210,17 +210,15 @@ class EthereumNode extends EventEmitter {
                     this.state = STATES.STOPPED;
                     this._stopPromise = null;
                 });
-        } else {
-            log.debug('Disconnection already in progress, returning Promise.');
-        }
 
+        log.debug('Disconnection already in progress, returning Promise.');
         return this._stopPromise;
-    }
+    };
 
 
-    getLog() {
+    function getLog() {
         return Settings.loadUserData('node.log');
-    }
+    };
 
 
     /**
@@ -234,7 +232,7 @@ class EthereumNode extends EventEmitter {
             method,
             params,
         });
-    }
+    };
 
 
     /**
@@ -351,18 +349,18 @@ class EthereumNode extends EventEmitter {
                 let args;
 
                 switch (network) {
-                  // STARTS ROPSTEN
-                  case 'test':
+                    // STARTS ROPSTEN
+                    case 'test':
                     args = (nodeType === 'geth') ? [
                         '--testnet',
                         '--fast',
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
                         '--ipcpath', Settings.rpcIpcPath
-                      ] : [
+                    ] : [
                         '--morden',
                         '--unsafe-transactions'
-                      ];
-                      break;
+                    ];
+                    break;
 
                   // STARTS RINKEBY
                   case 'rinkeby':

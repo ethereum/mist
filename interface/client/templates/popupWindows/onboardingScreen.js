@@ -29,7 +29,6 @@ var getPeerCount = function (template) {
 Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
     TemplateVar.set('readyToLaunch', false);
-    TemplateVar.set('newAccount', false);
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function (error, syncing) {
@@ -48,6 +47,15 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
             }
         }
     });
+
+
+    TemplateVar.set('newAccount', false);
+    web3.eth.getAccounts((err, acc)=> { 
+        console.log('newAccount', err, acc);
+        if(acc.length>0) {
+            TemplateVar.set(template, 'newAccount', acc[0]);
+        }
+    })
 
 
     // CHECK PEER COUNT
@@ -164,8 +172,12 @@ Template['popupWindows_onboardingScreen'].events({
             TemplateVar.set('syncing', null);
         }
 
-        TemplateVar.set('currentActive', 'testnet');
-        template.$('.onboarding-testnet input.password').focus();
+        if (!TemplateVar.get('newAccount')) {
+            TemplateVar.set('currentActive', 'testnet');
+            template.$('.onboarding-testnet input.password').focus();
+        } else {
+            TemplateVar.set('currentActive', 'account');
+        }
     },
     'click .goto-password': function (e, template) {
         TemplateVar.set('currentActive', 'password');

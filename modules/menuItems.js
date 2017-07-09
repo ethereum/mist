@@ -595,6 +595,11 @@ let menuTempl = function (webviews) {
         click() {
             shell.openExternal('https://github.com/ethereum/mist/issues');
         },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.mistWiki'),
+        click() {
+            shell.openExternal('https://github.com/ethereum/mist/wiki');
+        },
     });
 
     menu.push({

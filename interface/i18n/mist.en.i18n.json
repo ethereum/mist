@@ -80,7 +80,8 @@
             },
             "help": {
                 "label": "Help",
-                "reportBug": "Report an issue on Github"
+                "reportBug": "Report an issue on Github",
+                "mistWiki": "Troubleshooting and Help"
             }
         },
         "errors": {

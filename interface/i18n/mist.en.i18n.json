@@ -241,7 +241,7 @@
             },
             "onboarding": {
                 "description" : "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
-                "goToTestnet" : "Use the test network",
+                "goToTestnet" : "Use the test network (Rinkeby)",
                 "goToTestnetDescription" : "Test the technology freely in a sandboxed testnet, without using real Ether.",
                 "gotoMainnet" : "Use the main network",
                 "gotoMainnetDescription" : "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",
@@ -258,7 +258,7 @@
                 "accountTitleTestnet" : "Mine some!",
                 "etherDescription": "The ethereum network is based on a token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
                 "loadItDescription" : "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using Shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine Ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
+                "faucetDescription": "The Rinkeby testnet uses Clique Proof of Authority as a consensus mechanism, therefore there's no mining. If you want to get some test ether, head to the Rinkeby Faucet: <strong> faucet.rinkeby.io </strong>",
                 "you" : "YOU",
                 "etherbase" : "Main account (etherbase)",
                 "depositBitcoin" : "Deposit using Bitcoin",

@@ -388,9 +388,9 @@ onReady = () => {
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
                         const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'test' : 'main';
+                        const newNetwork = testnet ? 'rinkeby' : 'main';
 
-                        log.debug('Onboarding change network', newNetwork);
+                        log.debug('Onboarding change network', newType, newNetwork);
 
                         ethereumNode.restart(newType, newNetwork)
                             .then(function nodeRestarted() {

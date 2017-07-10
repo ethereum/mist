@@ -202,7 +202,7 @@
             },
             "onboarding": {
                 "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain): tamper-proof software i cili mund të transferojë vlerë dhe pronësi dhe jetë përgjithmonë",
-                "goToTestnet": "Përdor rrjetit testues",
+                "goToTestnet": "Përdor rrjetit testues (Rinkeby)",
                 "goToTestnetDescription": "Testo lirshëm teknologjinë në një testrrjet pa përdorur ether të vërtetë.",
                 "gotoMainnet": "Përdor rrjetin kryesor",
                 "gotoMainnetDescription": " Ju do të keni nevojë për pak Ether në mënyrë që të krijoni dhe zbatoni kontrata. Mos u shqetësoni, ne do ju ndihmojmë që të keni aq sa duhet...",

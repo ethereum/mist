@@ -14,11 +14,17 @@ const ClientBinaryManager = require('./clientBinaryManager');
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
 
-
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
-const UNABLE_TO_SPAWN_ERROR = 'unableToSpan';
-const PASSWORD_WRONG_ERROR = 'badPassword';
 const NODE_START_WAIT_MS = 3000;
+
+const STATES = {
+    STARTING: 0, /* Node about to be started */
+    STARTED: 1, /* Node started */
+    CONNECTED: 2, /* IPC connected - all ready */
+    STOPPING: 3, /* Node about to be stopped */
+    STOPPED: 4, /* Node stopped */
+    ERROR: -1, /* Unexpected error */
+};
 
 
 /**
@@ -77,6 +83,14 @@ class EthereumNode extends EventEmitter {
         return this.network === 'test';
     }
 
+    get isRinkebyNetwork() {
+        return this.network === 'rinkeby';
+    }
+
+    get isDevNetwork() {
+        return this.network === 'dev';
+    }
+
     get state() {
         return this._state;
     }
@@ -95,6 +109,8 @@ class EthereumNode extends EventEmitter {
             return 'stopped';
         case STATES.ERROR:
             return 'error';
+        default:
+            return false;
         }
     }
 
@@ -109,7 +125,7 @@ class EthereumNode extends EventEmitter {
     }
 
     set lastError(err) {
-        return this._lastErr = err;
+        this._lastErr = err;
     }
 
     /**
@@ -123,7 +139,7 @@ class EthereumNode extends EventEmitter {
 
                 this.emit('runningNodeFound');
             })
-            .catch((err) => {
+            .catch(() => {
                 log.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
 
                 log.info(`Node type: ${this.defaultNodeType}`);
@@ -133,7 +149,6 @@ class EthereumNode extends EventEmitter {
                 return this._start(this.defaultNodeType, this.defaultNetwork)
                     .catch((err) => {
                         log.error('Failed to start node', err);
-
                         throw err;
                     });
             });
@@ -206,22 +221,18 @@ class EthereumNode extends EventEmitter {
                     resolve();
                 });
             })
-                .then(() => {
-                    this.state = STATES.STOPPED;
-                    this._stopPromise = null;
-                });
-        } else {
-            log.debug('Disconnection already in progress, returning Promise.');
+            .then(() => {
+                this.state = STATES.STOPPED;
+                this._stopPromise = null;
+            });
         }
-
+        log.debug('Disconnection already in progress, returning Promise.');
         return this._stopPromise;
     }
-
 
     getLog() {
         return Settings.loadUserData('node.log');
     }
-
 
     /**
      * Send Web3 command to socket.
@@ -350,14 +361,39 @@ class EthereumNode extends EventEmitter {
 
                 let args;
 
-                // START TESTNET
-                if (network == 'test') {
-                    args = (nodeType === 'geth')
-                        ? ['--testnet', '--fast', '--ipcpath', Settings.rpcIpcPath]
-                        : ['--morden', '--unsafe-transactions'];
-                }
-                // START MAINNET
-                else {
+                switch (network) {
+                // STARTS ROPSTEN
+                case 'test':
+                    args = (nodeType === 'geth') ? [
+                        '--testnet',
+                        '--fast',
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ] : [
+                        '--morden',
+                        '--unsafe-transactions'
+                    ];
+                    break;
+
+                // STARTS RINKEBY
+                case 'rinkeby':
+                    args = [
+                        '--rinkeby',
+                        '--fast',
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
+
+                case 'dev':
+                    args = [
+                        '--dev',
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
+
+                // STARTS MAINNET
+                default:
                     args = (nodeType === 'geth')
                         ? ['--fast', '--cache', ((process.arch === 'x64') ? '1024' : '512')]
                         : ['--unsafe-transactions'];
@@ -462,7 +498,7 @@ class EthereumNode extends EventEmitter {
         // add node type
         nodelog = `Node type: ${nodeType}\n` +
             `Network: ${network}\n` +
-            `Platform: ${process.platform} (Architecure ${process.arch})` + `\n\n${
+            `Platform: ${process.platform} (Architecure ${process.arch})\n\n${
             nodelog}`;
 
         dialog.showMessageBox({
@@ -475,14 +511,13 @@ class EthereumNode extends EventEmitter {
 
 
     _logNodeData(data) {
-        data = data.toString().replace(/[\r\n]+/, '');
-
+        const cleanData = data.toString().replace(/[\r\n]+/, '');
         const nodeType = (this.type || 'node').toUpperCase();
 
-        log.trace(`${nodeType}: ${data}`);
+        log.trace(`${nodeType}: ${cleanData}`);
 
-        if (!/^\-*$/.test(data) && !_.isEmpty(data)) {
-            this.emit('nodeLog', data);
+        if (!/^-*$/.test(cleanData) && !_.isEmpty(cleanData)) {
+            this.emit('nodeLog', cleanData);
         }
     }
 
@@ -495,15 +530,6 @@ class EthereumNode extends EventEmitter {
     }
 }
 
-
-const STATES = {
-    STARTING: 0, /* Node about to be started */
-    STARTED: 1, /* Node started */
-    CONNECTED: 2, /* IPC connected - all ready */
-    STOPPING: 3, /* Node about to be stopped */
-    STOPPED: 4, /* Node stopped */
-    ERROR: -1, /* Unexpected error */
-};
 
 
 EthereumNode.STARTING = 0;

@@ -11,6 +11,7 @@ const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
+const windowStateKeeper = require('electron-window-state');
 
 Q.config({
     cancellation: true,
@@ -61,8 +62,7 @@ global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
 global.mode = Settings.uiMode;
 global.dirname = __dirname;
 
-global.language = 'en';
-global.i18n = i18n; // TODO: detect language switches somehow
+global.i18n = i18n;
 
 
 // INTERFACE PATHS
@@ -171,6 +171,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
 
 
 onReady = () => {
+    global.config = db.getCollection('SYS_config');
+
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -186,24 +188,35 @@ onReady = () => {
     // instantiate custom protocols
     // require('./customProtocols.js');
 
+    // change to user language now that global.config object is ready
+    i18n.changeLanguage(Settings.language);
+
     // add menu already here, so we have copy and past functionality
     appMenu();
 
     // Create the browser window.
+
+    const defaultWindow = windowStateKeeper({
+        defaultWidth: 1024 + 208,
+        defaultHeight: 720
+    });
 
     // MIST
     if (Settings.uiMode === 'mist') {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1024 + 208,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     nodeIntegration: true, /* necessary for webviews;
                         require will be removed through preloader */
                     preload: `${__dirname}/modules/preloader/mistUI.js`,
                     'overlay-fullscreen-video': true,
                     'overlay-scrollbars': true,
+                    experimentalFeatures: true,
                 },
             },
         });
@@ -213,8 +226,10 @@ onReady = () => {
         mainWindow = Windows.create('main', {
             primary: true,
             electronOptions: {
-                width: 1100,
-                height: 720,
+                width: Math.max(defaultWindow.width, 500),
+                height: Math.max(defaultWindow.height, 440),
+                x: defaultWindow.x,
+                y: defaultWindow.y,
                 webPreferences: {
                     preload: `${__dirname}/modules/preloader/walletMain.js`,
                     'overlay-fullscreen-video': true,
@@ -223,6 +238,9 @@ onReady = () => {
             },
         });
     }
+
+    // Delegating events to save window bounds on windowStateKeeper
+    defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) {
         splashWindow = Windows.create('splash', {
@@ -350,7 +368,8 @@ onReady = () => {
             return ethereumNode.send('eth_accounts', []);
         })
         .then(function onboarding(resultData) {
-            if (ethereumNode.isGeth && resultData.result && resultData.result.length === 0) {
+
+            if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
                 log.info('No accounts setup yet, lets do onboarding first.');
 
                 return new Q((resolve, reject) => {
@@ -369,9 +388,9 @@ onReady = () => {
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
                         const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'test' : 'main';
+                        const newNetwork = testnet ? 'rinkeby' : 'main';
 
-                        log.debug('Onboarding change network', newNetwork);
+                        log.debug('Onboarding change network', newType, newNetwork);
 
                         ethereumNode.restart(newType, newNetwork)
                             .then(function nodeRestarted() {

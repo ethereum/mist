@@ -134,7 +134,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "launchApp": "Launch Application",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -197,11 +196,13 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum は分散型のプラットフォームで、ブロックチェーン上でアプリケーションを作成することが出来ます。価値を転送することが出来、永続的に稼働するセキュリティの高いソフトウェアを作ることが出来ます。",
-                "goToTestnet": "テストネットワークを使用する",
+                "goToTestnet": "テストネットワークを使用する (Rinkeby)",
                 "goToTestnetDescription": "サンドボックスのテストネットで、テクノロジーを自由に使う。本当のEtherを使うことなく.",
                 "gotoMainnet": "メインネットワークを使用する",
                 "gotoMainnetDescription": "コントラクトを作成して実行するためにいくらかのEtherが必要となるでしょう。心配することはありません、手に入れるためにこちらの方法があります。...",

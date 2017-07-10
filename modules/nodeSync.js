@@ -49,6 +49,7 @@ class NodeSync extends EventEmitter {
 
                 ipc.on('backendAction_skipSync', () => {
                     ipc.removeAllListeners('backendAction_skipSync');
+                    log.info('Sync has been skipped');
 
                     this._onSyncDone();
                 });

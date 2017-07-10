@@ -20,8 +20,8 @@
         "sending": "Sende...",
         "create": "Erstellen",
         "tryToReconnect": "Versuche mich zu verbinden",
-        "stayAnonymous": "Stay anonymous",
-        "authorize": "Authorize"
+        "stayAnonymous": "Anonym bleiben",
+        "authorize": "Autorisieren"
     },
     "commonWords": {
         "you": "Du",

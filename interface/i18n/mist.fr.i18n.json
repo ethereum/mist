@@ -134,7 +134,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "launchApp": "Launch Application",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -197,11 +196,13 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum est une plateforme décentralisée pour la création d'applications sur une blockchain (chaîne de blocs) : logiciel inviolable qui peut transférer de la valeur et de la propriété et qui vit pour toujours",
-                "goToTestnet": "Utiliser le réseau Testnet",
+                "goToTestnet": "Utiliser le réseau Testnet (Rinkeby)",
                 "goToTestnetDescription": "Testez la technologie librement sur le réseau sandboxé (bac à sable), sans utiliser d'ether réel.",
                 "gotoMainnet": "Utiliser le réseau réel",
                 "gotoMainnetDescription": "Vous aurez besoin de quelques Ether afin de créer et exécuter des contrats. Ne vous en faites pas, nous allons vous aider à en obtenir...",

@@ -19,15 +19,19 @@ rules:
   arrow-body-style: off
   prefer-arrow-callback: off
   no-underscore-dangle: off
+  object-curly-spacing: off
+  func-names: off
+  global-require: off
+  class-methods-use-this: off
   comma-dangle:
     - error
     - only-multiline  ## no comma after last item if one line, though allow comma if multiline
   import/no-extraneous-dependencies:  ## checks if required modules are missing in packages.json
     - error
     - devDependencies:  ## declares files, whose imports belong to devDependencies
-      - "**/scripts/build-dist.js"
       - "**/tests/_base.js"
       - "**/*.test.js"
+      - "**/gulpTasks/*.js"
 
 globals:  # don't warn about missing declarations
   i18n: true
@@ -38,3 +42,6 @@ globals:  # don't warn about missing declarations
   Tabs: true
   Tracker: true
   _: true
+  window: true
+  location: true
+

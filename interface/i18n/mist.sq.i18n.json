@@ -133,7 +133,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
             "clientBinaries": {
@@ -197,11 +196,13 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain): tamper-proof software i cili mund të transferojë vlerë dhe pronësi dhe jetë përgjithmonë",
-                "goToTestnet": "Përdor rrjetit testues",
+                "goToTestnet": "Përdor rrjetit testues (Rinkeby)",
                 "goToTestnetDescription": "Testo lirshëm teknologjinë në një testrrjet pa përdorur ether të vërtetë.",
                 "gotoMainnet": "Përdor rrjetin kryesor",
                 "gotoMainnetDescription": " Ju do të keni nevojë për pak Ether në mënyrë që të krijoni dhe zbatoni kontrata. Mos u shqetësoni, ne do ju ndihmojmë që të keni aq sa duhet...",

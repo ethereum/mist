@@ -134,7 +134,6 @@
             "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "nodeSyncingStopped": "Ethereum node sync stopped",
             "launchApp": "Launch Application",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -197,11 +196,13 @@
                 "showRawBytecode": "show raw data",
                 "showDecodedParameters": "show decoded parameters",
                 "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet"
+                "lookupDataExplainer": "Look this up on the internet",
+                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
+                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
                 "description": "以太坊是一個用於在區塊鏈上創建應用的去中心化平台：一種用於轉移價值和資產，永遠存在並且無法被篡改的軟體",
-                "goToTestnet": "使用測試網路",
+                "goToTestnet": "使用測試網路 (Rinkeby)",
                 "goToTestnetDescription": "請放心在沙盒測試網路中測試該技術，無需使用真正的以太幣。",
                 "gotoMainnet": "使用主網路",
                 "gotoMainnetDescription": "您需要一些以太幣來創建和執行合約。別擔心，我們將幫您獲取一些……",

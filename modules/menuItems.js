@@ -214,15 +214,19 @@ let menuTempl = function (webviews) {
                     const paths = dialog.showOpenDialog(focusedWindow, {
                         properties: ['openFile', 'openDirectory']
                     });
+                    console.log(paths);
                     if (paths && paths.length === 1) {
                         const isDir = fs.lstatSync(paths[0]).isDirectory();
                         const defaultPath = path.join(paths[0], 'index.html');
+                        console.log("menuItems/swarm:", defaultPath);
                         const uploadConfig = {
                             path: paths[0],
                             kind: isDir ? 'directory' : 'file',
                             defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
                         };
+                        console.log("menuItems/swarm:", uploadConfig);
                         swarmNode.upload(uploadConfig).then((hash) => {
+                            console.log("menuItems/swarm:", hash);
                             focusedWindow.webContents.executeJavaScript(`
                               Tabs.update('browser', {$set: {
                                   url: 'bzz://${hash}',

@@ -85,9 +85,12 @@ class SwarmNode extends EventEmitter {
     }
 
     upload(arg) {
+        console.log("swarmNode.js a");
         if (!this._swarm) {
+            console.log("swarmNode.js b");
             return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
         }
+        console.log("swarmNode.js c");
 
         return this._swarm.upload(arg);
     }

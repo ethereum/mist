@@ -202,7 +202,7 @@
             },
             "onboarding": {
                 "description": "이더리움은 블록체인상에 앱을 만들기 위한 탈중앙화된 플랫폼이며, 이 블록체인은 변조방지가능한 소프트웨어로서 가치와 자산을 전송할 수 있고 영구히 존속합니다.",
-                "goToTestnet": "테스트 네트워크 사용하기",
+                "goToTestnet": "테스트 네트워크 사용하기 (Rinkeby)",
                 "goToTestnetDescription": "샌드박스 테스트넷에서 실제 이더를 사용하지 않고 자유롭게 테스트하기.",
                 "gotoMainnet": "메인 네트워크 사용하기",
                 "gotoMainnetDescription": "계약을 만들고 사용하기 위해서는 약간의 이더가 필요합니다. 약간의 이더를 가질 수 있도록 도와줄 수 있습니다.",

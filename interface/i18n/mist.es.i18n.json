@@ -202,7 +202,7 @@
             },
             "onboarding": {
                 "description": "Ethereum es una plataforma descentralizada para la construcción de aplicaciones en una blockchain: segura y a prueba de manipulaciones que puede transferir valor, propiedad y vive para siempre",
-                "goToTestnet": "Utiliza la red de pruebas",
+                "goToTestnet": "Utiliza la red de pruebas (Rinkeby)",
                 "goToTestnetDescription": "Pruebe la tecnología libremente en una red de pruebas sin utilizar ether reales.",
                 "gotoMainnet": "Utilizar la red principal",
                 "gotoMainnetDescription": " Necesitarás algunos Ether para poder crear y ejecutar contratos. No se preocupe, nosotros le ayudaremos a obtener algunos...",

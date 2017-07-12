@@ -1,6 +1,7 @@
 /**
 @module preloader browser
 */
+const _ = require('underscore');
 require('./include/common')('browser');
 const { ipcRenderer, webFrame, remote } = require('electron');
 const mist = require('./include/mistAPI.js');
@@ -19,9 +20,29 @@ Object.defineProperty(navigator, 'language', {
 // notifiy the tab to store the webview id
 ipcRenderer.sendToHost('setWebviewId');
 
+const isValidJsonRpc = function (message) {
+    return !!(Object.prototype.hasOwnProperty.call(message, 'method') ||
+    Object.prototype.hasOwnProperty.call(message, 'id') ||
+    Object.prototype.hasOwnProperty.call(message, 'params') ||
+    Object.prototype.hasOwnProperty.call(message, 'jsonrpc'));
+};
+
+const sanatizeJsonRpc = function (message) {
+    // sanitize
+    return {
+        jsonrpc: message.jsonrpc,
+        id: message.id,
+        method: message.method,
+        params: message.params
+    };
+};
+
 // Wait for post messages
 window.addEventListener('message', function message(event) {
-    var data;
+
+
+
+    let data;
     try {
         data = JSON.parse(event.data);
     } catch(e){
@@ -29,9 +50,11 @@ window.addEventListener('message', function message(event) {
     }
 
 
+
     if (typeof data !== 'object') {
         return;
     }
+
 
     // EthereumProvider: connect
     if (data.type === 'create') {
@@ -39,21 +62,27 @@ window.addEventListener('message', function message(event) {
 
     // EthereumProvider: write
     } else if (data.type === 'write') {
+        let messageIsArray = _.isArray(data.message);
+
         // only accept valid JSON rpc requests
-        if(!Object.prototype.hasOwnProperty.call(data.message, 'method') ||
-            !Object.prototype.hasOwnProperty.call(data.message, 'id') ||
-            !Object.prototype.hasOwnProperty.call(data.message, 'params') ||
-            !Object.prototype.hasOwnProperty.call(data.message, 'jsonrpc')) {
-            return;
+        if (messageIsArray) {
+            for (let i = 0; i < data.message.length; i++) {
+                if (isValidJsonRpc(data.message[i])) {
+                    data.message[i] = sanatizeJsonRpc(data.message[i]);
+                } else {
+                    return;
+                }
+            }
+        } else {
+            if (isValidJsonRpc(data.message)) {
+                data.message = sanatizeJsonRpc(data.message);
+            } else {
+                return;
+            }
         }
 
         // make sure we only send allowed properties
-        ipcRenderer.send('ipcProvider-write', JSON.stringify({
-            jsonrpc: data.message.jsonrpc,
-            id: data.message.id,
-            method: data.message.method,
-            params: data.message.params
-        }));
+        ipcRenderer.send('ipcProvider-write', JSON.stringify(data.message));
 
     // mistAPI
     } else if (/^mistAPI_[a-z]/i.test(data.type)) {
@@ -64,12 +93,10 @@ window.addEventListener('message', function message(event) {
             ipcRenderer.sendToHost(data.type, data.message);
         }
     }
-
-
 });
 
-var postMessage = function(payload) {
-    if(typeof payload === 'object') {
+const postMessage = function (payload) {
+    if (typeof payload === 'object') {
         payload = JSON.stringify(payload);
     }
 

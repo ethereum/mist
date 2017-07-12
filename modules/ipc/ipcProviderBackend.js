@@ -99,7 +99,6 @@ class IpcProviderBackend {
                         log.debug(`Destroy socket connection due to event: ${ev}, id=${ownerId}`);
 
                         socket.destroy().finally(() => {
-
                             if (!owner.isDestroyed()) { owner.send(`ipcProvider-${ev}`, JSON.stringify(data)); }
                         });
 

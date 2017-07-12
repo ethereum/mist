@@ -466,22 +466,42 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Testnet',
+                label: 'Ropsten - Test network',
                 accelerator: 'CommandOrControl+Shift+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'test',
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'test');
                 },
             },
+            {
+                label: 'Rinkeby - Test network',
+                accelerator: 'CommandOrControl+Shift+3',
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'rinkeby',
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'rinkeby');
+                },
+            },
+            {
+                label: 'Private network',
+                accelerator: 'CommandOrControl+Shift+4',
+                checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
+                enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'dev');
+                },
+            }
         ] });
-
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+Shift+M',
-        enabled: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+        enabled: ethereumNode.isOwnNode &&
+                (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork),
         click() {
             if (!global.mining) {
                 ethereumNode.send('miner_start', [1])
@@ -539,7 +559,6 @@ let menuTempl = function (webviews) {
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                role: 'arrangeInFront:',
                 role: 'front',
             },
         ],
@@ -575,6 +594,11 @@ let menuTempl = function (webviews) {
         label: i18n.t('mist.applicationMenu.help.reportBug'),
         click() {
             shell.openExternal('https://github.com/ethereum/mist/issues');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.mistWiki'),
+        click() {
+            shell.openExternal('https://github.com/ethereum/mist/wiki');
         },
     });
 

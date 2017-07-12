@@ -28,8 +28,8 @@ var getPeerCount = function (template) {
 
 Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
+    var oldData;
     TemplateVar.set('readyToLaunch', false);
-    TemplateVar.set('newAccount', false);
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function (error, syncing) {
@@ -39,13 +39,22 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
                 web3.reset(true);
             } else if (_.isObject(syncing)) {
                 // loads syncing data and adds it to old by using 'extend'
-                var oldData = TemplateVar.get(template, 'syncing');
+                oldData = TemplateVar.get(template, 'syncing');
 
                 TemplateVar.set(template, 'syncing', _.extend(oldData || {}, syncing || {}));
 
             } else {
                 TemplateVar.set(template, 'syncing', false);
             }
+        }
+    });
+
+
+    TemplateVar.set('newAccount', false);
+    web3.eth.getAccounts((err, acc) => {
+        console.log('newAccount', err, acc);
+        if (acc.length > 0) {
+            TemplateVar.set(template, 'newAccount', acc[0]);
         }
     });
 
@@ -72,7 +81,7 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
 
 
 Template['popupWindows_onboardingScreen'].helpers({
-    'newAccountLowerCase': function () {
+    newAccountLowerCase() {
         var account = TemplateVar.get('newAccount');
         return (account) ? account.toLowerCase() : '';
     },
@@ -81,7 +90,7 @@ Template['popupWindows_onboardingScreen'].helpers({
 
     @method syncStatus
     */
-    'syncStatus': function () {
+    syncStatus() {
 
         // This functions loops trhough numbers while waiting for the node to respond
         var template = Template.instance();
@@ -138,13 +147,13 @@ Template['popupWindows_onboardingScreen'].helpers({
 
     @method syncStatusMessage
     */
-    'syncStatusMessage': function () {
+    syncStatusMessage() {
         return TemplateVar.get('syncStatusMessageLive');
     }
 });
 
 Template['popupWindows_onboardingScreen'].events({
-    'click .goto-start': function (e) {
+    'click .goto-start': function () {
         TemplateVar.set('currentActive', 'start');
     },
     'click .goto-import-account': function () {
@@ -152,20 +161,24 @@ Template['popupWindows_onboardingScreen'].events({
 
         // if testnet, make sure to switch to the mainnet
         if (TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', false);
+            ipc.send('onBoarding_changeNet', /* isTestNet: */ false);
             TemplateVar.set('testnet', false);
             TemplateVar.set('syncing', null);
         }
     },
     'click .start-testnet': function (e, template) {
         if (!TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', true);
+            ipc.send('onBoarding_changeNet', /* isMainNet: */ true);
             TemplateVar.set('testnet', true);
             TemplateVar.set('syncing', null);
         }
 
-        TemplateVar.set('currentActive', 'testnet');
-        template.$('.onboarding-testnet input.password').focus();
+        if (!TemplateVar.get('newAccount')) {
+            TemplateVar.set('currentActive', 'testnet');
+            template.$('.onboarding-testnet input.password').focus();
+        } else {
+            TemplateVar.set('currentActive', 'account');
+        }
     },
     'click .goto-password': function (e, template) {
         TemplateVar.set('currentActive', 'password');
@@ -262,7 +275,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         if (files.length) {
             ipc.send('backendAction_checkWalletFile', files[0].path);
 
-            ipc.on('uiAction_checkedWalletFile', function (e, error, type) {
+            ipc.on('uiAction_checkedWalletFile', function (ev, error, type) {
                 switch (type) {
                 case 'presale':
                     console.log(`Imported ${type} account`);
@@ -318,7 +331,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
         ipc.send('backendAction_importWalletFile', TemplateVar.get('filePath'), pw);
 
         TemplateVar.set('importing', true);
-        ipc.on('uiAction_importedWalletFile', function (e, error, address) {
+        ipc.on('uiAction_importedWalletFile', function (ev, error, address) {
             TemplateVar.set(template, 'importing', false);
             TemplateVar.set(template, 'filePath', false);
 
@@ -347,7 +360,8 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
                     });
                 } else {
                     GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', { error: error }),
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', { error
+                        }),
                         duration: 4
                     });
                 }
@@ -404,8 +418,8 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event click button[type="button"]
     */
     'input input, change input': function (e, template) {
-        var pw = template.find('input.password').value,
-            pwRepeat = template.find('input.password-repeat').value;
+        var pw = template.find('input.password').value;
+        var pwRepeat = template.find('input.password-repeat').value;
 
         TemplateVar.set(template, 'passwordsNotEmpty', pw !== '' || pwRepeat !== '');
         TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw !== pwRepeat);
@@ -417,8 +431,8 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event submit form
     */
     'submit form': function (e, template) {
-        var pw = template.find('input.password').value,
-            pwRepeat = template.find('input.password-repeat').value;
+        var pw = template.find('input.password').value;
+        var pwRepeat = template.find('input.password-repeat').value;
 
         if (pw !== pwRepeat) {
             GlobalNotification.warning({
@@ -438,12 +452,13 @@ Template['popupWindows_onboardingScreen_password'].events({
                 // notifiy about backing up!
                 alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
-                if(!e) {
+                if (!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 
                     // clear form
-                    pw = pwRepeat = null;
+                    pw = null;
+                    pwRepeat = null;
 
                 } else {
                     GlobalNotification.warning({

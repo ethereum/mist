@@ -232,7 +232,7 @@
             },
             "onboarding": {
                 "description": "Ethereum is een decentraal platform voor het bouwen van applicaties op een blockchain: software die immuun is voor fraude en levenslang waarde en eigendom over kan brengen",
-                "goToTestnet": "Gebruik het test netwerk",
+                "goToTestnet": "Gebruik het test netwerk (Rinkeby)",
                 "goToTestnetDescription": "Test de technologie vrij in een testongeving, zonder echte Ether te gebruiken.",
                 "gotoMainnet": "Gebruik hoofdnetwerk",
                 "gotoMainnetDescription": "Je zult een beetje Ether nodig hebben om contracten uit te voeren. Geen zorgen, we helpen je met het verkrijgen...",

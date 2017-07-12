@@ -36,7 +36,7 @@
             }
 
 
-            if(typeof data !== 'object' || (data.message && !Object.prototype.hasOwnProperty.call(data.message, 'jsonrpc'))) {
+            if(typeof data !== 'object' || (data.message && (!Object.prototype.hasOwnProperty.call(data.message, 'jsonrpc') && !Object.prototype.hasOwnProperty.call(data.message[0], 'jsonrpc')))) {
                 return;
             }
 

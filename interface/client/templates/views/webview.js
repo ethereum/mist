@@ -88,8 +88,6 @@ Template['views_webview'].helpers({
         switch (this._id) {
         case 'browser':
             return 'file://' + Helpers.preloaderDirname + '/browser.js';
-        case 'wallet':
-            return 'file://' + Helpers.preloaderDirname + '/wallet.js';
         case 'tests':
             return 'file://' + Helpers.preloaderDirname + '/tests.js';
         default:

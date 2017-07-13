@@ -5,6 +5,7 @@ const Swarm = require('swarm-js');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const clientBinaries = require('./../clientBinaries.json');
 
 class SwarmNode extends EventEmitter {
     constructor() {
@@ -53,7 +54,8 @@ class SwarmNode extends EventEmitter {
             dataDir: path.join(Settings.userDataPath, 'swarmjs'),
             ethApi: Settings.rpcIpcPath,
             binPath: swarmBinPath,
-            onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize)
+            onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize),
+            archives: clientBinaries.swarm.archives
         };
 
         return new Q((resolve, reject) => {
@@ -62,7 +64,7 @@ class SwarmNode extends EventEmitter {
                 this._stop = stop;
                 this._swarm = swarm;
                 resolve(this);
-            }));
+            })).catch(reject);
         });
     }
 

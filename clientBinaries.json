@@ -111,5 +111,54 @@
                 }
             }
         }
+    },
+    "swarm": {
+        "archives": {
+            "windows-amd64": {
+                "archive": "swarm-windows-amd64-1.5.9.exe",
+                "binaryMD5": "69c565c8132dd69c8b54df8597d50f08",
+                "archiveMD5": "0e4c8c8c65365c83aefbb027230cf699"
+            },
+            "windows-386": {
+                "archive": "swarm-windows-386-1.5.9.exe",
+                "binaryMD5": "3518245a4bb305988f9a5e59e0e7943c",
+                "archiveMD5": "9eb8686cf56deddd0becc868df038322"
+            },
+            "linux-amd64": {
+                "archive": "swarm-linux-amd64-1.5.9",
+                "binaryMD5": "9ed4d9c08482d83c50e1c06134c9dd28",
+                "archiveMD5": "108789b5ac45b8a9134f74f418ee68bf"
+            },
+            "linux-386": {
+                "archive": "swarm-linux-386-1.5.9",
+                "binaryMD5": "b92a86dc265967b9876ddc9cadc9e450",
+                "archiveMD5": "896cf845cb204f9c2a34a88e3f9fac5a"
+            },
+            "linux-arm5": {
+                "archive": "swarm-linux-arm5-1.5.9",
+                "binaryMD5": "9a27465653c62ed1dbd71a8c6956dc21",
+                "archiveMD5": "2987082f398b336f815300e1a2eac863"
+            },
+            "linux-arm6": {
+                "archive": "swarm-linux-arm6-1.5.9",
+                "binaryMD5": "bb4d5ea9d717e3c84767dbefb720119c",
+                "archiveMD5": "59139412fb11935711fba7d1428fad93"
+            },
+            "linux-arm7": {
+                "archive": "swarm-linux-arm7-1.5.9",
+                "binaryMD5": "6e63ea90d8c213a04a7370424fa977fa",
+                "archiveMD5": "43577e5cf0f6afec193462c064e3f899"
+            },
+            "linux-arm64": {
+                "archive": "swarm-linux-arm64-1.5.9",
+                "binaryMD5": "59058d7c1910c3e1c5094a811034d03f",
+                "archiveMD5": "607b9a7b96976e83d6c924187026caef"
+            },
+            "darwin-amd64": {
+                "archive": "swarm-darwin-amd64-1.5.9",
+                "binaryMD5": "1c3e04d93a6ee6d227476d2a56513af0",
+                "archiveMD5": "4e29e1c3c565d690158c75a324b41bcf"
+            }
+        }
     }
 }

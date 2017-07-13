@@ -1,4 +1,3 @@
-
 global._ = require('./modules/utils/underscore');
 const { app, dialog, ipcMain, shell, protocol } = require('electron');
 const timesync = require('os-timesync');

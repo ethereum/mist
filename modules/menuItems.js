@@ -486,7 +486,7 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Private network',
+                label: 'Solo network',
                 accelerator: 'CommandOrControl+Shift+4',
                 checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
                 enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,

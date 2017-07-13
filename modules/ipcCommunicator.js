@@ -90,16 +90,17 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     }
 });
 
-ipc.on('backendAction_setLanguage', (e, lang) => {
-    if (global.language !== lang) {
-        global.i18n.changeLanguage(lang.substr(0, 5), (err) => {
-            if (!err) {
-                global.language = global.i18n.language;
-                log.info('Backend language set to: ', global.language);
-                appMenu(global.webviews);
-            }
-        });
-    }
+ipc.on('backendAction_setLanguage', (e) => {
+    global.i18n.changeLanguage(Settings.language.substr(0, 5), (err) => {
+        if (!err) {
+            log.info('Backend language set to: ', global.i18n.language);
+            appMenu(global.webviews);
+        }
+    });
+});
+
+ipc.on('backendAction_getLanguage', (e) => {
+    e.returnValue = Settings.language;
 });
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
@@ -151,6 +152,10 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
                         process.platform === 'sunos') keystorePath += '/.ethereum/keystore';
 
                     if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                }
+
+                if (!/^[0-9a-fA-F]{40}$/.test(keyfile.address)) {
+                    throw new Error('Invalid Address format.');
                 }
 
                 fs.writeFile(`${keystorePath}/0x${keyfile.address}`, data, (err) => {

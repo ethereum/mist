@@ -3,7 +3,7 @@
 */
 
 require('./include/common')('mist');
-require('./include/ethereumProvider.js');
+require('./include/web3CurrentProvider.js');
 const { ipcRenderer, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
 const { Menu, MenuItem } = remote;
 const dbSync = require('../dbSync.js');

@@ -1,14 +1,13 @@
 require('./include/common')('splashscreen');
-require('./include/ethereumProvider.js');
+require('./include/web3CurrentProvider.js');
 const mist = require('./include/mistAPI.js');
 const { ipcRenderer, remote, webFrame } = require('electron');
 
 require('./include/openExternal.js');
 require('./include/setBasePath')('interface');
 
-
-// get and set language
-ipcRenderer.send('backendAction_setLanguage', navigator.language);
+// set appmenu language
+ipcRenderer.send('backendAction_setLanguage');
 
 // disable pinch zoom
 webFrame.setZoomLevelLimits(1, 1);

@@ -204,7 +204,7 @@
             },
             "onboarding": {
                 "description": "Ethereum é uma plataforma decentralizada para construir aplicativos no blockchain: apps a prova de fraude, censura ou corrupção que podem transferir valor e títulos de propriedade",
-                "goToTestnet": "Usar a rede de teste",
+                "goToTestnet": "Usar a rede de teste (Rinkeby)",
                 "goToTestnetDescription": "Experimente a tecnologia usando uma rede de teste sem valores reais.",
                 "gotoMainnet": "Usar a rede Ethereum principal",
                 "gotoMainnetDescription": "Você irá precisar de ether para executar contratos. Não se preocupe, iremos lhe ajudar com isso",

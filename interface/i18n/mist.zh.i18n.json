@@ -203,7 +203,7 @@
             },
             "onboarding": {
                 "description": "以太坊是一个用于在区块链上创建应用的去中心化平台：一种用于转移价值和资产，永远存在并且无法被篡改的软件",
-                "goToTestnet": "使用测试网络",
+                "goToTestnet": "使用测试网络 (Rinkeby)",
                 "goToTestnetDescription": "请放心在沙盒测试网络中测试该技术，无需使用真正的以太币。",
                 "gotoMainnet": "使用主网络",
                 "gotoMainnetDescription": "你需要一些以太币来创建和执行合约。别担心，我们将帮你获取一些……",

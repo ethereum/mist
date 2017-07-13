@@ -203,7 +203,7 @@
             },
             "onboarding": {
                 "description": "Ethereum er en desentralisert plattform for å bygge applikasjoner på en blokkjede: sabotasjesikker programvare som kan overføre verdi og eiendom, og som lever evig",
-                "goToTestnet": "Bruk testnettet",
+                "goToTestnet": "Bruk testnettet (Rinkeby)",
                 "goToTestnetDescription": "Test teknologien fritt i en sandboks (testnett), uten å bruke ekte ether.",
                 "gotoMainnet": "Bruk hovednettverket",
                 "gotoMainnetDescription": " Du trenger noen ether for å skape og utføre kontrakter. Ikke bekymre deg, vi vil hjelpe deg å skaffe noen...",

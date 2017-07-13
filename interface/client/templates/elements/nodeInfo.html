@@ -11,27 +11,24 @@
             <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
                 <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
             </div>
-            <div>            
+            <div>
                 <i class="icon-cloud-download"></i> {{progress}}%
             </div>
             <progress max="100" value="{{progress}}"></progress>
         {{else}}
             <div class='block-number'  title="{{i18n 'mist.nodeInfo.blockNumber'}}">
-                <i class="icon-layers"></i> {{formattedBlockNumber}} 
+                <i class="icon-layers"></i> {{formattedBlockNumber}}
             </div>
             <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
                 <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
             </div>
-            <div title="{{i18n 'mist.nodeInfo.timeSinceBlock'}}">            
+            <div title="{{i18n 'mist.nodeInfo.timeSinceBlock'}}">
                 <i class="icon-clock"></i> {{{timeSinceBlock}}}
             </div>
         {{/with}}
 
-        {{#if $eq (TemplateVar.get "network") "testnet"}}
-            <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{i18n 'mist.nodeInfo.testNetwork'}}</span>
-        {{/if}}
-        {{#if $eq (TemplateVar.get "network") "privatenet"}}
-            <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.privatenetExplain'}}">{{i18n 'mist.nodeInfo.privateNetwork'}}</span>
+        {{#if $neq (TemplateVar.get "network") "mainnet"}}
+          <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{TemplateVar.get "networkName"}}</span>
         {{/if}}
     </div>
 </template>

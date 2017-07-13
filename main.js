@@ -63,8 +63,7 @@ global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
 global.mode = Settings.uiMode;
 global.dirname = __dirname;
 
-global.language = 'en';
-global.i18n = i18n; // TODO: detect language switches somehow
+global.i18n = i18n;
 
 
 // INTERFACE PATHS
@@ -175,6 +174,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
 protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
+    global.config = db.getCollection('SYS_config');
+
     // setup DB sync to backend
     dbSync.backendSyncInit();
 
@@ -199,6 +200,9 @@ onReady = () => {
 
     // instantiate custom protocols
     // require('./customProtocols.js');
+
+    // change to user language now that global.config object is ready
+    i18n.changeLanguage(Settings.language);
 
     // add menu already here, so we have copy and past functionality
     appMenu();
@@ -415,9 +419,9 @@ onReady = () => {
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
                         const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'test' : 'main';
+                        const newNetwork = testnet ? 'rinkeby' : 'main';
 
-                        log.debug('Onboarding change network', newNetwork);
+                        log.debug('Onboarding change network', newType, newNetwork);
 
                         ethereumNode.restart(newType, newNetwork)
                             .then(function nodeRestarted() {

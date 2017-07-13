@@ -203,7 +203,7 @@
             },
             "onboarding": {
                 "description": "Ethereum est une plateforme décentralisée pour la création d'applications sur une blockchain (chaîne de blocs) : logiciel inviolable qui peut transférer de la valeur et de la propriété et qui vit pour toujours",
-                "goToTestnet": "Utiliser le réseau Testnet",
+                "goToTestnet": "Utiliser le réseau Testnet (Rinkeby)",
                 "goToTestnetDescription": "Testez la technologie librement sur le réseau sandboxé (bac à sable), sans utiliser d'ether réel.",
                 "gotoMainnet": "Utiliser le réseau réel",
                 "gotoMainnetDescription": "Vous aurez besoin de quelques Ether afin de créer et exécuter des contrats. Ne vous en faites pas, nous allons vous aider à en obtenir...",

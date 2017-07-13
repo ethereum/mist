@@ -52,7 +52,7 @@ class SwarmNode extends EventEmitter {
         const config = {
             privateKey: this.getKeyPath(),
             dataDir: path.join(Settings.userDataPath, 'swarmjs'),
-            ethApi: Settings.rpcIpcPath,
+            ensApi: Settings.rpcIpcPath,
             binPath: swarmBinPath,
             onProgress: size => this.emit('downloadProgress', (totalDownloaded += size) / totalSize),
             archives: clientBinaries.swarm.archives

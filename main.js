@@ -1,6 +1,5 @@
-
 global._ = require('./modules/utils/underscore');
-const { app, dialog, ipcMain, shell } = require('electron');
+const { app, dialog, ipcMain, shell, protocol } = require('electron');
 const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
@@ -52,6 +51,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -169,6 +169,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
     });
 });
 
+// Allows the Swarm protocol to behave like http
+protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
     global.config = db.getCollection('SYS_config');
@@ -178,6 +180,16 @@ onReady = () => {
 
     // Initialise window mgr
     Windows.init();
+
+    // Enable the Swarm protocol
+    protocol.registerHttpProtocol('bzz', (request, callback) => {
+        const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
+        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+    }, (error) => {
+        if (error) {
+            log.error(error);
+        }
+    });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
@@ -304,6 +316,21 @@ onReady = () => {
             );
         });
 
+        // starting swarm
+        swarmNode.on('starting', () => {
+            Windows.broadcast('uiAction_swarmStatus', 'starting');
+        });
+
+        // swarm download progress
+        swarmNode.on('downloadProgress', (progress) => {
+            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+        });
+
+        // started swarm
+        swarmNode.on('started', (isLocal) => {
+            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+        });
+
 
         // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
@@ -352,6 +379,9 @@ onReady = () => {
         })
         .then(() => {
             return ethereumNode.init();
+        })
+        .then(() => {
+            return swarmNode.init();
         })
         .then(function sanityCheck() {
             if (!ethereumNode.isIpcConnected) {

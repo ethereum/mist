@@ -26,7 +26,7 @@
                 "fullscreen": "フルスクリーンをトグルする",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "アカウント",
                 "importPresale": "アカウントを読み込む",
                 "newAccount": "新規アカウント",
@@ -35,6 +35,7 @@
                 "backupMist": "アプリケーションデータ"
             },
             "develop": {
+                "uploadToSwarm": "Swarmにアップロード",
                 "label": "Develop",
                 "devTools": "開発者用ツールをトグルする",
                 "devToolsMistUI": "Mist UI",

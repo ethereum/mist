@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Windows = require('./windows');
@@ -6,6 +6,7 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
+const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -131,10 +132,10 @@ let menuTempl = function (webviews) {
 
     // ACCOUNTS
     menu.push({
-        label: i18n.t('mist.applicationMenu.accounts.label'),
+        label: i18n.t('mist.applicationMenu.file.label'),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.accounts.newAccount'),
+                label: i18n.t('mist.applicationMenu.file.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click() {
                     Windows.createPopup('requestAccount', {
@@ -145,7 +146,7 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
                 click() {
@@ -160,10 +161,10 @@ let menuTempl = function (webviews) {
                 type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.backup'),
+                label: i18n.t('mist.applicationMenu.file.backup'),
                 submenu: [
                     {
-                        label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
+                        label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
                             let userPath = Settings.userHomePath;
 
@@ -195,16 +196,46 @@ let menuTempl = function (webviews) {
                             shell.showItemInFolder(userPath);
                         },
                     }, {
-                        label: i18n.t('mist.applicationMenu.accounts.backupMist'),
+                        label: i18n.t('mist.applicationMenu.file.backupMist'),
                         click() {
                             shell.openItem(Settings.userDataPath);
                         },
                     },
                 ],
             },
-        ],
-    });
-
+            {
+                type: 'separator',
+            },
+            {
+                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+                accelerator: 'Shift+CommandOrControl+U',
+                click() {
+                    const focusedWindow = BrowserWindow.getFocusedWindow();
+                    const paths = dialog.showOpenDialog(focusedWindow, {
+                        properties: ['openFile', 'openDirectory']
+                    });
+                    if (paths && paths.length === 1) {
+                        const isDir = fs.lstatSync(paths[0]).isDirectory();
+                        const defaultPath = path.join(paths[0], 'index.html');
+                        const uploadConfig = {
+                            path: paths[0],
+                            kind: isDir ? 'directory' : 'file',
+                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                        };
+                        swarmNode.upload(uploadConfig).then((hash) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                              Tabs.update('browser', {$set: {
+                                  url: 'bzz://${hash}',
+                                  redirect: 'bzz://${hash}'
+                              }});
+                              LocalStore.set('selectedTab', 'browser');
+                            `);
+                        }).catch(e => console.log(e));
+                    }
+                }
+            }]
+        });
+        
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -409,6 +440,8 @@ let menuTempl = function (webviews) {
     devToolsMenu.push({
         type: 'separator',
     });
+
+
     // add node switch
     if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];

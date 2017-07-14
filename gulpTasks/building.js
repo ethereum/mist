@@ -35,6 +35,7 @@ gulp.task('copy-app-source-files', () => {
         '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
+        './errorPages/*',
         'customProtocols.js'
     ], {
         base: './'

@@ -28,6 +28,7 @@ var checkNetworkType = function (template) {
                 console.error('Got error fetching block 0', e);
             } else {
                 TemplateVar.set(template, 'network', Helpers.detectNetwork(res.hash).type);
+                TemplateVar.set(template, 'networkName', Helpers.detectNetwork(res.hash).name);
             }
         });
     } catch (err) {
@@ -51,9 +52,7 @@ Template['elements_networkIndicator'].onRendered(function () {
         case 'stopping':
         case 'connected':
             console.debug('Node status changing, reset network type indicator');
-
             TemplateVar.set(template, 'network', 'unknown');
-
             break;
         }
     });
@@ -68,5 +67,3 @@ Template['elements_networkIndicator'].onRendered(function () {
         }
     });
 });
-
-

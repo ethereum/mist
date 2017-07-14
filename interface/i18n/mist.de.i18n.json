@@ -26,7 +26,7 @@
                 "fullscreen": "Vollbildmodus",
                 "default": "Standard"
             },
-            "accounts": {
+            "file": {
                 "label": "Konten",
                 "importPresale": "Konto importieren",
                 "newAccount": "Neues Konto",
@@ -35,6 +35,7 @@
                 "backupMist": "Anwendungsdaten"
             },
             "develop": {
+                "uploadToSwarm": "Upload zum Swarm",
                 "label": "Entwicklung",
                 "devTools": "Entwicklerwerkzeuge",
                 "devToolsMistUI": "Mist UI",
@@ -200,7 +201,7 @@
             },
             "onboarding": {
                 "description": "Ethereum ist eine dezentrale Plattform, um Anwendungen auf einer Blockchain zu bauen: Fälschungssichere Software, die Werte und Vermögen übertragen kann und für immer besteht",
-                "goToTestnet": "Verwende das Testnetz",
+                "goToTestnet": "Verwende das Testnetz (Rinkeby)",
                 "goToTestnetDescription": "Teste die Technologie frei in der Testnetz-Sandbox, ",
                 "gotoMainnet": "Verwende das Hauptnetz",
                 "gotoMainnetDescription": " Du wirst etwas Ether benötigen, um Verträge anzulegen und auszuführen. Wir werden dir helfen, etwas zu bekommen ...",

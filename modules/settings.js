@@ -4,6 +4,7 @@ const fs = require('fs');
 const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
+const lodash = require('lodash');
 
 
 // try loading in config file
@@ -51,6 +52,15 @@ const argv = require('yargs')
         rpc: {
             demand: false,
             describe: 'Path to node IPC socket file OR HTTP RPC hostport (if IPC socket file then --node-ipcpath will be set with this value).',
+            requiresArg: true,
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
+        swarmurl: {
+            demand: false,
+            default: 'http://localhost:8500',
+            describe: 'URL serving the Swarm HTTP API. If null, Mist will open a local node.',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -196,6 +206,10 @@ class Settings {
         return !!process.env.TEST_MODE;
     }
 
+    get swarmURL() {
+        return argv.swarmurl;
+    }
+
     get gethPath() {
         return argv.gethpath;
     }
@@ -267,8 +281,54 @@ class Settings {
         return argv.nodeOptions;
     }
 
-    loadUserData(path) {
-        const fullPath = this.constructUserDataPath(path);
+    get language() {
+        return this.loadConfig('ui.i18n');
+    }
+
+    set language(langCode) {
+        this.saveConfig('ui.i18n', langCode);
+    }
+
+    initConfig() {
+        global.config.insert({
+            ui: {
+                i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            }
+        });
+    }
+
+    saveConfig(key, value) {
+        let obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            obj = global.config.get(1);
+        }
+
+        if (lodash.get(obj, key) !== value) {
+            lodash.set(obj, key, value);
+            global.config.update(obj);
+
+            this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
+            this._log.trace(global.config.data);
+        }
+    }
+
+    loadConfig(key) {
+        const obj = global.config.get(1);
+
+        if (!obj) {
+            this.initConfig();
+            return this.loadConfig(key);
+        }
+
+        this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+
+        return lodash.get(obj, key);
+    }
+
+    loadUserData(path2) {
+        const fullPath = this.constructUserDataPath(path2);
 
         this._log.trace('Load user data', fullPath);
 

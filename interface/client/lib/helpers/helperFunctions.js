@@ -80,7 +80,11 @@ Format Urls, e.g add a default protocol if on is missing.
 **/
 Helpers.formatUrl = function (url) {
     // add http:// if no protocol is present
-    if (url && url.indexOf('://') === -1) {
+    if (url && url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
+        // if the url looks like a hash, add bzz
+        url = 'bzz://' + url;
+    } else if (url && url.indexOf('://') === -1) {
+        // if it doesn't have a protocol
         url = 'http://' + url;
     }
 
@@ -210,23 +214,31 @@ Helpers.detectNetwork = function (hash) {
     case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
         console.log('Network is mainnet');
         network.type = 'mainnet';
+        network.name = 'Main';
         break;
 
     case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
         console.log('Network is Testnet #3 (Ropsten)');
         network.type = 'testnet';
-        network.name = 'Testnet #3 (Ropsten)';
+        network.name = 'Ropsten';
+        break;
+
+    case '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177':
+        console.log('Network is Testnet #4 (Rinkeby)');
+        network.type = 'testnet';
+        network.name = 'Rinkeby';
         break;
 
     case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
         console.log('Network is Testnet #2 (Morden)');
         network.type = 'testnet';
-        network.name = 'Testnet #2 (Morden)';
+        network.name = 'Morden';
         break;
 
     default:
         console.log('Network is privatenet');
         network.type = 'privatenet';
+        network.name = 'Private';
     }
 
     return network;

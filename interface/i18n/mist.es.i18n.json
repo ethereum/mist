@@ -26,8 +26,8 @@
                 "fullscreen": "Pantalla Completa",
                 "default": "Default"
             },
-            "accounts": {
-                "label": "Cuentas",
+            "file": {
+                "label": "Arquivo",
                 "importPresale": "Importar Cuentas",
                 "newAccount": "Nueva cuenta",
                 "backup": "Copia de seguridad",
@@ -35,6 +35,7 @@
                 "backupMist": "Datos de la aplicación"
             },
             "develop": {
+                "uploadToSwarm": "Upload a Swarm",
                 "label": "Desarrollo",
                 "devTools": "Herramientas para desarrolladores",
                 "devToolsMistUI": "UI de Mist",
@@ -202,7 +203,7 @@
             },
             "onboarding": {
                 "description": "Ethereum es una plataforma descentralizada para la construcción de aplicaciones en una blockchain: segura y a prueba de manipulaciones que puede transferir valor, propiedad y vive para siempre",
-                "goToTestnet": "Utiliza la red de pruebas",
+                "goToTestnet": "Utiliza la red de pruebas (Rinkeby)",
                 "goToTestnetDescription": "Pruebe la tecnología libremente en una red de pruebas sin utilizar ether reales.",
                 "gotoMainnet": "Utilizar la red principal",
                 "gotoMainnetDescription": " Necesitarás algunos Ether para poder crear y ejecutar contratos. No se preocupe, nosotros le ayudaremos a obtener algunos...",

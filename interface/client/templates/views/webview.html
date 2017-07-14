@@ -3,7 +3,7 @@
         {{#if $eq _id "tests"}}
             <webview src="file://{{dirname}}/tests/mocha-in-browser/runner.html" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
         {{else}}
-            <webview src="{{checkedUrl}}" data-id="{{_id}}" preload="{{preloaderFile}}" autosize="on"></webview>
+            <webview src="{{checkedUrl}}" data-id="{{_id}}" preload="{{preloaderFile}}" webpreferences="contextIsolation=yes" autosize="on"></webview>
         {{/if}}
     </div>
 </template>

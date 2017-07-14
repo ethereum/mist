@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain: ipc, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain: ipc, Menu, shell, dialog } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const Windows = require('./windows');
@@ -6,6 +6,7 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
+const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 
@@ -131,10 +132,10 @@ let menuTempl = function (webviews) {
 
     // ACCOUNTS
     menu.push({
-        label: i18n.t('mist.applicationMenu.accounts.label'),
+        label: i18n.t('mist.applicationMenu.file.label'),
         submenu: [
             {
-                label: i18n.t('mist.applicationMenu.accounts.newAccount'),
+                label: i18n.t('mist.applicationMenu.file.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click() {
                     Windows.createPopup('requestAccount', {
@@ -145,7 +146,7 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.importPresale'),
+                label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
                 click() {
@@ -160,10 +161,10 @@ let menuTempl = function (webviews) {
                 type: 'separator',
             },
             {
-                label: i18n.t('mist.applicationMenu.accounts.backup'),
+                label: i18n.t('mist.applicationMenu.file.backup'),
                 submenu: [
                     {
-                        label: i18n.t('mist.applicationMenu.accounts.backupKeyStore'),
+                        label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
                             let userPath = Settings.userHomePath;
 
@@ -195,16 +196,46 @@ let menuTempl = function (webviews) {
                             shell.showItemInFolder(userPath);
                         },
                     }, {
-                        label: i18n.t('mist.applicationMenu.accounts.backupMist'),
+                        label: i18n.t('mist.applicationMenu.file.backupMist'),
                         click() {
                             shell.openItem(Settings.userDataPath);
                         },
                     },
                 ],
             },
-        ],
-    });
-
+            {
+                type: 'separator',
+            },
+            {
+                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+                accelerator: 'Shift+CommandOrControl+U',
+                click() {
+                    const focusedWindow = BrowserWindow.getFocusedWindow();
+                    const paths = dialog.showOpenDialog(focusedWindow, {
+                        properties: ['openFile', 'openDirectory']
+                    });
+                    if (paths && paths.length === 1) {
+                        const isDir = fs.lstatSync(paths[0]).isDirectory();
+                        const defaultPath = path.join(paths[0], 'index.html');
+                        const uploadConfig = {
+                            path: paths[0],
+                            kind: isDir ? 'directory' : 'file',
+                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                        };
+                        swarmNode.upload(uploadConfig).then((hash) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                              Tabs.update('browser', {$set: {
+                                  url: 'bzz://${hash}',
+                                  redirect: 'bzz://${hash}'
+                              }});
+                              LocalStore.set('selectedTab', 'browser');
+                            `);
+                        }).catch(e => console.log(e));
+                    }
+                }
+            }]
+        });
+        
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -245,30 +276,51 @@ let menuTempl = function (webviews) {
         ],
     });
 
-    const genSwitchLanguageFunc = langCode => function (menuItem, browserWindow) {
-        browserWindow.webContents.executeJavaScript(
-            `TAPi18n.setLanguage("${langCode}");`
-        );
-        ipc.emit('backendAction_setLanguage', {}, langCode);
-    };
-    const currentLanguage = i18n.getBestMatchedLangCode(global.language);
+    // LANGUAGE (VIEW)
+    const switchLang = langCode => function (menuItem, browserWindow) {
+        try {
+            // update i18next instance in browserWindow (Mist meteor interface)
+            browserWindow.webContents.executeJavaScript(
+               `TAPi18n.setLanguage("${langCode}");`
+            );
 
-    const languageMenu =
-    Object.keys(i18n.options.resources)
+            // set Accept_Language header
+            const session = browserWindow.webContents.session;
+            session.setUserAgent(session.getUserAgent(), langCode);
+
+            // set navigator.language (dev console only)
+            // browserWindow.webContents.executeJavaScript(
+            //     `Object.defineProperty(navigator, 'language, {
+            //         get() { return ${langCode}; }
+            //     });`
+            // );
+
+            // reload browserWindow to apply language change
+            // browserWindow.webContents.reload();
+        } catch (err) {
+            log.error(err);
+        } finally {
+            Settings.language = langCode;
+            ipc.emit('backendAction_setLanguage');
+        }
+    };
+
+    const currentLanguage = Settings.language;
+    const languageMenu = Object.keys(i18n.options.resources)
     .filter(langCode => langCode !== 'dev')
     .map((langCode) => {
         const menuItem = {
             label: i18n.t(`mist.applicationMenu.view.langCodes.${langCode}`),
             type: 'checkbox',
-            checked: (currentLanguage === langCode),
-            click: genSwitchLanguageFunc(langCode),
+            checked: (langCode === currentLanguage),
+            click: switchLang(langCode),
         };
         return menuItem;
     });
-    const defaultLang = i18n.getBestMatchedLangCode(app.getLocale());
+
     languageMenu.unshift({
         label: i18n.t('mist.applicationMenu.view.default'),
-        click: genSwitchLanguageFunc(defaultLang),
+        click: switchLang(i18n.getBestMatchedLangCode(app.getLocale())),
     }, {
         type: 'separator',
     });
@@ -388,6 +440,8 @@ let menuTempl = function (webviews) {
     devToolsMenu.push({
         type: 'separator',
     });
+
+
     // add node switch
     if (process.platform === 'darwin' || process.platform === 'win32') {
         const nodeSubmenu = [];
@@ -445,22 +499,42 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Testnet',
+                label: 'Ropsten - Test network',
                 accelerator: 'CommandOrControl+Shift+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isTestNetwork,
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'test',
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'test');
                 },
             },
+            {
+                label: 'Rinkeby - Test network',
+                accelerator: 'CommandOrControl+Shift+3',
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
+                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'rinkeby',
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'rinkeby');
+                },
+            },
+            {
+                label: 'Solo network',
+                accelerator: 'CommandOrControl+Shift+4',
+                checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
+                enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+                type: 'checkbox',
+                click() {
+                    restartNode(ethereumNode.type, 'dev');
+                },
+            }
         ] });
-
 
     devToolsMenu.push({
         label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
         accelerator: 'CommandOrControl+Shift+M',
-        enabled: ethereumNode.isOwnNode && ethereumNode.isTestNetwork,
+        enabled: ethereumNode.isOwnNode &&
+                (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork),
         click() {
             if (!global.mining) {
                 ethereumNode.send('miner_start', [1])
@@ -518,7 +592,6 @@ let menuTempl = function (webviews) {
             },
             {
                 label: i18n.t('mist.applicationMenu.window.toFront'),
-                role: 'arrangeInFront:',
                 role: 'front',
             },
         ],
@@ -554,6 +627,11 @@ let menuTempl = function (webviews) {
         label: i18n.t('mist.applicationMenu.help.reportBug'),
         click() {
             shell.openExternal('https://github.com/ethereum/mist/issues');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.mistWiki'),
+        click() {
+            shell.openExternal('https://github.com/ethereum/mist/wiki');
         },
     });
 

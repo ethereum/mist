@@ -63,6 +63,7 @@ cache:
   yarn: true
 
 install:
+  - echo $PATH
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh
   - yarn global add gulp-cli meteor-build-client
   - yarn

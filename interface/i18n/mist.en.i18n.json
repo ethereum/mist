@@ -12,6 +12,15 @@
                 "showAll": "Show all",
                 "quit": "Quit __app__"
             },
+            "file": {
+                "label": "File",
+                "importPresale": "Import accounts",
+                "newAccount": "New account",
+                "backup": "Backup",
+                "backupKeyStore": "Accounts",
+                "backupMist": "Application data",
+                "swarmUpload": "Upload to Swarm..."
+            },
             "edit": {
                 "label": "Edit",
                 "undo": "Undo",
@@ -24,7 +33,7 @@
             "view": {
                 "label": "View",
                 "fullscreen": "Toggle full screen",
-                "languages": "Change language",
+                "languages": "Language",
                 "default": "Default",
                 "langCodes" : {
                     "de": "Deutsch",
@@ -43,14 +52,6 @@
                     "zh": "普通話",
                     "zh-TW": "國語"
                 }
-            },
-            "accounts": {
-                "label": "Accounts",
-                "importPresale": "Import accounts",
-                "newAccount": "New account",
-                "backup": "Backup",
-                "backupKeyStore": "Accounts",
-                "backupMist": "Application data"
             },
             "develop": {
                 "label": "Develop",

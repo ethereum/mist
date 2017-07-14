@@ -26,7 +26,7 @@
                 "fullscreen": "전체화면으로",
                 "default": "기본"
             },
-            "accounts": {
+            "file": {
                 "label": "계정",
                 "importPresale": "계정 추가하기",
                 "newAccount": "새 계정",
@@ -35,6 +35,7 @@
                 "backupMist": "어플리케이션 데이터"
             },
             "develop": {
+                "uploadToSwarm": "Swarm에 업로드",
                 "label": "개발",
                 "devTools": "개발도구 전환",
                 "devToolsMistUI": "미스트 UI",

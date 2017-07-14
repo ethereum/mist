@@ -66,14 +66,14 @@ Template['views_webview'].onRendered(function () {
 
     // Forward SWARM status code errors to showError
     webview.addEventListener('did-get-response-details', function (e) {
-        if(e && e.resourceType === 'mainFrame') {
+        if (e && e.resourceType === 'mainFrame') {
             switch (e.httpResponseCode) {
-                case 500:
-                    showError.call(webview, tabId, {
-                        isMainFrame: true,
-                        errorCode: 404
-                    });
-                    break;
+            case 500:
+                showError.call(webview, tabId, {
+                    isMainFrame: true,
+                    errorCode: 404
+                });
+                break;
             }
         }
     });

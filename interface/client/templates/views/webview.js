@@ -66,7 +66,8 @@ Template['views_webview'].onRendered(function () {
 
     // Forward SWARM status code errors to showError
     webview.addEventListener('did-get-response-details', function (e) {
-        if (e && e.resourceType === 'mainFrame') {
+        console.log(e);
+        if (e && e.resourceType === 'mainFrame' && /^bzz:\//i.test(e.newURL)) {
             switch (e.httpResponseCode) {
             case 500:
                 showError.call(webview, tabId, {

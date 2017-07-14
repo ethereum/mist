@@ -12,6 +12,9 @@ showError = function (tabId, e) {
         case -105:
             url = path + '404.html';
             break;
+        case 404:
+            url = path + '404.html';
+            break;
         case 500:
             url = path + '500.html';
             break;

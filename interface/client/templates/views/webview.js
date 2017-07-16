@@ -64,6 +64,22 @@ Template['views_webview'].onRendered(function () {
     webview.addEventListener('did-fail-load', showError.bind(webview, tabId));
     webview.addEventListener('crashed', showError.bind(webview, tabId));
 
+    // Forward SWARM status code errors to showError
+    webview.addEventListener('did-get-response-details', function (e) {
+        console.log(e);
+        if (e && e.resourceType === 'mainFrame' && /^bzz:\//i.test(e.newURL)) {
+            switch (e.httpResponseCode) {
+            case 500:
+                showError.call(webview, tabId, {
+                    isMainFrame: true,
+                    errorCode: 404
+                });
+                break;
+            }
+        }
+    });
+
+
     // navigate page, and redirect to browser tab if necessary
     webview.addEventListener('will-navigate', webviewLoadStart.bind(webview, tabId));
     webview.addEventListener('did-get-redirect-request', webviewLoadStart.bind(webview, tabId));

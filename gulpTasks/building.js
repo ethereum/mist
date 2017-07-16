@@ -200,6 +200,7 @@ gulp.task('release-dist', (done) => {
     const versionDashed = version.replace(/\./g, '-');
 
     const cp = (inputPath, outputPath) => {
+        console.info(`Copying from ${path.join(distPath, inputPath)} to ${path.join(releasePath, outputPath)}`);
         shell.cp(path.join(distPath, inputPath), path.join(releasePath, outputPath));
     };
 

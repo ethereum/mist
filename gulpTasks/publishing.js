@@ -73,7 +73,7 @@ gulp.task('upload-binaries', (cb) => {
             const dir = `dist_${type}/release`;
             const files = fs.readdirSync(dir);
             const filePaths = _.map(files, (file) => { return path.join(dir, file); });
-
+            console.log('Upload files: ', filePaths);
             // check if draft already contains target binaries
             // note: github replaces spaces in filenames with dots
             const existingAssets = _.intersection(files.map((file) => { return file.replace(/\s/g, '.'); }), _.pluck(draft.assets, 'name'));

@@ -13,6 +13,7 @@ const web3Admin = require('../web3Admin.js');
 
 webFrame.executeJavaScript("window.mistMode = 'wallet';");
 
+
 // add admin later
 setTimeout(() => {
     web3Admin.extend(window.web3);

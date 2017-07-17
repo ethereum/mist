@@ -6,14 +6,12 @@ const fs = require('fs');
 const Web3 = require('web3');
 const shell = require('shelljs');
 const path = require('path');
-const packageJson = require('../package.json');
 const gethPrivate = require('geth-private');
 const Application = require('spectron').Application;
 const chai = require('chai');
 const http = require('http');
 const ecstatic = require('ecstatic');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
-const Settings = require('../modules/settings');
 
 chai.should();
 
@@ -30,10 +28,8 @@ const startGeth = function* () {
 
     if (manager.clients.Geth.state.available) {
         gethPath = manager.clients.Geth.activeCli.fullPath;
-    }
-    else {
         console.info('Downloading geth...');
-        let downloadedGeth = yield manager.download('Geth');
+        const downloadedGeth = yield manager.download('Geth');
         gethPath = downloadedGeth.client.activeCli.fullPath;
         console.info('Geth downloaded at:', gethPath);
     }
@@ -144,7 +140,7 @@ exports.mocha = (_module, options) => {
             // Loop over windows trying to select Main Window
             const app = this;
             const selectMainWindow = function* (mainWindowSearch) {
-                let windowHandles = (yield app.client.windowHandles()).value;
+                const windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
                     yield app.client.window(windowHandles[handle]);

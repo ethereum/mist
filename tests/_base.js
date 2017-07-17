@@ -11,6 +11,7 @@ const Application = require('spectron').Application;
 const chai = require('chai');
 const http = require('http');
 const ecstatic = require('ecstatic');
+const express = require('express');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
 
 chai.should();
@@ -26,7 +27,7 @@ const startGeth = function* () {
     const manager = new ClientBinaryManager(config);
     yield manager.init();
 
-    if (manager.clients.Geth.state.available) {
+    if (!manager.clients.Geth.state.available) {
         gethPath = manager.clients.Geth.activeCli.fullPath;
         console.info('Downloading geth...');
         const downloadedGeth = yield manager.download('Geth');
@@ -51,6 +52,18 @@ const startGeth = function* () {
     });
     yield geth.start();
     return geth;
+};
+
+const startFixtureServer = function (serverPort) {
+    const app = express();
+    app.use(express.static(path.join(__dirname, 'fixtures')));
+
+    app.get('/redirect', (req, res) => {
+        // Redirects to param ?url=XX
+        res.redirect(302, req.query.to);
+    });
+    app.listen(serverPort);
+    return app;
 };
 
 exports.mocha = (_module, options) => {
@@ -117,18 +130,23 @@ exports.mocha = (_module, options) => {
                 webdriverLogPath: webdriverLogFile,
                 chromeDriverLogPath: chromeLogFile,
             });
+
             yield this.app.start();
+            this.client = this.app.client;
 
             /*
                 Starting HTTP server for HTML fixtures
             */
             const serverPort = 8080;
-            this.httpServer = http.createServer(
-                ecstatic({root: path.join(__dirname, 'fixtures')})
-            ).listen(serverPort);
+            this.httpServer = startFixtureServer(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
 
-            this.client = this.app.client;
+            // this.httpServer = http.createServer(
+            //     ecstatic({root: path.join(__dirname, 'fixtures')})
+            // ).listen(serverPort);
+            // this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
+            //
+            // this.client = this.app.client;
 
             /*
                 Utility methods
@@ -140,7 +158,7 @@ exports.mocha = (_module, options) => {
             // Loop over windows trying to select Main Window
             const app = this;
             const selectMainWindow = function* (mainWindowSearch) {
-                const windowHandles = (yield app.client.windowHandles()).value;
+                let windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
                     yield app.client.window(windowHandles[handle]);

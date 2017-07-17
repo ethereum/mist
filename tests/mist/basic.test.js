@@ -156,7 +156,7 @@ test['"file" protocol should be disallowed on browser bar'] = function* () { // 
     const filePath = `file://${path.join(__dirname, '..', 'fixtures', 'index.html')}`;
 
     yield this.navigateTo(filePath);
-    yield Q.delay(2500);
+    yield Q.delay(1000);
 
     const webviewErrorURL = yield this.getSelectedWebviewParam('src');
     webviewErrorURL.should.match(/errorPages\/400\.html$/);
@@ -261,11 +261,11 @@ test['Mist main webview should not redirect to arbitrary addresses'] = function*
 // ETH-01-008
 test['Mist main webview should not redirect to local files'] = function* () {
     const client = this.client;
+    const url = `${this.fixtureBaseUrl}redirect?to=file:///Users/ev/Desktop/keystore.txt`;
 
-    yield this.navigateTo('https://cure53.de/exchange/8743653459838/ETH-01-008.php');
-    yield client.waitUntil(() => {
-        return client.getText('.url-breadcrumb').then((e) => {
-            return /400\.html$/.test(e);
-        });
-    }, 5000, 'expected a URL not allowed as a result');
+    yield this.navigateTo(url);
+    yield Q.delay(1000);
+
+    const webviewErrorURL = yield this.getSelectedWebviewParam('src');
+    webviewErrorURL.should.match(/errorPages\/400\.html$/);
 };

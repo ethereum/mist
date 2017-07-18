@@ -67,10 +67,9 @@ mistAPIBackend = function (event) {
             appBar: (_.contains(allowedBrowserBarStyles, appBarClass) ? appBarClass : null)
         }});
     }
-
     if (event.channel === 'mistAPI_sound') {
         sound.pause();
-        sound.src = Blaze._escape(arg);
+        sound.src = Blaze._escape('file://'+ dirname +'/sounds/' + arg + '.mp3');
         sound.play();
     }
 

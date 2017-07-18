@@ -44,7 +44,7 @@ webviewChangeUrl = function (tabId, e) {
     }
 
     // make sure to not store error pages in history
-    if (!url || url.indexOf('mist/errorPages/') !== -1) {
+    if (!url || url.indexOf('mist/errorPages/') !== -1 || url.indexOf('app.asar/errorPages/') !== -1) {
         return;
     }
 

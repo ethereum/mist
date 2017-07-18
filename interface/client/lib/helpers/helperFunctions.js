@@ -84,8 +84,17 @@ Helpers.formatUrl = function (url) {
         // if the url looks like a hash, add bzz
         url = 'bzz://' + url;
     } else if (url && url.indexOf('://') === -1) {
-        // if it doesn't have a protocol
-        url = 'http://' + url;
+        console.log('formatURL', url, !!url.match(/[\./#]/i))
+        if (!url.match(/[\./#]/i)) {
+            // if it doesn't have a protocol or a TLD
+            url = 'bzz://' + url + '.eth';
+        } else if (!!url.match(/^[^/]*\.eth/i)) {
+            // doesn't have a protocol but has .eth as TLD
+            url = 'bzz://' + url;
+        } else {
+            // if it doesn't have a protocol
+            url = 'http://' + url;
+        }
     }
 
     return url;

@@ -230,6 +230,7 @@ let menuTempl = function (webviews) {
                               }});
                               LocalStore.set('selectedTab', 'browser');
                             `);
+                            console.log('Hash uploaded:', hash);
                         }).catch(e => console.log(e));
                     }
                 }

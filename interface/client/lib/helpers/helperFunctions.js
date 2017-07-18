@@ -79,22 +79,21 @@ Format Urls, e.g add a default protocol if on is missing.
 @param {String} url
 **/
 Helpers.formatUrl = function (url) {
+    if (!url) return;
+
     // add http:// if no protocol is present
-    if (url && url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
+    if (url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
         // if the url looks like a hash, add bzz
         url = 'bzz://' + url;
-    } else if (url && url.indexOf('://') === -1) {
-        console.log('formatURL', url, !!url.match(/[\./#]/i))
-        if (!url.match(/[\./#]/i)) {
-            // if it doesn't have a protocol or a TLD
-            url = 'bzz://' + url + '.eth';
-        } else if (!!url.match(/^[^/]*\.eth/i)) {
-            // doesn't have a protocol but has .eth as TLD
-            url = 'bzz://' + url;
-        } else {
-            // if it doesn't have a protocol
-            url = 'http://' + url;
-        }
+    } else if (!!url.match(/^([a-z]*:\/\/)?[^/]*\.eth/i)) {
+        // if uses .eth as a TLD
+        url = 'bzz://' + url.replace(/^([a-z]*:\/\/)?/i, '');
+    } else if (!!url.match(/^[^\.\/]*$/i)) {
+        // doesn't have a protocol nor a TLD
+        url = 'bzz://' + url + '.eth';
+    } else if (url.indexOf('://') === -1) {
+        // if it doesn't have a protocol
+        url = 'http://' + url;
     }
 
     return url;

@@ -135,10 +135,10 @@ const postMessage = function (payload) {
 
 
 // load ethereumProvider
-const bignumber = fs.readFileSync(path.resolve('./modules/preloader/injected/BigNumber.js')).toString();
-const eventEmitter3 = fs.readFileSync(path.resolve('./modules/preloader/injected/EventEmitter3.js')).toString();
-let mistAPI = fs.readFileSync(path.resolve('./modules/preloader/injected/mistAPI.js')).toString();
-const ethereumProvider = fs.readFileSync(path.resolve('./modules/preloader/injected/EthereumProvider.js')).toString();
+const bignumber = fs.readFileSync(path.join(__dirname, '/injected/BigNumber.js')).toString();
+const eventEmitter3 = fs.readFileSync(path.join(__dirname, '/injected/EventEmitter3.js')).toString();
+let mistAPI = fs.readFileSync(path.join(__dirname, '/injected/mistAPI.js')).toString();
+const ethereumProvider = fs.readFileSync(path.join(__dirname, '/injected/EthereumProvider.js')).toString();
 
 mistAPI = mistAPI.replace('__version__', packageJson.version)
         .replace('__license__', packageJson.license)

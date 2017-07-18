@@ -381,6 +381,10 @@ onReady = () => {
             return ethereumNode.init();
         })
         .then(() => {
+            // Wallet shouldn't start Swarm
+            if (Settings.uiMode === 'wallet') {
+                return new Promise();
+            }
             return swarmNode.init();
         })
         .then(function sanityCheck() {

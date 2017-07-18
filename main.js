@@ -383,7 +383,7 @@ onReady = () => {
         .then(() => {
             // Wallet shouldn't start Swarm
             if (Settings.uiMode === 'wallet') {
-                return new Promise();
+                return Promise.resolve();
             }
             return swarmNode.init();
         })

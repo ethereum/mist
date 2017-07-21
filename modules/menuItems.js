@@ -235,7 +235,7 @@ let menuTempl = function (webviews) {
                 }
             }]
         });
-        
+
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -624,14 +624,19 @@ let menuTempl = function (webviews) {
         );
     }
     helpMenu.push({
-        label: i18n.t('mist.applicationMenu.help.reportBug'),
-        click() {
-            shell.openExternal('https://github.com/ethereum/mist/issues');
-        },
-    }, {
         label: i18n.t('mist.applicationMenu.help.mistWiki'),
         click() {
             shell.openExternal('https://github.com/ethereum/mist/wiki');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.gitter'),
+        click() {
+            shell.openExternal('https://gitter.com/ethereum/mist');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.reportBug'),
+        click() {
+            shell.openExternal('https://github.com/ethereum/mist/issues');
         },
     });
 

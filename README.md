@@ -12,7 +12,9 @@ Please note that this repository is the Electron host for the Meteor based walle
 
 ## Help and troubleshooting
 
-Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki) for help.
+Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+
+Or the [Gitter Channel](https://gitter.im/ethereum/mist), to connect with the community for instant help.
 
 ## Installation
 

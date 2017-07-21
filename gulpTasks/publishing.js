@@ -57,6 +57,8 @@ gulp.task('upload-binaries', (cb) => {
     // personal access token (public_repo) must be set using travis' ENVs
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+    console.info('Checking Github releases...');
+
     // query github releases
     got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, { json: true })
     // filter draft with current version's tag

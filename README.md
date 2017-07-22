@@ -166,11 +166,16 @@ Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](htt
 
 Furthermore cross-platform builds require additional [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#linux). On macOS those are:
 
-    // windows deps
+    // windows deps, from Mac host
     $ brew install wine --without-x11 mono makensis
 
-    // linux deps
-    $ brew install gnu-tar libicns graphicsmagick xz
+    // linux deps, from Mac host
+    $ brew install gnu-tar libicns icnsutils graphicsmagick xz 
+
+##### Linux dependencies
+
+List of packages to build from Linux host to linux targets: https://github.com/ethereum/mist/blob/develop/.travis.yml#L41
+
 
 #### Generate packages
 

@@ -17,6 +17,7 @@ test['Sanity Check: main window is focused'] = function* () {
 
 test['Browser bar should render urls with separators'] = function* () {
     yield this.navigateTo('http://localhost:8080/page1/page2?param=value#hash');
+    yield Q.delay(500);
     yield this.waitForText('.url-breadcrumb', 'http://localhost:8080 ▸ page1 ▸ page2 ▸ param=value ▸ hash');
 };
 

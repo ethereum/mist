@@ -20,7 +20,6 @@ const switchForSystem = function (options) {
     return null;
 };
 
-
 // create menu
 // null -> null
 const createMenu = function (webviews) {
@@ -235,7 +234,7 @@ let menuTempl = function (webviews) {
                     }
                 }
             }]
-        });
+    });
 
     // EDIT
     menu.push({
@@ -352,6 +351,7 @@ let menuTempl = function (webviews) {
 
     // DEVELOP
     const devToolsMenu = [];
+    let devtToolsSubMenu;
 
     // change for wallet
     if (Settings.uiMode === 'mist') {
@@ -359,7 +359,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                const curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -383,7 +384,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                const curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -432,7 +434,7 @@ let menuTempl = function (webviews) {
                 shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
             } catch (e) {
                 log.info(e);
-                log = 'Couldn\'t load log file.';
+                log.info('Couldn\'t load log file.');
             }
         },
     });

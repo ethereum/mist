@@ -201,7 +201,7 @@
                 "enterPassword": "Enter master password",
                 "unlocking": "Unlocking...",
                 "errors": {
-                    "wrongPassword": "Password is wrong.  Try again."
+                    "wrongPassword": "Password is wrong. Try again."
                 }
             },
             "sendTransactionConfirmation": {

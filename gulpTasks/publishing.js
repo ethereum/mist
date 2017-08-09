@@ -21,16 +21,11 @@ gulp.task('checksums', (cb) => {
     let command;
     let argument = '';
 
-    switch (process.platform) {
-    case 'darwin':
-        command = 'md5';
-        break;
-    case 'win32':
+    if (process.platform === 'win32') {
         command = 'certUtil -hashfile';
-        argument = 'md5';
-        break;
-    default:
-        command = 'md5sum';
+        argument = 'SHA256';
+    } else {
+        command = 'shasum -a 256';
     }
 
     files.forEach((file) => {

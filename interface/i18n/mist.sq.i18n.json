@@ -33,7 +33,7 @@
             "view": {
                 "label": "Shiko",
                 "fullscreen": "Kalo me ekran të plotë",
-                "default": "Vlera e parazgjedhur",
+                "default": "Vlera e parazgjedhur"
             },
             "develop": {
                 "label": "Zhvillo",
@@ -219,10 +219,10 @@
                 "showRawBytecode": "shfaq të dhënat e paformatuara",
                 "showDecodedParameters": "shfaq parametrat e dekoduar",
                 "lookupData": "Përpiqu të dekodosh të dhëna",
-                "lookupDataExplainer": "Kërkojeni në internet",
+                "lookupDataExplainer": "Kërkojeni në internet"
             },
             "onboarding": {
-                "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain) me gjuhën e vet tv programimit",
+                "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain) me gjuhën e vet të programimit",
                 "goToTestnet": "Përdor rrjetin testues (Rinkeby)",
                 "goToTestnetDescription": "Testo lirshëm teknologjinë në një rrjet test pa përdorur ether të vërtetë.",
                 "gotoMainnet": "Përdor rrjetin kryesor",

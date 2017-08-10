@@ -85,6 +85,7 @@ gulp.task('upload-binaries', (cb) => {
             })
             // append checksums to draft text
             .then(() => {
+                console.info('Appending checksums to release notes...', checksums);
                 if (draft.body && checksums) {
                     got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
@@ -93,6 +94,9 @@ gulp.task('upload-binaries', (cb) => {
                         })
                     });
                 }
+            })
+            .catch((err) => {
+                console.log(err);
             });
         }
     })

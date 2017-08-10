@@ -90,7 +90,11 @@ gulp.task('upload-binaries', (cb) => {
                     got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
                             tag_name: `v${version}`,
-                            body: `${draft.body}\n\n## Checksums\n\`\`\`\n${checksums.join('')}\`\`\``
+                            // String manipulation to create a checksums table
+                            body: String.concat('File | Checksum (SHA256)\n-- | --', checksums.map((e) => {
+                                const line = e.replace('\n', '').split('  ');
+                                return `${line[1]} | ${line[0]}`;
+                            }).join('\n'))
                         })
                     });
                 }

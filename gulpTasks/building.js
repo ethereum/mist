@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const builder = require('electron-builder');
+const signer = require('electron-builder/out/windowsCodeSign').sign;
 const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
@@ -237,11 +238,21 @@ gulp.task('release-dist', (done) => {
 
 gulp.task('build-nsis', (cb) => {
     const typeString = `-DTYPE=${type}`;
-    const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
+    const appNameStringDashed = applicationName.replace(/\s/, '-');
+    const appNameString = `-DAPPNAME=${appNameStringDashed}`;
     const versionParts = version.split('.');
     const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
 
     const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
-    exec(cmdString, cb);
+    // Manually signing NSIS installer
+    exec(cmdString, () => {
+        const signInfo = {
+            path: path.join(__dirname, '..', `dist_${type}`, 'release', `${appNameStringDashed}-installer-${versionParts.join('-')}.exe`),
+            cert: process.env.CSC_WIN_LINK,
+            password: process.env.CSC_WIN_KEY_PASSWORD
+        };
+        console.log('Windows installer code signing', signInfo);
+        signer(signInfo).then(() => cb());
+    });
 });

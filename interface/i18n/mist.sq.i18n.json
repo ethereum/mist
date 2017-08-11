@@ -33,7 +33,24 @@
             "view": {
                 "label": "Shiko",
                 "fullscreen": "Kalo me ekran të plotë",
-                "default": "Vlera e parazgjedhur"
+                "default": "Vlera e parazgjedhur",
+                "langCodes": {
+                    "de": "Deutsch",
+                    "en": "English",
+                    "es": "Español",
+                    "fa": "فارسى",
+                    "fr": "Français",
+                    "it": "Italiano",
+                    "ja": "日本語",
+                    "ko": "한국어 ",
+                    "nl": "Nederlands",
+                    "nb": "Norsk",
+                    "pt": "Português",
+                    "sq": "Shqip",
+                    "ru": "Pусский",
+                    "zh": "普通話",
+                    "zh-TW": "國語"
+                }
             },
             "develop": {
                 "label": "Zhvillo",

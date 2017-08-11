@@ -238,16 +238,19 @@ gulp.task('build-nsis', (cb) => {
     const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
     // Manually signing NSIS installer
-    if (process.env.CSC_WIN_LINK && process.env.CSC_WIN_KEY_PASSWORD) {
-        exec(cmdString, () => {
-            const signInfo = {
-                options: {}, // default signing values will apply
-                path: path.join(__dirname, '..', `dist_${type}`, 'release', `${appNameStringDashed}-installer-${versionParts.join('-')}.exe`),
-                cert: process.env.CSC_WIN_LINK,
-                password: process.env.CSC_WIN_KEY_PASSWORD
-            };
+    exec(cmdString, () => {
+        const signInfo = {
+            options: {}, // default signing values will apply
+            path: path.join(__dirname, '..', `dist_${type}`, 'release', `${appNameStringDashed}-installer-${versionParts.join('-')}.exe`),
+            cert: process.env.CSC_WIN_LINK,
+            password: process.env.CSC_WIN_KEY_PASSWORD
+        };
+
+        if (process.env.CSC_WIN_LINK && process.env.CSC_WIN_KEY_PASSWORD) {
             console.log('Windows installer code signing', signInfo);
             signer(signInfo).then(() => cb());
-        });
-    }
+        } else {
+            cb();
+        }
+    });
 });

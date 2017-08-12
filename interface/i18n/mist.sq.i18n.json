@@ -281,7 +281,7 @@
                     "unknownFile": "Skedari nuk njihet.",
                     "wrongPassword": "Fjalëkalim i gabuar.",
                     "importFailed": "Skedari nuk mund të merret: __error__"
-                },
+                }
             },
             "connectAccount": {
                 "chooseAccountTitle": "Zgjidhni llogarinë",

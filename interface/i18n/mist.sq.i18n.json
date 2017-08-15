@@ -33,7 +33,7 @@
             "view": {
                 "label": "Shiko",
                 "fullscreen": "Kalo me ekran të plotë",
-                "default": "Vlera e parazgjedhur",
+                "default": "Vlera e parazgjedhur"
             },
             "develop": {
                 "label": "Zhvillo",

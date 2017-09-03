@@ -53,7 +53,7 @@ Install the latter ones via:
     $ yarn global add electron@1.4.15
     $ yarn global add gulp
 
-### Initialisation
+### Initialization
 
 Now you're ready to initialise Mist for development:
 

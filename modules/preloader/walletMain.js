@@ -5,7 +5,7 @@
 require('./dapps.js');
 require('./include/openExternal.js');
 require('./include/setBasePath')('interface/wallet');
-
+const {webFrame} = require('electron');
 const web3Admin = require('../web3Admin.js');
 
 // make variables globally accessable

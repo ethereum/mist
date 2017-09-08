@@ -230,12 +230,13 @@ let menuTempl = function (webviews) {
                               }});
                               LocalStore.set('selectedTab', 'browser');
                             `);
+                            console.log('Hash uploaded:', hash);
                         }).catch(e => console.log(e));
                     }
                 }
             }]
         });
-        
+
     // EDIT
     menu.push({
         label: i18n.t('mist.applicationMenu.edit.label'),
@@ -624,14 +625,19 @@ let menuTempl = function (webviews) {
         );
     }
     helpMenu.push({
-        label: i18n.t('mist.applicationMenu.help.reportBug'),
-        click() {
-            shell.openExternal('https://github.com/ethereum/mist/issues');
-        },
-    }, {
         label: i18n.t('mist.applicationMenu.help.mistWiki'),
         click() {
             shell.openExternal('https://github.com/ethereum/mist/wiki');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.gitter'),
+        click() {
+            shell.openExternal('https://gitter.im/ethereum/mist');
+        },
+    }, {
+        label: i18n.t('mist.applicationMenu.help.reportBug'),
+        click() {
+            shell.openExternal('https://github.com/ethereum/mist/issues');
         },
     });
 

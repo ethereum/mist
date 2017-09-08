@@ -12,7 +12,9 @@ Please note that this repository is the Electron host for the Meteor based walle
 
 ## Help and troubleshooting
 
-Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki) for help.
+Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+
+Or the [Gitter Channel](https://gitter.im/ethereum/mist), to connect with the community for instant help.
 
 ## Installation
 
@@ -38,7 +40,7 @@ Once a Mist version is released the Meteor frontend part is bundled using the `m
 
 To run mist in development you need:
 
-- [Node.js](https://nodejs.org) `v6.x` (use the prefered installation method for your OS)
+- [Node.js](https://nodejs.org) `v7.x` (use the prefered installation method for your OS)
 - [Meteor](https://www.meteor.com/install) javascript app framework
 - [Yarn](https://yarnpkg.com/) package manager
 - [Electron](http://electron.atom.io/) `v1.4.15` cross platform desktop app framework
@@ -224,12 +226,14 @@ It expects installer/zip files to be in the generated folders e.g. `dist_mist/re
 
 ## Testing
 
+Tests are ran using [Spectron](https://github.com/electron/spectron/), a webdriver.io runner built for Electron. 
+
 First make sure to build Mist with:
 
-    $ gulp [--wallet]
+    $ gulp
 
 Then run the tests:
 
-    $ gulp test [--wallet]
+    $ gulp test
 
 *Note: Integration tests are not yet supported on Windows.*

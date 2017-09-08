@@ -71,19 +71,19 @@
             bip: function playSound() {
                 postMessage({
                     type: 'mistAPI_sound',
-                    message: 'file://'+ __dirname +'/../../../sounds/bip.mp3'
+                    message: 'bip'
                 });
             },
             bloop: function playSound() {
                 postMessage({
                     type: 'mistAPI_sound',
-                    message: 'file://'+ __dirname +'/../../../sounds/bloop.mp3'
+                    message: 'bloop'
                 });
             },
             invite: function playSound() {
                 postMessage({
                     type: 'mistAPI_sound',
-                    message: 'file://'+ __dirname +'/../../../sounds/invite.mp3'
+                    message: 'invite'
                 });
             },
         },

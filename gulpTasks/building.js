@@ -35,6 +35,7 @@ gulp.task('copy-app-source-files', () => {
         '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
+        './errorPages/*',
         'customProtocols.js'
     ], {
         base: './'
@@ -200,6 +201,7 @@ gulp.task('release-dist', (done) => {
     const versionDashed = version.replace(/\./g, '-');
 
     const cp = (inputPath, outputPath) => {
+        console.info(`Copying from ${path.join(distPath, inputPath)} to ${path.join(releasePath, outputPath)}`);
         shell.cp(path.join(distPath, inputPath), path.join(releasePath, outputPath));
     };
 
@@ -213,7 +215,8 @@ gulp.task('release-dist', (done) => {
             break;
         case 'mac':
             cp(
-                `${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
+                path.join('mac', `${applicationName}-${version}.dmg`),
+                `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
             cp(

@@ -72,6 +72,7 @@ Helpers.getTabIdByUrl = function (url, returnEmpty) {
     return foundTab;
 };
 
+
 /**
 Format Urls, e.g add a default protocol if on is missing.
 
@@ -79,24 +80,28 @@ Format Urls, e.g add a default protocol if on is missing.
 @param {String} url
 **/
 Helpers.formatUrl = function (url) {
+    var fullUrl;
+
     if (!url) return;
+        // auto-adding protocol to url
+        if (url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
+            // if the url looks like a hash, add bzz
+            fullUrl = 'bzz://' + url;
+        } else if (url.match(/^([a-z]*:\/\/)?[^/]*\.eth(\/.*)?$/i)) {
+            // if uses .eth as a TLD
+            fullUrl = 'bzz://' + url.replace(/^([a-z]*:\/\/)?/i, '');
+        } else if (url.match(/^localhost(\/|:\d+)?/i)) {
+            // "localhost" exception
+            fullUrl = 'http://' + url;
+        } else if (url.match(/^[^./]*$/i)) {
+            // doesn't have a protocol nor a TLD
+            fullUrl = 'bzz://' + url + '.eth';
+        } else if (url.indexOf('://') === -1) {
+            // if it doesn't have a protocol
+            fullUrl = 'http://' + url;
+        }
 
-    // add http:// if no protocol is present
-    if (url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
-        // if the url looks like a hash, add bzz
-        url = 'bzz://' + url;
-    } else if (!!url.match(/^([a-z]*:\/\/)?[^/]*\.eth(\/.*)?$/i)) {
-        // if uses .eth as a TLD
-        url = 'bzz://' + url.replace(/^([a-z]*:\/\/)?/i, '');
-    } else if (!!url.match(/^[^\.\/]*$/i)) {
-        // doesn't have a protocol nor a TLD
-        url = 'bzz://' + url + '.eth';
-    } else if (url.indexOf('://') === -1) {
-        // if it doesn't have a protocol
-        url = 'http://' + url;
-    }
-
-    return url;
+    return (new URL(fullUrl)).toString();
 };
 
 /**

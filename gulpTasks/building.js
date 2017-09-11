@@ -28,6 +28,7 @@ gulp.task('copy-app-source-files', () => {
         'node_modules/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
+        './entry.js',
         './main.js',
         './clientBinaries.json',
         './modules/**',

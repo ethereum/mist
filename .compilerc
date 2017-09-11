@@ -1,0 +1,9 @@
+{
+  "application/javascript": {
+    "presets": ["es2016-node5"],
+    "sourceMaps": "inline"
+  },
+  "text/less": {
+    "dumpLineNumbers": "comments"
+  }
+}

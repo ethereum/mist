@@ -20,7 +20,6 @@ const switchForSystem = function (options) {
     return null;
 };
 
-
 // create menu
 // null -> null
 const createMenu = function (webviews) {
@@ -55,10 +54,10 @@ let menuTempl = function (webviews) {
     webviews = webviews || [];
 
     // APP
-    const fileMenu = [];
+    const appMenu = [];
 
     if (process.platform === 'darwin') {
-        fileMenu.push(
+        appMenu.push(
             {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
@@ -118,7 +117,7 @@ let menuTempl = function (webviews) {
             }
         );
     }
-    fileMenu.push(
+    appMenu.push(
         { label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
             accelerator: 'CommandOrControl+Q',
             click() {
@@ -127,115 +126,119 @@ let menuTempl = function (webviews) {
         });
     menu.push({
         label: i18n.t('mist.applicationMenu.app.label', { app: Settings.appName }),
-        submenu: fileMenu,
+        submenu: appMenu,
     });
 
-    // ACCOUNTS
-    menu.push({
-        label: i18n.t('mist.applicationMenu.file.label'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.file.newAccount'),
-                accelerator: 'CommandOrControl+N',
-                click() {
-                    Windows.createPopup('requestAccount', {
-                        electronOptions: {
-                            width: 420, height: 230, alwaysOnTop: true,
-                        },
-                    });
-                },
+    const fileSubMenu = [
+        {
+            label: i18n.t('mist.applicationMenu.file.newAccount'),
+            accelerator: 'CommandOrControl+N',
+            click() {
+                Windows.createPopup('requestAccount', {
+                    electronOptions: {
+                        width: 420, height: 230, alwaysOnTop: true,
+                    },
+                });
             },
-            {
-                label: i18n.t('mist.applicationMenu.file.importPresale'),
-                accelerator: 'CommandOrControl+I',
-                enabled: ethereumNode.isMainNetwork,
-                click() {
-                    Windows.createPopup('importAccount', {
-                        electronOptions: {
-                            width: 600, height: 370, alwaysOnTop: true,
-                        },
-                    });
-                },
+        },
+        {
+            label: i18n.t('mist.applicationMenu.file.importPresale'),
+            accelerator: 'CommandOrControl+I',
+            enabled: ethereumNode.isMainNetwork,
+            click() {
+                Windows.createPopup('importAccount', {
+                    electronOptions: {
+                        width: 600, height: 370, alwaysOnTop: true,
+                    },
+                });
             },
-            {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.file.backup'),
-                submenu: [
-                    {
-                        label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
-                        click() {
-                            let userPath = Settings.userHomePath;
+        },
+        {
+            type: 'separator',
+        },
+        {
+            label: i18n.t('mist.applicationMenu.file.backup'),
+            submenu: [
+                {
+                    label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
+                    click() {
+                        let userPath = Settings.userHomePath;
 
-                            // eth
-                            if (ethereumNode.isEth) {
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Web3\\keys`;
-                                } else {
-                                    userPath += '/.web3/keys';
-                                }
-
-                            // geth
+                        // eth
+                        if (ethereumNode.isEth) {
+                            if (process.platform === 'win32') {
+                                userPath = `${Settings.appDataPath}\\Web3\\keys`;
                             } else {
-                                if (process.platform === 'darwin') {
-                                    userPath += '/Library/Ethereum/keystore';
-                                }
-
-                                if (process.platform === 'freebsd' ||
-                                process.platform === 'linux' ||
-                                process.platform === 'sunos') {
-                                    userPath += '/.ethereum/keystore';
-                                }
-
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
-                                }
+                                userPath += '/.web3/keys';
                             }
 
-                            shell.showItemInFolder(userPath);
-                        },
-                    }, {
-                        label: i18n.t('mist.applicationMenu.file.backupMist'),
-                        click() {
-                            shell.openItem(Settings.userDataPath);
-                        },
+                        // geth
+                        } else {
+                            if (process.platform === 'darwin') {
+                                userPath += '/Library/Ethereum/keystore';
+                            }
+
+                            if (process.platform === 'freebsd' ||
+                            process.platform === 'linux' ||
+                            process.platform === 'sunos') {
+                                userPath += '/.ethereum/keystore';
+                            }
+
+                            if (process.platform === 'win32') {
+                                userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                            }
+                        }
+
+                        shell.showItemInFolder(userPath);
                     },
-                ],
-            },
-            {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
-                accelerator: 'Shift+CommandOrControl+U',
-                click() {
-                    const focusedWindow = BrowserWindow.getFocusedWindow();
-                    const paths = dialog.showOpenDialog(focusedWindow, {
-                        properties: ['openFile', 'openDirectory']
-                    });
-                    if (paths && paths.length === 1) {
-                        const isDir = fs.lstatSync(paths[0]).isDirectory();
-                        const defaultPath = path.join(paths[0], 'index.html');
-                        const uploadConfig = {
-                            path: paths[0],
-                            kind: isDir ? 'directory' : 'file',
-                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-                        };
-                        swarmNode.upload(uploadConfig).then((hash) => {
-                            focusedWindow.webContents.executeJavaScript(`
-                              Tabs.update('browser', {$set: {
-                                  url: 'bzz://${hash}',
-                                  redirect: 'bzz://${hash}'
-                              }});
-                              LocalStore.set('selectedTab', 'browser');
-                            `);
-                            console.log('Hash uploaded:', hash);
-                        }).catch(e => console.log(e));
-                    }
+                }, {
+                    label: i18n.t('mist.applicationMenu.file.backupMist'),
+                    click() {
+                        shell.openItem(Settings.userDataPath);
+                    },
+                },
+            ],
+        },
+    ];
+
+    if (Settings.uiMode === 'mist') {
+        fileSubMenu.push({ type: 'separator' });
+        fileSubMenu.push({
+            label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+            accelerator: 'Shift+CommandOrControl+U',
+            click() {
+                const focusedWindow = BrowserWindow.getFocusedWindow();
+                const paths = dialog.showOpenDialog(focusedWindow, {
+                    properties: ['openFile', 'openDirectory']
+                });
+                if (paths && paths.length === 1) {
+                    const isDir = fs.lstatSync(paths[0]).isDirectory();
+                    const defaultPath = path.join(paths[0], 'index.html');
+                    const uploadConfig = {
+                        path: paths[0],
+                        kind: isDir ? 'directory' : 'file',
+                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                    };
+                    swarmNode.upload(uploadConfig).then((hash) => {
+                        focusedWindow.webContents.executeJavaScript(`
+                          Tabs.update('browser', {$set: {
+                              url: 'bzz://${hash}',
+                              redirect: 'bzz://${hash}'
+                          }});
+                          LocalStore.set('selectedTab', 'browser');
+                        `);
+                        console.log('Hash uploaded:', hash);
+                    }).catch(e => console.log(e));
                 }
-            }]
+            }
         });
+    }
+
+    // FILE
+    menu.push({
+        label: i18n.t('mist.applicationMenu.file.label'),
+        submenu: fileSubMenu
+    });
 
     // EDIT
     menu.push({
@@ -352,6 +355,7 @@ let menuTempl = function (webviews) {
 
     // DEVELOP
     const devToolsMenu = [];
+    let devtToolsSubMenu;
 
     // change for wallet
     if (Settings.uiMode === 'mist') {
@@ -359,7 +363,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                const curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -383,7 +388,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                const curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -432,7 +438,7 @@ let menuTempl = function (webviews) {
                 shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
             } catch (e) {
                 log.info(e);
-                log = 'Couldn\'t load log file.';
+                log.info('Couldn\'t load log file.');
             }
         },
     });

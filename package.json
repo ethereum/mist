@@ -12,11 +12,13 @@
   },
   "main": "entry.js",
   "dependencies": {
+    "babel-preset-es2016-node5": "^1.1.2",
     "bignumber.js": "^4.0.1",
     "bluebird": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-string": "^1.3.0",
     "electron-compile": "^6.4.1",
+    "electron-compilers": "^5.9.0",
     "electron-window-state": "^4.0.1",
     "ethereum-client-binaries": "^1.6.1",
     "ethereum-keyfile-recognizer": "^1.0.2",
@@ -43,14 +45,12 @@
     "yargs": "^7.0.2"
   },
   "devDependencies": {
-    "babel-preset-es2016-node5": "^1.1.2",
     "chai": "^3.5.0",
     "co-mocha": "^1.2.0",
     "del": "^2.2.2",
     "ecstatic": "^2.1.0",
     "electron": "1.4.15",
     "electron-builder": "^12.2.2",
-    "electron-compilers": "^5.9.0",
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",

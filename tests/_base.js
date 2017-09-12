@@ -133,6 +133,7 @@ exports.mocha = (_module, options) => {
                 chromeDriverLogPath: chromeLogFile,
             });
 
+            console.info('App starting...');
             yield this.app.start();
             console.info('App started');
             this.client = this.app.client;

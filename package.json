@@ -12,9 +12,8 @@
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check"
   },
-  "main": "entry.js",
+  "main": "main.js",
   "dependencies": {
-    "babel-preset-es2016-node5": "^1.1.2",
     "bignumber.js": "^4.0.1",
     "bluebird": "^3.5.0",
     "chai-as-promised": "^6.0.0",

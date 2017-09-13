@@ -4,6 +4,7 @@ const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const gulp = require('gulp');
+const babel = require('gulp-babel');
 const options = require('../gulpfile.js').options;
 const path = require('path');
 const Q = require('bluebird');
@@ -28,9 +29,6 @@ gulp.task('copy-app-source-files', () => {
         'node_modules/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
-        '.compilerc',
-        './entry.js',
-        './main.js',
         './clientBinaries.json',
         './modules/**',
         './tests/**/*.*',
@@ -42,6 +40,13 @@ gulp.task('copy-app-source-files', () => {
     ], {
         base: './'
     })
+    .pipe(gulp.dest(`./dist_${type}/app`));
+});
+
+
+gulp.task('transpile', () => {
+  return gulp.src('./main.js')
+    .pipe(babel({ presets: ['es2016-node5'] }))
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 

@@ -71,6 +71,7 @@ gulp.task('buildQueue', (cb) => {
     let tasks = [
         'clean-dist',
         'copy-app-source-files',
+        'transpile',
         'copy-build-folder-files',
         'switch-production',
         'bundling-interface',

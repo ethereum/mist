@@ -30,7 +30,6 @@ gulp.task('copy-app-source-files', () => {
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
         './clientBinaries.json',
-        './modules/**',
         './tests/**/*.*',
         '!./tests/wallet/*',
         `./icons/${type}/*`,
@@ -44,10 +43,17 @@ gulp.task('copy-app-source-files', () => {
 });
 
 
-gulp.task('transpile', () => {
-  return gulp.src('./main.js')
-    .pipe(babel({ presets: ['es2016-node5'] }))
-    .pipe(gulp.dest(`./dist_${type}/app`));
+gulp.task('transpile-main', () => {
+    return gulp.src('./main.js')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app`));
+});
+
+
+gulp.task('transpile-modules', () => {
+    return gulp.src('./modules/**')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app/modules`));
 });
 
 

@@ -215,6 +215,12 @@ Options are:
 
 *Note: applicable only when combined with `--wallet`*
 
+#### skipTasks
+
+When building a binary, you can optionally skip some tasks — generally for testing purposes.
+
+  $ gulp --mac --skipTasks=bundling-interface,release-dist
+
 #### Checksums
 
 Spits out the MD5 checksums of distributables.
@@ -226,7 +232,7 @@ It expects installer/zip files to be in the generated folders e.g. `dist_mist/re
 
 ## Testing
 
-Tests are ran using [Spectron](https://github.com/electron/spectron/), a webdriver.io runner built for Electron. 
+Tests are ran using [Spectron](https://github.com/electron/spectron/), a webdriver.io runner built for Electron.
 
 First make sure to build Mist with:
 

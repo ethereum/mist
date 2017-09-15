@@ -88,18 +88,18 @@ Template['popupWindows_splashScreen'].onCreated(function () {
         switch (status) {
         case 'starting':
             TemplateVar.set(template, 'text', 'Starting Swarm');
-            TempalteVar.set(template, 'showProgressBar', false);
+            TemplateVar.set(template, 'showProgressBar', false);
             break;
 
         case 'downloadProgress':
             TemplateVar.set(template, 'text', `Downloading Swarm binary: ${(data * 100).toFixed(0)}%`);
-            TempalteVar.set(template, 'showProgressBar', true);
-            TempalteVar.set(template, 'progress', data * 100);
+            TemplateVar.set(template, 'showProgressBar', true);
+            TemplateVar.set(template, 'progress', data * 100);
             break;
 
         case 'started':
             TemplateVar.set(template, 'text', 'Started Swarm');
-            TempalteVar.set(template, 'showProgressBar', false);
+            TemplateVar.set(template, 'showProgressBar', false);
             break;
         }
     });

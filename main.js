@@ -109,13 +109,11 @@ async function init() {
         global.interfaceAppUrl = global.interfacePopupsUrl = url;
     }
 
-
     // prevent crashes and close gracefully
     process.on('uncaughtException', (error) => {
         log.error('UNCAUGHT EXCEPTION', error);
         store.dispatch(quitApp());
     });
-
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {

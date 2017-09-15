@@ -69,6 +69,8 @@
     "json-structure-diff": "^0.0.2",
     "minimist": "^1.2.0",
     "mocha": "^3.2.0",
+    "redux-devtools-extension": "^2.13.2",
+    "remote-redux-devtools": "^0.5.12",
     "require-dir": "^0.3.2",
     "run-sequence": "^1.2.1",
     "semver-compare": "^1.0.0",

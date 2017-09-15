@@ -12,6 +12,11 @@ const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 
+
+import configureReduxStore from './modules/core/store';
+import { createSplashWindow, quitApp } from './modules/core/ui/actions';
+
+
 Q.config({
     cancellation: true,
 });
@@ -96,13 +101,13 @@ if (Settings.uiMode === 'wallet') {
 // prevent crashed and close gracefully
 process.on('uncaughtException', (error) => {
     log.error('UNCAUGHT EXCEPTION', error);
-    app.quit();
+    store.dispatch(quitApp());
 });
 
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    app.quit();
+    store.dispatch(quitApp());
 });
 
 // Listen to custom protocole incoming messages, needs registering of URL schemes
@@ -132,7 +137,7 @@ app.on('before-quit', (event) => {
             killedSocketsAndNodes = true;
             await db.close();
 
-            app.quit();
+            store.dispatch(quitApp());
         }, 500);
     } else {
         log.info('About to quit...');
@@ -147,7 +152,9 @@ let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
-app.on('ready', () => {
+app.on('ready', async () => {
+    global.store = await configureReduxStore();
+    
     // if using HTTP RPC then inform user
     if (Settings.rpcMode === 'http') {
         dialog.showErrorBox('Insecure RPC connection', `
@@ -162,7 +169,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
     // initialise the db
     global.db.init().then(onReady).catch((err) => {
         log.error(err);
-        app.quit();
+        store.dispatch(quitApp());
     });
 });
 
@@ -252,6 +259,10 @@ onReady = () => {
     defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) {
+      
+        // TODO: SPLASH_WINDOW::CREATE
+        store.dispatch(createSplashWindow(Settings.uiMode));
+
         splashWindow = Windows.create('splash', {
             primary: true,
             url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
@@ -365,7 +376,7 @@ onReady = () => {
                     detail: global.i18n.t('mist.errors.legacyChain.description')
                 }, () => {
                     shell.openExternal('https://github.com/ethereum/mist/releases');
-                    app.quit();
+                    store.dispatch(quitApp());
                 });
 
                 throw new Error('Cant start client due to legacy non-Fork setting.');
@@ -413,7 +424,7 @@ onReady = () => {
                     });
 
                     onboardingWindow.on('closed', () => {
-                        app.quit();
+                        store.dispatch(quitApp());
                     });
 
                     // change network types (mainnet, testnet)
@@ -502,7 +513,7 @@ startMainWindow = () => {
 
     // close app, when the main window is closed
     mainWindow.on('closed', () => {
-        app.quit();
+        store.dispatch(quitApp());
     });
 
     // observe Tabs for changes and refresh menu

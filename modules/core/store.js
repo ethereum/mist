@@ -1,10 +1,14 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { app } from 'electron';
-import devToolsEnhancer from 'remote-redux-devtools';
+import { composeWithDevTools } from 'remote-redux-devtools';
 import rootReducer from './rootReducer';
+import thunk from 'redux-thunk';
 
-export default async function configureReduxStore() {
-    const store = createStore(rootReducer, devToolsEnhancer());
+export default function configureReduxStore() {
+    const store = createStore(
+        rootReducer, 
+        composeWithDevTools(applyMiddleware(thunk))
+    );
 
     store.subscribe(() => {
         const state = store.getState();

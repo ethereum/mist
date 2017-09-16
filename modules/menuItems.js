@@ -316,6 +316,7 @@ let menuTempl = function (webviews) {
             browserWindow.webContents.executeJavaScript(
                `TAPi18n.setLanguage("${langCode}");`
             );
+            store.dispatch({ type: 'SETTINGS_I18N::SET', payload: { i18n: langCode } });
 
             // set Accept_Language header
             const session = browserWindow.webContents.session;

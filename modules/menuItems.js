@@ -436,7 +436,6 @@ let menuTempl = function (webviews) {
                 shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
             } catch (e) {
                 log.info(e);
-                log = 'Couldn\'t load log file.';
             }
         },
     });

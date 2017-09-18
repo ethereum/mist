@@ -455,17 +455,24 @@ let menuTempl = function (webviews) {
         const gethClient = ClientBinaryManager.getClient('geth');
 
         if (gethClient) {
-            nodeSubmenu.push(
-                {
-                    label: `Geth ${gethClient.version} (Go)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
-                    enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
-                    click() {
-                        restartNode('geth');
-                    },
-                }
-            );
+            nodeSubmenu.push({
+                label: `Geth ${gethClient.version}`,
+                checked: ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isLightMode,
+                enabled: ethereumNode.isOwnNode,
+                type: 'checkbox',
+                click() {
+                    restartNode('geth', null, 'fast');
+                },
+            });
+            nodeSubmenu.push({
+                label: `Geth ${gethClient.version} Light Mode (beta)`,
+                checked: ethereumNode.isOwnNode && ethereumNode.isGeth && ethereumNode.isLightMode,
+                enabled: ethereumNode.isOwnNode,
+                type: 'checkbox',
+                click() {
+                    restartNode('geth', null, 'light');
+                },
+            });
         }
 
         if (ethClient) {

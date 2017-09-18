@@ -110,7 +110,7 @@ Template['elements_nodeInfo'].onDestroyed(function() {
 
     if (this.syncFilter) {
         this.syncFilter.stopWatching();
-    } 
+    }
 });
 
 
@@ -133,6 +133,10 @@ Template['elements_nodeInfo'].helpers({
         var timeSince = moment(EthBlocks.latest.timestamp, 'X');
         var now = moment();
         var diff = now.diff(timeSince, 'seconds');
+
+        if (!EthBlocks.latest.timestamp) {
+            return '-';
+        }
 
         if (diff > 60) {
             Helpers.rerun['10s'].tick();

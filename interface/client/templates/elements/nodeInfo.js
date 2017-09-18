@@ -105,11 +105,12 @@ Template['elements_nodeInfo'].onCreated(function(){
 });
 
 
-Template['elements_nodeInfo'].onDestroyed(function(){
+Template['elements_nodeInfo'].onDestroyed(function() {
     Meteor.clearInterval(this.peerCountIntervalId);
 
-    if(this.syncFilter)
+    if (this.syncFilter) {
         this.syncFilter.stopWatching();
+    } 
 });
 
 
@@ -120,7 +121,7 @@ Template['elements_nodeInfo'].helpers({
     @method (formattedBlockNumber)
     @return {String}
     */
-    'formattedBlockNumber': function() {
+    formattedBlockNumber: function () {
         return numeral(EthBlocks.latest.number).format('0,0');
     },
     /**
@@ -128,20 +129,20 @@ Template['elements_nodeInfo'].helpers({
 
     @method (timeSinceBlock)
     */
-    'timeSinceBlock': function () {
-        var timeSince = moment(EthBlocks.latest.timestamp, "X");
+    timeSinceBlock: function () {
+        var timeSince = moment(EthBlocks.latest.timestamp, 'X');
         var now = moment();
-        var diff = now.diff(timeSince, "seconds");
+        var diff = now.diff(timeSince, 'seconds');
 
-        if (diff>60) {
-            Helpers.rerun["10s"].tick();
+        if (diff > 60) {
+            Helpers.rerun['10s'].tick();
             return timeSince.fromNow(true);
-        } else if (diff<2) {
-            Helpers.rerun["1s"].tick();
-            return ' <span class="blue">' + TAPi18n.__('mist.nodeInfo.blockReceivedShort') + '</span>'
-        } else {
-            Helpers.rerun["1s"].tick();
-            return diff + "s";
+        } else if (diff < 2) {
+            Helpers.rerun['1s'].tick();
+            return ' <span class="blue">' + TAPi18n.__('mist.nodeInfo.blockReceivedShort') + '</span>';
         }
+
+        Helpers.rerun['1s'].tick();
+        return diff + 's';
     }
 });

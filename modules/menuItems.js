@@ -31,12 +31,12 @@ const createMenu = function (webviews) {
 };
 
 
-const restartNode = function (newType, newNetwork) {
+const restartNode = function (newType, newNetwork, syncMode) {
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
 
-    return ethereumNode.restart(newType, newNetwork)
+    return ethereumNode.restart(newType, newNetwork, syncMode)
         .then(() => {
             Windows.getByType('main').load(global.interfaceAppUrl);
 

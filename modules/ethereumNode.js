@@ -174,22 +174,15 @@ class EthereumNode extends EventEmitter {
             log.info('Restart node', newType, newNetwork);
 
             return this.stop()
-                .then(() => {
-                    Windows.loading.show();
-                })
-                .then(() => {
-                    return this._start(
+                .then(() => Windows.loading.show())
+                .then(() => this._start(
                       newType || this.type,
                       newNetwork || this.network,
                       syncMode || this.syncMode
-                    );
-                })
-                .then(() => {
-                    Windows.loading.hide();
-                })
+                    ))
+                .then(() => Windows.loading.hide())
                 .catch((err) => {
                     log.error('Error restarting node', err);
-
                     throw err;
                 });
         });

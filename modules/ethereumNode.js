@@ -377,20 +377,17 @@ class EthereumNode extends EventEmitter {
 
                 switch (network) {
 
-                // STARTS ROPSTEN
+                // Starts Ropsten network
                 case 'test':
-                    args = (nodeType === 'geth') ? [
+                    args = [
                         '--testnet',
                         '--syncmode', syncMode,
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
                         '--ipcpath', Settings.rpcIpcPath
-                    ] : [
-                        '--morden',
-                        '--unsafe-transactions'
                     ];
                     break;
 
-                // STARTS RINKEBY
+                // Starts Rinkeby network
                 case 'rinkeby':
                     args = [
                         '--rinkeby',
@@ -400,6 +397,7 @@ class EthereumNode extends EventEmitter {
                     ];
                     break;
 
+                // Starts local network
                 case 'dev':
                     args = [
                         '--dev',
@@ -408,7 +406,7 @@ class EthereumNode extends EventEmitter {
                     ];
                     break;
 
-                // STARTS MAINNET
+                // Starts Main net
                 default:
                     args = (nodeType === 'geth')
                         ? [

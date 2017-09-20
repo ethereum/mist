@@ -41,6 +41,7 @@ const restartNode = function (newType, newNetwork, syncMode) {
             Windows.getByType('main').load(global.interfaceAppUrl);
 
             createMenu(webviews);
+            log.info('Node switch successful.');
         })
         .catch((err) => {
             log.error('Error switching node', err);

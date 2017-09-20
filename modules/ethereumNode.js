@@ -403,7 +403,7 @@ class EthereumNode extends EventEmitter {
                 case 'dev':
                     args = [
                         '--dev',
-                        '--minerThreads', '1',
+                        '--minerthreads', '1',
                         '--ipcpath', Settings.rpcIpcPath
                     ];
                     break;

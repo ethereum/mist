@@ -31,7 +31,7 @@ const createMenu = function (webviews) {
 };
 
 
-const restartNode = function (newType, newNetwork, syncMode) {
+const restartNode = function (newType, newNetwork, syncMode, webviews) {
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
@@ -45,6 +45,37 @@ const restartNode = function (newType, newNetwork, syncMode) {
         })
         .catch((err) => {
             log.error('Error switching node', err);
+        });
+};
+
+
+const startMining = (webviews) => {
+    ethereumNode.send('miner_start', [1])
+        .then((ret) => {
+            log.info('miner_start', ret.result);
+
+            if (ret.result) {
+                global.mining = true;
+                createMenu(webviews);
+            }
+        })
+        .catch((err) => {
+            log.error('miner_start', err);
+        });
+};
+
+const stopMining = (webviews) => {
+    ethereumNode.send('miner_stop', [1])
+        .then((ret) => {
+            log.info('miner_stop', ret.result);
+
+            if (ret.result) {
+                global.mining = false;
+                createMenu(webviews);
+            }
+        })
+        .catch((err) => {
+            log.error('miner_stop', err);
         });
 };
 
@@ -236,7 +267,7 @@ let menuTempl = function (webviews) {
                     }
                 }
             }]
-        });
+    });
 
     // EDIT
     menu.push({
@@ -457,20 +488,11 @@ let menuTempl = function (webviews) {
         if (gethClient) {
             nodeSubmenu.push({
                 label: `Geth ${gethClient.version}`,
-                checked: ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isLightMode,
+                checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
-                    restartNode('geth', null, 'fast');
-                },
-            });
-            nodeSubmenu.push({
-                label: `Geth ${gethClient.version} Light Mode (beta)`,
-                checked: ethereumNode.isOwnNode && ethereumNode.isGeth && ethereumNode.isLightMode,
-                enabled: ethereumNode.isOwnNode,
-                type: 'checkbox',
-                click() {
-                    restartNode('geth', null, 'light');
+                    restartNode('geth', null, 'fast', webviews);
                 },
             });
         }
@@ -502,9 +524,9 @@ let menuTempl = function (webviews) {
         submenu: [
             {
                 label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-                accelerator: 'CommandOrControl+Shift+1',
+                accelerator: 'CommandOrControl+Alt+1',
                 checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isMainNetwork,
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'main');
@@ -512,9 +534,9 @@ let menuTempl = function (webviews) {
             },
             {
                 label: 'Ropsten - Test network',
-                accelerator: 'CommandOrControl+Shift+2',
+                accelerator: 'CommandOrControl+Alt+2',
                 checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
-                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'test',
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'test');
@@ -522,9 +544,9 @@ let menuTempl = function (webviews) {
             },
             {
                 label: 'Rinkeby - Test network',
-                accelerator: 'CommandOrControl+Shift+3',
+                accelerator: 'CommandOrControl+Alt+3',
                 checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
-                enabled: ethereumNode.isOwnNode && ethereumNode.network !== 'rinkeby',
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'rinkeby');
@@ -532,9 +554,9 @@ let menuTempl = function (webviews) {
             },
             {
                 label: 'Solo network',
-                accelerator: 'CommandOrControl+Shift+4',
+                accelerator: 'CommandOrControl+Alt+4',
                 checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
-                enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+                enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
                     restartNode(ethereumNode.type, 'dev');
@@ -542,42 +564,42 @@ let menuTempl = function (webviews) {
             }
         ] });
 
-    devToolsMenu.push({
-        label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
-        accelerator: 'CommandOrControl+Shift+M',
-        enabled: ethereumNode.isOwnNode &&
-                (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork),
-        click() {
-            if (!global.mining) {
-                ethereumNode.send('miner_start', [1])
-                    .then((ret) => {
-                        log.info('miner_start', ret.result);
+    // Light mode switch should appear when not in Solo Mode (dev network)
+    if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {
+        if (!ethereumNode.isLightMode) {
+            devToolsMenu.push({
+                label: 'Enable Light Mode (experimental)',
+                enabled: true,
+                click() {
+                    restartNode('geth', null, 'light');
+                },
+            });
+        } else {
+            devToolsMenu.push({
+                label: 'Disable Light Mode',
+                enabled: true,
+                click() {
+                    restartNode('geth', null, 'fast');
+                },
+            });
+        }
+    }
 
-                        if (ret.result) {
-                            global.mining = true;
-                            createMenu(webviews);
-                        }
-                    })
-                    .catch((err) => {
-                        log.error('miner_start', err);
-                    });
-            } else {
-                ethereumNode.send('miner_stop', [1])
-                    .then((ret) => {
-                        log.info('miner_stop', ret.result);
-
-                        if (ret.result) {
-                            global.mining = false;
-                            createMenu(webviews);
-                        }
-                    })
-                    .catch((err) => {
-                        log.error('miner_stop', err);
-                    });
+    // Enables mining menu: only in Solo mode and Ropsten network (testnet)
+    if (ethereumNode.isOwnNode && (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)) {
+        devToolsMenu.push({
+            label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
+            accelerator: 'CommandOrControl+Shift+M',
+            enabled: true,
+            click() {
+                if (global.mining) {
+                    stopMining(webviews);
+                } else {
+                    startMining(webviews);
+                }
             }
-        },
-    });
-
+        });
+    }
 
     menu.push({
         label: ((global.mining) ? '⛏ ' : '') + i18n.t('mist.applicationMenu.develop.label'),

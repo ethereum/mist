@@ -13,7 +13,7 @@ const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 
 
-import configureReduxStore from './modules/core/store';
+import { configureReduxStore } from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 
 Q.config({

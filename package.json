@@ -35,6 +35,7 @@
     "oboe": "^2.1.3",
     "os-timesync": "^1.0.7",
     "redux": "^3.7.2",
+    "redux-electron-store": "^0.4.1",
     "redux-thunk": "^2.2.0",
     "remote-redux-devtools": "^0.5.12",
     "semver": "^5.1.0",

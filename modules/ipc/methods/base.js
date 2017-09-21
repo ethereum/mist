@@ -26,13 +26,14 @@ module.exports = class BaseProcessor {
      * @param  {Object|Array} payload  payload
      * @return {Promise}
      */
-    exec(conn, payload) {
+    async exec(conn, payload) {
         this._log.trace('Execute request', payload);
 
-        return conn.socket.send(payload, {
+        const ret = await conn.socket.send(payload, {
             fullResult: true,
         })
-        .then(ret => ret.result);
+
+        return ret.result;
     }
 
 

@@ -126,16 +126,13 @@ app.on('before-quit', (event) => {
             });
 
         // delay quit, so the sockets can close
-        setTimeout(() => {
-            ethereumNode.stop()
-            .then(() => {
-                killedSocketsAndNodes = true;
+        setTimeout(async () => {
+            await ethereumNode.stop()
 
-                return db.close();
-            })
-            .then(() => {
-                app.quit();
-            });
+            killedSocketsAndNodes = true;
+            await db.close();
+
+            app.quit();
         }, 500);
     } else {
         log.info('About to quit...');

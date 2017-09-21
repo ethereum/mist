@@ -50,7 +50,9 @@ const startGeth = function* () {
             rpcport: 58545,
         },
     });
+    console.info('Geth starting...');
     yield geth.start();
+    console.info('Geth started');
     return geth;
 };
 
@@ -131,7 +133,9 @@ exports.mocha = (_module, options) => {
                 chromeDriverLogPath: chromeLogFile,
             });
 
+            console.info('App starting...');
             yield this.app.start();
+            console.info('App started');
             this.client = this.app.client;
 
             /*

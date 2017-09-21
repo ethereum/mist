@@ -1,15 +1,15 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.6.7",
+            "version": "1.7.0",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.6.7-ab5646c5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.7.0-6c6c7b2a.tar.gz",
                             "type": "tar",
-                            "md5": "d5331a9ba124778d6d1341baba56ef11",
-                            "bin": "geth-linux-amd64-1.6.7-ab5646c5/geth"
+                            "md5": "9f40a6cd7f8f6de6b3cfd480847f7c38",
+                            "bin": "geth-linux-amd64-1.7.0-6c6c7b2a/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -19,17 +19,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.7"
+                                    "1.7.0"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.6.7-ab5646c5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.7.0-6c6c7b2a.tar.gz",
                             "type": "tar",
-                            "md5": "d9833199b6df5404be6cedc854198e1d",
-                            "bin": "geth-linux-386-1.6.7-ab5646c5/geth"
+                            "md5": "611ae050fe9dbbb90fec1be4e9f6d356",
+                            "bin": "geth-linux-386-1.7.0-6c6c7b2a/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -39,7 +39,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.7"
+                                    "1.7.0"
                                 ]
                             }
                         }
@@ -48,10 +48,10 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.6.7-ab5646c5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.7.0-6c6c7b2a.tar.gz",
                             "type": "tar",
-                            "md5": "3da6ebf7255deb74bd46743cb7113b1b",
-                            "bin": "geth-darwin-amd64-1.6.7-ab5646c5/geth"
+                            "md5": "fbd3103db321886e5abf93a4d3f42577",
+                            "bin": "geth-darwin-amd64-1.7.0-6c6c7b2a/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -61,7 +61,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.7"
+                                    "1.7.0"
                                 ]
                             }
                         }
@@ -70,10 +70,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.6.7-ab5646c5.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.7.0-6c6c7b2a.zip",
                             "type": "zip",
-                            "md5": "6c5d11b0e0d1ca420be2a0d092466c2f",
-                            "bin": "geth-windows-amd64-1.6.7-ab5646c5\\geth.exe"
+                            "md5": "d73d0c3e41263d8cccd72fbabb5cc4d1",
+                            "bin": "geth-windows-amd64-1.7.0-6c6c7b2a\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -83,17 +83,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.7"
+                                    "1.7.0"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.6.7-ab5646c5.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.7.0-6c6c7b2a.zip",
                             "type": "zip",
-                            "md5": "44f66ec3565ee5b88929af8178a34027",
-                            "bin": "geth-windows-386-1.6.7-ab5646c5\\geth.exe"
+                            "md5": "3d21ea8621dfc96f91c4ab8aa7163471",
+                            "bin": "geth-windows-386-1.7.0-6c6c7b2a\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -103,7 +103,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.7"
+                                    "1.7.0"
                                 ]
                             }
                         }

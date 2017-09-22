@@ -1,5 +1,6 @@
 const _ = require('underscore');
 const builder = require('electron-builder');
+const signer = require('electron-builder/out/windowsCodeSign').sign;
 const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
@@ -221,25 +222,17 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            cp(
-                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
-            cp(
-                `${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
         case 'mac':
-            cp(
-                path.join('mac', `${applicationName}-${version}.dmg`),
-                `${appNameHypen}-macosx-${versionDashed}.dmg`);
+            cp(`${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            cp(
-                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(
-                `${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
+            cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+            cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }
     });
@@ -250,11 +243,27 @@ gulp.task('release-dist', (done) => {
 
 gulp.task('build-nsis', (cb) => {
     const typeString = `-DTYPE=${type}`;
-    const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
+    const appNameStringDashed = applicationName.replace(/\s/, '-');
+    const appNameString = `-DAPPNAME=${appNameStringDashed}`;
     const versionParts = version.split('.');
     const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${versionParts[1]} -DVERSIONBUILD=${versionParts[2]}`;
 
     const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
-    exec(cmdString, cb);
+    // Manually signing NSIS installer
+    exec(cmdString, () => {
+        const signInfo = {
+            options: {}, // default signing values will apply
+            path: path.join(__dirname, '..', `dist_${type}`, 'release', `${appNameStringDashed}-installer-${versionParts.join('-')}.exe`),
+            cert: process.env.CSC_WIN_LINK,
+            password: process.env.CSC_WIN_KEY_PASSWORD
+        };
+
+        if (process.env.CSC_WIN_LINK && process.env.CSC_WIN_KEY_PASSWORD) {
+            console.log('Windows installer code signing', signInfo);
+            signer(signInfo).then(() => cb());
+        } else {
+            cb();
+        }
+    });
 });

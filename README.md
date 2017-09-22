@@ -79,9 +79,11 @@ In the original window you can then start Mist with:
     $ cd mist
     $ yarn dev:electron
 
+*NOTE: if you want to pass arguments to the Mist executable, please use the double dash `--`, then pass the flags as desired.*
+
 *NOTE: client-binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)*
 
-*NOTE: use `--help` to display available options, e.g. `--loglevel debug` (or `trace`) for verbose output*
+*NOTE: use ` yarn dev:electron -- --help` to display available options, e.g. `-- --loglevel debug` (or `trace`) for verbose output*
 
 ### Run the Wallet
 
@@ -96,7 +98,7 @@ Start the wallet app for development, *in a separate terminal window:*
 In the original window you can then start Mist using wallet mode:
 
     $ cd mist
-    $ yarn dev:electron --mode wallet
+    $ yarn dev:electron -- --mode wallet
 
 
 ### Connecting to node via HTTP instead of IPC
@@ -105,7 +107,7 @@ This is useful if you have a node running on another machine, though note that
 it's less secure than using the default IPC method.
 
 ```bash
-$ yarn dev:electron --rpc http://localhost:8545
+$ yarn dev:electron -- --rpc http://localhost:8545
 ```
 
 
@@ -115,21 +117,21 @@ You can pass command-line options directly to Geth by prefixing them with `--nod
 the command-line invocation:
 
 ```bash
-$ yarn dev:electron --mode mist --node-rpcport 19343 --node-networkid 2
+$ yarn dev:electron -- --mode mist --node-rpcport 19343 --node-networkid 2
 ```
 
 The `--rpc` Mist option is a special case. If you set this to an IPC socket file
 path then the `--ipcpath` option automatically gets set, i.e.:
 
 ```bash
-$ yarn dev:electron --rpc /my/geth.ipc
+$ yarn dev:electron -- --rpc /my/geth.ipc
 ```
 
 ...is the same as doing...
 
 
 ```bash
-$ yarn dev:electron --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
+$ yarn dev:electron -- --rpc /my/geth.ipc --node-ipcpath /my/geth.ipc
 ```
 
 ### Creating a local private net
@@ -144,7 +146,7 @@ To run a private network you will need to set the IPC path, network id and data
 folder:
 
 ```bash
-$ yarn dev:electron --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234 --node-datadir ~/Library/Ethereum/privatenet
+$ yarn dev:electron -- --rpc ~/Library/Ethereum/geth.ipc --node-networkid 1234 --node-datadir ~/Library/Ethereum/privatenet
 ```
 
 _NOTE: since `ipcpath` is also a Mist option you do not need to also include a

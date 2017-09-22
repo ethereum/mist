@@ -352,6 +352,8 @@ let menuTempl = function (webviews) {
 
     // DEVELOP
     const devToolsMenu = [];
+    let devtToolsSubMenu;
+    let curWindow;
 
     // change for wallet
     if (Settings.uiMode === 'mist') {
@@ -359,7 +361,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsMistUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -383,7 +386,8 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.devToolsWalletUI'),
             accelerator: 'Alt+CommandOrControl+I',
             click() {
-                if (curWindow = BrowserWindow.getFocusedWindow()) {
+                curWindow = BrowserWindow.getFocusedWindow();
+                if (curWindow) {
                     curWindow.toggleDevTools();
                 }
             },
@@ -632,7 +636,7 @@ let menuTempl = function (webviews) {
     }, {
         label: i18n.t('mist.applicationMenu.help.gitter'),
         click() {
-            shell.openExternal('https://gitter.com/ethereum/mist');
+            shell.openExternal('https://gitter.im/ethereum/mist');
         },
     }, {
         label: i18n.t('mist.applicationMenu.help.reportBug'),

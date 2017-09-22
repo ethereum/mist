@@ -20,8 +20,8 @@
         "sending": "Inviando...",
         "create": "Crea",
         "tryToReconnect": "Prova a riconnetterti",
-        "stayAnonymous": "Stay anonymous",
-        "authorize": "Authorize"
+        "stayAnonymous": "Rimani anonimo",
+        "authorize": "Autorizza"
     },
     "commonWords": {
         "you": "Tu",

@@ -544,9 +544,9 @@ class EthereumNode extends EventEmitter {
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
         this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
-        this.defaultSyncMode = Settings.syncMode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE;
+        this.defaultSyncMode = Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE;
 
-        log.info(Settings.syncMode, Settings.loadUserData('syncmode'), DEFAULT_SYNCMODE);
+        log.info(Settings.syncmode, Settings.loadUserData('syncmode'), DEFAULT_SYNCMODE);
         log.info(`Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${this.defaultSyncMode}`);
     }
 }

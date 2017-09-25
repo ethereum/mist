@@ -14,6 +14,8 @@ const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
+import { getLanguage } from './core/settings/actions';
+
 const log = logger.create('ipcCommunicator');
 
 require('./abi.js');
@@ -99,9 +101,7 @@ ipc.on('backendAction_setLanguage', (e) => {
     });
 });
 
-ipc.on('backendAction_getLanguage', (e) => {
-    e.returnValue = Settings.language;
-});
+ipc.on('backendAction_getLanguage', (e) => { store.dispatch(getLanguage(e)); });
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     console.log('webcontent ID', id);

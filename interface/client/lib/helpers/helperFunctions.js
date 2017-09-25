@@ -99,6 +99,8 @@ Helpers.formatUrl = function (url) {
         } else if (url.indexOf('://') === -1) {
             // if it doesn't have a protocol
             fullUrl = 'http://' + url;
+        } else {
+          fullUrl = url;
         }
 
     return (new URL(fullUrl)).toString();

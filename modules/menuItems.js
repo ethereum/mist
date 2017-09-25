@@ -566,13 +566,14 @@ let menuTempl = function (webviews) {
 
     // Light mode switch should appear when not in Solo Mode (dev network)
     if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {
-            devToolsMenu.push({
-                label: 'Sync with Light client (beta)',
-                enabled: ethereumNode.isLightMode,
-                click() {
-                    restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
-                },
-            });
+        devToolsMenu.push({
+            label: 'Sync with Light client (beta)',
+            enabled: true,
+            checked: ethereumNode.isLightMode,
+            click() {
+                restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
+            },
+        });
     }
 
     // Enables mining menu: only in Solo mode and Ropsten network (testnet)

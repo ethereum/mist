@@ -570,6 +570,7 @@ let menuTempl = function (webviews) {
             label: 'Sync with Light client (beta)',
             enabled: true,
             checked: ethereumNode.isLightMode,
+            type: 'checkbox',
             click() {
                 restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
             },

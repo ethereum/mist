@@ -219,18 +219,18 @@ test['Wallet tab shouldn\'t have the page replaced if URLs does not match - 2'] 
     }, 2000);
 };
 
-test['Links with target _blank should open inside Mist'] = function* () {
-    const client = this.client;
-    yield this.navigateTo(`${this.fixtureBaseUrl}/fixture-popup.html`);
-    yield this.getWindowByUrl(e => /fixture-popup.html$/.test(e));
-
-    yield client.click('a[target=_blank]');
-    yield client.waitUntil(() => {
-        return client.getUrl((url) => {
-            return /index.html$/.test(url);
-        });
-    });
-};
+//test['Links with target _blank should open inside Mist'] = function* () {
+//    const client = this.client;
+//    yield this.navigateTo(`${this.fixtureBaseUrl}/fixture-popup.html`);
+//    yield this.getWindowByUrl(e => /fixture-popup.html$/.test(e));
+//
+//    yield client.click('a[target=_blank]');
+//    yield client.waitUntil(() => {
+//        return client.getUrl((url) => {
+//            return /index.html$/.test(url);
+//        });
+//    });
+//};
 
 // test['Links with target _popup should open inside Mist'] = function* () {
 //     const client = this.client;

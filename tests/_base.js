@@ -13,10 +13,13 @@ const http = require('http');
 const ecstatic = require('ecstatic');
 const express = require('express');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
+const logger = require('../modules/utils/logger');
 
 chai.should();
 
 process.env.TEST_MODE = 'true';
+
+const log = logger.create('base');
 
 const startGeth = function* () {
     let gethPath;
@@ -50,9 +53,9 @@ const startGeth = function* () {
             rpcport: 58545,
         },
     });
-    console.info('Geth starting...');
+    log.info('Geth starting...');
     yield geth.start();
-    console.info('Geth started');
+    log.info('Geth started');
     return geth;
 };
 
@@ -83,11 +86,12 @@ exports.mocha = (_module, options) => {
             this.expect = chai.expect;
 
             const mistLogFile = path.join(__dirname, 'mist.log');
-            const webdriverLogFile = path.join(__dirname, 'webdriver.log');
             const chromeLogFile = path.join(__dirname, 'chrome.log');
+            const webdriverLogDir = path.join(__dirname, 'webdriver');
 
-            _.each([mistLogFile, webdriverLogFile, chromeLogFile], (e) => {
-                shell.rm('-f', e);
+            _.each([mistLogFile, webdriverLogDir, chromeLogFile], (e) => {
+                log.info('Removing log files', e);
+                shell.rm('-rf', e);
             });
 
             this.geth = yield startGeth();
@@ -129,7 +133,7 @@ exports.mocha = (_module, options) => {
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
                 ],
-                webdriverLogPath: webdriverLogFile,
+                webdriverLogPath: webdriverLogDir,
                 chromeDriverLogPath: chromeLogFile,
             });
 
@@ -204,8 +208,7 @@ exports.mocha = (_module, options) => {
 
                 LocalStore.set('selectedTab', 'browser');
             });
-            yield Q.delay(2000);
-            // yield this.client.reload();
+            yield Q.delay(1000);
         },
 
         // * afterEach() { },

@@ -46,7 +46,7 @@
                 "ethereumNode": "Ethereum-нода",
                 "network": "Сеть",
                 "mainNetwork": "Основная сеть",
-                "startMining": "⛏ Запустить майнинг (только для тестовой сети)",
+                "startMining": "⛏ Запустить майнинг",
                 "stopMining": "⛏ Остановить майнинг",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

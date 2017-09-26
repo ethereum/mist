@@ -69,7 +69,7 @@
                 "nodeMode": "Chain download",
                 "fullNode": "Store full blockchain",
                 "lightNode": "Use light Node (experimental!)",
-                "startMining": "⛏ Start mining (Testnet only)",
+                "startMining": "⛏ Start mining",
                 "stopMining": "⛏ Stop mining"
             },
             "window": {

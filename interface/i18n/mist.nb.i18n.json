@@ -46,7 +46,7 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Nettverk",
                 "mainNetwork": "Hovednettverk",
-                "startMining": "⛏ Start Mining (Kun testnett)",
+                "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stopp Mining",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

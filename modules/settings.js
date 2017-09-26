@@ -115,6 +115,14 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        syncmode: {
+            demand: false,
+            requiresArg: true,
+            describe: 'Geth synchronization mode: [fast|light|full]',
+            nargs: 1,
+            type: 'string',
+            group: 'Mist options:',
+        },
         version: {
             alias: 'v',
             demand: false,
@@ -151,6 +159,9 @@ if (argv.ipcpath) {
     argv.nodeOptions.push('--ipcpath', argv.ipcpath);
 }
 
+if (argv.nodeOptions && argv.nodeOptions.syncmode) {
+    argv.push('--syncmode', argv.nodeOptions.syncmode);
+}
 
 class Settings {
     init() {
@@ -277,6 +288,10 @@ class Settings {
         return argv.network;
     }
 
+    get syncmode() {
+        return argv.syncmode;
+    }
+
     get nodeOptions() {
         return argv.nodeOptions;
     }
@@ -341,7 +356,9 @@ class Settings {
 
       // try to read it
         try {
-            return fs.readFileSync(fullPath, { encoding: 'utf8' });
+            const data = fs.readFileSync(fullPath, { encoding: 'utf8' });
+            this._log.debug(`Reading "${data}" from ${fullPath}`);
+            return data;
         } catch (err) {
             this._log.warn(`File not readable: ${fullPath}`, err);
         }
@@ -356,6 +373,7 @@ class Settings {
         const fullPath = this.constructUserDataPath(path2);
 
         try {
+            this._log.debug(`Saving "${data}" to ${fullPath}`);
             fs.writeFileSync(fullPath, data, { encoding: 'utf8' });
         } catch (err) {
             this._log.warn(`Unable to write to ${fullPath}`, err);

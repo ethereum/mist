@@ -53,9 +53,15 @@ const startGeth = function* () {
             rpcport: 58545,
         },
     });
+<<<<<<< HEAD
     log.info('Geth starting...');
     yield geth.start();
     log.info('Geth started');
+=======
+    console.info('Geth starting...');
+    yield geth.start();
+    console.info('Geth started');
+>>>>>>> a17b8f1969aa2abb513b87cd611845691f075992
     return geth;
 };
 

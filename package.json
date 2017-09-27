@@ -10,7 +10,8 @@
   "scripts": {
     "postinstall": "cd interface && yarn",
     "dev:electron": "electron -r babel-register main.js",
-    "dev:meteor": "cd interface && meteor --no-release-check"
+    "dev:meteor": "cd interface && meteor --no-release-check",
+    "dev:tools": "open http://remotedev.io/local/"
   },
   "main": "main.js",
   "dependencies": {
@@ -33,6 +34,9 @@
     "numeral": "^2.0.6",
     "oboe": "^2.1.3",
     "os-timesync": "^1.0.7",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0",
+    "remote-redux-devtools": "^0.5.12",
     "semver": "^5.1.0",
     "solc": "^0.4.15",
     "swarm-js": "^0.1.21",

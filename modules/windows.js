@@ -1,4 +1,3 @@
-const _ = global._;
 const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
@@ -220,6 +219,7 @@ class Windows {
 
 
     create(type, options, callback) {
+        log.info(`Creating window: ${type}`);
         options = options || {};
 
         const existing = this.getByType(type);

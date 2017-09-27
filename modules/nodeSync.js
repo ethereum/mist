@@ -145,12 +145,11 @@ class NodeSync extends EventEmitter {
                         return ethereumNode.send('eth_getBlockByNumber', ['latest', false])
                             .then((ret2) => {
                                 const blockResult = ret2.result;
-
                                 const now = Math.floor(new Date().getTime() / 1000);
 
-                                const diff = now - +blockResult.timestamp;
+                                log.debug(`Last block: ${Number(blockResult.number)}; timestamp: ${blockResult.timestamp}`);
 
-                                log.debug(`Last block: ${Number(blockResult.number)}, ${diff}s ago`);
+                                const diff = now - +blockResult.timestamp;
 
                                 // need sync if > 1 minute
                                 if (diff > 60) {

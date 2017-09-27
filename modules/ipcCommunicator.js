@@ -92,15 +92,6 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     }
 });
 
-ipc.on('backendAction_setLanguage', (e) => {
-    global.i18n.changeLanguage(Settings.language.substr(0, 5), (err) => {
-        if (!err) {
-            log.info('Backend language set to: ', global.i18n.language);
-            appMenu(global.webviews);
-        }
-    });
-});
-
 ipc.on('backendAction_getLanguage', (e) => { store.dispatch(getLanguage(e)); });
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {

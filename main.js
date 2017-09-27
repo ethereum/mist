@@ -15,6 +15,7 @@ const windowStateKeeper = require('electron-window-state');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
+import { setLanguageOnMain } from './modules/core/settings/actions';
 
 Q.config({
     cancellation: true,
@@ -226,8 +227,7 @@ async function init() {
         // require('./customProtocols.js');
 
         // change to user language now that global.config object is ready
-        i18n.changeLanguage(Settings.language);
-        store.dispatch({ type: 'SETTINGS_I18N::SET', payload: { i18n: Settings.language } });
+        store.dispatch(setLanguageOnMain(Settings.language));
 
         // add menu already here, so we have copy and paste functionality
         appMenu();

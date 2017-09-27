@@ -45,7 +45,7 @@ const settings = (state = initialState, action) => {
             return Object.assign({}, state, { uiMode: action.payload.uiMode });
         case 'SETTINGS_DIRNAME::SET':
             return Object.assign({}, state, { dirname: action.payload.dirname });
-        case 'SETTINGS_I18N::SET':
+        case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
             return Object.assign({}, state, { i18n: action.payload.i18n });
         case 'SWARM::INIT_FINISH':
             return Object.assign({}, state, { swarmInit: true });

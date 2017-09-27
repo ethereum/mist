@@ -12,518 +12,567 @@ const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 
+
+import configureReduxStore from './modules/core/store';
+import { quitApp } from './modules/core/ui/actions';
+
 Q.config({
     cancellation: true,
 });
 
-
 // logging setup
 const log = logger.create('main');
 
+init();
 
-Settings.init();
+async function init() {
+    global.store = await configureReduxStore();
 
-if (Settings.cli.version) {
-    log.info(Settings.appVersion);
+    Settings.init();
+    store.dispatch({ type: 'SETTINGS::INIT_FINISH' });
 
-    process.exit(0);
-}
+    if (Settings.cli.version) {
+        log.info(Settings.appVersion);
 
-if (Settings.cli.ignoreGpuBlacklist) {
-    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
-}
+        process.exit(0);
+    }
+    store.dispatch({ type: 'SETTINGS_APP_VERSION::SET', payload: { appVersion: Settings.appVersion } });
 
-if (Settings.inAutoTestMode) {
-    log.info('AUTOMATED TESTING');
-}
-
-log.info(`Running in production mode: ${Settings.inProductionMode}`);
-
-if (Settings.rpcMode === 'http') {
-    log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
-}
-
-// db
-const db = global.db = require('./modules/db');
-
-
-require('./modules/ipcCommunicator.js');
-const appMenu = require('./modules/menuItems');
-const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
-const ethereumNode = require('./modules/ethereumNode.js');
-const swarmNode = require('./modules/swarmNode.js');
-const nodeSync = require('./modules/nodeSync.js');
-
-global.webviews = [];
-
-global.mining = false;
-
-global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
-global.mode = Settings.uiMode;
-global.dirname = __dirname;
-
-global.i18n = i18n;
-
-
-// INTERFACE PATHS
-// - WALLET
-if (Settings.uiMode === 'wallet') {
-    log.info('Starting in Wallet mode');
-
-    global.interfaceAppUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
-        : 'http://localhost:3050';
-    global.interfacePopupsUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-// - MIST
-} else {
-    log.info('Starting in Mist mode');
-
-    let url = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-    if (Settings.cli.resetTabs) {
-        url += '?reset-tabs=true';
+    if (Settings.cli.ignoreGpuBlacklist) {
+        app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
+        store.dispatch({ type: 'SETTINGS_GPU_BLACKLIST::SET' });
     }
 
-    global.interfaceAppUrl = global.interfacePopupsUrl = url;
-}
-
-
-// prevent crashed and close gracefully
-process.on('uncaughtException', (error) => {
-    log.error('UNCAUGHT EXCEPTION', error);
-    app.quit();
-});
-
-
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    app.quit();
-});
-
-// Listen to custom protocole incoming messages, needs registering of URL schemes
-app.on('open-url', (e, url) => {
-    log.info('Open URL', url);
-});
-
-
-let killedSocketsAndNodes = false;
-
-app.on('before-quit', (event) => {
-    if (!killedSocketsAndNodes) {
-        log.info('Defer quitting until sockets and node are shut down');
-
-        event.preventDefault();
-
-        // sockets manager
-        Sockets.destroyAll()
-            .catch(() => {
-                log.error('Error shutting down sockets');
-            });
-
-        // delay quit, so the sockets can close
-        setTimeout(async () => {
-            await ethereumNode.stop()
-
-            killedSocketsAndNodes = true;
-            await db.close();
-
-            app.quit();
-        }, 500);
-    } else {
-        log.info('About to quit...');
+    if (Settings.inAutoTestMode) {
+        log.info('AUTOMATED TESTING');
+        store.dispatch({ type: 'SETTINGS_AUTO_TEST_MODE::SET' });
     }
-});
 
+    log.info(`Running in production mode: ${Settings.inProductionMode}`);
+    store.dispatch({ type: 'SETTINGS_PRODUCTION_MODE::SET', payload: { productionMode: Settings.inProductionMode } });
 
-let mainWindow;
-let splashWindow;
-let onReady;
-let startMainWindow;
-
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
-app.on('ready', () => {
-    // if using HTTP RPC then inform user
     if (Settings.rpcMode === 'http') {
-        dialog.showErrorBox('Insecure RPC connection', `
-WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
-
-This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
-
-Only do this if you have secured your HTTP connection or you know what you are doing.
-`);
+        log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
     }
+    store.dispatch({ type: 'SETTINGS_RPC_MODE::SET', payload: { rpcMode: Settings.rpcMode } });
 
-    // initialise the db
-    global.db.init().then(onReady).catch((err) => {
-        log.error(err);
-        app.quit();
-    });
-});
+    // db
+    const db = global.db = require('./modules/db');
 
-// Allows the Swarm protocol to behave like http
-protocol.registerStandardSchemes(['bzz']);
 
-onReady = () => {
-    global.config = db.getCollection('SYS_config');
+    require('./modules/ipcCommunicator.js');
+    const appMenu = require('./modules/menuItems');
+    const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+    const ethereumNode = require('./modules/ethereumNode.js');
+    const swarmNode = require('./modules/swarmNode.js');
+    const nodeSync = require('./modules/nodeSync.js');
 
-    // setup DB sync to backend
-    dbSync.backendSyncInit();
+    global.webviews = [];
 
-    // Initialise window mgr
-    Windows.init();
+    global.mining = false;
+    store.dispatch({ type: 'SETTINGS_MINING::SET', payload: { mining: false } });
 
-    // Enable the Swarm protocol
-    protocol.registerHttpProtocol('bzz', (request, callback) => {
-        const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
-        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-    }, (error) => {
-        if (error) {
-            log.error(error);
-        }
-    });
+    global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
 
-    // check for update
-    if (!Settings.inAutoTestMode) UpdateChecker.run();
+    global.mode = Settings.uiMode;
+    store.dispatch({ type: 'SETTINGS_UI_MODE::SET', payload: { uiMode: Settings.uiMode } });
 
-    // initialize the web3 IPC provider backend
-    ipcProviderBackend.init();
+    global.dirname = __dirname;
+    store.dispatch({ type: 'SETTINGS_DIRNAME::SET', payload: { dirname: __dirname } });
 
-    // instantiate custom protocols
-    // require('./customProtocols.js');
+    global.i18n = i18n;
+        
+    // INTERFACE PATHS
+    // - WALLET
+    if (Settings.uiMode === 'wallet') {
+        log.info('Starting in Wallet mode');
 
-    // change to user language now that global.config object is ready
-    i18n.changeLanguage(Settings.language);
+        global.interfaceAppUrl = (Settings.inProductionMode)
+            ? `file://${__dirname}/interface/wallet/index.html`
+            : 'http://localhost:3050';
+        global.interfacePopupsUrl = (Settings.inProductionMode)
+            ? `file://${__dirname}/interface/index.html`
+            : 'http://localhost:3000';
 
-    // add menu already here, so we have copy and past functionality
-    appMenu();
-
-    // Create the browser window.
-
-    const defaultWindow = windowStateKeeper({
-        defaultWidth: 1024 + 208,
-        defaultHeight: 720
-    });
-
-    // MIST
-    if (Settings.uiMode === 'mist') {
-        mainWindow = Windows.create('main', {
-            primary: true,
-            electronOptions: {
-                width: Math.max(defaultWindow.width, 500),
-                height: Math.max(defaultWindow.height, 440),
-                x: defaultWindow.x,
-                y: defaultWindow.y,
-                webPreferences: {
-                    nodeIntegration: true, /* necessary for webviews;
-                        require will be removed through preloader */
-                    preload: `${__dirname}/modules/preloader/mistUI.js`,
-                    'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
-                    experimentalFeatures: true,
-                },
-            },
-        });
-
-    // WALLET
+    // - MIST
     } else {
-        mainWindow = Windows.create('main', {
-            primary: true,
-            electronOptions: {
-                width: Math.max(defaultWindow.width, 500),
-                height: Math.max(defaultWindow.height, 440),
-                x: defaultWindow.x,
-                y: defaultWindow.y,
-                webPreferences: {
-                    preload: `${__dirname}/modules/preloader/walletMain.js`,
-                    'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
-                },
-            },
-        });
-    }
+        log.info('Starting in Mist mode');
 
-    // Delegating events to save window bounds on windowStateKeeper
-    defaultWindow.manage(mainWindow.window);
+        let url = (Settings.inProductionMode)
+            ? `file://${__dirname}/interface/index.html`
+            : 'http://localhost:3000';
 
-    if (!Settings.inAutoTestMode) {
-        splashWindow = Windows.create('splash', {
-            primary: true,
-            url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
-            show: true,
-            electronOptions: {
-                width: 400,
-                height: 230,
-                resizable: false,
-                backgroundColor: '#F6F6F6',
-                useContentSize: true,
-                frame: false,
-                webPreferences: {
-                    preload: `${__dirname}/modules/preloader/splashScreen.js`,
-                },
-            },
-        });
-    }
-
-    // check time sync
-    // var ntpClient = require('ntp-client');
-    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
-    timesync.checkEnabled((err, enabled) => {
-        if (err) {
-            log.error('Couldn\'t get time from NTP time sync server.', err);
-            return;
+        if (Settings.cli.resetTabs) {
+            url += '?reset-tabs=true';
         }
 
-        if (!enabled) {
-            dialog.showMessageBox({
-                type: 'warning',
-                buttons: ['OK'],
-                message: global.i18n.t('mist.errors.timeSync.title'),
-                detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
-            }, () => {
-            });
+        global.interfaceAppUrl = global.interfacePopupsUrl = url;
+    }
+
+
+    // prevent crashes and close gracefully
+    process.on('uncaughtException', (error) => {
+        log.error('UNCAUGHT EXCEPTION', error);
+        store.dispatch(quitApp());
+    });
+
+
+    // Quit when all windows are closed.
+    app.on('window-all-closed', () => {
+        store.dispatch(quitApp());
+    });
+
+    // Listen to custom protocol incoming messages, needs registering of URL schemes
+    app.on('open-url', (e, url) => {
+        log.info('Open URL', url);
+    });
+
+
+    let killedSocketsAndNodes = false;
+
+    app.on('before-quit', async (event) => {
+        if (!killedSocketsAndNodes) {
+            log.info('Defer quitting until sockets and node are shut down');
+
+            event.preventDefault();
+
+            // sockets manager
+            try {
+                await Sockets.destroyAll();
+                store.dispatch({ type: 'SOCKETS::DESTROY_ALL' });
+            } catch (e) {
+                log.error('Error shutting down sockets');
+            }
+
+            // delay quit, so the sockets can close
+            setTimeout(async () => {
+                await ethereumNode.stop();
+                store.dispatch({ type: 'ETH_NODE::STOP' });
+
+                killedSocketsAndNodes = true;
+                await db.close();
+                store.dispatch({ type: 'DB::CLOSE' });
+
+                store.dispatch(quitApp());
+            }, 500);
+        } else {
+            log.info('About to quit...');
         }
     });
 
 
-    const kickStart = () => {
-        // client binary stuff
-        ClientBinaryManager.on('status', (status, data) => {
-            Windows.broadcast('uiAction_clientBinaryStatus', status, data);
+    let mainWindow;
+    let splashWindow;
+    let onReady;
+    let startMainWindow;
+
+    // This method will be called when Electron has done everything
+    // initialization and ready for creating browser windows.
+    app.on('ready', async () => {
+        // if using HTTP RPC then inform user
+        if (Settings.rpcMode === 'http') {
+            dialog.showErrorBox('Insecure RPC connection', `
+    WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
+
+    This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
+
+    Only do this if you have secured your HTTP connection or you know what you are doing.
+    `);
+        }
+
+        // initialise the db
+        try {
+            await global.db.init();
+            store.dispatch({ type: 'DB::INIT' });
+            onReady();
+        } catch (e) {
+            log.error(e);
+            store.dispatch(quitApp());
+        }
+    });
+
+    // Allows the Swarm protocol to behave like http
+    protocol.registerStandardSchemes(['bzz']);
+
+    onReady = () => {
+        global.config = db.getCollection('SYS_config');
+
+        // setup DB sync to backend
+        dbSync.backendSyncInit();
+        store.dispatch({ type: 'DB::SYNC_TO_BACKEND' });
+
+        // Initialise window mgr
+        Windows.init();
+        store.dispatch({ type: 'WINDOWS::INIT_FINISH' });
+
+        // Enable the Swarm protocol
+        protocol.registerHttpProtocol('bzz', (request, callback) => {
+            const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
+            callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+            store.dispatch({ type: 'PROTOCOL::REGISTER', payload: { protocol: 'bzz' } });
+        }, (error) => {
+            if (error) {
+                log.error(error);
+            }
         });
 
-        // node connection stuff
-        ethereumNode.on('nodeConnectionTimeout', () => {
-            Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
+        // check for update
+        if (!Settings.inAutoTestMode) UpdateChecker.run();
+        store.dispatch({ type: 'UPDATE_CHECKER::RUN' });
+
+        // initialize the web3 IPC provider backend
+        ipcProviderBackend.init();
+        store.dispatch({ type: 'IPC_PROVIDER_BACKEND::INIT' });
+
+        // instantiate custom protocols
+        // require('./customProtocols.js');
+
+        // change to user language now that global.config object is ready
+        i18n.changeLanguage(Settings.language);
+        store.dispatch({ type: 'SETTINGS_I18N::SET', payload: { i18n: Settings.language } });
+
+        // add menu already here, so we have copy and paste functionality
+        appMenu();
+
+        // Create the browser window.
+
+        const defaultWindow = windowStateKeeper({
+            defaultWidth: 1024 + 208,
+            defaultHeight: 720
         });
 
-        ethereumNode.on('nodeLog', (data) => {
-            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
-        });
+        store.dispatch({ type: 'MAIN_WINDOW::CREATE_START' });
 
-        // state change
-        ethereumNode.on('state', (state, stateAsText) => {
-            Windows.broadcast('uiAction_nodeStatus', stateAsText,
-                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
-            );
-        });
+        // MIST
+        if (Settings.uiMode === 'mist') {
+            mainWindow = Windows.create('main', {
+                primary: true,
+                electronOptions: {
+                    width: Math.max(defaultWindow.width, 500),
+                    height: Math.max(defaultWindow.height, 440),
+                    x: defaultWindow.x,
+                    y: defaultWindow.y,
+                    webPreferences: {
+                        nodeIntegration: true, /* necessary for webviews;
+                            require will be removed through preloader */
+                        preload: `${__dirname}/modules/preloader/mistUI.js`,
+                        'overlay-fullscreen-video': true,
+                        'overlay-scrollbars': true,
+                        experimentalFeatures: true,
+                    },
+                },
+            });
+            store.dispatch({ type: 'MAIN_WINDOW::CREATE_SUCCESS' });
 
-        // starting swarm
-        swarmNode.on('starting', () => {
-            Windows.broadcast('uiAction_swarmStatus', 'starting');
-        });
+        // WALLET
+        } else {
+            mainWindow = Windows.create('main', {
+                primary: true,
+                electronOptions: {
+                    width: Math.max(defaultWindow.width, 500),
+                    height: Math.max(defaultWindow.height, 440),
+                    x: defaultWindow.x,
+                    y: defaultWindow.y,
+                    webPreferences: {
+                        preload: `${__dirname}/modules/preloader/walletMain.js`,
+                        'overlay-fullscreen-video': true,
+                        'overlay-scrollbars': true,
+                    },
+                },
+            });
+            store.dispatch({ type: 'MAIN_WINDOW::CREATE_SUCCESS' });
+        }
 
-        // swarm download progress
-        swarmNode.on('downloadProgress', (progress) => {
-            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
-        });
+        // Delegating events to save window bounds on windowStateKeeper
+        defaultWindow.manage(mainWindow.window);
 
-        // started swarm
-        swarmNode.on('started', (isLocal) => {
-            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
-        });
+        if (!Settings.inAutoTestMode) {
+            store.dispatch({ type: 'SPLASH_WINDOW::CREATE_START' });
 
-
-        // capture sync results
-        const syncResultPromise = new Q((resolve, reject) => {
-            nodeSync.on('nodeSyncing', (result) => {
-                Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+            splashWindow = Windows.create('splash', {
+                primary: true,
+                url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
+                show: true,
+                electronOptions: {
+                    width: 400,
+                    height: 230,
+                    resizable: false,
+                    backgroundColor: '#F6F6F6',
+                    useContentSize: true,
+                    frame: false,
+                    webPreferences: {
+                        preload: `${__dirname}/modules/preloader/splashScreen.js`,
+                    },
+                },
             });
 
-            nodeSync.on('stopped', () => {
-                Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
-            });
+            store.dispatch({ type: 'SPLASH_WINDOW::CREATE_SUCCESS' });
+        }
 
-            nodeSync.on('error', (err) => {
-                log.error('Error syncing node', err);
+        // check time sync
+        // var ntpClient = require('ntp-client');
+        // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
+        timesync.checkEnabled((err, enabled) => {
+            if (err) {
+                log.error('Couldn\'t get time from NTP time sync server.', err);
+                return;
+            }
 
-                reject(err);
-            });
-
-            nodeSync.on('finished', () => {
-                nodeSync.removeAllListeners('error');
-                nodeSync.removeAllListeners('finished');
-
-                resolve();
-            });
-        });
-
-        // check legacy chain
-        // CHECK for legacy chain (FORK RELATED)
-        Q.try(() => {
-            // open the legacy chain message
-            if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
+            if (!enabled) {
                 dialog.showMessageBox({
                     type: 'warning',
                     buttons: ['OK'],
-                    message: global.i18n.t('mist.errors.legacyChain.title'),
-                    detail: global.i18n.t('mist.errors.legacyChain.description')
+                    message: global.i18n.t('mist.errors.timeSync.title'),
+                    detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
                 }, () => {
-                    shell.openExternal('https://github.com/ethereum/mist/releases');
-                    app.quit();
-                });
-
-                throw new Error('Cant start client due to legacy non-Fork setting.');
-            }
-        })
-        .then(() => {
-            return ClientBinaryManager.init();
-        })
-        .then(() => {
-            return ethereumNode.init();
-        })
-        .then(() => {
-            // Wallet shouldn't start Swarm
-            if (Settings.uiMode === 'wallet') {
-                return Promise.resolve();
-            }
-            return swarmNode.init();
-        })
-        .then(function sanityCheck() {
-            if (!ethereumNode.isIpcConnected) {
-                throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
-            }
-
-            /* At this point Geth is running and the socket is connected. */
-            log.info('Connected via IPC to node.');
-
-            // update menu, to show node switching possibilities
-            appMenu();
-        })
-        .then(function getAccounts() {
-            return ethereumNode.send('eth_accounts', []);
-        })
-        .then(function onboarding(resultData) {
-
-            if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
-                log.info('No accounts setup yet, lets do onboarding first.');
-
-                return new Q((resolve, reject) => {
-                    const onboardingWindow = Windows.createPopup('onboardingScreen', {
-                        primary: true,
-                        electronOptions: {
-                            width: 576,
-                            height: 442,
-                        },
-                    });
-
-                    onboardingWindow.on('closed', () => {
-                        app.quit();
-                    });
-
-                    // change network types (mainnet, testnet)
-                    ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                        const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'rinkeby' : 'main';
-
-                        log.debug('Onboarding change network', newType, newNetwork);
-
-                        ethereumNode.restart(newType, newNetwork)
-                            .then(function nodeRestarted() {
-                                appMenu();
-                            })
-                            .catch((err) => {
-                                log.error('Error restarting node', err);
-
-                                reject(err);
-                            });
-                    });
-
-                    // launch app
-                    ipcMain.on('onBoarding_launchApp', () => {
-                        // prevent that it closes the app
-                        onboardingWindow.removeAllListeners('closed');
-                        onboardingWindow.close();
-
-                        ipcMain.removeAllListeners('onBoarding_changeNet');
-                        ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                        resolve();
-                    });
-
-                    if (splashWindow) {
-                        splashWindow.hide();
-                    }
                 });
             }
-
-            return;
-        })
-        .then(function doSync() {
-            // we're going to do the sync - so show splash
-            if (splashWindow) {
-                splashWindow.show();
-            }
-
-            if (!Settings.inAutoTestMode) {
-                return syncResultPromise;
-            }
-
-            return;
-        })
-        .then(function allDone() {
-            startMainWindow();
-        })
-        .catch((err) => {
-            log.error('Error starting up node and/or syncing', err);
-        }); /* socket connected to geth */
-    }; /* kick start */
-
-    if (splashWindow) {
-        splashWindow.on('ready', kickStart);
-    } else {
-        kickStart();
-    }
-}; /* onReady() */
+        });
 
 
-/**
-Start the main window and all its processes
+        const kickStart = () => {
+            // client binary stuff
+            ClientBinaryManager.on('status', (status, data) => {
+                Windows.broadcast('uiAction_clientBinaryStatus', status, data);
+            });
 
-@method startMainWindow
-*/
-startMainWindow = () => {
-    log.info(`Loading Interface at ${global.interfaceAppUrl}`);
+            // node connection stuff
+            ethereumNode.on('nodeConnectionTimeout', () => {
+                Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
+            });
 
-    mainWindow.on('ready', () => {
+            ethereumNode.on('nodeLog', (data) => {
+                Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
+            });
+
+            // state change
+            ethereumNode.on('state', (state, stateAsText) => {
+                Windows.broadcast('uiAction_nodeStatus', stateAsText,
+                    ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+                );
+            });
+
+            // starting swarm
+            swarmNode.on('starting', () => {
+                Windows.broadcast('uiAction_swarmStatus', 'starting');
+                store.dispatch({ type: 'SWARM::INIT_START' });
+            });
+
+            // swarm download progress
+            swarmNode.on('downloadProgress', (progress) => {
+                Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+            });
+
+            // started swarm
+            swarmNode.on('started', (isLocal) => {
+                Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+                store.dispatch({ type: 'SWARM::INIT_FINISH' });
+            });
+
+
+            // capture sync results
+            const syncResultPromise = new Q((resolve, reject) => {
+                nodeSync.on('nodeSyncing', (result) => {
+                    Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+                });
+
+                nodeSync.on('stopped', () => {
+                    Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+                });
+
+                nodeSync.on('error', (err) => {
+                    log.error('Error syncing node', err);
+
+                    reject(err);
+                });
+
+                nodeSync.on('finished', () => {
+                    nodeSync.removeAllListeners('error');
+                    nodeSync.removeAllListeners('finished');
+
+                    resolve();
+                });
+            });
+
+            // check legacy chain
+            // CHECK for legacy chain (FORK RELATED)
+            Q.try(() => {
+                // open the legacy chain message
+                if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
+                    dialog.showMessageBox({
+                        type: 'warning',
+                        buttons: ['OK'],
+                        message: global.i18n.t('mist.errors.legacyChain.title'),
+                        detail: global.i18n.t('mist.errors.legacyChain.description')
+                    }, () => {
+                        shell.openExternal('https://github.com/ethereum/mist/releases');
+                        store.dispatch(quitApp());
+                    });
+
+                    throw new Error('Cant start client due to legacy non-Fork setting.');
+                }
+            })
+            .then(() => {
+                return ClientBinaryManager.init();
+            })
+            .then(() => {
+                return ethereumNode.init();
+            })
+            .then(() => {
+                // Wallet shouldn't start Swarm
+                if (Settings.uiMode === 'wallet') {
+                    return Promise.resolve();
+                }
+                return swarmNode.init();
+            })
+            .then(function sanityCheck() {
+                if (!ethereumNode.isIpcConnected) {
+                    throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
+                }
+
+                /* At this point Geth is running and the socket is connected. */
+                log.info('Connected via IPC to node.');
+
+                // update menu, to show node switching possibilities
+                appMenu();
+            })
+            .then(function getAccounts() {
+                return ethereumNode.send('eth_accounts', []);
+            })
+            .then(function onboarding(resultData) {
+
+                if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
+                    log.info('No accounts setup yet, lets do onboarding first.');
+
+                    return new Q((resolve, reject) => {
+                        store.dispatch({ type: 'ONBOARDING_WINDOW::CREATE_START' });
+                        const onboardingWindow = Windows.createPopup('onboardingScreen', {
+                            primary: true,
+                            electronOptions: {
+                                width: 576,
+                                height: 442,
+                            },
+                        });
+                        store.dispatch({ type: 'ONBOARDING_WINDOW::CREATE_SUCCESS' });
+
+                        onboardingWindow.on('closed', () => {
+                            store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
+                            store.dispatch(quitApp());
+                        });
+
+                        // change network types (mainnet, testnet)
+                        ipcMain.on('onBoarding_changeNet', (e, testnet) => {
+                            const newType = ethereumNode.type;
+                            const newNetwork = testnet ? 'rinkeby' : 'main';
+
+                            log.debug('Onboarding change network', newType, newNetwork);
+
+                            ethereumNode.restart(newType, newNetwork)
+                                .then(function nodeRestarted() {
+                                    appMenu();
+                                })
+                                .catch((err) => {
+                                    log.error('Error restarting node', err);
+
+                                    reject(err);
+                                });
+                        });
+
+                        // launch app
+                        ipcMain.on('onBoarding_launchApp', () => {
+                            // prevent that it closes the app
+                            onboardingWindow.removeAllListeners('closed');
+                            onboardingWindow.close();
+                            store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
+
+                            ipcMain.removeAllListeners('onBoarding_changeNet');
+                            ipcMain.removeAllListeners('onBoarding_launchApp');
+
+                            resolve();
+                        });
+
+                        if (splashWindow) {
+                            splashWindow.hide();
+                        }
+                    });
+                }
+
+                return;
+            })
+            .then(function doSync() {
+                // we're going to do the sync - so show splash
+                if (splashWindow) {
+                    splashWindow.show();
+                }
+
+                if (!Settings.inAutoTestMode) {
+                    return syncResultPromise;
+                }
+
+                return;
+            })
+            .then(function allDone() {
+                startMainWindow();
+            })
+            .catch((err) => {
+                log.error('Error starting up node and/or syncing', err);
+            }); /* socket connected to geth */
+        }; /* kick start */
+
         if (splashWindow) {
-            splashWindow.close();
+            splashWindow.on('ready', kickStart);
+        } else {
+            kickStart();
         }
+    }; /* onReady() */
 
-        mainWindow.show();
-    });
 
-    mainWindow.load(global.interfaceAppUrl);
+    /**
+    Start the main window and all its processes
 
-    // close app, when the main window is closed
-    mainWindow.on('closed', () => {
-        app.quit();
-    });
+    @method startMainWindow
+    */
+    startMainWindow = () => {
+        log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
-    // observe Tabs for changes and refresh menu
-    const Tabs = global.db.getCollection('UI_tabs');
+        mainWindow.on('ready', () => {
+            if (splashWindow) {
+                splashWindow.close();
+                store.dispatch({ type: 'SPLASH_WINDOW::CLOSE' });
+            }
 
-    const sortedTabs = Tabs.addDynamicView('sorted_tabs');
-    sortedTabs.applySimpleSort('position', false);
+            mainWindow.show();
+            store.dispatch({ type: 'MAIN_WINDOW::SHOW' });
+        });
 
-    const refreshMenu = () => {
-        clearTimeout(global._refreshMenuFromTabsTimer);
+        mainWindow.load(global.interfaceAppUrl);
 
-        global._refreshMenuFromTabsTimer = setTimeout(() => {
-            log.debug('Refresh menu with tabs');
+        // close app, when the main window is closed
+        mainWindow.on('closed', () => {
+            store.dispatch(quitApp());
+        });
 
-            global.webviews = sortedTabs.data();
+        // observe Tabs for changes and refresh menu
+        const Tabs = global.db.getCollection('UI_tabs');
 
-            appMenu(global.webviews);
-        }, 1000);
+        const sortedTabs = Tabs.addDynamicView('sorted_tabs');
+        sortedTabs.applySimpleSort('position', false);
+
+        const refreshMenu = () => {
+            clearTimeout(global._refreshMenuFromTabsTimer);
+
+            global._refreshMenuFromTabsTimer = setTimeout(() => {
+                log.debug('Refresh menu with tabs');
+
+                global.webviews = sortedTabs.data();
+
+                appMenu(global.webviews);
+                store.dispatch({ type: 'MENU::REFRESH' });
+            }, 1000);
+        };
+
+        Tabs.on('insert', refreshMenu);
+        Tabs.on('update', refreshMenu);
+        Tabs.on('delete', refreshMenu);
     };
-
-    Tabs.on('insert', refreshMenu);
-    Tabs.on('update', refreshMenu);
-    Tabs.on('delete', refreshMenu);
-};
+}

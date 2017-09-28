@@ -1,3 +1,7 @@
+export function syncFlags(argv) {
+    return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { flags: argv } };
+}
+
 export function setLanguage(lang, browserWindow) {
     return dispatch => {
         dispatch({ type: '[MAIN]:SET_LANGUAGE:START' });

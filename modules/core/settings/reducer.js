@@ -15,6 +15,7 @@ const initialState = {
     swarmInit: false,
     uiMode: '',
     updateCheckerRan: false,
+    cliFlags: {}
 };
 
 const settings = (state = initialState, action) => {
@@ -45,6 +46,8 @@ const settings = (state = initialState, action) => {
             return Object.assign({}, state, { uiMode: action.payload.uiMode });
         case 'SETTINGS_DIRNAME::SET':
             return Object.assign({}, state, { dirname: action.payload.dirname });
+        case '[MAIN]:CLI_FLAGS:SYNC':
+            return Object.assign({}, state, { cliFlags: action.payload.flags });
         case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
             return Object.assign({}, state, { i18n: action.payload.i18n });
         case 'SWARM::INIT_FINISH':

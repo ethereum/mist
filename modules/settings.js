@@ -6,6 +6,7 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
+import { syncFlags } from './core/settings/actions';
 
 // try loading in config file
 const defaultConfig = {
@@ -166,12 +167,12 @@ if (argv.nodeOptions && argv.nodeOptions.syncmode) {
 class Settings {
     init() {
         logger.setup(argv);
-
         this._log = logger.create('Settings');
+        store.dispatch(syncFlags(argv));
     }
 
     get userDataPath() {
-    // Application Aupport/Mist
+    // Application Support/Mist
         return app.getPath('userData');
     }
 

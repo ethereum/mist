@@ -2,6 +2,13 @@ export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { flags: argv } };
 }
 
+export function syncBuildConfig(appVersion, rpcMode, productionMode) {
+    return { 
+        type: '[MAIN]:BUILD_CONFIG:SYNC', 
+        payload: { appVersion, rpcMode, productionMode }
+    };
+}
+
 export function setLanguage(lang, browserWindow) {
     return dispatch => {
         dispatch({ type: '[MAIN]:SET_LANGUAGE:START' });

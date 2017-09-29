@@ -11,7 +11,7 @@ const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
-
+const log = logger.create('main');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
@@ -21,8 +21,6 @@ Q.config({
     cancellation: true,
 });
 
-// logging setup
-const log = logger.create('main');
 
 init();
 
@@ -30,36 +28,8 @@ async function init() {
     global.store = await configureReduxStore();
 
     Settings.init();
-    store.dispatch({ type: 'SETTINGS::INIT_FINISH' });
 
-    if (Settings.cli.version) {
-        log.info(Settings.appVersion);
-
-        process.exit(0);
-    }
-    store.dispatch({ type: 'SETTINGS_APP_VERSION::SET', payload: { appVersion: Settings.appVersion } });
-
-    if (Settings.cli.ignoreGpuBlacklist) {
-        app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
-        store.dispatch({ type: 'SETTINGS_GPU_BLACKLIST::SET' });
-    }
-
-    if (Settings.inAutoTestMode) {
-        log.info('AUTOMATED TESTING');
-        store.dispatch({ type: 'SETTINGS_AUTO_TEST_MODE::SET' });
-    }
-
-    log.info(`Running in production mode: ${Settings.inProductionMode}`);
-    store.dispatch({ type: 'SETTINGS_PRODUCTION_MODE::SET', payload: { productionMode: Settings.inProductionMode } });
-
-    if (Settings.rpcMode === 'http') {
-        log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
-    }
-    store.dispatch({ type: 'SETTINGS_RPC_MODE::SET', payload: { rpcMode: Settings.rpcMode } });
-
-    // db
     const db = global.db = require('./modules/db');
-
 
     require('./modules/ipcCommunicator.js');
     const appMenu = require('./modules/menuItems');

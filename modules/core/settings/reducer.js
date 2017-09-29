@@ -1,4 +1,4 @@
-const initialState = {
+export const initialState = {
     appVersion: '',
     autoTestMode: false,
     dbInit: false,
@@ -44,7 +44,7 @@ const settings = (state = initialState, action) => {
         case 'SETTINGS_DIRNAME::SET':
             return Object.assign({}, state, { dirname: action.payload.dirname });
         case '[MAIN]:CLI_FLAGS:SYNC':
-            return Object.assign({}, state, { cliFlags: action.payload.flags });
+            return Object.assign({}, state, { cliFlags: action.payload.cliFlags });
         case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
             return Object.assign({}, state, { i18n: action.payload.i18n });
         case 'SWARM::INIT_FINISH':

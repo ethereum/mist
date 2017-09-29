@@ -11,7 +11,9 @@
     "postinstall": "cd interface && yarn",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
-    "dev:tools": "open http://remotedev.io/local/"
+    "dev:tools": "open http://remotedev.io/local/",
+    "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
+    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*"
   },
   "main": "main.js",
   "dependencies": {

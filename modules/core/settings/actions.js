@@ -1,5 +1,5 @@
 export function syncFlags(argv) {
-    return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { flags: argv } };
+    return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };
 }
 
 export function syncBuildConfig(appVersion, rpcMode, productionMode) {

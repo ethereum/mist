@@ -2,10 +2,10 @@ export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };
 }
 
-export function syncBuildConfig(appVersion, rpcMode, productionMode) {
+export function syncBuildConfig(key, value) {
     return { 
         type: '[MAIN]:BUILD_CONFIG:SYNC', 
-        payload: { appVersion, rpcMode, productionMode }
+        payload: { [key]: value }
     };
 }
 

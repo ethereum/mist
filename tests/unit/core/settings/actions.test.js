@@ -28,14 +28,12 @@ describe('settings actions:', () => {
 
         it('should handle #syncBuildConfig', () => {
             const appVersion = '1.0.0';
-            const rpcMode = 'ipc';
-            const productionMode = true;
             const action = {
                 type: '[MAIN]:BUILD_CONFIG:SYNC',
-                payload: { appVersion, rpcMode, productionMode }
+                payload: { appVersion }
             };
 
-            assert.deepEqual(syncBuildConfig(appVersion, rpcMode, productionMode), action);
+            assert.deepEqual(syncBuildConfig('appVersion', appVersion), action);
         });
     });
 

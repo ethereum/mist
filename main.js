@@ -38,24 +38,17 @@ async function init() {
     const swarmNode = require('./modules/swarmNode.js');
     const nodeSync = require('./modules/nodeSync.js');
 
+    // Define global vars; The preloader makes some globals available to the client.
     global.webviews = [];
-
     global.mining = false;
-    store.dispatch({ type: 'SETTINGS_MINING::SET', payload: { mining: false } });
-
-    global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
-
-    global.mode = Settings.uiMode;
-    store.dispatch({ type: 'SETTINGS_UI_MODE::SET', payload: { uiMode: Settings.uiMode } });
-
+    global.mode = store.getState().settings.uiMode;
+    global.icon = `${__dirname}/icons/${global.mode}/icon.png`;
     global.dirname = __dirname;
-    store.dispatch({ type: 'SETTINGS_DIRNAME::SET', payload: { dirname: __dirname } });
-
     global.i18n = i18n;
         
     // INTERFACE PATHS
     // - WALLET
-    if (Settings.uiMode === 'wallet') {
+    if (global.mode === 'wallet') {
         log.info('Starting in Wallet mode');
 
         global.interfaceAppUrl = (Settings.inProductionMode)
@@ -212,7 +205,7 @@ async function init() {
         store.dispatch({ type: 'MAIN_WINDOW::CREATE_START' });
 
         // MIST
-        if (Settings.uiMode === 'mist') {
+        if (global.mode === 'mist') {
             mainWindow = Windows.create('main', {
                 primary: true,
                 electronOptions: {
@@ -259,7 +252,7 @@ async function init() {
 
             splashWindow = Windows.create('splash', {
                 primary: true,
-                url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
+                url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
                 show: true,
                 electronOptions: {
                     width: 400,
@@ -388,7 +381,7 @@ async function init() {
             })
             .then(() => {
                 // Wallet shouldn't start Swarm
-                if (Settings.uiMode === 'wallet') {
+                if (global.mode === 'wallet') {
                     return Promise.resolve();
                 }
                 return swarmNode.init();

@@ -9,16 +9,10 @@ describe('the settings reducer', () => {
     it('should handle the "[MAIN]:BUILD_CONFIG:SYNC" action', () => {
         const action = {
             type: '[MAIN]:BUILD_CONFIG:SYNC',
-            payload: {
-                appVersion: '1.0.0',
-                rpcMode: 'ipc',
-                productionMode: true
-            }
+            payload: { appVersion: '1.0.0' }
         };
         const expectedState = Object.assign({}, initialState, {
             appVersion: '1.0.0',
-            rpcMode: 'ipc',
-            productionMode: true
         });
 
         assert.deepEqual(reducer(initialState, action), expectedState);

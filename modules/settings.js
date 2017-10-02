@@ -193,7 +193,10 @@ class Settings {
             this._log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
         }
 
-        store.dispatch(syncBuildConfig(packageJson.version, this.rpcMode, this.inProductionMode));
+        store.dispatch(syncBuildConfig('appVersion', packageJson.version));
+        store.dispatch(syncBuildConfig('rpcMode', this.rpcMode));
+        store.dispatch(syncBuildConfig('productionMode', this.inProductionMode));
+        store.dispatch(syncBuildConfig('uiMode', this.uiMode));
     }
 
     get userDataPath() {

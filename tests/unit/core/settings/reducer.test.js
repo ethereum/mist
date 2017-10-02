@@ -1,5 +1,5 @@
-import reducer, { initialState } from '../../../../modules/core/settings/reducer';
 import { assert } from 'chai';
+import reducer, { initialState } from '../../../../modules/core/settings/reducer';
 
 describe('the settings reducer', () => {
     it('should return a default initial state', () => {

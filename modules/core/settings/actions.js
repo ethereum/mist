@@ -32,7 +32,7 @@ export function setLanguageOnMain(lang) {
     }
 }
 
-function setLanguageOnClient(lang, browserWindow) {
+export function setLanguageOnClient(lang, browserWindow) {
     return dispatch => {
         dispatch({ type: '[MAIN]:SET_LANGUAGE_ON_CLIENT:START' });
         try {
@@ -46,7 +46,7 @@ function setLanguageOnClient(lang, browserWindow) {
     }
 }
 
-function setAcceptLanguageHeader(lang, browserWindow) {
+export function setAcceptLanguageHeader(lang, browserWindow) {
     return dispatch => {
         dispatch({ type: '[MAIN]:SET_ACCEPT_LANGUAGE_HEADER:START' });
         try {
@@ -59,7 +59,7 @@ function setAcceptLanguageHeader(lang, browserWindow) {
     }
 }
 
-function resetMenu(lang) {
+export function resetMenu(lang) {
     return dispatch => {
         dispatch({ type: '[MAIN]:RESET_MENU:START' });
         try {

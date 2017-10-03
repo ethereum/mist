@@ -11,17 +11,16 @@ const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
-
+const log = logger.create('main');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
+import { setLanguageOnMain } from './modules/core/settings/actions';
 
 Q.config({
     cancellation: true,
 });
 
-// logging setup
-const log = logger.create('main');
 
 init();
 
@@ -29,36 +28,8 @@ async function init() {
     global.store = await configureReduxStore();
 
     Settings.init();
-    store.dispatch({ type: 'SETTINGS::INIT_FINISH' });
 
-    if (Settings.cli.version) {
-        log.info(Settings.appVersion);
-
-        process.exit(0);
-    }
-    store.dispatch({ type: 'SETTINGS_APP_VERSION::SET', payload: { appVersion: Settings.appVersion } });
-
-    if (Settings.cli.ignoreGpuBlacklist) {
-        app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
-        store.dispatch({ type: 'SETTINGS_GPU_BLACKLIST::SET' });
-    }
-
-    if (Settings.inAutoTestMode) {
-        log.info('AUTOMATED TESTING');
-        store.dispatch({ type: 'SETTINGS_AUTO_TEST_MODE::SET' });
-    }
-
-    log.info(`Running in production mode: ${Settings.inProductionMode}`);
-    store.dispatch({ type: 'SETTINGS_PRODUCTION_MODE::SET', payload: { productionMode: Settings.inProductionMode } });
-
-    if (Settings.rpcMode === 'http') {
-        log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
-    }
-    store.dispatch({ type: 'SETTINGS_RPC_MODE::SET', payload: { rpcMode: Settings.rpcMode } });
-
-    // db
     const db = global.db = require('./modules/db');
-
 
     require('./modules/ipcCommunicator.js');
     const appMenu = require('./modules/menuItems');
@@ -67,24 +38,17 @@ async function init() {
     const swarmNode = require('./modules/swarmNode.js');
     const nodeSync = require('./modules/nodeSync.js');
 
+    // Define global vars; The preloader makes some globals available to the client.
     global.webviews = [];
-
     global.mining = false;
-    store.dispatch({ type: 'SETTINGS_MINING::SET', payload: { mining: false } });
-
-    global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
-
-    global.mode = Settings.uiMode;
-    store.dispatch({ type: 'SETTINGS_UI_MODE::SET', payload: { uiMode: Settings.uiMode } });
-
+    global.mode = store.getState().settings.uiMode;
+    global.icon = `${__dirname}/icons/${global.mode}/icon.png`;
     global.dirname = __dirname;
-    store.dispatch({ type: 'SETTINGS_DIRNAME::SET', payload: { dirname: __dirname } });
-
     global.i18n = i18n;
         
     // INTERFACE PATHS
     // - WALLET
-    if (Settings.uiMode === 'wallet') {
+    if (global.mode === 'wallet') {
         log.info('Starting in Wallet mode');
 
         global.interfaceAppUrl = (Settings.inProductionMode)
@@ -109,13 +73,11 @@ async function init() {
         global.interfaceAppUrl = global.interfacePopupsUrl = url;
     }
 
-
     // prevent crashes and close gracefully
     process.on('uncaughtException', (error) => {
         log.error('UNCAUGHT EXCEPTION', error);
         store.dispatch(quitApp());
     });
-
 
     // Quit when all windows are closed.
     app.on('window-all-closed', () => {
@@ -228,8 +190,7 @@ async function init() {
         // require('./customProtocols.js');
 
         // change to user language now that global.config object is ready
-        i18n.changeLanguage(Settings.language);
-        store.dispatch({ type: 'SETTINGS_I18N::SET', payload: { i18n: Settings.language } });
+        store.dispatch(setLanguageOnMain(Settings.language));
 
         // add menu already here, so we have copy and paste functionality
         appMenu();
@@ -244,7 +205,7 @@ async function init() {
         store.dispatch({ type: 'MAIN_WINDOW::CREATE_START' });
 
         // MIST
-        if (Settings.uiMode === 'mist') {
+        if (global.mode === 'mist') {
             mainWindow = Windows.create('main', {
                 primary: true,
                 electronOptions: {
@@ -291,7 +252,7 @@ async function init() {
 
             splashWindow = Windows.create('splash', {
                 primary: true,
-                url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
+                url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
                 show: true,
                 electronOptions: {
                     width: 400,
@@ -420,7 +381,7 @@ async function init() {
             })
             .then(() => {
                 // Wallet shouldn't start Swarm
-                if (Settings.uiMode === 'wallet') {
+                if (global.mode === 'wallet') {
                     return Promise.resolve();
                 }
                 return swarmNode.init();

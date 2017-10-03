@@ -1,13 +1,16 @@
 import { createStore, applyMiddleware } from 'redux';
-import { app } from 'electron';
+import { electronEnhancer } from 'redux-electron-store';
 import { composeWithDevTools } from 'remote-redux-devtools';
-import rootReducer from './rootReducer';
 import thunk from 'redux-thunk';
+import { app } from 'electron';
+import rootReducer from './rootReducer';
 
 export default function configureReduxStore() {
     const store = createStore(
         rootReducer, 
-        composeWithDevTools(applyMiddleware(thunk))
+        composeWithDevTools(applyMiddleware(thunk), electronEnhancer({
+            dispatchProxy: a => store.dispatch(a)
+        }))
     );
 
     store.subscribe(() => {

@@ -9,6 +9,8 @@ const ethereumNode = require('./ethereumNode.js');
 const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
+import { setLanguage } from './core/settings/actions';
+
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -310,33 +312,8 @@ let menuTempl = function (webviews) {
     });
 
     // LANGUAGE (VIEW)
-    const switchLang = langCode => function (menuItem, browserWindow) {
-        try {
-            // update i18next instance in browserWindow (Mist meteor interface)
-            browserWindow.webContents.executeJavaScript(
-               `TAPi18n.setLanguage("${langCode}");`
-            );
-            store.dispatch({ type: 'SETTINGS_I18N::SET', payload: { i18n: langCode } });
-
-            // set Accept_Language header
-            const session = browserWindow.webContents.session;
-            session.setUserAgent(session.getUserAgent(), langCode);
-
-            // set navigator.language (dev console only)
-            // browserWindow.webContents.executeJavaScript(
-            //     `Object.defineProperty(navigator, 'language, {
-            //         get() { return ${langCode}; }
-            //     });`
-            // );
-
-            // reload browserWindow to apply language change
-            // browserWindow.webContents.reload();
-        } catch (err) {
-            log.error(err);
-        } finally {
-            Settings.language = langCode;
-            ipc.emit('backendAction_setLanguage');
-        }
+    const switchLang = langCode => (menuItem, browserWindow) => {
+        store.dispatch(setLanguage(langCode, browserWindow));
     };
 
     const currentLanguage = Settings.language;

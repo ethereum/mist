@@ -165,7 +165,7 @@ Sets the main badge of your dapp, right below your dapps menu button.
 
 ### mist.menu.update(id, [, options] [, callback])
 
-Works like `mist.menu.add()`, but all of the `id` parameters are optional.
+Works like `mist.menu.add()`, but only the `id` parameter is required.
 
 #### Parameters
 

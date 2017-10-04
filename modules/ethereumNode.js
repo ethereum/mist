@@ -465,7 +465,7 @@ class EthereumNode extends EventEmitter {
                                     error.tag = UNABLE_TO_BIND_PORT_ERROR;
                                 }
 
-                                log.debug(error.message);
+                                log.debug(error);
 
                                 return reject(error);
                             }

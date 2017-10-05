@@ -219,14 +219,7 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
 
 
 const createAccountPopup = (e) => {
-    Windows.createPopup('requestAccount', {
-        ownerId: e.sender.id,
-        electronOptions: {
-            width: 400,
-            height: 230,
-            alwaysOnTop: true,
-        },
-    });
+    Windows.createPopup('requestAccount', { ownerId: e.sender.id });
 };
 
 // MIST API
@@ -236,16 +229,7 @@ ipc.on('mistAPI_requestAccount', (e) => {
     if (global.mode === 'wallet') {
         createAccountPopup(e);
     } else { // Mist
-        Windows.createPopup('connectAccount', {
-            ownerId: e.sender.id,
-            electronOptions: {
-                width: 460,
-                height: 520,
-                maximizable: false,
-                minimizable: false,
-                alwaysOnTop: true,
-            },
-        });
+        Windows.createPopup('connectAccount', { ownerId: e.sender.id });
     }
 });
 

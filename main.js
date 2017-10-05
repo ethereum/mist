@@ -165,7 +165,6 @@ async function init() {
 
         // Initialise window mgr
         Windows.init();
-        store.dispatch({ type: 'WINDOWS::INIT_FINISH' });
 
         // Enable the Swarm protocol
         protocol.registerHttpProtocol('bzz', (request, callback) => {
@@ -195,78 +194,16 @@ async function init() {
         // add menu already here, so we have copy and paste functionality
         appMenu();
 
+        global.defaultWindow = windowStateKeeper({ defaultWidth: 1024 + 208, defaultHeight: 720 });
+
         // Create the browser window.
-
-        const defaultWindow = windowStateKeeper({
-            defaultWidth: 1024 + 208,
-            defaultHeight: 720
-        });
-
-        store.dispatch({ type: 'MAIN_WINDOW::CREATE_START' });
-
-        // MIST
-        if (global.mode === 'mist') {
-            mainWindow = Windows.create('main', {
-                primary: true,
-                electronOptions: {
-                    width: Math.max(defaultWindow.width, 500),
-                    height: Math.max(defaultWindow.height, 440),
-                    x: defaultWindow.x,
-                    y: defaultWindow.y,
-                    webPreferences: {
-                        nodeIntegration: true, /* necessary for webviews;
-                            require will be removed through preloader */
-                        preload: `${__dirname}/modules/preloader/mistUI.js`,
-                        'overlay-fullscreen-video': true,
-                        'overlay-scrollbars': true,
-                        experimentalFeatures: true,
-                    },
-                },
-            });
-            store.dispatch({ type: 'MAIN_WINDOW::CREATE_SUCCESS' });
-
-        // WALLET
-        } else {
-            mainWindow = Windows.create('main', {
-                primary: true,
-                electronOptions: {
-                    width: Math.max(defaultWindow.width, 500),
-                    height: Math.max(defaultWindow.height, 440),
-                    x: defaultWindow.x,
-                    y: defaultWindow.y,
-                    webPreferences: {
-                        preload: `${__dirname}/modules/preloader/walletMain.js`,
-                        'overlay-fullscreen-video': true,
-                        'overlay-scrollbars': true,
-                    },
-                },
-            });
-            store.dispatch({ type: 'MAIN_WINDOW::CREATE_SUCCESS' });
-        }
+        mainWindow = Windows.create('main');
 
         // Delegating events to save window bounds on windowStateKeeper
-        defaultWindow.manage(mainWindow.window);
+        global.defaultWindow.manage(mainWindow.window);
 
         if (!Settings.inAutoTestMode) {
-            store.dispatch({ type: 'SPLASH_WINDOW::CREATE_START' });
-
-            splashWindow = Windows.create('splash', {
-                primary: true,
-                url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
-                show: true,
-                electronOptions: {
-                    width: 400,
-                    height: 230,
-                    resizable: false,
-                    backgroundColor: '#F6F6F6',
-                    useContentSize: true,
-                    frame: false,
-                    webPreferences: {
-                        preload: `${__dirname}/modules/preloader/splashScreen.js`,
-                    },
-                },
-            });
-            store.dispatch({ type: 'SPLASH_WINDOW::CREATE_SUCCESS' });
+            splashWindow = Windows.create('splash');
         }
 
         // Checks time sync
@@ -405,15 +342,7 @@ async function init() {
                     log.info('No accounts setup yet, lets do onboarding first.');
 
                     return new Q((resolve, reject) => {
-                        store.dispatch({ type: 'ONBOARDING_WINDOW::CREATE_START' });
-                        const onboardingWindow = Windows.createPopup('onboardingScreen', {
-                            primary: true,
-                            electronOptions: {
-                                width: 576,
-                                height: 442,
-                            },
-                        });
-                        store.dispatch({ type: 'ONBOARDING_WINDOW::CREATE_SUCCESS' });
+                        const onboardingWindow = Windows.createPopup('onboardingScreen');
 
                         onboardingWindow.on('closed', () => {
                             store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });

@@ -54,16 +54,7 @@ module.exports = class extends BaseProcessor {
             }
 
             const modalWindow = Windows.createPopup('sendTransactionConfirmation', {
-                sendData: {
-                    uiAction_sendData: payload.params[0],
-                },
-                electronOptions: {
-                    width: 580,
-                    height: 550,
-                    alwaysOnTop: true,
-                    enableLargerThanScreen: false,
-                    resizable: true
-                },
+                sendData: { uiAction_sendData: payload.params[0] }
             });
 
             BlurOverlay.enable();

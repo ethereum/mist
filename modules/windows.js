@@ -177,22 +177,7 @@ class Windows {
     init() {
         log.info('Creating commonly-used windows');
 
-        this.loading = this.create('loading', {
-            show: false,
-            url: `${global.interfacePopupsUrl}#loadingWindow`,
-            electronOptions: {
-                title: '',
-                alwaysOnTop: true,
-                resizable: false,
-                width: 100,
-                height: 80,
-                center: true,
-                frame: false,
-                useContentSize: true,
-                titleBarStyle: '', // hidden-inset: more space
-                skipTaskbar: true,
-            },
-        });
+        this.loading = this.create('loading');
 
         this.loading.on('show', () => {
             this.loading.window.center();
@@ -215,12 +200,15 @@ class Windows {
                 wnd.id = id;
             }
         });
+
+        store.dispatch({ type: '[MAIN]:WINDOWS:INIT_FINISH' });
     }
 
 
-    create(type, options, callback) {
-        log.info(`Creating window: ${type}`);
-        options = options || {};
+    create(type, opts, callback) {
+        global.store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
+
+        const options = _.deepExtend(this.getDefaultOptionsForType(type), opts || {});
 
         const existing = this.getByType(type);
 
@@ -241,14 +229,167 @@ class Windows {
             wnd.callback = callback;
         }
 
+        global.store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
+
         return wnd;
     }
 
 
-    createPopup(type, options, callback) {
-        options = options || {};
+    getDefaultOptionsForType(type) {
+        const mainWebPreferences = {
+            mist: {
+                nodeIntegration: true, /* necessary for webviews;
+                    require will be removed through preloader */
+                preload: `${__dirname}/preloader/mistUI.js`,
+                'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
+                experimentalFeatures: true,
+            },
+            wallet: {
+                preload: `${__dirname}/preloader/walletMain.js`,
+                'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
+            }
+        }
 
-        let opts = {
+        switch (type) {
+            case 'main':
+                return {
+                    primary: true,
+                    electronOptions: {
+                        width: Math.max(global.defaultWindow.width, 500),
+                        height: Math.max(global.defaultWindow.height, 440),
+                        x: global.defaultWindow.x,
+                        y: global.defaultWindow.y,
+                        webPreferences: mainWebPreferences[global.mode],
+                    },
+                }
+            case 'splash':
+                return {
+                    primary: true,
+                    url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
+                    show: true,
+                    electronOptions: {
+                        width: 400,
+                        height: 230,
+                        resizable: false,
+                        backgroundColor: '#F6F6F6',
+                        useContentSize: true,
+                        frame: false,
+                        webPreferences: {
+                            preload: `${__dirname}/preloader/splashScreen.js`,
+                        },
+                    },
+                }
+            case 'loading':
+                return {
+                    show: false,
+                    url: `${global.interfacePopupsUrl}#loadingWindow`,
+                    electronOptions: {
+                        title: '',
+                        alwaysOnTop: true,
+                        resizable: false,
+                        width: 100,
+                        height: 80,
+                        center: true,
+                        frame: false,
+                        useContentSize: true,
+                        titleBarStyle: '', // hidden-inset: more space
+                        skipTaskbar: true,
+                    },
+                }
+            case 'onboardingScreen':
+                return {
+                    primary: true,
+                    electronOptions: {
+                        width: 576,
+                        height: 442,
+                    },
+                }
+            case 'about':
+                return {
+                    electronOptions: {
+                        width: 420,
+                        height: 230,
+                        alwaysOnTop: true,
+                    },
+                }
+            case 'remix':
+                return {
+                    url: 'https://remix.ethereum.org',
+                    electronOptions: {
+                        width: 1024,
+                        height: 720,
+                        center: true,
+                        frame: true,
+                        resizable: true,
+                        titleBarStyle: 'default',
+                    }
+                }
+            case 'importAccount':
+                return {
+                    electronOptions: {
+                        width: 600,
+                        height: 370,
+                        alwaysOnTop: true,
+                    },
+                }
+            case 'requestAccount':
+                return {
+                    electronOptions: {
+                        width: 420,
+                        height: 230,
+                        alwaysOnTop: true,
+                    },
+                }
+            case 'connectAccount':
+                return {
+                    electronOptions: {
+                        width: 460,
+                        height: 520,
+                        maximizable: false,
+                        minimizable: false,
+                        alwaysOnTop: true,
+                    },
+                }
+            case 'sendTransactionConfirmation':
+                return {
+                    electronOptions: {
+                        width: 580,
+                        height: 550,
+                        alwaysOnTop: true,
+                        enableLargerThanScreen: false,
+                        resizable: true
+                    },
+                }
+            case 'updateAvailable':
+                return {
+                    useWeb3: false,
+                    electronOptions: {
+                        width: 580,
+                        height: 250,
+                        alwaysOnTop: true,
+                        resizable: false,
+                        maximizable: false,
+                    },
+                }
+            case 'clientUpdateAvailable':
+                return {
+                    useWeb3: false,
+                    electronOptions: {
+                        width: 600,
+                        height: 340,
+                        alwaysOnTop: false,
+                        resizable: false,
+                        maximizable: false,
+                    },
+                }
+        }
+    }
+
+
+    createPopup(type, options, callback) {
+        const defaultPopupOpts = {
             url: `${global.interfacePopupsUrl}#${type}`,
             show: true,
             ownerId: null,
@@ -268,6 +409,8 @@ class Windows {
             }
         };
 
+        let opts = _.deepExtend(defaultPopupOpts, this.getDefaultOptionsForType(type), options || {});
+
         // always show on top of main window
         const parent = _.find(this._windows, (w) => {
             return w.type === 'main';
@@ -277,8 +420,6 @@ class Windows {
             opts.electronOptions.parent = parent.window;
         }
 
-
-        opts = _.deepExtend(opts, options);
 
         // mark it as a pop-up window
         opts.isPopup = true;

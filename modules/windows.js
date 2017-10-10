@@ -17,6 +17,9 @@ class Window extends EventEmitter {
         this.isPopup = !!opts.isPopup;
         this.ownerId = opts.ownerId; // the window which creates this new window
 
+        // genericWindow uses 'isAvailable' for reuse
+        this.isAvailable = opts.isAvailable || false;
+
         let electronOptions = {
             title: Settings.appName,
             show: false,
@@ -89,7 +92,15 @@ class Window extends EventEmitter {
             this.emit('closed');
         });
 
-        this.window.once('close', (e) => {
+        this.window.on('close', (e) => {
+            // Persist the genericWindow, unless quitting the app
+            const continueUsingApp = !global.store.getState().ui.appQuit;
+            if (this.type === 'genericWindow' && continueUsingApp) {
+                console.info('preventing default onCLOSE!');
+                e.preventDefault();
+                return this.close();
+            }
+
             this.emit('close', e);
         });
 
@@ -131,6 +142,7 @@ class Window extends EventEmitter {
 
 
     hide() {
+        console.info('HIDE!', this.type);
         if (this.isClosed) {
             return;
         }
@@ -144,6 +156,7 @@ class Window extends EventEmitter {
 
 
     show() {
+        console.info('SHOW!', this.type);
         if (this.isClosed) {
             return;
         }
@@ -157,13 +170,25 @@ class Window extends EventEmitter {
 
 
     close() {
-        if (this.isClosed) {
+        if (this.isClosed) { return; }
+        if (this.type === 'genericWindow') {
+            console.info('AVOIDED CLOSING!');
+            this.hide();
+            this.isAvailable = true;
             return;
         }
 
         this._log.debug('Close');
 
         this.window.close();
+    }
+
+    reuse(type, options, callback) {
+        console.info('REUSE!', type);
+        this.isAvailable = false;
+        if (options.url) { this.load(options.url); }
+        this.window.setSize(options.electronOptions.width, options.electronOptions.height);
+        this.window.webContents.once('did-finish-load', () => this.show());
     }
 }
 
@@ -178,6 +203,13 @@ class Windows {
         log.info('Creating commonly-used windows');
 
         this.loading = this.create('loading');
+
+        // The genericWindow gets recycled by popup windows for added performance
+        this.genericWindow = this.createPopup('genericWindow', {
+            isAvailable: true,
+            show: false,
+            electronOptions: { isShown: false, }
+        });
 
         this.loading.on('show', () => {
             this.loading.window.center();
@@ -384,6 +416,8 @@ class Windows {
                         maximizable: false,
                     },
                 }
+            default:
+                return {}
         }
     }
 
@@ -430,14 +464,21 @@ class Windows {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
         }
 
-        this.loading.show();
+        // For performance: if genericWindow is available, repurpose it
+        const genericWindow = this.getByType('genericWindow');
+        if (genericWindow && genericWindow.isAvailable) {
+            global.store.dispatch({ type: '[MAIN]:GENERIC_WINDOW:REUSE', payload: { type } });
+            return genericWindow.reuse(type, opts, callback);
+        }
+
+        if (type !== 'genericWindow') this.loading.show();
 
         log.info(`Create popup window: ${type}`);
 
         const wnd = this.create(type, opts, callback);
 
         wnd.once('ready', () => {
-            this.loading.hide();
+            if (type !== 'genericWindow') { this.loading.hide(); }
         });
 
         return wnd;

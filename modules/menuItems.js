@@ -96,13 +96,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('about');
                 },
             },
             {
@@ -172,11 +166,7 @@ let menuTempl = function (webviews) {
                 label: i18n.t('mist.applicationMenu.file.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click() {
-                    Windows.createPopup('requestAccount', {
-                        electronOptions: {
-                            width: 420, height: 230, alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('requestAccount');
                 },
             },
             {
@@ -184,11 +174,7 @@ let menuTempl = function (webviews) {
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
                 click() {
-                    Windows.createPopup('importAccount', {
-                        electronOptions: {
-                            width: 600, height: 370, alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('importAccount');
                 },
             },
             {
@@ -415,17 +401,7 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.openRemix'),
             enabled: true,
             click() {
-                Windows.createPopup('remix', {
-                    url: 'https://remix.ethereum.org',
-                    electronOptions: {
-                        width: 1024,
-                        height: 720,
-                        center: true,
-                        frame: true,
-                        resizable: true,
-                        titleBarStyle: 'default',
-                    }
-                });
+                Windows.createPopup('remix');
             },
         });
     }
@@ -610,13 +586,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('about');
                 },
             },
             {

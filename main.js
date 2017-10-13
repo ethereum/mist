@@ -219,6 +219,8 @@ onReady = () => {
                 height: Math.max(defaultWindow.height, 440),
                 x: defaultWindow.x,
                 y: defaultWindow.y,
+                vibrancy: 'medium-light',
+                backgroundColor: '#00000000',  // transparent background required for vibrancy
                 webPreferences: {
                     nodeIntegration: true, /* necessary for webviews;
                         require will be removed through preloader */

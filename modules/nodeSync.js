@@ -147,6 +147,10 @@ class NodeSync extends EventEmitter {
                                 const blockResult = ret2.result;
                                 const now = Math.floor(new Date().getTime() / 1000);
 
+                                if (!blockResult) {
+                                    return this._sync();
+                                }
+
                                 log.debug(`Last block: ${Number(blockResult.number)}; timestamp: ${blockResult.timestamp}`);
 
                                 const diff = now - +blockResult.timestamp;

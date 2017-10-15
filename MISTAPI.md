@@ -64,7 +64,7 @@ Asks the user to provide, or create a new account.
 
 #### Parameters
 
-1. `Function` The callback to be called with the new address as the second param
+1. `Function` The callback to be called with the new address as the second parameter.
 
 #### Example
 
@@ -78,7 +78,7 @@ mist.requestAccount(function(e, address){
 
 ### mist.menu
 
-Provides functionality to control the sub menu of your dapp, when its add to the sidebar.
+Provides functionality to control the sub menu of your dapp, when its added to the sidebar.
 
 ***
 
@@ -91,10 +91,10 @@ Adds/Updates a sub menu entry, which is placed below you dapp button in the side
 1. `String` **optional** and id string to identify your sub menu entry when updating.
 2. `Object` The menu options:
     - `name` (`String`): The name of the sub menu button.
-    - `badge` (`String|null`) **optional**: The badge text for the sub menu button, e.g. `50`
+    - `badge` (`String|null`) **optional**: The badge text for the sub menu button, e.g. `50`.
     - `position` (`Number`) **optional**: The position of the submenu button, `1` is on the top.
-    - `selected` (`Boolean`) **optional**: whether or not this sub menu entry is currently selected.
-3. `Function` **optional**: The callback to be called when the sub menu entry is clicked
+    - `selected` (`Boolean`) **optional**: Whether or not this sub menu entry is currently selected.
+3. `Function` **optional**: The callback to be called when the sub menu entry is clicked.
 
 #### Minimal example
 
@@ -125,7 +125,7 @@ mist.menu.add('tkrzU', {
 ### mist.menu.clear()
 
 Removes all sub menu entries. You can use this when you reload your app,
-to clear up wrong menu entries, which might got lost since the last session.
+to clear up incorrect menu entries, which might have been lost since the last session.
 
 #### Parameters
 
@@ -145,11 +145,11 @@ Removes a sub menu entry.
 
 ### mist.menu.select(id)
 
-Selects the according sub menu entry.
+Selects the respective sub menu entry.
 
 #### Parameters
 
-1. `String` the sub menu entry identifier
+1. `String` the sub menu entry identifier.
 
 ***
 
@@ -159,23 +159,23 @@ Sets the main badge of your dapp, right below your dapps menu button.
 
 #### Parameters
 
-1. `String` the string used as the badge text
+1. `String` the string used as the badge text.
 
 ***
 
 ### mist.menu.update(id, [, options] [, callback])
 
-Works like `mist.menu.add()`, but all but the `id` parameters are optional.
+Works like `mist.menu.add()`, but only the `id` parameter is required.
 
 #### Parameters
 
 1. `String` and id string to identify your sub menu entry.
 2. `Object` The menu options:
     - `name` (`String`): (optional) The name of the sub menu button.
-    - `badge` (`String|null`): (optional) The badge text for the sub menu button, e.g. `50`
+    - `badge` (`String|null`): (optional) The badge text for the sub menu button, e.g. `50`.
     - `position` (`Number`): (optional) The position of the submenu button, `1` is on the top.
-    - `selected` (`Boolean`): (optional) whether or not this sub menu entry is currently selected.
-3. `Function` (optional) The callback to be called when the sub menu entry is clicked
+    - `selected` (`Boolean`): (optional) Whether or not this sub menu entry is currently selected.
+3. `Function` (optional) The callback to be called when the sub menu entry is clicked.
 
 #### Example
 

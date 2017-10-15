@@ -47,7 +47,7 @@
                 "ethereumNode": "Node",
                 "network": "Rede",
                 "mainNetwork": "Rede principal",
-                "startMining": "⛏ Iniciar mineração (somente em teste)",
+                "startMining": "⛏ Iniciar mineração",
                 "stopMining": "⛏ Parar mineração",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

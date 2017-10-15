@@ -1,15 +1,15 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.6.6",
+            "version": "1.7.2",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.6.6-10a45cb5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.7.2-1db4ecdc.tar.gz",
                             "type": "tar",
-                            "md5": "5d60910275bcdec0ddf6e9c217e65b9d",
-                            "bin": "geth-linux-amd64-1.6.6-10a45cb5/geth"
+                            "md5": "cc4a666fd21ae3627ee8ae974650b2f7",
+                            "bin": "geth-linux-amd64-1.7.2-1db4ecdc/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -19,17 +19,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.6"
+                                    "1.7.2"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.6.6-10a45cb5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.7.2-1db4ecdc.tar.gz",
                             "type": "tar",
-                            "md5": "cf6794245871235a7664903090593479",
-                            "bin": "geth-linux-386-1.6.6-10a45cb5/geth"
+                            "md5": "84b3a2d491db6f79fd84daa242da9ec6",
+                            "bin": "geth-linux-386-1.7.2-1db4ecdc/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -39,7 +39,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.6"
+                                    "1.7.2"
                                 ]
                             }
                         }
@@ -48,10 +48,10 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.6.6-10a45cb5.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.7.2-1db4ecdc.tar.gz",
                             "type": "tar",
-                            "md5": "faf0aa0af6d90685deeef70062d653f5",
-                            "bin": "geth-darwin-amd64-1.6.6-10a45cb5/geth"
+                            "md5": "1220015825ee8772aada37353aa3f7ef",
+                            "bin": "geth-darwin-amd64-1.7.2-1db4ecdc/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -61,7 +61,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.6"
+                                    "1.7.2"
                                 ]
                             }
                         }
@@ -70,10 +70,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.6.6-10a45cb5.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.7.2-1db4ecdc.zip",
                             "type": "zip",
-                            "md5": "2a73767451a27538f3f335bf5d466658",
-                            "bin": "geth-windows-amd64-1.6.6-10a45cb5\\geth.exe"
+                            "md5": "b34d22226c2d8c6729b4c01a2f25f818",
+                            "bin": "geth-windows-amd64-1.7.2-1db4ecdc\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -83,17 +83,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.6"
+                                    "1.7.2"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.6.6-10a45cb5.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.7.2-1db4ecdc.zip",
                             "type": "zip",
-                            "md5": "08188b29b8f2ba49db52215cc279c23e",
-                            "bin": "geth-windows-386-1.6.6-10a45cb5\\geth.exe"
+                            "md5": "50b353bf3639a502b06e0098c751df67",
+                            "bin": "geth-windows-386-1.7.2-1db4ecdc\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -103,7 +103,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.6.6"
+                                    "1.7.2"
                                 ]
                             }
                         }
@@ -115,69 +115,69 @@
     "swarm": {
         "archives": {
             "windows-amd64": {
-              "archive": "swarm-windows-amd64-1.6.7.exe",
-              "binaryMD5": "c2d827dc4553d9b91a7d6c1d5a6140fd",
-              "archiveMD5": "059196d21548060a18a12e17cc0ee59a"
+                "archive": "swarm-windows-amd64-1.6.7.exe",
+                "binaryMD5": "c2d827dc4553d9b91a7d6c1d5a6140fd",
+                "archiveMD5": "059196d21548060a18a12e17cc0ee59a"
             },
             "linux-amd64": {
-              "archive": "swarm-linux-amd64-1.6.7",
-              "binaryMD5": "85002d79b8ebc2d2f2f10fb198636a81",
-              "archiveMD5": "3e8874299ab8c0e3043d70ebb6673879"
+                "archive": "swarm-linux-amd64-1.6.7",
+                "binaryMD5": "85002d79b8ebc2d2f2f10fb198636a81",
+                "archiveMD5": "3e8874299ab8c0e3043d70ebb6673879"
             },
             "linux-386": {
-              "archive": "swarm-linux-386-1.6.7",
-              "binaryMD5": "35bc2ab976f60f96a2cede117e0df19d",
-              "archiveMD5": "7868a86c9cbdf8ac7ac2e5682b4ce40f"
+                "archive": "swarm-linux-386-1.6.7",
+                "binaryMD5": "35bc2ab976f60f96a2cede117e0df19d",
+                "archiveMD5": "7868a86c9cbdf8ac7ac2e5682b4ce40f"
             },
             "darwin-amd64": {
-              "archive": "swarm-darwin-amd64-1.6.7",
-              "binaryMD5": "c499b186645229260dd6ab685dd58f07",
-              "archiveMD5": "0794d111e5018eac3b657bcb29851121"
+                "archive": "swarm-darwin-amd64-1.6.7",
+                "binaryMD5": "c499b186645229260dd6ab685dd58f07",
+                "archiveMD5": "0794d111e5018eac3b657bcb29851121"
             },
             "linux-arm5": {
-              "archive": "swarm-linux-arm5-1.6.7",
-              "binaryMD5": "516fcd85246c905529442cd9b689c12f",
-              "archiveMD5": "47312708d417cb196b07ba0af1d3abb4"
+                "archive": "swarm-linux-arm5-1.6.7",
+                "binaryMD5": "516fcd85246c905529442cd9b689c12f",
+                "archiveMD5": "47312708d417cb196b07ba0af1d3abb4"
             },
             "linux-arm6": {
-              "archive": "swarm-linux-arm6-1.6.7",
-              "binaryMD5": "82ff7bdbe388b4a190f4101c5150d3b4",
-              "archiveMD5": "350276de7bb175a15c314cfc4cb7f8fd"
+                "archive": "swarm-linux-arm6-1.6.7",
+                "binaryMD5": "82ff7bdbe388b4a190f4101c5150d3b4",
+                "archiveMD5": "350276de7bb175a15c314cfc4cb7f8fd"
             },
             "linux-mips": {
-              "archive": "swarm-linux-mips-1.6.7",
-              "binaryMD5": "e1e95280441c0ca35633927792ef5317",
-              "archiveMD5": "8fb4b64e94cd73aa718db787b9d4c53e"
+                "archive": "swarm-linux-mips-1.6.7",
+                "binaryMD5": "e1e95280441c0ca35633927792ef5317",
+                "archiveMD5": "8fb4b64e94cd73aa718db787b9d4c53e"
             },
             "linux-arm7": {
-              "archive": "swarm-linux-arm7-1.6.7",
-              "binaryMD5": "bfc0b4d1c86d8a975af052fc7854bdd3",
-              "archiveMD5": "4378641d8e1e1fbb947f941c8fca8613"
+                "archive": "swarm-linux-arm7-1.6.7",
+                "binaryMD5": "bfc0b4d1c86d8a975af052fc7854bdd3",
+                "archiveMD5": "4378641d8e1e1fbb947f941c8fca8613"
             },
             "linux-arm64": {
-              "archive": "swarm-linux-arm64-1.6.7",
-              "binaryMD5": "bbac21a6c6fa8208f67ca4123d3f948a",
-              "archiveMD5": "4e503160327c5fbcca0414f17c54e5ee"
+                "archive": "swarm-linux-arm64-1.6.7",
+                "binaryMD5": "bbac21a6c6fa8208f67ca4123d3f948a",
+                "archiveMD5": "4e503160327c5fbcca0414f17c54e5ee"
             },
             "linux-mipsle": {
-              "archive": "swarm-linux-mipsle-1.6.7",
-              "binaryMD5": "a82f191b2f9d2c470d0273219c820657",
-              "archiveMD5": "3016bdb6d237ae654c0cdf36fe85dc7c"
+                "archive": "swarm-linux-mipsle-1.6.7",
+                "binaryMD5": "a82f191b2f9d2c470d0273219c820657",
+                "archiveMD5": "3016bdb6d237ae654c0cdf36fe85dc7c"
             },
             "windows-386": {
-              "archive": "swarm-windows-386-1.6.7.exe",
-              "binaryMD5": "ce0b34640642e58068ae5a359faef102",
-              "archiveMD5": "640aede4da08a3a9d8a6ac0434ba7c0f"
+                "archive": "swarm-windows-386-1.6.7.exe",
+                "binaryMD5": "ce0b34640642e58068ae5a359faef102",
+                "archiveMD5": "640aede4da08a3a9d8a6ac0434ba7c0f"
             },
             "linux-mips64": {
-              "archive": "swarm-linux-mips64-1.6.7",
-              "binaryMD5": "9da967664f384817adb5083fd1ffe8f1",
-              "archiveMD5": "357a33be470f8f89ba2619957a08deff"
+                "archive": "swarm-linux-mips64-1.6.7",
+                "binaryMD5": "9da967664f384817adb5083fd1ffe8f1",
+                "archiveMD5": "357a33be470f8f89ba2619957a08deff"
             },
             "linux-mips64le": {
-              "archive": "swarm-linux-mips64le-1.6.7",
-              "binaryMD5": "ec1abcf7b216e87645ec83954d8344cd",
-              "archiveMD5": "a81fd0158190d99813c738ffa4f87627"
+                "archive": "swarm-linux-mips64le-1.6.7",
+                "binaryMD5": "ec1abcf7b216e87645ec83954d8344cd",
+                "archiveMD5": "a81fd0158190d99813c738ffa4f87627"
             }
         }
     }

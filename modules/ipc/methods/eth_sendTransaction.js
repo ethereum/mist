@@ -59,7 +59,7 @@ module.exports = class extends BaseProcessor {
 
             BlurOverlay.enable();
 
-            modalWindow.on('closed', () => {
+            modalWindow.on('hidden', () => {
                 BlurOverlay.disable();
 
                 // user cancelled?
@@ -69,8 +69,7 @@ module.exports = class extends BaseProcessor {
             });
 
             ipc.once('backendAction_unlockedAccountAndSentTransaction', (ev, err, result) => {
-                if (Windows.getById(ev.sender.id) === modalWindow
-                        && !modalWindow.isClosed) {
+                if (Windows.getById(ev.sender.id) === modalWindow && !modalWindow.isClosed) {
                     if (err || !result) {
                         this._log.debug('Confirmation error', err);
 

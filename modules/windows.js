@@ -3,6 +3,156 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
 
+class GenericWindow extends EventEmitter {
+    constructor(mgr) {
+        super();
+
+        this._mgr = mgr;
+        this._log = log.create('generic');
+        this.isPrimary = false;
+        this.type = 'generic';
+        this.isPopup = true;
+        this.ownerId = null;
+        this.isAvailable = true;
+        this.actingType = null;
+
+        let electronOptions = {
+            title: Settings.appName,
+            show: false,
+            icon: global.icon,
+            titleBarStyle: 'hidden-inset', // hidden-inset: more space
+            backgroundColor: '#F6F6F6',
+            acceptFirstMouse: true,
+            darkTheme: true,
+            webPreferences: {
+                preload: `${__dirname}/preloader/popupWindows.js`,
+                nodeIntegration: false,
+                webaudio: true,
+                webgl: false,
+                webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
+                textAreasAreResizable: true,
+            },
+        };
+
+        // electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
+
+        this._log.debug('Creating generic window');
+        this.window = new BrowserWindow(electronOptions);
+
+        // set Accept_Language header
+        this.session = this.window.webContents.session;
+        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+
+        this.webContents = this.window.webContents;
+        this.webContents.once('did-finish-load', () => {
+            this.isContentReady = true;
+            this._log.debug(`Content loaded, id: ${this.id}`);
+
+            // if (opts.sendData) {
+                // if (_.isString(opts.sendData)) {
+                    // this.send(opts.sendData);
+                // } else if (_.isObject(opts.sendData)) {
+                    // for (const key in opts.sendData) {
+                        // if ({}.hasOwnProperty.call(opts.sendData, key)) {
+                            // this.send(key, opts.sendData[key]);
+                        // }
+                    // }
+                // }
+            // }
+
+            // if (opts.show) { this.show(); }
+            this.emit('ready');
+        });
+
+
+        // prevent dropping files
+        this.webContents.on('will-navigate', e => e.preventDefault());
+
+
+        this.window.once('closed', () => {
+            this._log.debug('Closed');
+
+            this.isShown = false;
+            this.isClosed = true;
+            this.isContentReady = false;
+
+            this.emit('closed');
+        });
+
+        this.window.on('close', (e) => {
+            // Preserve window unless quitting Mist
+            if (store.getState().ui.appQuit) { 
+                return this.emit('close', e); 
+            }
+
+            e.preventDefault();
+            this.hide();
+        });
+
+        this.window.on('show', e => this.emit('show', e));
+
+        this.window.on('hide', e => this.emit('hide', e));
+
+        this.load(`${global.interfacePopupsUrl}#generic`);
+    }
+
+    load(url) {
+        if (this.isClosed) { return; }
+        this._log.debug(`Load URL: ${url}`);
+        this.window.loadURL(url);
+    }
+
+    send() {
+        if (this.isClosed || !this.isContentReady) { return; }
+        this._log.trace('Sending data', arguments);
+        this.webContents.send.apply(this.webContents, arguments);
+    }
+
+    hide() {
+        if (this.isClosed) { return; }
+        this._log.debug('Hide');
+        this.window.hide();
+        this.send('uiAction_switchTemplate', 'generic');
+        this.actingType = null;
+        this.isShown = false;
+        this.isAvailable = true;
+        this.emit('hidden');
+    }
+
+    show() {
+        if (this.isClosed) { return; } 
+        this._log.debug('Show');
+        this.window.show();
+        this.isShown = true;
+    }
+
+    close() {
+        if (this.isClosed) { return; }
+        this._log.debug('Avoiding close of generic window');
+        this.hide();
+    }
+
+    reuse(type, options, callback) {
+        this.isAvailable = false;
+        this.actingType = type;
+        if (callback) { this.callback = callback; }
+        if (options.ownerId) { this.ownerId = options.ownerId; }
+        if (options.sendData) {
+            if (_.isString(options.sendData)) {
+                this.send(options.sendData);
+            } else if (_.isObject(options.sendData)) {
+                for (const key in options.sendData) {
+                    if ({}.hasOwnProperty.call(options.sendData, key)) {
+                        this.send(key, options.sendData[key]);
+                    }
+                }
+            }
+        }
+        this.window.setSize(options.electronOptions.width, options.electronOptions.height);
+        this.send('uiAction_switchTemplate', type);
+        this.show();
+    }
+}
 
 class Window extends EventEmitter {
     constructor(mgr, type, opts) {
@@ -178,6 +328,7 @@ class Windows {
         log.info('Creating commonly-used windows');
 
         this.loading = this.create('loading');
+        this.generic = this.createGenericWindow();
 
         this.loading.on('show', () => {
             this.loading.window.center();
@@ -204,6 +355,10 @@ class Windows {
         store.dispatch({ type: '[MAIN]:WINDOWS:INIT_FINISH' });
     }
 
+    createGenericWindow() {
+        const wnd = this._windows.generic = new GenericWindow(this);
+        return wnd;
+    }
 
     create(type, opts, callback) {
         global.store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
@@ -308,6 +463,7 @@ class Windows {
                 }
             case 'about':
                 return {
+                    // url: `${global.interfacePopupsUrl}#about`,
                     electronOptions: {
                         width: 420,
                         height: 230,
@@ -428,6 +584,13 @@ class Windows {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`;
         } else {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
+        }
+
+        // If generic window is available, recycle it
+        const genericWindow = this.getByType('generic');
+        if (genericWindow && genericWindow.isAvailable) {
+            genericWindow.reuse(type, opts, callback);
+            return genericWindow;
         }
 
         this.loading.show();

@@ -4,12 +4,17 @@ Template Controllers
 @module Templates
 */
 
-/**
+/**a
 The body template
 
 @class [template] body
 @constructor
 */
+
+// Generic windows reuse windows by switching the template
+ipc.on('uiAction_switchTemplate', (e, templateName) => {
+    TemplateVar.setTo('#dapp-form-helper-iframe', 'MainRenderTemplate', `popupWindows_${templateName}`);
+});
 
 Template.body.helpers({
     /**
@@ -18,6 +23,10 @@ Template.body.helpers({
     @method renderApp
     */
     'renderApp': function () {
+        // Generic windows return the TemplateVar if set in the ipc call above
+        const template = TemplateVar.get('MainRenderTemplate');
+        if (template) { return template; }
+
         if (_.isEmpty(location.hash)) {
             $('title').text('Mist');
             return 'layout_main';

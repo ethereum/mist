@@ -74,7 +74,7 @@ Meteor.startup(function () {
         mistInit();
     }
 
-    store.dispatch(getLanguage());
+    if (store) { store.dispatch(getLanguage()); }
 
     // change moment and numeral language, when language changes
     Tracker.autorun(function () {

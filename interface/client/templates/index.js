@@ -4,7 +4,7 @@ Template Controllers
 @module Templates
 */
 
-/**a
+/**
 The body template
 
 @class [template] body
@@ -13,7 +13,7 @@ The body template
 
 // Generic windows reuse windows by switching the template
 ipc.on('uiAction_switchTemplate', (e, templateName) => {
-    TemplateVar.setTo('#dapp-form-helper-iframe', 'MainRenderTemplate', `popupWindows_${templateName}`);
+    TemplateVar.setTo('#generic-body', 'MainRenderTemplate', `popupWindows_${templateName}`);
 });
 
 Template.body.helpers({

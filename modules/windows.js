@@ -16,27 +16,8 @@ class GenericWindow extends EventEmitter {
         this.isAvailable = true;
         this.actingType = null;
 
-        let electronOptions = {
-            title: Settings.appName,
-            show: false,
-            icon: global.icon,
-            titleBarStyle: 'hidden-inset', // hidden-inset: more space
-            backgroundColor: '#F6F6F6',
-            acceptFirstMouse: true,
-            darkTheme: true,
-            webPreferences: {
-                preload: `${__dirname}/preloader/popupWindows.js`,
-                nodeIntegration: false,
-                webaudio: true,
-                webgl: false,
-                webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
-                textAreasAreResizable: true,
-            },
-        };
-
-        // electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
-
         this._log.debug('Creating generic window');
+        let electronOptions = this._mgr.getDefaultOptionsForType('generic');
         this.window = new BrowserWindow(electronOptions);
 
         // set Accept_Language header
@@ -45,46 +26,21 @@ class GenericWindow extends EventEmitter {
 
         this.webContents = this.window.webContents;
         this.webContents.once('did-finish-load', () => {
-            this.isContentReady = true;
             this._log.debug(`Content loaded, id: ${this.id}`);
-
-            // if (opts.sendData) {
-                // if (_.isString(opts.sendData)) {
-                    // this.send(opts.sendData);
-                // } else if (_.isObject(opts.sendData)) {
-                    // for (const key in opts.sendData) {
-                        // if ({}.hasOwnProperty.call(opts.sendData, key)) {
-                            // this.send(key, opts.sendData[key]);
-                        // }
-                    // }
-                // }
-            // }
-
-            // if (opts.show) { this.show(); }
             this.emit('ready');
         });
-
 
         // prevent dropping files
         this.webContents.on('will-navigate', e => e.preventDefault());
 
-
         this.window.once('closed', () => {
             this._log.debug('Closed');
-
-            this.isShown = false;
-            this.isClosed = true;
-            this.isContentReady = false;
-
             this.emit('closed');
         });
 
         this.window.on('close', (e) => {
             // Preserve window unless quitting Mist
-            if (store.getState().ui.appQuit) { 
-                return this.emit('close', e); 
-            }
-
+            if (store.getState().ui.appQuit) { return this.emit('close', e); }
             e.preventDefault();
             this.hide();
         });
@@ -97,37 +53,30 @@ class GenericWindow extends EventEmitter {
     }
 
     load(url) {
-        if (this.isClosed) { return; }
         this._log.debug(`Load URL: ${url}`);
         this.window.loadURL(url);
     }
 
     send() {
-        if (this.isClosed || !this.isContentReady) { return; }
         this._log.trace('Sending data', arguments);
         this.webContents.send.apply(this.webContents, arguments);
     }
 
     hide() {
-        if (this.isClosed) { return; }
         this._log.debug('Hide');
         this.window.hide();
         this.send('uiAction_switchTemplate', 'generic');
         this.actingType = null;
-        this.isShown = false;
         this.isAvailable = true;
         this.emit('hidden');
     }
 
     show() {
-        if (this.isClosed) { return; } 
         this._log.debug('Show');
         this.window.show();
-        this.isShown = true;
     }
 
     close() {
-        if (this.isClosed) { return; }
         this._log.debug('Avoiding close of generic window');
         this.hide();
     }
@@ -418,7 +367,7 @@ class Windows {
                         y: global.defaultWindow.y,
                         webPreferences: mainWebPreferences[global.mode],
                     },
-                }
+                };
             case 'splash':
                 return {
                     primary: true,
@@ -435,7 +384,7 @@ class Windows {
                             preload: `${__dirname}/preloader/splashScreen.js`,
                         },
                     },
-                }
+                };
             case 'loading':
                 return {
                     show: false,
@@ -451,8 +400,11 @@ class Windows {
                         useContentSize: true,
                         titleBarStyle: '', // hidden-inset: more space
                         skipTaskbar: true,
+                        webPreferences: {
+                            preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`,
+                        },
                     },
-                }
+                };
             case 'onboardingScreen':
                 return {
                     primary: true,
@@ -460,16 +412,16 @@ class Windows {
                         width: 576,
                         height: 442,
                     },
-                }
+                };
             case 'about':
                 return {
-                    // url: `${global.interfacePopupsUrl}#about`,
+                    url: `${global.interfacePopupsUrl}#about`,
                     electronOptions: {
                         width: 420,
                         height: 230,
                         alwaysOnTop: true,
                     },
-                }
+                };
             case 'remix':
                 return {
                     url: 'https://remix.ethereum.org',
@@ -481,7 +433,7 @@ class Windows {
                         resizable: true,
                         titleBarStyle: 'default',
                     }
-                }
+                };
             case 'importAccount':
                 return {
                     electronOptions: {
@@ -489,7 +441,7 @@ class Windows {
                         height: 370,
                         alwaysOnTop: true,
                     },
-                }
+                };
             case 'requestAccount':
                 return {
                     electronOptions: {
@@ -497,7 +449,7 @@ class Windows {
                         height: 230,
                         alwaysOnTop: true,
                     },
-                }
+                };
             case 'connectAccount':
                 return {
                     electronOptions: {
@@ -507,7 +459,7 @@ class Windows {
                         minimizable: false,
                         alwaysOnTop: true,
                     },
-                }
+                };
             case 'sendTransactionConfirmation':
                 return {
                     electronOptions: {
@@ -517,7 +469,7 @@ class Windows {
                         enableLargerThanScreen: false,
                         resizable: true
                     },
-                }
+                };
             case 'updateAvailable':
                 return {
                     useWeb3: false,
@@ -528,7 +480,7 @@ class Windows {
                         resizable: false,
                         maximizable: false,
                     },
-                }
+                };
             case 'clientUpdateAvailable':
                 return {
                     useWeb3: false,
@@ -539,7 +491,25 @@ class Windows {
                         resizable: false,
                         maximizable: false,
                     },
-                }
+                };
+            case 'generic':
+                return {
+                    title: Settings.appName,
+                    show: false,
+                    icon: global.icon,
+                    titleBarStyle: 'hidden-inset', // hidden-inset: more space
+                    backgroundColor: '#F6F6F6',
+                    acceptFirstMouse: true,
+                    darkTheme: true,
+                    webPreferences: {
+                        preload: `${__dirname}/preloader/popupWindows.js`,
+                        nodeIntegration: false,
+                        webaudio: true,
+                        webgl: false,
+                        webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
+                        textAreasAreResizable: true,
+                    },
+                };
         }
     }
 
@@ -586,9 +556,9 @@ class Windows {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
         }
 
-        // If generic window is available, recycle it
+        // If generic window is available, recycle it (unless opening remix)
         const genericWindow = this.getByType('generic');
-        if (genericWindow && genericWindow.isAvailable) {
+        if (type !== 'remix' && genericWindow && genericWindow.isAvailable) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;
         } else if (genericWindow) {

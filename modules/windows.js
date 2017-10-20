@@ -591,6 +591,12 @@ class Windows {
         if (genericWindow && genericWindow.isAvailable) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;
+        } else if (genericWindow) {
+            // If a generic window exists of the same actingType, focus that window
+            if (genericWindow.actingType === type) {
+                genericWindow.webContents.focus();
+                return genericWindow;
+            }
         }
 
         this.loading.show();

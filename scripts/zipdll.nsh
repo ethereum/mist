@@ -287,7 +287,9 @@
   !endif
 
   !ifdef "LANG_KOREAN"
+      
     strcmp $LANGUAGE ${LANG_KOREAN} 0 +10
+      
       Push "  오류 : %s"
       Push "파일 속성을 얻어올 수 없습니다."
       Push "오류: 파일 속성을 얻어올 수 없습니다."

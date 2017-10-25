@@ -43,33 +43,6 @@ global.icon = `${__dirname}/icons/${global.mode}/icon.png`;
 global.dirname = __dirname;
 global.i18n = i18n;
     
-// INTERFACE PATHS
-// - WALLET
-if (global.mode === 'wallet') {
-    log.info('Starting in Wallet mode');
-
-    global.interfaceAppUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
-        : 'http://localhost:3050';
-    global.interfacePopupsUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-// - MIST
-} else {
-    log.info('Starting in Mist mode');
-
-    let url = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-    if (Settings.cli.resetTabs) {
-        url += '?reset-tabs=true';
-    }
-
-    global.interfaceAppUrl = global.interfacePopupsUrl = url;
-}
-
 // prevent crashes and close gracefully
 process.on('uncaughtException', (error) => {
     log.error('UNCAUGHT EXCEPTION', error);

@@ -9,6 +9,35 @@ export function syncBuildConfig(key, value) {
     };
 }
 
+export function setInterfaceUrls() {
+    return (dispatch, getState) => {
+        const { cliFlags, productionMode, uiMode } = getState().settings;
+
+        if (uiMode === 'wallet') {
+            global.interfaceAppUrl = (productionMode)
+                ? `file://${__dirname}/interface/wallet/index.html`
+                : 'http://localhost:3050';
+            global.interfacePopupsUrl = (productionMode)
+                ? `file://${__dirname}/interface/index.html`
+                : 'http://localhost:3000';
+        } else {
+            let url = (productionMode)
+                ? `file://${__dirname}/interface/index.html`
+                : 'http://localhost:3000';
+            if (cliFlags.resetTabs) { url += '?reset-tabs=true'; }
+            global.interfaceAppUrl = global.interfacePopupsUrl = url;
+        }
+
+        dispatch({
+            type: '[MAIN]:INTERFACE_URLS:SET',
+            payload: {
+                interfaceAppUrl: global.interfaceAppUrl,
+                interfacePopupsUrl: global.interfacePopupsUrl,
+            },
+        });
+    }
+}
+
 export function setLanguage(lang, browserWindow) {
     return dispatch => {
         dispatch({ type: '[MAIN]:SET_LANGUAGE:START' });

@@ -6,7 +6,11 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
-import { syncBuildConfig, syncFlags } from './core/settings/actions';
+import {
+    setInterfaceUrls,
+    syncBuildConfig,
+    syncFlags,
+} from './core/settings/actions';
 
 // try loading in config file
 const defaultConfig = {
@@ -204,6 +208,7 @@ class Settings {
         store.dispatch(syncBuildConfig('rpcMode', this.rpcMode));
         store.dispatch(syncBuildConfig('productionMode', this.inProductionMode));
         store.dispatch(syncBuildConfig('uiMode', this.uiMode));
+        store.dispatch(setInterfaceUrls());
     }
 
     get userDataPath() {

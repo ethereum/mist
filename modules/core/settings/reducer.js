@@ -1,10 +1,13 @@
 export const initialState = {
     appVersion: '',
     autoTestMode: false,
+    cliFlags: {},
     dbInit: false,
     dbSync: false,
-    ignoreGpuBlacklist: false,
     i18n: '',
+    ignoreGpuBlacklist: false,
+    interfaceAppUrl: '',
+    interfacePopupsUrl: '',
     ipcProviderBackendInit: false,
     mining: false,
     productionMode: null,
@@ -13,7 +16,6 @@ export const initialState = {
     swarmInit: false,
     uiMode: '',
     updateCheckerRan: false,
-    cliFlags: {}
 };
 
 const settings = (state = initialState, action) => {
@@ -31,6 +33,11 @@ const settings = (state = initialState, action) => {
             return Object.assign({}, state, { [key]: action.payload[key] });
         case '[MAIN]:IGNORE_GPU_BLACKLIST:SET':
             return Object.assign({}, state, { ignoreGpuBlacklist: true });
+        case '[MAIN]:INTERFACE_URLS:SET':
+            return Object.assign({}, state, {
+                interfaceAppUrl: action.payload.interfaceAppUrl,
+                interfacePopupsUrl: action.payload.interfacePopupsUrl
+            });
         case '[MAIN]:TEST_MODE:SET':
             return Object.assign({}, state, { autoTestMode: true });
         case 'SETTINGS_MINING::SET':

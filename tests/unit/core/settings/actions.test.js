@@ -7,6 +7,7 @@ import {
     getLanguage,
     resetMenu,
     setAcceptLanguageHeader,
+    setInterfaceUrls,
     setLanguage,
     setLanguageOnClient,
     setLanguageOnMain,
@@ -43,6 +44,14 @@ describe('settings actions:', () => {
         const store = initMockStore({ settings: initialState });
 
         afterEach(() => store.clearActions());
+
+        it('should handle #setInterfaceUrls', async () => {
+            await store.dispatch(setInterfaceUrls());
+            const actions = store.getActions();
+
+            assert.equal(actions.length, 1);
+            assert.equal(actions[0].type, '[MAIN]:INTERFACE_URLS:SET');
+        });
 
         it('should handle #setLanguage', async () => {
             await store.dispatch(setLanguage('en', {}));

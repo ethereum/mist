@@ -18,6 +18,22 @@ describe('the settings reducer', () => {
         assert.deepEqual(reducer(initialState, action), expectedState);
     });
 
+    it('should handle the "[MAIN]:INTERFACE_URLS:SET" action', () => {
+        const action = {
+            type: '[MAIN]:INTERFACE_URLS:SET',
+            payload: { 
+                interfaceAppUrl: 'localhost:3000',
+                interfacePopupsUrl: 'localhost:3000',
+            },
+        };
+        const expectedState = Object.assign({}, initialState, {
+            interfaceAppUrl: 'localhost:3000',
+            interfacePopupsUrl: 'localhost:3000',
+        });
+
+        assert.deepEqual(reducer(initialState, action), expectedState);
+    });
+
     it('should handle the "[MAIN]:IGNORE_GPU_BLACKLIST:SET" action', () => {
         const action = { type: '[MAIN]:IGNORE_GPU_BLACKLIST:SET' };
         const expectedState = Object.assign({}, initialState, {

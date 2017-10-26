@@ -20,7 +20,7 @@ export const initialState = {
 
 const ui = (state = initialState, action) => {
     switch (action.type) {
-        case 'APP::QUIT':
+        case '[MAIN]:APP_QUIT:SUCCESS':
             return Object.assign({}, state, { appQuit: true });
         case 'MAIN_WINDOW::CLOSE':
             return Object.assign({}, state, { mainWindowVisible: false });

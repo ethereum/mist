@@ -2,7 +2,6 @@ import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { initialState } from '../../../../modules/core/settings/reducer';
-import rootReducer from '../../../../modules/core/rootReducer';
 import {
     getLanguage,
     resetMenu,

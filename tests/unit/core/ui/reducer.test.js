@@ -17,4 +17,13 @@ describe('the ui reducer', () => {
 
         assert.deepEqual(reducer(initialState, action), expectedState);
     });
+
+    it('should handle the "[MAIN]:APP_QUIT:SUCCESS" action', () => {
+        const action = { type: '[MAIN]:APP_QUIT:SUCCESS' };
+        const expectedState = Object.assign({}, initialState, {
+            appQuit: true
+        });
+
+        assert.deepEqual(reducer(initialState, action), expectedState);
+    });
 });

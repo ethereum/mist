@@ -6,18 +6,10 @@ import { app } from 'electron';
 import rootReducer from './rootReducer';
 
 export default function configureReduxStore() {
-    const store = createStore(
+    return createStore(
         rootReducer, 
         composeWithDevTools(applyMiddleware(thunk), electronEnhancer({
             dispatchProxy: a => store.dispatch(a)
         }))
     );
-
-    store.subscribe(() => {
-        const state = store.getState();
-
-        if (state.ui.appQuit) return app.quit();
-    });
-
-    return store;
 }

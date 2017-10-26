@@ -11,41 +11,22 @@ const UpdateChecker = require('./modules/updateChecker');
 const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
+const log = logger.create('main');
+
+import configureReduxStore from './modules/core/store';
+import { quitApp } from './modules/core/ui/actions';
+import { setLanguageOnMain } from './modules/core/settings/actions';
 
 Q.config({
     cancellation: true,
 });
 
 
-// logging setup
-const log = logger.create('main');
-
+global.store = configureReduxStore();
 
 Settings.init();
 
-if (Settings.cli.version) {
-    log.info(Settings.appVersion);
-
-    process.exit(0);
-}
-
-if (Settings.cli.ignoreGpuBlacklist) {
-    app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
-}
-
-if (Settings.inAutoTestMode) {
-    log.info('AUTOMATED TESTING');
-}
-
-log.info(`Running in production mode: ${Settings.inProductionMode}`);
-
-if (Settings.rpcMode === 'http') {
-    log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
-}
-
-// db
 const db = global.db = require('./modules/db');
-
 
 require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
@@ -54,58 +35,26 @@ const ethereumNode = require('./modules/ethereumNode.js');
 const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
+// Define global vars; The preloader makes some globals available to the client.
 global.webviews = [];
-
 global.mining = false;
-
-global.icon = `${__dirname}/icons/${Settings.uiMode}/icon.png`;
-global.mode = Settings.uiMode;
+global.mode = store.getState().settings.uiMode;
+global.icon = `${__dirname}/icons/${global.mode}/icon.png`;
 global.dirname = __dirname;
-
 global.i18n = i18n;
-
-
-// INTERFACE PATHS
-// - WALLET
-if (Settings.uiMode === 'wallet') {
-    log.info('Starting in Wallet mode');
-
-    global.interfaceAppUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/wallet/index.html`
-        : 'http://localhost:3050';
-    global.interfacePopupsUrl = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-// - MIST
-} else {
-    log.info('Starting in Mist mode');
-
-    let url = (Settings.inProductionMode)
-        ? `file://${__dirname}/interface/index.html`
-        : 'http://localhost:3000';
-
-    if (Settings.cli.resetTabs) {
-        url += '?reset-tabs=true';
-    }
-
-    global.interfaceAppUrl = global.interfacePopupsUrl = url;
-}
-
-
-// prevent crashed and close gracefully
+    
+// prevent crashes and close gracefully
 process.on('uncaughtException', (error) => {
     log.error('UNCAUGHT EXCEPTION', error);
-    app.quit();
+    store.dispatch(quitApp());
 });
-
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    app.quit();
+    store.dispatch(quitApp());
 });
 
-// Listen to custom protocole incoming messages, needs registering of URL schemes
+// Listen to custom protocol incoming messages, needs registering of URL schemes
 app.on('open-url', (e, url) => {
     log.info('Open URL', url);
 });
@@ -113,26 +62,30 @@ app.on('open-url', (e, url) => {
 
 let killedSocketsAndNodes = false;
 
-app.on('before-quit', (event) => {
+app.on('before-quit', async (event) => {
     if (!killedSocketsAndNodes) {
         log.info('Defer quitting until sockets and node are shut down');
 
         event.preventDefault();
 
         // sockets manager
-        Sockets.destroyAll()
-            .catch(() => {
-                log.error('Error shutting down sockets');
-            });
+        try {
+            await Sockets.destroyAll();
+            store.dispatch({ type: 'SOCKETS::DESTROY_ALL' });
+        } catch (e) {
+            log.error('Error shutting down sockets');
+        }
 
         // delay quit, so the sockets can close
         setTimeout(async () => {
-            await ethereumNode.stop()
+            await ethereumNode.stop();
+            store.dispatch({ type: 'ETH_NODE::STOP' });
 
             killedSocketsAndNodes = true;
             await db.close();
+            store.dispatch({ type: 'DB::CLOSE' });
 
-            app.quit();
+            store.dispatch(quitApp());
         }, 500);
     } else {
         log.info('About to quit...');
@@ -147,7 +100,7 @@ let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
-app.on('ready', () => {
+app.on('ready', async () => {
     // if using HTTP RPC then inform user
     if (Settings.rpcMode === 'http') {
         dialog.showErrorBox('Insecure RPC connection', `
@@ -160,10 +113,14 @@ Only do this if you have secured your HTTP connection or you know what you are d
     }
 
     // initialise the db
-    global.db.init().then(onReady).catch((err) => {
-        log.error(err);
-        app.quit();
-    });
+    try {
+        await global.db.init();
+        store.dispatch({ type: 'DB::INIT' });
+        onReady();
+    } catch (e) {
+        log.error(e);
+        store.dispatch(quitApp());
+    }
 });
 
 // Allows the Swarm protocol to behave like http
@@ -174,6 +131,7 @@ onReady = () => {
 
     // setup DB sync to backend
     dbSync.backendSyncInit();
+    store.dispatch({ type: 'DB::SYNC_TO_BACKEND' });
 
     // Initialise window mgr
     Windows.init();
@@ -182,6 +140,7 @@ onReady = () => {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
         callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+        store.dispatch({ type: 'PROTOCOL::REGISTER', payload: { protocol: 'bzz' } });
     }, (error) => {
         if (error) {
             log.error(error);
@@ -190,84 +149,31 @@ onReady = () => {
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
+    store.dispatch({ type: 'UPDATE_CHECKER::RUN' });
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
+    store.dispatch({ type: 'IPC_PROVIDER_BACKEND::INIT' });
 
     // instantiate custom protocols
     // require('./customProtocols.js');
 
     // change to user language now that global.config object is ready
-    i18n.changeLanguage(Settings.language);
+    store.dispatch(setLanguageOnMain(Settings.language));
 
-    // add menu already here, so we have copy and past functionality
+    // add menu already here, so we have copy and paste functionality
     appMenu();
 
+    global.defaultWindow = windowStateKeeper({ defaultWidth: 1024 + 208, defaultHeight: 720 });
+
     // Create the browser window.
-
-    const defaultWindow = windowStateKeeper({
-        defaultWidth: 1024 + 208,
-        defaultHeight: 720
-    });
-
-    // MIST
-    if (Settings.uiMode === 'mist') {
-        mainWindow = Windows.create('main', {
-            primary: true,
-            electronOptions: {
-                width: Math.max(defaultWindow.width, 500),
-                height: Math.max(defaultWindow.height, 440),
-                x: defaultWindow.x,
-                y: defaultWindow.y,
-                webPreferences: {
-                    nodeIntegration: true, /* necessary for webviews;
-                        require will be removed through preloader */
-                    preload: `${__dirname}/modules/preloader/mistUI.js`,
-                    'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
-                    experimentalFeatures: true,
-                },
-            },
-        });
-
-    // WALLET
-    } else {
-        mainWindow = Windows.create('main', {
-            primary: true,
-            electronOptions: {
-                width: Math.max(defaultWindow.width, 500),
-                height: Math.max(defaultWindow.height, 440),
-                x: defaultWindow.x,
-                y: defaultWindow.y,
-                webPreferences: {
-                    preload: `${__dirname}/modules/preloader/walletMain.js`,
-                    'overlay-fullscreen-video': true,
-                    'overlay-scrollbars': true,
-                },
-            },
-        });
-    }
+    mainWindow = Windows.create('main');
 
     // Delegating events to save window bounds on windowStateKeeper
-    defaultWindow.manage(mainWindow.window);
+    global.defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) {
-        splashWindow = Windows.create('splash', {
-            primary: true,
-            url: `${global.interfacePopupsUrl}#splashScreen_${Settings.uiMode}`,
-            show: true,
-            electronOptions: {
-                width: 400,
-                height: 230,
-                resizable: false,
-                backgroundColor: '#F6F6F6',
-                useContentSize: true,
-                frame: false,
-                webPreferences: {
-                    preload: `${__dirname}/modules/preloader/splashScreen.js`,
-                },
-            },
-        });
+        splashWindow = Windows.create('splash');
     }
 
     // Checks time sync
@@ -289,6 +195,7 @@ onReady = () => {
             }
         });
     }
+
 
     const kickStart = () => {
         // client binary stuff
@@ -315,6 +222,7 @@ onReady = () => {
         // starting swarm
         swarmNode.on('starting', () => {
             Windows.broadcast('uiAction_swarmStatus', 'starting');
+            store.dispatch({ type: 'SWARM::INIT_START' });
         });
 
         // swarm download progress
@@ -325,6 +233,7 @@ onReady = () => {
         // started swarm
         swarmNode.on('started', (isLocal) => {
             Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+            store.dispatch({ type: 'SWARM::INIT_FINISH' });
         });
 
 
@@ -364,7 +273,7 @@ onReady = () => {
                     detail: global.i18n.t('mist.errors.legacyChain.description')
                 }, () => {
                     shell.openExternal('https://github.com/ethereum/mist/releases');
-                    app.quit();
+                    store.dispatch(quitApp());
                 });
 
                 throw new Error('Cant start client due to legacy non-Fork setting.');
@@ -378,7 +287,7 @@ onReady = () => {
         })
         .then(() => {
             // Wallet shouldn't start Swarm
-            if (Settings.uiMode === 'wallet') {
+            if (global.mode === 'wallet') {
                 return Promise.resolve();
             }
             return swarmNode.init();
@@ -403,16 +312,11 @@ onReady = () => {
                 log.info('No accounts setup yet, lets do onboarding first.');
 
                 return new Q((resolve, reject) => {
-                    const onboardingWindow = Windows.createPopup('onboardingScreen', {
-                        primary: true,
-                        electronOptions: {
-                            width: 576,
-                            height: 442,
-                        },
-                    });
+                    const onboardingWindow = Windows.createPopup('onboardingScreen');
 
                     onboardingWindow.on('closed', () => {
-                        app.quit();
+                        store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
+                        store.dispatch(quitApp());
                     });
 
                     // change network types (mainnet, testnet)
@@ -438,6 +342,7 @@ onReady = () => {
                         // prevent that it closes the app
                         onboardingWindow.removeAllListeners('closed');
                         onboardingWindow.close();
+                        store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
 
                         ipcMain.removeAllListeners('onBoarding_changeNet');
                         ipcMain.removeAllListeners('onBoarding_launchApp');
@@ -492,16 +397,18 @@ startMainWindow = () => {
     mainWindow.on('ready', () => {
         if (splashWindow) {
             splashWindow.close();
+            store.dispatch({ type: 'SPLASH_WINDOW::CLOSE' });
         }
 
         mainWindow.show();
+        store.dispatch({ type: 'MAIN_WINDOW::SHOW' });
     });
 
     mainWindow.load(global.interfaceAppUrl);
 
     // close app, when the main window is closed
     mainWindow.on('closed', () => {
-        app.quit();
+        store.dispatch(quitApp());
     });
 
     // observe Tabs for changes and refresh menu
@@ -519,6 +426,7 @@ startMainWindow = () => {
             global.webviews = sortedTabs.data();
 
             appMenu(global.webviews);
+            store.dispatch({ type: 'MENU::REFRESH' });
         }, 1000);
     };
 

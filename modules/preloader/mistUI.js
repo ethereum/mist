@@ -2,6 +2,22 @@
 @module preloader MistUI
 */
 
+// Create the client-side Redux store. This store's only purpose 
+// is to receive actions and keep them in sync with the main store.
+const { createStore, compose, applyMiddleware } = require('redux');
+const { electronEnhancer } = require('redux-electron-store');
+const thunk = require('redux-thunk').default;
+
+window.store = createStore(
+    () => {}, 
+    compose(
+        applyMiddleware(thunk), 
+        electronEnhancer({
+            dispatchProxy: a => store.dispatch(a)
+        })
+    )
+);
+
 require('./include/common')('mist');
 require('./include/web3CurrentProvider.js');
 const { ipcRenderer, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
@@ -42,11 +58,8 @@ delete window.require;
 
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
-    console.log(type, id, error, value);
     if ((type === 'requestAccount') || (type === 'connectAccount') && !error) {
-        Tabs.update({ webviewId: id }, { $addToSet: {
-            'permissions.accounts': value,
-        } });
+        Tabs.update({ webviewId: id }, { $addToSet: { 'permissions.accounts': value } });
     }
 
     // forward to the webview (TODO: remove and manage in the ipcCommunicator?)
@@ -57,7 +70,6 @@ ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
             webview.send('uiAction_windowMessage', type, error, value);
         }
     }
-
 });
 
 ipcRenderer.on('uiAction_enableBlurOverlay', (e, value) => {

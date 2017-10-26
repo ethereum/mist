@@ -1,3 +1,5 @@
+const { getLanguage } = require('./actions.js');
+
 /**
 The init function of Mist
 
@@ -72,9 +74,7 @@ Meteor.startup(function () {
         mistInit();
     }
 
-    console.debug('Setting language');
-
-    TAPi18n.setLanguage(ipc.sendSync('backendAction_getLanguage'));
+    store.dispatch(getLanguage());
 
     // change moment and numeral language, when language changes
     Tracker.autorun(function () {

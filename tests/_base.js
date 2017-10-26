@@ -261,23 +261,22 @@ const Utils = {
 
         return elem.value;
     },
-    * openAndFocusNewWindow(fnPromise) {
-        const client = this.client;
-
-        const existingHandles = (yield client.windowHandles()).value;
-
+    * openAndFocusNewWindow(type, fnPromise) {
         yield fnPromise();
+        const handle = yield this.selectWindowHandleByType(type);
+        yield this.client.window(handle);
+    },
+    * selectWindowHandleByType(type) {
+        const client = this.client;
+        const windowHandles = (yield client.windowHandles()).value;
 
-        yield this.waitUntil('new window visible', function checkForAddWindow() {
-            return client.windowHandles().then((handles) => {
-                return handles.value.length === existingHandles.length + 1;
-            });
-        });
-
-        const newHandles = (yield client.windowHandles()).value;
-
-        // focus on new window
-        yield client.window(newHandles.pop());
+        for (let handle in windowHandles) {
+            yield client.window(windowHandles[handle]);
+            const windowUrl = yield client.getUrl();
+            if (new RegExp(type).test(windowUrl)) {
+                return windowHandles[handle];
+            }
+        }
     },
     * execElemsMethod(clientElementIdMethod, selector) {
         const elems = yield this.client.elements(selector);
@@ -389,7 +388,7 @@ const Utils = {
     * pinCurrentTab() {
         const client = this.client;
 
-        yield this.openAndFocusNewWindow(() => {
+        yield this.openAndFocusNewWindow('generic', () => {
             return client.click('span.connect-button');
         });
         yield client.click('.dapp-primary-button');

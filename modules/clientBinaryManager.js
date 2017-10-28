@@ -31,7 +31,6 @@ class Manager extends EventEmitter {
         // check every hour
         setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
 
-        this._resolveEthBinPath();
         return this._checkForNewConfig(restart);
     }
 
@@ -73,7 +72,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;

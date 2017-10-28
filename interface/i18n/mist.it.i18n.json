@@ -46,7 +46,7 @@
                 "ethereumNode": "Nodo Ethereum",
                 "network": "Rete",
                 "mainNetwork": "Rete principale",
-                "startMining": "⛏ Inizia mining (solo Testnet)",
+                "startMining": "⛏ Inizia mining",
                 "stopMining": "⛏ Ferma mining",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

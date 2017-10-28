@@ -46,7 +46,7 @@
                 "ethereumNode": "Ethereum ノード",
                 "network": "ネットワーク",
                 "mainNetwork": "メインネットワーク",
-                "startMining": "⛏ マイニングを始める (テストネット のみ)",
+                "startMining": "⛏ マイニングを始める",
                 "stopMining": "⛏ マイニングを中止する",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

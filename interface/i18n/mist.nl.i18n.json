@@ -69,7 +69,7 @@
                 "fullNode": "Bewaar volledige blockchain",
                 "lightNode": "Gebruik light Node (experimenteel!)",
                 "mainNetwork": "Hoofdnetwerk",
-                "startMining": "⛏ Start Mining (Alleen testnet)",
+                "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stop Mining"
             },
             "window": {

@@ -396,7 +396,14 @@ class EthereumNode extends EventEmitter {
                         '--ipcpath', Settings.rpcIpcPath
                     ];
                     break;
-
+                case 'pluto':
+                    args = [
+                        '--pluto',
+                        '--syncmode', syncMode,
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
                 // Starts local network
                 case 'dev':
                     args = [

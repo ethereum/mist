@@ -42,7 +42,7 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: null,
+            default: 'pluto',
             describe: 'Network to connect to: main, test',
             requiresArg: true,
             nargs: 1,
@@ -277,9 +277,9 @@ class Settings {
         } else if (process.platform === 'freebsd' ||
        process.platform === 'linux' ||
        process.platform === 'sunos') {
-            ipcPath += '/.ethereum/geth.ipc';
+            ipcPath += '/.wanchain/gwan.ipc';
         } else if (process.platform === 'win32') {
-            ipcPath = '\\\\.\\pipe\\geth.ipc';
+            ipcPath = '\\\\.\\pipe\\gwan.ipc';
         }
 
         this._log.debug(`IPC path: ${ipcPath}`);

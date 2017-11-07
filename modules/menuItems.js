@@ -543,13 +543,13 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Rinkeby - Test network',
+                label: 'Pluto - Test network',
                 accelerator: 'CommandOrControl+Alt+3',
-                checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'rinkeby');
+                    restartNode(ethereumNode.type, 'pluto');
                 },
             },
             {

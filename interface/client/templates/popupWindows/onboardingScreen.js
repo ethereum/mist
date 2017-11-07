@@ -30,6 +30,8 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
     var oldData;
     TemplateVar.set('readyToLaunch', false);
+    TemplateVar.set('testnet', true); // in the develop phase, we use testnet default. TODO: change to mainnet later.
+
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function (error, syncing) {

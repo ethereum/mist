@@ -3,55 +3,56 @@
         "applicationMenu": {
             "app": {
                 "label": "__app__",
-                "about": "Mbi __app__",
-                "quit": "Dil __app__",
-                "checkForUpdates": "Check for updates...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
-                "services": "Services",
-                "hide": "Hide __app__",
-                "hideOthers": "Hide Others",
-                "showAll": "Show All"
+                "about": "Rreth __app__",
+                "checkForUpdates": "Kërko për përditësime...",
+                "checkForNodeUpdates": "Kërko për përditësime të nyjes Ethereum...",
+                "services": "Shërbime",
+                "hide": "Fshih __app__",
+                "hideOthers": "Fshih të tjerat",
+                "showAll": "Shfaq të gjitha",
+                "quit": "Dil nga __app__"
+            },
+            "file": {
+                "label": "Llogari",
+                "importPresale": "Merr llogari",
+                "newAccount": "Llogari e re",
+                "backup": "Ruaj kopje rezervë",
+                "backupKeyStore": "Llogari",
+                "backupMist": "Të Dhënat e Aplikimit",
+                "swarmUpload": "Ngarko në Swarm..."
             },
             "edit": {
-                "label": "Përpuno",
+                "label": "Redakto",
                 "undo": "Zhbëj",
                 "redo": "Ribëj",
                 "cut": "Pri",
                 "copy": "Kopjo",
-                "paste": "Bashko",
+                "paste": "Ngjit",
                 "selectAll": "Përzgjidh të gjitha"
             },
             "view": {
                 "label": "Shiko",
                 "fullscreen": "Kalo me ekran të plotë",
-                "default": "Default"
-            },
-            "accounts": {
-                "label": "Llogari",
-                "importPresale": "Merr llogari",
-                "newAccount": "Llogari e re",
-                "backup": "Ruaj një kopje rezervë",
-                "backupKeyStore": "Llogari",
-                "backupMist": "Të Dhënat e Aplikimit"
+                "default": "Vlera e parazgjedhur"
             },
             "develop": {
                 "label": "Zhvillo",
-                "devTools": "Kalo tek Mjetet e Zhvilluesit",
+                "devTools": "Shfaq mjetet e zhvillimit",
                 "devToolsMistUI": "Mist UI",
                 "devToolsWalletUI": "Kuletë UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Fillo testimet",
-                "logFiles": "Trego skedën me të dhënat e rregjistruara",
-                "ethereumNode": "Nyje Ethereumi",
+                "logFiles": "Trego skedarin me të dhënat e regjistruara",
+                "openRemix": "Hap IDE-në Remix",
+                "externalNode": "duke përdorur nyje të jashtme",
+                "ethereumNode": "Nyje Ethereum",
                 "network": "Rrjet",
                 "mainNetwork": "Rrjeti kryesor",
-                "startMining": "⛏  Fillo të Prodhosh (Rrjet testimi)",
-                "stopMining": "⛏ Ndalo së Prodhuari",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "nodeMode": "Shkarkim zinxhir",
+                "fullNode": "Ruaj zinxhirin e plotë të blloqeve",
+                "lightNode": "Përdor nyje të lehtë (eksperimentale!)",
+                "startMining": "⛏  Fillo të Prodhosh",
+                "stopMining": "⛏ Ndalo së Prodhuari"
             },
             "window": {
                 "label": "Dritare",
@@ -61,98 +62,118 @@
             },
             "help": {
                 "label": "Ndihmë",
-                "reportBug": "Report an issue on Github"
+                "mistWiki": "Zgjidhje problemesh dhe ndihmë",
+                "gitter": "Kanali Mist në Gitter",
+                "reportBug": "Raportoni një problem në Github"
             }
         },
         "errors": {
-            "nodeConnect": "Nuk mund të lidhesh me nyje? Shiko të dhënat e rregjistruara për më shumë:",
-            "nodeStartup": "Duket se nyja nuk mund të krijohet. Mos keni ndonje qe është aktive? Mos është duke pasuruar bazën e të dhënave në këto momente?",
+            "nodeConnect": "Nuk mund të lidhesh me nyje? Shiko të dhënat e regjistruara për më shumë:",
+            "nodeStartup": "Duket se nyja nuk mund të niset. Mos keni ndonjë nyje tjetër është aktive? Mos është duke pasuruar bazën e të dhënave në këto momente?",
             "timeSync": {
                 "title": "Ora e kompjuterit tuaj nuk është e sinkronizuar.",
-                "description": "Në mënyrë që të sinkronizoheni me sukses me rrjetin e Ethereum-it ju duhet të sinkronizoni orën tuaj të kompjuterit me një server sinkronizues kohe.",
-                "win32": "Shkoni në \"Internet Time Settings\" tek preferencat tuaja të sistemit dhe përzgjidhni opcionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
+                "description": "Në mënyrë që të sinkronizoheni me sukses me rrjetin Ethereum ju duhet të sinkronizoni orën tuaj të kompjuterit me një server sinkronizues kohe.",
+                "win32": "Shkoni në \"Internet Time Settings\" te preferencat tuaja të sistemit dhe përzgjidhni opsionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "Që të fusni në punë një server kohe të sinkronizuar instaloni \"ntp\" nëpërmjet \"apt-get install ntp\".",
-                "darwin": "Që të mundësoni një sinkronizim kohe,  hapni preferencat e kohes dhe përzgjidhni \"Set the time and date automatically\"."
+                "darwin": "Që të mundësoni një sinkronizim kohe,  hapni preferencat e kohës dhe përzgjidhni \"Set the time and date automatically\"."
             },
             "nodeChecksumMismatch": {
-                "title": "Checksum mismatch in downloaded node!",
-                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+                "title": "Konflikt skedarësh në nyjen e shkarkuar!",
+                "description": "__algorithm__: __hash__\n\nJu lutemi të instaloni versionin node __type__ __version__ manualisht."
             },
             "legacyChain": {
-                "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "title": "U zbulua zinxhir i vjetër",
+                "description": "Nyja juaj ndodhet në zinxhirin e pasuportuar Ethereum Classic. Për të përdorur këtë zinxhir, përdorni mjetet e mundësuara nga projekti Ethereum Classic në\nhttps://ethereumclassic.github.io.\n\nPër të kaluar në zinxhirin kryesor Ethereum ndiqni udhëzuesin këtu:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
             "reload": "Ringarko",
             "openDevTools": "Hap Mjetet e Zhvilluesit",
-            "inspectElements": "Inspekto Elementët"
+            "inspectElements": "Inspekto Elemente"
         },
         "nodeInfo": {
-            "nodeSyncing": "__blockDiff__ blocks left",
-            "blockReceived": "U Mor një Bllok i Ri",
+            "nodeSyncing": "__blockDiff__ blloqe të mbetura",
+            "blockReceived": "U mor një bllok i ri",
             "blockNumber": "Numri i bllokut tuaj të fundit",
-            "timeSinceBlock": "Kohë e kaluar që nga blloku i fundit",
-            "testnetExplain": "You jeni në një rrjet testimi, MOS DERGONI asnjë ether në këto adresa",
-            "peers": "të barabartë",
-            "checkingWhichNetwork": "Checking network...",
+            "timeSinceBlock": "Koha e kaluar që nga blloku i fundit",
+            "checkingWhichNetwork": "Duke kontrolluar rrjetin...",
             "mainNetwork": "Main-net",
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
-            "unknownnetExplain": "Unable to determine which network you are on"
+            "testnetExplain": "Jeni në një rrjet testimi, MOS DËRGONI asnjë ether të vërtetë në këto adresa",
+            "mainnetExplain": "Jeni në rrjetin kryesor global Ethereum",
+            "privatenetExplain": "Jeni në një rrjet privat, MOS DËRGONI asnjë ether të vërtetë në këto adresa",
+            "unknownnetExplain": "Nuk mund të vlerësohet rrjeti ku ndodheni tani",
+            "peers": "miq"
         },
         "sidebar": {
             "buttons": {
                 "browser": "Shfleto"
+            },
+            "submenu": {
+                "account": "Llogaria",
+                "account_plural": "Llogaritë",
+                "connectAccounts": "Lidh Llogari"
             }
         },
         "browserBar": {
             "buttons": {
                 "noAccounts": "Nuk ka llogari të krijuar",
-                "connect": "Connect"
+                "connect": "Lidhu"
             }
         },
         "startScreen": {
-            "runningNodeFound": "U gjet nyje Ethereumi në punë!",
-            "startingNode": "Duke krijuar nyje Ethereumi...",
-            "startedNode": "Duke filluar aplikacionin...",
-            "nodeConnectionTimeout": "Nuk mundi të fillojë krijimin e një nyje Ethereumi!<br><small>Nëse ju <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, përdorni këtë komandë ta krijoni atë: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ose raportoni një problem </a></small>",
-            "nodeBinaryNotFound": "Nuk u gjet nyje binare Ethereumi!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Lutemi krijoni një manualisht më parë. </a> </small>",
-            "nodeSyncing": "Nyja e Ethereumit ka nevojë të sinkronizohet, lutemi prisni...",
-            "nodeSyncInfo": "Duke marrë bllokun __currentBlock__ of __highestBlock__.",
-            "nodeSyncConnecting": "Duke kërkuar të barabartë...",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
-            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
-            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "peerSearchTimeout": "Skip peer search",
-            "launchApp": "Launch Application",
+            "runningNodeFound": "U gjet nyje Ethereum në punë!",
+            "startingNode": "Duke krijuar nyje Ethereum...",
+            "startedNode": "Duke nisur aplikacionin...",
+            "nodeConnectionTimeout": "Nuk mund të niset nyje Ethereum!<br><small>Nëse ju <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>instaluat Geth</a>, përdorni këtë komandë ta krijoni: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ose raportoni një problem </a></small>",
+            "nodeBinaryNotFound": "Nuk u gjet nyje binare Ethereum!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Ju lutemi krijoni një manualisht më parë. </a> </small>",
+            "nodeStarting": "Nyja Ethereum po niset...",
+            "nodeStarted": "Nyja Ethereum u nis",
+            "nodeConnected": "Nyja Ethereum u lidh",
+            "nodeStopping": "Nyja Ethereum po ndalon...",
+            "nodeStopped": "Nyja Ethereum ndaloi",
+            "nodeError": "Problem lidhjeje i nyjes Ethereum:'(",
+            "unableToBindPort": "Nyja Ethereum nuk munt të fillojë. Mos ka ndonjë instancë tjetër të nisur?",
+            "nodeSyncing": "Nyja Ethereum ka nevojë të sinkronizohet, ju lutemi prisni...",
+            "nodeSyncInfo": "Duke marrë bllokun __currentBlock__ nga __highestBlock__.",
+            "nodeSyncInfoStates": "Duke shkarkuar bllokun __displayBlock__ nga __highestBlock__, <br> Duke shkarkuar strukturën e zinxhirit __displayState__ nga __displayKnownStates__",
+            "nodeSyncConnecting": "Duke kërkuar miq...",
+            "stoppingNode": "Duke ndaluar nyjen Ethereum...",
+            "nodeSyncFoundPeers": "Duke u lidhur me __peers__ miq...",
+            "peerSearchTimeout": "Kapërce kërkimin e miqve",
+            "launchApp": "Hap Aplikacionin",
             "clientBinaries": {
-                "scanning": "Checking for node update...",
-                "downloading": "Downloading new node...",
-                "loadConfig": "Loading client config...",
-                "filtering": "Filtering client binaries...",
-                "done": "Ethereum node up-to-date...",
-                "error": "Error running downloaded binary."
+                "scanning": "Duke kërkuar për përditësime të nyjes...",
+                "downloading": "Duke shkarkuar nyje të re...",
+                "loadConfig": "Duke ngarkuar konfigurimin e klientit...",
+                "filtering": "Duke filtruar skedarët binarë të klientit...",
+                "done": "Nyja Ethereum e përditësuar...",
+                "error": "Problem me ekzekutimin e programit të shkarkuar."
             }
         },
         "popupWindows": {
+            "updateAvailable": {
+                "newVersionAvailable": "Version i ri i  __name__ i përdorshëm",
+                "version": "Versioni",
+                "downloadURL": "URL e shkarkimit",
+                "checksum": "Checksum",
+                "downloadAndRestart": "Përditëso dhe Rindiz",
+                "download": "Shkarko version të ri",
+                "skipUpdate": "Kapërce përditësim",
+                "notNow": "Më pyet më vonë",
+                "checking": "Duke kontrolluar për përditësime të __name__...",
+                "noUpdateFound": "Nuk u gjetën përditësime. Po përdorni versionin më të fundit të __name__."
+            },
             "requestAccount": {
                 "title": "Krijoni llogari",
                 "enterPassword": "Fusni fjalëkalimin",
                 "repeatPassword": "Përsërisni fjalëkalimin",
                 "creating": "Duke krijuar llogari...",
+                "backupHint": "Sigurohuni të ruani edhe fjalëkalimin, edhe skedarët çelës!\n\nMund t'i gjeni këta skedarë duke përdorur menunë kryesore -> Llogaritë -> Ruaj kopje rezervë -> Llogaritë. Ruani një kopje të dosjes \"keystore\" në një vend të sigurt!",
                 "errors": {
-                    "passwordMismatch": "Fjalëkalimi juaj nuk përputhet.",
-                    "passwordTooShort": "Make a longer password"
+                    "passwordMismatch": "Fjalëkalimet nuk përputhen.",
+                    "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"
                 }
             },
             "unlockMasterPassword": {
@@ -169,112 +190,100 @@
                     "contractExecution": "Kryeni kontratën.",
                     "createContract": "Krijoni kontratë"
                 },
-                "contractExecutionInfo": "Ju jeni pranë ekzekutimit të një funksioni në një kontratë. Kjo mund të përfshijë transferim vlerash.",
-                "contractCreationInfo": "Ju jeni pranë krijimit të një kontrate nga të dhënat e siguruara.",
+                "contractExecutionInfo": "Ju jeni pranë ekzekutimit të një funksioni në një kontratë. Kjo mund të përfshijë transferim valutash.",
+                "contractCreationInfo": "Ju jeni pranë krijimit të një kontrate nga të dhënat e marra.",
                 "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
                 "unlocking": "Duke konfirmuar...",
                 "createContract": "Krijoni kontratë",
-                "estimatedFee": "Tarifa e vlerësuar e konsumuar",
-                "estimatedGasError": "Të dhënat nuk mund të ekzekutohen keshtu që do të përdoret i gjithë karburanti.",
+                "estimatedFee": "Tarifa e hamendësuar për t'u konsumuar",
+                "estimatedGasError": "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
+                "transactionThrow": "Kontrata nuk lejon kryerjen e këtij transaksioni",
+                "overBlockGasLimit": "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
+                "notEnoughGas": "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
+                "noEstimate": "Nuk mund të hamendësonim sasinë e nevojshme të karburantit.",
                 "gasPrice": "Çmimi i karburantit",
                 "perMillionGas": "ether për milion karburant",
                 "gasLimit": "Vendos tarifë maksimale",
-                "data": "Të dhëna",
+                "data": "Të dhëna të paformatuara",
+                "parameters": "Parametra",
                 "buttons": {
-                    "sendTransaction": "Dërgo transaksionin"
+                    "sendTransaction": "Kryej transaksionin"
                 },
                 "errors": {
                     "connectionTimeout": "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
                     "wrongPassword": "Fjalëkalim i gabuar",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
-                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
-                    "sameAccount": "Can't send to itself"
+                    "multipleKeysMatchAddress": "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (Menu -> Llogaritë -> Ruaj kopje tjetër -> Llogari)",
+                    "insufficientFundsForGas": "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
+                    "sameAccount": "Nuk mund t'i dërgohet vetes"
                 },
-                "transactionThrow": "The contract won't allow this transaction to be executed",
-                "noEstimate": "We couldn't estimate the gas.",
-                "parameters": "Parameters",
-                "showRawBytecode": "show raw data",
-                "showDecodedParameters": "show decoded parameters",
-                "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet",
-                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
-                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
+                "showRawBytecode": "shfaq të dhënat e paformatuara",
+                "showDecodedParameters": "shfaq parametrat e dekoduar",
+                "lookupData": "Përpiqu të dekodosh të dhëna",
+                "lookupDataExplainer": "Kërkojeni në internet"
             },
             "onboarding": {
-                "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain): tamper-proof software i cili mund të transferojë vlerë dhe pronësi dhe jetë përgjithmonë",
-                "goToTestnet": "Përdor rrjetit testues (Rinkeby)",
-                "goToTestnetDescription": "Testo lirshëm teknologjinë në një testrrjet pa përdorur ether të vërtetë.",
+                "description": "Ethereum është një platformë e decentralizuar për ndërtim aplikacionesh në një zinxhir blloqesh (blockchain) me gjuhën e vet të programimit",
+                "goToTestnet": "Përdor rrjetin testues (Rinkeby)",
+                "goToTestnetDescription": "Testo lirshëm teknologjinë në një rrjet test pa përdorur ether të vërtetë.",
                 "gotoMainnet": "Përdor rrjetin kryesor",
-                "gotoMainnetDescription": " Ju do të keni nevojë për pak Ether në mënyrë që të krijoni dhe zbatoni kontrata. Mos u shqetësoni, ne do ju ndihmojmë që të keni aq sa duhet...",
+                "gotoMainnetDescription": " Ju do të keni nevojë për pak Ether në mënyrë që të krijoni dhe zbatoni kontrata. Mos u shqetësoni, ne do ju ndihmojmë që të gjeni sa duhet...",
                 "doYouHaveAWalletFile": "A keni një skedë kulete?",
                 "walletFileDescription": "<p>Nëse ju keni marrë pjesë në Parashitjen e Ethereumit 2014, ju duhet të keni një skedë të emëruar <code>ethereum_wallet_backup.json</code>. Eshtë shkarkuar pas shitjes dhe dërguar në emailin tuaj</p>",
                 "dropFilesHere": "Vendos skedën e parashitjes",
                 "creating": "Duke krijuar...",
                 "importing": "Duke marrë...",
                 "skip": "Kapërce këtë hap",
-                "next": "Vijues",
-                "protectTitle": "Protect your account",
-                "protectDescription": "Choose a password for your new account. Make it as strong as if it would protect your house keys!",
-                "accountTitle": "Load it up!",
-                "accountTitleTestnet": "Mine some!",
-                "etherDescription": "The ethereum network is based on token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
-                "loadItDescription": "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
-                "mineItDescription": "<strong>On the testnet you can mine ether yourself by going to the <em>Develop</em> menu and choosing <em>Start Mining</em>. </strong> <br> <strong> DO NOT ATTEMPT TO SEND REAL ETHER TO THIS ADDRESS </strong>",
-                "you": "YOU",
-                "etherbase": "Main account (etherbase)",
-                "depositBitcoin": "Deposit Bitcoin",
-                "learnIt": "Learn while you wait",
-                "downloadingBlocks": "Downloading blocks",
-                "tutorial1Description": "<p> Now the only thing left to do is wait for the download to finish. Here's some reading suggestions: </p> <h4>Make your own money </h4> <p> Make a cryptocurrency with a fixed market supply, tokens representing real world assets, etc </p>",
-                "tutorial2Description": "<h4> Create a crowdsale </h4> <p> Raise funds for a common goal, fully trustable without a third party. Sidestep the hurdle of traditional funding system and go directly to the source by funding an organization via the blockchain.</p>",
-                "tutorial3Description": "<h4> Blockchain Organization </h4> <p> Create an autonomous organization with unbreakable rules on how money can be spent and who can make the decisions. Let your backers take an active role on how the money is spent</p>",
+                "next": "Më tej",
+                "protectTitle": "Ruaj adresën",
+                "protectDescription": "Zgjidhni një fjalëkalim për adresën tuaj të re. Krijojeni aq të fortë sa të mjaftonte për të ruajtur çelësat e shtëpisë!",
+                "accountTitle": "Ngarko",
+                "accountTitleTestnet": "Puno",
+                "etherDescription": "Rrjeti Ethereum bazohet në monedhën e quajtur “Ether”. Nevojitet një sasi e vogël e tij për të bërë ndonjë gjë në rrjetin Ethereum.",
+                "loadItDescription": "Nëse keni Bitcoin ose ndonjë kriptovalutë tjetër, mund t'i këmbeni me ether duke përdorur shapeshift. <br><br> Ne ju rekomandojmë ngarkimin e <strong>0.25 deri 1 ether</strong>.",
+                "mineItDescription": "<strong>Në rrjetin test mund të përftoni ether duke shkuar në menunë <em>Zhvillo</em> dhe duke zgjedhur <em>Fillo të punosh</em>. </strong> <br> <strong> MOS PROVONI Txxx DxxxRGONI ETHER Txxx VxxxRTETxxx Nxxx KxxxTxxx ADRESxxx </strong>",
+                "you": "JU",
+                "etherbase": "Adresa kryesore (etherbase)",
+                "depositBitcoin": "Depozito Bitcoin",
+                "viaShapeshift": "Këmbim i menjëhershëm duke përdorur <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "learnIt": "Mësoni ndërkohë që prisni",
+                "downloadingBlocks": "Duke shkarkuar blloqe",
+                "syncMessage": "Blloku __displayBlock__ nga __highestBlockString__",
+                "syncMessageWithStates": "Blloku __displayBlock__ nga __highestBlockString__ (Struktura e zinxhirit __statesPercent__%)",
+                "startingSync": "Duke u përgatitur për sinkronizim...",
+                "tutorial1Description": "<p> Tani mbetet vetëm të prisni sa tv përfundojë shkarkimi. Ja disa sugjerime për lexim: </p> <h4>Krijoni paranë tuaj </h4> <p> Krijoni një kriptovalutë me ofertë fikse tregu, valuta që përfaqësojnë asete të jetës së vërtetë, etj. </p>",
+                "tutorial2Description": "<h4> Krijoni \"crowdsales\" </h4> <p> Mblidhni fonde për një qëllim të përbashkët, plotësisht të besueshme pa palë të treta. Kapërceni pengesat e sistemeve tradicionale të mbledhjes së fondeve dhe shkoni drejt e te burimi duke financuar organizatën nëpërmjet zinxhirit të blloqeve.</p>",
+                "tutorial3Description": "<h4> Organizatë Blockchain </h4> <p> Krijoni një organizatë autonome me rregulla të pathyeshme mbi shpenzimin e parave dhe marrjen e vendimeve. Lejoni mbështetësit të kenë rol aktivmbi shpenzimin e parave</p>",
                 "buttons": {
-                    "showPassword": "Show password",
-                    "importAccount": "Import account",
-                    "launchApp": "Launch Application!",
-                    "learnReceipt": "Learn this recipe"
+                    "showPassword": "Shfaq fjalëkalimin",
+                    "importAccount": "Merr llogari",
+                    "launchApp": "Nis Aplikacionin",
+                    "learnReceipt": "Mëso këtë recetë"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Wait a few more seconds until your node is fully started and try again",
-                    "unknownFile": "File not recognised.",
-                    "wrongPassword": "Wrong password.",
-                    "importFailed": "Couldn't import the file got: __error__"
-                },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
-            },
-            "updateAvailable": {
-                "newVersionAvailable": "New __name__ version available",
-                "version": "Version",
-                "downloadURL": "Download URL",
-                "checksum": "Checksum",
-                "downloadAndRestart": "Update and Restart",
-                "download": "Download new version",
-                "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
-                "checking": "Checking for updates to __name__...",
-                "noUpdateFound": "No update found. You are running the latest version of __name__."
+                    "nodeNotStartedYet": "Prisni edhe disa sekonda derisa nyja të jetë nisur plotësisht dhe provojeni përsëri dhe provojeni përsëri",
+                    "unknownFile": "Skedari nuk njihet.",
+                    "wrongPassword": "Fjalëkalim i gabuar.",
+                    "importFailed": "Skedari nuk mund të merret: __error__"
+                }
             },
             "connectAccount": {
-                "chooseAccountTitle": "Choose account",
-                "createAccount": "Create new account",
-                "pinToSidebar": "Pin app to the sidebar",
-                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
+                "chooseAccountTitle": "Zgjidhni llogarinë",
+                "createAccount": "Krijoni llogari të re",
+                "pinToSidebar": "Vendosni aplikacionin në shiritin anësor",
+                "connectAccountDescription": "Po shpërndani identitetin tuaj me __dappName__. Kjo i lejon aplikacionit të shohë çdo informacion publik të llogarive tuaja, duke përfshirë vlerat e lidhura me të."
             }
         }
     },
     "elements": {
-        "checksumAlert": "This address looks valid, but it doesn't have some security features that will protect you against typos, so double check you have the right one. If provided, check if the security icon matches.",
-        "identiconHelper": "This is a security icon, if there's any change on the address the resulting icon should be a completely different one",
+        "checksumAlert": "Kjo adresë duket e vlefshme, por nuk ka disa masa sigurie që ju mbrojnë nga gabimet e shtypjes, kështu që duhet të siguroheni që kjo është adresa e duhur. Nëse e keni, kontrolloni nëse ikona e sigurisë përputhet.",
+        "identiconHelper": "Kjo është një ikonë sigurie; nëse ka ndonjë ndryshim në adresë ikona e përftuar do të ishte krejt tjetër",
         "type": {
-            "address": "Address",
-            "bool": "Boolean",
-            "int": "Integer",
-            "uint": "Natural Number",
+            "address": "Adresa",
+            "bool": "Buleane",
+            "int": "Numër i plotë",
+            "uint": "Numër Natyror",
             "string": "String",
-            "bytes": "Bytes"
+            "bytes": "Bajt"
         }
     }
 }

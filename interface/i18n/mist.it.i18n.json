@@ -26,7 +26,7 @@
                 "fullscreen": "Schermo intero",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "Accounts",
                 "importPresale": "Importa Accounts",
                 "newAccount": "Nuovo account",
@@ -35,6 +35,7 @@
                 "backupMist": "Dati applicativi"
             },
             "develop": {
+                "uploadToSwarm": "Carica a Swarm",
                 "label": "Sviluppo",
                 "devTools": "Strumenti di sviluppo",
                 "devToolsMistUI": "Mist UI",
@@ -45,7 +46,7 @@
                 "ethereumNode": "Nodo Ethereum",
                 "network": "Rete",
                 "mainNetwork": "Rete principale",
-                "startMining": "⛏ Inizia mining (solo Testnet)",
+                "startMining": "⛏ Inizia mining",
                 "stopMining": "⛏ Ferma mining",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

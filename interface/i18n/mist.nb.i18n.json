@@ -26,7 +26,7 @@
                 "fullscreen": "Veksle Mellom Fullskjerm",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "Kontoer",
                 "importPresale": "Importer Kontoer",
                 "newAccount": "Ny konto",
@@ -35,6 +35,7 @@
                 "backupMist": "Applikasjonsdata"
             },
             "develop": {
+                "uploadToSwarm": "Opplasting til Swarm",
                 "label": "Utvikle",
                 "devTools": "Veksle Mellom Utviklerverktøy",
                 "devToolsMistUI": "Mist UI",
@@ -45,7 +46,7 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Nettverk",
                 "mainNetwork": "Hovednettverk",
-                "startMining": "⛏ Start Mining (Kun testnett)",
+                "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stopp Mining",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

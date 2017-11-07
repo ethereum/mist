@@ -4,6 +4,7 @@ const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const gulp = require('gulp');
+const babel = require('gulp-babel');
 const options = require('../gulpfile.js').options;
 const path = require('path');
 const Q = require('bluebird');
@@ -28,18 +29,31 @@ gulp.task('copy-app-source-files', () => {
         'node_modules/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
-        './main.js',
         './clientBinaries.json',
-        './modules/**',
         './tests/**/*.*',
         '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
+        './errorPages/*',
         'customProtocols.js'
     ], {
         base: './'
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
+});
+
+
+gulp.task('transpile-main', () => {
+    return gulp.src('./main.js')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app`));
+});
+
+
+gulp.task('transpile-modules', () => {
+    return gulp.src('./modules/**')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app/modules`));
 });
 
 
@@ -200,6 +214,7 @@ gulp.task('release-dist', (done) => {
     const versionDashed = version.replace(/\./g, '-');
 
     const cp = (inputPath, outputPath) => {
+        console.info(`Copying from ${path.join(distPath, inputPath)} to ${path.join(releasePath, outputPath)}`);
         shell.cp(path.join(distPath, inputPath), path.join(releasePath, outputPath));
     };
 
@@ -213,7 +228,8 @@ gulp.task('release-dist', (done) => {
             break;
         case 'mac':
             cp(
-                `${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
+                path.join('mac', `${applicationName}-${version}.dmg`),
+                `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
             cp(

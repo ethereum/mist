@@ -26,13 +26,14 @@ module.exports = class BaseProcessor {
      * @param  {Object|Array} payload  payload
      * @return {Promise}
      */
-    exec(conn, payload) {
+    async exec(conn, payload) {
         this._log.trace('Execute request', payload);
 
-        return conn.socket.send(payload, {
+        const ret = await conn.socket.send(payload, {
             fullResult: true,
         })
-        .then(ret => ret.result);
+
+        return ret.result;
     }
 
 
@@ -97,11 +98,11 @@ module.exports = class BaseProcessor {
         }
 
         // prevent dapps from acccesing admin endpoints
-        if (!/^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
+        if (!/^eth_|^bzz_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
             delete payload.result;
-
-            payload.error = this.ERRORS.METHOD_DENIED;
+            const err = _.clone(this.ERRORS.METHOD_DENIED);
+            err.message = err.message.replace('__method__', `"${payload.method}"`);
+            payload.error = err;
         }
     }
 };
-

@@ -44,4 +44,4 @@ globals:  # don't warn about missing declarations
   _: true
   window: true
   location: true
-
+  document: true

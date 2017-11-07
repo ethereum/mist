@@ -6,18 +6,20 @@ const fs = require('fs');
 const Web3 = require('web3');
 const shell = require('shelljs');
 const path = require('path');
-const packageJson = require('../package.json');
 const gethPrivate = require('geth-private');
 const Application = require('spectron').Application;
 const chai = require('chai');
 const http = require('http');
 const ecstatic = require('ecstatic');
+const express = require('express');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
-const Settings = require('../modules/settings');
+const logger = require('../modules/utils/logger');
 
 chai.should();
 
 process.env.TEST_MODE = 'true';
+
+const log = logger.create('base');
 
 const startGeth = function* () {
     let gethPath;
@@ -28,12 +30,10 @@ const startGeth = function* () {
     const manager = new ClientBinaryManager(config);
     yield manager.init();
 
-    if (manager.clients.Geth.state.available) {
+    if (!manager.clients.Geth.state.available) {
         gethPath = manager.clients.Geth.activeCli.fullPath;
-    }
-    else {
         console.info('Downloading geth...');
-        let downloadedGeth = yield manager.download('Geth');
+        const downloadedGeth = yield manager.download('Geth');
         gethPath = downloadedGeth.client.activeCli.fullPath;
         console.info('Geth downloaded at:', gethPath);
     }
@@ -53,8 +53,24 @@ const startGeth = function* () {
             rpcport: 58545,
         },
     });
+
+    log.info('Geth starting...');
     yield geth.start();
+    log.info('Geth started');
+
     return geth;
+};
+
+const startFixtureServer = function (serverPort) {
+    const app = express();
+    app.use(express.static(path.join(__dirname, 'fixtures')));
+
+    app.get('/redirect', (req, res) => {
+        // Redirects to param ?url=XX
+        res.redirect(302, req.query.to);
+    });
+    app.listen(serverPort);
+    return app;
 };
 
 exports.mocha = (_module, options) => {
@@ -72,21 +88,21 @@ exports.mocha = (_module, options) => {
             this.expect = chai.expect;
 
             const mistLogFile = path.join(__dirname, 'mist.log');
-            const webdriverLogFile = path.join(__dirname, 'webdriver.log');
             const chromeLogFile = path.join(__dirname, 'chrome.log');
+            const webdriverLogDir = path.join(__dirname, 'webdriver');
 
-            _.each([mistLogFile, webdriverLogFile, chromeLogFile], (e) => {
-                shell.rm('-f', e);
+            _.each([mistLogFile, webdriverLogDir, chromeLogFile], (e) => {
+                log.info('Removing log files', e);
+                shell.rm('-rf', e);
             });
 
             this.geth = yield startGeth();
 
             const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
-            const appVers = packageJson.version.replace(/\./ig, '-');
             const platformArch = `${process.platform}-${process.arch}`;
 
             let appPath;
-            let ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
+            const ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
 
             switch (platformArch) {
             case 'darwin-x64':
@@ -119,21 +135,27 @@ exports.mocha = (_module, options) => {
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
                 ],
-                webdriverLogPath: webdriverLogFile,
+                webdriverLogPath: webdriverLogDir,
                 chromeDriverLogPath: chromeLogFile,
             });
+
             yield this.app.start();
+
+            this.client = this.app.client;
 
             /*
                 Starting HTTP server for HTML fixtures
             */
             const serverPort = 8080;
-            this.httpServer = http.createServer(
-                ecstatic({root: path.join(__dirname, 'fixtures')})
-            ).listen(serverPort);
+            this.httpServer = startFixtureServer(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
 
-            this.client = this.app.client;
+            // this.httpServer = http.createServer(
+            //     ecstatic({root: path.join(__dirname, 'fixtures')})
+            // ).listen(serverPort);
+            // this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
+            //
+            // this.client = this.app.client;
 
             /*
                 Utility methods
@@ -143,8 +165,8 @@ exports.mocha = (_module, options) => {
             }
 
             // Loop over windows trying to select Main Window
-            let app = this;
-            let selectMainWindow = function* (mainWindowSearch) {
+            const app = this;
+            const selectMainWindow = function* (mainWindowSearch) {
                 let windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
@@ -157,7 +179,7 @@ exports.mocha = (_module, options) => {
                 // not main window. try again after 1 second.
                 yield Q.delay(1000);
                 yield selectMainWindow(mainWindowSearch);
-            }
+            };
 
             const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
             yield selectMainWindow(mainWindowSearch);
@@ -165,7 +187,7 @@ exports.mocha = (_module, options) => {
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
         },
 
-        * beforeEach () {
+        * beforeEach() {
             yield this.app.client.window(this.mainWindowHandle);
 
             yield this.client.execute(() => { // Code executed in context of browser
@@ -188,14 +210,12 @@ exports.mocha = (_module, options) => {
 
                 LocalStore.set('selectedTab', 'browser');
             });
-            yield Q.delay(2000);
-            // yield this.client.reload();
+            yield Q.delay(1000);
         },
 
-        * afterEach () {
-        },
+        // * afterEach() { },
 
-        * after () {
+        * after() {
             if (this.app && this.app.isRunning()) {
                 console.log('Stopping app...');
                 yield this.app.stop();
@@ -339,14 +359,18 @@ const Utils = {
     },
 
     * selectTab(tabId) {
-        const tab = yield this.getUiElement(`.sidebar [data-tab-id=${tabId}]`);
+        yield this.getUiElement(`.sidebar [data-tab-id=${tabId}]`);
         yield this.client.click(`.sidebar [data-tab-id=${tabId}] button.main`);
         // TODO: returns webview reference
     },
-    * getActiveWebview() {
-        const webview = '';
-        return webview;
+
+    * getSelectedWebviewParam(param) {
+        const selectedTabId = (yield this.client.execute(() => {
+            return localStorage.getItem('selectedTab');
+        })).value;
+        return yield this.client.getAttribute(`webview[data-id=${selectedTabId}]`, param);
     },
+
     * loadFixture(uri = '') {
         const client = this.client;
         yield client.setValue('#url-input', `${this.fixtureBaseUrl}${uri}`);
@@ -357,10 +381,12 @@ const Utils = {
             });
         }, 3000, 'expected to properly load fixture');
     },
+
     * getBrowserBarText() {
         return yield this.client.getText('.url-breadcrumb');
     },
-    *pinCurrentTab() {
+
+    * pinCurrentTab() {
         const client = this.client;
 
         yield this.openAndFocusNewWindow(() => {
@@ -374,7 +400,7 @@ const Utils = {
         const pinnedWebview = (yield client.windowHandles()).value.pop();
         return pinnedWebview;
     },
-    *navigateTo(url) {
+    * navigateTo(url) {
         const client = this.client;
         yield client.setValue('#url-input', url);
         yield client.submitForm('form.url');
@@ -386,19 +412,15 @@ const Utils = {
     @param search: function that tells how to search by window
     @param tries: amount of tries left until give up searching for
     */
-    *getWindowByUrl(search, tries = 5) {
+    * getWindowByUrl(search, tries = 5) {
         if (tries < 0) throw new Error('Couldn\'t select window using given parameters.');
-
-        let windowHandles = (yield this.client.windowHandles()).value;
-
+        const windowHandles = (yield this.client.windowHandles()).value;
         for (let handle in windowHandles) {
             yield this.client.window(windowHandles[handle]);
-
             const found = !!search(yield this.client.getUrl());
             if (found) return true;
         }
         yield Q.delay(500);
-        yield this.getWindowByUrl(search, --tries);
+        yield this.getWindowByUrl(search, --tries); //eslint-disable-line
     }
-
 };

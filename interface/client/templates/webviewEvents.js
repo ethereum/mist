@@ -12,6 +12,9 @@ showError = function (tabId, e) {
         case -105:
             url = path + '404.html';
             break;
+        case 404:
+            url = path + '404.html';
+            break;
         case 500:
             url = path + '500.html';
             break;
@@ -41,7 +44,7 @@ webviewChangeUrl = function (tabId, e) {
     }
 
     // make sure to not store error pages in history
-    if (!url || url.indexOf('mist/errorPages/') !== -1) {
+    if (!url || url.indexOf('mist/errorPages/') !== -1 || url.indexOf('app.asar/errorPages/') !== -1) {
         return;
     }
 

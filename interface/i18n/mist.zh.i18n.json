@@ -26,7 +26,7 @@
                 "fullscreen": "全屏切换",
                 "default": "Default"
             },
-            "accounts": {
+            "file": {
                 "label": "账户",
                 "importPresale": "导入账户",
                 "newAccount": "新建账户",
@@ -35,6 +35,7 @@
                 "backupMist": "应用程序数据"
             },
             "develop": {
+                "uploadToSwarm": "上传到Swarm",
                 "label": "开发",
                 "devTools": "切换开发者工具",
                 "devToolsMistUI": "Mist界面",

@@ -1,10 +1,13 @@
+- [ ] I've asked for help in the [Mist Gitter](http://gitter.im/ethereum/mist) before filing this issue.
+
+
 <!-- Please fill in these information below: -->
-``````
+```
 Version: `0.0.0`
 OS & Version: windows/linux/osx
-Node type: `eth/geth`
+Node version: `geth 0.0.0` 
 Number of blocks synchronized: 0
-``````
+```
 
 <!--
 

@@ -26,7 +26,7 @@
                 "fullscreen": "Vollbildmodus",
                 "default": "Standard"
             },
-            "accounts": {
+            "file": {
                 "label": "Konten",
                 "importPresale": "Konto importieren",
                 "newAccount": "Neues Konto",
@@ -35,6 +35,7 @@
                 "backupMist": "Anwendungsdaten"
             },
             "develop": {
+                "uploadToSwarm": "Upload zum Swarm",
                 "label": "Entwicklung",
                 "devTools": "Entwicklerwerkzeuge",
                 "devToolsMistUI": "Mist UI",
@@ -46,7 +47,7 @@
                 "ethereumNode": "Ethereum Softwareknoten",
                 "network": "Netzwerk",
                 "mainNetwork": "Hauptnetzwerk",
-                "startMining": "⛏ Mining starten (nur auf Testnetz)",
+                "startMining": "⛏ Mining starten",
                 "stopMining": "⛏ Mining stoppen",
                 "externalNode": "externer Softwareknoten aktiv",
                 "nodeMode": "Chain herunterladen",

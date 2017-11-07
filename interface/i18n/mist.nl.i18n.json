@@ -44,7 +44,7 @@
                     "zh-TW": "國語"
                 }
             },
-            "accounts": {
+            "file": {
                 "label": "Accounts",
                 "importPresale": "Importeer Accounts",
                 "newAccount": "Nieuw account",
@@ -53,6 +53,7 @@
                 "backupMist": "Applicatie Data"
             },
             "develop": {
+                "uploadToSwarm": "Uploaden naar Swarm",
                 "label": "Ontwikkelen",
                 "devTools": "Ontwikkelaars Opties Inschakelen",
                 "devToolsMistUI": "Mist UI",
@@ -68,7 +69,7 @@
                 "fullNode": "Bewaar volledige blockchain",
                 "lightNode": "Gebruik light Node (experimenteel!)",
                 "mainNetwork": "Hoofdnetwerk",
-                "startMining": "⛏ Start Mining (Alleen testnet)",
+                "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stop Mining"
             },
             "window": {

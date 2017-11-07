@@ -1,6 +1,5 @@
-
 global._ = require('./modules/utils/underscore');
-const { app, dialog, ipcMain, shell } = require('electron');
+const { app, dialog, ipcMain, shell, protocol } = require('electron');
 const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
@@ -52,6 +51,7 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
+const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 global.webviews = [];
@@ -126,16 +126,13 @@ app.on('before-quit', (event) => {
             });
 
         // delay quit, so the sockets can close
-        setTimeout(() => {
-            ethereumNode.stop()
-            .then(() => {
-                killedSocketsAndNodes = true;
+        setTimeout(async () => {
+            await ethereumNode.stop()
 
-                return db.close();
-            })
-            .then(() => {
-                app.quit();
-            });
+            killedSocketsAndNodes = true;
+            await db.close();
+
+            app.quit();
         }, 500);
     } else {
         log.info('About to quit...');
@@ -169,6 +166,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
     });
 });
 
+// Allows the Swarm protocol to behave like http
+protocol.registerStandardSchemes(['bzz']);
 
 onReady = () => {
     global.config = db.getCollection('SYS_config');
@@ -178,6 +177,16 @@ onReady = () => {
 
     // Initialise window mgr
     Windows.init();
+
+    // Enable the Swarm protocol
+    protocol.registerHttpProtocol('bzz', (request, callback) => {
+        const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
+        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+    }, (error) => {
+        if (error) {
+            log.error(error);
+        }
+    });
 
     // check for update
     if (!Settings.inAutoTestMode) UpdateChecker.run();
@@ -261,26 +270,25 @@ onReady = () => {
         });
     }
 
-    // check time sync
-    // var ntpClient = require('ntp-client');
-    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
-    timesync.checkEnabled((err, enabled) => {
-        if (err) {
-            log.error('Couldn\'t get time from NTP time sync server.', err);
-            return;
-        }
+    // Checks time sync
+    if (!Settings.skiptimesynccheck) {
+        timesync.checkEnabled((err, enabled) => {
+            if (err) {
+                log.error('Couldn\'t infer if computer automatically syncs time.', err);
+                return;
+            }
 
-        if (!enabled) {
-            dialog.showMessageBox({
-                type: 'warning',
-                buttons: ['OK'],
-                message: global.i18n.t('mist.errors.timeSync.title'),
-                detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
-            }, () => {
-            });
-        }
-    });
-
+            if (!enabled) {
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.timeSync.title'),
+                    detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
+                }, () => {
+                });
+            }
+        });
+    }
 
     const kickStart = () => {
         // client binary stuff
@@ -302,6 +310,21 @@ onReady = () => {
             Windows.broadcast('uiAction_nodeStatus', stateAsText,
                 ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
             );
+        });
+
+        // starting swarm
+        swarmNode.on('starting', () => {
+            Windows.broadcast('uiAction_swarmStatus', 'starting');
+        });
+
+        // swarm download progress
+        swarmNode.on('downloadProgress', (progress) => {
+            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+        });
+
+        // started swarm
+        swarmNode.on('started', (isLocal) => {
+            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
         });
 
 
@@ -352,6 +375,13 @@ onReady = () => {
         })
         .then(() => {
             return ethereumNode.init();
+        })
+        .then(() => {
+            // Wallet shouldn't start Swarm
+            if (Settings.uiMode === 'wallet') {
+                return Promise.resolve();
+            }
+            return swarmNode.init();
         })
         .then(function sanityCheck() {
             if (!ethereumNode.isIpcConnected) {

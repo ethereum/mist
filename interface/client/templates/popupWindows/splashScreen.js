@@ -84,6 +84,26 @@ Template['popupWindows_splashScreen'].onCreated(function () {
         }
     });
 
+    ipc.on('uiAction_swarmStatus', function (e, status, data) {
+        switch (status) {
+        case 'starting':
+            TemplateVar.set(template, 'text', 'Starting Swarm');
+            TemplateVar.set(template, 'showProgressBar', false);
+            break;
+
+        case 'downloadProgress':
+            TemplateVar.set(template, 'text', `Downloading Swarm binary: ${(data * 100).toFixed(0)}%`);
+            TemplateVar.set(template, 'showProgressBar', true);
+            TemplateVar.set(template, 'progress', data * 100);
+            break;
+
+        case 'started':
+            TemplateVar.set(template, 'text', 'Started Swarm');
+            TemplateVar.set(template, 'showProgressBar', false);
+            break;
+        }
+    });
+
     ipc.on('uiAction_nodeSyncStatus', function (e, status, data) {
         console.trace('Node sync status', status, data);
 

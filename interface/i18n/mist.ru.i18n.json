@@ -26,7 +26,7 @@
                 "fullscreen": "Полноэкранный режим",
                 "default": "По умолчанию"
             },
-            "accounts": {
+            "file": {
                 "label": "Аккаунты",
                 "importPresale": "Импорт аккаунтов",
                 "newAccount": "Создать аккаунт",
@@ -35,6 +35,7 @@
                 "backupMist": "Данных приложения"
             },
             "develop": {
+                "uploadToSwarm": "Загрузить в Swarm",
                 "label": "Дополнительно",
                 "devTools": "Выбрать инструмент разработчика",
                 "devToolsMistUI": "Mist UI",
@@ -45,7 +46,7 @@
                 "ethereumNode": "Ethereum-нода",
                 "network": "Сеть",
                 "mainNetwork": "Основная сеть",
-                "startMining": "⛏ Запустить майнинг (только для тестовой сети)",
+                "startMining": "⛏ Запустить майнинг",
                 "stopMining": "⛏ Остановить майнинг",
                 "externalNode": "using external node",
                 "openRemix": "Open Remix IDE",

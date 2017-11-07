@@ -64,6 +64,21 @@ Template['views_webview'].onRendered(function () {
     webview.addEventListener('did-fail-load', showError.bind(webview, tabId));
     webview.addEventListener('crashed', showError.bind(webview, tabId));
 
+    // Forward SWARM status code errors to showError
+    webview.addEventListener('did-get-response-details', function (e) {
+        if (e && e.resourceType === 'mainFrame' && /^bzz:\//i.test(e.newURL)) {
+            switch (e.httpResponseCode) {
+            case 500:
+                showError.call(webview, tabId, {
+                    isMainFrame: true,
+                    errorCode: 404
+                });
+                break;
+            }
+        }
+    });
+
+
     // navigate page, and redirect to browser tab if necessary
     webview.addEventListener('will-navigate', webviewLoadStart.bind(webview, tabId));
     webview.addEventListener('did-get-redirect-request', webviewLoadStart.bind(webview, tabId));
@@ -88,8 +103,6 @@ Template['views_webview'].helpers({
         switch (this._id) {
         case 'browser':
             return 'file://' + Helpers.preloaderDirname + '/browser.js';
-        case 'wallet':
-            return 'file://' + Helpers.preloaderDirname + '/wallet.js';
         case 'tests':
             return 'file://' + Helpers.preloaderDirname + '/tests.js';
         default:

@@ -98,7 +98,7 @@ app.on('before-quit', async (event) => {
         // sockets manager
         try {
             await Sockets.destroyAll();
-            store.dispatch({ type: 'SOCKETS::DESTROY_ALL' });
+            store.dispatch({ type: '[MAIN]:SOCKETS:DESTROY' });
         } catch (e) {
             log.error('Error shutting down sockets');
         }
@@ -106,11 +106,11 @@ app.on('before-quit', async (event) => {
         // delay quit, so the sockets can close
         setTimeout(async () => {
             await ethereumNode.stop();
-            store.dispatch({ type: 'ETH_NODE::STOP' });
+            store.dispatch({ type: '[MAIN]:ETH_NODE:STOP' });
 
             killedSocketsAndNodes = true;
             await db.close();
-            store.dispatch({ type: 'DB::CLOSE' });
+            store.dispatch({ type: '[MAIN]:DB:CLOSE' });
 
             store.dispatch(quitApp());
         }, 500);
@@ -142,7 +142,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
     // initialise the db
     try {
         await global.db.init();
-        store.dispatch({ type: 'DB::INIT' });
+        store.dispatch({ type: '[MAIN]:DB:INIT' });
         onReady();
     } catch (e) {
         log.error(e);
@@ -158,7 +158,7 @@ onReady = () => {
 
     // setup DB sync to backend
     dbSync.backendSyncInit();
-    store.dispatch({ type: 'DB::SYNC_TO_BACKEND' });
+    store.dispatch({ type: '[MAIN]:DB:SYNC_TO_BACKEND' });
 
     // Initialise window mgr
     Windows.init();
@@ -167,7 +167,7 @@ onReady = () => {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
         callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-        store.dispatch({ type: 'PROTOCOL::REGISTER', payload: { protocol: 'bzz' } });
+        store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
     }, (error) => {
         if (error) {
             log.error(error);
@@ -175,12 +175,14 @@ onReady = () => {
     });
 
     // check for update
-    if (!Settings.inAutoTestMode) UpdateChecker.run();
-    store.dispatch({ type: 'UPDATE_CHECKER::RUN' });
+    if (!Settings.inAutoTestMode) {
+        UpdateChecker.run();
+        store.dispatch({ type: '[MAIN]:UPDATE_CHECKER:FINISHED' });
+    }
 
     // initialize the web3 IPC provider backend
     ipcProviderBackend.init();
-    store.dispatch({ type: 'IPC_PROVIDER_BACKEND::INIT' });
+    store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
 
     // instantiate custom protocols
     // require('./customProtocols.js');
@@ -249,7 +251,7 @@ onReady = () => {
         // starting swarm
         swarmNode.on('starting', () => {
             Windows.broadcast('uiAction_swarmStatus', 'starting');
-            store.dispatch({ type: 'SWARM::INIT_START' });
+            store.dispatch({ type: '[MAIN]:SWARM:INIT_START' });
         });
 
         // swarm download progress
@@ -260,7 +262,7 @@ onReady = () => {
         // started swarm
         swarmNode.on('started', (isLocal) => {
             Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
-            store.dispatch({ type: 'SWARM::INIT_FINISH' });
+            store.dispatch({ type: '[MAIN]:SWARM:INIT_FINISH' });
         });
 
 
@@ -453,7 +455,7 @@ startMainWindow = () => {
             global.webviews = sortedTabs.data();
 
             appMenu(global.webviews);
-            store.dispatch({ type: 'MENU::REFRESH' });
+            store.dispatch({ type: '[MAIN]:MENU:REFRESH' });
         }, 1000);
     };
 

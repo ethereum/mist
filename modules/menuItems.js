@@ -180,7 +180,8 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
-                enabled: ethereumNode.isMainNetwork,
+                //cranelv: open this menu in all nets. 2o17-11-13
+//                enabled: ethereumNode.isMainNetwork,
                 click() {
                     Windows.createPopup('importAccount', {
                         electronOptions: {

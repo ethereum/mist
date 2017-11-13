@@ -11,3 +11,19 @@ export function quitApp() {
         }
     }
 }
+
+export function openWindow(windowType) {
+    return { type: '[MAIN]:WINDOW:OPEN', payload: { windowType } };
+}
+
+export function closeWindow(windowType) {
+    return { type: '[MAIN]:WINDOW:CLOSE', payload: { windowType } };
+}
+
+export function reuseGenericWindow(actingType) {
+    return { type: '[MAIN]:GENERIC_WINDOW:REUSE', payload: { actingType } };
+}
+
+export function resetGenericWindow(actingType) {
+    return { type: '[MAIN]:GENERIC_WINDOW:RESET' };
+}

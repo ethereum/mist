@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
+import { resetGenericWindow, reuseGenericWindow } from './core/ui/actions';
 
 class GenericWindow extends EventEmitter {
     constructor(mgr) {
@@ -69,6 +70,7 @@ class GenericWindow extends EventEmitter {
         this.actingType = null;
         this.isAvailable = true;
         this.emit('hidden');
+        store.dispatch(resetGenericWindow());
     }
 
     show() {
@@ -100,6 +102,7 @@ class GenericWindow extends EventEmitter {
         this.window.setSize(options.electronOptions.width, options.electronOptions.height);
         this.send('uiAction_switchTemplate', type);
         this.show();
+        store.dispatch(reuseGenericWindow(type));
     }
 }
 
@@ -310,7 +313,7 @@ class Windows {
     }
 
     create(type, opts, callback) {
-        global.store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
+        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
 
         const options = _.deepExtend(this.getDefaultOptionsForType(type), opts || {});
 
@@ -333,7 +336,7 @@ class Windows {
             wnd.callback = callback;
         }
 
-        global.store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
+        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
 
         return wnd;
     }

@@ -24,6 +24,6 @@ export function reuseGenericWindow(actingType) {
     return { type: '[MAIN]:GENERIC_WINDOW:REUSE', payload: { actingType } };
 }
 
-export function resetGenericWindow(actingType) {
+export function resetGenericWindow() {
     return { type: '[MAIN]:GENERIC_WINDOW:RESET' };
 }

@@ -6,18 +6,6 @@ describe('the ui reducer', () => {
         assert.deepEqual(reducer(undefined, {}), initialState);
     });
 
-    it('should handle the "[MAIN]:WINDOW:CREATE_FINISH" action', () => {
-        const action = {
-            type: '[MAIN]:WINDOW:CREATE_FINISH',
-            payload: { type: 'about' }
-        };
-        const expectedState = Object.assign({}, initialState, {
-            aboutWindowCreated: true,
-        });
-
-        assert.deepEqual(reducer(initialState, action), expectedState);
-    });
-
     it('should handle the "[MAIN]:APP_QUIT:SUCCESS" action', () => {
         const action = { type: '[MAIN]:APP_QUIT:SUCCESS' };
         const expectedState = Object.assign({}, initialState, {
@@ -63,7 +51,8 @@ describe('the ui reducer', () => {
             payload: { actingType: 'about' },
         };
         const expectedState = Object.assign({}, initialState, {
-            genericWindowActingType: 'about'
+            genericWindowActingType: 'about',
+            windowsOpen: ['generic'],
         });
 
         assert.deepEqual(reducer(initialState, action), expectedState);
@@ -72,9 +61,13 @@ describe('the ui reducer', () => {
     it('should handle the "[MAIN]:GENERIC_WINDOW:RESET" action', () => {
         const state = Object.assign({}, initialState, {
             genericWindowActingType: 'about',
+            windowsOpen: ['generic', 'main'],
         });
         const action = { type: '[MAIN]:GENERIC_WINDOW:RESET' };
+        const expectedState = Object.assign({}, initialState, {
+            windowsOpen: ['main'],
+        });
 
-        assert.deepEqual(reducer(state, action), initialState);
+        assert.deepEqual(reducer(state, action), expectedState);
     });
 });

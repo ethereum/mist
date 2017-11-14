@@ -2,7 +2,12 @@ const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
-import { resetGenericWindow, reuseGenericWindow } from './core/ui/actions';
+import {
+    closeWindow,
+    openWindow,
+    resetGenericWindow,
+    reuseGenericWindow,
+} from './core/ui/actions';
 
 class GenericWindow extends EventEmitter {
     constructor(mgr) {
@@ -189,6 +194,7 @@ class Window extends EventEmitter {
             this.isContentReady = false;
 
             this.emit('closed');
+            store.dispatch(closeWindow(this.type));
         });
 
         this.window.once('close', (e) => {
@@ -255,6 +261,8 @@ class Window extends EventEmitter {
         this.window.show();
 
         this.isShown = true;
+
+        store.dispatch(openWindow(this.type));
     }
 
 
@@ -284,6 +292,11 @@ class Windows {
 
         this.loading.on('show', () => {
             this.loading.window.center();
+            store.dispatch(openWindow('loading'));
+        });
+
+        this.loading.on('hide', () => {
+            store.dispatch(closeWindow('loading'));
         });
 
         // when a window gets initalized it will send us its id

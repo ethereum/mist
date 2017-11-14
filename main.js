@@ -14,7 +14,7 @@ const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
 
 import configureReduxStore from './modules/core/store';
-import { closeWindow, openWindow, quitApp } from './modules/core/ui/actions';
+import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain } from './modules/core/settings/actions';
 
 Q.config({
@@ -77,14 +77,10 @@ process.on('uncaughtException', (error) => {
 });
 
 // Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    store.dispatch(quitApp());
-});
+app.on('window-all-closed', () => store.dispatch(quitApp()));
 
 // Listen to custom protocol incoming messages, needs registering of URL schemes
-app.on('open-url', (e, url) => {
-    log.info('Open URL', url);
-});
+app.on('open-url', (e, url) => log.info('Open URL', url));
 
 
 let killedSocketsAndNodes = false;
@@ -334,10 +330,7 @@ onReady = () => {
                 return new Q((resolve, reject) => {
                     const onboardingWindow = Windows.createPopup('onboardingScreen');
 
-                    onboardingWindow.on('closed', () => {
-                        store.dispatch(closeWindow('onboarding'));
-                        store.dispatch(quitApp());
-                    });
+                    onboardingWindow.on('closed', () => store.dispatch(quitApp()));
 
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
@@ -362,7 +355,6 @@ onReady = () => {
                         // prevent that it closes the app
                         onboardingWindow.removeAllListeners('closed');
                         onboardingWindow.close();
-                        store.dispatch(closeWindow('onboarding'));
 
                         ipcMain.removeAllListeners('onBoarding_changeNet');
                         ipcMain.removeAllListeners('onBoarding_launchApp');
@@ -408,21 +400,13 @@ startMainWindow = () => {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
     mainWindow.on('ready', () => {
-        if (splashWindow) {
-            splashWindow.close();
-            store.dispatch(closeWindow('splash'));
-        }
-
+        if (splashWindow) { splashWindow.close(); }
         mainWindow.show();
-        store.dispatch(openWindow('main'));
     });
 
     mainWindow.load(global.interfaceAppUrl);
 
-    // close app, when the main window is closed
-    mainWindow.on('closed', () => {
-        store.dispatch(quitApp());
-    });
+    mainWindow.on('closed', () => store.dispatch(quitApp()));
 
     // observe Tabs for changes and refresh menu
     const Tabs = global.db.getCollection('UI_tabs');

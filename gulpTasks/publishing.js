@@ -93,7 +93,7 @@ gulp.task('upload-binaries', (cb) => {
                             // String manipulation to create a checksums table
                             body: String.concat('File | Checksum (SHA256)\n-- | --', checksums.map((e) => {
                                 const line = e.replace('\n', '').split('  ');
-                                return `${line[1]} | ${line[0]}`;
+                                return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
                             }).join('\n'))
                         })
                     });

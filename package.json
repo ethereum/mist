@@ -9,7 +9,7 @@
   },
   "scripts": {
     "postinstall": "cd interface && yarn",
-    "dev:electron": "electron -r babel-register main.js",
+    "dev:electron": "electron -r babel-register .",
     "dev:meteor": "cd interface && meteor --no-release-check"
   },
   "main": "main.js",
@@ -50,7 +50,7 @@
     "co-mocha": "^1.2.0",
     "del": "^2.2.2",
     "ecstatic": "^2.1.0",
-    "electron": "1.7.9",
+    "electron": "1.8.1",
     "electron-builder": "^12.2.2",
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.0.1",

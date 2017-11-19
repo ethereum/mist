@@ -66,7 +66,7 @@
                     {{/if}}
                 </div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>
                     <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>
                 </div>
             </div>
@@ -175,6 +175,8 @@
                 <span class="dapp-identicon dapp-icon-loading"></span>
                 <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.onboarding.creating"}}</h2>
             {{else}}
+                <!--cranelv add Accounts 2017-11-19-->
+                <input type="{{showPassword}}" placeholder="{{i18n 'mist.applicationMenu.file.newAccount'}}" class="account">
                 <input type="{{passwordInputType}}" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
                 <input type="{{passwordInputType}}" placeholder="{{i18n 'mist.popupWindows.requestAccount.repeatPassword'}}" class="password-repeat {{#if TemplateVar.get 'passwordsMismatch'}}dapp-error{{/if}}">
                 <br><br>

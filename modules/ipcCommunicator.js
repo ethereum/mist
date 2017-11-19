@@ -5,6 +5,7 @@ Window communication
 */
 
 const _ = global._;
+const wanOTAs = require('./wanChain/wanChainOTAs');
 const fs = require('fs');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
 const Windows = require('./windows');
@@ -74,7 +75,6 @@ ipc.on('backendAction_windowCallback', (e, value1, value2, value3) => {
 ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
     const windowId = e.sender.id;
     const senderWindow = Windows.getById(windowId);
-
     if (senderWindow.ownerId) {
         const ownerWindow = Windows.getById(senderWindow.ownerId);
         const mainWindow = Windows.getByType('main');
@@ -231,8 +231,8 @@ const createAccountPopup = (e) => {
     Windows.createPopup('requestAccount', {
         ownerId: e.sender.id,
         electronOptions: {
-            width: 400,
-            height: 230,
+            width: 420,
+            height: 380,
             alwaysOnTop: true,
         },
     });
@@ -241,9 +241,9 @@ const createAccountPopup = (e) => {
 // MIST API
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
-ipc.on('mistAPI_requestAccount', (e) => {
+ipc.on('mistAPI_requestAccount', (event) => {
     if (global.mode === 'wallet') {
-        createAccountPopup(e);
+        createAccountPopup(event);
     } else { // Mist
         Windows.createPopup('connectAccount', {
             ownerId: e.sender.id,
@@ -257,7 +257,21 @@ ipc.on('mistAPI_requestAccount', (e) => {
         });
     }
 });
+ipc.on('wan_requestOTACollection',(event,address)=>{
 
+    var OTAArray = wanOTAs.requireOTAsFromCollection(address.address);
+    console.log('wan_requestOTACollection :' + JSON.stringify(OTAArray));
+    const windowId = event.sender.id;
+    const senderWindow = Windows.getById(windowId);
+    const mainWindow = Windows.getByType('main');
+    if(senderWindow)
+        senderWindow.send('uiAction_windowMessage', 'requestOTACollection',  null, OTAArray);
+    mainWindow.send('uiAction_windowMessage', 'requestOTACollection',  null, OTAArray);
+
+});
+ipc.on('wan_requestScanOTAbyBlock',(event,address)=>{
+    wanOTAs.scanOTAsByblocks(address.address);
+});
 const uiLoggers = {};
 
 ipc.on('console_log', (event, id, logLevel, logItemsStr) => {

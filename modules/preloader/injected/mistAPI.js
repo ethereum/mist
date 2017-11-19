@@ -49,21 +49,45 @@
      */
     const mist = {
         callbacks: {},
+        //cranelv add permanent callbacks; 2017-11-19
+        permanentCallbacks: {},
         version: '__version__',
         license: '__license__',
         platform: '__platform__',
         requestAccount(callback) {
             if (callback) {
-                if (!this.callbacks.connectAccount) {
-                    this.callbacks.connectAccount = [];
+                if (!this.callbacks.requestAccount) {
+                    this.callbacks.requestAccount = [];
                 }
-                this.callbacks.connectAccount.push(callback);
+                this.callbacks.requestAccount.push(callback);
             }
 
             postMessage({
                 type: 'mistAPI_requestAccount'
             });
         },
+        //cranelv add Database Interface
+        requestOTACollection(address,callback)
+        {
+            if(callback)
+                if (!this.callbacks.requestOTACollection) {
+                    this.callbacks.requestOTACollection = [];
+                }
+            this.callbacks.requestOTACollection.push(callback);
+            postMessage({
+                type: 'wan_requestOTACollection',
+                address: address
+            });
+        },
+        requestScanOTAbyBlock(address)
+        {
+            postMessage({
+                type: 'wan_requestScanOTAbyBlock',
+                address: address
+            });
+        },
+
+
         solidity: {
             version: '__solidityVersion__',
         },

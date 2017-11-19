@@ -403,6 +403,7 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event click button[type="button"]
     */
     'click button[type="button"]': function (e, template) {
+//        template.find('input.account').value = '';
         template.find('input.password').value = '';
         template.find('input.password-repeat').value = '';
     },
@@ -422,9 +423,13 @@ Template['popupWindows_onboardingScreen_password'].events({
     'input input, change input': function (e, template) {
         var pw = template.find('input.password').value;
         var pwRepeat = template.find('input.password-repeat').value;
+        //cranelv add Account name 2017-11-13
+        var account = template.find('input.account').value;
 
         TemplateVar.set(template, 'passwordsNotEmpty', pw !== '' || pwRepeat !== '');
         TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw !== pwRepeat);
+        //cranelv add Account name 2017-11-13
+        TemplateVar.set(template, 'accountNotEmpty', account!=='');
 
     },
     /**
@@ -435,8 +440,19 @@ Template['popupWindows_onboardingScreen_password'].events({
     'submit form': function (e, template) {
         var pw = template.find('input.password').value;
         var pwRepeat = template.find('input.password-repeat').value;
+        //cranelv add Account name 2017-11-13
+        var account = template.find('input.account').value;
 
-        if (pw !== pwRepeat) {
+        if(account=='' || account.length < 2)
+        {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        }
+        else if (pw !== pwRepeat) {
+
+ //       if (pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3

@@ -36,6 +36,7 @@
                 "languages": "Language",
                 "default": "Default",
                 "langCodes": {
+                    "ca": "Català",
                     "de": "Deutsch",
                     "en": "English",
                     "es": "Español",

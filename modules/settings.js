@@ -132,6 +132,14 @@ const argv = require('yargs')
             group: 'Mist options:',
             type: 'boolean',
         },
+        skiptimesynccheck: {
+            demand: false,
+            requiresArg: false,
+            nargs: 0,
+            describe: 'Disable checks for the presence of automatic time sync on your OS.',
+            group: 'Mist options:',
+            type: 'boolean',
+        },
         '': {
             describe: 'To pass options to the underlying node (e.g. Geth) use the --node- prefix, e.g. --node-datadir',
             group: 'Node options:',
@@ -140,7 +148,6 @@ const argv = require('yargs')
     .help('h')
     .alias('h', 'help')
     .parse(process.argv.slice(1));
-
 
 argv.nodeOptions = [];
 
@@ -302,6 +309,10 @@ class Settings {
 
     set language(langCode) {
         this.saveConfig('ui.i18n', langCode);
+    }
+
+    get skiptimesynccheck() {
+        return argv.skiptimesynccheck;
     }
 
     initConfig() {

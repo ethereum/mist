@@ -220,7 +220,7 @@ onReady = () => {
                 x: defaultWindow.x,
                 y: defaultWindow.y,
                 vibrancy: 'medium-light',
-                backgroundColor: '#00000000',  // transparent background required for vibrancy
+                // backgroundColor: '#00000000',  // transparent background required for vibrancy
                 webPreferences: {
                     nodeIntegration: true, /* necessary for webviews;
                         require will be removed through preloader */
@@ -272,26 +272,25 @@ onReady = () => {
         });
     }
 
-    // check time sync
-    // var ntpClient = require('ntp-client');
-    // ntpClient.getNetworkTime("pool.ntp.org", 123, function(err, date) {
-    timesync.checkEnabled((err, enabled) => {
-        if (err) {
-            log.error('Couldn\'t get time from NTP time sync server.', err);
-            return;
-        }
+    // Checks time sync
+    if (!Settings.skiptimesynccheck) {
+        timesync.checkEnabled((err, enabled) => {
+            if (err) {
+                log.error('Couldn\'t infer if computer automatically syncs time.', err);
+                return;
+            }
 
-        if (!enabled) {
-            dialog.showMessageBox({
-                type: 'warning',
-                buttons: ['OK'],
-                message: global.i18n.t('mist.errors.timeSync.title'),
-                detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
-            }, () => {
-            });
-        }
-    });
-
+            if (!enabled) {
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.timeSync.title'),
+                    detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
+                }, () => {
+                });
+            }
+        });
+    }
 
     const kickStart = () => {
         // client binary stuff
@@ -509,8 +508,7 @@ startMainWindow = () => {
 
     // observe Tabs for changes and refresh menu
     const Tabs = global.db.getCollection('UI_tabs');
-
-    const sortedTabs = Tabs.addDynamicView('sorted_tabs');
+    const sortedTabs = Tabs.getDynamicView('sorted_tabs') || Tabs.addDynamicView('sorted_tabs');
     sortedTabs.applySimpleSort('position', false);
 
     const refreshMenu = () => {

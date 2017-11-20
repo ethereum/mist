@@ -42,7 +42,6 @@ exports.requireOTAsFromCollection = (address) =>
     console.log('scanOTAsByblocks:' + address);
     var OTAsCollection = db.getCollection('OTAsCollection');
     var Key = address.toLowerCase();
-    console.log('scanOTAsByblocks:' + Key);
     return OTAsCollection.find({'address':Key});
 }
 exports.firstNewAccount = (newAccount) =>
@@ -51,7 +50,6 @@ exports.firstNewAccount = (newAccount) =>
     var found = accountCollection.findOne({'address': newAccount.address});
     if(found == null)
     {
-        console.log('firstNewAccount insert:' + JSON.stringify(newAccount));
         accountCollection.insert({'address': newAccount.address, 'name': newAccount.name});
     }
 }

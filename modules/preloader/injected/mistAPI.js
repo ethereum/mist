@@ -77,10 +77,12 @@
         requireAccountName(address,callback)
         {
             if(callback)
+            {
                 if (!this.callbacks.requireAccountName) {
                     this.callbacks.requireAccountName = [];
                 }
-            this.callbacks.requireAccountName.push(callback);
+                this.callbacks.requireAccountName.push(callback);
+            }
             postMessage({
                 type: 'wan_requireAccountName',
                 address: address
@@ -90,10 +92,12 @@
         requestOTACollection(address,callback)
         {
             if(callback)
+            {
                 if (!this.callbacks.requestOTACollection) {
                     this.callbacks.requestOTACollection = [];
                 }
-            this.callbacks.requestOTACollection.push(callback);
+                this.callbacks.requestOTACollection.push(callback);
+            }
             postMessage({
                 type: 'wan_requestOTACollection',
                 address: address

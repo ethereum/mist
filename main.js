@@ -77,14 +77,10 @@ process.on('uncaughtException', (error) => {
 });
 
 // Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    store.dispatch(quitApp());
-});
+app.on('window-all-closed', () => store.dispatch(quitApp()));
 
 // Listen to custom protocol incoming messages, needs registering of URL schemes
-app.on('open-url', (e, url) => {
-    log.info('Open URL', url);
-});
+app.on('open-url', (e, url) => log.info('Open URL', url));
 
 
 let killedSocketsAndNodes = false;
@@ -201,9 +197,7 @@ onReady = () => {
     // Delegating events to save window bounds on windowStateKeeper
     global.defaultWindow.manage(mainWindow.window);
 
-    if (!Settings.inAutoTestMode) {
-        splashWindow = Windows.create('splash');
-    }
+    if (!Settings.inAutoTestMode) { splashWindow = Windows.create('splash'); }
 
     // Checks time sync
     if (!Settings.skiptimesynccheck) {
@@ -227,12 +221,10 @@ onReady = () => {
 
 
     const kickStart = () => {
-        // client binary stuff
         ClientBinaryManager.on('status', (status, data) => {
             Windows.broadcast('uiAction_clientBinaryStatus', status, data);
         });
 
-        // node connection stuff
         ethereumNode.on('nodeConnectionTimeout', () => {
             Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
         });
@@ -241,32 +233,27 @@ onReady = () => {
             Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
         });
 
-        // state change
         ethereumNode.on('state', (state, stateAsText) => {
             Windows.broadcast('uiAction_nodeStatus', stateAsText,
                 ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
             );
         });
 
-        // starting swarm
         swarmNode.on('starting', () => {
             Windows.broadcast('uiAction_swarmStatus', 'starting');
             store.dispatch({ type: '[MAIN]:SWARM:INIT_START' });
         });
 
-        // swarm download progress
         swarmNode.on('downloadProgress', (progress) => {
             Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
         });
 
-        // started swarm
         swarmNode.on('started', (isLocal) => {
             Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
             store.dispatch({ type: '[MAIN]:SWARM:INIT_FINISH' });
         });
 
 
-        // capture sync results
         const syncResultPromise = new Q((resolve, reject) => {
             nodeSync.on('nodeSyncing', (result) => {
                 Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
@@ -343,10 +330,7 @@ onReady = () => {
                 return new Q((resolve, reject) => {
                     const onboardingWindow = Windows.createPopup('onboardingScreen');
 
-                    onboardingWindow.on('closed', () => {
-                        store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
-                        store.dispatch(quitApp());
-                    });
+                    onboardingWindow.on('closed', () => store.dispatch(quitApp()));
 
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
@@ -371,7 +355,6 @@ onReady = () => {
                         // prevent that it closes the app
                         onboardingWindow.removeAllListeners('closed');
                         onboardingWindow.close();
-                        store.dispatch({ type: 'ONBOARDING_WINDOW::CLOSE' });
 
                         ipcMain.removeAllListeners('onBoarding_changeNet');
                         ipcMain.removeAllListeners('onBoarding_launchApp');
@@ -388,15 +371,8 @@ onReady = () => {
             return;
         })
         .then(function doSync() {
-            // we're going to do the sync - so show splash
-            if (splashWindow) {
-                splashWindow.show();
-            }
-
-            if (!Settings.inAutoTestMode) {
-                return syncResultPromise;
-            }
-
+            if (splashWindow) { splashWindow.show(); }
+            if (!Settings.inAutoTestMode) { return syncResultPromise; }
             return;
         })
         .then(function allDone() {
@@ -424,21 +400,13 @@ startMainWindow = () => {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
 
     mainWindow.on('ready', () => {
-        if (splashWindow) {
-            splashWindow.close();
-            store.dispatch({ type: 'SPLASH_WINDOW::CLOSE' });
-        }
-
+        if (splashWindow) { splashWindow.close(); }
         mainWindow.show();
-        store.dispatch({ type: 'MAIN_WINDOW::SHOW' });
     });
 
     mainWindow.load(global.interfaceAppUrl);
 
-    // close app, when the main window is closed
-    mainWindow.on('closed', () => {
-        store.dispatch(quitApp());
-    });
+    mainWindow.on('closed', () => store.dispatch(quitApp()));
 
     // observe Tabs for changes and refresh menu
     const Tabs = global.db.getCollection('UI_tabs');

@@ -1,45 +1,38 @@
+import uniq from 'lodash/uniq';
+
 export const initialState = {
-    aboutWindowCreated: false,
     appQuit: false,
-    clientUpdateAvailableWindowCreated: false,
-    connectAccountWindowCreated: false,
-    importAccountWindowCreated: false,
-    loadingWindowCreated: false,
-    mainWindowCreated: false,
-    mainWindowVisible: false,
-    onboardingScreenWindowCreated: false,
-    onboardingScreenWindowVisible: false,
-    remixWindowCreated: false,
-    requestAccountWindowCreated: false,
-    sendTransactionConfirmationWindowCreated: false,
-    splashWindowCreated: false,
-    splashWindowVisible: false,
-    updateAvailableWindowCreated: false,
+    genericWindowActingType: '',
     windowsInit: false,
+    windowsOpen: [],
 };
 
 const ui = (state = initialState, action) => {
     switch (action.type) {
         case '[MAIN]:APP_QUIT:SUCCESS':
             return Object.assign({}, state, { appQuit: true });
-        case 'MAIN_WINDOW::CLOSE':
-            return Object.assign({}, state, { mainWindowVisible: false });
-        case '[MAIN]:WINDOW:CREATE_FINISH':
-            return Object.assign({}, state, { [`${action.payload.type}WindowCreated`]: true });
-        case 'MAIN_WINDOW::SHOW':
-            return Object.assign({}, state, { mainWindowVisible: true });
-        case 'MAIN_WINDOW::HIDE':
-            return Object.assign({}, state, { mainWindowVisible: false });
-        case 'ONBOARDING_WINDOW::CLOSE':
-            return Object.assign({}, state, { onboardingScreenWindowVisible: false });
-        case 'SPLASH_WINDOW::CLOSE':
-            return Object.assign({}, state, { splashWindowVisible: false });
-        case 'SPLASH_WINDOW::SHOW':
-            return Object.assign({}, state, { splashWindowVisible: true });
-        case 'SPLASH_WINDOW::HIDE':
-            return Object.assign({}, state, { splashWindowVisible: false });
+        case '[MAIN]:WINDOW:OPEN':
+            return Object.assign({}, state, {
+                windowsOpen: uniq(state.windowsOpen.concat(action.payload.windowType)),
+            });
+        case '[MAIN]:WINDOW:CLOSE':
+            return Object.assign({}, state, {
+                windowsOpen: state.windowsOpen.filter(w => {
+                    return w !== action.payload.windowType;
+                }),
+            });
         case '[MAIN]:WINDOWS:INIT_FINISH':
             return Object.assign({}, state, { windowsInit: true });
+        case '[MAIN]:GENERIC_WINDOW:REUSE':
+            return Object.assign({}, state, {
+                genericWindowActingType: action.payload.actingType,
+                windowsOpen: state.windowsOpen.concat('generic'),
+            });
+        case '[MAIN]:GENERIC_WINDOW:RESET':
+            return Object.assign({}, state, {
+                genericWindowActingType: '',
+                windowsOpen: state.windowsOpen.filter(i => i !== 'generic'),
+            });
         default:
             return state;
     }

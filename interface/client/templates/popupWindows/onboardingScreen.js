@@ -473,7 +473,13 @@ Template['popupWindows_onboardingScreen_password'].events({
                 if (!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-
+                    //cranelv add Account to database 2017-11-20]
+                    var newAccount = {
+                        type: 'account',
+                        address : res,
+                        name : account
+                    };
+                    ipc.send('wan_onBoarding_newAccount', newAccount);
                     // clear form
                     pw = null;
                     pwRepeat = null;

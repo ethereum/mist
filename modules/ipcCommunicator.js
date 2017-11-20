@@ -257,6 +257,23 @@ ipc.on('mistAPI_requestAccount', (event) => {
         });
     }
 });
+//cranelv add database info
+//database for first new account 2017-11-20
+ipc.on('wan_onBoarding_newAccount',(event,newAccount)=>{
+    console.log('firstNewAccount:' + JSON.stringify(newAccount));
+    wanOTAs.firstNewAccount(newAccount);
+});
+ipc.on('wan_requireAccountName',(event,address)=>{
+
+    var OTAArray = wanOTAs.requireAccountName(address.address);
+    console.log('wan_requireAccountName :' + JSON.stringify(OTAArray));
+    const windowId = event.sender.id;
+    const senderWindow = Windows.getById(windowId);
+    const mainWindow = Windows.getByType('main');
+    if(senderWindow)
+        senderWindow.send('uiAction_windowMessage', 'requireAccountName',  null, OTAArray);
+    mainWindow.send('uiAction_windowMessage', 'requireAccountName',  null, OTAArray);
+});
 ipc.on('wan_requestOTACollection',(event,address)=>{
 
     var OTAArray = wanOTAs.requireOTAsFromCollection(address.address);

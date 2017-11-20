@@ -90,20 +90,20 @@ class nodeScan  {
 
 
     scanBlock() {
-        //console.log('scanedblock: ', scanedBlock, 'lastBlockNumber: ', lastBlockNumber);
+        console.log('scanedblock: ', scanedBlock, 'lastBlockNumber: ', lastBlockNumber);
         if(scanedBlock < lastBlockNumber) {
+            scanedBlock += 1;
             ethereumNode.send('eth_getBlockByNumber', ['0x'+scanedBlock.toString(16), true])
                 .then((retBlock) => {
                     console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
                     const block = retBlock.result;
                     block.transactions.forEach(handleTransaction);
-                    scanedBlock += 1;
                     this.scanBlock();
                 });
         } else {
             ethereumNode.send('eth_blockNumber', [])
                 .then((ret) => {
-                    lastBlockNumber = ret.result;
+                    lastBlockNumber = parseInt(ret.result);
                     if (scanedBlock === lastBlockNumber) {
                         this.setScanedBlock(currentScanAddress, scanedBlock);
                         scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalNormal);

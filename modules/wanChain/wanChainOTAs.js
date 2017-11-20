@@ -35,7 +35,11 @@ exports.setScanedByWaddr = function (waddr, scaned) {
 exports.insertOtabyWaddr = function(waddr, ota, value, status) {
     let OTAsCollection = db.getCollection('OTAsCollection');
     let Key = waddr.toLowerCase();
-    OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status});
+    try {
+        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status});
+    }catch(err){
+        console.log("insertOtabyWaddr:", err);
+    }
 }
 
 exports.requireOTAsFromCollection = (waddr) =>

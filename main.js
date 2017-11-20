@@ -28,7 +28,14 @@ if (Settings.cli.version) {
 
     process.exit(0);
 }
+if (Settings.cli.test) {
+    log.info("Testint...");
+    global.db.init().then(()=>{
+        require('./modules/wanChain/nodeScan').test();
+        process.exit(0);
 
+    });
+}
 if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }

@@ -15,7 +15,7 @@ const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
 var keythereum = require("keythereum");
 
-const nodeScan = require('./nodeScan.js');
+const nodeScan = require('./wanChain/nodeScan.js');
 
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
@@ -245,17 +245,21 @@ const createAccountPopup = (e) => {
 // MIST API
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
-ipc.on('mistAPI_inputAccountPassword', (e) => {
-    Windows.createPopup('inputAccountPassword', {
+ipc.on('wan_inputAccountPassword', (e,param) => {
+    console.log("ipc.on wan_inputAccountPassword");
+    console.log("param:",param);
+    Windows.createPopup('inputAccountPassword', _.extend({
+        sendData: { uiAction_sendData: {scAddress: param.scAddress} }
+    },{
         ownerId: e.sender.id,
         electronOptions: {
             width: 400,
             height: 230,
             alwaysOnTop: true,
         },
-    });
+    }));
 });
-ipc.on('mistAPI_startScan', (e, address, keyPassword)=> {
+ipc.on('wan_startScan', (e, address, keyPassword)=> {
     //check the passwd
     let ksdir = "";
     if(ethereumNode.isPlutoNetwork){
@@ -264,6 +268,7 @@ ipc.on('mistAPI_startScan', (e, address, keyPassword)=> {
         ksdir = app.getPath('home')+"/.wanchain/keystore";
     }
     console.log("keystore path:",ksdir);
+    console.log("address:",address);
     fs.readdir(ksdir, function(err, files) {
         if(err){
             console.log("readdir",err);

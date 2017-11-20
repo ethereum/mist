@@ -123,6 +123,14 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        test: {
+            demand: false,
+            requiresArg: false,
+            nargs: 0,
+            describe: 'Execute some test code.',
+            group: 'Mist options:',
+            type: 'boolean',
+        },
         version: {
             alias: 'v',
             demand: false,

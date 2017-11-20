@@ -43,11 +43,11 @@ Template['popupWindows_inputAccountPassword'].events({
     'submit form': function (e, template) {
         e.preventDefault();
         var pw = template.find('input.password').value;
-        //var address = template.find('input.password').value;
-        var address = "9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
+        var data = Session.get('data');
+        var address = data.scAddress;
 
-        ipc.send('backendAction_unlockedMasterPassword', null, pw);
-        ipc.send('mistAPI_startScan', address,pw);
+        //ipc.send('backendAction_unlockedMasterPassword', null, pw);
+        ipc.send('wan_startScan', address, pw);
 
         template.find('input.password').value = '';
         pw = null;

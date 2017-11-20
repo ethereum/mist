@@ -10,38 +10,43 @@ OTAsCollection struct
     value:
     state:
  */
-exports.scanOTAsByblocks = (address) =>
-{
-    console.log('scanOTAsByblocks:' + JSON.stringify(address));
-    var OTAsCollection = db.getCollection('OTAsCollection');
-    var ScanBlockIndex = db.getCollection('ScanBlockIndex');
-    var Key = address.toLowerCase();
-    console.log('scanOTAsByblocks:' + Key);
-    var Index = ScanBlockIndex.find({'address': Key});
-    var begin = Index !== null ? Index.index : 0;
-    //cranelv 2017-11-19 opened for scanBlocks
-/*
-    var lastNum = web3.eth.blockNumber;
-    for(var i=begin;i<lastNum;++i)
-    {
-        var OTAArray = web3.wan.eth_scanOTAbyAccount(address,i);
 
-        _each(OTAArray,(e)=>{
-            if(!OTAsCollection.find({'OTA':e}))
-                OTAsCollection.insert({'address': Key,'OTA':e,'value':'0','state':'0'});
-        });
-    }
-    ScanBlockIndex.upsert({address: address}, {$set: {
-        address: address,
-        index: lastNum-1,
-    }});
-    */
+exports.getScanedByWaddr = function(waddr){
+    let ScanBlockIndex = db.getCollection('ScanBlockIndex');
+    let Index = ScanBlockIndex.find({'address': waddr});
+    console.log("getScanedByWaddr:", Index);
+    const begin = Index.length === 0 ? 0:Index[0].index;
+    return begin;
 }
-exports.requireOTAsFromCollection = (address) =>
+exports.setScanedByWaddr = function (waddr, scaned) {
+    let ScanBlockIndex = db.getCollection('ScanBlockIndex');
+    var found = ScanBlockIndex.findOne({'_id': waddr});
+    console.log("found:",found);
+    if(found == null) {
+        ScanBlockIndex.insert({
+            _id: waddr,
+            index: scaned,
+        });
+    } else {
+        found.index = scaned;
+        ScanBlockIndex.update(found);
+    }
+}
+exports.insertOtabyWaddr = function(waddr, ota, value, status) {
+    let OTAsCollection = db.getCollection('OTAsCollection');
+    let Key = waddr.toLowerCase();
+    OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status});
+}
+
+exports.requireOTAsFromCollection = (waddr) =>
 {
-    console.log('scanOTAsByblocks:' + address);
+    console.log('scanOTAsByblocks:' + waddr);
     var OTAsCollection = db.getCollection('OTAsCollection');
-    var Key = address.toLowerCase();
+    var Key = waddr.toLowerCase();
     console.log('scanOTAsByblocks:' + Key);
     return OTAsCollection.find({'address':Key});
 }
+
+
+
+

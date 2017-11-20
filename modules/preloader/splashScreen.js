@@ -16,3 +16,6 @@ window.ipc = ipcRenderer;
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
+
+// Stub out the Redux store
+window.store = { dispatch: () => {} };

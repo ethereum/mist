@@ -6,17 +6,17 @@ Scan the chain block.
 */
 
 const EventEmitter = require('events').EventEmitter;
-const ethereumNode = require('./ethereumNode');
-const log = require('./utils/logger').create('nodeScan');
+const ethereumNode = require('../ethereumNode');
+const log = require('../utils/logger').create('nodeScan');
 const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
 var ethUtil = wanUtil.ethereumUtil;
+const wanchainDB = require('./wanChainOTAs');
 
 let scanedBlock = 0;
 let lastBlockNumber = 0;
 let currentScanAddress = "";
 
-const scanIntervalFast = 1;
 const scanIntervalNormal = 60000;
 const coinContractAddr = "0x0000000000000000000000000000000000000006";
 let privKeyB;
@@ -66,40 +66,46 @@ function handleTransaction(tx)
             if(A1.toString('hex') === otaA1.toString('hex')){
                 console.log("received a privacy transaction to me: ",ota);
                 console.log("the value is: ", value.toString());
+                wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0);
             }
         }
 }
 
 class nodeScan  {
-    constructor() {
-        //super();
-        // TODO: change to read from file.
 
-        //ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
+    test() {
+        // only For test;
+        scanedBlock = 100;
+        currentScanAddress = '035c6f2618a476792c14a5959e418c9038c0b347fca40403326f818c2ed5dbdba503248e9f0357b49950fbd3929c698869352aa49a7c8efda91c4811cb15831348df';
+        this.setScanedBlock(currentScanAddress, scanedBlock);
+        const t = this.getScanedBlock(currentScanAddress);
+        console.log("getScanedBlock:", t);
     }
-    getScanedBlock(addr) {
-        return 270000;
+    getScanedBlock(waddr) {
+        return wanchainDB.getScanedByWaddr(waddr);
     }
-    setScanedBlock(addr) {
+    setScanedBlock(waddr, scaned) {
+        wanchainDB.setScanedByWaddr(waddr, scaned);
     }
 
 
     scanBlock() {
+        //console.log('scanedblock: ', scanedBlock, 'lastBlockNumber: ', lastBlockNumber);
         if(scanedBlock < lastBlockNumber) {
             ethereumNode.send('eth_getBlockByNumber', ['0x'+scanedBlock.toString(16), true])
                 .then((retBlock) => {
-                    console.log("XXXXXXXXXXXXXXX eth_getBlockByNumber", retBlock.result.number);
-                    let block = retBlock.result;
+                    console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
+                    const block = retBlock.result;
                     block.transactions.forEach(handleTransaction);
                     scanedBlock += 1;
-                    //scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalFast);
                     this.scanBlock();
                 });
-        }else{
+        } else {
             ethereumNode.send('eth_blockNumber', [])
                 .then((ret) => {
                     lastBlockNumber = ret.result;
-                    if(scanedBlock == lastBlockNumber) {
+                    if (scanedBlock === lastBlockNumber) {
+                        this.setScanedBlock(currentScanAddress, scanedBlock);
                         scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalNormal);
                     } else {
                         this.scanBlock();
@@ -108,8 +114,9 @@ class nodeScan  {
         }
     }
     start(waddr, privB) {
-        console.log("got addr:", waddr, privB.toString('hex'));
-        let myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
+        console.log('got addr:', waddr, privB.toString('hex'));
+        currentScanAddress = waddr;
+        const myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
         privKeyB = privB;
         pubKeyA = myPub.A;
         scanedBlock = this.getScanedBlock(waddr);
@@ -117,10 +124,11 @@ class nodeScan  {
     }
     stop() {
         clearTimeout(scanTimer);
+        this.setScanedBlock(currentScanAddress, scanedBlock);
     }
     restart(waddr, privB) {
         this.stop();
-        this.start(waddr,privB);
+        this.start(waddr, privB);
     }
     /* todo: monitor scan cmd status
     _onScanStateChanged(state){

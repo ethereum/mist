@@ -62,7 +62,7 @@ Template['popupWindows_requestAccount'].events({
                     var insert = {
                         type: 'account',
                         address: res,
-                        account: account1,
+                        name: account1,
                     };
                     ipc.send('backendAction_windowMessageToOwner', null, insert);
                 } else {

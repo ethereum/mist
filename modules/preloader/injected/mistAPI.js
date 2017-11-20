@@ -51,6 +51,13 @@
         callbacks: {},
         //cranelv add permanent callbacks; 2017-11-19
         permanentCallbacks: {},
+        addPermanentCallbacks(eventType,callback)
+        {
+            if(!this.permanentCallbacks[eventType]) {
+                this.permanentCallbacks[eventType] = [];
+            }
+            this.permanentCallbacks[eventType].push(callback);
+        },
         version: '__version__',
         license: '__license__',
         platform: '__platform__',
@@ -271,6 +278,12 @@
                     cb(params.error, params.value);
                 });
                 delete mist.callbacks[params.type];
+            }
+            else if(mist.permanentCallbacks[params.type])
+            {
+                mist.permanentCallbacks[params.type].forEach(function(cb) {
+                    cb(params.error, params.value);
+                });
             }
         }
     });

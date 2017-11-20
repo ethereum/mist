@@ -442,8 +442,7 @@ startMainWindow = () => {
 
     // observe Tabs for changes and refresh menu
     const Tabs = global.db.getCollection('UI_tabs');
-
-    const sortedTabs = Tabs.addDynamicView('sorted_tabs');
+    const sortedTabs = Tabs.getDynamicView('sorted_tabs') || Tabs.addDynamicView('sorted_tabs');
     sortedTabs.applySimpleSort('position', false);
 
     const refreshMenu = () => {

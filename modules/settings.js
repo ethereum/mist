@@ -9,7 +9,7 @@ const lodash = require('lodash');
 
 // try loading in config file
 const defaultConfig = {
-    mode: 'mist',
+    mode: 'wallet',
     production: false,
 };
 try {

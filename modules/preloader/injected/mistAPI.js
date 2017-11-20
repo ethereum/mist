@@ -87,7 +87,19 @@
             });
         },
 
+        startScan(addr, callback) {
+            if (callback) {
+                if (!this.callbacks.startScan) {
+                    this.callbacks.startScan = [];
+                }
+                this.callbacks.startScan.push(callback);
+            }
 
+            postMessage({
+                type: 'mistAPI_inputAccountPassword',
+                scAddress: addr
+            });
+        },
         solidity: {
             version: '__solidityVersion__',
         },

@@ -88,6 +88,9 @@ class EthereumNode extends EventEmitter {
         return this.network === 'test';
     }
 
+    get isPlutoNetwork() {
+        return this.network === 'pluto';
+    }
     get isRinkebyNetwork() {
         return this.network === 'rinkeby';
     }

@@ -13,6 +13,10 @@ const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
 const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
+var keythereum = require("keythereum");
+
+const nodeScan = require('./nodeScan.js');
+
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
 const log = logger.create('ipcCommunicator');
@@ -241,6 +245,56 @@ const createAccountPopup = (e) => {
 // MIST API
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
+ipc.on('mistAPI_inputAccountPassword', (e) => {
+    Windows.createPopup('inputAccountPassword', {
+        ownerId: e.sender.id,
+        electronOptions: {
+            width: 400,
+            height: 230,
+            alwaysOnTop: true,
+        },
+    });
+});
+ipc.on('mistAPI_startScan', (e, address, keyPassword)=> {
+    //check the passwd
+    let ksdir = "";
+    if(ethereumNode.isPlutoNetwork){
+        ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
+    }else{
+        ksdir = app.getPath('home')+"/.wanchain/keystore";
+    }
+    console.log("keystore path:",ksdir);
+    fs.readdir(ksdir, function(err, files) {
+        if(err){
+            console.log("readdir",err);
+        }else{
+            for(let i=0; i<files.length; i++){
+                let filepath = ksdir+'/'+files[i];
+                address= address.toLowerCase();
+                if(-1 != filepath.indexOf(address)){
+                    console.log("find:", filepath);
+                    let keystoreStr = fs.readFileSync(filepath,"utf8");
+                        let keystore = JSON.parse(keystoreStr);
+                        let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+                        try {
+                            var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                        }catch(error){
+                                e.sender.send('backendAction_windowMessageToOwner', error);
+                                console.log("wrong password");
+                                return;
+                        };
+                        var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                        let myWaddr = keystore.waddress;
+                        console.log("myWaddr:",myWaddr);
+                        nodeScan.restart(myWaddr, privKeyB);
+                }
+            }
+
+        }
+
+    });
+
+});
 ipc.on('mistAPI_requestAccount', (event) => {
     if (global.mode === 'wallet') {
         createAccountPopup(event);

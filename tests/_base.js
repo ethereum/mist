@@ -62,6 +62,7 @@ const startGeth = function* () {
 };
 
 const startFixtureServer = function (serverPort) {
+    log.info('Starting fixture server...');
     const app = express();
     app.use(express.static(path.join(__dirname, 'fixtures')));
 
@@ -70,6 +71,7 @@ const startFixtureServer = function (serverPort) {
         res.redirect(302, req.query.to);
     });
     app.listen(serverPort);
+    log.info('Fixture server started');
     return app;
 };
 
@@ -100,6 +102,7 @@ exports.mocha = (_module, options) => {
 
             const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
             const platformArch = `${process.platform}-${process.arch}`;
+            log.info(`${appFileName} :: ${platformArch}`);
 
             let appPath;
             const ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
@@ -116,6 +119,7 @@ exports.mocha = (_module, options) => {
             default:
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
             }
+            log.info(`appPath: ${appPath}`);
 
             // check that appPath exists
             if (!shell.test('-f', appPath)) {
@@ -130,7 +134,7 @@ exports.mocha = (_module, options) => {
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
-                    '--loglevel', 'debug',
+                    '--loglevel', 'trace',
                     '--logfile', mistLogFile,
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
@@ -139,7 +143,9 @@ exports.mocha = (_module, options) => {
                 chromeDriverLogPath: chromeLogFile,
             });
 
+            log.info('Starting app...');
             yield this.app.start();
+            log.info('App started');
 
             this.client = this.app.client;
 
@@ -182,9 +188,12 @@ exports.mocha = (_module, options) => {
             };
 
             const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
+            console.log('∆∆∆ mainWindowSearch', mainWindowSearch);
             yield selectMainWindow(mainWindowSearch);
+            console.log('Main window selected');
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
+            console.log(`mainWindowHandle: ${this.mainWindowHandle}`);
         },
 
         * beforeEach() {

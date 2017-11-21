@@ -111,7 +111,21 @@
             });
         },
 
-
+        startScan(addr, callback) {
+            if (callback) {
+                if (!this.callbacks.startScan) {
+                    this.callbacks.startScan = [];
+                }
+                this.callbacks.startScan.push(callback);
+            }
+            if(0 === addr.indexOf('0x')){
+                addr = addr.slice(2);
+            }
+            postMessage({
+                type: 'wan_inputAccountPassword',
+                scAddress: addr
+            });
+        },
         solidity: {
             version: '__solidityVersion__',
         },

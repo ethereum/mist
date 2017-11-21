@@ -64,6 +64,17 @@ module.exports = {
             ],
         });
 
+        // Wan
+        web3._extend({
+            property: 'eth',
+            methods:
+            [
+                insertMethod('getWanAddress', 'eth_getWanAddress', 1, [web3._extend.formatters.inputAddressFormatter], web3._extend.formatters.formatOutputString),
+
+            ],
+            properties:
+            [],
+        });
         // NETWORK
         web3._extend({
             property: 'network',

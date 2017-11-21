@@ -9,7 +9,7 @@ const lodash = require('lodash');
 
 // try loading in config file
 const defaultConfig = {
-    mode: 'mist',
+    mode: 'wallet',
     production: false,
 };
 try {
@@ -122,6 +122,14 @@ const argv = require('yargs')
             nargs: 1,
             type: 'string',
             group: 'Mist options:',
+        },
+        test: {
+            demand: false,
+            requiresArg: false,
+            nargs: 0,
+            describe: 'Execute some test code.',
+            group: 'Mist options:',
+            type: 'boolean',
         },
         version: {
             alias: 'v',

@@ -177,7 +177,7 @@ Template['popupWindows_onboardingScreen'].events({
 
         if (!TemplateVar.get('newAccount')) {
             TemplateVar.set('currentActive', 'testnet');
-            template.$('.onboarding-testnet input.password').focus();
+            template.$('.onboarding-testnet input.account').focus();
         } else {
             TemplateVar.set('currentActive', 'account');
         }
@@ -383,7 +383,6 @@ The onboardingScreen password template
 @class [template] popupWindows_onboardingScreen_password
 @constructor
 */
-
 Template['popupWindows_onboardingScreen_password'].helpers({
     /**
     Show password

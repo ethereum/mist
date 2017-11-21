@@ -348,6 +348,21 @@ ipc.on('wan_requestOTACollection',(event,address)=>{
 ipc.on('wan_requestScanOTAbyBlock',(event,address)=>{
     wanOTAs.scanOTAsByblocks(address.address);
 });
+ipc.on('wan_changeAccountPassword', (e,param) => {
+    console.log("ipc.on wan_changeAccountPassword");
+    console.log("param:",param);
+    Windows.createPopup('changeAccountPassword', _.extend({
+        sendData: { uiAction_sendData: {address: param.address} }
+    },{
+        ownerId: e.sender.id,
+        electronOptions: {
+            width: 420,
+            height: 380,
+            alwaysOnTop: true,
+        },
+    }));
+});
+
 const uiLoggers = {};
 
 ipc.on('console_log', (event, id, logLevel, logItemsStr) => {

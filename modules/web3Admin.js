@@ -70,7 +70,15 @@ module.exports = {
             methods:
             [
                 insertMethod('getWanAddress', 'eth_getWanAddress', 1, [web3._extend.formatters.inputAddressFormatter], web3._extend.formatters.formatOutputString),
-
+            ],
+            properties:
+            [],
+        });
+        web3._extend({
+            property: 'personal',
+            methods:
+            [
+                insertMethod('updateAccount', 'personal_updateAccount', 3, [web3._extend.formatters.inputAddressFormatter,null,null]),
             ],
             properties:
             [],

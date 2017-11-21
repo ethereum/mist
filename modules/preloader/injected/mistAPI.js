@@ -88,6 +88,13 @@
                 address: address
             });
         },
+        changePassword(address)
+        {
+            postMessage({
+                type: 'wan_changeAccountPassword',
+                address: address
+            });
+        },
         //cranelv add Database Interface
         requestOTACollection(address,callback)
         {

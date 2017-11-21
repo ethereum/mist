@@ -21,16 +21,11 @@ gulp.task('checksums', (cb) => {
     let command;
     let argument = '';
 
-    switch (process.platform) {
-    case 'darwin':
-        command = 'md5';
-        break;
-    case 'win32':
+    if (process.platform === 'win32') {
         command = 'certUtil -hashfile';
-        argument = 'md5';
-        break;
-    default:
-        command = 'md5sum';
+        argument = 'SHA256';
+    } else {
+        command = 'shasum -a 256';
     }
 
     files.forEach((file) => {
@@ -90,14 +85,22 @@ gulp.task('upload-binaries', (cb) => {
             })
             // append checksums to draft text
             .then(() => {
+                console.info('Appending checksums to release notes...', checksums);
                 if (draft.body && checksums) {
                     got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
                             tag_name: `v${version}`,
-                            body: `${draft.body}\n\n## Checksums\n\`\`\`\n${checksums.join('')}\`\`\``
+                            // String manipulation to create a checksums table
+                            body: String.concat('File | Checksum (SHA256)\n-- | --', checksums.map((e) => {
+                                const line = e.replace('\n', '').split('  ');
+                                return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
+                            }).join('\n'))
                         })
                     });
                 }
+            })
+            .catch((err) => {
+                console.log(err);
             });
         }
     })

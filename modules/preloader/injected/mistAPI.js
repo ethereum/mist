@@ -130,9 +130,30 @@
             }
             postMessage({
                 type: 'wan_inputAccountPassword',
+                action: 'startScan',
                 scAddress: addr
             });
         },
+        refundCoin(addr,ota, number,otaValue, callback) {
+            if (callback) {
+                if (!this.callbacks.startScan) {
+                    this.callbacks.startScan = [];
+                }
+                this.callbacks.startScan.push(callback);
+            }
+            if(0 === addr.indexOf('0x')){
+                addr = addr.slice(2);
+            }
+            postMessage({
+                type: 'wan_inputAccountPassword',
+                action: 'refundCoin',
+                rfAddress: addr,
+                otaddr: ota,
+                otaValue: otaValue,
+                otaNumber, number
+            });
+        },
+
         solidity: {
             version: '__solidityVersion__',
         },

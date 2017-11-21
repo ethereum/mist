@@ -259,6 +259,8 @@ ipc.on('wan_inputAccountPassword', (e,param) => {
         },
     }));
 });
+
+
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
     //check the passwd
     let ksdir = "";
@@ -269,6 +271,7 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
     }
     console.log("keystore path:",ksdir);
     console.log("address:",address);
+    const mainWindow = Windows.getByType('main');
     fs.readdir(ksdir, function(err, files) {
         if(err){
             console.log("readdir",err);
@@ -281,17 +284,18 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                     let keystoreStr = fs.readFileSync(filepath,"utf8");
                         let keystore = JSON.parse(keystoreStr);
                         let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+                        let privKeyB;
                         try {
-                            var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                            privKeyB = keythereum.recover(keyPassword, keyBObj);
                         }catch(error){
-                                e.sender.send('backendAction_windowMessageToOwner', error);
-                                console.log("wrong password");
-                                return;
+                            mainWindow.send('uiAction_windowMessage', "startScan",  "wrong password", "");
+                            console.log("wan_startScan:", "xwrong password");
+                            return;
                         };
-                        var privKeyB = keythereum.recover(keyPassword, keyBObj);
                         let myWaddr = keystore.waddress;
                         console.log("myWaddr:",myWaddr);
                         nodeScan.restart(myWaddr, privKeyB);
+                        mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
                 }
             }
 
@@ -300,6 +304,94 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
     });
 
 });
+function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value){
+    // checkOTAddress;
+    let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    let otaSetBuf = [];
+    for(let i=0; i<otaSet.length; i++){
+        let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
+        let rpcu = secp256k1.publicKeyConvert(rpkc, false);
+        otaSetBuf.push(rpcu);
+    }
+    console.log("fetch  ota set: ",otaSet);
+    let otaSk = ethUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
+    let otaPub = ethUtil.recoverPubkeyFromWaddress(otaDestAddress);
+    let otaPubK = otaPub.A;
+
+    let M = new Buffer(rfAddr,'hex');
+    let ringArgs = ethUtil.getRingSign(M, otaSk,otaPubK,ringPubKs);
+    let KIWQ = generatePubkeyIWQforRing(ringArgs.PubKeys,ringArgs.I, ringArgs.w, ringArgs.q);
+    let all = contractCoinInstance.refundCoin.getData(KIWQ,value);
+
+    var serial = '0x' + web3.eth.getTransactionCount('0x'+keystore.address).toString(16);
+    var rawTx = {
+        Txtype: '0x00',
+        nonce: serial,
+        gasPrice: '0x6fc23ac00',
+        gasLimit: '0xf4240',
+        to: contractInstanceAddress,//contract address
+        value: '0x00',
+        data: all
+    };
+
+    var tx = new Tx(rawTx);
+    tx.sign(privKeyA);
+    var serializedTx = tx.serialize();
+    let hash = web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'));
+    console.log('tx hash:'+hash);
+}
+
+ipc.on('wan_refundCoin', (e, address, keyPassword, otaddr, otaNumber, value)=> {
+    //check the passwd
+    let ksdir = "";
+    if(ethereumNode.isPlutoNetwork){
+        ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
+    }else{
+        ksdir = app.getPath('home')+"/.wanchain/keystore";
+    }
+    console.log("keystore path:",ksdir);
+    console.log("address:",address);
+    const mainWindow = Windows.getByType('main');  
+    let keyFound = false; 
+    fs.readdir(ksdir, function(err, files) {
+        if(err){
+            console.log("readdir",err);
+            mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
+        }else{
+            for(let i=0; i<files.length; i++){
+                let filepath = ksdir+'/'+files[i];
+                address= address.toLowerCase();
+                if(-1 != filepath.indexOf(address)){
+                    console.log("find:", filepath);
+                    keyFound = true;
+                    let keystoreStr = fs.readFileSync(filepath,"utf8");
+                        let keystore = JSON.parse(keystoreStr);
+                        let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+                        try {
+                            var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                        }catch(error){
+                            mainWindow.send('uiAction_windowMessage', "refundCoin",  error, value);
+                            console.log("wan_refundCoin", error);
+                            return;
+                        };
+                        var privKeyA = keythereum.recover(keyPassword, keyAObj);
+                        var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                        let hash = otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value);
+                        mainWindow.send('uiAction_windowMessage', "refundCoin",  null, hash);
+                        return;
+                }
+            }
+            if(!keyFound){
+                console.log("Can't find keystore:", address);
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
+            }
+
+        }
+
+    });
+
+});
+
 ipc.on('mistAPI_requestAccount', (event) => {
     if (global.mode === 'wallet') {
         createAccountPopup(event);

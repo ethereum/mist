@@ -12,7 +12,7 @@ matrix:
     # WINDOWS cross-built from linux
     - os: linux
       dist: trusty
-      node_js: 6
+      node_js: 8
       env:
           - GULP_PLATFORM=win
       addons:
@@ -33,7 +33,7 @@ matrix:
     # LINUX
     - os: linux
       dist: trusty
-      node_js: 6
+      node_js: 8
       env:
           - GULP_PLATFORM=linux
       addons:
@@ -48,7 +48,7 @@ matrix:
     # MAC
     - os: osx
       osx_image: xcode8  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
-      node_js: 6
+      node_js: 8
       env:
           - GULP_PLATFORM=mac
       before_install:
@@ -84,6 +84,12 @@ script:
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
+
+after_failure:
+  - echo "after_failure..."
+  - pwd
+  - ls
+  - cat /home/travis/build/ethereum/mist/tests/mist.log
 
 notifications:
   webhooks:

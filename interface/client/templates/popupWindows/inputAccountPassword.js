@@ -44,10 +44,17 @@ Template['popupWindows_inputAccountPassword'].events({
         e.preventDefault();
         var pw = template.find('input.password').value;
         var data = Session.get('data');
-        var address = data.scAddress;
-
-        //ipc.send('backendAction_unlockedMasterPassword', null, pw);
-        ipc.send('wan_startScan', address, pw);
+        const action = data.action;
+        if(action === 'refundCoin') {
+            var rfAddress = data.rfAddress;
+            var otaddr = data.otaddr;
+            var otaNumber = data.otaNumber;
+            var otaValue = data.otaValue;
+            ipc.send('wan_refundCoin', rfAddress, pw, otaddr,otaNumber, otaValue);
+        }else {
+            var scAddress = data.scAddress;
+            ipc.send('wan_startScan', scAddress, pw);
+        }
 
         template.find('input.password').value = '';
         pw = null;

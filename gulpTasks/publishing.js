@@ -95,7 +95,7 @@ gulp.task('upload-binaries', (cb) => {
                         body: JSON.stringify({
                             tag_name: `v${version}`,
                             // String manipulation to create a checksums table
-                            body: `File | Checksum (SHA256)\n-- | -- \n${checksumRows}`
+                            body: `${draft.body}\n\nFile | Checksum (SHA256)\n-- | -- \n${checksumRows}`
                         })
                     });
                 }

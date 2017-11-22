@@ -30,11 +30,8 @@ if (Settings.cli.version) {
 }
 if (Settings.cli.test) {
     log.info("Testint...");
-    global.db.init().then(()=>{
-        require('./modules/wanChain/nodeScan').test();
-        process.exit(0);
 
-    });
+    process.exit(0);
 }
 if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');

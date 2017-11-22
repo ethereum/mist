@@ -8,6 +8,9 @@ const _ = global._;
 const wanOTAs = require('./wanChain/wanChainOTAs');
 const fs = require('fs');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
+    const electron = require('electron');
+    const ipcRenderer = electron.ipcRenderer;
+
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
@@ -16,8 +19,13 @@ const ethereumNode = require('./ethereumNode.js');
 var keythereum = require("keythereum");
 
 const nodeScan = require('./wanChain/nodeScan.js');
-
+let wanUtil = require('wanchain-util');
+var ethUtil = wanUtil.ethereumUtil;
+var Tx = wanUtil.ethereumTx;
+let coinSCDefinition = wanUtil.coinSCAbi;
+const secp256k1 = require('secp256k1');
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
+//const wcmUtil = require('./preloader/wanChainUtil.js');
 
 const log = logger.create('ipcCommunicator');
 
@@ -249,7 +257,7 @@ ipc.on('wan_inputAccountPassword', (e,param) => {
     console.log("ipc.on wan_inputAccountPassword");
     console.log("param:",param);
     Windows.createPopup('inputAccountPassword', _.extend({
-        sendData: { uiAction_sendData: {scAddress: param.scAddress} }
+        sendData: { uiAction_sendData: param }
     },{
         ownerId: e.sender.id,
         electronOptions: {
@@ -259,6 +267,92 @@ ipc.on('wan_inputAccountPassword', (e,param) => {
         },
     }));
 });
+
+
+/* set pubkey, w, q */
+function generatePubkeyIWQforRing(Pubs, I, w, q){
+    let length = Pubs.length;
+    let sPubs  = [];
+    for(let i=0; i<length; i++){
+        sPubs.push(Pubs[i].toString('hex'));
+    }
+    let ssPubs = sPubs.join('&');
+    let ssI = I.toString('hex');
+    let sw  = [];
+    for(let i=0; i<length; i++){
+        sw.push('0x'+w[i].toString('hex').replace(/(^0*)/g,""));
+    }
+    let ssw = sw.join('&');
+    let sq  = [];
+    for(let i=0; i<length; i++){
+        sq.push('0x'+q[i].toString('hex').replace(/(^0*)/g,""));
+    }
+    let ssq = sq.join('&');
+
+    let KWQ = [ssPubs,ssI,ssw,ssq].join('+');
+    return KWQ;
+}
+const CoinContractAddr = "0x0000000000000000000000000000000000000006";
+
+async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value){
+
+    const Web3 = require("web3");
+    var net = require('net');
+    const Settings = require('./settings');
+    console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
+    var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+    // checkOTAddress;
+    //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
+    let otaSet = otaSetr.result;
+    console.log("otaSet:",otaSet);
+    let otaSetBuf = [];
+    for(let i=0; i<otaSet.length; i++){
+        let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
+        let rpcu = secp256k1.publicKeyConvert(rpkc, false);
+        otaSetBuf.push(rpcu);
+    }
+    console.log('fetch  ota set: ', otaSet);
+    let otaSk = ethUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
+    let otaPub = ethUtil.recoverPubkeyFromWaddress(otaDestAddress);
+    let otaPubK = otaPub.A;
+
+    let M = new Buffer(rfAddr,'hex');
+    let ringArgs = ethUtil.getRingSign(M, otaSk,otaPubK,otaSetBuf);
+    let KIWQ = generatePubkeyIWQforRing(ringArgs.PubKeys,ringArgs.I, ringArgs.w, ringArgs.q);
+    console.log("KIWQ:", KIWQ);
+
+
+    let CoinContract = web3.eth.contract(coinSCDefinition);
+    console.log("CoinContract:", CoinContract);
+    let CoinContractInstance = CoinContract.at(CoinContractAddr);
+
+    let all = CoinContractInstance.refundCoin.getData(KIWQ,value);
+    console.log("all:", all);
+    let txCountr = await ethereumNode.send('eth_getTransactionCount', ['0x'+rfAddr,'latest']);
+    console.log("txCountr",txCountr);
+    let txCount = txCountr.result;
+    //var serial = '0x' + web3.eth.getTransactionCount('0x'+rfAddr).toString(16);
+    let serial = txCount.toString(16);
+    console.log("serial:", serial);
+    var rawTx = {
+        Txtype: '0x00',
+        nonce: serial,
+        gasPrice: '0x6fc23ac00',
+        gasLimit: '0xf4240',
+        to: CoinContractAddr,//contract address
+        value: '0x00',
+        data: all
+    };
+    console.log("rawTx:",rawTx);
+    var tx = new Tx(rawTx);
+    tx.sign(privKeyA);
+    var serializedTx = tx.serialize();
+    let hashr = await ethereumNode.send('eth_sendRawTransaction', ['0x' + serializedTx.toString('hex')]);
+    let hash = hashr.result;
+    console.log('tx hash:'+hash);
+    return hash;
+}
 
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
@@ -304,44 +398,8 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
     });
 
 });
-function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value){
-    // checkOTAddress;
-    let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
-    let otaSetBuf = [];
-    for(let i=0; i<otaSet.length; i++){
-        let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
-        let rpcu = secp256k1.publicKeyConvert(rpkc, false);
-        otaSetBuf.push(rpcu);
-    }
-    console.log("fetch  ota set: ",otaSet);
-    let otaSk = ethUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
-    let otaPub = ethUtil.recoverPubkeyFromWaddress(otaDestAddress);
-    let otaPubK = otaPub.A;
 
-    let M = new Buffer(rfAddr,'hex');
-    let ringArgs = ethUtil.getRingSign(M, otaSk,otaPubK,ringPubKs);
-    let KIWQ = generatePubkeyIWQforRing(ringArgs.PubKeys,ringArgs.I, ringArgs.w, ringArgs.q);
-    let all = contractCoinInstance.refundCoin.getData(KIWQ,value);
-
-    var serial = '0x' + web3.eth.getTransactionCount('0x'+keystore.address).toString(16);
-    var rawTx = {
-        Txtype: '0x00',
-        nonce: serial,
-        gasPrice: '0x6fc23ac00',
-        gasLimit: '0xf4240',
-        to: contractInstanceAddress,//contract address
-        value: '0x00',
-        data: all
-    };
-
-    var tx = new Tx(rawTx);
-    tx.sign(privKeyA);
-    var serializedTx = tx.serialize();
-    let hash = web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'));
-    console.log('tx hash:'+hash);
-}
-
-ipc.on('wan_refundCoin', (e, address, keyPassword, otaddr, otaNumber, value)=> {
+ipc.on('wan_refundCoin', async (e, address, keyPassword, otaddr, otaNumber, value)=> {
     //check the passwd
     let ksdir = "";
     if(ethereumNode.isPlutoNetwork){
@@ -351,9 +409,9 @@ ipc.on('wan_refundCoin', (e, address, keyPassword, otaddr, otaNumber, value)=> {
     }
     console.log("keystore path:",ksdir);
     console.log("address:",address);
-    const mainWindow = Windows.getByType('main');  
-    let keyFound = false; 
-    fs.readdir(ksdir, function(err, files) {
+    const mainWindow = Windows.getByType('main');
+    let keyFound = false;
+    fs.readdir(ksdir, async function(err, files) {
         if(err){
             console.log("readdir",err);
             mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
@@ -367,16 +425,19 @@ ipc.on('wan_refundCoin', (e, address, keyPassword, otaddr, otaNumber, value)=> {
                     let keystoreStr = fs.readFileSync(filepath,"utf8");
                         let keystore = JSON.parse(keystoreStr);
                         let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+                        let keyAObj = {version:keystore.version, crypto:keystore.crypto};
+                        let privKeyA;
+                        let privKeyB;
                         try {
-                            var privKeyB = keythereum.recover(keyPassword, keyBObj);
+                            privKeyA = keythereum.recover(keyPassword, keyAObj);
+                            privKeyB = keythereum.recover(keyPassword, keyBObj);
                         }catch(error){
-                            mainWindow.send('uiAction_windowMessage', "refundCoin",  error, value);
-                            console.log("wan_refundCoin", error);
+                            mainWindow.send('uiAction_windowMessage', "refundCoin",  "wrong password", value);
+                            console.log("wan_refundCoin", "wrong password");
                             return;
                         };
-                        var privKeyA = keythereum.recover(keyPassword, keyAObj);
-                        var privKeyB = keythereum.recover(keyPassword, keyBObj);
-                        let hash = otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value);
+
+                        let hash = await otaRefund(address, otaddr, otaNumber, privKeyA, privKeyB,value);
                         mainWindow.send('uiAction_windowMessage', "refundCoin",  null, hash);
                         return;
                 }

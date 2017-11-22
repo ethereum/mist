@@ -112,10 +112,10 @@
         },
         refundCoin(addr,ota, number,otaValue, callback) {
             if (callback) {
-                if (!this.callbacks.startScan) {
-                    this.callbacks.startScan = [];
+                if (!this.callbacks.refundCoin) {
+                    this.callbacks.refundCoin = [];
                 }
-                this.callbacks.startScan.push(callback);
+                this.callbacks.refundCoin.push(callback);
             }
             if(0 === addr.indexOf('0x')){
                 addr = addr.slice(2);
@@ -126,7 +126,7 @@
                 rfAddress: addr,
                 otaddr: ota,
                 otaValue: otaValue,
-                otaNumber, number
+                otaNumber: number
             });
         },
 

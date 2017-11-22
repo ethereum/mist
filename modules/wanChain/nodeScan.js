@@ -47,40 +47,10 @@ function parseContractMethodPara(paraData, abi,method)
 
     return dict;
 }
-function handleTransaction(tx)
-{
-        if(tx.to == coinContractAddr){
-            let cmd = tx.input.slice(2,10).toString('hex');
-            if(cmd != fhs_buyCoinNote){
-                return;
-            }
-            let inputPara = tx.input.slice(10);
-            let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
-            let value = paras.Value;
-            let ota = paras.OtaAddr;
-            let otaPub = ethUtil.recoverPubkeyFromWaddress(ota);
-            let otaA1 = otaPub.A;
-            let otaS1 = otaPub.B;
-            let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
 
-            if(A1.toString('hex') === otaA1.toString('hex')){
-                console.log("received a privacy transaction to me: ",ota);
-                console.log("the value is: ", value.toString());
-                wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0);
-            }
-        }
-}
 
 class nodeScan  {
 
-    test() {
-        // only For test;
-        scanedBlock = 100;
-        currentScanAddress = '035c6f2618a476792c14a5959e418c9038c0b347fca40403326f818c2ed5dbdba503248e9f0357b49950fbd3929c698869352aa49a7c8efda91c4811cb15831348df';
-        this.setScanedBlock(currentScanAddress, scanedBlock);
-        const t = this.getScanedBlock(currentScanAddress);
-        console.log("getScanedBlock:", t);
-    }
     getScanedBlock(waddr) {
         return wanchainDB.getScanedByWaddr(waddr);
     }
@@ -97,7 +67,29 @@ class nodeScan  {
                 .then((retBlock) => {
                     console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
                     const block = retBlock.result;
-                    block.transactions.forEach(handleTransaction);
+
+                    block.transactions.forEach((tx)=>{
+                           if(tx.to == coinContractAddr){
+                                let cmd = tx.input.slice(2,10).toString('hex');
+                                if(cmd != fhs_buyCoinNote){
+                                    return;
+                                }
+                                let inputPara = tx.input.slice(10);
+                                let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
+                                let value = paras.Value;
+                                let ota = paras.OtaAddr;
+                                let otaPub = ethUtil.recoverPubkeyFromWaddress(ota);
+                                let otaA1 = otaPub.A;
+                                let otaS1 = otaPub.B;
+                                let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
+
+                                if(A1.toString('hex') === otaA1.toString('hex')){
+                                    console.log("received a privacy transaction to me: ",ota);
+                                    console.log("the value is: ", value.toString());
+                                    wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0, block.timeStamp);
+                                }
+                            }                        
+                    });
                     this.scanBlock();
                 });
         } else {

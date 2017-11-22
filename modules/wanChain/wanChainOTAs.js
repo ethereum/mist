@@ -32,11 +32,11 @@ exports.setScanedByWaddr = function (waddr, scaned) {
         ScanBlockIndex.update(found);
     }
 }
-exports.insertOtabyWaddr = function(waddr, ota, value, status) {
+exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
     let OTAsCollection = db.getCollection('OTAsCollection');
     let Key = waddr.toLowerCase();
     try {
-        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status});
+        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status, 'timeStamp':timeStamp});
     }catch(err){
         console.log("insertOtabyWaddr:", err);
     }

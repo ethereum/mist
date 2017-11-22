@@ -73,14 +73,38 @@
                 type: 'mistAPI_requestAccount'
             });
         },
+        //cranelv add require account name
+        requireAccountName(address,callback)
+        {
+            if(callback)
+            {
+                if (!this.callbacks.requireAccountName) {
+                    this.callbacks.requireAccountName = [];
+                }
+                this.callbacks.requireAccountName.push(callback);
+            }
+            postMessage({
+                type: 'wan_requireAccountName',
+                address: address
+            });
+        },
+        changePassword(address)
+        {
+            postMessage({
+                type: 'wan_changeAccountPassword',
+                address: address
+            });
+        },
         //cranelv add Database Interface
         requestOTACollection(address,callback)
         {
             if(callback)
+            {
                 if (!this.callbacks.requestOTACollection) {
                     this.callbacks.requestOTACollection = [];
                 }
-            this.callbacks.requestOTACollection.push(callback);
+                this.callbacks.requestOTACollection.push(callback);
+            }
             postMessage({
                 type: 'wan_requestOTACollection',
                 address: address

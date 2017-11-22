@@ -74,6 +74,15 @@ module.exports = {
             properties:
             [],
         });
+        web3._extend({
+            property: 'personal',
+            methods:
+            [
+                insertMethod('updateAccount', 'personal_updateAccount', 3, [web3._extend.formatters.inputAddressFormatter,null,null]),
+            ],
+            properties:
+            [],
+        });
         // NETWORK
         web3._extend({
             property: 'network',

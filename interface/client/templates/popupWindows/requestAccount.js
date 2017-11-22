@@ -38,7 +38,7 @@ Template['popupWindows_requestAccount'].events({
 
         // ask for password repeat
         // check passwords
-        if(account1 && account1.length< 8){
+        if(account1 && account1.length< 2){
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
                 duration: 3

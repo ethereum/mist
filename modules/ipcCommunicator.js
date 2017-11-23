@@ -32,7 +32,6 @@ const log = logger.create('ipcCommunicator');
 const Web3 = require("web3");
 var net = require('net');
 console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
-var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
 require('./abi.js');
 /*
 
@@ -299,6 +298,7 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
 const CoinContractAddr = "0x0000000000000000000000000000000000000006";
 
 async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, pasPrice){
+    var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
     //let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
     //let otaSet = otaSetr.result;
@@ -396,6 +396,8 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let ksdir = "";
     let address = rfOta.rfAddress.toLowerCase();
+    var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+
     if(0 === para.rfAddress.indexOf('0x')) {
         address = address.slice(2);
     }

@@ -31,7 +31,6 @@ const log = logger.create('ipcCommunicator');
 
 const Web3 = require("web3");
 var net = require('net');
-const Settings = require('./settings');
 console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
 var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
 require('./abi.js');

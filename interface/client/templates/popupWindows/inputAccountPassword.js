@@ -46,11 +46,8 @@ Template['popupWindows_inputAccountPassword'].events({
         var data = Session.get('data');
         const action = data.action;
         if(action === 'refundCoin') {
-            var rfAddress = data.rfAddress;
-            var otaddr = data.otaddr;
-            var otaNumber = data.otaNumber;
-            var otaValue = data.otaValue;
-            ipc.send('wan_refundCoin', rfAddress, pw, otaddr,otaNumber, otaValue);
+            var rfOta = data.para;
+            ipc.send('wan_refundCoin', rfOta, pw);
         }else {
             var scAddress = data.scAddress;
             ipc.send('wan_startScan', scAddress, pw);

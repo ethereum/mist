@@ -30,6 +30,7 @@ const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 const log = logger.create('ipcCommunicator');
 
 const Web3 = require("web3");
+const web3Admin = require('./web3Admin.js');
 var net = require('net');
 console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
 require('./abi.js');
@@ -297,12 +298,16 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
 }
 const CoinContractAddr = "0x0000000000000000000000000000000000000006";
 
-async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, pasPrice){
+async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, gasPrice){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
-    let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    //web3Admin.extend(web3);
+    //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    let otaSetr = await ethereumNode.send('wan_getOTAMixSet', [otaDestAddress, number]);
+    let otaSet = otaSetr.result;
+
     //let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
     //let otaSet = otaSetr.result;
-    console.log("otaSet:",otaSet);
+    console.log("otaSetr:",otaSetr);
     let otaSetBuf = [];
     for(let i=0; i<otaSet.length; i++){
         let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
@@ -396,16 +401,16 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let ksdir = "";
     let address = rfOta.rfAddress.toLowerCase();
-    var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+    //var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
 
-    if(0 === para.rfAddress.indexOf('0x')) {
+    if(0 === address.indexOf('0x')) {
         address = address.slice(2);
     }
     let otas = rfOta.otas;
     let gas = rfOta.gas;
     let gasPrice = rfOta.gasPrice;
     let otaNumber = rfOta.otaNumber;
-    if(Settings.isPlutoNetwork){
+    if(Settings.network == 'pluto'){
         ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
     }else{
         ksdir = app.getPath('home')+"/.wanchain/keystore";
@@ -448,7 +453,10 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 console.log("wan_refundCoin", "wrong password");
                 return;
             };
-            let serial =  web3.eth.getTransactionCount('0x'+address);
+            let serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
+            let serial = parseInt(serialr.result);
+            console.log("serialr:",serialr)
+            //let serial =  web3.eth.getTransactionCount('0x'+address);
             try{
                 for (let c=0; c<otas.length; c++) {
                     let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
@@ -456,6 +464,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 }
             }catch(error){
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
+                console.log("refund Error:", error);
                 return;
             }
             mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "");

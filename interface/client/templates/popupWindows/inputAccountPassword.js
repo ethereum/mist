@@ -45,6 +45,7 @@ Template['popupWindows_inputAccountPassword'].events({
         var pw = template.find('input.password').value;
         var data = Session.get('data');
         const action = data.action;
+        console.log("popupWindows_inputAccountPassword data",data);
         if(action === 'refundCoin') {
             var rfOta = data.para;
             ipc.send('wan_refundCoin', rfOta, pw);

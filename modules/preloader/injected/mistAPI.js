@@ -134,26 +134,20 @@
                 scAddress: addr
             });
         },
-        refundCoin(addr,ota, number,otaValue, callback) {
+        refundCoin(para, callback) {
             if (callback) {
                 if (!this.callbacks.refundCoin) {
                     this.callbacks.refundCoin = [];
                 }
                 this.callbacks.refundCoin.push(callback);
             }
-            if(0 === addr.indexOf('0x')){
-                addr = addr.slice(2);
-            }
+
             postMessage({
                 type: 'wan_inputAccountPassword',
                 action: 'refundCoin',
-                rfAddress: addr,
-                otaddr: ota,
-                otaValue: otaValue,
-                otaNumber: number
+                para: para
             });
         },
-
         solidity: {
             version: '__solidityVersion__',
         },

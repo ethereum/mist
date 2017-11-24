@@ -29,6 +29,10 @@ const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
 const log = logger.create('ipcCommunicator');
 
+const Web3 = require("web3");
+const web3Admin = require('./web3Admin.js');
+var net = require('net');
+console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
 require('./abi.js');
 /*
 
@@ -300,18 +304,16 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
 }
 const CoinContractAddr = "0x0000000000000000000000000000000000000006";
 
-async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value){
-
-    const Web3 = require("web3");
-    var net = require('net');
-    const Settings = require('./settings');
-    console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
+async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, gasPrice){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
-    // checkOTAddress;
+    //web3Admin.extend(web3);
     //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
-    let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
+    let otaSetr = await ethereumNode.send('wan_getOTAMixSet', [otaDestAddress, number]);
     let otaSet = otaSetr.result;
-    console.log("otaSet:",otaSet);
+
+    //let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
+    //let otaSet = otaSetr.result;
+    console.log("otaSetr:",otaSetr);
     let otaSetBuf = [];
     for(let i=0; i<otaSet.length; i++){
         let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
@@ -335,17 +337,14 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
 
     let all = CoinContractInstance.refundCoin.getData(KIWQ,value);
     console.log("all:", all);
-    let txCountr = await ethereumNode.send('eth_getTransactionCount', ['0x'+rfAddr,'latest']);
-    console.log("txCountr",txCountr);
-    let txCount = txCountr.result;
-    //var serial = '0x' + web3.eth.getTransactionCount('0x'+rfAddr).toString(16);
-    let serial = txCount.toString(16);
+
+    let serial = '0x'+nonce.toString(16);
     console.log("serial:", serial);
     var rawTx = {
         Txtype: '0x00',
         nonce: serial,
-        gasPrice: '0x6fc23ac00',
-        gasLimit: '0xf4240',
+        gasPrice: gasPrice,
+        gasLimit: gas,
         to: CoinContractAddr,//contract address
         value: '0x00',
         data: all
@@ -405,10 +404,19 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 
 });
 
-ipc.on('wan_refundCoin', async (e, address, keyPassword, otaddr, otaNumber, value)=> {
-    //check the passwd
+ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let ksdir = "";
-    if(ethereumNode.isPlutoNetwork){
+    let address = rfOta.rfAddress.toLowerCase();
+    //var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+
+    if(0 === address.indexOf('0x')) {
+        address = address.slice(2);
+    }
+    let otas = rfOta.otas;
+    let gas = rfOta.gas;
+    let gasPrice = rfOta.gasPrice;
+    let otaNumber = rfOta.otaNumber;
+    if(Settings.network == 'pluto'){
         ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
     }else{
         ksdir = app.getPath('home')+"/.wanchain/keystore";
@@ -422,36 +430,52 @@ ipc.on('wan_refundCoin', async (e, address, keyPassword, otaddr, otaNumber, valu
             console.log("readdir",err);
             mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
         }else{
+            let filepath;
             for(let i=0; i<files.length; i++){
-                let filepath = ksdir+'/'+files[i];
-                address= address.toLowerCase();
+                filepath = ksdir+'/'+files[i];
                 if(-1 != filepath.indexOf(address)){
                     console.log("find:", filepath);
                     keyFound = true;
-                    let keystoreStr = fs.readFileSync(filepath,"utf8");
-                        let keystore = JSON.parse(keystoreStr);
-                        let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
-                        let keyAObj = {version:keystore.version, crypto:keystore.crypto};
-                        let privKeyA;
-                        let privKeyB;
-                        try {
-                            privKeyA = keythereum.recover(keyPassword, keyAObj);
-                            privKeyB = keythereum.recover(keyPassword, keyBObj);
-                        }catch(error){
-                            mainWindow.send('uiAction_windowMessage', "refundCoin",  "wrong password", value);
-                            console.log("wan_refundCoin", "wrong password");
-                            return;
-                        };
-
-                        let hash = await otaRefund(address, otaddr, otaNumber, privKeyA, privKeyB,value);
-                        mainWindow.send('uiAction_windowMessage', "refundCoin",  null, hash);
-                        return;
+                    break;
                 }
             }
             if(!keyFound){
                 console.log("Can't find keystore:", address);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
+                return;
             }
+
+            let keystoreStr = fs.readFileSync(filepath,"utf8");
+            let keystore = JSON.parse(keystoreStr);
+            let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+            let keyAObj = {version:keystore.version, crypto:keystore.crypto};
+            let privKeyA;
+            let privKeyB;
+            try {
+                privKeyA = keythereum.recover(keyPassword, keyAObj);
+                privKeyB = keythereum.recover(keyPassword, keyBObj);
+            }catch(error){
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  "wrong password", value);
+                console.log("wan_refundCoin", "wrong password");
+                return;
+            };
+            let serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
+            let serial = parseInt(serialr.result);
+            console.log("serialr:",serialr)
+            //let serial =  web3.eth.getTransactionCount('0x'+address);
+            try{
+                for (let c=0; c<otas.length; c++) {
+                    let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    console.log("refund hash:",hash);
+                }
+            }catch(error){
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
+                console.log("refund Error:", error);
+                return;
+            }
+            mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "");
+            return;
+
 
         }
 

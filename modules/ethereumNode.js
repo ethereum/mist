@@ -525,7 +525,7 @@ class EthereumNode extends EventEmitter {
         // add node type
         nodelog = `Node type: ${nodeType}\n` +
             `Network: ${network}\n` +
-            `Platform: ${process.platform} (Architecure ${process.arch})\n\n${
+            `Platform: ${process.platform} (Architecture ${process.arch})\n\n${
             nodelog}`;
 
         dialog.showMessageBox({

@@ -19,7 +19,7 @@ gulp.task('update-nodes', (cb) => {
     const geth = newJson.clients.Geth;
 
     // Query latest geth version
-    got('https://api.github.com/repos/ethereum/go-ethereum/releases/latest', { json: true })
+    got('https://api.github.com/repos/wanchain/go-wanchain/releases/latest', { json: true })
     .then((response) => {
         return response.body.tag_name;
     })
@@ -32,7 +32,7 @@ gulp.task('update-nodes', (cb) => {
             geth.version = latestGethVersion;
 
             // Query commit hash (first 8 characters)
-            got(`https://api.github.com/repos/ethereum/go-ethereum/commits/${tagName}`, { json: true })
+            got(`https://api.github.com/repos/wanchain/go-wanchain/commits/${tagName}`, { json: true })
             .then((response) => {
                 return String(response.body.sha).substr(0, 8);
             })
@@ -55,15 +55,18 @@ gulp.task('update-nodes', (cb) => {
                             let url = geth.platforms[platform][arch].download.url;
                             url = url.replace(/\d+\.\d+\.\d+-[a-z0-9]{8}/, `${latestGethVersion}-${hash}`);
                             geth.platforms[platform][arch].download.url = url;
+                            console.log(platform + ' : '+ arch  + ' : '+  url);
 
                             // Update bin name (path in archive)
                             let bin = geth.platforms[platform][arch].download.bin;
                             bin = bin.replace(/\d+\.\d+\.\d+-[a-z0-9]{8}/, `${latestGethVersion}-${hash}`);
                             geth.platforms[platform][arch].download.bin = bin;
+                            console.log(platform + ' : '+ arch  + ' : '+  bin);
 
                             // Update expected sanity-command version output
                             geth.platforms[platform][arch].commands.sanity.output[1] =
                             String(latestGethVersion);
+                            console.log('latestGethVersion :' + latestGethVersion);
 
                             // Update md5 checksum
                             blobs.forEach((blob) => {
@@ -114,7 +117,7 @@ gulp.task('download-signatures', (cb) => {
 
 gulp.task('update-i18n', (cb) => {
     /**
-     * This script will update Mist's i18n files
+     * This script w-ill update Mist's i18n files
      *  - adds missing english strings to all translations
      *  - removes obsolet keys from translations
      */

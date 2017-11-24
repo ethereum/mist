@@ -157,13 +157,19 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
                     }
                 // geth
                 } else {
-                    if (process.platform === 'darwin') keystorePath += '/Library/Ethereum/keystore';
+                    let ksdir = "";
+                    if(ethereumNode.isPlutoNetwork){
+                        ksdir = "wanchain/pluto/keystore";
+                    }else{
+                        ksdir = "wanchain/keystore";
+                    }
+                    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
 
                     if (process.platform === 'freebsd' ||
                         process.platform === 'linux' ||
-                        process.platform === 'sunos') keystorePath += '/.ethereum/keystore';
+                        process.platform === 'sunos') keystorePath += '/.' + ksdir;
 
-                    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
                 }
 
                 if (!/^[0-9a-fA-F]{40}$/.test(keyfile.address)) {

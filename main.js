@@ -367,7 +367,7 @@ onReady = () => {
                     message: global.i18n.t('mist.errors.legacyChain.title'),
                     detail: global.i18n.t('mist.errors.legacyChain.description')
                 }, () => {
-                    shell.openExternal('https://github.com/ethereum/mist/releases');
+                    shell.openExternal('https://github.com/wanchain/wanwallet/releases');
                     app.quit();
                 });
 

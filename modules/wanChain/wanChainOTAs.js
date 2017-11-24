@@ -32,6 +32,14 @@ exports.setScanedByWaddr = function (waddr, scaned) {
         ScanBlockIndex.update(found);
     }
 }
+exports.updateOtaStatus = function(ota) {
+    let OTAsCollection = db.getCollection('OTAsCollection');
+    var found = OTAsCollection.findOne({'_id': ota});
+    if(found){
+        found.state = 1;
+        OTAsCollection.update(found);
+    }
+}
 exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
     let OTAsCollection = db.getCollection('OTAsCollection');
     let Key = waddr.toLowerCase();

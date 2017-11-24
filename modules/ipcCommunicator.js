@@ -404,6 +404,42 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 
 });
 
+function getTransactionReceipt(rfHashs)
+{
+    return new Promise(function(success, fail){
+        let filter = web3.eth.filter('latest');
+        let blockAfter = 0;
+        filter.watch(async function(err,blockhash){
+            blockAfter += 1;
+            if(err ){
+                log.error("filterRfHashs error:"+err);
+                filter.stopWatching();
+                fail("filterRfHashs error:"+err);
+            }else{
+                for(let i=rfHashs.length-1; i>=0; i--){
+                    let receiptr = await ethereumNode.send('eth_getTransactionReceipt', [rfHashs[i].hash]);
+                    console.log("receiptr:",receiptr);
+                    let receipt = receiptr.result;
+                    if(receipt){
+                        rfHashs.splice(i, 1);
+                        wanOTAs.updateOtaStatus(rfHashs[i].ota);
+                    }
+                }
+                if(rfHashs.length == 0){
+                    filter.stopWatching();
+                    success(0);
+                }
+                if(blockAfter > 6){
+                    filter.stopWatching();
+                    fail("Failed to get all receipts");
+                }
+            }
+        });
+    });
+}
+
+
+
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let ksdir = "";
     let address = rfOta.rfAddress.toLowerCase();
@@ -463,20 +499,25 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             let serial = parseInt(serialr.result);
             console.log("serialr:",serialr)
             //let serial =  web3.eth.getTransactionCount('0x'+address);
+            let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
                     let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
                     console.log("refund hash:",hash);
+                    rfHashs.push({hash:hash, ota:otas[c].otaddr});
                 }
             }catch(error){
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
                 console.log("refund Error:", error);
                 return;
             }
-            mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "");
+            try {
+                await getTransactionReceipt(rfHashs);
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "Done");
+            }catch(error){
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "");
+            }
             return;
-
-
         }
 
     });
@@ -499,8 +540,8 @@ ipc.on('mistAPI_requestAccount', (event) => {
         });
     }
 });
-//cranelv add database info
-//database for first new account 2017-11-20
+// cranelv add database info
+// database for first new account 2017-11-20
 ipc.on('wan_onBoarding_newAccount',(event,newAccount)=>{
     console.log('firstNewAccount:' + JSON.stringify(newAccount));
     wanOTAs.firstNewAccount(newAccount);

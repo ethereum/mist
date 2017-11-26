@@ -548,7 +548,7 @@ ipc.on('wan_onBoarding_newAccount',(event,newAccount)=>{
 });
 ipc.on('wan_requireAccountName',(event,address)=>{
 
-    var OTAArray = wanOTAs.requireAccountName(address.address,address.status);
+    var OTAArray = wanOTAs.requireAccountName(address.address);
 
     console.log('wan_requireAccountName :' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
@@ -560,7 +560,7 @@ ipc.on('wan_requireAccountName',(event,address)=>{
 });
 ipc.on('wan_requestOTACollection',(event,address)=>{
 
-    var OTAArray = wanOTAs.requireOTAsFromCollection(address.address);
+    var OTAArray = wanOTAs.requireOTAsFromCollection(address.address,address.status);
     console.log('wan_requestOTACollection :' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);

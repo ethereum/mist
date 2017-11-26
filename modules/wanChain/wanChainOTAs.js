@@ -67,9 +67,9 @@ exports.firstNewAccount = (newAccount) =>
         accountCollection.insert({'address': newAccount.address, 'name': newAccount.name});
     }
 }
-exports.requireAccountName = (address) =>
+exports.requireAccountName = (address, status) =>
 {
     console.log('requireAccountName:' + address);
     var accountCollection = db.getCollection('firstNewAccount');
-    return accountCollection.find({'address': address});
+    return accountCollection.find({'address': address, 'state':status});
 }

@@ -548,7 +548,8 @@ ipc.on('wan_onBoarding_newAccount',(event,newAccount)=>{
 });
 ipc.on('wan_requireAccountName',(event,address)=>{
 
-    var OTAArray = wanOTAs.requireAccountName(address.address);
+    var OTAArray = wanOTAs.requireAccountName(address.address,address.status);
+
     console.log('wan_requireAccountName :' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);

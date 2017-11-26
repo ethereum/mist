@@ -96,7 +96,7 @@
             });
         },
         //cranelv add Database Interface
-        requestOTACollection(address,callback)
+        requestOTACollection(address,status,callback)
         {
             if(callback)
             {
@@ -107,7 +107,8 @@
             }
             postMessage({
                 type: 'wan_requestOTACollection',
-                address: address
+                address: address,
+                status:status
             });
         },
         requestScanOTAbyBlock(address)

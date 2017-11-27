@@ -20,3 +20,6 @@ window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
 window.dbSync = dbSync;
 window.ipc = ipcRenderer;
+
+// Initialise the Redux store
+window.store = require('./rendererStore');

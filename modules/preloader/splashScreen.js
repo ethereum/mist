@@ -17,5 +17,5 @@ window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
 
-// Stub out the Redux store
-window.store = { dispatch: () => {} };
+// Initialise the Redux store
+window.store = require('./rendererStore');

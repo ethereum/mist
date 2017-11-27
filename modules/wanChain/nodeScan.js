@@ -18,6 +18,8 @@ let lastBlockNumber = 0;
 let currentScanAddress = "";
 
 const scanIntervalNormal = 60000;
+const scanIntervalFast = 100;
+
 const coinContractAddr = "0x0000000000000000000000000000000000000006";
 let privKeyB;
 let pubKeyA;
@@ -60,12 +62,10 @@ class nodeScan  {
 
 
     scanBlock() {
-        console.log('scanedblock: ', scanedBlock, 'lastBlockNumber: ', lastBlockNumber);
         if(scanedBlock < lastBlockNumber) {
             scanedBlock += 1;
             ethereumNode.send('eth_getBlockByNumber', ['0x'+scanedBlock.toString(16), true])
                 .then((retBlock) => {
-                    console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
                     const block = retBlock.result;
 
                     block.transactions.forEach((tx)=>{
@@ -84,13 +84,20 @@ class nodeScan  {
                                 let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
 
                                 if(A1.toString('hex') === otaA1.toString('hex')){
-                                    console.log("received a privacy transaction to me: ",ota);
-                                    console.log("the value is: ", value.toString());
+                                    log.debug("received a privacy transaction to me: ",ota);
+                                    log.debug("the value is: ", value.toString());
                                     wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0, block.timeStamp);
                                 }
-                            }                        
+                            }
                     });
-                    this.scanBlock();
+                    if(scanedBlock%100 == 0){
+                        if (scanTimer)  clearTimeout(scanTimer);
+                        scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalFast);
+                        log.info('scanedblock: ', scanedBlock, 'lastest: ', lastBlockNumber);
+                        this.setScanedBlock(currentScanAddress, scanedBlock);
+                    }else {
+                        this.scanBlock();
+                    }
                 });
         } else {
             ethereumNode.send('eth_blockNumber', [])
@@ -98,6 +105,7 @@ class nodeScan  {
                     lastBlockNumber = parseInt(ret.result);
                     if (scanedBlock === lastBlockNumber) {
                         this.setScanedBlock(currentScanAddress, scanedBlock);
+                        if (scanTimer)  clearTimeout(scanTimer);
                         scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalNormal);
                     } else {
                         this.scanBlock();
@@ -106,7 +114,7 @@ class nodeScan  {
         }
     }
     start(waddr, privB) {
-        console.log('got addr:', waddr, privB.toString('hex'));
+        log.debug('got addr:', waddr, privB.toString('hex'));
         currentScanAddress = waddr;
         const myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
         privKeyB = privB;

@@ -55,7 +55,7 @@ gulp.task('upload-binaries', (cb) => {
     console.info('Checking Github releases...');
 
     // query github releases
-    got(`https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`, { json: true })
+    got(`https://api.github.com/repos/wanchain/wanwallet/releases?access_token=${GITHUB_TOKEN}`, { json: true })
     // filter draft with current version's tag
     .then((res) => {
         const draft = res.body[_.indexOf(_.pluck(res.body, 'tag_name'), `v${version}`)];
@@ -77,7 +77,7 @@ gulp.task('upload-binaries', (cb) => {
             if (!_.isEmpty(existingAssets)) throw new Error(`Github release draft already contains assets (${existingAssets}); will not upload, please remove and trigger rebuild`);
 
             return githubUpload({
-                url: `https://uploads.github.com/repos/ethereum/mist/releases/${draft.id}/assets{?name}`,
+                url: `https://uploads.github.com/repos/wanchian/wanwallet/releases/${draft.id}/assets{?name}`,
                 token: [GITHUB_TOKEN],
                 assets: filePaths
             }).then((res) => {
@@ -91,7 +91,7 @@ gulp.task('upload-binaries', (cb) => {
                         const line = e.replace('\n', '').split('  ');
                         return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
                     }).join('\n');
-                    got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
+                    got.patch(`https://api.github.com/repos/wanchain/wanwallet/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
                             tag_name: `v${version}`,
                             // String manipulation to create a checksums table

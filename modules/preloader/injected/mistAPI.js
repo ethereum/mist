@@ -49,19 +49,104 @@
      */
     const mist = {
         callbacks: {},
+        //cranelv add permanent callbacks; 2017-11-19
+        permanentCallbacks: {},
+        addPermanentCallbacks(eventType,callback)
+        {
+            if(!this.permanentCallbacks[eventType]) {
+                this.permanentCallbacks[eventType] = [];
+            }
+            this.permanentCallbacks[eventType].push(callback);
+        },
         version: '__version__',
         license: '__license__',
         platform: '__platform__',
         requestAccount(callback) {
             if (callback) {
-                if (!this.callbacks.connectAccount) {
-                    this.callbacks.connectAccount = [];
+                if (!this.callbacks.requestAccount) {
+                    this.callbacks.requestAccount = [];
                 }
-                this.callbacks.connectAccount.push(callback);
+                this.callbacks.requestAccount.push(callback);
             }
 
             postMessage({
                 type: 'mistAPI_requestAccount'
+            });
+        },
+        //cranelv add require account name
+        requireAccountName(address,callback)
+        {
+            if(callback)
+            {
+                if (!this.callbacks.requireAccountName) {
+                    this.callbacks.requireAccountName = [];
+                }
+                this.callbacks.requireAccountName.push(callback);
+            }
+            postMessage({
+                type: 'wan_requireAccountName',
+                address: address
+            });
+        },
+        changePassword(address)
+        {
+            postMessage({
+                type: 'wan_changeAccountPassword',
+                address: address
+            });
+        },
+        //cranelv add Database Interface
+        requestOTACollection(address,status,callback)
+        {
+            if(callback)
+            {
+                if (!this.callbacks.requestOTACollection) {
+                    this.callbacks.requestOTACollection = [];
+                }
+                this.callbacks.requestOTACollection.push(callback);
+            }
+            postMessage({
+                type: 'wan_requestOTACollection',
+                address: address,
+                status:status
+            });
+        },
+        requestScanOTAbyBlock(address)
+        {
+            postMessage({
+                type: 'wan_requestScanOTAbyBlock',
+                address: address
+            });
+        },
+
+        startScan(addr, callback) {
+            if (callback) {
+                if (!this.callbacks.startScan) {
+                    this.callbacks.startScan = [];
+                }
+                this.callbacks.startScan.push(callback);
+            }
+            if(0 === addr.indexOf('0x')){
+                addr = addr.slice(2);
+            }
+            postMessage({
+                type: 'wan_inputAccountPassword',
+                action: 'startScan',
+                scAddress: addr
+            });
+        },
+        refundCoin(para, callback) {
+            if (callback) {
+                if (!this.callbacks.refundCoin) {
+                    this.callbacks.refundCoin = [];
+                }
+                this.callbacks.refundCoin.push(callback);
+            }
+
+            postMessage({
+                type: 'wan_inputAccountPassword',
+                action: 'refundCoin',
+                para: para
             });
         },
         solidity: {
@@ -247,6 +332,12 @@
                     cb(params.error, params.value);
                 });
                 delete mist.callbacks[params.type];
+            }
+            else if(mist.permanentCallbacks[params.type])
+            {
+                mist.permanentCallbacks[params.type].forEach(function(cb) {
+                    cb(params.error, params.value);
+                });
             }
         }
     });

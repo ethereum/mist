@@ -30,6 +30,8 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
     var oldData;
     TemplateVar.set('readyToLaunch', false);
+    TemplateVar.set('testnet', true); // in the develop phase, we use testnet default. TODO: change to mainnet later.
+
 
     // check for block status
     this.syncFilter = web3.eth.isSyncing(function (error, syncing) {
@@ -175,7 +177,7 @@ Template['popupWindows_onboardingScreen'].events({
 
         if (!TemplateVar.get('newAccount')) {
             TemplateVar.set('currentActive', 'testnet');
-            template.$('.onboarding-testnet input.password').focus();
+            template.$('.onboarding-testnet input.account').focus();
         } else {
             TemplateVar.set('currentActive', 'account');
         }
@@ -381,7 +383,6 @@ The onboardingScreen password template
 @class [template] popupWindows_onboardingScreen_password
 @constructor
 */
-
 Template['popupWindows_onboardingScreen_password'].helpers({
     /**
     Show password
@@ -401,6 +402,7 @@ Template['popupWindows_onboardingScreen_password'].events({
     @event click button[type="button"]
     */
     'click button[type="button"]': function (e, template) {
+//        template.find('input.account').value = '';
         template.find('input.password').value = '';
         template.find('input.password-repeat').value = '';
     },
@@ -420,9 +422,13 @@ Template['popupWindows_onboardingScreen_password'].events({
     'input input, change input': function (e, template) {
         var pw = template.find('input.password').value;
         var pwRepeat = template.find('input.password-repeat').value;
+        //cranelv add Account name 2017-11-13
+        var account = template.find('input.account').value;
 
         TemplateVar.set(template, 'passwordsNotEmpty', pw !== '' || pwRepeat !== '');
         TemplateVar.set(template, 'passwordsMismatch', pwRepeat && pw !== pwRepeat);
+        //cranelv add Account name 2017-11-13
+        TemplateVar.set(template, 'accountNotEmpty', account!=='');
 
     },
     /**
@@ -433,8 +439,19 @@ Template['popupWindows_onboardingScreen_password'].events({
     'submit form': function (e, template) {
         var pw = template.find('input.password').value;
         var pwRepeat = template.find('input.password-repeat').value;
+        //cranelv add Account name 2017-11-13
+        var account = template.find('input.account').value;
 
-        if (pw !== pwRepeat) {
+        if(account=='' || account.length < 2)
+        {
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        }
+        else if (pw !== pwRepeat) {
+
+ //       if (pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
@@ -455,7 +472,13 @@ Template['popupWindows_onboardingScreen_password'].events({
                 if (!e) {
                     TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
-
+                    //cranelv add Account to database 2017-11-20]
+                    var newAccount = {
+                        type: 'account',
+                        address : res,
+                        name : account
+                    };
+                    ipc.send('wan_onBoarding_newAccount', newAccount);
                     // clear form
                     pw = null;
                     pwRepeat = null;

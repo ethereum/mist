@@ -15,6 +15,10 @@ ipcRenderer.on('uiAction_sendData', (e, data) => {
     Session.set('data', data);
 });
 
+ipcRenderer.on('uiAction_sendKeyData', (e, key, data) => {
+    Session.set(key, data);
+});
+
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');

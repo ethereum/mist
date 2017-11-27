@@ -28,7 +28,11 @@ if (Settings.cli.version) {
 
     process.exit(0);
 }
+if (Settings.cli.test) {
+    log.info("Testint...");
 
+    process.exit(0);
+}
 if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
@@ -363,7 +367,7 @@ onReady = () => {
                     message: global.i18n.t('mist.errors.legacyChain.title'),
                     detail: global.i18n.t('mist.errors.legacyChain.description')
                 }, () => {
-                    shell.openExternal('https://github.com/ethereum/mist/releases');
+                    shell.openExternal('https://github.com/wanchain/wanwallet/releases');
                     app.quit();
                 });
 
@@ -418,7 +422,7 @@ onReady = () => {
                     // change network types (mainnet, testnet)
                     ipcMain.on('onBoarding_changeNet', (e, testnet) => {
                         const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'rinkeby' : 'main';
+                        const newNetwork = testnet ? 'pluto' : 'main';
 
                         log.debug('Onboarding change network', newType, newNetwork);
 

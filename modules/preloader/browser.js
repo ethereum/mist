@@ -93,6 +93,10 @@ window.addEventListener('message', function message(event) {
             ipcRenderer.sendToHost(data.type, data.message);
         }
     }
+    //cranelv add wan-Message 2017-11-17
+    else if (/^wan_[a-z]/i.test(data.type)) {
+        ipcRenderer.send(data.type, data);
+    }
 });
 
 const postMessage = function (payload) {

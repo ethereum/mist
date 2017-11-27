@@ -171,8 +171,9 @@ let menuTempl = function (webviews) {
                 accelerator: 'CommandOrControl+N',
                 click() {
                     Windows.createPopup('requestAccount', {
+                        ownerId : Windows.getByType('main').id,
                         electronOptions: {
-                            width: 420, height: 230, alwaysOnTop: true,
+                            width: 420, height: 380, alwaysOnTop: true,
                         },
                     });
                 },
@@ -180,7 +181,8 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
-                enabled: ethereumNode.isMainNetwork,
+                //cranelv: open this menu in all nets. 2o17-11-13
+//                enabled: ethereumNode.isMainNetwork,
                 click() {
                     Windows.createPopup('importAccount', {
                         electronOptions: {
@@ -198,6 +200,7 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
+                            let kestorePath = 'wanchain/pluto';
                             let userPath = Settings.userHomePath;
 
                             // eth
@@ -211,17 +214,17 @@ let menuTempl = function (webviews) {
                             // geth
                             } else {
                                 if (process.platform === 'darwin') {
-                                    userPath += '/Library/Ethereum/keystore';
+                                    userPath += '/Library/'+kestorePath+'/keystore';
                                 }
 
                                 if (process.platform === 'freebsd' ||
                                 process.platform === 'linux' ||
                                 process.platform === 'sunos') {
-                                    userPath += '/.ethereum/keystore';
+                                    userPath += '/.'+kestorePath+'/keystore';
                                 }
 
                                 if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
+                                    userPath = `${Settings.appDataPath}\\${kestorePath}\\keystore`;
                                 }
                             }
 
@@ -543,13 +546,13 @@ let menuTempl = function (webviews) {
                 },
             },
             {
-                label: 'Rinkeby - Test network',
+                label: 'Pluto - Test network',
                 accelerator: 'CommandOrControl+Alt+3',
-                checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
+                checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'rinkeby');
+                    restartNode(ethereumNode.type, 'pluto');
                 },
             },
             {
@@ -649,20 +652,21 @@ let menuTempl = function (webviews) {
             }
         );
     }
+    const gitPath = 'wanchain/wanwallet';
     helpMenu.push({
         label: i18n.t('mist.applicationMenu.help.mistWiki'),
         click() {
-            shell.openExternal('https://github.com/ethereum/mist/wiki');
+            shell.openExternal('https://github.com/'+gitPath+'/wiki');
         },
     }, {
         label: i18n.t('mist.applicationMenu.help.gitter'),
         click() {
-            shell.openExternal('https://gitter.im/ethereum/mist');
+            shell.openExternal('https://gitter.im'+gitPath);
         },
     }, {
         label: i18n.t('mist.applicationMenu.help.reportBug'),
         click() {
-            shell.openExternal('https://github.com/ethereum/mist/issues');
+            shell.openExternal('https://github.com/'+gitPath+'/issues');
         },
     });
 

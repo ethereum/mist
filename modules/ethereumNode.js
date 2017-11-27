@@ -88,6 +88,9 @@ class EthereumNode extends EventEmitter {
         return this.network === 'test';
     }
 
+    get isPlutoNetwork() {
+        return this.network === 'pluto';
+    }
     get isRinkebyNetwork() {
         return this.network === 'rinkeby';
     }
@@ -396,7 +399,14 @@ class EthereumNode extends EventEmitter {
                         '--ipcpath', Settings.rpcIpcPath
                     ];
                     break;
-
+                case 'pluto':
+                    args = [
+                        '--pluto',
+                        '--syncmode', syncMode,
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
+                    break;
                 // Starts local network
                 case 'dev':
                     args = [

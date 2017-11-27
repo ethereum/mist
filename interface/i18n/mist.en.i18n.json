@@ -16,6 +16,7 @@
                 "label": "File",
                 "importPresale": "Import accounts",
                 "newAccount": "New account",
+                "changePassword": "Change password",
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
                 "backupMist": "Application data",
@@ -195,6 +196,12 @@
                     "passwordMismatch": "Your passwords don't match.",
                     "passwordTooShort": "Make a longer password"
                 }
+            },
+            "changeMasterPassword":{
+                "title": "Change password",
+                "enterOldPassword": "Enter old password",
+                "enterNewPassword": "Enter new password",
+                "repeatNewPassword": "Repeat new password"
             },
             "unlockMasterPassword": {
                 "title": "Enter master password",

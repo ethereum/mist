@@ -48,10 +48,10 @@ module.exports = () => {
         platform: process.platform,
         requestAccount(callback) {
             if (callback) {
-                if (!this.callbacks.connectAccount) {
-                    this.callbacks.connectAccount = [];
+                if (!this.callbacks.requestAccount) {
+                    this.callbacks.requestAccount = [];
                 }
-                this.callbacks.connectAccount.push(callback);
+                this.callbacks.requestAccount.push(callback);
             }
 
             ipcRenderer.send('mistAPI_requestAccount');

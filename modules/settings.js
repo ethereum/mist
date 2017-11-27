@@ -9,7 +9,7 @@ const lodash = require('lodash');
 
 // try loading in config file
 const defaultConfig = {
-    mode: 'mist',
+    mode: 'wallet',
     production: false,
 };
 try {
@@ -42,7 +42,7 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: null,
+            default: 'pluto',
             describe: 'Network to connect to: main, test',
             requiresArg: true,
             nargs: 1,
@@ -122,6 +122,14 @@ const argv = require('yargs')
             nargs: 1,
             type: 'string',
             group: 'Mist options:',
+        },
+        test: {
+            demand: false,
+            requiresArg: false,
+            nargs: 0,
+            describe: 'Execute some test code.',
+            group: 'Mist options:',
+            type: 'boolean',
         },
         version: {
             alias: 'v',
@@ -277,9 +285,9 @@ class Settings {
         } else if (process.platform === 'freebsd' ||
        process.platform === 'linux' ||
        process.platform === 'sunos') {
-            ipcPath += '/.ethereum/geth.ipc';
+            ipcPath += '/.wanchain/gwan.ipc';
         } else if (process.platform === 'win32') {
-            ipcPath = '\\\\.\\pipe\\geth.ipc';
+            ipcPath = '\\\\.\\pipe\\gwan.ipc';
         }
 
         this._log.debug(`IPC path: ${ipcPath}`);

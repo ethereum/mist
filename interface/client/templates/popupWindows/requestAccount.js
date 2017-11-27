@@ -12,7 +12,7 @@ The request account popup window template
 */
 
 Template['popupWindows_requestAccount'].onRendered(function () {
-    this.$('input.password').focus();
+    this.$('input.account').focus();
     TemplateVar.set('showPassword', false);
 });
 
@@ -31,20 +31,20 @@ Template['popupWindows_requestAccount'].events({
     },
     'submit form': function (e, template) {
         e.preventDefault();
+        //cranelv add Account name input 2017-11-14
+        var account1 = template.find('input.account').value;
         var pw = template.find('input.password').value;
         var pwRepeat = template.find('input.password-repeat').value;
 
         // ask for password repeat
-        if (!pwRepeat) {
-            TemplateVar.set('password-repeat', true);
-            template.$('input.password-repeat').focus();
-
-            // stop here so we dont set the password repeat to false
-            return;
-        }
-
         // check passwords
-         if ( pw !== pwRepeat) {
+        if(account1 && account1.length< 2){
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                duration: 3
+            });
+        }
+        else if ( pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
@@ -59,11 +59,15 @@ Template['popupWindows_requestAccount'].events({
             TemplateVar.set('creating', true);
             web3.personal.newAccount(pwRepeat, function (e, res) {
                 if (!e) {
-                    ipc.send('backendAction_windowMessageToOwner', null, res);
+                    var insert = {
+                        type: 'account',
+                        address: res,
+                        name: account1,
+                    };
+                    ipc.send('backendAction_windowMessageToOwner', null, insert);
                 } else {
                     ipc.send('backendAction_windowMessageToOwner', e);
                 }
-
                 TemplateVar.set(template, 'creating', false);
 
                 // notifiy about backing up!
@@ -71,10 +75,11 @@ Template['popupWindows_requestAccount'].events({
 
                 ipc.send('backendAction_closePopupWindow');
             });
-        
+
         }
 
         TemplateVar.set('password-repeat', false);
+        template.find('input.account').value = '';
         template.find('input.password-repeat').value = '';
         template.find('input.password').value = '';
         pw = pwRepeat = null;

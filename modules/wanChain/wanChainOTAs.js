@@ -44,10 +44,8 @@ exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
 
 exports.requireOTAsFromCollection = (waddr) =>
 {
-    console.log('scanOTAsByblocks:' + waddr);
     var OTAsCollection = db.getCollection('OTAsCollection');
     var Key = waddr.toLowerCase();
-    console.log('scanOTAsByblocks:' + Key);
     return OTAsCollection.find({'address':Key});
 }
 exports.firstNewAccount = (newAccount) =>

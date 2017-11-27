@@ -13,17 +13,17 @@ let wanUtil = require('wanchain-util');
 var ethUtil = wanUtil.ethereumUtil;
 const wanchainDB = require('./wanChainOTAs');
 
-let scanedBlock = 0;
+let scanBlockIndex = 0;
 let lastBlockNumber = 0;
+let preBlockIndex = -1;
+let scanTimer = 0;
+let scanTimerStep = 0;
 let currentScanAddress = "";
 
 const scanIntervalNormal = 60000;
-const scanIntervalFast = 100;
-
 const coinContractAddr = "0x0000000000000000000000000000000000000006";
 let privKeyB;
 let pubKeyA;
-let scanTimer;
 let fhs_buyCoinNote = ethUtil.sha3('buyCoinNote(string,uint256)', 256).slice(0,4).toString('hex');
 function parseContractMethodPara(paraData, abi,method)
 {
@@ -62,69 +62,72 @@ class nodeScan  {
 
 
     scanBlock() {
-        if(scanedBlock < lastBlockNumber) {
-            scanedBlock += 1;
-            ethereumNode.send('eth_getBlockByNumber', ['0x'+scanedBlock.toString(16), true])
-                .then((retBlock) => {
-                    const block = retBlock.result;
+        ethereumNode.send('eth_blockNumber', [])
+            .then((ret) => {
+                lastBlockNumber = parseInt(ret.result);
+                scanTimer = setInterval(function(){
+                        if(preBlockIndex<scanBlockIndex)
+                        {
+                            preBlockIndex = scanBlockIndex;
+                            ethereumNode.send('eth_getBlockByNumber', ['0x'+scanBlockIndex.toString(16), true])
+                                .then((retBlock) => {
+                                    console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
+                                    const block = retBlock.result;
 
-                    block.transactions.forEach((tx)=>{
-                           if(tx.to == coinContractAddr){
-                                let cmd = tx.input.slice(2,10).toString('hex');
-                                if(cmd != fhs_buyCoinNote){
-                                    return;
-                                }
-                                let inputPara = tx.input.slice(10);
-                                let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
-                                let value = paras.Value;
-                                let ota = paras.OtaAddr;
-                                let otaPub = ethUtil.recoverPubkeyFromWaddress(ota);
-                                let otaA1 = otaPub.A;
-                                let otaS1 = otaPub.B;
-                                let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
+                                    block.transactions.forEach((tx) => {
+                                        if (tx.to == coinContractAddr) {
+                                            let cmd = tx.input.slice(2, 10).toString('hex');
+                                            if (cmd != fhs_buyCoinNote) {
+                                                return;
+                                            }
+                                            let inputPara = tx.input.slice(10);
+                                            let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
+                                            let value = paras.Value;
+                                            let ota = paras.OtaAddr;
+                                            let otaPub = ethUtil.recoverPubkeyFromWaddress(ota);
+                                            let otaA1 = otaPub.A;
+                                            let otaS1 = otaPub.B;
+                                            let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
 
-                                if(A1.toString('hex') === otaA1.toString('hex')){
-                                    log.debug("received a privacy transaction to me: ",ota);
-                                    log.debug("the value is: ", value.toString());
-                                    wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0, block.timeStamp);
-                                }
-                            }
-                    });
-                    if(scanedBlock%100 == 0){
-                        if (scanTimer)  clearTimeout(scanTimer);
-                        scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalFast);
-                        log.info('scanedblock: ', scanedBlock, 'lastest: ', lastBlockNumber);
-                        this.setScanedBlock(currentScanAddress, scanedBlock);
-                    }else {
-                        this.scanBlock();
-                    }
-                });
-        } else {
-            ethereumNode.send('eth_blockNumber', [])
-                .then((ret) => {
-                    lastBlockNumber = parseInt(ret.result);
-                    if (scanedBlock === lastBlockNumber) {
-                        this.setScanedBlock(currentScanAddress, scanedBlock);
-                        if (scanTimer)  clearTimeout(scanTimer);
-                        scanTimer = setTimeout(() => { this.scanBlock(); }, scanIntervalNormal);
-                    } else {
-                        this.scanBlock();
-                    }
-                });
-        }
+                                            if (A1.toString('hex') === otaA1.toString('hex')) {
+                                                console.log("received a privacy transaction to me: ", ota);
+                                                console.log("the value is: ", value.toString());
+                                                wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0, block.timeStamp);
+                                            }
+                                        }
+                                    });
+                                    if(scanBlockIndex>=lastBlockNumber-1) {
+                                        clearInterval(scanTimer);
+                                        this.setScanedBlock(currentScanAddress, scanBlockIndex+1);
+                                        scanTimer = 0;
+                                    }
+                                    else {
+                                        ++scanBlockIndex;
+                                    }
+                                });
+                        }
+                    },10);
+
+            });
     }
     start(waddr, privB) {
-        log.debug('got addr:', waddr, privB.toString('hex'));
+        console.log('got addr:', waddr, privB.toString('hex'));
         currentScanAddress = waddr;
         const myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
         privKeyB = privB;
         pubKeyA = myPub.A;
-        scanedBlock = this.getScanedBlock(waddr);
+        scanBlockIndex = this.getScanedBlock(waddr);
         this.scanBlock();
+        scanTimerStep = setInterval(function(){
+            if(scanTimer == 0)
+            {
+                this.scanBlock();
+            }
+        },60000);
+
     }
     stop() {
-        clearTimeout(scanTimer);
-        this.setScanedBlock(currentScanAddress, scanedBlock);
+        clearTimeout(scanTimerStep);
     }
     restart(waddr, privB) {
         this.stop();

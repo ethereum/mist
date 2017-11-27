@@ -17,10 +17,10 @@ Template['popupWindows_inputAccountPassword'].onRendered(function () {
     template.$('input.password').focus();
 
     template.autorun(function () {
-        var data = Session.get('data');
+        var data = Session.get('masterPasswordWrong');
 
-        if (data && data.masterPasswordWrong) {
-
+        if (data ) {
+            TemplateVar.set('unlocking', false);
             Tracker.afterFlush(function () {
                 template.$('input.password').focus();
             });
@@ -30,7 +30,7 @@ Template['popupWindows_inputAccountPassword'].onRendered(function () {
                 duration: 3
             });
 
-            Session.set('data', false);
+            Session.set('masterPasswordWrong', false);
         }
     });
 });
@@ -46,16 +46,18 @@ Template['popupWindows_inputAccountPassword'].events({
         var data = Session.get('data');
         const action = data.action;
         console.log("popupWindows_inputAccountPassword data",data);
-        if(action === 'refundCoin') {
-            var rfOta = data.para;
-            ipc.send('wan_refundCoin', rfOta, pw);
-        }else {
-            var scAddress = data.scAddress;
-            ipc.send('wan_startScan', scAddress, pw);
-        }
+        TemplateVar.set('unlocking', true);
+        setTimeout((e)=>{
+            if(action === 'refundCoin') {
+                var rfOta = data.para;
+                ipc.send('wan_refundCoin', rfOta, pw);
+            }else {
+                var scAddress = data.scAddress;
+                ipc.send('wan_startScan', scAddress, pw, e);
+            }
 
-        template.find('input.password').value = '';
-        pw = null;
-        ipc.send('backendAction_closePopupWindow');
+            template.find('input.password').value = '';
+            pw = null;
+        }, 1000);
     }
 });

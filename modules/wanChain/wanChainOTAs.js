@@ -49,13 +49,11 @@ exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
     }
 }
 
-exports.requireOTAsFromCollection = (waddr) =>
+exports.requireOTAsFromCollection = (waddr, status) =>
 {
-    console.log('requireOTAsFromCollection:' + waddr);
     var OTAsCollection = db.getCollection('OTAsCollection');
     var Key = waddr.toLowerCase();
-    console.log('requireOTAsFromCollection:' + Key);
-    return OTAsCollection.find({'address':Key});
+    return OTAsCollection.find({'address':Key, 'state':status});
 }
 exports.firstNewAccount = (newAccount) =>
 {
@@ -66,9 +64,9 @@ exports.firstNewAccount = (newAccount) =>
         accountCollection.insert({'address': newAccount.address, 'name': newAccount.name});
     }
 }
-exports.requireAccountName = (address, status) =>
+exports.requireAccountName = (address) =>
 {
     console.log('requireAccountName:' + address);
     var accountCollection = db.getCollection('firstNewAccount');
-    return accountCollection.find({'address': address, 'state':status});
+    return accountCollection.find({'address': address});
 }

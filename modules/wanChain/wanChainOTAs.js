@@ -49,11 +49,11 @@ exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
     }
 }
 
-exports.requireOTAsFromCollection = (waddr) =>
+exports.requireOTAsFromCollection = (waddr, status) =>
 {
     var OTAsCollection = db.getCollection('OTAsCollection');
     var Key = waddr.toLowerCase();
-    return OTAsCollection.find({'address':Key});
+    return OTAsCollection.find({'address':Key, 'state':status});
 }
 exports.firstNewAccount = (newAccount) =>
 {

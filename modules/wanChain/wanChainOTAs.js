@@ -13,7 +13,7 @@ OTAsCollection struct
 
 exports.getScanedByWaddr = function(waddr){
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
-    let Index = ScanBlockIndex.find({'address': waddr});
+    let Index = ScanBlockIndex.find({'_id': waddr});
     console.log("getScanedByWaddr:", Index);
     const begin = Index.length === 0 ? 0:Index[0].index;
     return begin;
@@ -21,7 +21,6 @@ exports.getScanedByWaddr = function(waddr){
 exports.setScanedByWaddr = function (waddr, scaned) {
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
     var found = ScanBlockIndex.findOne({'_id': waddr});
-    console.log("found:",found);
     if(found == null) {
         ScanBlockIndex.insert({
             _id: waddr,
@@ -30,6 +29,14 @@ exports.setScanedByWaddr = function (waddr, scaned) {
     } else {
         found.index = scaned;
         ScanBlockIndex.update(found);
+    }
+}
+exports.updateOtaStatus = function(ota) {
+    let OTAsCollection = db.getCollection('OTAsCollection');
+    var found = OTAsCollection.findOne({'_id': ota});
+    if(found){
+        found.state = 1;
+        OTAsCollection.update(found);
     }
 }
 exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {

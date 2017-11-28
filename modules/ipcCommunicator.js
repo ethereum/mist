@@ -381,14 +381,22 @@ function wan_windowMessageToOwner(e, error, value) {
 
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
-    //check the passwd
+
     let ksdir = "";
     if(ethereumNode.isPlutoNetwork){
-        ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
+        ksdir = "wanchain/pluto/keystore";
     }else{
-        ksdir = app.getPath('home')+"/.wanchain/keystore";
+        ksdir = "wanchain/keystore";
     }
-    console.log("keystore path:",ksdir);
+    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
+
+    if (process.platform === 'freebsd' ||
+        process.platform === 'linux' ||
+        process.platform === 'sunos') keystorePath += '/.' + ksdir;
+
+    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
+
+    console.log("keystore path:",keystorePath);
     console.log("address:",address);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);

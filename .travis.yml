@@ -1,4 +1,11 @@
 language: node_js
+node_js: '8'
+cache:
+  yarn: true
+  directories:
+    - node_modules
+    - 'interface/.meteor'
+
 sudo: required
 
 branches:
@@ -8,11 +15,9 @@ branches:
 
 matrix:
   include:
-
     # WINDOWS cross-built from linux
     - os: linux
       dist: trusty
-      node_js: 6
       env:
           - GULP_PLATFORM=win
       addons:
@@ -29,11 +34,9 @@ matrix:
         - sudo apt-get update -q
         - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
 
-
     # LINUX
     - os: linux
       dist: trusty
-      node_js: 6
       env:
           - GULP_PLATFORM=linux
       addons:
@@ -47,8 +50,7 @@ matrix:
 
     # MAC
     - os: osx
-      osx_image: xcode8  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
-      node_js: 6
+      osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
       env:
           - GULP_PLATFORM=mac
       before_install:
@@ -59,8 +61,6 @@ matrix:
 
   fast_finish: true
 
-cache:
-  yarn: true
 
 install:
   - echo $PATH

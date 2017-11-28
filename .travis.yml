@@ -86,9 +86,6 @@ after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
 
 after_failure:
-  - echo "after_failure..."
-  - pwd
-  - ls
   - cat /home/travis/build/ethereum/mist/tests/mist.log
 
 notifications:

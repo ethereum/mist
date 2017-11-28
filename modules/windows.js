@@ -572,9 +572,10 @@ class Windows {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
         }
 
-        // If generic window is available, recycle it (unless opening remix)
+        // If generic window is available, recycle it (unless on blacklist)
         const genericWindow = this.getByType('generic');
-        if (type !== 'remix' && type !== 'updateAvailable' && genericWindow && genericWindow.isAvailable) {
+        const genericWindowBlacklist = ['remix', 'updateAvailable', 'connectAccount'];
+        if (!genericWindowBlacklist.includes(type) && genericWindow && genericWindow.isAvailable) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;
         } else if (genericWindow) {

@@ -399,21 +399,23 @@ const Utils = {
 
     * pinCurrentTab() {
         const client = this.client;
-
-        yield this.openAndFocusNewWindow('generic', () => {
+        yield this.openAndFocusNewWindow('connectAccount', () => {
             return client.click('span.connect-button');
         });
         yield client.click('.dapp-primary-button');
-
-        console.log(`∆∆∆ pinCurrentTab: ${this.mainWindowHandle}`);
-        const windowHandles = (yield client.windowHandles()).value;
-        console.log(`∆∆∆ windowHandles ${windowHandles}`);
+        yield this.delay(500);
         yield client.window(this.mainWindowHandle); // selects main window again
-        yield Q.delay(1000);
 
         const pinnedWebview = (yield client.windowHandles()).value.pop();
         return pinnedWebview;
     },
+
+    * delay(ms) {
+        yield this.waitUntil('delay', async () => {
+            return new Promise(resolve => setTimeout(() => resolve(true), ms));
+        });
+    },
+
     * navigateTo(url) {
         const client = this.client;
         yield client.setValue('#url-input', url);

@@ -87,14 +87,15 @@ gulp.task('upload-binaries', (cb) => {
             .then(() => {
                 console.info('Appending checksums to release notes...', checksums);
                 if (draft.body && checksums) {
+                    const checksumRows = checksums.map((e) => {
+                        const line = e.replace('\n', '').split('  ');
+                        return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
+                    }).join('\n');
                     got.patch(`https://api.github.com/repos/ethereum/mist/releases/${draft.id}?access_token=${GITHUB_TOKEN}`, {
                         body: JSON.stringify({
                             tag_name: `v${version}`,
                             // String manipulation to create a checksums table
-                            body: String.concat('File | Checksum (SHA256)\n-- | --', checksums.map((e) => {
-                                const line = e.replace('\n', '').split('  ');
-                                return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
-                            }).join('\n'))
+                            body: `${draft.body}\n\nFile | Checksum (SHA256)\n-- | -- \n${checksumRows}`
                         })
                     });
                 }

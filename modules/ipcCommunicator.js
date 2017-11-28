@@ -383,6 +383,7 @@ function wan_windowMessageToOwner(e, error, value) {
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
 
     let ksdir = "";
+    let keystorePath = Settings.userHomePath;
     if(ethereumNode.isPlutoNetwork){
         ksdir = "wanchain/pluto/keystore";
     }else{

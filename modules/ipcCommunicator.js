@@ -401,12 +401,12 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
     console.log("address:",address);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
-    fs.readdir(ksdir, function(err, files) {
+    fs.readdir(keystorePath, function(err, files) {
         if(err){
             console.log("readdir",err);
         }else{
             for(let i=0; i<files.length; i++){
-                let filepath = ksdir+'/'+files[i];
+                let filepath = keystorePath+'/'+files[i];
                 address= address.toLowerCase();
                 if(-1 != filepath.indexOf(address)){
                     console.log("find:", filepath);

@@ -405,8 +405,11 @@ const Utils = {
         });
         yield client.click('.dapp-primary-button');
 
+        console.log(`∆∆∆ pinCurrentTab: ${this.mainWindowHandle}`);
+        const windowHandles = (yield client.windowHandles()).value;
+        console.log(`∆∆∆ windowHandles ${windowHandles}`);
         yield client.window(this.mainWindowHandle); // selects main window again
-        yield Q.delay(500);
+        yield Q.delay(1000);
 
         const pinnedWebview = (yield client.windowHandles()).value.pop();
         return pinnedWebview;

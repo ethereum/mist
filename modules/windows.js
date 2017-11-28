@@ -574,7 +574,7 @@ class Windows {
 
         // If generic window is available, recycle it (unless opening remix)
         const genericWindow = this.getByType('generic');
-        if (type !== 'remix' && genericWindow && genericWindow.isAvailable) {
+        if (type !== 'remix' && type !== 'updateAvailable' && genericWindow && genericWindow.isAvailable) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;
         } else if (genericWindow) {

@@ -17,3 +17,6 @@ web3Admin.extend(window.web3);
 // make variables globally accessable
 window.Q = Q;
 window.https = https;
+
+// Initialise the Redux store
+window.store = require('./rendererStore');

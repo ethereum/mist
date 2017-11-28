@@ -172,7 +172,8 @@ exports.mocha = (_module, options) => {
 
             // Loop over windows trying to select Main Window
             const app = this;
-            const selectMainWindow = function* (mainWindowSearch) {
+            const selectMainWindow = function* (mainWindowSearch, retries = 20) {
+                console.log(`∆∆∆ retries remaining: ${retries}`);
                 let windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
@@ -182,9 +183,11 @@ exports.mocha = (_module, options) => {
                     if (isMainWindow) return true;
                 }
 
-                // not main window. try again after 1 second.
-                yield Q.delay(1000);
-                yield selectMainWindow(mainWindowSearch);
+                if (retries === 0) throw new Error('Failed to select main window');
+
+                // not main window. try again after 2 seconds.
+                yield Q.delay(2000);
+                yield selectMainWindow(mainWindowSearch, --retries);
             };
 
             const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;

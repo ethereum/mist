@@ -102,7 +102,7 @@ module.exports = class Web3Socket extends Socket {
             this._log.trace('JSON response', result);
 
             try {
-           
+
                 const isBatch = _.isArray(result);
 
                 const firstItem = isBatch ? result[0] : result;
@@ -143,6 +143,7 @@ module.exports = class Web3Socket extends Socket {
                     // not a response to a request so pass it on as a notification
                     this.emit('data-notification', result);
                 }
+                delete this._sendRequests[firstItem.id];
 
             } catch (err) {
                 this._log.error('Error handling socket response', err);

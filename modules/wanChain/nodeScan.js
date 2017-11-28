@@ -15,9 +15,8 @@ const wanchainDB = require('./wanChainOTAs');
 
 let scanBlockIndex = 0;
 let lastBlockNumber = 0;
-let preBlockIndex = -1;
+let getLastBlockIter = 0;
 let scanTimer = 0;
-let scanTimerStep = 0;
 let currentScanAddress = "";
 
 const scanIntervalNormal = 60000;
@@ -66,9 +65,8 @@ class nodeScan  {
             .then((ret) => {
                 lastBlockNumber = parseInt(ret.result);
                 scanTimer = setInterval(function(){
-                        if(preBlockIndex<scanBlockIndex)
+                        if(scanBlockIndex < lastBlockNumber)
                         {
-                            preBlockIndex = scanBlockIndex;
                             let paramArrary = ['0x'+scanBlockIndex.toString(16), true];
                             ethereumNode.send('eth_getBlockByNumber', paramArrary)
                                 .then((retBlock) => {
@@ -98,13 +96,23 @@ class nodeScan  {
                                         }
                                     });
                                 });
-                            if(scanBlockIndex>=lastBlockNumber-1) {
-                                clearInterval(scanTimer);
-                                wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex+1)
-                                scanTimer = 0;
+                            ++scanBlockIndex;
+                            if((scanBlockIndex%10000) == 0)
+                            {
+                                wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex);
                             }
-                            else {
-                                ++scanBlockIndex;
+                        }
+                        else
+                        {
+                            ++getLastBlockIter;
+                            if(getLastBlockIter>=6000)
+                            {
+                                getLastBlockIter = 0;
+                                ethereumNode.send('eth_blockNumber', [])
+                                    .then((ret) => {
+                                        lastBlockNumber = parseInt(ret.result);
+                                        getLastBlockIter = 0;
+                                    });
                             }
                         }
                     },10);
@@ -117,18 +125,18 @@ class nodeScan  {
         const myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
         privKeyB = privB;
         pubKeyA = myPub.A;
-        scanBlockIndex = this.getScanedBlock(waddr);
-        this.scanBlock();
-        scanTimerStep = setInterval(function(){
-            if(scanTimer == 0)
-            {
-                this.scanBlock();
-            }
-        },60000);
+        var nodesc = this;
+        scanBlockIndex = nodesc.getScanedBlock(waddr);
+        nodesc.scanBlock();
 
     }
     stop() {
-        clearTimeout(scanTimerStep);
+        if(scanTimer !== 0)
+        {
+            clearInterval(scanTimer);
+            scanTimer = 0;
+            wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex);
+        }
     }
     restart(waddr, privB) {
         this.stop();

@@ -5,7 +5,7 @@
                 "label": "__app__",
                 "about": "关于__app__",
                 "checkForUpdates": "检测更新...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
+                "checkForNodeUpdates": "Check for Wanchain node updates...",
                 "services": "服务",
                 "hide": "隐藏 __app__",
                 "hideOthers": "隐藏 其它",
@@ -44,7 +44,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "运行测试",
                 "logFiles": "显示日志文件",
-                "ethereumNode": "以太坊节点",
+                "ethereumNode": "Wanchain节点",
                 "network": "网络",
                 "mainNetwork": "主网络",
                 "startMining": "⛏ 开启挖矿（仅限Testnet网络）",
@@ -71,7 +71,7 @@
             "nodeStartup": "该节点可能无法被启动，你是否正在运行一个节点？它是否正在更新数据库？",
             "timeSync": {
                 "title": "你的计算机时间同步不准确！",
-                "description": "为了和以太坊网络保持同步，你的计算机时间和服务器时间需要保持同步。",
+                "description": "为了和Wanchain网络保持同步，你的计算机时间和服务器时间需要保持同步。",
                 "win32": "从系统选项中打开网络时间设置并勾选。详细信息参考：http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "为开启时间同步服务器，请通过\"apt-get install ntp\"安装\"ntp\"。",
                 "darwin": "为开启时间同步，打开时间选项并勾选\"Set the time and date automatically\"."
@@ -82,7 +82,7 @@
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "description": "Your node is currently on the unsupported Wanchain Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -101,7 +101,7 @@
             "mainNetwork": "Main-net",
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
+            "mainnetExplain": "You are on the main Wanchain global network",
             "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on"
         },
@@ -117,23 +117,23 @@
             }
         },
         "startScreen": {
-            "runningNodeFound": "发现正在运行的以太坊节点！",
-            "startingNode": "正在开启以太坊节点……",
+            "runningNodeFound": "发现正在运行的Wanchain节点！",
+            "startingNode": "正在开启Wanchain节点……",
             "startedNode": "正在启动应用程序……",
-            "nodeConnectionTimeout": "无法开启以太坊节点！<br><small>如果你已经<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>安装Geth</a>，使用此命令运行： <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 或者上报此问题 </a></small>",
-            "nodeBinaryNotFound": "找不到以太坊节点安装文件！<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 请事先手动开启一个节点 </a> </small>",
-            "nodeSyncing": "需要同步以太坊节点，请等待……",
+            "nodeConnectionTimeout": "无法开启Wanchain节点！<br><small>如果你已经<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>安装Geth</a>，使用此命令运行： <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 或者上报此问题 </a></small>",
+            "nodeBinaryNotFound": "找不到Wanchain节点安装文件！<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 请事先手动开启一个节点 </a> </small>",
+            "nodeSyncing": "需要同步Wanchain节点，请等待……",
             "nodeSyncInfo": "正在下载第__displayBlock__块，共__highestBlock__。",
             "nodeSyncConnecting": "正在查找节点……",
             "peerSearchTimeout": "跳过节点搜索",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
+            "stoppingNode": "Stopping Wanchain node...",
+            "nodeStarting": "Wanchain node starting up...",
+            "nodeStarted": "Wanchain node started",
+            "nodeConnected": "Wanchain node connected",
+            "nodeStopping": "Wanchain node stopping...",
+            "nodeStopped": "Wanchain node stopped",
+            "nodeError": "Wanchain node connection error :'(",
+            "unableToBindPort": "Wanchain node cannot run. Is another instance already running?",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
             "launchApp": "Launch Application",
@@ -142,7 +142,7 @@
                 "downloading": "Downloading new node...",
                 "loadConfig": "Loading client config...",
                 "filtering": "Filtering client binaries...",
-                "done": "Ethereum node up-to-date...",
+                "done": "Wanchain node up-to-date...",
                 "error": "Error running downloaded binary."
             }
         },
@@ -209,13 +209,13 @@
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
             "onboarding": {
-                "description": "以太坊是一个用于在区块链上创建应用的去中心化平台：一种用于转移价值和资产，永远存在并且无法被篡改的软件",
+                "description": "Wanchain是一个用于在区块链上创建应用的去中心化平台：一种用于转移价值和资产，永远存在并且无法被篡改的软件",
                 "goToTestnet": "使用测试网络 (Rinkeby)",
                 "goToTestnetDescription": "请放心在沙盒测试网络中测试该技术，无需使用真正的以太币。",
                 "gotoMainnet": "使用主网络",
                 "gotoMainnetDescription": "你需要一些以太币来创建和执行合约。别担心，我们将帮你获取一些……",
                 "doYouHaveAWalletFile": "你拥有一个钱包文件吗？",
-                "walletFileDescription": "<p>如果你参与了2014年的以太坊预售，你应该有一个文件名为<code>ethereum_wallet_backup.json</code>的钱包文件。在你购买后已被下载并且也发送到你邮箱。</p>",
+                "walletFileDescription": "<p>如果你参与了2014年的Wanchain预售，你应该有一个文件名为<code>ethereum_wallet_backup.json</code>的钱包文件。在你购买后已被下载并且也发送到你邮箱。</p>",
                 "dropFilesHere": "预售文件拖入此处",
                 "creating": "正在创建……",
                 "importing": "正在导入……",
@@ -225,7 +225,7 @@
                 "protectDescription": "为你的新账户选择一个密码。请像保持你家钥匙一样保证密码强度足够安全！",
                 "accountTitle": "正在装载！",
                 "accountTitleTestnet": "挖到一些以太币！",
-                "etherDescription": "以太坊网络是基于一种叫做“以太币”的代币。你需要一点以太币来尝试在以太坊网络上的任何操作。",
+                "etherDescription": "Wanchain网络是基于一种叫做“以太币”的代币。你需要一点以太币来尝试在Wanchain网络上的任何操作。",
                 "loadItDescription": "如果你已经拥有比特币或者任何其他加密货币，你可以使用shapeshift来方便地转换为以太币。<br><br>我们推荐你存入<strong>0.25到1以太币</strong>.",
                 "mineItDescription": "<strong>如果你在testnet测试网络中，你可以自己挖掘一些以太币，点击<em>开发</em>菜单并选择<em>开启挖矿</em>。</strong> <br> <strong>请勿将真正的以太币发往该地址！</strong>",
                 "you": "你本人",

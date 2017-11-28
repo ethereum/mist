@@ -64,7 +64,7 @@ Return the friendly app name.
 @method (appName)
 **/
 Template.registerHelper('appName', function () {
-    return window.mistMode === 'mist' ? 'Mist' : 'Ethereum Wallet';
+    return window.mistMode === 'mist' ? 'Mist' : 'Wanchain Wallet';
 });
 
 /**

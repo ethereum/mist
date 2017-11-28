@@ -69,12 +69,13 @@ class nodeScan  {
                         if(preBlockIndex<scanBlockIndex)
                         {
                             preBlockIndex = scanBlockIndex;
-                            ethereumNode.send('eth_getBlockByNumber', ['0x'+scanBlockIndex.toString(16), true])
+                            let paramArrary = ['0x'+scanBlockIndex.toString(16), true];
+                            ethereumNode.send('eth_getBlockByNumber', paramArrary)
                                 .then((retBlock) => {
                                     console.log('XXXXXXXXXXXXXXX eth_getBlockByNumber', retBlock.result.number);
                                     const block = retBlock.result;
 
-                                    block.transactions.forEach((tx) => {
+                                    retBlock.result.transactions.forEach((tx) => {
                                         if (tx.to == coinContractAddr) {
                                             let cmd = tx.input.slice(2, 10).toString('hex');
                                             if (cmd != fhs_buyCoinNote) {
@@ -82,29 +83,29 @@ class nodeScan  {
                                             }
                                             let inputPara = tx.input.slice(10);
                                             let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
-                                            let value = paras.Value;
-                                            let ota = paras.OtaAddr;
-                                            let otaPub = ethUtil.recoverPubkeyFromWaddress(ota);
-                                            let otaA1 = otaPub.A;
-                                            let otaS1 = otaPub.B;
-                                            let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaS1);
+//                                            let value = paras.Value;
+//                                            let ota = paras.OtaAddr;
+                                            let otaPub = ethUtil.recoverPubkeyFromWaddress(paras.OtaAddr);
+//                                            let otaA1 = otaPub.A;
+//                                            let otaS1 = otaPub.B;
+                                            let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaPub.B);
 
-                                            if (A1.toString('hex') === otaA1.toString('hex')) {
-                                                console.log("received a privacy transaction to me: ", ota);
+                                            if (A1.toString('hex') === otaPub.A.toString('hex')) {
+                                                console.log("received a privacy transaction to me: ", paras.OtaAddr);
                                                 console.log("the value is: ", value.toString());
-                                                wanchainDB.insertOtabyWaddr(currentScanAddress, ota, value, 0, block.timeStamp);
+                                                wanchainDB.insertOtabyWaddr(currentScanAddress, paras.OtaAddr, value, 0, block.timeStamp);
                                             }
                                         }
                                     });
-                                    if(scanBlockIndex>=lastBlockNumber-1) {
-                                        clearInterval(scanTimer);
-                                        this.setScanedBlock(currentScanAddress, scanBlockIndex+1);
-                                        scanTimer = 0;
-                                    }
-                                    else {
-                                        ++scanBlockIndex;
-                                    }
                                 });
+                            if(scanBlockIndex>=lastBlockNumber-1) {
+                                clearInterval(scanTimer);
+                                wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex+1)
+                                scanTimer = 0;
+                            }
+                            else {
+                                ++scanBlockIndex;
+                            }
                         }
                     },10);
 

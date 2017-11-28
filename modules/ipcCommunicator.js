@@ -381,23 +381,32 @@ function wan_windowMessageToOwner(e, error, value) {
 
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
-    //check the passwd
+
     let ksdir = "";
+    let keystorePath = Settings.userHomePath;
     if(ethereumNode.isPlutoNetwork){
-        ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
+        ksdir = "wanchain/pluto/keystore";
     }else{
-        ksdir = app.getPath('home')+"/.wanchain/keystore";
+        ksdir = "wanchain/keystore";
     }
-    console.log("keystore path:",ksdir);
+    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
+
+    if (process.platform === 'freebsd' ||
+        process.platform === 'linux' ||
+        process.platform === 'sunos') keystorePath += '/.' + ksdir;
+
+    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
+
+    console.log("keystore path:",keystorePath);
     console.log("address:",address);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
-    fs.readdir(ksdir, function(err, files) {
+    fs.readdir(keystorePath, function(err, files) {
         if(err){
             console.log("readdir",err);
         }else{
             for(let i=0; i<files.length; i++){
-                let filepath = ksdir+'/'+files[i];
+                let filepath = keystorePath+'/'+files[i];
                 address= address.toLowerCase();
                 if(-1 != filepath.indexOf(address)){
                     console.log("find:", filepath);

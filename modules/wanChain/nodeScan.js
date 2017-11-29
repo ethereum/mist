@@ -90,8 +90,8 @@ class nodeScan  {
 
                                             if (A1.toString('hex') === otaPub.A.toString('hex')) {
                                                 console.log("received a privacy transaction to me: ", paras.OtaAddr);
-                                                console.log("the value is: ", value.toString());
-                                                wanchainDB.insertOtabyWaddr(currentScanAddress, paras.OtaAddr, value, 0, block.timeStamp);
+                                                console.log("the value is: ", paras.Value.toString());
+                                                wanchainDB.insertOtabyWaddr(currentScanAddress, paras.OtaAddr, paras.Value, 0, block.timeStamp);
                                             }
                                         }
                                     });

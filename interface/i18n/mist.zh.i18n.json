@@ -159,6 +159,7 @@
             },
             "changeMasterPassword":{
                 "title": "修改密码",
+                "Changing": "正在修改密码 ...",
                 "enterOldPassword": "输入旧密码",
                 "enterNewPassword": "输入新密码",
                 "repeatNewPassword": "重复新密码"

@@ -200,6 +200,7 @@
             "changeMasterPassword":{
                 "title": "Change password",
                 "enterOldPassword": "Enter old password",
+                "Changing": "Changing password ...",
                 "enterNewPassword": "Enter new password",
                 "repeatNewPassword": "Repeat new password"
             },

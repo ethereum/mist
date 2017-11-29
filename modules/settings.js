@@ -42,7 +42,7 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: 'pluto',
+            default: 'main',
             describe: 'Network to connect to: main, test',
             requiresArg: true,
             nargs: 1,

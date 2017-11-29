@@ -5,7 +5,7 @@
                 "label": "__app__",
                 "about": "About __app__",
                 "checkForUpdates": "Check for updates...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
+                "checkForNodeUpdates": "Check for Wanchain node updates...",
                 "services": "Services",
                 "hide": "Hide __app__",
                 "hideOthers": "Hide others",
@@ -65,7 +65,7 @@
                 "logFiles": "Show log file",
                 "openRemix": "Open Remix IDE",
                 "externalNode": "using external node",
-                "ethereumNode": "Ethereum Node",
+                "ethereumNode": "Wanchain Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "nodeMode": "Chain download",
@@ -92,7 +92,7 @@
             "nodeStartup": "It seems like the node couldn't be started.  Do you already have one running? Is it upgrading the database right now?",
             "timeSync": {
                 "title": "Your computer's clock is not synced.",
-                "description": "To successfully synchronize with the Ethereum network, you need to sync your computer's clock with a time sync server.",
+                "description": "To successfully synchronize with the Wanchain network, you need to sync your computer's clock with a time sync server.",
                 "win32": "Go to your Internet Time Settings in your system preferences and check the box. See this guide for details: http://www.guidingtech.com/3119/windows-clock-sync/",
                 "linux": "To enable a time sync server, install \"ntp\" via \"apt-get install ntp\".",
                 "darwin": "To enable time sync, open the time preferences and check \"Set the time and date automatically\"."
@@ -103,7 +103,7 @@
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain, use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "description": "Your node is currently on the unsupported Wanchain Classic chain. To use this chain, use tools provided by the Wanchain classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main Wanchain chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -121,7 +121,7 @@
             "mainNetwork": "Main-net",
             "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
+            "mainnetExplain": "You are on the main Wanchain global network",
             "testnetExplain": "You are on the __name__. DO NOT SEND any real Ether to these addresses",
             "privatenetExplain": "You are on a private net. DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on",
@@ -144,20 +144,20 @@
             }
         },
         "startScreen": {
-            "runningNodeFound": "Found running Ethereum node!",
-            "startingNode": "Starting Ethereum node...",
-            "stoppingNode": "Stopping Ethereum node...",
+            "runningNodeFound": "Found running Wanchain node!",
+            "startingNode": "Starting Wanchain node...",
+            "stoppingNode": "Stopping Wanchain node...",
             "startedNode": "Starting application...",
-            "nodeConnectionTimeout": "Couldn't start Ethereum node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
-            "nodeBinaryNotFound": "No Ethereum node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error:'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
-            "nodeSyncing": "Ethereum node needs to sync, please wait...",
+            "nodeConnectionTimeout": "Couldn't start Wanchain node!<br><small>If you <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installed Geth</a>, use this command to run it: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Or report an issue </a></small>",
+            "nodeBinaryNotFound": "No Wanchain node binary found!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Please start one manually before. </a> </small>",
+            "nodeStarting": "Wanchain node starting up...",
+            "nodeStarted": "Wanchain node started",
+            "nodeConnected": "Wanchain node connected",
+            "nodeStopping": "Wanchain node stopping...",
+            "nodeStopped": "Wanchain node stopped",
+            "nodeError": "Wanchain node connection error:'(",
+            "unableToBindPort": "Wanchain node cannot run. Is another instance already running?",
+            "nodeSyncing": "Wanchain node needs to sync, please wait...",
             "nodeSyncInfo": "Downloading block __displayBlock__ of __highestBlock__",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncConnecting": "Looking for peers...",
@@ -169,7 +169,7 @@
                 "downloading": "Downloading new node...",
                 "loadConfig": "Loading client config...",
                 "filtering": "Filtering client binaries...",
-                "done": "Ethereum node up-to-date...",
+                "done": "Wanchain node up-to-date...",
                 "error": "Error running downloaded binary."
             }
         },
@@ -250,13 +250,13 @@
                 "lookupDataExplainer": "Look this up on the internet"
             },
             "onboarding": {
-                "description": "Ethereum is a platform for decentralized blockchain apps with a fully featured programming language",
+                "description": "Wanchain is a platform for decentralized blockchain apps with a fully featured programming language",
                 "goToTestnet": "Use the test network (Rinkeby)",
                 "goToTestnetDescription": "Test the technology freely in a sandboxed testnet, without using real Ether.",
                 "gotoMainnet": "Use the main network",
                 "gotoMainnetDescription": "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",
                 "doYouHaveAWalletFile": "Do you have a wallet file?",
-                "walletFileDescription": "<p>Move any wallet file here to import.<br>If you participated in the Ethereum Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
+                "walletFileDescription": "<p>Move any wallet file here to import.<br>If you participated in the Wanchain Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
                 "dropFilesHere": "Drop wallet file",
                 "creating": "Creating...",
                 "importing": "Importing...",
@@ -266,7 +266,7 @@
                 "protectDescription": "Choose a password for your new account. Make it as strong as if it were to protect your house keys!",
                 "accountTitle": "Load it up!",
                 "accountTitleTestnet": "Mine some!",
-                "etherDescription": "The ethereum network is based on a token called “Ether”. You’ll need a small amount of it to do anything on the Ethereum network.",
+                "etherDescription": "The Wanchain network is based on a token called “Ether”. You’ll need a small amount of it to do anything on the Wanchain network.",
                 "loadItDescription": "If you already own Bitcoin, or any other cryptocurrency, you can easily convert it to ether using Shapeshift. <br><br> We recommend loading somewhere between <strong>0.25 to 1 ether</strong>.",
                 "faucetDescription": "The Rinkeby testnet uses Clique Proof of Authority as a consensus mechanism, therefore there's no mining. If you want to get some test ether, head to the Rinkeby Faucet: <strong> faucet.rinkeby.io </strong>",
                 "you": "YOU",

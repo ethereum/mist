@@ -15,7 +15,9 @@ const resources = {
 
 // add supported languages
 i18nConf.supported_languages.forEach((lang) => {
-    resources[lang] = { translation: require(`../interface/i18n/mist.${lang}.i18n.json`) };
+    if (lang === 'en' || lang === 'zh') {
+        resources[lang] = { translation: require(`../interface/i18n/mist.${lang}.i18n.json`) };
+    }
 });
 
 /**

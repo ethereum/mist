@@ -39,6 +39,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
         TemplateVar.set(template, 'showNetworkIndicator', status === 'done');
         TemplateVar.set(template, 'showProgressBar', false);
         TemplateVar.set(template, 'showStartAppButton', false);
+        TemplateVar.set(template, 'showRetryConnectionButton', false);
         TemplateVar.set(template, 'logText', null);
     });
 
@@ -51,6 +52,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
             TemplateVar.set(template, 'logText', null);
             TemplateVar.set(template, 'showProgressBar', false);
             TemplateVar.set(template, 'showStartAppButton', false);
+            TemplateVar.set(template, 'showRetryConnectionButton', false);
             break;
 
         case 'started':
@@ -80,6 +82,8 @@ Template['popupWindows_splashScreen'].onCreated(function () {
             errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
 
             TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
+            TemplateVar.set(template, 'showRetryConnectionButton', true);
+            TemplateVar.set(template, 'retryConnectionButtonText', TAPi18n.__('mist.startScreen.retryConnection'));
             break;
         }
     });
@@ -254,5 +258,9 @@ Template['popupWindows_splashScreen'].helpers({
 Template['popupWindows_splashScreen'].events({
     'click .start-app': function () {
         ipc.send('backendAction_skipSync');
+    },
+
+    'click .retry-connection': function () {
+        ipc.send('retryConnection');
     }
 });

@@ -8,6 +8,10 @@
             <button class="start-app">{{{TemplateVar.get "startAppButtonText"}}}</button>
         {{/if}}
 
+        {{#if TemplateVar.get "showRetryConnectionButton"}}
+            <button class="retry-connection">{{{TemplateVar.get "retryConnectionButtonText"}}}</button>
+        {{/if}}
+
         <img id="image" src="{{appIconPath}}">
         <h1>
             {{{TemplateVar.get "text"}}}

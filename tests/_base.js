@@ -134,7 +134,7 @@ exports.mocha = (_module, options) => {
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
-                    '--loglevel', 'trace',
+                    '--loglevel', 'debug',
                     '--logfile', mistLogFile,
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
@@ -173,7 +173,7 @@ exports.mocha = (_module, options) => {
             // Loop over windows trying to select Main Window
             const app = this;
             const selectMainWindow = function* (mainWindowSearch, retries = 20) {
-                console.log(`∆∆∆ retries remaining: ${retries}`);
+                console.log(`selectMainWindow retries remaining: ${retries}`);
                 let windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
@@ -191,12 +191,10 @@ exports.mocha = (_module, options) => {
             };
 
             const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
-            console.log('∆∆∆ mainWindowSearch', mainWindowSearch);
             yield selectMainWindow(mainWindowSearch);
             console.log('Main window selected');
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
-            console.log(`mainWindowHandle: ${this.mainWindowHandle}`);
         },
 
         * beforeEach() {

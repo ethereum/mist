@@ -105,6 +105,7 @@ class GenericWindow extends EventEmitter {
             }
         }
         this.window.setSize(options.electronOptions.width, options.electronOptions.height);
+        this.window.setAlwaysOnTop(true, 'floating', 1);
         this.send('uiAction_switchTemplate', type);
         this.show();
         store.dispatch(reuseGenericWindow(type));

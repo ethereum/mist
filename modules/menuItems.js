@@ -200,7 +200,11 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
-                            let kestorePath = 'wanchain/pluto';
+                            let kestorePath = 'wanchain';
+                            if(ethereumNode.network === 'pluto')
+                            {
+                                kestorePath = 'wanchain/pluto';
+                            }
                             let userPath = Settings.userHomePath;
 
                             // eth

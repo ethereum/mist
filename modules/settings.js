@@ -117,6 +117,7 @@ const argv = require('yargs')
         },
         syncmode: {
             demand: false,
+            default: 'fast',
             requiresArg: true,
             describe: 'Geth synchronization mode: [fast|light|full]',
             nargs: 1,

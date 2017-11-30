@@ -6,6 +6,7 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
+import { syncBuildConfig, syncFlags } from './core/settings/actions';
 
 // try loading in config file
 const defaultConfig = {
@@ -173,12 +174,40 @@ if (argv.nodeOptions && argv.nodeOptions.syncmode) {
 class Settings {
     init() {
         logger.setup(argv);
-
         this._log = logger.create('Settings');
+        store.dispatch(syncFlags(argv));
+
+        // If -v flag provided, log the Mist version and exit
+        if (argv.version) {
+            this._log.info(`Mist v${this.appVersion}`);
+            process.exit(0);
+        }
+
+        // Some Linux installations require this setting:
+        if (argv.ignoreGpuBlacklist) {
+            app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
+            store.dispatch({ type: '[MAIN]:IGNORE_GPU_BLACKLIST:SET' });
+        }
+
+        if (this.inAutoTestMode) {
+            this._log.info('AUTOMATED TESTING');
+            store.dispatch({ type: '[MAIN]:TEST_MODE:SET' });
+        }
+
+        this._log.info(`Running in production mode: ${this.inProductionMode}`);
+
+        if (this.rpcMode === 'http') {
+            this._log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
+        }
+
+        store.dispatch(syncBuildConfig('appVersion', packageJson.version));
+        store.dispatch(syncBuildConfig('rpcMode', this.rpcMode));
+        store.dispatch(syncBuildConfig('productionMode', this.inProductionMode));
+        store.dispatch(syncBuildConfig('uiMode', this.uiMode));
     }
 
     get userDataPath() {
-    // Application Aupport/Mist
+    // Application Support/Mist
         return app.getPath('userData');
     }
 

@@ -9,6 +9,8 @@ const ethereumNode = require('./ethereumNode.js');
 const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
+import { setLanguage } from './core/settings/actions';
+
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -94,13 +96,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('about');
                 },
             },
             {
@@ -170,11 +166,7 @@ let menuTempl = function (webviews) {
                 label: i18n.t('mist.applicationMenu.file.newAccount'),
                 accelerator: 'CommandOrControl+N',
                 click() {
-                    Windows.createPopup('requestAccount', {
-                        electronOptions: {
-                            width: 420, height: 230, alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('requestAccount');
                 },
             },
             {
@@ -182,11 +174,7 @@ let menuTempl = function (webviews) {
                 accelerator: 'CommandOrControl+I',
                 enabled: ethereumNode.isMainNetwork,
                 click() {
-                    Windows.createPopup('importAccount', {
-                        electronOptions: {
-                            width: 600, height: 370, alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('importAccount');
                 },
             },
             {
@@ -310,32 +298,8 @@ let menuTempl = function (webviews) {
     });
 
     // LANGUAGE (VIEW)
-    const switchLang = langCode => function (menuItem, browserWindow) {
-        try {
-            // update i18next instance in browserWindow (Mist meteor interface)
-            browserWindow.webContents.executeJavaScript(
-               `TAPi18n.setLanguage("${langCode}");`
-            );
-
-            // set Accept_Language header
-            const session = browserWindow.webContents.session;
-            session.setUserAgent(session.getUserAgent(), langCode);
-
-            // set navigator.language (dev console only)
-            // browserWindow.webContents.executeJavaScript(
-            //     `Object.defineProperty(navigator, 'language, {
-            //         get() { return ${langCode}; }
-            //     });`
-            // );
-
-            // reload browserWindow to apply language change
-            // browserWindow.webContents.reload();
-        } catch (err) {
-            log.error(err);
-        } finally {
-            Settings.language = langCode;
-            ipc.emit('backendAction_setLanguage');
-        }
+    const switchLang = langCode => (menuItem, browserWindow) => {
+        store.dispatch(setLanguage(langCode, browserWindow));
     };
 
     const currentLanguage = Settings.language;
@@ -437,17 +401,7 @@ let menuTempl = function (webviews) {
             label: i18n.t('mist.applicationMenu.develop.openRemix'),
             enabled: true,
             click() {
-                Windows.createPopup('remix', {
-                    url: 'https://remix.ethereum.org',
-                    electronOptions: {
-                        width: 1024,
-                        height: 720,
-                        center: true,
-                        frame: true,
-                        resizable: true,
-                        titleBarStyle: 'default',
-                    }
-                });
+                Windows.createPopup('remix');
             },
         });
     }
@@ -632,13 +586,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
+                    Windows.createPopup('about');
                 },
             },
             {

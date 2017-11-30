@@ -65,16 +65,7 @@ const check = exports.check = () => {
 function showWindow(options) {
     log.debug('Show update checker window');
 
-    return Windows.createPopup('updateAvailable', _.extend({
-        useWeb3: false,
-        electronOptions: {
-            width: 580,
-            height: 250,
-            alwaysOnTop: true,
-            resizable: false,
-            maximizable: false,
-        },
-    }, options));
+    return Windows.createPopup('updateAvailable', options);
 }
 
 

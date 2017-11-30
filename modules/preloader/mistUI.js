@@ -2,6 +2,9 @@
 @module preloader MistUI
 */
 
+// Initialise the Redux store
+window.store = require('./rendererStore');
+
 require('./include/common')('mist');
 require('./include/web3CurrentProvider.js');
 const { ipcRenderer, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
@@ -42,11 +45,8 @@ delete window.require;
 
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
-    console.log(type, id, error, value);
     if ((type === 'requestAccount') || (type === 'connectAccount') && !error) {
-        Tabs.update({ webviewId: id }, { $addToSet: {
-            'permissions.accounts': value,
-        } });
+        Tabs.update({ webviewId: id }, { $addToSet: { 'permissions.accounts': value } });
     }
 
     // forward to the webview (TODO: remove and manage in the ipcCommunicator?)
@@ -57,7 +57,6 @@ ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
             webview.send('uiAction_windowMessage', type, error, value);
         }
     }
-
 });
 
 ipcRenderer.on('uiAction_enableBlurOverlay', (e, value) => {

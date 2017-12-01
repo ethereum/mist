@@ -23,7 +23,7 @@ const scanIntervalNormal = 60000;
 const coinContractAddr = "0x0000000000000000000000000000000000000006";
 let privKeyB;
 let pubKeyA;
-let fhs_buyCoinNote = ethUtil.sha3('buyCoinNote(string,uint256)', 256).slice(0,4).toString('hex');
+let fhs_buyCoinNote = wanUtil.sha3('buyCoinNote(string,uint256)', 256).slice(0,4).toString('hex');
 function parseContractMethodPara(paraData, abi,method)
 {
     var dict = {};

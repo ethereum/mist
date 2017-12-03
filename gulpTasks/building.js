@@ -60,7 +60,7 @@ gulp.task('transpile-modules', () => {
 gulp.task('copy-build-folder-files', () => {
     return gulp.src([
         `./icons/${type}/*`,
-        './interface/public/images/dmg-background.jpg'
+        './interface/public/images/bg-homestead.jpg'
     ])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
@@ -145,7 +145,7 @@ gulp.task('build-dist', (cb) => {
                 category: 'public.app-category.productivity',
             },
             dmg: {
-                background: '../build/dmg-background.jpg',
+                background: '../build/bg-homestead.jpg',
                 iconSize: 128,
                 contents: [
                     {

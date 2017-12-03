@@ -20,8 +20,7 @@ var keythereum = require("keythereum");
 
 const nodeScan = require('./wanChain/nodeScan.js');
 let wanUtil = require('wanchain-util');
-var ethUtil = wanUtil.ethereumUtil;
-var Tx = wanUtil.ethereumTx;
+var Tx = wanUtil.wanchainTx;
 let coinSCDefinition = wanUtil.coinSCAbi;
 const secp256k1 = require('secp256k1');
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
@@ -302,7 +301,7 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
     let KWQ = [ssPubs,ssI,ssw,ssq].join('+');
     return KWQ;
 }
-const CoinContractAddr = "0x0000000000000000000000000000000000000006";
+const CoinContractAddr = wanUtil.contractCoinAddress;
 
 async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, gasPrice){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
@@ -321,12 +320,12 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
         otaSetBuf.push(rpcu);
     }
     console.log('fetch  ota set: ', otaSet);
-    let otaSk = ethUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
-    let otaPub = ethUtil.recoverPubkeyFromWaddress(otaDestAddress);
+    let otaSk = wanUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
+    let otaPub = wanUtil.recoverPubkeyFromWaddress(otaDestAddress);
     let otaPubK = otaPub.A;
 
     let M = new Buffer(rfAddr,'hex');
-    let ringArgs = ethUtil.getRingSign(M, otaSk,otaPubK,otaSetBuf);
+    let ringArgs = wanUtil.getRingSign(M, otaSk,otaPubK,otaSetBuf);
     let KIWQ = generatePubkeyIWQforRing(ringArgs.PubKeys,ringArgs.I, ringArgs.w, ringArgs.q);
     console.log("KIWQ:", KIWQ);
 

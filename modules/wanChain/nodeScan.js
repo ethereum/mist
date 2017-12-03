@@ -10,7 +10,6 @@ const ethereumNode = require('../ethereumNode');
 const log = require('../utils/logger').create('nodeScan');
 const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
-var ethUtil = wanUtil.ethereumUtil;
 const wanchainDB = require('./wanChainOTAs');
 
 let scanBlockIndex = 0;
@@ -20,7 +19,7 @@ let scanTimer = 0;
 let currentScanAddress = "";
 
 const scanIntervalNormal = 60000;
-const coinContractAddr = "0x0000000000000000000000000000000000000006";
+const coinContractAddr = wanUtil.contractCoinAddress;
 let privKeyB;
 let pubKeyA;
 let fhs_buyCoinNote = wanUtil.sha3('buyCoinNote(string,uint256)', 256).slice(0,4).toString('hex');
@@ -83,10 +82,10 @@ class nodeScan  {
                                             let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, "buyCoinNote");
 //                                            let value = paras.Value;
 //                                            let ota = paras.OtaAddr;
-                                            let otaPub = ethUtil.recoverPubkeyFromWaddress(paras.OtaAddr);
+                                            let otaPub = wanUtil.recoverPubkeyFromWaddress(paras.OtaAddr);
 //                                            let otaA1 = otaPub.A;
 //                                            let otaS1 = otaPub.B;
-                                            let A1 = ethUtil.generateA1(privKeyB, pubKeyA, otaPub.B);
+                                            let A1 = wanUtil.generateA1(privKeyB, pubKeyA, otaPub.B);
 
                                             if (A1.toString('hex') === otaPub.A.toString('hex')) {
                                                 console.log("received a privacy transaction to me: ", paras.OtaAddr);
@@ -122,7 +121,7 @@ class nodeScan  {
     start(waddr, privB) {
         console.log('got addr:', waddr, privB.toString('hex'));
         currentScanAddress = waddr;
-        const myPub = ethUtil.recoverPubkeyFromWaddress(waddr);
+        const myPub = wanUtil.recoverPubkeyFromWaddress(waddr);
         privKeyB = privB;
         pubKeyA = myPub.A;
         var nodesc = this;

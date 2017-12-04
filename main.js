@@ -220,13 +220,11 @@ onReady = () => {
     }
 
 
-    const kickStart = () => {
-        // connection failed; retry
+    const kickStart = async () => {
         ipcMain.on('retryConnection', () => {
             kickStart();
         });
 
-        // client binary stuff
         ClientBinaryManager.on('status', (status, data) => {
             Windows.broadcast('uiAction_clientBinaryStatus', status, data);
         });
@@ -283,117 +281,96 @@ onReady = () => {
             });
         });
 
-        // check legacy chain
-        // CHECK for legacy chain (FORK RELATED)
-        Q.try(() => {
-            // open the legacy chain message
-            if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
-                dialog.showMessageBox({
-                    type: 'warning',
-                    buttons: ['OK'],
-                    message: global.i18n.t('mist.errors.legacyChain.title'),
-                    detail: global.i18n.t('mist.errors.legacyChain.description')
-                }, () => {
-                    shell.openExternal('https://github.com/ethereum/mist/releases');
-                    store.dispatch(quitApp());
+        // Check legacy chain
+        if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
+            dialog.showMessageBox({
+                type: 'warning',
+                buttons: ['OK'],
+                message: global.i18n.t('mist.errors.legacyChain.title'),
+                detail: global.i18n.t('mist.errors.legacyChain.description')
+            }, () => {
+                shell.openExternal('https://github.com/ethereum/mist/releases');
+                store.dispatch(quitApp());
+            });
+
+            throw new Error('Cant start client due to legacy non-Fork setting.');
+        }
+
+        await ClientBinaryManager.init();
+        await ethereumNode.init();
+
+        // Wallet shouldn't start Swarm || TODO: TravisCI failing to download Swarm
+        if (global.mode === 'wallet' || Settings.inAutoTestMode) {
+            log.info('skipping Swarm');
+        } else {
+            await swarmNode.init();
+        }
+
+        // Sanity check function
+        if (!ethereumNode.isIpcConnected) {
+            throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
+        }
+
+        // At this point Geth is running and the socket is connected.
+        log.info('Connected via IPC to node.');
+
+        // update menu, to show node switching possibilities
+        appMenu();
+
+        // #getAccounts
+        const resultData = await ethereumNode.send('eth_accounts', []);
+
+        // #onboarding
+        if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
+            log.info('No accounts setup yet, lets do onboarding first.');
+
+            await new Q((resolve, reject) => {
+                const onboardingWindow = Windows.createPopup('onboardingScreen');
+
+                onboardingWindow.on('closed', () => store.dispatch(quitApp()));
+
+                // change network types (mainnet, testnet)
+                ipcMain.on('onBoarding_changeNet', (e, testnet) => {
+                    const newType = ethereumNode.type;
+                    const newNetwork = testnet ? 'rinkeby' : 'main';
+
+                    log.debug('Onboarding change network', newType, newNetwork);
+
+                    ethereumNode.restart(newType, newNetwork)
+                        .then(function nodeRestarted() {
+                            appMenu();
+                        })
+                        .catch((err) => {
+                            log.error('Error restarting node', err);
+
+                            reject(err);
+                        });
                 });
 
-                throw new Error('Cant start client due to legacy non-Fork setting.');
-            }
-        })
-        .then(() => {
-            return ClientBinaryManager.init();
-        })
-        .then(() => {
-            return ethereumNode.init();
-        })
-        .then(() => {
-            // Wallet shouldn't start Swarm || TODO: TravisCI failing to download Swarm
-            if (global.mode === 'wallet' || Settings.inAutoTestMode) {
-                return Promise.resolve();
-            }
-            return swarmNode.init();
-        })
-        .then(function sanityCheck() {
-            if (!ethereumNode.isIpcConnected) {
-                throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
-            }
+                // launch app
+                ipcMain.on('onBoarding_launchApp', () => {
+                    // prevent that it closes the app
+                    onboardingWindow.removeAllListeners('closed');
+                    onboardingWindow.close();
 
-            /* At this point Geth is running and the socket is connected. */
-            log.info('Connected via IPC to node.');
+                    ipcMain.removeAllListeners('onBoarding_changeNet');
+                    ipcMain.removeAllListeners('onBoarding_launchApp');
 
-            // update menu, to show node switching possibilities
-            appMenu();
-        })
-        .then(function getAccounts() {
-            return ethereumNode.send('eth_accounts', []);
-        })
-        .then(function onboarding(resultData) {
-
-            if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
-                log.info('No accounts setup yet, lets do onboarding first.');
-
-                return new Q((resolve, reject) => {
-                    const onboardingWindow = Windows.createPopup('onboardingScreen');
-
-                    onboardingWindow.on('closed', () => store.dispatch(quitApp()));
-
-                    // change network types (mainnet, testnet)
-                    ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                        const newType = ethereumNode.type;
-                        const newNetwork = testnet ? 'rinkeby' : 'main';
-
-                        log.debug('Onboarding change network', newType, newNetwork);
-
-                        ethereumNode.restart(newType, newNetwork)
-                            .then(function nodeRestarted() {
-                                appMenu();
-                            })
-                            .catch((err) => {
-                                log.error('Error restarting node', err);
-
-                                reject(err);
-                            });
-                    });
-
-                    // launch app
-                    ipcMain.on('onBoarding_launchApp', () => {
-                        // prevent that it closes the app
-                        onboardingWindow.removeAllListeners('closed');
-                        onboardingWindow.close();
-
-                        ipcMain.removeAllListeners('onBoarding_changeNet');
-                        ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                        resolve();
-                    });
-
-                    if (splashWindow) {
-                        splashWindow.hide();
-                    }
+                    resolve();
                 });
-            }
 
-            return;
-        })
-        .then(function doSync() {
-            if (splashWindow) { splashWindow.show(); }
-            if (!Settings.inAutoTestMode) { return syncResultPromise; }
-            return;
-        })
-        .then(function allDone() {
-            startMainWindow();
-        })
-        .catch((err) => {
-            log.error('Error starting up node and/or syncing', err);
-        }); /* socket connected to geth */
+                if (splashWindow) { splashWindow.hide(); }
+            });
+        }
+
+        // #doSync
+        if (splashWindow) { splashWindow.show(); }
+        if (!Settings.inAutoTestMode) { await syncResultPromise; }
+
+        await startMainWindow();
     }; /* kick start */
 
-    if (splashWindow) {
-        splashWindow.on('ready', kickStart);
-    } else {
-        kickStart();
-    }
+    splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }; /* onReady() */
 
 

@@ -307,6 +307,7 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     //web3Admin.extend(web3);
     //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    console.log("otaRefund OTAs:", otaDestAddress, value);
     let otaSetr = await ethereumNode.send('wan_getOTAMixSet', [otaDestAddress, number]);
     let otaSet = otaSetr.result;
 
@@ -315,7 +316,7 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     console.log("otaSetr:",otaSetr);
     let otaSetBuf = [];
     for(let i=0; i<otaSet.length; i++){
-        let rpkc = new Buffer(otaSet[i].slice(0,66),'hex');
+        let rpkc = new Buffer(otaSet[i].slice(2,68),'hex');
         let rpcu = secp256k1.publicKeyConvert(rpkc, false);
         otaSetBuf.push(rpcu);
     }
@@ -340,7 +341,7 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     let serial = '0x'+nonce.toString(16);
     console.log("serial:", serial);
     var rawTx = {
-        Txtype: '0x00',
+        Txtype: '0x01',
         nonce: serial,
         gasPrice: gasPrice,
         gasLimit: gas,
@@ -354,7 +355,7 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var serializedTx = tx.serialize();
     let hashr = await ethereumNode.send('eth_sendRawTransaction', ['0x' + serializedTx.toString('hex')]);
     let hash = hashr.result;
-    console.log('tx hash:'+hash);
+    console.log('tx hash:',hashr);
     return hash;
 }
 
@@ -590,9 +591,9 @@ ipc.on('wan_requireAccountName',(event,address)=>{
     mainWindow.send('uiAction_windowMessage', 'requireAccountName',  null, OTAArray);
 });
 ipc.on('wan_requestOTACollection',(event,address)=>{
-
-    var OTAArray = wanOTAs.requireOTAsFromCollection(address.address,address.status);
-    console.log('wan_requestOTACollection :' + JSON.stringify(OTAArray));
+    console.log("wan_requestOTACollection query:", address);
+    var OTAArray = wanOTAs.requireOTAsFromCollection({address:address.address.toLowerCase(),state:address.state});
+    console.log('wan_requestOTACollection results:' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);
     const mainWindow = Windows.getByType('main');

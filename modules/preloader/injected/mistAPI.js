@@ -96,7 +96,7 @@
             });
         },
         //cranelv add Database Interface
-        requestOTACollection(address,status,callback)
+        requestOTACollection(address,state,callback)
         {
             if(callback)
             {
@@ -108,7 +108,7 @@
             postMessage({
                 type: 'wan_requestOTACollection',
                 address: address,
-                status:status
+                state:state
             });
         },
         requestScanOTAbyBlock(address)
@@ -142,6 +142,7 @@
                 }
                 this.callbacks.refundCoin.push(callback);
             }
+            console.log("mistAPI refundCoin para:", JSON.stringify(para));
 
             postMessage({
                 type: 'wan_inputAccountPassword',

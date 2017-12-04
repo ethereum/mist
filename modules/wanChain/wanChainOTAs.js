@@ -39,11 +39,11 @@ exports.updateOtaStatus = function(ota) {
         OTAsCollection.update(found);
     }
 }
-exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp) {
+exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp,from) {
     let OTAsCollection = db.getCollection('OTAsCollection');
     let Key = waddr.toLowerCase();
     try {
-        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status, 'timeStamp':timeStamp});
+        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status, 'timeStamp':timeStamp,'otaFrom':from});
     }catch(err){
         console.log("insertOtabyWaddr:", err);
     }

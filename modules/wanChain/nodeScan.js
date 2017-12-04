@@ -90,13 +90,13 @@ class nodeScan  {
                                             if (A1.toString('hex') === otaPub.A.toString('hex')) {
                                                 console.log("received a privacy transaction to me: ", paras.OtaAddr);
                                                 console.log("the value is: ", paras.Value.toString());
-                                                wanchainDB.insertOtabyWaddr(currentScanAddress, paras.OtaAddr, paras.Value, 0, block.timeStamp);
+                                                wanchainDB.insertOtabyWaddr(currentScanAddress, paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from);
                                             }
                                         }
                                     });
                                 });
                             ++scanBlockIndex;
-                            if((scanBlockIndex%10000) == 0)
+                            if((scanBlockIndex%100) == 0)
                             {
                                 wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex);
                             }

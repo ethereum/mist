@@ -341,9 +341,9 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     let serial = '0x'+nonce.toString(16);
     console.log("serial:", serial);
     var rawTx = {
-        Txtype: '0x01',
+        Txtype: '0x00',
         nonce: serial,
-        gasPrice: gasPrice,
+        gasPrice: '0x30d40',
         gasLimit: gas,
         to: CoinContractAddr,//contract address
         value: '0x00',
@@ -439,31 +439,33 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 function getTransactionReceipt(rfHashs)
 {
     return new Promise(function(success, fail){
+        var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
         let filter = web3.eth.filter('latest');
         let blockAfter = 0;
         filter.watch(async function(err,blockhash){
             blockAfter += 1;
             if(err ){
                 log.error("filterRfHashs error:"+err);
-                filter.stopWatching();
-                fail("filterRfHashs error:"+err);
+                filter.stopWatching(function(){fail("filterRfHashs error:"+err);});
+
             }else{
+                console.log("get new block hash:",blockhash);
                 for(let i=rfHashs.length-1; i>=0; i--){
                     let receiptr = await ethereumNode.send('eth_getTransactionReceipt', [rfHashs[i].hash]);
                     console.log("receiptr:",receiptr);
                     let receipt = receiptr.result;
                     if(receipt){
-                        rfHashs.splice(i, 1);
                         wanOTAs.updateOtaStatus(rfHashs[i].ota);
+                        rfHashs.splice(i, 1);
                     }
                 }
                 if(rfHashs.length == 0){
-                    filter.stopWatching();
-                    success(0);
+                    filter.stopWatching(function(){success(0);});
+
                 }
                 if(blockAfter > 6){
-                    filter.stopWatching();
-                    fail("Failed to get all receipts");
+                    filter.stopWatching(function(){fail("Failed to get all receipts");});
+
                 }
             }
         });
@@ -492,6 +494,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     console.log("keystore path:",ksdir);
     console.log("address:",address);
     const mainWindow = Windows.getByType('main');
+    const senderWindow = Windows.getById(e.sender.id);
     let keyFound = false;
     fs.readdir(ksdir, async function(err, files) {
         if(err){
@@ -534,6 +537,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
+                    //wanOTAs.updateOtaStatus(otas[c].otaddr); // TODO:  this is a test
                     let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
                     console.log("refund hash:",hash);
                     rfHashs.push({hash:hash, ota:otas[c].otaddr});
@@ -544,12 +548,14 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 return;
             }
             try {
+                console.log("try to get receipt")
                 await getTransactionReceipt(rfHashs);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "Done");
             }catch(error){
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "");
+                console.log("get receipt error:", error);
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "refund error");
             }
-            return;
+            senderWindow.close();
         }
 
     });

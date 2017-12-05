@@ -8,8 +8,7 @@ const _ = global._;
 const wanOTAs = require('./wanChain/wanChainOTAs');
 const fs = require('fs');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
-    const electron = require('electron');
-    const ipcRenderer = electron.ipcRenderer;
+
 
 const Windows = require('./windows');
 const logger = require('./utils/logger');
@@ -31,7 +30,6 @@ const log = logger.create('ipcCommunicator');
 const Web3 = require("web3");
 const web3Admin = require('./web3Admin.js');
 var net = require('net');
-console.log("SSSSSSSSSSS:", Settings.rpcIpcPath);
 require('./abi.js');
 /*
 
@@ -463,8 +461,8 @@ function getTransactionReceipt(rfHashs)
                     filter.stopWatching(function(){success(0);});
 
                 }
-                if(blockAfter > 6){
-                    filter.stopWatching(function(){fail("Failed to get all receipts");});
+                if (blockAfter > 12) {
+                    filter.stopWatching(function( ) { fail('Failed to get all receipts'); } );
 
                 }
             }
@@ -526,12 +524,12 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 privKeyA = keythereum.recover(keyPassword, keyAObj);
                 privKeyB = keythereum.recover(keyPassword, keyBObj);
             }catch(error){
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  "wrong password", value);
-                console.log("wan_refundCoin", "wrong password");
+                console.log('wan_refundCoin', 'wrong password');
+                senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                 return;
-            };
-            let serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
-            let serial = parseInt(serialr.result);
+            }
+            const serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
+            const serial = parseInt(serialr.result);
             console.log("serialr:",serialr)
             //let serial =  web3.eth.getTransactionCount('0x'+address);
             let rfHashs = [];
@@ -545,6 +543,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             }catch(error){
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
                 console.log("refund Error:", error);
+                senderWindow.close();
                 return;
             }
             try {

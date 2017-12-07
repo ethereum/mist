@@ -119,7 +119,6 @@ app.on('before-quit', async (event) => {
 let mainWindow;
 let splashWindow;
 let onReady;
-let startMainWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -219,169 +218,162 @@ onReady = () => {
         });
     }
 
-
-    const kickStart = async () => {
-        ipcMain.on('retryConnection', () => {
-            kickStart();
-        });
-
-        ClientBinaryManager.on('status', (status, data) => {
-            Windows.broadcast('uiAction_clientBinaryStatus', status, data);
-        });
-
-        ethereumNode.on('nodeConnectionTimeout', () => {
-            Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
-        });
-
-        ethereumNode.on('nodeLog', (data) => {
-            Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
-        });
-
-        ethereumNode.on('state', (state, stateAsText) => {
-            Windows.broadcast('uiAction_nodeStatus', stateAsText,
-                ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
-            );
-        });
-
-        swarmNode.on('starting', () => {
-            Windows.broadcast('uiAction_swarmStatus', 'starting');
-            store.dispatch({ type: '[MAIN]:SWARM:INIT_START' });
-        });
-
-        swarmNode.on('downloadProgress', (progress) => {
-            Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
-        });
-
-        swarmNode.on('started', (isLocal) => {
-            Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
-            store.dispatch({ type: '[MAIN]:SWARM:INIT_FINISH' });
-        });
-
-
-        const syncResultPromise = new Q((resolve, reject) => {
-            nodeSync.on('nodeSyncing', (result) => {
-                Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
-            });
-
-            nodeSync.on('stopped', () => {
-                Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
-            });
-
-            nodeSync.on('error', (err) => {
-                log.error('Error syncing node', err);
-
-                reject(err);
-            });
-
-            nodeSync.on('finished', () => {
-                nodeSync.removeAllListeners('error');
-                nodeSync.removeAllListeners('finished');
-
-                resolve();
-            });
-        });
-
-        // Check legacy chain
-        if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
-            dialog.showMessageBox({
-                type: 'warning',
-                buttons: ['OK'],
-                message: global.i18n.t('mist.errors.legacyChain.title'),
-                detail: global.i18n.t('mist.errors.legacyChain.description')
-            }, () => {
-                shell.openExternal('https://github.com/ethereum/mist/releases');
-                store.dispatch(quitApp());
-            });
-
-            throw new Error('Cant start client due to legacy non-Fork setting.');
-        }
-
-        await ClientBinaryManager.init();
-        await ethereumNode.init();
-
-        // Wallet shouldn't start Swarm || TODO: TravisCI failing to download Swarm
-        if (global.mode === 'wallet' || Settings.inAutoTestMode) {
-            log.info('skipping Swarm');
-        } else {
-            await swarmNode.init();
-        }
-
-        // Sanity check function
-        if (!ethereumNode.isIpcConnected) {
-            throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
-        }
-
-        // At this point Geth is running and the socket is connected.
-        log.info('Connected via IPC to node.');
-
-        // update menu, to show node switching possibilities
-        appMenu();
-
-        // #getAccounts
-        const resultData = await ethereumNode.send('eth_accounts', []);
-
-        // #onboarding
-        if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
-            log.info('No accounts setup yet, lets do onboarding first.');
-
-            await new Q((resolve, reject) => {
-                const onboardingWindow = Windows.createPopup('onboardingScreen');
-
-                onboardingWindow.on('closed', () => store.dispatch(quitApp()));
-
-                // change network types (mainnet, testnet)
-                ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                    const newType = ethereumNode.type;
-                    const newNetwork = testnet ? 'rinkeby' : 'main';
-
-                    log.debug('Onboarding change network', newType, newNetwork);
-
-                    ethereumNode.restart(newType, newNetwork)
-                        .then(function nodeRestarted() {
-                            appMenu();
-                        })
-                        .catch((err) => {
-                            log.error('Error restarting node', err);
-
-                            reject(err);
-                        });
-                });
-
-                // launch app
-                ipcMain.on('onBoarding_launchApp', () => {
-                    // prevent that it closes the app
-                    onboardingWindow.removeAllListeners('closed');
-                    onboardingWindow.close();
-
-                    ipcMain.removeAllListeners('onBoarding_changeNet');
-                    ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                    resolve();
-                });
-
-                if (splashWindow) { splashWindow.hide(); }
-            });
-        }
-
-        // #doSync
-        if (splashWindow) { splashWindow.show(); }
-        if (!Settings.inAutoTestMode) { await syncResultPromise; }
-
-        await startMainWindow();
-    }; /* kick start */
-
     splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }; /* onReady() */
 
+async function kickStart() {
+    initializeKickStartListeners();
+    checkForLegacyChain();
+    await ClientBinaryManager.init();
+    await ethereumNode.init();
 
-/**
-Start the main window and all its processes
+    // Wallet shouldn't start Swarm || TODO: TravisCI failing to download Swarm
+    if (global.mode === 'wallet' || Settings.inAutoTestMode) {
+        log.info('skipping Swarm');
+    } else {
+        await swarmNode.init();
+    }
 
-@method startMainWindow
-*/
-startMainWindow = () => {
+    if (!ethereumNode.isIpcConnected) { throw new Error('Either the node didn\'t start or IPC socket failed to connect.'); }
+    log.info('Connected via IPC to node.');
+
+    // Update menu, to show node switching possibilities
+    appMenu();
+
+    await handleOnboarding();
+
+    if (splashWindow) { splashWindow.show(); }
+    if (!Settings.inAutoTestMode) { await handleNodeSync(); }
+
+    await startMainWindow();
+}
+
+function checkForLegacyChain() {
+    if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
+        dialog.showMessageBox({
+            type: 'warning',
+            buttons: ['OK'],
+            message: global.i18n.t('mist.errors.legacyChain.title'),
+            detail: global.i18n.t('mist.errors.legacyChain.description')
+        }, () => {
+            shell.openExternal('https://github.com/ethereum/mist/releases');
+            store.dispatch(quitApp());
+        });
+
+        throw new Error('Cant start client due to legacy non-Fork setting.');
+    }
+}
+
+function initializeKickStartListeners() {
+    ClientBinaryManager.on('status', (status, data) => {
+        Windows.broadcast('uiAction_clientBinaryStatus', status, data);
+    });
+
+    ethereumNode.on('nodeConnectionTimeout', () => {
+        Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
+    });
+
+    ethereumNode.on('nodeLog', (data) => {
+        Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
+    });
+
+    ethereumNode.on('state', (state, stateAsText) => {
+        Windows.broadcast('uiAction_nodeStatus', stateAsText,
+            ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
+        );
+    });
+
+    swarmNode.on('starting', () => {
+        Windows.broadcast('uiAction_swarmStatus', 'starting');
+        store.dispatch({ type: '[MAIN]:SWARM:INIT_START' });
+    });
+
+    swarmNode.on('downloadProgress', (progress) => {
+        Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
+    });
+
+    swarmNode.on('started', (isLocal) => {
+        Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
+        store.dispatch({ type: '[MAIN]:SWARM:INIT_FINISH' });
+    });
+}
+
+async function handleOnboarding() {
+    // Fetch accounts; if none, show the onboarding process
+    const resultData = await ethereumNode.send('eth_accounts', []);
+
+    if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
+        log.info('No accounts setup yet, lets do onboarding first.');
+
+        await new Q((resolve, reject) => {
+            const onboardingWindow = Windows.createPopup('onboardingScreen');
+
+            onboardingWindow.on('closed', () => store.dispatch(quitApp()));
+
+            // Handle changing network types (mainnet, testnet)
+            ipcMain.on('onBoarding_changeNet', (e, testnet) => {
+                const newType = ethereumNode.type;
+                const newNetwork = testnet ? 'rinkeby' : 'main';
+
+                log.debug('Onboarding change network', newType, newNetwork);
+
+                ethereumNode.restart(newType, newNetwork)
+                    .then(function nodeRestarted() {
+                        appMenu();
+                    })
+                    .catch((err) => {
+                        log.error('Error restarting node', err);
+                        reject(err);
+                    });
+            });
+
+            ipcMain.on('onBoarding_launchApp', () => {
+                onboardingWindow.removeAllListeners('closed');
+                onboardingWindow.close();
+
+                ipcMain.removeAllListeners('onBoarding_changeNet');
+                ipcMain.removeAllListeners('onBoarding_launchApp');
+
+                resolve();
+            });
+
+            if (splashWindow) { splashWindow.hide(); }
+        });
+    }
+}
+
+function handleNodeSync() {
+    return new Q((resolve, reject) => {
+        nodeSync.on('nodeSyncing', (result) => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+        });
+
+        nodeSync.on('stopped', () => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+        });
+
+        nodeSync.on('error', (err) => {
+            log.error('Error syncing node', err);
+
+            reject(err);
+        });
+
+        nodeSync.on('finished', () => {
+            nodeSync.removeAllListeners('error');
+            nodeSync.removeAllListeners('finished');
+
+            resolve();
+        });
+    });
+}
+
+function startMainWindow() {
     log.info(`Loading Interface at ${global.interfaceAppUrl}`);
+    initializeMainWindowListeners();
+    initializeTabs();
+}
 
+function initializeMainWindowListeners() {
     mainWindow.on('ready', () => {
         if (splashWindow) { splashWindow.close(); }
         mainWindow.show();
@@ -390,8 +382,9 @@ startMainWindow = () => {
     mainWindow.load(global.interfaceAppUrl);
 
     mainWindow.on('closed', () => store.dispatch(quitApp()));
+}
 
-    // observe Tabs for changes and refresh menu
+function initializeTabs() {
     const Tabs = global.db.getCollection('UI_tabs');
     const sortedTabs = Tabs.getDynamicView('sorted_tabs') || Tabs.addDynamicView('sorted_tabs');
     sortedTabs.applySimpleSort('position', false);
@@ -401,9 +394,7 @@ startMainWindow = () => {
 
         global._refreshMenuFromTabsTimer = setTimeout(() => {
             log.debug('Refresh menu with tabs');
-
             global.webviews = sortedTabs.data();
-
             appMenu(global.webviews);
             store.dispatch({ type: '[MAIN]:MENU:REFRESH' });
         }, 1000);
@@ -412,4 +403,4 @@ startMainWindow = () => {
     Tabs.on('insert', refreshMenu);
     Tabs.on('update', refreshMenu);
     Tabs.on('delete', refreshMenu);
-};
+}

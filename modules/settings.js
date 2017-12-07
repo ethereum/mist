@@ -192,7 +192,10 @@ class Settings {
     }
 
     get dbFilePath() {
-        const dbFileName = (this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
+        let dbFileName = (this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
+        if(this.network === 'pluto'){
+            dbFileName = 'mist.pluto.lokidb';
+        }
         return path.join(this.userDataPath, dbFileName);
     }
 

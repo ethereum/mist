@@ -12,6 +12,9 @@ OTAsCollection struct
  */
 
 exports.getScanedByWaddr = function(waddr){
+    if (!waddr){
+        waddr = '0x0000000000000000000000000000000000000000';
+    }
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
     let Index = ScanBlockIndex.find({'_id': waddr});
     console.log("getScanedByWaddr:", Index);
@@ -19,6 +22,9 @@ exports.getScanedByWaddr = function(waddr){
     return begin;
 }
 exports.setScanedByWaddr = function (waddr, scaned) {
+    if (!waddr){
+        waddr = '0x0000000000000000000000000000000000000000';
+    }
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
     var found = ScanBlockIndex.findOne({'_id': waddr});
     if(found == null) {
@@ -26,9 +32,11 @@ exports.setScanedByWaddr = function (waddr, scaned) {
             _id: waddr,
             index: scaned,
         });
+        console.log('setScanedByWaddr:', waddr, 'insert');
     } else {
         found.index = scaned;
         ScanBlockIndex.update(found);
+        console.log('setScanedByWaddr:', waddr, 'update');
     }
 }
 exports.updateOtaStatus = function(ota) {
@@ -39,15 +47,33 @@ exports.updateOtaStatus = function(ota) {
         OTAsCollection.update(found);
     }
 }
-exports.insertOtabyWaddr = function(waddr, ota, value, status,timeStamp,from) {
+exports.insertOtabyWaddr = function(waddr, ota, value, state,timeStamp,from,blockNumber) {
     let OTAsCollection = db.getCollection('OTAsCollection');
     let Key = waddr.toLowerCase();
     try {
-        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':status, 'timeStamp':timeStamp,'otaFrom':from});
+        OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':state, 'timeStamp':timeStamp,'otaFrom':from, 'blockNumber':blockNumber});
     }catch(err){
         console.log("insertOtabyWaddr:", err);
     }
 }
+
+exports.checkOta = function( cb, blockFrom, blockEnd) {
+    let OTAsCollection = db.getCollection('OTAsCollection');
+    let where = {};
+    where.blockNumber = {'$gte': blockFrom, '$lte':blockEnd};
+    where.address = {'$eq':''};
+    where.state = {'$eq': 0};
+    let otaSet = OTAsCollection.find(where);
+    console.log('checkOta otaSet length:', otaSet.length);
+    otaSet.forEach((ota) => {
+       let changed = cb(ota);
+       if (changed) {
+           OTAsCollection.update(ota);
+           console.log("find new ota by waddress:", ota);
+       }
+    });
+}
+
 
 exports.requireOTAsFromCollection = (where) =>
 {

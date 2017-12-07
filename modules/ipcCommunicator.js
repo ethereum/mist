@@ -351,10 +351,10 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var tx = new Tx(rawTx);
     tx.sign(privKeyA);
     var serializedTx = tx.serialize();
+
     let hashr = await ethereumNode.send('eth_sendRawTransaction', ['0x' + serializedTx.toString('hex')]);
-    let hash = hashr.result;
     console.log('tx hash:',hashr);
-    return hash;
+    return hashr.result;
 }
 
 
@@ -382,7 +382,7 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
 
     let ksdir = "";
     let keystorePath = Settings.userHomePath;
-    if(ethereumNode.isPlutoNetwork){
+    if(Settings.network === 'pluto'){
         ksdir = "wanchain/pluto/keystore";
     }else{
         ksdir = "wanchain/keystore";
@@ -450,6 +450,7 @@ function getTransactionReceipt(rfHashs)
                 console.log("get new block hash:",blockhash);
                 for(let i=rfHashs.length-1; i>=0; i--){
                     let receiptr = await ethereumNode.send('eth_getTransactionReceipt', [rfHashs[i].hash]);
+                    console.log("source hash:", rfHashs[i].hash);
                     console.log("receiptr:",receiptr);
                     let receipt = receiptr.result;
                     if(receipt){
@@ -535,10 +536,11 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
-                    //wanOTAs.updateOtaStatus(otas[c].otaddr); // TODO:  this is a test
                     let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
                     console.log("refund hash:",hash);
-                    rfHashs.push({hash:hash, ota:otas[c].otaddr});
+                    if(hash){
+                        rfHashs.push({hash:hash, ota:otas[c].otaddr});
+                    }
                 }
             }catch(error){
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
@@ -596,9 +598,9 @@ ipc.on('wan_requireAccountName',(event,address)=>{
     mainWindow.send('uiAction_windowMessage', 'requireAccountName',  null, OTAArray);
 });
 ipc.on('wan_requestOTACollection',(event,address)=>{
-    console.log("wan_requestOTACollection query:", address);
+    //console.log("wan_requestOTACollection query:", address);
     var OTAArray = wanOTAs.requireOTAsFromCollection({address:address.address.toLowerCase(),state:address.state});
-    console.log('wan_requestOTACollection results:' + JSON.stringify(OTAArray));
+    //console.log('wan_requestOTACollection results:' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);
     const mainWindow = Windows.getByType('main');

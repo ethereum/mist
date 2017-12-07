@@ -57,6 +57,7 @@ const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
 const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
+const nodeScanOta = require('./modules/wanChain/nodeScanOta');
 
 global.webviews = [];
 

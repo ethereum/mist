@@ -12,13 +12,13 @@ const log = require('../utils/logger').create('nodeScan');
 const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
 const wanchainDB = require('./wanChainOTAs');
-let checkBurst = 500;
+let checkBurst = 1000;
 let scanBlockIndex = 0;
 let lastBlockNumber = 0;
 let getLastBlockIter = 0;
 let currentScanAddress = "";
 
-const scanIntervalNormal = 60000;
+const scanIntervalNormal = 10000;
 const coinContractAddr = wanUtil.contractCoinAddress;
 let privKeyB;
 let pubKeyA;
@@ -93,7 +93,7 @@ class nodeScan extends EventEmitter {
         return false;
     }
     checkOtainDb() {
-        let checkinterval = 60000;
+        let checkinterval = 10000;
         lastBlockNumber = wanchainDB.getScanedByWaddr(null);
         console.log("scanBlockIndex,lastBlockNumber:",scanBlockIndex,lastBlockNumber);
         if(lastBlockNumber === scanBlockIndex && scanBlockIndex !== 0 ) {

@@ -301,6 +301,22 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
 }
 const CoinContractAddr = wanUtil.contractCoinAddress;
 
+function wan_sendTransaction(tx)
+{
+    return new Promise(function(success, fail){
+        var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+        web3.eth.sendRawTransaction(tx,(err,hash)=>{
+           if(err){
+               fail(err);
+           } else {
+               success(hash);
+           }
+        });
+    });
+}
+
+
+
 async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, gasPrice){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     //web3Admin.extend(web3);
@@ -351,10 +367,15 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var tx = new Tx(rawTx);
     tx.sign(privKeyA);
     var serializedTx = tx.serialize();
+    try {
+        let hash = await wan_sendTransaction('0x' + serializedTx.toString('hex'));
+        console.log('tx hash:',hash);
+        return hash;
+    } catch (error) {
+        console.log('otaRefund:', error);
+        return error;
+    }
 
-    let hashr = await ethereumNode.send('eth_sendRawTransaction', ['0x' + serializedTx.toString('hex')]);
-    console.log('tx hash:',hashr);
-    return hashr.result;
 }
 
 
@@ -537,8 +558,12 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             try{
                 for (let c=0; c<otas.length; c++) {
                     let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    hash = hash.toString();
                     console.log("refund hash:",hash);
-                    if(hash){
+                    if(hash.indexOf('Error: OTA is reused') === 0){
+                        console.log("############## ota is reused, set status as 1");
+                        wanOTAs.updateOtaStatus(otas[c].otaddr);
+                    }else{
                         rfHashs.push({hash:hash, ota:otas[c].otaddr});
                     }
                 }

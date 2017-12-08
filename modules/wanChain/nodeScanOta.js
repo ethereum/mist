@@ -19,7 +19,7 @@ let getLastBlockIter = 0;
 let scanTimer = 0;
 let currentScanAddress = "";
 let burst = 100;
-const scanIntervalNormal = 60000;
+const scanIntervalNormal = 10000;
 const coinContractAddr = wanUtil.contractCoinAddress;
 let privKeyB;
 let pubKeyA;
@@ -97,7 +97,7 @@ class nodeScanOta  extends EventEmitter{
                 if(count === burst){
                     scanTimer = setTimeout(self.scanBlock,10);
                 }else {
-                    scanTimer = setTimeout(self.scanBlock,60000);
+                    scanTimer = setTimeout(self.scanBlock,10000);
                 }
             });
     }

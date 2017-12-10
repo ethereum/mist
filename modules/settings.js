@@ -330,7 +330,7 @@ class Settings {
     initConfig() {
         global.config.insert({
             ui: {
-                i18n: i18n.getBestMatchedLangCode(app.getLocale())
+                i18n: i18n.getBestMatchedLangCode('en') // app.getLocale()
             }
         });
     }

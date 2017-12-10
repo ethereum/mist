@@ -230,7 +230,7 @@
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
                 "noEstimate": "We couldn't estimate the gas.",
                 "gasPrice": "Gas price",
-                "perMillionGas": "ether per million gas",
+                "perMillionGas": "wan per million gas",
                 "gasLimit": "Provide maximum fee",
                 "data": "Raw Data",
                 "parameters": "Parameters",

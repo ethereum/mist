@@ -304,7 +304,8 @@ class Settings {
     }
 
     get network() {
-        return argv.network;
+        console.log("get network: argv:", argv.network);
+        return argv.network ? argv.network : 'main';
     }
 
     get syncmode() {

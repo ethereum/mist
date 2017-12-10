@@ -44,7 +44,7 @@
                 "runTests": "Run tests",
                 "logFiles": "Show log file",
                 "externalNode": "using external node",
-                "ethereumNode": "Ethereum Node",
+                "ethereumNode": "Wanchain Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
                 "startMining": "⛏ Start Mining",

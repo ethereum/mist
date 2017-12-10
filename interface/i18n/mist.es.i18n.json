@@ -43,7 +43,7 @@
                 "devToolsWebview": "__webview__",
                 "runTests": "Ejecutar pruebas",
                 "logFiles": "Mostrar archivo de registro",
-                "ethereumNode": "Nodo de Ethereum",
+                "ethereumNode": "Nodo de Wanchain",
                 "network": "Red",
                 "mainNetwork": "Red principal",
                 "startMining": "⛏ Empezar a minar",

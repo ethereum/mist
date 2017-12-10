@@ -15,7 +15,29 @@ Template['popupWindows_changeAccountPassword'].onRendered(function () {
 
     template.$('input.oldPassword').focus();
     TemplateVar.set('showPassword', false);
+    template.autorun(function () {
+        var data = Session.get('masterPasswordWrong');
+
+        if (data ) {
+            TemplateVar.set('unlocking', false);
+            Tracker.afterFlush(function () {
+                template.$('input.password').focus();
+            });
+
+            GlobalNotification.warning({
+                content: TAPi18n.__('mist.popupWindows.unlockMasterPassword.errors.wrongPassword'),
+                duration: 3
+            });
+
+            Session.set('masterPasswordWrong', false);
+        }
+    });
 });
+
+
+
+
+
 Template['popupWindows_changeAccountPassword'].helpers({
     'passwordInputType': function () {
         return TemplateVar.get('showPassword') ? 'text' : 'password';
@@ -53,22 +75,12 @@ Template['popupWindows_changeAccountPassword'].events({
         } else if (pw && pw.length >= 8) {
             var data = Session.get('data');
             var address = data.address;
-            web3.personal.updateAccount(address, oldpw, pw, function (e) {
-                if(e){
-                    alert('Change passwordError :' + e + '! Try again.');
-                }
-                else
-                {
-                    ipc.send('backendAction_closePopupWindow');
-                    TemplateVar.set('password-repeat', false);
-                    template.find('input.oldPassword').value = '';
-                    template.find('input.repeatPassword').value = '';
-                    template.find('input.newPassword').value = '';
-                    pw = pwRepeat = null;
-                }
-
-                // notifiy about backing up!
-            });
+            console.log('ccccc');
+            setTimeout((e)=>{
+                ipc.send('wan_updateAccount', address, oldpw, pw);
+                template.find('input.password').value = '';
+                pw = null;
+            }, 1000);
         }
 
     }

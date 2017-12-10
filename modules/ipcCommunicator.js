@@ -397,7 +397,39 @@ function wan_windowMessageToOwner(e, error, value) {
         }
     }
 }
+ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
+    var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
+    web3Admin.extend(web3);
+    const mainWindow = Windows.getByType('main');
+    const senderWindow = Windows.getById(e.sender.id);
+    console.log("wan_updateAccount address:",address);
+    web3.personal.updateAccount(address, oldpw, pw, function (e) {
+        if(e){
+            console.log('Change password Error :', e.toString() );
+            senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
+        } else {
+            mainWindow.send('uiAction_windowMessage', "updateAccount",  null, "scan started.");
+            senderWindow.close();
+            console.log('wan_updateAccount done:');
+        }
 
+        // notifiy about backing up!
+    });
+
+    /*
+    ethereumNode.send('personal_updateAccount', [address, oldpw, pw])
+        .then((result)=>{
+            mainWindow.send('uiAction_windowMessage', "updateAccount",  null, "scan started.");
+            senderWindow.close();
+            console.log('wan_updateAccount done:', result);
+        })
+        .catch((err)=>{
+            console.log('Change passwordError :', err );
+            senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
+        });
+        */
+
+});
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
 

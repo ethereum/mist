@@ -528,22 +528,22 @@ function getTransactionReceipt(rfHashs)
 
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let ksdir = "";
-    let address = rfOta.rfAddress.toLowerCase();
-    //var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
-
-    if(0 === address.indexOf('0x')) {
-        address = address.slice(2);
-    }
-    let otas = rfOta.otas;
-    let gas = rfOta.gas;
-    let gasPrice = rfOta.gasPrice;
-    let otaNumber = rfOta.otaNumber;
-    if(Settings.network == 'pluto'){
-        ksdir = app.getPath('home')+"/.wanchain/pluto/keystore";
+    let keystorePath = Settings.userHomePath;
+    if(Settings.network === 'pluto'){
+        ksdir = "wanchain/pluto/keystore";
     }else{
-        ksdir = app.getPath('home')+"/.wanchain/keystore";
+        ksdir = "wanchain/keystore";
     }
-    console.log("keystore path:",ksdir);
+    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
+
+    if (process.platform === 'freebsd' ||
+        process.platform === 'linux' ||
+        process.platform === 'sunos') keystorePath += '/.' + ksdir;
+
+    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
+
+    console.log("keystore path:",keystorePath);
+    
     console.log("address:",address);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);

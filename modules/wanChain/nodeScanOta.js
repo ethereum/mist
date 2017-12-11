@@ -2,12 +2,12 @@
 The nodeScan module,
 Scan the chain block.
 
-@module nodeScan
+@module nodeScanOta
 */
 
 const EventEmitter = require('events').EventEmitter;
 const ethereumNode = require('../ethereumNode');
-const log = require('../utils/logger').create('nodeScan');
+const log = require('../utils/logger').create('nodeScanOta');
 const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
 const wanchainDB = require('./wanChainOTAs');

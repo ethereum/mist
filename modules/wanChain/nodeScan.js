@@ -108,6 +108,7 @@ class nodeScan extends EventEmitter {
         wanchainDB.checkOta(self.compareOta, scanBlockIndex+1, blockEnd);
         wanchainDB.setScanedByWaddr(currentScanAddress, blockEnd);
         scanBlockIndex = blockEnd;
+        log.debug('checkinterval:', checkinterval);
         setTimeout(self.checkOtainDb, checkinterval);
     }
 }

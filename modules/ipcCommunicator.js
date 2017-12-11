@@ -261,8 +261,8 @@ const createAccountPopup = (e) => {
 ipc.on('mistAPI_createAccount', createAccountPopup);
 
 ipc.on('wan_inputAccountPassword', (e,param) => {
-    console.log("ipc.on wan_inputAccountPassword");
-    console.log("param:",param);
+    log.trace("ipc.on wan_inputAccountPassword");
+    log.trace("param:",param);
     Windows.createPopup('inputAccountPassword', _.extend({
         sendData: { uiAction_sendData: param }
     },{
@@ -321,20 +321,20 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     //web3Admin.extend(web3);
     //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
-    console.log("otaRefund OTAs:", otaDestAddress, value);
+    log.debug("otaRefund OTAs:", otaDestAddress, value);
     let otaSetr = await ethereumNode.send('wan_getOTAMixSet', [otaDestAddress, number]);
     let otaSet = otaSetr.result;
 
     //let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
     //let otaSet = otaSetr.result;
-    console.log("otaSetr:",otaSetr);
+    log.debug("otaSetr:",otaSetr);
     let otaSetBuf = [];
     for(let i=0; i<otaSet.length; i++){
         let rpkc = new Buffer(otaSet[i].slice(2,68),'hex');
         let rpcu = secp256k1.publicKeyConvert(rpkc, false);
         otaSetBuf.push(rpcu);
     }
-    console.log('fetch  ota set: ', otaSet);
+    log.debug('fetch  ota set: ', otaSet);
     let otaSk = wanUtil.computeWaddrPrivateKey(otaDestAddress, privKeyA,privKeyB);
     let otaPub = wanUtil.recoverPubkeyFromWaddress(otaDestAddress);
     let otaPubK = otaPub.A;
@@ -342,38 +342,38 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     let M = new Buffer(rfAddr,'hex');
     let ringArgs = wanUtil.getRingSign(M, otaSk,otaPubK,otaSetBuf);
     let KIWQ = generatePubkeyIWQforRing(ringArgs.PubKeys,ringArgs.I, ringArgs.w, ringArgs.q);
-    console.log("KIWQ:", KIWQ);
+    log.debug("KIWQ:", KIWQ);
 
 
     let CoinContract = web3.eth.contract(coinSCDefinition);
-    console.log("CoinContract:", CoinContract);
+    log.debug("CoinContract:", CoinContract);
     let CoinContractInstance = CoinContract.at(CoinContractAddr);
 
     let all = CoinContractInstance.refundCoin.getData(KIWQ,value);
-    console.log("all:", all);
+    log.debug("all:", all);
 
     let serial = '0x'+nonce.toString(16);
-    console.log("serial:", serial);
+    log.debug("serial:", serial);
     var rawTx = {
         Txtype: '0x00',
         nonce: serial,
-        gasPrice: '0x30d40',
+        gasPrice: gasPrice,
         gasLimit: gas,
         to: CoinContractAddr,//contract address
         value: '0x00',
         data: all
     };
-    console.log("rawTx:",rawTx);
+    log.debug("rawTx:",rawTx);
     var tx = new Tx(rawTx);
     tx.sign(privKeyA);
     var serializedTx = tx.serialize();
     try {
         let hash = await wan_sendTransaction('0x' + serializedTx.toString('hex'));
-        console.log('tx hash:',hash);
-        return hash;
+        log.info('tx hash:',hash);
+        return {error:null, hash:hash};
     } catch (error) {
-        console.log('otaRefund:', error);
-        return error;
+        log.error('otaRefund:', error);
+        return {error:error.toString(), hash:null};
     }
 
 }
@@ -402,15 +402,15 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
     web3Admin.extend(web3);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
-    console.log("wan_updateAccount address:",address);
+    log.debug("wan_updateAccount address:",address);
     web3.personal.updateAccount(address, oldpw, pw, function (e) {
         if(e){
-            console.log('Change password Error :', e.toString() );
+            log.error('Change password Error :', e.toString() );
             senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
         } else {
             mainWindow.send('uiAction_windowMessage', "updateAccount",  null, "scan started.");
             senderWindow.close();
-            console.log('wan_updateAccount done:');
+            log.debug('wan_updateAccount done:');
         }
 
         // notifiy about backing up!
@@ -432,35 +432,19 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
 });
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
-
-    let ksdir = "";
-    let keystorePath = Settings.userHomePath;
-    if(Settings.network === 'pluto'){
-        ksdir = "wanchain/pluto/keystore";
-    }else{
-        ksdir = "wanchain/keystore";
-    }
-    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
-
-    if (process.platform === 'freebsd' ||
-        process.platform === 'linux' ||
-        process.platform === 'sunos') keystorePath += '/.' + ksdir;
-
-    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
-
-    console.log("keystore path:",keystorePath);
-    console.log("address:",address);
+    address = address.toLowerCase().slice(2);
+    let keystorePath = getKsFullName();
+    log.debug("keystore path:",keystorePath);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
     fs.readdir(keystorePath, function(err, files) {
         if(err){
-            console.log("readdir",err);
+            log.error("readdir",err);
         }else{
             for(let i=0; i<files.length; i++){
                 let filepath = keystorePath+'/'+files[i];
-                address= address.toLowerCase();
                 if(-1 != filepath.indexOf(address)){
-                    console.log("find:", filepath);
+                    log.debug("find:", filepath);
                     let keystoreStr = fs.readFileSync(filepath,"utf8");
                     let keystore = JSON.parse(keystoreStr);
                     let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
@@ -469,12 +453,12 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                         privKeyB = keythereum.recover(keyPassword, keyBObj);
                     }catch(error){
                         // mainWindow.send('uiAction_windowMessage', "startScan",  "wrong password", "");
-                        console.log("wan_startScan:", "xwrong password");
+                        log.error("wan_startScan:", "xwrong password");
                         senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                         return;
                     };
                     let myWaddr = keystore.waddress;
-                    console.log("myWaddr:",myWaddr);
+                    log.debug("myWaddr:",myWaddr);
                     nodeScan.restart(myWaddr, privKeyB);
                     mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
                     senderWindow.close();
@@ -500,11 +484,11 @@ function getTransactionReceipt(rfHashs)
                 filter.stopWatching(function(){fail("filterRfHashs error:"+err);});
 
             }else{
-                console.log("get new block hash:",blockhash);
+                log.debug("get new block hash:",blockhash);
                 for(let i=rfHashs.length-1; i>=0; i--){
                     let receiptr = await ethereumNode.send('eth_getTransactionReceipt', [rfHashs[i].hash]);
-                    console.log("source hash:", rfHashs[i].hash);
-                    console.log("receiptr:",receiptr);
+                    log.debug("source hash:", rfHashs[i].hash);
+                    log.debug("receiptr:",receiptr);
                     let receipt = receiptr.result;
                     if(receipt){
                         wanOTAs.updateOtaStatus(rfHashs[i].ota);
@@ -524,9 +508,7 @@ function getTransactionReceipt(rfHashs)
     });
 }
 
-
-
-ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
+function getKsFullName(){
     let ksdir = "";
     let keystorePath = Settings.userHomePath;
     if(Settings.network === 'pluto'){
@@ -542,28 +524,37 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
 
     if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
 
-    console.log("keystore path:",keystorePath);
-    
-    console.log("address:",address);
+    log.debug("keystore path:",keystorePath);
+    return  keystorePath;
+}
+
+ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
+    let address = rfOta.rfAddress.toLowerCase().slice(2);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
+    let otas = rfOta.otas;
+    let gas = rfOta.gas;
+    let gasPrice = rfOta.gasPrice;
+    let otaNumber = rfOta.otaNumber;
+
     let keyFound = false;
-    fs.readdir(ksdir, async function(err, files) {
+    let keystorePath = getKsFullName(address);
+    fs.readdir(keystorePath, async function(err, files) {
         if(err){
-            console.log("readdir",err);
+            log.error("readdir",err);
             mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
         }else{
             let filepath;
             for(let i=0; i<files.length; i++){
-                filepath = ksdir+'/'+files[i];
+                filepath = keystorePath+'/'+files[i];
                 if(-1 != filepath.indexOf(address)){
-                    console.log("find:", filepath);
+                    log.debug("find:", filepath);
                     keyFound = true;
                     break;
                 }
             }
             if(!keyFound){
-                console.log("Can't find keystore:", address);
+                log.error("Can't find keystore:", address);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
                 return;
             }
@@ -578,39 +569,46 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 privKeyA = keythereum.recover(keyPassword, keyAObj);
                 privKeyB = keythereum.recover(keyPassword, keyBObj);
             }catch(error){
-                console.log('wan_refundCoin', 'wrong password');
+                log.error('wan_refundCoin', 'wrong password');
                 senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                 return;
             }
             const serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
             const serial = parseInt(serialr.result);
-            console.log("serialr:",serialr)
+            log.debug("serialr:",serialr)
             //let serial =  web3.eth.getTransactionCount('0x'+address);
             let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
-                    let hash = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
-                    hash = hash.toString();
-                    console.log("refund hash:",hash);
-                    if(hash.indexOf('Error: OTA is reused') === 0){
-                        console.log("############## ota is reused, set status as 1");
-                        wanOTAs.updateOtaStatus(otas[c].otaddr);
+                    let {error,hash} = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    if(error){
+                        if(error.indexOf('Error: OTA is reused') === 0) {
+                            log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
+                            wanOTAs.updateOtaStatus(otas[c].otaddr);
+                        }else{
+                            // common error
+                            mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again:"+error, "");
+                            log.error("Refund Error:", error);
+                            senderWindow.close();
+                            return;
+                        }
                     }else{
                         rfHashs.push({hash:hash, ota:otas[c].otaddr});
                     }
+
                 }
             }catch(error){
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", "");
-                console.log("refund Error:", error);
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", error.toString());
+                log.error("catch refund Error:", error);
                 senderWindow.close();
                 return;
             }
             try {
-                console.log("try to get receipt")
+                log.debug("try to get receipt")
                 await getTransactionReceipt(rfHashs);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "Done");
             }catch(error){
-                console.log("get receipt error:", error);
+                log.error("get receipt error:", error);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "refund error");
             }
             senderWindow.close();
@@ -639,14 +637,14 @@ ipc.on('mistAPI_requestAccount', (event) => {
 // cranelv add database info
 // database for first new account 2017-11-20
 ipc.on('wan_onBoarding_newAccount',(event,newAccount)=>{
-    console.log('firstNewAccount:' + JSON.stringify(newAccount));
+    log.debug('firstNewAccount:' + JSON.stringify(newAccount));
     wanOTAs.firstNewAccount(newAccount);
 });
 ipc.on('wan_requireAccountName',(event,address)=>{
 
     var OTAArray = wanOTAs.requireAccountName(address.address);
 
-    console.log('wan_requireAccountName :' + JSON.stringify(OTAArray));
+    log.debug('wan_requireAccountName :' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);
     const mainWindow = Windows.getByType('main');
@@ -655,9 +653,9 @@ ipc.on('wan_requireAccountName',(event,address)=>{
     mainWindow.send('uiAction_windowMessage', 'requireAccountName',  null, OTAArray);
 });
 ipc.on('wan_requestOTACollection',(event,address)=>{
-    //console.log("wan_requestOTACollection query:", address);
+    //log.debug("wan_requestOTACollection query:", address);
     var OTAArray = wanOTAs.requireOTAsFromCollection({address:address.address.toLowerCase(),state:address.state});
-    //console.log('wan_requestOTACollection results:' + JSON.stringify(OTAArray));
+    //log.debug('wan_requestOTACollection results:' + JSON.stringify(OTAArray));
     const windowId = event.sender.id;
     const senderWindow = Windows.getById(windowId);
     const mainWindow = Windows.getByType('main');
@@ -670,8 +668,8 @@ ipc.on('wan_requestScanOTAbyBlock',(event,address)=>{
     wanOTAs.scanOTAsByblocks(address.address);
 });
 ipc.on('wan_changeAccountPassword', (e,param) => {
-    console.log("ipc.on wan_changeAccountPassword");
-    console.log("param:",param);
+    log.debug("ipc.on wan_changeAccountPassword");
+    log.debug("param:",param);
     Windows.createPopup('changeAccountPassword', _.extend({
         sendData: { uiAction_sendData: {address: param.address} }
     },{

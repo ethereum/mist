@@ -409,7 +409,9 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
             senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
         } else {
             mainWindow.send('uiAction_windowMessage', "updateAccount",  null, "scan started.");
-            senderWindow.close();
+
+            senderWindow.send('uiAction_sendKeyData', 'masterPasswordRight', true);
+
             log.debug('wan_updateAccount done:');
         }
 

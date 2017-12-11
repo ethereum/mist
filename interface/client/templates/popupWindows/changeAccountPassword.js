@@ -25,11 +25,21 @@ Template['popupWindows_changeAccountPassword'].onRendered(function () {
             });
 
             GlobalNotification.warning({
-                content: TAPi18n.__('mist.popupWindows.unlockMasterPassword.errors.wrongPassword'),
+                content: "Modifying the password failed",
                 duration: 3
             });
 
             Session.set('masterPasswordWrong', false);
+        }
+
+        var dataRight = Session.get('masterPasswordRight');
+        if(dataRight)
+        {
+            alert("Revise the password successfully.");
+
+            ipc.send('backendAction_closePopupWindow');
+
+            Session.set('masterPasswordRight', false);
         }
     });
 });
@@ -67,6 +77,11 @@ Template['popupWindows_changeAccountPassword'].events({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
             });
+        } else if (oldpw === pw) {
+            GlobalNotification.warning({
+                content: TAPi18n.__('The new password is the same as the old one.'),
+                duration: 3
+            });
         } else if (pw && pw.length < 8) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
@@ -75,7 +90,7 @@ Template['popupWindows_changeAccountPassword'].events({
         } else if (pw && pw.length >= 8) {
             var data = Session.get('data');
             var address = data.address;
-            console.log('ccccc');
+
             setTimeout((e)=>{
                 ipc.send('wan_updateAccount', address, oldpw, pw);
                 template.find('input.password').value = '';

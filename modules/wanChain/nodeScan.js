@@ -13,8 +13,8 @@ const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
 const wanchainDB = require('./wanChainOTAs');
 let checkBurst = 1000;
-let scanBlockIndex = 0;
-let lastBlockNumber = 0;
+let scanBlockIndexDb = 0;
+let lastBlockNumberDb = 0;
 let getLastBlockIter = 0;
 let currentScanAddress = "";
 
@@ -68,14 +68,14 @@ class nodeScan extends EventEmitter {
         privKeyB = privB;
         pubKeyA = myPub.A;
         var nodesc = this;
-        scanBlockIndex = nodesc.getScanedBlock(waddr);
+        scanBlockIndexDb = nodesc.getScanedBlock(waddr);
         nodesc.checkOtainDb();
 
     }
 
     stop() {
-        if (scanBlockIndex ) {
-            wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndex);
+        if (scanBlockIndexDb ) {
+            wanchainDB.setScanedByWaddr(currentScanAddress, scanBlockIndexDb);
         }
     }
     restart(waddr, privB) {
@@ -94,20 +94,20 @@ class nodeScan extends EventEmitter {
     }
     checkOtainDb() {
         let checkinterval = 10000;
-        lastBlockNumber = wanchainDB.getScanedByWaddr(null);
-        console.log("scanBlockIndex,lastBlockNumber:",scanBlockIndex,lastBlockNumber);
-        if(lastBlockNumber === scanBlockIndex && scanBlockIndex !== 0 ) {
+        lastBlockNumberDb = wanchainDB.getScanedByWaddr(null);
+        console.log("checkOtainDb scanBlockIndexDb,lastBlockNumberDb:",scanBlockIndexDb,lastBlockNumberDb);
+        if(lastBlockNumberDb === scanBlockIndexDb && scanBlockIndexDb !== 0 ) {
             setTimeout(self.checkOtainDb, checkinterval);
             return;
         }
-        let blockEnd = lastBlockNumber;
-        if(scanBlockIndex + checkBurst < lastBlockNumber){
+        let blockEnd = lastBlockNumberDb;
+        if(scanBlockIndexDb + checkBurst < lastBlockNumberDb){
             checkinterval = 100;
-            blockEnd = scanBlockIndex + checkBurst;
+            blockEnd = scanBlockIndexDb + checkBurst;
         }
-        wanchainDB.checkOta(self.compareOta, scanBlockIndex+1, blockEnd);
+        wanchainDB.checkOta(self.compareOta, scanBlockIndexDb+1, blockEnd);
         wanchainDB.setScanedByWaddr(currentScanAddress, blockEnd);
-        scanBlockIndex = blockEnd;
+        scanBlockIndexDb = blockEnd;
         log.debug('checkinterval:', checkinterval);
         setTimeout(self.checkOtainDb, checkinterval);
     }

@@ -463,7 +463,9 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                     log.debug("myWaddr:",myWaddr);
                     nodeScan.restart(myWaddr, privKeyB);
                     mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
-                    senderWindow.close();
+
+                    senderWindow.send('uiAction_sendKeyData', 'startScan', true);
+                    // senderWindow.close();
                 }
             }
 

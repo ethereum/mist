@@ -367,6 +367,8 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var tx = new Tx(rawTx);
     tx.sign(privKeyA);
     var serializedTx = tx.serialize();
+    log.debug("serializedTx:", '0x' + serializedTx.toString('hex'));
+
     try {
         let hash = await wan_sendTransaction('0x' + serializedTx.toString('hex'));
         log.info('tx hash:',hash);

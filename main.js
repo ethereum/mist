@@ -118,7 +118,6 @@ app.on('before-quit', async (event) => {
 
 let mainWindow;
 let splashWindow;
-let onReady;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -148,17 +147,32 @@ Only do this if you have secured your HTTP connection or you know what you are d
 // Allows the Swarm protocol to behave like http
 protocol.registerStandardSchemes(['bzz']);
 
-onReady = () => {
+async function onReady() {
     global.config = db.getCollection('SYS_config');
 
-    // setup DB sync to backend
-    dbSync.backendSyncInit();
-    store.dispatch({ type: '[MAIN]:DB:SYNC_TO_BACKEND' });
+    dbSync.initializeListeners();
 
-    // Initialise window mgr
     Windows.init();
 
-    // Enable the Swarm protocol
+    enableSwarmProtocol();
+
+    if (!Settings.inAutoTestMode) { await UpdateChecker.run(); }
+
+    ipcProviderBackend.init();
+
+    // TODO: Settings.language relies on global.config object being set
+    store.dispatch(setLanguageOnMain(Settings.language));
+
+    appMenu();
+
+    createCoreWindows();
+
+    checkTimeSync();
+
+    splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
+}
+
+function enableSwarmProtocol() {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
         callback({ method: request.method, referrer: request.referrer, url: redirectPath });
@@ -168,26 +182,9 @@ onReady = () => {
             log.error(error);
         }
     });
+}
 
-    // check for update
-    if (!Settings.inAutoTestMode) {
-        UpdateChecker.run();
-        store.dispatch({ type: '[MAIN]:UPDATE_CHECKER:FINISHED' });
-    }
-
-    // initialize the web3 IPC provider backend
-    ipcProviderBackend.init();
-    store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
-
-    // instantiate custom protocols
-    // require('./customProtocols.js');
-
-    // change to user language now that global.config object is ready
-    store.dispatch(setLanguageOnMain(Settings.language));
-
-    // add menu already here, so we have copy and paste functionality
-    appMenu();
-
+function createCoreWindows() {
     global.defaultWindow = windowStateKeeper({ defaultWidth: 1024 + 208, defaultHeight: 720 });
 
     // Create the browser window.
@@ -197,8 +194,9 @@ onReady = () => {
     global.defaultWindow.manage(mainWindow.window);
 
     if (!Settings.inAutoTestMode) { splashWindow = Windows.create('splash'); }
+}
 
-    // Checks time sync
+function checkTimeSync() {
     if (!Settings.skiptimesynccheck) {
         timesync.checkEnabled((err, enabled) => {
             if (err) {
@@ -217,9 +215,7 @@ onReady = () => {
             }
         });
     }
-
-    splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
-}; /* onReady() */
+}
 
 async function kickStart() {
     initializeKickStartListeners();

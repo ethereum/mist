@@ -137,17 +137,17 @@ Section Mist MIST_IDX
     SetOutPath $TEMP
     # include both architecture zip files
     file "..\dist_${TYPE}\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-    file "..\dist_${TYPE}\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    # file "..\dist_${TYPE}\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
     file "..\dist_${TYPE}\build\icon.ico"
 
     # Extract the zip file from TEMP to the user's selected installation directory
-    ${If} ${RunningX64}
+    # ${If} ${RunningX64}
       ZipDLL::extractALL "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
       StrCpy $ARCHDIR "win-unpacked"
-    ${Else}
-      ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
-      StrCpy $ARCHDIR "win-ia32-unpacked"
-    ${Endif}
+    # ${Else}
+    #  ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
+    #  StrCpy $ARCHDIR "win-ia32-unpacked"
+    # ${Endif}
 
     # Move files out of subfolder
     !insertmacro MoveFolder "$FILEDIR\$ARCHDIR" "$FILEDIR" "*.*"
@@ -199,7 +199,7 @@ Section Mist MIST_IDX
     WriteRegStr HKCU "Software\${GROUPNAME} ${APPNAME}" "DESKTOPDIR" "$DESKTOPDIR"
 
     # Clean up temporary files
-    Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    # Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
     Delete "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
 SectionEnd
 

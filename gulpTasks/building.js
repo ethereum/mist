@@ -131,15 +131,11 @@ gulp.task('build-dist', (cb) => {
             },
             linux: {
                 category: 'WebBrowser',
-                target: [
-                    'zip',
-                    'deb'
-                ]
+                target: ['zip','deb']
             },
             win: {
-                target: [
-                    'zip'
-                ]
+                target: ['zip']
+
             },
             mac: {
                 category: 'public.app-category.productivity',
@@ -175,7 +171,7 @@ gulp.task('build-dist', (cb) => {
     if (options.linux) targets.push(builder.Platform.LINUX);
 
     builder.build({
-        targets: builder.createTargets(targets, null, 'all'),
+        targets: builder.createTargets(targets, null, 'x64'),
         projectDir: path.join(__dirname, `../dist_${type}`, 'app'),
         publish: 'never',
         config: {
@@ -221,8 +217,8 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            cp(
-                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+//            cp(
+//                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
             cp(
                 `${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
@@ -232,10 +228,10 @@ gulp.task('release-dist', (done) => {
                 `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            cp(
-                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+//            cp(
+//                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+//            cp(
+//                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
             cp(
                 `${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
             cp(

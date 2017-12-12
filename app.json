@@ -1,0 +1,44 @@
+{
+  "name": "gentlejack-mist",
+  "description": "gitterchatbot",
+  "scripts": {
+    "postdeploy": "bin/setup",
+    "pr-predestroy": "bin/markdown"
+  },
+  "env": {
+    "GITTERBOT_APIKEY": {
+      "required": true
+    },
+    "GITTERBOT_GITTER_ROOM": {
+      "required": true
+    },
+    "GITTERBOT_IRC_ADMIN": {
+      "required": true
+    },
+    "GITTERBOT_IRC_CHANNEL": {
+      "required": true
+    },
+    "GITTERBOT_IRC_NICK": {
+      "required": true
+    },
+    "GITTERBOT_IRC_OPTS": {
+      "required": true
+    },
+    "GITTERBOT_IRC_SERVER": {
+      "required": true
+    },
+    "HEROKU_URL": {
+      "required": true
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}

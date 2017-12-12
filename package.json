@@ -57,7 +57,7 @@
     "babel-register": "^6.26.0",
     "chai": "^3.5.0",
     "co-mocha": "^1.2.0",
-    "del": "^2.2.2",
+    "del": "^3.0.0",
     "ecstatic": "^2.1.0",
     "electron": "1.7.9",
     "electron-builder": "^12.2.2",

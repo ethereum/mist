@@ -13,7 +13,7 @@ const version = require('../package.json').version;
 
 
 const type = options.type;
-const applicationName = (options.wallet) ? 'WanChain Wallet' : 'Mist';
+const applicationName = (options.wallet) ? 'WanWallet' : 'Mist';
 
 
 gulp.task('clean-dist', (cb) => {

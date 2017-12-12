@@ -1,6 +1,6 @@
 {
   "name": "wanWallet",
-  "version": "0.9.3",
+  "version": "0.1.1",
   "license": "GPL-3.0",
   "author": {
     "name": "wanchain wallet Team",
@@ -45,7 +45,7 @@
     "underscore": "^1.8.3",
     "underscore-deep-extend": "^1.1.5",
     "uuid": "^3.0.1",
-    "wanchain-util": "github:wanchain/wanchain-util",
+    "wanchain-util": "^1.0.1",
     "web3": "^0.18.4",
     "yargs": "^7.0.2"
   },

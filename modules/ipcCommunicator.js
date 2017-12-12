@@ -367,6 +367,8 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     var tx = new Tx(rawTx);
     tx.sign(privKeyA);
     var serializedTx = tx.serialize();
+    log.debug("serializedTx:", '0x' + serializedTx.toString('hex'));
+
     try {
         let hash = await wan_sendTransaction('0x' + serializedTx.toString('hex'));
         log.info('tx hash:',hash);
@@ -463,7 +465,9 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                     log.debug("myWaddr:",myWaddr);
                     nodeScan.restart(myWaddr, privKeyB);
                     mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
-                    senderWindow.close();
+
+                    senderWindow.send('uiAction_sendKeyData', 'startScan', true);
+                    // senderWindow.close();
                 }
             }
 

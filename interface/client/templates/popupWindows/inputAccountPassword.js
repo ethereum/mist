@@ -32,6 +32,16 @@ Template['popupWindows_inputAccountPassword'].onRendered(function () {
 
             Session.set('masterPasswordWrong', false);
         }
+
+        var startScan = Session.get('startScan');
+        if(startScan)
+        {
+            alert("Get OTAs worked, you may be should wait for a moment.");
+
+            ipc.send('backendAction_closePopupWindow');
+
+            Session.set('startScan', false);
+        }
     });
 });
 

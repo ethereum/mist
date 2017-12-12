@@ -27,7 +27,7 @@
                 "default": "Default"
             },
             "file": {
-                "label": "Arquivo",
+                "label": "Archivo",
                 "importPresale": "Importar Cuentas",
                 "newAccount": "Nueva cuenta",
                 "backup": "Copia de seguridad",

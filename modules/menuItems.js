@@ -242,38 +242,39 @@ let menuTempl = function (webviews) {
                     },
                 ],
             },
-            {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
-                accelerator: 'Shift+CommandOrControl+U',
-                click() {
-                    const focusedWindow = BrowserWindow.getFocusedWindow();
-                    const paths = dialog.showOpenDialog(focusedWindow, {
-                        properties: ['openFile', 'openDirectory']
-                    });
-                    if (paths && paths.length === 1) {
-                        const isDir = fs.lstatSync(paths[0]).isDirectory();
-                        const defaultPath = path.join(paths[0], 'index.html');
-                        const uploadConfig = {
-                            path: paths[0],
-                            kind: isDir ? 'directory' : 'file',
-                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-                        };
-                        swarmNode.upload(uploadConfig).then((hash) => {
-                            focusedWindow.webContents.executeJavaScript(`
-                              Tabs.update('browser', {$set: {
-                                  url: 'bzz://${hash}',
-                                  redirect: 'bzz://${hash}'
-                              }});
-                              LocalStore.set('selectedTab', 'browser');
-                            `);
-                            console.log('Hash uploaded:', hash);
-                        }).catch(e => console.log(e));
-                    }
-                }
-            }]
+            // {
+            //     type: 'separator',
+            // },
+            // {
+            //     label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+            //     accelerator: 'Shift+CommandOrControl+U',
+            //     click() {
+            //         const focusedWindow = BrowserWindow.getFocusedWindow();
+            //         const paths = dialog.showOpenDialog(focusedWindow, {
+            //             properties: ['openFile', 'openDirectory']
+            //         });
+            //         if (paths && paths.length === 1) {
+            //             const isDir = fs.lstatSync(paths[0]).isDirectory();
+            //             const defaultPath = path.join(paths[0], 'index.html');
+            //             const uploadConfig = {
+            //                 path: paths[0],
+            //                 kind: isDir ? 'directory' : 'file',
+            //                 defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+            //             };
+            //             swarmNode.upload(uploadConfig).then((hash) => {
+            //                 focusedWindow.webContents.executeJavaScript(`
+            //                   Tabs.update('browser', {$set: {
+            //                       url: 'bzz://${hash}',
+            //                       redirect: 'bzz://${hash}'
+            //                   }});
+            //                   LocalStore.set('selectedTab', 'browser');
+            //                 `);
+            //                 console.log('Hash uploaded:', hash);
+            //             }).catch(e => console.log(e));
+            //         }
+            //     }
+            // }
+            ]
     });
 
     // EDIT
@@ -381,10 +382,10 @@ let menuTempl = function (webviews) {
                     mainWindow.window.setFullScreen(!mainWindow.window.isFullScreen());
                 },
             },
-            {
-                label: i18n.t('mist.applicationMenu.view.languages'),
-                submenu: languageMenu,
-            },
+            // {
+            //     label: i18n.t('mist.applicationMenu.view.languages'),
+            //     submenu: languageMenu,
+            // },
         ],
     });
 
@@ -572,17 +573,17 @@ let menuTempl = function (webviews) {
         ] });
 
     // Light mode switch should appear when not in Solo Mode (dev network)
-    if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {
-        devToolsMenu.push({
-            label: 'Sync with Light client (beta)',
-            enabled: true,
-            checked: ethereumNode.isLightMode,
-            type: 'checkbox',
-            click() {
-                restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
-            },
-        });
-    }
+    // if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {
+    //     devToolsMenu.push({
+    //         label: 'Sync with Light client (beta)',
+    //         enabled: true,
+    //         checked: ethereumNode.isLightMode,
+    //         type: 'checkbox',
+    //         click() {
+    //             restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
+    //         },
+    //     });
+    // }
 
     // Enables mining menu: only in Solo mode and Ropsten network (testnet)
     if (ethereumNode.isOwnNode && (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)) {
@@ -656,21 +657,26 @@ let menuTempl = function (webviews) {
             }
         );
     }
-    const gitPath = 'wanchain/wanwallet';
-    helpMenu.push({
-        label: i18n.t('mist.applicationMenu.help.mistWiki'),
-        click() {
-            shell.openExternal('https://github.com/'+gitPath+'/wiki');
-        },
-    }, {
-        label: i18n.t('mist.applicationMenu.help.gitter'),
-        click() {
-            shell.openExternal('https://gitter.im'+gitPath);
-        },
-    }, {
+    // const gitPath = 'wanchain/wanwallet';
+    helpMenu.push(
+        // {
+        // label: i18n.t('mist.applicationMenu.help.mistWiki'),
+        // click() {
+        //     shell.openExternal('https://github.com/'+gitPath+'/wiki');
+        // },
+        // },
+        //
+        // {
+        // label: i18n.t('mist.applicationMenu.help.gitter'),
+        // click() {
+        //     shell.openExternal('https://gitter.im'+gitPath);
+        // },
+        // },
+
+        {
         label: i18n.t('mist.applicationMenu.help.reportBug'),
         click() {
-            shell.openExternal('https://github.com/'+gitPath+'/issues');
+            shell.openExternal('https://github.com/wanchain/wanwallet');
         },
     });
 

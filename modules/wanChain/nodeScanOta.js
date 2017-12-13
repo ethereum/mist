@@ -18,7 +18,7 @@ let lastBlockNumber = 0;
 let getLastBlockIter = 0;
 let scanTimer = 0;
 let currentScanAddress = "";
-let burst = 100;
+let burst = 1000;
 const scanIntervalNormal = 10000;
 const coinContractAddr = wanUtil.contractCoinAddress;
 let privKeyB;

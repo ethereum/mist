@@ -492,6 +492,10 @@ function getTransactionReceipt(rfHashs)
             }else{
                 log.debug("get new block hash:",blockhash);
                 for(let i=rfHashs.length-1; i>=0; i--){
+                    if(!rfHashs[i].hash){
+                        rfHashs.splice(i, 1);
+                        continue;
+                    }
                     let receiptr = await ethereumNode.send('eth_getTransactionReceipt', [rfHashs[i].hash]);
                     log.debug("source hash:", rfHashs[i].hash);
                     log.debug("receiptr:",receiptr);
@@ -586,7 +590,9 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
-                    let {error,hash} = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    let error = ra.error;
+                    let hash = ra.hash;
                     if(error){
                         if(error.indexOf('Error: OTA is reused') === 0) {
                             log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
@@ -598,10 +604,8 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                             senderWindow.close();
                             return;
                         }
-                    }else{
-                        rfHashs.push({hash:hash, ota:otas[c].otaddr});
                     }
-
+                    rfHashs.push({hash:hash, ota:otas[c].otaddr});
                 }
             }catch(error){
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", error.toString());
@@ -609,10 +613,11 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 senderWindow.close();
                 return;
             }
+            let retHash = rfHashs.slice(0);
             try {
-                log.debug("try to get receipt")
+                log.debug("try to get receipt");
                 await getTransactionReceipt(rfHashs);
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  null, "Done");
+                mainWindow.send('uiAction_windowMessage', "refundCoin",  null, retHash);
             }catch(error){
                 log.error("get receipt error:", error);
                 mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "refund error");

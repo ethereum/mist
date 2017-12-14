@@ -4,13 +4,13 @@ const path = require('path');
 const Windows = require('./windows');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
+const swarmLog = require('./utils/logger').create('swarm');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
-const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
-import { setLanguage } from './core/settings/actions';
-
+import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
+import swarmNode from './swarmNode.js';
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -229,6 +229,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.file.swarmUpload'),
                 accelerator: 'Shift+CommandOrControl+U',
+                enabled: store.getState().settings.swarmEnabled,
                 click() {
                     const focusedWindow = BrowserWindow.getFocusedWindow();
                     const paths = dialog.showOpenDialog(focusedWindow, {
@@ -250,8 +251,8 @@ let menuTempl = function (webviews) {
                               }});
                               LocalStore.set('selectedTab', 'browser');
                             `);
-                            console.log('Hash uploaded:', hash);
-                        }).catch(e => console.log(e));
+                            swarmLog.info('Hash uploaded:', hash);
+                        }).catch(e => swarmLog.error(e));
                     }
                 }
             }]
@@ -530,6 +531,20 @@ let menuTempl = function (webviews) {
             },
         });
     }
+
+    devToolsMenu.push({
+        type: 'separator'
+    },
+    {
+        label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
+        enabled: true,
+        checked: global.store.getState().settings.swarmEnabled,
+        type: 'checkbox',
+        click() {
+            store.dispatch(toggleSwarm());
+            store.dispatch(toggleSwarmOnStart());
+        }
+    });
 
     // Enables mining menu: only in Solo mode and Ropsten network (testnet)
     if (ethereumNode.isOwnNode && (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)) {

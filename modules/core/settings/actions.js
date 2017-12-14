@@ -1,3 +1,9 @@
+const logger = require('../../utils/logger');
+const swarmLog = logger.create('swarm');
+
+import Settings from '../../settings';
+import swarmNode from '../../swarmNode.js';
+
 export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };
 }
@@ -63,8 +69,9 @@ export function resetMenu(lang) {
     return dispatch => {
         dispatch({ type: '[MAIN]:RESET_MENU:START' });
         try {
-            const Settings = require('../../settings');
-            Settings.language = lang;
+            if (lang) {
+                Settings.language = lang;
+            }
 
             const appMenu = require('../../menuItems');
             appMenu(global.webviews);
@@ -85,6 +92,71 @@ export function getLanguage(event) {
             dispatch({ type: '[MAIN]:GET_LANGUAGE:SUCCESS', payload: { i18n } });
         } catch (error) {
             dispatch({ type: '[MAIN]:GET_LANGUAGE:FAILURE', error });
+        }
+    }
+}
+
+export function toggleSwarm(event) {
+    return (dispatch, getState) => {
+        if (getState().settings.swarmEnabled) {
+            dispatch({ type: '[MAIN]:SWARM:STOP' });
+
+            try {
+                swarmNode.on('stopping', () => {
+                    swarmLog.info('Stopping Swarm');
+                    dispatch({ type: '[MAIN]:SWARM:DISABLING' });
+                });
+
+                swarmNode.on('stopped', () => {
+                    swarmLog.info('Swarm stopped');
+                    dispatch({ type: '[MAIN]:SWARM:DISABLED' });
+                    dispatch(resetMenu());
+                });
+
+                swarmNode.stop();
+
+            } catch (error) {
+                dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
+                swarmLog.error(error);
+            }
+
+        } else {
+            dispatch({ type: '[MAIN]:SWARM:START' });
+
+            try {
+                swarmNode.on('starting', () => {
+                    swarmLog.info('Starting Swarm');
+                    dispatch({ type: '[MAIN]:SWARM:ENABLING' });
+                });
+
+                swarmNode.on('downloadProgress', (progress) => {
+                    swarmLog.info(progress);
+                });
+
+                swarmNode.on('started', () => {
+                    swarmLog.info('Swarm started');
+                    dispatch({ type: '[MAIN]:SWARM:ENABLED' });
+                    dispatch(resetMenu());
+                });
+
+                swarmNode.init();
+
+            } catch (error) {
+                dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
+                swarmLog.error(error);
+            }
+        }
+    }
+}
+
+export function toggleSwarmOnStart(event) {
+    return (dispatch, getState) => {
+        if (getState().settings.swarmEnableOnStart) {
+            Settings.enableSwarmOnStart = false;
+            dispatch({ type: '[MAIN]:SWARM:DISABLE_ON_START' });
+        } else {
+            Settings.enableSwarmOnStart = true;
+            dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
         }
     }
 }

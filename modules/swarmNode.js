@@ -86,6 +86,16 @@ class SwarmNode extends EventEmitter {
         return this.startUsingGateway();
     }
 
+    stop() {
+        if (!this._swarm) {
+            return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
+        }
+
+        this.emit('stopping');
+        this._stop();
+        this.emit('stopped');
+    }
+
     upload(arg) {
         if (!this._swarm) {
             return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
@@ -93,7 +103,6 @@ class SwarmNode extends EventEmitter {
 
         return this._swarm.upload(arg);
     }
-
 }
 
 module.exports = new SwarmNode();

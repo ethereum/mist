@@ -58,6 +58,13 @@ const argv = require('yargs')
             type: 'string',
             group: 'Mist options:',
         },
+        swarm: {
+            describe: 'Enable Swarm on start.',
+            requiresArg: false,
+            nargs: 0,
+            type: 'boolean',
+            group: 'Mist options:',
+        },
         swarmurl: {
             demand: false,
             default: 'http://localhost:8500',
@@ -340,6 +347,18 @@ class Settings {
         this.saveConfig('ui.i18n', langCode);
     }
 
+    get enableSwarmOnStart() {
+        if (argv.swarm) {
+            return true;
+        }
+
+        return this.loadConfig('swarm.enableOnStart');
+    }
+
+    set enableSwarmOnStart(bool) {
+        this.saveConfig('swarm.enableOnStart', bool);
+    }
+
     get skiptimesynccheck() {
         return argv.skiptimesynccheck;
     }
@@ -348,6 +367,9 @@ class Settings {
         global.config.insert({
             ui: {
                 i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            },
+            swarm: {
+                enableOnStart: argv.swarm
             }
         });
     }

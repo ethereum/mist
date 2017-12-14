@@ -9,7 +9,8 @@ export const initialState = {
     productionMode: null,
     protocols: [],
     rpcMode: '',
-    swarmInit: false,
+    swarmEnabled: false,
+    swarmEnableOnStart: false,
     uiMode: '',
     updateCheckerRan: false,
     cliFlags: {}
@@ -36,8 +37,14 @@ const settings = (state = initialState, action) => {
             return Object.assign({}, state, { cliFlags: action.payload.cliFlags });
         case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
             return Object.assign({}, state, { i18n: action.payload.i18n });
-        case '[MAIN]:SWARM:INIT_FINISH':
-            return Object.assign({}, state, { swarmInit: true });
+        case '[MAIN]:SWARM:ENABLED':
+            return Object.assign({}, state, { swarmEnabled: true });
+        case '[MAIN]:SWARM:DISABLED':
+            return Object.assign({}, state, { swarmEnabled: false });
+        case '[MAIN]:SWARM:ENABLE_ON_START':
+            return Object.assign({}, state, { swarmEnableOnStart: true });
+        case '[MAIN]:SWARM:DISABLE_ON_START':
+            return Object.assign({}, state, { swarmEnableOnStart: false });
         case '[MAIN]:UPDATE_CHECKER:FINISH':
             return Object.assign({}, state, { updateCheckerRan: true });
         case '[MAIN]:IPC_PROVIDER_BACKEND:FINISH':

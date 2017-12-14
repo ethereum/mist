@@ -88,7 +88,7 @@ class SwarmNode extends EventEmitter {
 
     stop() {
         if (!this._swarm) {
-            return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
+            return Q.reject(new Error('Swarm not initialized, unable to stop.'));
         }
 
         this.emit('stopping');
@@ -98,7 +98,7 @@ class SwarmNode extends EventEmitter {
 
     upload(arg) {
         if (!this._swarm) {
-            return Q.reject(new Error('Swarm not initialized. Have you called swarmNode.init()?'));
+            return Q.reject(new Error('Swarm not initialized, unable to upload.'));
         }
 
         return this._swarm.upload(arg);

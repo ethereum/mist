@@ -532,20 +532,6 @@ let menuTempl = function (webviews) {
         });
     }
 
-    devToolsMenu.push({
-        type: 'separator'
-    },
-    {
-        label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
-        enabled: true,
-        checked: global.store.getState().settings.swarmEnabled,
-        type: 'checkbox',
-        click() {
-            store.dispatch(toggleSwarm());
-            store.dispatch(toggleSwarmOnStart());
-        }
-    });
-
     // Enables mining menu: only in Solo mode and Ropsten network (testnet)
     if (ethereumNode.isOwnNode && (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)) {
         devToolsMenu.push({
@@ -561,6 +547,20 @@ let menuTempl = function (webviews) {
             }
         });
     }
+
+    devToolsMenu.push({
+        type: 'separator'
+    },
+    {
+        label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
+        enabled: true,
+        checked: global.store.getState().settings.swarmEnabled,
+        type: 'checkbox',
+        click() {
+            store.dispatch(toggleSwarm());
+            store.dispatch(toggleSwarmOnStart());
+        }
+    });
 
     menu.push({
         label: ((global.mining) ? '⛏ ' : '') + i18n.t('mist.applicationMenu.develop.label'),

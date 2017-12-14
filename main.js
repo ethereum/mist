@@ -163,8 +163,8 @@ onReady = () => {
         if (!store.getState().settings.swarmEnabled) {
             let error = global.i18n.t('mist.errors.swarm.notEnabled');
             dialog.showErrorBox('Error', error);
-            callback({ error: error });
-            store.dispatch({ type: '[MAIN]:PROTOCOL:ERROR', payload: { protocol: 'bzz', error: error } });
+            callback({ error });
+            store.dispatch({ type: '[MAIN]:PROTOCOL:ERROR', payload: { protocol: 'bzz', error } });
             return;
         }
 

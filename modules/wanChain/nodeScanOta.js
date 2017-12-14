@@ -1,9 +1,11 @@
 /**
-The nodeScan module,
-Scan the chain block.
+The nodeScanOta module,
+Scan the chain block, fetch all the OTAs to DB.
 
 @module nodeScanOta
 */
+
+'use strict';
 
 const EventEmitter = require('events').EventEmitter;
 const ethereumNode = require('../ethereumNode');
@@ -15,16 +17,12 @@ const wanchainDB = require('./wanChainOTAs');
 
 let scanBlockIndex = 0;
 let lastBlockNumber = 0;
-let getLastBlockIter = 0;
 let scanTimer = 0;
-let currentScanAddress = "";
 let burst = 1000;
-const scanIntervalNormal = 10000;
 const coinContractAddr = wanUtil.contractCoinAddress;
-let privKeyB;
-let pubKeyA;
 let self;
 let fhs_buyCoinNote = wanUtil.sha3('buyCoinNote(string,uint256)', 256).slice(0,4).toString('hex');
+
 function parseContractMethodPara(paraData, abi, method) {
     var dict = {};
     var inputs = [];

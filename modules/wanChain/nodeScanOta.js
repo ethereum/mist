@@ -62,13 +62,24 @@ class nodeScanOta  extends EventEmitter{
     }
 
     scanBlock() {
+        scanBlockIndex = self.getScanedBlock();
         ethereumNode.send('eth_blockNumber', [])
             .then(async (ret) => {
                 lastBlockNumber = parseInt(ret.result);
-                let count = 0;
-                console.log("scanBlockIndex, lastBlockNumber :",scanBlockIndex, lastBlockNumber);
-                while(scanBlockIndex < lastBlockNumber && count < burst) {
-                    let paramArrary = ['0x'+scanBlockIndex.toString(16), true];
+                let checkInterval = 10000;
+                if(scanBlockIndex === lastBlockNumber){
+                    scanTimer = setTimeout(self.scanBlock,checkInterval);
+                    return;
+                }
+                let blockCur = scanBlockIndex+1;
+                let blockEnd = lastBlockNumber;
+                if(blockCur + burst < lastBlockNumber){
+                    blockEnd = scanBlockIndex + burst;
+                    checkInterval = 10;
+                }
+                log.info("scanBlock blockCur,blockEnd: ",blockCur,blockEnd);
+                while(blockCur <= blockEnd ) {
+                    let paramArrary = ['0x'+blockCur.toString(16), true];
                     await ethereumNode.send('eth_getBlockByNumber', paramArrary)
                         .then((retBlock) => {
                             const block = retBlock.result;
@@ -80,23 +91,18 @@ class nodeScanOta  extends EventEmitter{
                                     }
                                     let inputPara = tx.input.slice(10);
                                     let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, 'buyCoinNote');
-                                    wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from, scanBlockIndex);
-                                    console.log("new ota found:", paras.OtaAddr, scanBlockIndex);
+                                    wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from, blockCur);
+                                    log.debug("new ota found:", paras.OtaAddr, blockCur);
                                 }
                             });
                         })
                         .catch((error)=>{
-                            console.log("failed to get BlockNumber. geth exit?");
+                            log.debug("failed to get BlockNumber. Has geth crashed? ");
                         });
-                    count += 1;
-                    scanBlockIndex += 1;
+                    blockCur += 1;
                 }
-                wanchainDB.setScanedByWaddr(null, scanBlockIndex);
-                if(count === burst){
-                    scanTimer = setTimeout(self.scanBlock,10);
-                }else {
-                    scanTimer = setTimeout(self.scanBlock,10000);
-                }
+                wanchainDB.setScanedByWaddr(null, blockEnd);
+                scanTimer = setTimeout(self.scanBlock,checkInterval);
             });
     }
     start() {
@@ -105,7 +111,6 @@ class nodeScanOta  extends EventEmitter{
 
     }
     stop() {
-        console.log("scanTimer:", scanTimer);
         if (scanTimer !== 0) {
             clearTimeout(scanTimer);
             scanTimer = 0;

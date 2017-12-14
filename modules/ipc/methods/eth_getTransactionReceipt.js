@@ -35,6 +35,7 @@ module.exports = class extends BaseProcessor {
             params: [txHash]
         }, { fullResult: true });
 
+	if(!transactionInfo.result.result){return null;};
 
         const fromAddress = transactionInfo.result.result.from;
         const nonce = parseInt(transactionInfo.result.result.nonce, 16);

@@ -66,21 +66,21 @@ class nodeScan  {
 
     checkOtainDb() {
         scanBlockIndexDb = self.getScanedBlock(currentScanAddressDB);
-        let checkinterval = 10000;
         lastBlockNumberDb = wanchainDB.getScanedByWaddr(null);
-        console.log("checkOtainDb scanBlockIndexDb,lastBlockNumberDb:",scanBlockIndexDb,lastBlockNumberDb);
-        if(lastBlockNumberDb === scanBlockIndexDb && scanBlockIndexDb !== 0 ) {
+        let checkinterval = 10000;
+        if(  scanBlockIndexDb === lastBlockNumberDb && scanBlockIndexDb !== 0 ) {
             otaDbTimer = setTimeout(self.checkOtainDb, checkinterval);
             return;
         }
+        let checkBlockIndex = scanBlockIndexDb+1;
         let blockEnd = lastBlockNumberDb;
-        if(scanBlockIndexDb + checkBurst < lastBlockNumberDb){
+        if(checkBlockIndex + checkBurst < lastBlockNumberDb){
             checkinterval = 100;
             blockEnd = scanBlockIndexDb + checkBurst;
         }
-        wanchainDB.checkOta(self.compareOta, scanBlockIndexDb+1, blockEnd);
+        log.info("checkOtainDb checkBlockIndex,lastBlockNumberDb,waddress: ",checkBlockIndex,lastBlockNumberDb, currentScanAddressDB);
+        wanchainDB.checkOta(self.compareOta, checkBlockIndex, blockEnd);
         wanchainDB.setScanedByWaddr(currentScanAddressDB, blockEnd);
-        scanBlockIndexDb = blockEnd;
         log.debug('checkinterval:', checkinterval);
         otaDbTimer = setTimeout(self.checkOtainDb, checkinterval);
     }

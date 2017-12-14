@@ -17,7 +17,7 @@ exports.getScanedByWaddr = function(waddr){
     }
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
     let Index = ScanBlockIndex.find({'_id': waddr});
-    console.log("getScanedByWaddr:", Index);
+    log.debug("getScanedByWaddr:", Index);
     const begin = Index.length === 0 ? 0:Index[0].index;
     return begin;
 }
@@ -32,11 +32,11 @@ exports.setScanedByWaddr = function (waddr, scaned) {
             _id: waddr,
             index: scaned,
         });
-        console.log('setScanedByWaddr:', waddr, 'insert');
+        log.debug('setScanedByWaddr:', waddr, 'insert');
     } else {
         found.index = scaned;
         ScanBlockIndex.update(found);
-        console.log('setScanedByWaddr:', waddr, 'update');
+        log.debug('setScanedByWaddr:', waddr, 'update');
     }
 }
 exports.updateOtaStatus = function(ota) {
@@ -53,7 +53,7 @@ exports.insertOtabyWaddr = function(waddr, ota, value, state,timeStamp,from,bloc
     try {
         OTAsCollection.insert({'address': Key, '_id':ota, 'value':value, 'state':state, 'timeStamp':timeStamp,'otaFrom':from, 'blockNumber':blockNumber});
     }catch(err){
-        console.log("insertOtabyWaddr:", err);
+        log.debug("insertOtabyWaddr:", err);
     }
 }
 
@@ -64,12 +64,12 @@ exports.checkOta = function( cb, blockFrom, blockEnd) {
     where.address = {'$eq':''};
     where.state = {'$eq': 0};
     let otaSet = OTAsCollection.find(where);
-    console.log('checkOta otaSet length:', otaSet.length);
+    log.debug('checkOta otaSet length:', otaSet.length);
     otaSet.forEach((ota) => {
        let changed = cb(ota);
        if (changed) {
            OTAsCollection.update(ota);
-           console.log("find new ota by waddress:", ota);
+           log.debug("find new ota by waddress:", ota);
        }
     });
 }
@@ -91,7 +91,6 @@ exports.firstNewAccount = (newAccount) =>
 }
 exports.requireAccountName = (address) =>
 {
-    console.log('requireAccountName:' + address);
     var accountCollection = db.getCollection('firstNewAccount');
     return accountCollection.find({'address': address});
 }

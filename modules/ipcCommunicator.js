@@ -457,7 +457,7 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                         privKeyB = keythereum.recover(keyPassword, keyBObj);
                     }catch(error){
                         // mainWindow.send('uiAction_windowMessage', "startScan",  "wrong password", "");
-                        log.error("wan_startScan:", "xwrong password");
+                        log.error("wan_startScan:", "Wrong password");
                         senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                         return;
                     };

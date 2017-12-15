@@ -6,7 +6,7 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
-import { syncBuildConfig, syncFlags } from './core/settings/actions';
+import { syncBuildConfig, syncFlags, setSwarmEnableOnStart } from './core/settings/actions';
 
 // try loading in config file
 const defaultConfig = {
@@ -352,7 +352,14 @@ class Settings {
             return true;
         }
 
-        return this.loadConfig('swarm.enableOnStart');
+        const enableOnStart = this.loadConfig('swarm.enableOnStart');
+
+        // Sync to redux
+        if (enableOnStart) {
+            store.dispatch(setSwarmEnableOnStart());
+        }
+
+        return enableOnStart;
     }
 
     set enableSwarmOnStart(bool) {

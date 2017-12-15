@@ -161,3 +161,9 @@ export function toggleSwarmOnStart(event) {
         }
     }
 }
+
+export function setSwarmEnableOnStart() {
+    return (dispatch, getState) => {
+        dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
+    }
+}

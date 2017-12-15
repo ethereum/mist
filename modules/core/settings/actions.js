@@ -99,7 +99,7 @@ export function getLanguage(event) {
 
 export function toggleSwarm(event) {
     return (dispatch, getState) => {
-        if ([SwarmState.Enabled, SwarmState.Enabling].indexOf(getState().settings.swarmState) > -1) {
+        if ([SwarmState.Enabled, SwarmState.Enabling].includes(getState().settings.swarmState)) {
             dispatch({ type: '[MAIN]:SWARM:STOP' });
 
             try {
@@ -163,7 +163,5 @@ export function toggleSwarmOnStart(event) {
 }
 
 export function setSwarmEnableOnStart() {
-    return (dispatch, getState) => {
-        dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
-    }
+    return { type: '[MAIN]:SWARM:ENABLE_ON_START' };
 }

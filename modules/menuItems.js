@@ -555,7 +555,7 @@ let menuTempl = function (webviews) {
     {
         label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
         enabled: true,
-        checked: [SwarmState.Enabling, SwarmState.Enabled].indexOf(global.store.getState().settings.swarmState) > -1,
+        checked: [SwarmState.Enabling, SwarmState.Enabled].includes(global.store.getState().settings.swarmState),
         type: 'checkbox',
         click() {
             store.dispatch(toggleSwarm());

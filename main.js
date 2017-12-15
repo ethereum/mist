@@ -221,6 +221,12 @@ onReady = () => {
 
 
     const kickStart = () => {
+        // connection failed; retry
+        ipcMain.on('retryConnection', () => {
+            kickStart();
+        });
+
+        // client binary stuff
         ClientBinaryManager.on('status', (status, data) => {
             Windows.broadcast('uiAction_clientBinaryStatus', status, data);
         });

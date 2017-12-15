@@ -36,7 +36,7 @@ Template['popupWindows_inputAccountPassword'].onRendered(function () {
         var startScan = Session.get('startScan');
         if(startScan)
         {
-            alert("Get OTAs worked, you may be should wait for a moment.");
+            alert("OTA scan generated. Will take few moments to show up in the wallet.");
 
             ipc.send('backendAction_closePopupWindow');
 

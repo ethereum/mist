@@ -3,6 +3,7 @@ const swarmLog = logger.create('swarm');
 
 import Settings from '../../settings';
 import swarmNode from '../../swarmNode.js';
+import { SwarmState } from './reducer.js';
 
 export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };
@@ -98,7 +99,7 @@ export function getLanguage(event) {
 
 export function toggleSwarm(event) {
     return (dispatch, getState) => {
-        if (getState().settings.swarmEnabled) {
+        if ([SwarmState.Enabled, SwarmState.Enabling].indexOf(getState().settings.swarmState) > -1) {
             dispatch({ type: '[MAIN]:SWARM:STOP' });
 
             try {

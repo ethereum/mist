@@ -230,7 +230,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.file.swarmUpload'),
                 accelerator: 'Shift+CommandOrControl+U',
-                enabled: store.getState().settings.SwarmState == SwarmState.Enabled,
+                enabled: store.getState().settings.swarmState == SwarmState.Enabled,
                 click() {
                     const focusedWindow = BrowserWindow.getFocusedWindow();
                     const paths = dialog.showOpenDialog(focusedWindow, {

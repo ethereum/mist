@@ -40,7 +40,7 @@ Template['popupWindows_requestAccount'].events({
         // check passwords
         if(account1 && account1.length< 2){
             GlobalNotification.warning({
-                content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordTooShort'),
+                content: "Make a longer name",
                 duration: 3
             });
         }

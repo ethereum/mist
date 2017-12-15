@@ -16,7 +16,7 @@ const log = logger.create('main');
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
-import { SwarmStatus } from './modules/core/settings/reducer';
+import { SwarmState } from './modules/core/settings/reducer';
 
 Q.config({
     cancellation: true,
@@ -161,7 +161,7 @@ onReady = () => {
 
     // Enable the Swarm protocol
     protocol.registerHttpProtocol('bzz', (request, callback) => {
-        if (store.getState().settings.swarmStatus !== SwarmStatus.Enabled) {
+        if (store.getState().settings.swarmState !== SwarmState.Enabled) {
             let error = global.i18n.t('mist.errors.swarm.notEnabled');
             dialog.showErrorBox('Error', error);
             callback({ error });

@@ -116,6 +116,11 @@ export function toggleSwarm(event) {
 
                 swarmNode.stop();
 
+                if (getState().settings.swarmEnableOnStart) {
+                    Settings.enableSwarmOnStart = false;
+                    dispatch({ type: '[MAIN]:SWARM:DISABLE_ON_START' });
+                }
+
             } catch (error) {
                 dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
                 swarmLog.error(error);
@@ -142,22 +147,15 @@ export function toggleSwarm(event) {
 
                 swarmNode.init();
 
+                if (!getState().settings.swarmEnableOnStart) {
+                    Settings.enableSwarmOnStart = true;
+                    dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
+                }
+
             } catch (error) {
                 dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
                 swarmLog.error(error);
             }
-        }
-    }
-}
-
-export function toggleSwarmOnStart(event) {
-    return (dispatch, getState) => {
-        if (getState().settings.swarmEnableOnStart) {
-            Settings.enableSwarmOnStart = false;
-            dispatch({ type: '[MAIN]:SWARM:DISABLE_ON_START' });
-        } else {
-            Settings.enableSwarmOnStart = true;
-            dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
         }
     }
 }

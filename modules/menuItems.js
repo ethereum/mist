@@ -559,7 +559,6 @@ let menuTempl = function (webviews) {
         type: 'checkbox',
         click() {
             store.dispatch(toggleSwarm());
-            store.dispatch(toggleSwarmOnStart());
         }
     });
 

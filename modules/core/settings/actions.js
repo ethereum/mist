@@ -1,9 +1,9 @@
-const logger = require('../../utils/logger');
-const swarmLog = logger.create('swarm');
-
+import logger from '../../utils/logger';
 import Settings from '../../settings';
-import swarmNode from '../../swarmNode.js';
-import { SwarmState } from './reducer.js';
+import swarmNode from '../../swarmNode';
+import { SwarmState } from './reducer';
+
+const swarmLog = logger.create('swarm');
 
 export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };

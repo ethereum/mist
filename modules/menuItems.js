@@ -401,7 +401,6 @@ let menuTempl = function (webviews) {
         }];
     }
 
-    const externalNodeMsg = (ethereumNode.isOwnNode) ? '' : ` (${i18n.t('mist.applicationMenu.develop.externalNode')})`;
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.devTools'),
         submenu: devtToolsSubMenu,
@@ -426,13 +425,12 @@ let menuTempl = function (webviews) {
     });
 
     devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
-        enabled: ethereumNode.isOwnNode,
+        label: i18n.t('mist.applicationMenu.develop.logFiles'),
         click() {
             try {
-                shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
-            } catch (e) {
-                log.info(e);
+                shell.showItemInFolder(`${Settings.appDataPath}/Mist/logs/all.log`);
+            } catch (error) {
+                log.error(error);
             }
         },
     });

@@ -106,14 +106,6 @@ const argv = require('yargs')
             type: 'boolean',
             group: 'Mist options:',
         },
-        logfile: {
-            demand: false,
-            describe: 'Logs will be written to this file in addition to the console.',
-            requiresArg: true,
-            nargs: 1,
-            type: 'string',
-            group: 'Mist options:',
-        },
         loglevel: {
             demand: false,
             default: 'info',
@@ -180,8 +172,12 @@ if (argv.nodeOptions && argv.nodeOptions.syncmode) {
 
 class Settings {
     init() {
-        logger.setup(argv);
+        const logLevel = {logLevel: argv.loglevel};
+        const logFolder = {logFolder: `${this.appDataPath}/Mist/logs`};
+        const loggerOptions = Object.assign(argv, logLevel, logFolder);
+        logger.setup(loggerOptions);
         this._log = logger.create('Settings');
+
         store.dispatch(syncFlags(argv));
 
         // If -v flag provided, log the Mist version and exit

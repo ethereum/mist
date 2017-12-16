@@ -17,6 +17,7 @@ import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
 import { SwarmState } from './modules/core/settings/reducer';
+import swarmNode from './modules/swarmNode.js';
 
 Q.config({
     cancellation: true,
@@ -175,16 +176,23 @@ async function onReady() {
 
 function enableSwarmProtocol() {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
-        if (store.getState().settings.swarmState !== SwarmState.Enabled) {
+        if ([SwarmState.Disabling, SwarmState.Disabled].includes(store.getState().settings.swarmState)) {
             const error = global.i18n.t('mist.errors.swarm.notEnabled');
-            dialog.showErrorBox('Error', error);
+            dialog.showErrorBox('Note', error);
             callback({ error });
             store.dispatch({ type: '[MAIN]:PROTOCOL:ERROR', payload: { protocol: 'bzz', error } });
             return;
         }
 
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
-        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+
+        if (store.getState().settings.swarmState === SwarmState.Enabling) {
+            swarmNode.on('started', () => {
+                callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+            });
+        } else { // Swarm enabled
+            callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+        }
 
         store.dispatch({ type: '[MAIN]:PROTOCOL:REQUEST', payload: { protocol: 'bzz' } });
 

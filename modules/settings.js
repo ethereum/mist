@@ -348,6 +348,10 @@ class Settings {
     }
 
     get enableSwarmOnStart() {
+        if (global.mode === 'wallet') {
+            return false;
+        }
+
         if (argv.swarm) {
             return true;
         }

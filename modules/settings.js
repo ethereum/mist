@@ -474,4 +474,3 @@ if (argv.ipcpath) {
 if (argv.nodeOptions && argv.nodeOptions.syncmode) {
     argv.push('--syncmode', argv.nodeOptions.syncmode);
 }
-

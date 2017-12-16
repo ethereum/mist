@@ -169,7 +169,6 @@ async function onReady() {
 
     checkTimeSync();
 
-
     splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }
 

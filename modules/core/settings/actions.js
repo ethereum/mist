@@ -136,7 +136,7 @@ export function toggleSwarm(event) {
                 });
 
                 swarmNode.on('downloadProgress', (progress) => {
-                    swarmLog.info(progress);
+                    swarmLog.info(`Downloading Swarm binary: ${(progress * 100).toFixed(0)}%`);
                 });
 
                 swarmNode.on('started', () => {

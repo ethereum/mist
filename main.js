@@ -144,9 +144,6 @@ Only do this if you have secured your HTTP connection or you know what you are d
     }
 });
 
-// Allows the Swarm protocol to behave like http
-protocol.registerStandardSchemes(['bzz']);
-
 async function onReady() {
     global.config = db.getCollection('SYS_config');
 
@@ -173,6 +170,9 @@ async function onReady() {
 }
 
 function enableSwarmProtocol() {
+    protocol.registerStandardSchemes(['bzz']);
+    store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
+
     protocol.registerHttpProtocol('bzz', (request, callback) => {
         if (store.getState().settings.swarmState !== SwarmState.Enabled) {
             const error = global.i18n.t('mist.errors.swarm.notEnabled');
@@ -184,7 +184,9 @@ function enableSwarmProtocol() {
 
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
         callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-        store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
+
+        store.dispatch({ type: '[MAIN]:PROTOCOL:REQUEST', payload: { protocol: 'bzz' } });
+
     }, (error) => {
         if (error) {
             log.error(error);

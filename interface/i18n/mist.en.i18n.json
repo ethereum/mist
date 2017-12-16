@@ -167,6 +167,7 @@
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
             "peerSearchTimeout": "Skip peer search",
             "launchApp": "Launch Application",
+            "retryConnection": "Retry Connection",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
                 "downloading": "Downloading new node...",

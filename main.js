@@ -8,11 +8,11 @@ const Sockets = require('./modules/socketManager');
 const Windows = require('./modules/windows');
 const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
-const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
 
+import Settings from './modules/settings';
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
@@ -22,7 +22,6 @@ import swarmNode from './modules/swarmNode.js';
 Q.config({
     cancellation: true,
 });
-
 
 global.store = configureReduxStore();
 

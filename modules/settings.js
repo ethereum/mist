@@ -1,23 +1,26 @@
 const { app } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const logger = require('./utils/logger');
 const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
 import { syncBuildConfig, syncFlags, setSwarmEnableOnStart } from './core/settings/actions';
+import logger from './utils/logger';
 
-// try loading in config file
+const settingsLog = logger.create('Settings');
+
+// Load config file
 const defaultConfig = {
     mode: 'mist',
     production: false,
 };
+
 try {
     _.extend(defaultConfig, require('../config.json'));
-} catch (err) {
+} catch (error) {
+    settingsLog.error(error);
 }
-
 
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] [Node options]')
@@ -170,19 +173,28 @@ if (argv.nodeOptions && argv.nodeOptions.syncmode) {
     argv.push('--syncmode', argv.nodeOptions.syncmode);
 }
 
+let instance = null;
+
 class Settings {
+    constructor() {
+        if (!instance) {
+            instance = this;
+        }
+
+        return instance;
+    }
+
     init() {
         const logLevel = {logLevel: argv.loglevel};
         const logFolder = {logFolder: path.join(this.userDataPath, 'logs')};
         const loggerOptions = Object.assign(argv, logLevel, logFolder);
         logger.setup(loggerOptions);
-        this._log = logger.create('Settings');
 
         store.dispatch(syncFlags(argv));
 
         // If -v flag provided, log the Mist version and exit
         if (argv.version) {
-            this._log.info(`Mist v${this.appVersion}`);
+            settingsLog.info(`Mist v${this.appVersion}`);
             process.exit(0);
         }
 
@@ -193,14 +205,14 @@ class Settings {
         }
 
         if (this.inAutoTestMode) {
-            this._log.info('AUTOMATED TESTING');
+            settingsLog.info('AUTOMATED TESTING');
             store.dispatch({ type: '[MAIN]:TEST_MODE:SET' });
         }
 
-        this._log.info(`Running in production mode: ${this.inProductionMode}`);
+        settingsLog.info(`Running in production mode: ${this.inProductionMode}`);
 
         if (this.rpcMode === 'http') {
-            this._log.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
+            settingsLog.warn('Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase());
         }
 
         store.dispatch(syncBuildConfig('appVersion', packageJson.version));
@@ -274,7 +286,7 @@ class Settings {
         if (argv.rpc && argv.rpc.indexOf('http') === 0)
             return 'http';
         if (argv.rpc && argv.rpc.indexOf('ws:') === 0) {
-            this._log.warn('Websockets are not yet supported by Mist, using default IPC connection');
+            settingsLog.warn('Websockets are not yet supported by Mist, using default IPC connection');
             argv.rpc = null;
             return 'ipc';
         } else
@@ -309,14 +321,14 @@ class Settings {
         if (process.platform === 'darwin') {
             ipcPath += '/Library/Ethereum/geth.ipc';
         } else if (process.platform === 'freebsd' ||
-       process.platform === 'linux' ||
-       process.platform === 'sunos') {
+            process.platform === 'linux' ||
+            process.platform === 'sunos') {
             ipcPath += '/.ethereum/geth.ipc';
         } else if (process.platform === 'win32') {
             ipcPath = '\\\\.\\pipe\\geth.ipc';
         }
 
-        this._log.debug(`IPC path: ${ipcPath}`);
+        settingsLog.debug(`IPC path: ${ipcPath}`);
 
         return ipcPath;
     }
@@ -395,8 +407,8 @@ class Settings {
             lodash.set(obj, key, value);
             global.config.update(obj);
 
-            this._log.debug(`Settings: saveConfig('${key}', '${value}')`);
-            this._log.trace(global.config.data);
+            settingsLog.debug(`Settings: saveConfig('${key}', '${value}')`);
+            settingsLog.trace(global.config.data);
         }
     }
 
@@ -408,7 +420,7 @@ class Settings {
             return this.loadConfig(key);
         }
 
-        this._log.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
+        settingsLog.trace(`Settings: loadConfig('${key}') = '${lodash.get(obj, key)}'`);
 
         return lodash.get(obj, key);
     }
@@ -416,7 +428,7 @@ class Settings {
     loadUserData(path2) {
         const fullPath = this.constructUserDataPath(path2);
 
-        this._log.trace('Load user data', fullPath);
+        settingsLog.trace('Load user data', fullPath);
 
       // check if the file exists
         try {
@@ -428,10 +440,10 @@ class Settings {
       // try to read it
         try {
             const data = fs.readFileSync(fullPath, { encoding: 'utf8' });
-            this._log.debug(`Reading "${data}" from ${fullPath}`);
+            settingsLog.debug(`Reading "${data}" from ${fullPath}`);
             return data;
         } catch (err) {
-            this._log.warn(`File not readable: ${fullPath}`, err);
+            settingsLog.warn(`File not readable: ${fullPath}`, err);
         }
 
         return null;
@@ -444,10 +456,10 @@ class Settings {
         const fullPath = this.constructUserDataPath(path2);
 
         try {
-            this._log.debug(`Saving "${data}" to ${fullPath}`);
+            settingsLog.debug(`Saving "${data}" to ${fullPath}`);
             fs.writeFileSync(fullPath, data, { encoding: 'utf8' });
         } catch (err) {
-            this._log.warn(`Unable to write to ${fullPath}`, err);
+            settingsLog.warn(`Unable to write to ${fullPath}`, err);
         }
     }
 

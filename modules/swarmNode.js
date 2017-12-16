@@ -17,10 +17,6 @@ class SwarmNode extends EventEmitter {
             instance = this;
         }
 
-        this._swarm = null;
-        this._stop = null;
-        this._accountPassword = 'SAP';
-
         return instance;
     }
 

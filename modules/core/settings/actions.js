@@ -1,5 +1,6 @@
+const Settings = require('../../settings');
+
 import logger from '../../utils/logger';
-import Settings from '../../settings';
 import swarmNode from '../../swarmNode';
 import { SwarmState } from './reducer';
 

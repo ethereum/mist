@@ -11,8 +11,8 @@ const UpdateChecker = require('./modules/updateChecker');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
+const Settings = require('./modules/settings');
 
-import Settings from './modules/settings';
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';

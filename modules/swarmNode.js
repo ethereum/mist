@@ -1,11 +1,12 @@
 const EventEmitter = require('events').EventEmitter;
 const Q = require('bluebird');
-const Settings = require('./settings.js');
-const Swarm = require('swarm-js');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const clientBinaries = require('./../clientBinaries.json');
+
+import Settings from './settings';
+import Swarm from 'swarm-js';
 
 let instance = null;
 

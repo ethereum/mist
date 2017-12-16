@@ -173,7 +173,7 @@ if (argv.nodeOptions && argv.nodeOptions.syncmode) {
 class Settings {
     init() {
         const logLevel = {logLevel: argv.loglevel};
-        const logFolder = {logFolder: `${this.appDataPath}/Mist/logs`};
+        const logFolder = {logFolder: path.join(this.userDataPath, 'logs')};
         const loggerOptions = Object.assign(argv, logLevel, logFolder);
         logger.setup(loggerOptions);
         this._log = logger.create('Settings');
@@ -209,8 +209,10 @@ class Settings {
         store.dispatch(syncBuildConfig('uiMode', this.uiMode));
     }
 
+
+    // @returns "Application Support/Mist" in production mode
+    // @returns "Application Support/Electron" in development mode
     get userDataPath() {
-    // Application Support/Mist
         return app.getPath('userData');
     }
 

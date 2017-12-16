@@ -428,7 +428,7 @@ let menuTempl = function (webviews) {
         label: i18n.t('mist.applicationMenu.develop.logFiles'),
         click() {
             try {
-                shell.showItemInFolder(`${Settings.appDataPath}/Mist/logs/all.log`);
+                shell.showItemInFolder(path.join(Settings.userDataPath, 'logs', 'all.log'));
             } catch (error) {
                 log.error(error);
             }

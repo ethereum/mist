@@ -144,6 +144,9 @@ Only do this if you have secured your HTTP connection or you know what you are d
     }
 });
 
+protocol.registerStandardSchemes(['bzz']);
+store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
+
 async function onReady() {
     global.config = db.getCollection('SYS_config');
 
@@ -166,13 +169,11 @@ async function onReady() {
 
     checkTimeSync();
 
+
     splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }
 
 function enableSwarmProtocol() {
-    protocol.registerStandardSchemes(['bzz']);
-    store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
-
     protocol.registerHttpProtocol('bzz', (request, callback) => {
         if (store.getState().settings.swarmState !== SwarmState.Enabled) {
             const error = global.i18n.t('mist.errors.swarm.notEnabled');

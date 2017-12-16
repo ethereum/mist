@@ -7,13 +7,21 @@ const fs = require('fs');
 const os = require('os');
 const clientBinaries = require('./../clientBinaries.json');
 
+let instance = null;
+
 class SwarmNode extends EventEmitter {
     constructor() {
         super();
 
+        if (!instance) {
+            instance = this;
+        }
+
         this._swarm = null;
         this._stop = null;
         this._accountPassword = 'SAP';
+
+        return instance;
     }
 
     getKeyPath() {

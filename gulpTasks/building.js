@@ -69,6 +69,7 @@ gulp.task('copy-build-folder-files', () => {
 gulp.task('switch-production', (cb) => {
     fs.writeFile(`./dist_${type}/app/config.json`, JSON.stringify({
         production: true,
+        internal:options.internal,
         mode: type
     }), cb);
 });

@@ -42,8 +42,8 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: 'main',
-            describe: 'Network to connect to: main, test',
+            default: defaultConfig.internal ? 'internal' : 'main',
+            describe: 'Network to connect to: main-beta, internal, pluto',
             requiresArg: true,
             nargs: 1,
             type: 'string',
@@ -192,11 +192,15 @@ class Settings {
     }
 
     get dbFilePath() {
-        let dbFileName = (this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
+        //let dbFileName = (this.inAutoTestMode) ? 'mist.test.lokidb' : 'mist.lokidb';
+        let dbFileName = 'mist.lokidb';
         if(this.network === 'pluto'){
             dbFileName = 'mist.pluto.lokidb';
+        }else if(this.network === 'internal'){
+            dbFileName = 'mist.internal.lokidb';
         }
         return path.join(this.userDataPath, dbFileName);
+
     }
 
     get appDataPath() {

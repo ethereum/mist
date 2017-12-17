@@ -91,7 +91,7 @@ class nodeScanOta  extends EventEmitter{
                                     }
                                     let inputPara = tx.input.slice(10);
                                     let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, 'buyCoinNote');
-                                    wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from, blockCur);
+                                    wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from, blockCur, tx.hash);
                                     log.debug("new ota found:", paras.OtaAddr, blockCur);
                                 }
                             });

@@ -527,50 +527,60 @@ let menuTempl = function (webviews) {
     }
 
     // add network switch
-    devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.network'),
-        submenu: [
-            {
-                label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
-                accelerator: 'CommandOrControl+Alt+1',
-                checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-                enabled: ethereumNode.isOwnNode,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, 'main');
+    if (Settings.network === 'internal'){
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.network'),
+            submenu: [
+                {
+                    //label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+                    label: 'Test network - beta',
+                    accelerator: 'CommandOrControl+Alt+1',
+                    checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
+                    enabled: ethereumNode.isOwnNode,
+                    type: 'checkbox',
+                    click() {
+                        restartNode(ethereumNode.type, 'main');
+                    },
                 },
-            },
-            // {
-            //     label: 'Ropsten - Test network',
-            //     accelerator: 'CommandOrControl+Alt+3',
-            //     checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
-            //     enabled: ethereumNode.isOwnNode,
-            //     type: 'checkbox',
-            //     click() {
-            //         restartNode(ethereumNode.type, 'test');
-            //     },
-            // },
-            {
-                label: 'Pluto - Test network',
-                accelerator: 'CommandOrControl+Alt+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
-                enabled: ethereumNode.isOwnNode,
-                type: 'checkbox',
-                click() {
-                    restartNode(ethereumNode.type, 'pluto');
+                {
+                    label: 'internal - Test network',
+                    accelerator: 'CommandOrControl+Alt+3',
+                    checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
+                    enabled: ethereumNode.isOwnNode,
+                    type: 'checkbox',
+                    click() {
+                        restartNode(ethereumNode.type, 'test');
+                    },
                 },
-            },
-            // {
-            //     label: 'Solo network',
-            //     accelerator: 'CommandOrControl+Alt+4',
-            //     checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
-            //     enabled: ethereumNode.isOwnNode,
-            //     type: 'checkbox',
-            //     click() {
-            //         restartNode(ethereumNode.type, 'dev');
-            //     },
-            // }
-        ] });
+                {
+                    label: 'Pluto - Test network',
+                    accelerator: 'CommandOrControl+Alt+2',
+                    checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
+                    enabled: ethereumNode.isOwnNode,
+                    type: 'checkbox',
+                    click() {
+                        restartNode(ethereumNode.type, 'pluto');
+                    },
+                }
+            ] });
+    } else {
+        devToolsMenu.push({
+            label: i18n.t('mist.applicationMenu.develop.network'),
+            submenu: [
+                {
+                    //label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
+                    label: 'Test network - beta',
+                    accelerator: 'CommandOrControl+Alt+1',
+                    checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
+                    enabled: ethereumNode.isOwnNode,
+                    type: 'checkbox',
+                    click() {
+                        restartNode(ethereumNode.type, 'main');
+                    },
+                }
+            ] });
+    }
+
 
     // Light mode switch should appear when not in Solo Mode (dev network)
     // if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {

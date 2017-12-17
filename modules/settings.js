@@ -42,7 +42,7 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: defaultConfig.internal ? 'internal' : 'main',
+            default: defaultConfig.internal ? 'internal' : 'testnet', // currently, beta need --testnet, this is a little ..
             describe: 'Network to connect to: main-beta, internal, pluto',
             requiresArg: true,
             nargs: 1,

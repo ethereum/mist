@@ -381,7 +381,7 @@ class EthereumNode extends EventEmitter {
                 switch (network) {
 
                 // Starts Ropsten network
-                case 'test':
+                case 'testnet':
                     args = [
                         '--testnet',
                         '--syncmode', syncMode,
@@ -400,12 +400,11 @@ class EthereumNode extends EventEmitter {
                     ];
                     break;
                 case 'internal':
-                        args = [
-                            '--internal',
-                            '--syncmode', syncMode,
-                            '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                            '--ipcpath', Settings.rpcIpcPath
-                        ];
+                    args = [
+                        '--syncmode', syncMode,
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                        '--ipcpath', Settings.rpcIpcPath
+                    ];
                         break;
                 case 'pluto':
                     args = [

@@ -9,6 +9,8 @@ const ethereumNode = require('./ethereumNode.js');
 const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
+const version = require('../package').version;
+
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -644,44 +646,36 @@ let menuTempl = function (webviews) {
     // HELP
     const helpMenu = [];
 
-    if (process.platform === 'freebsd' || process.platform === 'linux' ||
-            process.platform === 'sunos' || process.platform === 'win32') {
-        helpMenu.push(
-            {
-                label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
-                click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
-                },
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
-                click() {
-                    updateChecker.runVisibly();
-                },
-            }
-        );
-    }
+    // if (process.platform === 'freebsd' || process.platform === 'linux' ||
+    //         process.platform === 'sunos' || process.platform === 'win32') {
+    //
+    // }
+
+
     // const gitPath = 'wanchain/wanwallet';
     helpMenu.push(
+        {
+        label: "WanWallet Version: " + version,
+        },
+
         // {
-        // label: i18n.t('mist.applicationMenu.help.mistWiki'),
-        // click() {
-        //     shell.openExternal('https://github.com/'+gitPath+'/wiki');
+        //     label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
+        //     click() {
+        //         Windows.createPopup('about', {
+        //             electronOptions: {
+        //                 width: 420,
+        //                 height: 230,
+        //                 alwaysOnTop: true,
+        //             },
+        //         });
+        //     },
         // },
-        // },
-        //
-        // {
-        // label: i18n.t('mist.applicationMenu.help.gitter'),
-        // click() {
-        //     shell.openExternal('https://gitter.im'+gitPath);
-        // },
-        // },
+        {
+            label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
+            click() {
+                updateChecker.runVisibly();
+            },
+        },
 
         {
         label: i18n.t('mist.applicationMenu.help.reportBug'),

@@ -1,15 +1,15 @@
 {
     "clients": {
         "Geth": {
-            "version": "0.2.7",
+            "version": "0.3.1",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.2.7/geth-linux-amd64-0.2.7-435e67b8.tar.gz",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.1/geth-linux-amd64-0.3.1-13d71525.tar.gz",
                             "type": "tar",
-                            "md5": "efd1812bad7e3aa10603248ed9ce0220",
-                            "bin": "geth-linux-amd64-0.2.7-435e67b8/geth"
+                            "md5": "eba614d9613f5a4766aee8ae75c7f4c1",
+                            "bin": "geth-linux-amd64-0.3.1-13d71525/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -19,7 +19,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.2.7"
+                                    "0.3.1"
                                 ]
                             }
                         }
@@ -50,10 +50,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.2.7/geth-windows-amd64-0.2.7-435e67b8.zip",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.1/geth-windows-amd64-0.3.1-13d71525.zip",
                             "type": "zip",
-                            "md5": "75150eb988935372892de36beee02873",
-                            "bin": "win64/geth.exe"
+                            "md5": "f5b0d1a0485ee5c06854de605c618cdd",
+                            "bin": "geth-windows-amd64-0.3.1-13d71525/geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -63,7 +63,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.2.7"
+                                    "0.3.1"
                                 ]
                             }
                         }

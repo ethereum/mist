@@ -103,7 +103,7 @@
             },
             "legacyChain": {
                 "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Wanchain Classic chain. To use this chain, use tools provided by the Wanchain classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main Wanchain chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "description": "Your node is currently on the unsupported Wanchain Classic chain. To use this chain, use tools provided by the Wanchain classic project at\nhttps://github.com/wanchain/wanwallet\n\nTo revert to the main Wanchain chain follow the tutorial here:\nhttps://github.com/wanchain/wanwallet"
             }
         },
         "rightClick": {

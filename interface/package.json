@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ethereum/mist.git"
+    "url": "git+https://github.com/wanchain/wanwallet.git"
   },
   "keywords": [
     "ethereum",
@@ -18,9 +18,9 @@
   "author": "Fabian Vogelsteller <fabian@ethereum.org>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/ethereum/mist/issues"
+    "url": "https://github.com/wanchain/wanwallet/issues"
   },
-  "homepage": "https://github.com/ethereum/mist#readme",
+  "homepage": "https://github.com/wanchain/wanwallet#readme",
   "dependencies": {
     "babel-runtime": "^6.18.0"
   }

@@ -354,7 +354,22 @@ class EthereumNode extends EventEmitter {
                 .then(resolve, reject);
         });
     }
+    getBetadir(){
+        let keystorePath = Settings.userHomePath;
 
+        let ksdir = 'wanchain';
+
+        if (process.platform === 'darwin') keystorePath += '/Library/' + 'wanchain';
+
+        if (process.platform === 'freebsd' ||
+            process.platform === 'linux' ||
+            process.platform === 'sunos') keystorePath += '/.' + ksdir;
+
+        if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
+
+        log.info("datadir path:",keystorePath);
+        return  keystorePath;
+    }
 
     /**
      * @return {Promise}
@@ -384,6 +399,7 @@ class EthereumNode extends EventEmitter {
                 case 'testnet':
                     args = [
                         '--testnet',
+                        '--datadir', this.getBetadir(),
                         '--syncmode', syncMode,
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
                         '--ipcpath', Settings.rpcIpcPath

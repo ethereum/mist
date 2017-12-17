@@ -1928,6 +1928,10 @@ ethereum-client-binaries@^1.6.1:
     node-unzip-2 "^0.2.1"
     tmp "0.0.29"
 
+ethereum-common@^0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/ethereum-common/-/ethereum-common-0.0.17.tgz#0b554ca9d512cadc8be0456fbd000ffcc3ac4f6f"
+
 ethereum-keyfile-recognizer@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ethereum-keyfile-recognizer/-/ethereum-keyfile-recognizer-1.0.2.tgz#c0315f91c77e076621e9f6b5f8099fd370f7a11d"
@@ -1942,17 +1946,14 @@ ethereumjs-abi@^0.6.3:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-util@^4.3.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-4.5.0.tgz#3e9428b317eebda3d7260d854fddda954b1f1bc6"
+ethereumjs-tx@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.1.2.tgz#c151477c6205d1860600e29108c3eacae97e29fa"
   dependencies:
-    bn.js "^4.8.0"
-    create-hash "^1.1.2"
-    keccakjs "^0.2.0"
-    rlp "^2.0.0"
-    secp256k1 "^3.0.1"
+    ethereum-common "^0.0.17"
+    ethereumjs-util "^4.5.0"
 
-ethereumjs-util@^5.1.2:
+ethereumjs-util@5.1.2, ethereumjs-util@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.2.tgz#25ba0215cbb4c2f0b108a6f96af2a2e62e45921f"
   dependencies:
@@ -1962,6 +1963,16 @@ ethereumjs-util@^5.1.2:
     create-hash "^1.1.2"
     ethjs-util "^0.1.3"
     keccak "^1.0.2"
+    rlp "^2.0.0"
+    secp256k1 "^3.0.1"
+
+ethereumjs-util@^4.3.0, ethereumjs-util@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-4.5.0.tgz#3e9428b317eebda3d7260d854fddda954b1f1bc6"
+  dependencies:
+    bn.js "^4.8.0"
+    create-hash "^1.1.2"
+    keccakjs "^0.2.0"
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
@@ -3293,6 +3304,15 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+keccak@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.2.0.tgz#b53618fc7961b642f6e73f1546eec3329f7effe0"
+  dependencies:
+    bindings "^1.2.1"
+    inherits "^2.0.3"
+    nan "^2.2.1"
+    prebuild-install "^2.0.0"
+
 keccak@^1.0.2:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.3.0.tgz#3681bd99ad3d0354ddb29b9040c1b6560cce08ac"
@@ -3309,6 +3329,15 @@ keccakjs@^0.2.0, keccakjs@^0.2.1:
   dependencies:
     browserify-sha3 "^0.0.1"
     sha3 "^1.1.0"
+
+keythereum@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.2.tgz#612ba41cde254b17dd7737e75237ae6ee5162992"
+  dependencies:
+    keccak "1.2.0"
+    secp256k1 "3.2.5"
+    sjcl "1.0.6"
+    uuid "3.0.0"
 
 kind-of@^3.0.2:
   version "3.2.2"
@@ -4750,6 +4779,19 @@ sax@>=0.6.0:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
+secp256k1@3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.2.5.tgz#0dde5b27e5021665f6dffca7b2c3e010c6c13c93"
+  dependencies:
+    bindings "^1.2.1"
+    bip66 "^1.1.3"
+    bn.js "^4.11.3"
+    create-hash "^1.1.2"
+    drbg.js "^1.0.1"
+    elliptic "^6.2.3"
+    nan "^2.2.1"
+    prebuild-install "^2.0.0"
+
 secp256k1@^3.0.1:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.3.0.tgz#50ec9b201ba401403dd13ccbf21d31eeb3ff43cf"
@@ -4886,6 +4928,10 @@ single-line-log@^1.1.2:
   resolved "https://registry.yarnpkg.com/single-line-log/-/single-line-log-1.1.2.tgz#c2f83f273a3e1a16edb0995661da0ed5ef033364"
   dependencies:
     string-width "^1.0.1"
+
+sjcl@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/sjcl/-/sjcl-1.0.6.tgz#6415462a63cc0d4215c49baec9d3fa0c1b53520f"
 
 slash@^1.0.0:
   version "1.0.0"
@@ -5520,6 +5566,10 @@ uuid-1345@^0.99.6:
   dependencies:
     macaddress "^0.2.7"
 
+uuid@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.0.tgz#6728fc0459c450d796a99c31837569bdf672d728"
+
 uuid@^2.0.1:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
@@ -5594,6 +5644,13 @@ vinyl@^0.5.0:
 walkdir@^0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/walkdir/-/walkdir-0.0.11.tgz#a16d025eb931bd03b52f308caed0f40fcebe9532"
+
+wanchain-util@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/wanchain-util/-/wanchain-util-1.0.2.tgz#c73cf8fa3f2bf548f4bf57f16180d499c3663f90"
+  dependencies:
+    ethereumjs-tx "1.1.2"
+    ethereumjs-util "5.1.2"
 
 wdio-dot-reporter@~0.0.8:
   version "0.0.9"

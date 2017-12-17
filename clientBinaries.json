@@ -6,10 +6,10 @@
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.1/geth-linux-amd64-0.3.1-13d71525.tar.gz",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.3/geth-linux-amd64-0.3.3-ff421334.tar.gz",
                             "type": "tar",
-                            "md5": "eba614d9613f5a4766aee8ae75c7f4c1",
-                            "bin": "geth-linux-amd64-0.3.1-13d71525/geth"
+                            "md5": "5443f16626321e853c222618aa32482b",
+                            "bin": "geth-linux-amd64-0.3.3-ff421334/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -19,7 +19,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.3.1"
+                                    "0.3.3"
                                 ]
                             }
                         }
@@ -50,10 +50,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.1/geth-windows-amd64-0.3.1-13d71525.zip",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.3/geth-windows-amd64-0.3.3-ff421334.zip",
                             "type": "zip",
-                            "md5": "f5b0d1a0485ee5c06854de605c618cdd",
-                            "bin": "geth-windows-amd64-0.3.1-13d71525/geth.exe"
+                            "md5": "b03c5d67b8195abb40c6a94b590db3b2",
+                            "bin": "geth-windows-amd64-0.3.3-ff421334/geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -63,7 +63,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.3.1"
+                                    "0.3.3"
                                 ]
                             }
                         }

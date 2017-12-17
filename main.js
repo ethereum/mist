@@ -279,7 +279,7 @@ onReady = () => {
     if (!Settings.skiptimesynccheck) {
         timesync.checkEnabled((err, enabled) => {
             if (err) {
-                log.error('Couldn\'t infer if computer automatically syncs time.', err);
+                log.error('Couldn\'t infer if computer automatically syncs time.');
                 return;
             }
 

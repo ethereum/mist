@@ -28,7 +28,7 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "http://47.104.60.142:/mac_geth_0_2_7.tar.gz",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.3/geth-mac-amd64-0.3.3-ff421334.tar.gz",
                             "type": "tar",
                             "md5": "b9ed393e139fb7f93229d4d4e0873596",
                             "bin": "build/bin/geth"

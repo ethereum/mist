@@ -8,19 +8,20 @@ const Sockets = require('./modules/socketManager');
 const Windows = require('./modules/windows');
 const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
-const Settings = require('./modules/settings');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
+const Settings = require('./modules/settings');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
-import { setLanguageOnMain } from './modules/core/settings/actions';
+import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
+import { SwarmState } from './modules/core/settings/reducer';
+import swarmNode from './modules/swarmNode.js';
 
 Q.config({
     cancellation: true,
 });
-
 
 global.store = configureReduxStore();
 
@@ -32,7 +33,6 @@ require('./modules/ipcCommunicator.js');
 const appMenu = require('./modules/menuItems');
 const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
 const ethereumNode = require('./modules/ethereumNode.js');
-const swarmNode = require('./modules/swarmNode.js');
 const nodeSync = require('./modules/nodeSync.js');
 
 // Define global vars; The preloader makes some globals available to the client.
@@ -144,8 +144,8 @@ Only do this if you have secured your HTTP connection or you know what you are d
     }
 });
 
-// Allows the Swarm protocol to behave like http
 protocol.registerStandardSchemes(['bzz']);
+store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
 
 async function onReady() {
     global.config = db.getCollection('SYS_config');
@@ -174,9 +174,26 @@ async function onReady() {
 
 function enableSwarmProtocol() {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
+        if ([SwarmState.Disabling, SwarmState.Disabled].includes(store.getState().settings.swarmState)) {
+            const error = global.i18n.t('mist.errors.swarm.notEnabled');
+            dialog.showErrorBox('Note', error);
+            callback({ error });
+            store.dispatch({ type: '[MAIN]:PROTOCOL:ERROR', payload: { protocol: 'bzz', error } });
+            return;
+        }
+
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
-        callback({ method: request.method, referrer: request.referrer, url: redirectPath });
-        store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
+
+        if (store.getState().settings.swarmState === SwarmState.Enabling) {
+            swarmNode.on('started', () => {
+                callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+            });
+        } else { // Swarm enabled
+            callback({ method: request.method, referrer: request.referrer, url: redirectPath });
+        }
+
+        store.dispatch({ type: '[MAIN]:PROTOCOL:REQUEST', payload: { protocol: 'bzz' } });
+
     }, (error) => {
         if (error) {
             log.error(error);
@@ -223,12 +240,7 @@ async function kickStart() {
     await ClientBinaryManager.init();
     await ethereumNode.init();
 
-    // Wallet shouldn't start Swarm || TODO: TravisCI failing to download Swarm
-    if (global.mode === 'wallet' || Settings.inAutoTestMode) {
-        log.info('skipping Swarm');
-    } else {
-        await swarmNode.init();
-    }
+    if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
 
     if (!ethereumNode.isIpcConnected) { throw new Error('Either the node didn\'t start or IPC socket failed to connect.'); }
     log.info('Connected via IPC to node.');
@@ -277,20 +289,6 @@ function initializeKickStartListeners() {
         Windows.broadcast('uiAction_nodeStatus', stateAsText,
             ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
         );
-    });
-
-    swarmNode.on('starting', () => {
-        Windows.broadcast('uiAction_swarmStatus', 'starting');
-        store.dispatch({ type: '[MAIN]:SWARM:INIT_START' });
-    });
-
-    swarmNode.on('downloadProgress', (progress) => {
-        Windows.broadcast('uiAction_swarmStatus', 'downloadProgress', progress);
-    });
-
-    swarmNode.on('started', (isLocal) => {
-        Windows.broadcast('uiAction_swarmStatus', 'started', isLocal);
-        store.dispatch({ type: '[MAIN]:SWARM:INIT_FINISH' });
     });
 }
 

@@ -221,7 +221,7 @@ Helpers.detectNetwork = function (hash) {
     console.log('mistFuncHash: ', hash);
 
     switch (hash) {
-    case '0x1b3ac302cbf7dc7b34dacd1aa4bbec8600bf6a2bbe67d6ce983f143c3f6ac0ca':
+    case '0xa37b811609a9d1e898fb49b3901728023e5e72e18e58643d9a7a82db483bfeb0':
         console.log('Network is mainnet');
         network.type = 'mainnet';
         network.name = 'Main';

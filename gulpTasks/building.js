@@ -140,24 +140,25 @@ gulp.task('build-dist', (cb) => {
             },
             mac: {
                 category: 'public.app-category.productivity',
+                target: ['zip']
             },
-            dmg: {
-                background: '../build/bg-homestead.jpg',
-                iconSize: 128,
-                contents: [
-                    {
-                        x: 441,
-                        y: 448,
-                        type: 'link',
-                        path: '/Applications'
-                    },
-                    {
-                        x: 441,
-                        y: 142,
-                        type: 'file'
-                    }
-                ]
-            }
+            // dmg: {
+            //     background: '../build/bg-homestead.jpg',
+            //     iconSize: 128,
+            //     contents: [
+            //         {
+            //             x: 441,
+            //             y: 448,
+            //             type: 'link',
+            //             path: '/Applications'
+            //         },
+            //         {
+            //             x: 441,
+            //             y: 142,
+            //             type: 'file'
+            //         }
+            //     ]
+            // }
         }
     });
 
@@ -230,7 +231,7 @@ gulp.task('release-dist', (done) => {
             // break;
 
             cp(
-                path.join('mac', `${applicationName}-${version}.zip`),
+                path.join('mac', `${applicationName}-${version}-mac.zip`),
                 `${appNameHypen}-mac-${versionDashed}.zip`);
             break;
 

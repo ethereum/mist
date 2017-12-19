@@ -1,4 +1,4 @@
-const _ = global._;
+const _ = require('./utils/underscore');
 const fs = require('fs');
 const Q = require('bluebird');
 const spawn = require('child_process').spawn;
@@ -381,8 +381,8 @@ class EthereumNode extends EventEmitter {
                     args = [
                         '--testnet',
                         '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
+                        '--ipcpath', Settings.rpcIpcPath,
+                        '--keystore', Settings.keystorePath
                     ];
                     break;
 
@@ -391,8 +391,8 @@ class EthereumNode extends EventEmitter {
                     args = [
                         '--rinkeby',
                         '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
+                        '--ipcpath', Settings.rpcIpcPath,
+                        '--keystore', Settings.keystorePath
                     ];
                     break;
 
@@ -401,7 +401,8 @@ class EthereumNode extends EventEmitter {
                     args = [
                         '--dev',
                         '--minerthreads', '1',
-                        '--ipcpath', Settings.rpcIpcPath
+                        '--ipcpath', Settings.rpcIpcPath,
+                        '--keystore', Settings.keystorePath
                     ];
                     break;
 
@@ -410,7 +411,7 @@ class EthereumNode extends EventEmitter {
                     args = (nodeType === 'geth')
                         ? [
                             '--syncmode', syncMode,
-                            '--cache', ((process.arch === 'x64') ? '1024' : '512')
+                            '--keystore', Settings.keystorePath
                         ]
                         : ['--unsafe-transactions'];
                 }

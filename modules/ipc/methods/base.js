@@ -1,5 +1,3 @@
-
-
 const _ = global._;
 const Q = require('bluebird');
 

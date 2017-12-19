@@ -109,30 +109,6 @@
                 </div>
             </div>
         </div>
-
-        <footer>
-            <progress value="{{#with TemplateVar.get 'syncing'}}{{progress}}{{/with}}" max="100"></progress>
-            <progress class='stateBar' value="{{#with TemplateVar.get 'syncing'}}{{_displayStatesDownload}}{{/with}}" max="1"></progress>
-
-            {{syncStatus}}
-            {{#if TemplateVar.get 'readyToLaunch'}}
-                <button class="launch-app"> {{i18n "mist.popupWindows.onboarding.buttons.launchApp"}} </button>
-            {{else}}
-                {{#with TemplateVar.get "syncing"}}
-                    <div class="status"> {{i18n "mist.popupWindows.onboarding.downloadingBlocks"}} ({{TemplateVar.get "peerCount"}} {{i18n 'mist.nodeInfo.peers'}})</div>
-                    <div class="blocks">  {{syncStatusMessage}}  </div>
-                {{else}}
-                    <div class="status">
-                    {{#if TemplateVar.get "peerCount"}}
-                        {{i18n 'mist.startScreen.nodeSyncFoundPeers' peers=(TemplateVar.get 'peerCount')}}
-                    {{else}}
-                        {{i18n 'mist.startScreen.nodeSyncConnecting'}}
-                    {{/if}}
-                    </div>
-                {{/with}}
-            {{/if}}
-
-        </footer>
     </div>
 </template>
 

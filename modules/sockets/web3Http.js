@@ -67,6 +67,8 @@ class HttpSocket extends EventEmitter {
     }
 
     _call(dataStr) {
+        console.log('HEY');
+        console.log("__ dataStr __: " + dataStr);
         return got.post(this._hostPort, {
             encoding: this._encoding,
             headers: {

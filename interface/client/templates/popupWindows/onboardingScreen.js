@@ -11,44 +11,10 @@ The onboardingScreen template
 @constructor
 */
 
-
-/**
-Update the peercount
-
-@method getPeerCount
-*/
-var getPeerCount = function (template) {
-    web3.net.getPeerCount(function (e, res) {
-        if (!e) {
-            TemplateVar.set(template, 'peerCount', res);
-        }
-    });
-};
-
-
 Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
     var oldData;
     TemplateVar.set('readyToLaunch', false);
-
-    // check for block status
-    this.syncFilter = web3.eth.isSyncing(function (error, syncing) {
-        if (!error) {
-
-            if (syncing === true) {
-                web3.reset(true);
-            } else if (_.isObject(syncing)) {
-                // loads syncing data and adds it to old by using 'extend'
-                oldData = TemplateVar.get(template, 'syncing');
-
-                TemplateVar.set(template, 'syncing', _.extend(oldData || {}, syncing || {}));
-
-            } else {
-                TemplateVar.set(template, 'syncing', false);
-            }
-        }
-    });
-
 
     TemplateVar.set('newAccount', false);
     web3.eth.getAccounts((err, acc) => {
@@ -57,18 +23,6 @@ Template['popupWindows_onboardingScreen'].onCreated(function () {
             TemplateVar.set(template, 'newAccount', acc[0]);
         }
     });
-
-
-    // CHECK PEER COUNT
-    this.peerCountIntervalId = null;
-
-    TemplateVar.set('peerCount', 0);
-    getPeerCount(template);
-
-    Meteor.clearInterval(this.peerCountIntervalId);
-    this.peerCountIntervalId = setInterval(function () {
-        getPeerCount(template);
-    }, 1000);
 
 
     TemplateVar.set('currentActive', 'start');

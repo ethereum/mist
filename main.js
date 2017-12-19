@@ -6,8 +6,6 @@ const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/socketManager');
 const Windows = require('./modules/windows');
-const ClientBinaryManager = require('./modules/clientBinaryManager');
-const UpdateChecker = require('./modules/updateChecker');
 const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
@@ -15,7 +13,8 @@ const Settings = require('./modules/settings');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
-import { setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
+import { setLanguageOnMain, toggleSwarm, runClientBinaryManager, runUpdateChecker } from './modules/core/settings/actions';
+import { startEthereumNode, handleOnboarding } from './modules/core/ethereum/actions';
 import { SwarmState } from './modules/core/settings/reducer';
 import swarmNode from './modules/swarmNode.js';
 
@@ -82,7 +81,6 @@ app.on('window-all-closed', () => store.dispatch(quitApp()));
 // Listen to custom protocol incoming messages, needs registering of URL schemes
 app.on('open-url', (e, url) => log.info('Open URL', url));
 
-
 let killedSocketsAndNodes = false;
 
 app.on('before-quit', async (event) => {
@@ -102,7 +100,7 @@ app.on('before-quit', async (event) => {
         // delay quit, so the sockets can close
         setTimeout(async () => {
             await ethereumNode.stop();
-            store.dispatch({ type: '[MAIN]:ETH_NODE:STOP' });
+            store.dispatch({ type: '[ETHEREUM]:NODE:STOP' });
 
             killedSocketsAndNodes = true;
             await db.close();
@@ -115,25 +113,9 @@ app.on('before-quit', async (event) => {
     }
 });
 
-
 let mainWindow;
-let splashWindow;
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
 app.on('ready', async () => {
-    // if using HTTP RPC then inform user
-    if (Settings.rpcMode === 'http') {
-        dialog.showErrorBox('Insecure RPC connection', `
-WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
-
-This is less secure than using local IPC - your passwords will be sent over the wire in plaintext.
-
-Only do this if you have secured your HTTP connection or you know what you are doing.
-`);
-    }
-
-    // initialise the db
     try {
         await global.db.init();
         store.dispatch({ type: '[MAIN]:DB:INIT' });
@@ -147,7 +129,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
 protocol.registerStandardSchemes(['bzz']);
 store.dispatch({ type: '[MAIN]:PROTOCOL:REGISTER', payload: { protocol: 'bzz' } });
 
-async function onReady() {
+function onReady() {
     global.config = db.getCollection('SYS_config');
 
     dbSync.initializeListeners();
@@ -156,9 +138,7 @@ async function onReady() {
 
     enableSwarmProtocol();
 
-    if (!Settings.inAutoTestMode) { await UpdateChecker.run(); }
-
-    ipcProviderBackend.init();
+    store.dispatch(runUpdateChecker());
 
     // TODO: Settings.language relies on global.config object being set
     store.dispatch(setLanguageOnMain(Settings.language));
@@ -169,7 +149,7 @@ async function onReady() {
 
     checkTimeSync();
 
-    splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
+    kickStart();
 }
 
 function enableSwarmProtocol() {
@@ -209,8 +189,6 @@ function createCoreWindows() {
 
     // Delegating events to save window bounds on windowStateKeeper
     global.defaultWindow.manage(mainWindow.window);
-
-    if (!Settings.inAutoTestMode) { splashWindow = Windows.create('splash'); }
 }
 
 function checkTimeSync() {
@@ -234,131 +212,19 @@ function checkTimeSync() {
     }
 }
 
-async function kickStart() {
-    initializeKickStartListeners();
-    checkForLegacyChain();
-    await ClientBinaryManager.init();
-    await ethereumNode.init();
+function kickStart() {
+    store.dispatch(runClientBinaryManager());
+
+    store.dispatch(startEthereumNode());
 
     if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
-
-    if (!ethereumNode.isIpcConnected) { throw new Error('Either the node didn\'t start or IPC socket failed to connect.'); }
-    log.info('Connected via IPC to node.');
 
     // Update menu, to show node switching possibilities
     appMenu();
 
-    await handleOnboarding();
+    store.dispatch(handleOnboarding());
 
-    if (splashWindow) { splashWindow.show(); }
-    if (!Settings.inAutoTestMode) { await handleNodeSync(); }
-
-    await startMainWindow();
-}
-
-function checkForLegacyChain() {
-    if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
-        dialog.showMessageBox({
-            type: 'warning',
-            buttons: ['OK'],
-            message: global.i18n.t('mist.errors.legacyChain.title'),
-            detail: global.i18n.t('mist.errors.legacyChain.description')
-        }, () => {
-            shell.openExternal('https://github.com/ethereum/mist/releases');
-            store.dispatch(quitApp());
-        });
-
-        throw new Error('Cant start client due to legacy non-Fork setting.');
-    }
-}
-
-function initializeKickStartListeners() {
-    ClientBinaryManager.on('status', (status, data) => {
-        Windows.broadcast('uiAction_clientBinaryStatus', status, data);
-    });
-
-    ethereumNode.on('nodeConnectionTimeout', () => {
-        Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
-    });
-
-    ethereumNode.on('nodeLog', (data) => {
-        Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
-    });
-
-    ethereumNode.on('state', (state, stateAsText) => {
-        Windows.broadcast('uiAction_nodeStatus', stateAsText,
-            ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
-        );
-    });
-}
-
-async function handleOnboarding() {
-    // Fetch accounts; if none, show the onboarding process
-    const resultData = await ethereumNode.send('eth_accounts', []);
-
-    if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
-        log.info('No accounts setup yet, lets do onboarding first.');
-
-        await new Q((resolve, reject) => {
-            const onboardingWindow = Windows.createPopup('onboardingScreen');
-
-            onboardingWindow.on('closed', () => store.dispatch(quitApp()));
-
-            // Handle changing network types (mainnet, testnet)
-            ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                const newType = ethereumNode.type;
-                const newNetwork = testnet ? 'rinkeby' : 'main';
-
-                log.debug('Onboarding change network', newType, newNetwork);
-
-                ethereumNode.restart(newType, newNetwork)
-                    .then(function nodeRestarted() {
-                        appMenu();
-                    })
-                    .catch((err) => {
-                        log.error('Error restarting node', err);
-                        reject(err);
-                    });
-            });
-
-            ipcMain.on('onBoarding_launchApp', () => {
-                onboardingWindow.removeAllListeners('closed');
-                onboardingWindow.close();
-
-                ipcMain.removeAllListeners('onBoarding_changeNet');
-                ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                resolve();
-            });
-
-            if (splashWindow) { splashWindow.hide(); }
-        });
-    }
-}
-
-function handleNodeSync() {
-    return new Q((resolve, reject) => {
-        nodeSync.on('nodeSyncing', (result) => {
-            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
-        });
-
-        nodeSync.on('stopped', () => {
-            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
-        });
-
-        nodeSync.on('error', (err) => {
-            log.error('Error syncing node', err);
-
-            reject(err);
-        });
-
-        nodeSync.on('finished', () => {
-            nodeSync.removeAllListeners('error');
-            nodeSync.removeAllListeners('finished');
-
-            resolve();
-        });
-    });
+    startMainWindow();
 }
 
 function startMainWindow() {
@@ -369,7 +235,6 @@ function startMainWindow() {
 
 function initializeMainWindowListeners() {
     mainWindow.on('ready', () => {
-        if (splashWindow) { splashWindow.close(); }
         mainWindow.show();
     });
 

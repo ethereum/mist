@@ -217,6 +217,16 @@ class Settings {
         this.saveConfig('swarm.enableOnStart', bool);
     }
 
+    get keystorePath() {
+        return path.join(this.userDataPath, 'accounts');
+    }
+
+    get accounts() {
+        fs.readdir(this.keystorePath, function(error, items) {
+            return items;
+        });
+    }
+
     get skiptimesynccheck() {
         return argv.skiptimesynccheck;
     }

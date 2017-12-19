@@ -100,10 +100,6 @@
                 "title": "Checksum mismatch in downloaded node!",
                 "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
             },
-            "legacyChain": {
-                "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain, use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
-            },
             "swarm": {
                 "notEnabled": "Swarm is not enabled. Please enable it in the menu under Develop > Enable Swarm."
             }

@@ -1,5 +1,3 @@
-
-
 /**
 The IPC provider backend filter and tunnel all incoming request to the ethereum node.
 

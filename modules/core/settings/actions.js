@@ -3,6 +3,8 @@ const Settings = require('../../settings');
 import logger from '../../utils/logger';
 import swarmNode from '../../swarmNode';
 import { SwarmState } from './reducer';
+import clientBinaryManager from '../../clientBinaryManager';
+import UpdateChecker from '../..//updateChecker';
 
 const swarmLog = logger.create('swarm');
 
@@ -163,4 +165,16 @@ export function toggleSwarm(event) {
 
 export function setSwarmEnableOnStart() {
     return { type: '[MAIN]:SWARM:ENABLE_ON_START' };
+}
+
+export function runClientBinaryManager() {
+    clientBinaryManager.init();
+    return { type: '[MAIN]:CLIENT_BINARY_MANAGER:RUN' };
+}
+
+export function runUpdateChecker() {
+    if (!Settings.inAutoTestMode) {
+        UpdateChecker.run();
+        return { type: '[MAIN]:UPDATE_CHECKER:START' };
+    }
 }

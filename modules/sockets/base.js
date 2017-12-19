@@ -1,13 +1,10 @@
 const _ = global._;
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
-
 const log = require('../utils/logger').create('Sockets');
-
 
 const CONNECT_INTERVAL_MS = 1000;
 const CONNECT_TIMEOUT_MS = 3000;
-
 
 /**
  * Socket connecting to Ethereum Node.
@@ -18,9 +15,7 @@ class Socket extends EventEmitter {
 
         this._mgr = socketMgr;
         this._id = id;
-
         this._log = log.create(this._id);
-
         this._state = null;
     }
 

@@ -1,6 +1,5 @@
 global._ = require('./modules/utils/underscore');
 const { app, dialog, ipcMain, shell, protocol } = require('electron');
-const timesync = require('os-timesync');
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
@@ -13,13 +12,19 @@ const Settings = require('./modules/settings');
 
 import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
-import { setLanguageOnMain, toggleSwarm, runClientBinaryManager, runUpdateChecker } from './modules/core/settings/actions';
-import { startEthereumNode, handleOnboarding } from './modules/core/ethereum/actions';
-import { SwarmState } from './modules/core/settings/reducer';
+import { setLanguageOnMain, toggleSwarm, runClientBinaryManager, runUpdateChecker, checkTimeSync } from './modules/core/settings/actions';
+import { runSwarm } from './modules/core/swarm/actions';
+import { startEthereumNode, handleOnboarding } from './modules/core/ethereum_node/actions';
+import { NodeState } from './modules/core/constants';
 import swarmNode from './modules/swarmNode.js';
 
 Q.config({
     cancellation: true,
+});
+
+// For debugging
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
 
 global.store = configureReduxStore();
@@ -147,14 +152,14 @@ function onReady() {
 
     createCoreWindows();
 
-    checkTimeSync();
+    // store.dispatch(checkTimeSync());  // TODO: Investigate if this is still necessary 
 
     kickStart();
 }
 
 function enableSwarmProtocol() {
     protocol.registerHttpProtocol('bzz', (request, callback) => {
-        if ([SwarmState.Disabling, SwarmState.Disabled].includes(store.getState().settings.swarmState)) {
+        if ([NodeState.Disabling, NodeState.Disabled].includes(store.getState().swarm.nodeState)) {
             const error = global.i18n.t('mist.errors.swarm.notEnabled');
             dialog.showErrorBox('Note', error);
             callback({ error });
@@ -164,7 +169,7 @@ function enableSwarmProtocol() {
 
         const redirectPath = `${Settings.swarmURL}/${request.url.replace('bzz:/', 'bzz://')}`;
 
-        if (store.getState().settings.swarmState === SwarmState.Enabling) {
+        if (store.getState().swarm.nodeState === NodeState.Enabling) {
             swarmNode.on('started', () => {
                 callback({ method: request.method, referrer: request.referrer, url: redirectPath });
             });
@@ -191,33 +196,12 @@ function createCoreWindows() {
     global.defaultWindow.manage(mainWindow.window);
 }
 
-function checkTimeSync() {
-    if (!Settings.skiptimesynccheck) {
-        timesync.checkEnabled((err, enabled) => {
-            if (err) {
-                log.error('Couldn\'t infer if computer automatically syncs time.', err);
-                return;
-            }
-
-            if (!enabled) {
-                dialog.showMessageBox({
-                    type: 'warning',
-                    buttons: ['OK'],
-                    message: global.i18n.t('mist.errors.timeSync.title'),
-                    detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
-                }, () => {
-                });
-            }
-        });
-    }
-}
-
 function kickStart() {
     store.dispatch(runClientBinaryManager());
 
     store.dispatch(startEthereumNode());
 
-    if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
+    store.dispatch(runSwarm());
 
     // Update menu, to show node switching possibilities
     appMenu();

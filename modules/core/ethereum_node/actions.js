@@ -3,11 +3,98 @@ const Settings = require('../../settings');
 import logger from '../../utils/logger';
 import ethereumNode from '../../ethereumNode';
 import ipcProviderBackend from '../../ipc/ipcProviderBackend';
-import { NodeState } from './reducer';
+import { NodeType, NodeNetwork, NodeSyncMode } from './reducer';
+import { NodeState } from '../constants';
+import ClientBinaryManager from '../../clientBinaryManager';
 
 const ethereumNodeLog = logger.create('etherumNode');
 
-export function startEthereumNode(nodeOptions = {}) {
+export function connectRemote() {
+
+}
+export function startEthereumNode() {
+    return async (dispatch, getState) => {
+        dispatch({ type: 'ETHEREUM:NODE:ENABLING' });
+
+        let args = [];
+
+        switch (getState().ethereumNode.type) {
+          case NodeType.Geth:
+              args.push([
+                  '-ws', // Enable WebSockets
+                  '--syncmode', `--${getState().ethereumNode.syncMode.toLowerCase()}`,
+                  '--keystore', Settings.keystorePath
+              ]);
+
+              switch (getState().ethereumNode.network) {
+                  case NodeNetwork.Rinkeby:
+                      args.push('--rinkeby');
+                  case NodeNetwork.Ropsten:
+                      args.push('--ropsten');
+                  case NodeNetwork.Kovan:
+                      const error = "Kovan is not currently available in Geth."
+                      ethereumNodeLog.error(error);
+                      throw Error;
+              }
+          }
+
+          const customNodeOptions = Settings.nodeOptions;
+          if (customNodeOptions) {
+            ethereumNodeLog.debug('Custom node options', customNodeOptions);
+            args.push(customNodeOptions);
+          }
+
+          const binPath = getBinPath(getState().ethereumNode.type);
+
+          ethereumNodeLog.trace('Spawn node', binPath, args);
+          dispatch({ type: 'ETHEREUM:NODE:SPAWN', process });
+
+          const process = spawn(binPath, args);
+
+          process.stdout.on('data', (data) => {
+              const dataString = data.toString();
+              ethereumNodeLog.info(dataString);
+
+              switch (getState().ethereumNode.type) {
+                  case NodeType.Geth:
+                      if (dataString.includes('WebSocket endpoint opened')) {
+                        const webSocketAddress = dataString.match(/ws:\/\/.*/)[0];
+                        dispatch({ type: 'ETHEREUM:NODE:ENABLED', webSocketAddress });
+                      }
+              }
+          });
+
+          process.stderr.on('data', (data) => {
+              const dataString = data.toString();
+              ethereumNodeLog.error(dataString);
+          });
+    }
+}
+
+function getBinPath(nodeType) {
+  const client = ClientBinaryManager.getClient(nodeType);
+
+  if (!client || !client.binPath) {
+    const error = `Node "${nodeType}" binPath is not available.`;
+    ethereumNodeLog.error(error);
+    throw new Error(error);
+  }
+
+  switch (NodeType) {
+    case NodeType.Geth: 
+      return client.binPath;
+  }
+}
+
+export function stopNode(nodeOptions = {}) {
+    return async (dispatch, getState) => {
+      // Disconnect
+
+      // Disable 
+    }
+}
+
+export function startEthereumNode2(nodeOptions = {}) {
     return async (dispatch, getState) => {
       ipcProviderBackend.init();
 
@@ -52,7 +139,7 @@ export function startEthereumNode(nodeOptions = {}) {
 
 export function handleOnboarding() {
     return async (dispatch, getState) => {
-        if (Settings.accounts) {
+        if (Settings.accounts.length > 0) {
             dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
             return;
         }

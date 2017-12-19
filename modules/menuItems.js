@@ -9,8 +9,9 @@ const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
-import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
-import { SwarmState } from './core/settings/reducer';
+import { setLanguage } from './core/settings/actions';
+import { toggleSwarm, toggleSwarmOnStart } from './core/swarm/actions';
+import { NodeState } from './core/constants';
 import swarmNode from './swarmNode.js';
 
 // Make easier to return values for specific systems
@@ -171,7 +172,7 @@ let menuTempl = function (webviews) {
         {
             label: i18n.t('mist.applicationMenu.file.swarmUpload'),
             accelerator: 'Shift+CommandOrControl+U',
-            enabled: store.getState().settings.swarmState == SwarmState.Enabled,
+            enabled: store.getState().swarm.nodeState == NodeState.Enabled,
             click() {
                 const focusedWindow = BrowserWindow.getFocusedWindow();
                 const paths = dialog.showOpenDialog(focusedWindow, {
@@ -563,7 +564,7 @@ let menuTempl = function (webviews) {
         {
             label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
             enabled: true,
-            checked: [SwarmState.Enabling, SwarmState.Enabled].includes(global.store.getState().settings.swarmState),
+            checked: [NodeState.Enabling, NodeState.Enabled].includes(global.store.getState().swarm.nodeState),
             type: 'checkbox',
             click() {
                 store.dispatch(toggleSwarm());

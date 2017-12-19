@@ -332,7 +332,6 @@
             }
 
         } else if (data.type === 'uiAction_windowMessage') {
-            console.log(data);
             var params = data.message;
 
             if (mist.callbacks[params.type]) {
@@ -349,7 +348,6 @@
             }
         }else if(data.type === 'uiAction_windowClose')
         {
-            console.log(data.type);
             for(var i = 0;i<mist.popEventsCallback.length;i++)
             {
                 mist.popEventsCallback[i](false);

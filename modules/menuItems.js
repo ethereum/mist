@@ -655,7 +655,10 @@ let menuTempl = function (webviews) {
     // const gitPath = 'wanchain/wanwallet';
     helpMenu.push(
         {
-        label: "WanWallet Version: " + version,
+            label: "WanWallet Version: " + version,
+            click() {
+                shell.openExternal('https://github.com/wanchain/go-wanchain/releases');
+            },
         },
 
         // {

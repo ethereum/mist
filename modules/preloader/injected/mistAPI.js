@@ -51,6 +51,12 @@
         callbacks: {},
         //cranelv add permanent callbacks; 2017-11-19
         permanentCallbacks: {},
+        popEventsCallback: [],
+        popWindowEvents(func)
+        {
+            func(true);
+            this.popEventsCallback.push(func);
+        },
         addPermanentCallbacks(eventType,callback)
         {
             if(!this.permanentCallbacks[eventType]) {
@@ -326,6 +332,7 @@
             }
 
         } else if (data.type === 'uiAction_windowMessage') {
+            console.log(data);
             var params = data.message;
 
             if (mist.callbacks[params.type]) {
@@ -340,6 +347,14 @@
                     cb(params.error, params.value);
                 });
             }
+        }else if(data.type === 'uiAction_windowClose')
+        {
+            console.log(data.type);
+            for(var i = 0;i<mist.popEventsCallback.length;i++)
+            {
+                mist.popEventsCallback[i](false);
+            }
+            mist.popEventsCallback = [];
         }
     });
 

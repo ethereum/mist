@@ -108,7 +108,7 @@ const postMessage = function (payload) {
 };
 
 // custom Events
-['uiAction_windowMessage', 'mistAPI_callMenuFunction'].forEach(function (type) {
+['uiAction_windowMessage', 'mistAPI_callMenuFunction','uiAction_windowClose'].forEach(function (type) {
     ipcRenderer.on(type, function onIpcRenderer(e, result) {
 
         // this type needs special packaging

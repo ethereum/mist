@@ -4,7 +4,6 @@ const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
 
-
 class Window extends EventEmitter {
     constructor(mgr, type, opts) {
         super();
@@ -26,7 +25,7 @@ class Window extends EventEmitter {
             icon: global.icon,
             titleBarStyle: 'hidden-inset', // hidden-inset: more space
             backgroundColor: '#F6F6F6',
-            acceptFirstMouse: true,
+            acceptFirstMouse: false,
             darkTheme: true,
             webPreferences: {
                 nodeIntegration: false,
@@ -82,7 +81,6 @@ class Window extends EventEmitter {
 
         this.window.once('closed', () => {
             this._log.debug('Closed');
-
             this.isShown = false;
             this.isClosed = true;
             this.isContentReady = false;
@@ -91,6 +89,12 @@ class Window extends EventEmitter {
         });
 
         this.window.once('close', (e) => {
+            if(this.isPopup)
+            {
+                const mainWindow = windows.getByType('main');
+                mainWindow.send('uiAction_windowClose','aa',2, null, '11');
+                console.log('uiAction_windowClose');
+            }
             this.emit('close', e);
         });
 
@@ -161,6 +165,7 @@ class Window extends EventEmitter {
         if (this.isClosed) {
             return;
         }
+
 
         this._log.debug('Close');
 
@@ -255,6 +260,7 @@ class Windows {
             useWeb3: true,
             electronOptions: {
                 title: '',
+                modal:true,
                 width: 400,
                 height: 400,
                 resizable: false,
@@ -275,6 +281,7 @@ class Windows {
 
         if (parent) {
             opts.electronOptions.parent = parent.window;
+            opts.electronOptions.modal = true;
         }
 
 
@@ -294,7 +301,6 @@ class Windows {
         log.info(`Create popup window: ${type}`);
 
         const wnd = this.create(type, opts, callback);
-
         wnd.once('ready', () => {
             this.loading.hide();
         });
@@ -364,6 +370,5 @@ class Windows {
         }
     }
 }
-
-
-module.exports = new Windows();
+let windows = new Windows();
+module.exports = windows;

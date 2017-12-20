@@ -1,4 +1,4 @@
-3stack:bignumber@2.0.7
+3stack:bignumber@2.0.0
 agnito:simptip@0.0.1
 aldeed:simple-schema@1.5.3
 alexvandesande:identicon@2.0.2
@@ -20,7 +20,6 @@ cfs:http-methods@0.0.32
 check@1.2.4
 chuangbo:cookie@1.1.0
 coffeescript@1.11.1_4
-cosmos:browserify@0.10.0
 ddp@1.2.5
 ddp-client@1.3.2
 ddp-common@1.2.8
@@ -30,11 +29,11 @@ diff-sequence@1.0.7
 ecmascript@0.6.1
 ecmascript-runtime@0.3.15
 ejson@1.0.13
-ethereum:accounts@0.3.12
+ethereum:accounts@0.4.0
 ethereum:blocks@0.3.2
-ethereum:dapp-styles@0.5.7
-ethereum:elements@0.7.10
-ethereum:tools@0.6.0
+ethereum:dapp-styles@0.5.8
+ethereum:elements@0.7.17
+ethereum:tools@0.4.1
 ethereum:web3@0.15.3
 fastclick@1.0.13
 frozeman:animation-helper@0.2.6

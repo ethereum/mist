@@ -20,13 +20,6 @@ export const NodeSyncMode = {
     Light: 'Light',
 };
 
-export const InfuraEndpoints = {
-    Main: 'https://mainnet.infura.io',
-    Ropsten: 'https://ropsten.infura.io',
-    Rinkeby: 'https://rinkeby.infura.io',
-    Kovan: 'https://kovan.infura.io'
-};
-
 export const initialState = {
     state: NodeState.Disabled,
     type: NodeType.Geth,
@@ -34,8 +27,7 @@ export const initialState = {
     syncMode: NodeSyncMode.Light,
     rpc: null,
     process: null,
-    webSocketAddress: null,
-    infuraToken: '76PyENot1npWxmi8u28i'
+    providerAddress: null,
 };
 
 const ethereumNode = (state = initialState, action) => {
@@ -51,7 +43,7 @@ const ethereumNode = (state = initialState, action) => {
         case '[ETHEREUM]:NODE:ENABLED':
             return Object.assign({}, state, {
                 state: NodeState.Enabled,
-                webSocketAddress: action.payload.webSocketAddress
+                providerAddress: action.payload.webSocketAddress
             });
         case '[ETHEREUM]:NODE:CONNECTED':
             return Object.assign({}, state, {

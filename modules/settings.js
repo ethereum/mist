@@ -5,7 +5,8 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
-import { syncBuildConfig, syncFlags, setSwarmEnableOnStart } from './core/settings/actions';
+import { syncBuildConfig, syncFlags } from './core/settings/actions';
+import { setSwarmEnableOnStart } from './core/swarm/actions';
 import logger from './utils/logger';
 
 const settingsLog = logger.create('Settings');

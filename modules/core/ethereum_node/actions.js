@@ -1,20 +1,29 @@
-const Settings = require('../../settings');
-
+import { ipcMain } from 'electron';
+import Settings from '../../settings';
 import logger from '../../utils/logger';
 import ethereumNode from '../../ethereumNode';
 import ipcProviderBackend from '../../ipc/ipcProviderBackend';
 import { NodeType, NodeNetwork, NodeSyncMode } from './reducer';
 import { NodeState } from '../constants';
 import ClientBinaryManager from '../../clientBinaryManager';
+import { Infura } from '../constants';
+import Windows from '../../windows';
 
 const ethereumNodeLog = logger.create('etherumNode');
 
 export function connectRemote() {
-
-}
-export function startEthereumNode() {
     return async (dispatch, getState) => {
-        dispatch({ type: 'ETHEREUM:NODE:ENABLING' });
+        const rpc = `${Infura.ethereum.endpoints[getState().ethereumNode.network]}/${Infura.ethereum.token}`;
+        dispatch({ type: '[ETHEREUM]:NODE:CONNECTED', rpc });
+    }
+}
+
+export function startEthereumNode() {
+    return (dispatch, getState) => {
+        dispatch(connectRemote());
+        return;
+
+        dispatch({ type: '[ETHEREUM]:NODE:ENABLING' });
 
         let args = [];
 
@@ -34,7 +43,7 @@ export function startEthereumNode() {
                   case NodeNetwork.Kovan:
                       const error = "Kovan is not currently available in Geth."
                       ethereumNodeLog.error(error);
-                      throw Error;
+                      throw Error(error);
               }
           }
 
@@ -47,7 +56,7 @@ export function startEthereumNode() {
           const binPath = getBinPath(getState().ethereumNode.type);
 
           ethereumNodeLog.trace('Spawn node', binPath, args);
-          dispatch({ type: 'ETHEREUM:NODE:SPAWN', process });
+          dispatch({ type: '[ETHEREUM]:NODE:SPAWN', process });
 
           const process = spawn(binPath, args);
 
@@ -59,7 +68,7 @@ export function startEthereumNode() {
                   case NodeType.Geth:
                       if (dataString.includes('WebSocket endpoint opened')) {
                         const webSocketAddress = dataString.match(/ws:\/\/.*/)[0];
-                        dispatch({ type: 'ETHEREUM:NODE:ENABLED', webSocketAddress });
+                        dispatch({ type: '[ETHEREUM]:NODE:ENABLED', webSocketAddress });
                       }
               }
           });
@@ -139,36 +148,32 @@ export function startEthereumNode2(nodeOptions = {}) {
 
 export function handleOnboarding() {
     return async (dispatch, getState) => {
-        if (Settings.accounts.length > 0) {
+        if (Settings.accounts) {
             dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
             return;
         }
 
-          // Try to fetch accounts from node.
-          // If none, show the onboarding process.
-          const ethAccounts = await ethereumNode.send('eth_accounts', []);
+        // Try to fetch accounts from node.
+        // If none, show the onboarding process.
+        const accounts = await global.web3.eth.getAccounts();
+        if (accounts.length > 0) {
+            dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
+            return;
+        }
 
-          if (ethAccounts.result.length > 0) {
-              dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
-              return;
-          }
+        // dispatch({ type: '[ETHEREUM]:ONBOARDING:START' });
 
-          dispatch({ type: '[ETHEREUM]:ONBOARDING:START' });
+        // const onboardingWindow = Windows.createPopup('onboardingScreen');
+        // onboardingWindow.on('closed', () => store.dispatch(quitApp()));
 
-        await new Promise((resolve, reject) => {
-            const onboardingWindow = Windows.createPopup('onboardingScreen');
-            onboardingWindow.on('closed', () => store.dispatch(quitApp()));
+        // ipcMain.on('onBoarding_launchApp', () => {
+        //     onboardingWindow.removeAllListeners('closed');
+        //     onboardingWindow.close();
 
-            ipcMain.on('onBoarding_launchApp', () => {
-                onboardingWindow.removeAllListeners('closed');
-                onboardingWindow.close();
+        //     ipcMain.removeAllListeners('onBoarding_launchApp');
 
-                ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                dispatch({ type: '[ETHEREUM]:ONBOARDING:FINISHED' });
-                resolve(true);
-            });
-        });
+        //     dispatch({ type: '[ETHEREUM]:ONBOARDING:FINISHED' });
+        // });
     }
 };
 

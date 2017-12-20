@@ -52,7 +52,7 @@ Template['elements_nodeInfo'].onCreated(function(){
             TemplateVar.set(template, 'network', network.type);
             TemplateVar.set(template, 'networkName', network.name);
         }
-    });
+    }).then(console.log);
 
     // CHECK SYNCING
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {

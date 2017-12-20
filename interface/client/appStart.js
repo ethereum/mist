@@ -65,7 +65,6 @@ mistInit = function () {
     });
 };
 
-
 Meteor.startup(function () {
     console.info('Meteor starting up...');
 

@@ -29,6 +29,9 @@ process.on('unhandledRejection', (reason, p) => {
 
 global.store = configureReduxStore();
 
+import Web3 from 'web3';
+global.web3 = new Web3(store.getState().ethereumNode.providerAddress || 'https://mainnet.infura.io/76PyENot1npWxmi8u28i');
+
 Settings.init();
 
 const db = global.db = require('./modules/db');

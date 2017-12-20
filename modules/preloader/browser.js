@@ -39,50 +39,19 @@ const sanatizeJsonRpc = function (message) {
 
 // Wait for post messages
 window.addEventListener('message', function message(event) {
-
-
+    console.log('MESSAGE IN BROWSER.JS: ' + event.data)
 
     let data;
+
     try {
         data = JSON.parse(event.data);
     } catch(e){
         data = event.data;
     }
 
-
-
     if (typeof data !== 'object') {
         return;
     }
-
-
-    // EthereumProvider: connect
-    if (data.type === 'create') {
-        ipcRenderer.send('ipcProvider-create');
-
-    // EthereumProvider: write
-    } else if (data.type === 'write') {
-        let messageIsArray = _.isArray(data.message);
-
-        // only accept valid JSON rpc requests
-        if (messageIsArray) {
-            for (let i = 0; i < data.message.length; i++) {
-                if (isValidJsonRpc(data.message[i])) {
-                    data.message[i] = sanatizeJsonRpc(data.message[i]);
-                } else {
-                    return;
-                }
-            }
-        } else {
-            if (isValidJsonRpc(data.message)) {
-                data.message = sanatizeJsonRpc(data.message);
-            } else {
-                return;
-            }
-        }
-
-        // make sure we only send allowed properties
-        ipcRenderer.send('ipcProvider-write', JSON.stringify(data.message));
 
     // mistAPI
     } else if (/^mistAPI_[a-z]/i.test(data.type)) {
@@ -133,25 +102,14 @@ const postMessage = function (payload) {
     });
 });
 
-
-// load ethereumProvider
-const bignumber = fs.readFileSync(path.join(__dirname, '/injected/BigNumber.js')).toString();
-const eventEmitter3 = fs.readFileSync(path.join(__dirname, '/injected/EventEmitter3.js')).toString();
-let mistAPI = fs.readFileSync(path.join(__dirname, '/injected/mistAPI.js')).toString();
-const ethereumProvider = fs.readFileSync(path.join(__dirname, '/injected/EthereumProvider.js')).toString();
-
 mistAPI = mistAPI.replace('__version__', packageJson.version)
         .replace('__license__', packageJson.license)
         .replace('__platform__', process.platform)
         .replace('__solidityVersion__', String(packageJson.dependencies.solc).match(/\d+\.\d+\.\d+/)[0]);
 
 webFrame.executeJavaScript(
-    mistAPI +
-    bignumber +
-    eventEmitter3 +
-    ethereumProvider
+    mistAPI
 );
-
 
 // notifiy the tab to store the webview id
 ipcRenderer.sendToHost('setWebviewId');

@@ -1,3 +1,4 @@
+import Settings  from '../../settings';
 import logger from '../../utils/logger';
 import swarmNode from '../../swarmNode';
 import { NodeState } from '../constants';

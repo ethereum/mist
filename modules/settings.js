@@ -7,6 +7,7 @@ const lodash = require('lodash');
 
 import { syncBuildConfig, syncFlags } from './core/settings/actions';
 import { setSwarmEnableOnStart } from './core/swarm/actions';
+import { setIPFSEnableOnStart } from './core/ipfs/actions';
 import logger from './utils/logger';
 
 const settingsLog = logger.create('Settings');
@@ -214,6 +215,25 @@ class Settings {
         return enableOnStart;
     }
 
+    get enableIPFSOnStart() {
+        if (global.mode === 'wallet') {
+            return false;
+        }
+
+        if (argv.ipfs) {
+            return true;
+        }
+
+        const enableOnStart = this.loadConfig('ipfs.enableOnStart');
+
+        // Sync to redux
+        if (enableOnStart) {
+            store.dispatch(setIPFSEnableOnStart());
+        }
+
+        return enableOnStart;
+    }
+
     set enableSwarmOnStart(bool) {
         this.saveConfig('swarm.enableOnStart', bool);
     }
@@ -239,6 +259,9 @@ class Settings {
             },
             swarm: {
                 enableOnStart: argv.swarm
+            },
+            ipfs: {
+                enableOnStart: argv.ipfs
             }
         });
     }
@@ -376,6 +399,13 @@ const argv = require('yargs')
         },
         swarm: {
             describe: 'Enable Swarm on start.',
+            requiresArg: false,
+            nargs: 0,
+            type: 'boolean',
+            group: 'Mist options:',
+        },
+        ipfs: {
+            describe: 'Enable IPFS on start.',
             requiresArg: false,
             nargs: 0,
             type: 'boolean',

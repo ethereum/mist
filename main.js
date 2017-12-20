@@ -14,7 +14,9 @@ import configureReduxStore from './modules/core/store';
 import { quitApp } from './modules/core/ui/actions';
 import { setLanguageOnMain, toggleSwarm, runClientBinaryManager, runUpdateChecker, checkTimeSync } from './modules/core/settings/actions';
 import { runSwarm } from './modules/core/swarm/actions';
-import { startEthereumNode, handleOnboarding } from './modules/core/ethereum_node/actions';
+import { runIPFS } from './modules/core/ipfs/actions';
+import { startEthereumNode } from './modules/core/ethereum_node/actions';
+import { handleOnboarding } from './modules/core/accounts/actions';
 import { NodeState } from './modules/core/constants';
 import swarmNode from './modules/swarmNode.js';
 
@@ -200,16 +202,18 @@ function createCoreWindows() {
 }
 
 function kickStart() {
+    store.dispatch(handleOnboarding());
+
     store.dispatch(runClientBinaryManager());
 
     store.dispatch(startEthereumNode());
 
     store.dispatch(runSwarm());
 
+    store.dispatch(runIPFS());
+
     // Update menu, to show node switching possibilities
     appMenu();
-
-    store.dispatch(handleOnboarding());
 
     startMainWindow();
 }

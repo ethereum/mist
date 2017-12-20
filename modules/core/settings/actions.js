@@ -1,10 +1,8 @@
-const Settings = require('../../settings');
-const timesync = require('os-timesync');
-const { dialog } = require('electron');
-
+import Settings from '../../settings';
+import timesync from 'os-timesync';
+import { dialog } from 'electron';
 import clientBinaryManager from '../../clientBinaryManager';
 import UpdateChecker from '../..//updateChecker';
-
 import logger from '../../utils/logger';
 const settingsLog = logger.create('Settings');
 

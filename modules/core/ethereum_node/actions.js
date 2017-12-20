@@ -6,15 +6,15 @@ import ipcProviderBackend from '../../ipc/ipcProviderBackend';
 import { NodeType, NodeNetwork, NodeSyncMode } from './reducer';
 import { NodeState } from '../constants';
 import ClientBinaryManager from '../../clientBinaryManager';
-import { Infura } from '../constants';
+import { InfuraEndpoints } from '../constants';
 import Windows from '../../windows';
 
 const ethereumNodeLog = logger.create('etherumNode');
 
 export function connectRemote() {
     return async (dispatch, getState) => {
-        const rpc = `${Infura.ethereum.endpoints[getState().ethereumNode.network]}/${Infura.ethereum.token}`;
-        dispatch({ type: '[ETHEREUM]:NODE:CONNECTED', rpc });
+        const currentProviderAddress = InfuraEndpoints.ethereum.websockets[getState().ethereumNode.network];
+        dispatch({ type: '[ETHEREUM]:NODE:CONNECTED', currentProviderAddress });
     }
 }
 
@@ -145,37 +145,6 @@ export function startEthereumNode2(nodeOptions = {}) {
     };
   };
 }
-
-export function handleOnboarding() {
-    return async (dispatch, getState) => {
-        if (Settings.accounts) {
-            dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
-            return;
-        }
-
-        // Try to fetch accounts from node.
-        // If none, show the onboarding process.
-        const accounts = await global.web3.eth.getAccounts();
-        if (accounts.length > 0) {
-            dispatch({ type: '[ETHEREUM]:ONBOARDING:SKIP' });
-            return;
-        }
-
-        // dispatch({ type: '[ETHEREUM]:ONBOARDING:START' });
-
-        // const onboardingWindow = Windows.createPopup('onboardingScreen');
-        // onboardingWindow.on('closed', () => store.dispatch(quitApp()));
-
-        // ipcMain.on('onBoarding_launchApp', () => {
-        //     onboardingWindow.removeAllListeners('closed');
-        //     onboardingWindow.close();
-
-        //     ipcMain.removeAllListeners('onBoarding_launchApp');
-
-        //     dispatch({ type: '[ETHEREUM]:ONBOARDING:FINISHED' });
-        // });
-    }
-};
 
 export function handleNodeSync() {
   return (dispatch, getState) => {

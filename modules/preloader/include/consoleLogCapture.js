@@ -35,11 +35,13 @@ module.exports = function (windowId) {
             return function () {
                 const args = Array.from(arguments);
 
-                const suffix = `@ ${
-                    this.lineNumber
-                        ? `${this.fileName}:${this.lineNumber}:1`
-                        : extractLineNumberFromStack(new Error().stack)}`
-                ;
+                let suffix = '@ ';
+                if (this && this.lineNumber) {
+                    suffix += `${this.fileName}:${this.lineNumber}:1`;
+                } else {
+                    suffix += extractLineNumberFromStack(new Error().stack);
+
+                }
 
                 origMethod.apply(console, args.concat([suffix]));
 

@@ -27,7 +27,9 @@ export const initialState = {
     syncMode: NodeSyncMode.Light,
     rpc: null,
     process: null,
-    providerAddress: null,
+    currentProviderAddress: null,
+    latestBlockHeader: null,
+    accounts: []
 };
 
 const ethereumNode = (state = initialState, action) => {
@@ -38,16 +40,16 @@ const ethereumNode = (state = initialState, action) => {
             });
         case '[ETHEREUM]:NODE:SPAWN':
             return Object.assign({}, state, {
-                process: action.payload.process
+                process: action.process
             });
         case '[ETHEREUM]:NODE:ENABLED':
             return Object.assign({}, state, {
                 state: NodeState.Enabled,
-                providerAddress: action.payload.webSocketAddress
             });
         case '[ETHEREUM]:NODE:CONNECTED':
             return Object.assign({}, state, {
                 state: NodeState.Connected,
+                currentProviderAddress: action.currentProviderAddress
             });
         case '[ETHEREUM]:NODE:DISABLING':
             return Object.assign({}, state, {
@@ -62,6 +64,14 @@ const ethereumNode = (state = initialState, action) => {
         case '[ETHEREUM]:NODE:ERROR':
             return Object.assign({}, state, {
                 state: NodeState.Error
+            });
+        case '[ETHEREUM]:NETWORK:NEW_BLOCK_HEADER':
+            return Object.assign({}, state, {
+                latestBlockHeader: action.latestBlockHeader
+            });
+        case '[ETHEREUM]:ACCOUNTS:SYNC':
+            return Object.assign({}, state, {
+                accounts: action.accounts
             });
         default:
             return state;

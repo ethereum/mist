@@ -1,4 +1,7 @@
-const { getLanguage, setLatestBlockHeader } = require('./actions.js');
+import Web3 from 'web3';
+import { getLanguage, setLatestBlockHeader } from './actions';
+
+web3 = new Web3(Web3.givenProvider || store.getState().ethereumNode.currentProviderAddress);
 
 /**
 The init function of Mist
@@ -8,12 +11,15 @@ The init function of Mist
 mistInit = function () {
     console.info('Initialise Mist Interface');
 
+    web3.eth.getBlock('latest').then(function(block) {
+        store.dispatch(setLatestBlockHeader(block));
+    });
     let subscription = web3.eth.subscribe('newBlockHeaders', function(error, result) {
         if (!error) {
             console.log(error);
         }
-    }).on("data", function(blockHeader) {
-        global.latestBlockHeader = blockHeader; // Quick global hack until we can get redux working like so: store.dispatch(setLatestBlockHeader(blockHeader));
+    }).on('data', function(blockHeader) {
+        store.dispatch(setLatestBlockHeader(blockHeader));
     });
 
     Tabs.onceSynced.then(function () {
@@ -66,7 +72,6 @@ mistInit = function () {
 
 Meteor.startup(function () {
     console.info('Meteor starting up...');
-
 
     if (!location.hash) {  // Main window
         mistInit();

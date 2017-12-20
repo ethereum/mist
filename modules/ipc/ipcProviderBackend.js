@@ -60,6 +60,8 @@ class IpcProviderBackend {
         });
 
         log.trace('Loaded processors', _.keys(this._processors));
+
+        store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
     }
 
 

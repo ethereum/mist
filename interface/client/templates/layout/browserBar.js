@@ -157,7 +157,7 @@ Template['layout_browserBar'].events({
         var url = Helpers.sanitizeUrl(url);
         var tabId = Helpers.getTabIdByUrl(url);
 
-        console.log('Submitted new URL:' + url);
+        console.log('Submitted new URL: ' + url);
 
         // update current tab url
         Tabs.update(tabId, { $set: {

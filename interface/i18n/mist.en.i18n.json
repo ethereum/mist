@@ -61,9 +61,8 @@
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
                 "runTests": "Run tests",
-                "logFiles": "Show log file",
+                "logFiles": "Show log files",
                 "openRemix": "Open Remix IDE",
-                "externalNode": "using external node",
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
@@ -71,7 +70,8 @@
                 "fullNode": "Store full blockchain",
                 "lightNode": "Use light Node (experimental!)",
                 "startMining": "⛏ Start mining",
-                "stopMining": "⛏ Stop mining"
+                "stopMining": "⛏ Stop mining",
+                "enableSwarm": "Enable Swarm"
             },
             "window": {
                 "label": "Window",
@@ -103,6 +103,9 @@
             "legacyChain": {
                 "title": "Legacy chain detected",
                 "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain, use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+            },
+            "swarm": {
+                "notEnabled": "Swarm is not enabled. Please enable it in the menu under Develop > Enable Swarm."
             }
         },
         "rightClick": {

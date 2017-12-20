@@ -4,13 +4,14 @@ const path = require('path');
 const Windows = require('./windows');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('menuItems');
+const swarmLog = require('./utils/logger').create('swarm');
 const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
-const swarmNode = require('./swarmNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
-import { setLanguage } from './core/settings/actions';
-
+import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
+import { SwarmState } from './core/settings/reducer';
+import swarmNode from './swarmNode.js';
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -97,27 +98,29 @@ let menuTempl = function (webviews) {
                 label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
                 click() {
                     Windows.createPopup('about');
-                },
+                }
             },
             {
                 label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
                 click() {
                     updateChecker.runVisibly();
-                },
-            }, {
+                }
+            },
+            {
                 label: i18n.t('mist.applicationMenu.app.checkForNodeUpdates'),
                 click() {
                     // remove skipVersion
                     fs.writeFileSync(
                         path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
                         '' // write no version
-                    );
+                        );
 
                     // true = will restart after updating and user consent
                     ClientBinaryManager.init(true);
-                },
-            }, {
-                type: 'separator',
+                }
+            },
+            {
+                    type: 'separator',
             },
             {
                 label: i18n.t('mist.applicationMenu.app.services', { app: Settings.appName }),
@@ -146,19 +149,57 @@ let menuTempl = function (webviews) {
             }
         );
     }
-    fileMenu.push(
-        { label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
-            accelerator: 'CommandOrControl+Q',
-            click() {
-                app.quit();
-            },
-        });
+
+    fileMenu.push({
+        label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
+        accelerator: 'CommandOrControl+Q',
+        click() {
+            app.quit();
+        },
+    });
+
     menu.push({
         label: i18n.t('mist.applicationMenu.app.label', { app: Settings.appName }),
         submenu: fileMenu,
     });
 
-    // ACCOUNTS
+    let swarmUpload = [];
+    if (global.mode !== 'wallet') {
+        swarmUpload.push({
+            type: 'separator',
+        },
+        {
+            label: i18n.t('mist.applicationMenu.file.swarmUpload'),
+            accelerator: 'Shift+CommandOrControl+U',
+            enabled: store.getState().settings.swarmState == SwarmState.Enabled,
+            click() {
+                const focusedWindow = BrowserWindow.getFocusedWindow();
+                const paths = dialog.showOpenDialog(focusedWindow, {
+                    properties: ['openFile', 'openDirectory']
+                });
+                if (paths && paths.length === 1) {
+                    const isDir = fs.lstatSync(paths[0]).isDirectory();
+                    const defaultPath = path.join(paths[0], 'index.html');
+                    const uploadConfig = {
+                        path: paths[0],
+                        kind: isDir ? 'directory' : 'file',
+                        defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
+                    };
+                    swarmNode.upload(uploadConfig).then((hash) => {
+                        focusedWindow.webContents.executeJavaScript(`
+                          Tabs.update('browser', {$set: {
+                              url: 'bzz://${hash}',
+                              redirect: 'bzz://${hash}'
+                          }});
+                          LocalStore.set('selectedTab', 'browser');
+                          `);
+                        swarmLog.info('Hash uploaded:', hash);
+                    }).catch(e => swarmLog.error(e));
+                }
+            }
+        });
+    }
+
     menu.push({
         label: i18n.t('mist.applicationMenu.file.label'),
         submenu: [
@@ -223,39 +264,9 @@ let menuTempl = function (webviews) {
                     },
                 ],
             },
-            {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.file.swarmUpload'),
-                accelerator: 'Shift+CommandOrControl+U',
-                click() {
-                    const focusedWindow = BrowserWindow.getFocusedWindow();
-                    const paths = dialog.showOpenDialog(focusedWindow, {
-                        properties: ['openFile', 'openDirectory']
-                    });
-                    if (paths && paths.length === 1) {
-                        const isDir = fs.lstatSync(paths[0]).isDirectory();
-                        const defaultPath = path.join(paths[0], 'index.html');
-                        const uploadConfig = {
-                            path: paths[0],
-                            kind: isDir ? 'directory' : 'file',
-                            defaultFile: fs.existsSync(defaultPath) ? '/index.html' : null
-                        };
-                        swarmNode.upload(uploadConfig).then((hash) => {
-                            focusedWindow.webContents.executeJavaScript(`
-                              Tabs.update('browser', {$set: {
-                                  url: 'bzz://${hash}',
-                                  redirect: 'bzz://${hash}'
-                              }});
-                              LocalStore.set('selectedTab', 'browser');
-                            `);
-                            console.log('Hash uploaded:', hash);
-                        }).catch(e => console.log(e));
-                    }
-                }
-            }]
-    });
+            ...swarmUpload
+            ]
+        });
 
     // EDIT
     menu.push({
@@ -390,7 +401,6 @@ let menuTempl = function (webviews) {
         }];
     }
 
-    const externalNodeMsg = (ethereumNode.isOwnNode) ? '' : ` (${i18n.t('mist.applicationMenu.develop.externalNode')})`;
     devToolsMenu.push({
         label: i18n.t('mist.applicationMenu.develop.devTools'),
         submenu: devtToolsSubMenu,
@@ -415,13 +425,12 @@ let menuTempl = function (webviews) {
     });
 
     devToolsMenu.push({
-        label: i18n.t('mist.applicationMenu.develop.logFiles') + externalNodeMsg,
-        enabled: ethereumNode.isOwnNode,
+        label: i18n.t('mist.applicationMenu.develop.logFiles'),
         click() {
             try {
-                shell.showItemInFolder(`${Settings.userDataPath}/node.log`);
-            } catch (e) {
-                log.info(e);
+                shell.showItemInFolder(path.join(Settings.userDataPath, 'logs', 'all.log'));
+            } catch (error) {
+                log.error(error);
             }
         },
     });
@@ -543,6 +552,21 @@ let menuTempl = function (webviews) {
                 } else {
                     startMining(webviews);
                 }
+            }
+        });
+    }
+
+    if (global.mode !== 'wallet') {
+        devToolsMenu.push({
+            type: 'separator'
+        },
+        {
+            label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
+            enabled: true,
+            checked: [SwarmState.Enabling, SwarmState.Enabled].includes(global.store.getState().settings.swarmState),
+            type: 'checkbox',
+            click() {
+                store.dispatch(toggleSwarm());
             }
         });
     }

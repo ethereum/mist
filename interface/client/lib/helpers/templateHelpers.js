@@ -26,7 +26,7 @@ Returns the current block
 @method (CurrentBlock)
 **/
 Template.registerHelper('CurrentBlock', function () {
-    return EthBlocks.latest;
+    return global.latestBlockHeader.latest;
 });
 
 

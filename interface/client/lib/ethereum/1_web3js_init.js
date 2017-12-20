@@ -8,6 +8,6 @@ if (typeof web3 !== 'undefined') {
 } else {
     console.info('Web3 not yet initialized, doing so now with HttpProvider.');
 
-    web3 = new Web3('https://mainnet.infura.io/76PyENot1npWxmi8u28i');
-    // wss://rinkeby.infura.io/ws
+    web3 = new Web3('wss://rinkeby.infura.io/ws');
+    // https://mainnet.infura.io/76PyENot1npWxmi8u28i
 }

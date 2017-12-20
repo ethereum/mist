@@ -1,3 +1,5 @@
+console.log('FACK');
+console.log(store);
 /**
 Template Controllers
 
@@ -123,7 +125,7 @@ Template['elements_nodeInfo'].helpers({
     @return {String}
     */
     formattedBlockNumber: function () {
-        return numeral(EthBlocks.latest.number).format('0,0');
+        return numeral(global.latestBlockHeader.latest.number).format('0,0');
     },
     /**
     Formats the time since the last block
@@ -131,11 +133,11 @@ Template['elements_nodeInfo'].helpers({
     @method (timeSinceBlock)
     */
     timeSinceBlock: function () {
-        var timeSince = moment(EthBlocks.latest.timestamp, 'X');
+        var timeSince = moment(global.latestBlockHeader.latest.timestamp, 'X');
         var now = moment();
         var diff = now.diff(timeSince, 'seconds');
 
-        if (!EthBlocks.latest.timestamp) {
+        if (!global.latestBlockHeader.latest.timestamp) {
             return '-';
         }
 

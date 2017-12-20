@@ -10,3 +10,9 @@ exports.getLanguage = function getLanguage() {
         }
     }
 }
+
+exports.setLatestBlockHeader = function setLatestBlockHeader(blockHeader) {
+    return function (dispatch) {
+        dispatch({ type: '[ETHEREUM]:NETWORK:NEW_BLOCK_HEADER' }, blockHeader);
+    }
+}

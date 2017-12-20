@@ -97,7 +97,7 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
         }
 
         // send through the mainWindow to the webviews
-        if (mainWindow) {
+        else if (mainWindow) {
             mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
         }
     }

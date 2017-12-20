@@ -317,17 +317,19 @@ function wan_sendTransaction(tx)
 
 
 
-async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, nonce,gas, gasPrice){
+async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, gas, gasPrice, password){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
-    //web3Admin.extend(web3);
-    //let otaSet = web3.wan.getOTAMixSet(otaDestAddress, number);
+    web3Admin.extend(web3);
     log.debug("otaRefund OTAs:", otaDestAddress, value);
-    let otaSetr = await ethereumNode.send('wan_getOTAMixSet', [otaDestAddress, number]);
-    let otaSet = otaSetr.result;
+    let otaSet;
+    try {
+        otaSet = await web3SendTransaction(web3.eth.getOTAMixSet, [otaDestAddress, number]);
+        log.debug('otaSet:',otaSet);
+    } catch (error) {
+        log.info('otaRefund:', error);
+        return {error:error.toString(), hash:null};
+    }
 
-    //let otaSetr = await ethereumNode.send('eth_getOTAMixSet', [otaDestAddress, number]);
-    //let otaSet = otaSetr.result;
-    log.debug("otaSetr:",otaSetr);
     let otaSetBuf = [];
     for(let i=0; i<otaSet.length; i++){
         let rpkc = new Buffer(otaSet[i].slice(2,68),'hex');
@@ -352,29 +354,22 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
     let all = CoinContractInstance.refundCoin.getData(KIWQ,value);
     log.debug("all:", all);
 
-    let serial = '0x'+nonce.toString(16);
-    log.debug("serial:", serial);
     var rawTx = {
-        Txtype: '0x00',
-        nonce: serial,
+        from: '0x'+rfAddr,
+        Txtype: '0x01',
         gasPrice: gasPrice,
-        gasLimit: gas,
-        to: CoinContractAddr,//contract address
+        gas: gas,
+        to: CoinContractAddr,
         value: '0x00',
         data: all
     };
     log.debug("rawTx:",rawTx);
-    var tx = new Tx(rawTx);
-    tx.sign(privKeyA);
-    var serializedTx = tx.serialize();
-    log.debug("serializedTx:", '0x' + serializedTx.toString('hex'));
-
     try {
-        let hash = await wan_sendTransaction('0x' + serializedTx.toString('hex'));
+        let hash = await web3SendTransaction(web3.personal.sendTransaction, [rawTx, password]);
         log.info('tx hash:',hash);
         return {error:null, hash:hash};
     } catch (error) {
-        log.error('otaRefund:', error);
+        log.info('otaRefund:', error);
         return {error:error.toString(), hash:null};
     }
 
@@ -419,20 +414,6 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
 
         // notifiy about backing up!
     });
-
-    /*
-    ethereumNode.send('personal_updateAccount', [address, oldpw, pw])
-        .then((result)=>{
-            mainWindow.send('uiAction_windowMessage', "updateAccount",  null, "scan started.");
-            senderWindow.close();
-            console.log('wan_updateAccount done:', result);
-        })
-        .catch((err)=>{
-            console.log('Change passwordError :', err );
-            senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
-        });
-        */
-
 });
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
@@ -476,7 +457,19 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
     });
 
 });
-
+function web3SendTransaction(web3Func, paras){
+    return new Promise(function(success, fail){
+        function _cb(err, hash){
+            if(err){
+                fail(err);
+            } else {
+                success(hash);
+            }
+        }
+        paras.push(_cb);
+        web3Func.apply(null, paras);
+    });
+}
 function getTransactionReceipt(rfHashs)
 {
     return new Promise(function(success, fail){
@@ -583,14 +576,11 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                 senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                 return;
             }
-            const serialr = await ethereumNode.send('eth_getTransactionCount', ['0x'+address, 'latest']);
-            const serial = parseInt(serialr.result);
-            log.debug("serialr:",serialr)
-            //let serial =  web3.eth.getTransactionCount('0x'+address);
+
             let rfHashs = [];
             try{
                 for (let c=0; c<otas.length; c++) {
-                    let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, c+serial,gas, gasPrice);
+                    let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, gas, gasPrice, keyPassword);
                     let error = ra.error;
                     let hash = ra.hash;
                     if(error){

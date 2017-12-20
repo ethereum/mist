@@ -12,8 +12,14 @@ const shell = require('shelljs');
 const version = require('../package.json').version;
 
 
+
 const type = options.type;
-const applicationName = (options.wallet) ? 'WanWalletGui' : 'Mist';
+let applicationName;
+if (options.internal) {
+    applicationName = (options.wallet) ? 'WanWalletGuiInternal' : 'Mist';
+} else {
+    applicationName = (options.wallet) ? 'WanWalletGui' : 'Mist';
+}
 
 
 gulp.task('clean-dist', (cb) => {

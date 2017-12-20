@@ -8,15 +8,6 @@ The init function of Mist
 mistInit = function () {
     console.info('Initialise Mist Interface');
 
-    EthBlocks.init();
-    const ethBlocksInterval = setInterval(() => {
-        if (_.isEmpty(EthBlocks.latest)) {
-            EthBlocks.init();
-        } else {
-            clearInterval(ethBlocksInterval);
-        }
-    }, 500);
-
     Tabs.onceSynced.then(function () {
         if (location.search.indexOf('reset-tabs') >= 0) {
             console.info('Resetting UI tabs');

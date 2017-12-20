@@ -41,5 +41,4 @@ ecmascript
 numeral:numeral
 numeral:languages
 ethereum:accounts
-ethereum:blocks
 ethereum:elements

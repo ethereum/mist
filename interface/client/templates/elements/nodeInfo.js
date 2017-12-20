@@ -10,9 +10,10 @@ Update the peercount
 @method getPeerCount
 */
 var getPeerCount = function(template) {
-    web3.net.getPeerCount(function(e, res) {
-        if(!e)
-            TemplateVar.set(template, 'peerCount', res);
+    web3.eth.net.getPeerCount(function(error, result) {
+        if (!error) {
+            TemplateVar.set(template, 'peerCount', result);
+        }
     });
 };
 
@@ -22,11 +23,11 @@ Update the mining hashrate
 @method getMining
 */
 var getMining = function(template) {
-    web3.eth.getMining(function(e, res) {
-        if(!e && res) {
-            web3.eth.getHashrate(function(e, res) {
-                if(!e) {
-                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.0'));
+    web3.eth.isMining(function(error, result) {
+        if(!error && result) {
+            web3.eth.getHashrate(function(error, result) {
+                if(!error) {
+                    TemplateVar.set(template, 'mining', numeral(result/1000).format('0,0.0'));
                 }
             });
         } else {

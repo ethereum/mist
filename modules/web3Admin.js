@@ -69,7 +69,8 @@ module.exports = {
             property: 'eth',
             methods:
             [
-                insertMethod('getWanAddress', 'eth_getWanAddress', 1, [web3._extend.formatters.inputAddressFormatter], web3._extend.formatters.formatOutputString),
+                insertMethod('getWanAddress', 'wan_getWanAddress', 1, [web3._extend.formatters.inputAddressFormatter], web3._extend.formatters.formatOutputString),
+                insertMethod('getOTAMixSet', 'wan_getOTAMixSet', 2,[null, null])
             ],
             properties:
             [],

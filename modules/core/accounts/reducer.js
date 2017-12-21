@@ -8,6 +8,10 @@ const accounts = (state = initialState, action) => {
             return Object.assign({}, state, {
                 active: action.accounts
             });
+        case '[ETHEREUM]:ACCOUNTS:NEW':
+            return Object.assign({}, state, {
+                active: [...state.active, action.wallet]
+            });
         default:
             return state;
     }

@@ -60,11 +60,10 @@ class Settings {
         store.dispatch(syncBuildConfig('uiMode', this.uiMode));
     }
 
-
-    // @returns "Application Support/Mist" in production mode
-    // @returns "Application Support/Electron" in development mode
+    // @returns "Application Support/Mist"
     get userDataPath() {
-        return app.getPath('userData');
+        // app.getPath('userData') returns "Application Support/Electron" in development
+        return app.getPath('userData').replace(/Electron/i, this.appName);
     }
 
     get dbFilePath() {
@@ -243,10 +242,30 @@ class Settings {
     }
 
     get accounts() {
-        fs.readdir(this.keystorePath, function(error, items) {
-            return items;
+        const keystorePath = this.keystorePath;
+
+        return new Promise(function (resolve, reject) {
+            fs.readdir(keystorePath, function (error, files) {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                let accounts = [];
+
+                for (var file of files) {
+                    try {
+                        const accountData = JSON.parse(fs.readFileSync(path.join(keystorePath, file)));
+                        accounts.push(accountData);
+                    } catch (error) {
+                        settingsLog.error(error);
+                    }
+                }
+
+                resolve(accounts);
+            });
         });
-    }
+   }
 
     get skiptimesynccheck() {
         return argv.skiptimesynccheck;

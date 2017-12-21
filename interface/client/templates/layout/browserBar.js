@@ -49,7 +49,9 @@ Template['layout_browserBar'].helpers({
     */
     'dappAccounts': function () {
         if (this.permissions) {
-            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
+            return _.find(store.getState().accounts.active, function (account) {
+                return this.permissions.accounts.includes(account.address);
+            });
         }
     },
     /**

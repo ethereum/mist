@@ -29,7 +29,6 @@ export const initialState = {
     process: null,
     currentProviderAddress: null,
     latestBlockHeader: null,
-    accounts: []
 };
 
 const ethereumNode = (state = initialState, action) => {
@@ -68,10 +67,6 @@ const ethereumNode = (state = initialState, action) => {
         case '[ETHEREUM]:NETWORK:NEW_BLOCK_HEADER':
             return Object.assign({}, state, {
                 latestBlockHeader: action.latestBlockHeader
-            });
-        case '[ETHEREUM]:ACCOUNTS:SYNC':
-            return Object.assign({}, state, {
-                accounts: action.accounts
             });
         default:
             return state;

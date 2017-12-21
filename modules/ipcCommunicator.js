@@ -15,6 +15,7 @@ const ethereumNode = require('./ethereumNode.js');
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
 
 import { getLanguage } from './core/settings/actions';
+import { saveNewWallet } from './core/accounts/actions';
 
 const log = logger.create('ipcCommunicator');
 
@@ -96,6 +97,10 @@ ipc.on('backendAction_windowMessageToOwner', (e, error, value) => {
 });
 
 ipc.on('backendAction_getLanguage', (e) => { store.dispatch(getLanguage(e)); });
+
+ipc.on('backendAction_saveNewWallet', (event, walletFileName, walletJSON) => {
+    store.dispatch(saveNewWallet(walletFileName, walletJSON));
+});
 
 ipc.on('backendAction_stopWebviewNavigation', (e, id) => {
     console.log('webcontent ID', id);
@@ -254,6 +259,6 @@ ipc.on('console_log', (event, id, logLevel, logItemsStr) => {
     }
 });
 
-ipc.on('backendAction_reloadSelectedTab', (event) => {
+ipc.on('backendAction_dispatchNewWallet', (event) => {
     event.sender.send('uiAction_reloadSelectedTab');
 });

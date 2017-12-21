@@ -1,20 +1,16 @@
 import { ipcMain } from 'electron';
 import Settings from '../../settings';
-import logger from '../../utils/logger';
-import ethereumNode from '../../ethereumNode';
-import ipcProviderBackend from '../../ipc/ipcProviderBackend';
-import { NodeType, NodeNetwork, NodeSyncMode } from './reducer';
-import { NodeState } from '../constants';
-import ClientBinaryManager from '../../clientBinaryManager';
-import { InfuraEndpoints } from '../constants';
 import Windows from '../../windows';
+import logger from '../../utils/logger';
+import path from 'path';
+import fs from 'fs';
 
 const accountsLog = logger.create('accounts');
 
 export function syncAccounts() {
-    return (dispatch, getState) => {
-        const accounts = Settings.accounts;
-        dispatch({ type: '[ETHEREUM]:ACOUNTS:SYNC', accounts });
+    return async (dispatch, getState) => {
+        const accounts = await Settings.accounts;
+        dispatch({ type: '[ETHEREUM]:ACCOUNTS:SYNC', accounts });
     }
 };
 
@@ -40,5 +36,24 @@ export function handleOnboarding() {
 
         //     dispatch({ type: '[ETHEREUM]:ONBOARDING:FINISHED' });
         // });
+    }
+};
+
+export function saveNewWallet(walletFileName, walletJSON) {
+    return (dispatch, getState) => {
+        const filePath = path.join(Settings.keystorePath, walletFileName);
+        const fileData = JSON.stringify(walletJSON)
+
+        fs.writeFile(filePath, fileData, function(error) {
+            if (error) {
+                accountsLog.error(error);
+                return;
+            }
+
+            accountsLog.info(`New account saved to ${path}`);
+        }); 
+
+        const wallet = walletJSON;
+        dispatch({ type: '[ETHEREUM]:ACCOUNTS:NEW', wallet });
     }
 };

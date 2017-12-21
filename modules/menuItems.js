@@ -34,6 +34,8 @@ const createMenu = function (webviews) {
 
 
 const restartNode = function (newType, newNetwork, syncMode, webviews) {
+    if(ethereumNode.network === newNetwork)
+        return;
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
@@ -539,7 +541,7 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+1',
                     checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
                         restartNode(ethereumNode.type, 'main');
                     },
@@ -549,7 +551,7 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+3',
                     checked: ethereumNode.isOwnNode && ethereumNode.network === 'internal',
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
                         restartNode(ethereumNode.type, 'internal');
                     },
@@ -559,7 +561,7 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+2',
                     checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
                         restartNode(ethereumNode.type, 'pluto');
                     },
@@ -575,7 +577,7 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+1',
                     checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
                         restartNode(ethereumNode.type, 'main');
                     },

@@ -16,7 +16,7 @@ try {
     _.extend(defaultConfig, require('../config.json'));
 } catch (err) {
 }
-
+console.log("defaultConfig:", defaultConfig);
 
 const argv = require('yargs')
     .usage('Usage: $0 [Mist options] [Node options]')
@@ -42,7 +42,7 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: 'testnet',
+            default: 'main',
             //default: defaultConfig.internal ? 'internal' : 'testnet', // currently, beta need --testnet, this is a little ..
             describe: 'Network to connect to: main-beta, internal, pluto',
             requiresArg: true,
@@ -203,7 +203,6 @@ class Settings {
         return path.join(this.userDataPath, dbFileName);
 
     }
-
     get appDataPath() {
     // Application Support/
         return app.getPath('appData');
@@ -311,7 +310,13 @@ class Settings {
     }
 
     get network() {
-        return argv.network ? argv.network : 'testnet';
+        if(argv.network){
+            return argv.network;
+        }else if(defaultConfig.internal){
+            return 'internal';
+        }else{
+            return 'main'
+        }
     }
 
     get syncmode() {

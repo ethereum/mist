@@ -55,10 +55,10 @@ class nodeScanOta  extends EventEmitter{
         ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
     }
     getScanedBlock() {
-        return wanchainDB.getScanedByWaddr(null);
+        return wanchainDB.getScanedByWaddr(ethereumNode.otaDbKey);
     }
     setScanedBlock(scaned) {
-        wanchainDB.setScanedByWaddr(null, scaned);
+        wanchainDB.setScanedByWaddr(ethereumNode.otaDbKey, scaned);
     }
 
     scanBlock() {
@@ -101,7 +101,7 @@ class nodeScanOta  extends EventEmitter{
                         });
                     blockCur += 1;
                 }
-                wanchainDB.setScanedByWaddr(null, blockEnd);
+                wanchainDB.setScanedByWaddr(ethereumNode.otaDbKey, blockEnd);
                 scanTimer = setTimeout(self.scanBlock,checkInterval);
             });
     }

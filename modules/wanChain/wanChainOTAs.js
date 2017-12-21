@@ -17,7 +17,7 @@ exports.getScanedByWaddr = function(waddr){
     }
     let ScanBlockIndex = db.getCollection('ScanBlockIndex');
     let Index = ScanBlockIndex.find({'_id': waddr});
-    log.debug("getScanedByWaddr:", Index);
+    log.trace("getScanedByWaddr:", Index);
     const begin = Index.length === 0 ? 0:Index[0].index;
     return begin;
 }

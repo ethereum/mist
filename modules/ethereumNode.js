@@ -1,5 +1,6 @@
 const _ = global._;
 const fs = require('fs');
+const path = require('path');
 const Q = require('bluebird');
 const spawn = require('child_process').spawn;
 const { dialog } = require('electron');
@@ -67,7 +68,41 @@ class EthereumNode extends EventEmitter {
     get network() {
         return this.isOwnNode ? this._network : null;
     }
+    getDatadir(isKs=false){
+        let keystorePath = Settings.userHomePath;
 
+        let ksdir = 'wanchain';
+
+        if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
+
+        if (process.platform === 'freebsd' ||
+            process.platform === 'linux' ||
+            process.platform === 'sunos') keystorePath += '/.' + ksdir;
+
+        if (process.platform === 'win32') keystorePath = Settings.appDataPath + '\\' + ksdir;
+        console.log("this.network: ",this.network);
+        console.log("this._network: ",this._network);
+        console.log("this.isOwnNode: ",this.isOwnNode);
+
+
+        if(this._network == 'internal'){
+            keystorePath =  path.join(keystorePath, 'internal');
+        }
+        if(isKs){
+            keystorePath =  path.join(keystorePath, 'keystore');
+        }
+        console.log("the path:",keystorePath);
+        return  keystorePath;
+    }
+    get otaDbKey(){
+        if(this._network == 'pluto'){
+            return '0x0000000000000000000000000000000000000002';
+        } else if(this._network == 'internal'){
+            return '0x0000000000000000000000000000000000000001';
+        } else {
+            return '0x0000000000000000000000000000000000000000';
+        }
+    }
     get syncMode() {
         return this._syncMode;
     }
@@ -354,22 +389,6 @@ class EthereumNode extends EventEmitter {
                 .then(resolve, reject);
         });
     }
-    getBetadir(){
-        let keystorePath = Settings.userHomePath;
-
-        let ksdir = 'wanchain';
-
-        if (process.platform === 'darwin') keystorePath += '/Library/' + 'wanchain';
-
-        if (process.platform === 'freebsd' ||
-            process.platform === 'linux' ||
-            process.platform === 'sunos') keystorePath += '/.' + ksdir;
-
-        if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
-
-        log.info("datadir path:",keystorePath);
-        return  keystorePath;
-    }
 
     /**
      * @return {Promise}
@@ -396,10 +415,10 @@ class EthereumNode extends EventEmitter {
                 switch (network) {
 
                 // Starts Ropsten network
-                case 'testnet':
+                case 'main':
                     args = [
                         '--testnet',
-                        '--datadir', this.getBetadir(),
+                        '--datadir', this.getDatadir(),
                         '--syncmode', syncMode,
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
                         '--ipcpath', Settings.rpcIpcPath
@@ -418,6 +437,7 @@ class EthereumNode extends EventEmitter {
                 case 'internal':
                     args = [
                         '--syncmode', syncMode,
+                        '--datadir', this.getDatadir(),
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),
                         '--ipcpath', Settings.rpcIpcPath
                     ];

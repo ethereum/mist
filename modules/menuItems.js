@@ -529,7 +529,7 @@ let menuTempl = function (webviews) {
     }
 
     // add network switch
-    if (Settings.network === 'internal'){
+    if (Settings.internal){
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.network'),
             submenu: [
@@ -547,11 +547,11 @@ let menuTempl = function (webviews) {
                 {
                     label: 'internal - Test network',
                     accelerator: 'CommandOrControl+Alt+3',
-                    checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
+                    checked: ethereumNode.isOwnNode && ethereumNode.network === 'internal',
                     enabled: ethereumNode.isOwnNode,
                     type: 'checkbox',
                     click() {
-                        restartNode(ethereumNode.type, 'test');
+                        restartNode(ethereumNode.type, 'internal');
                     },
                 },
                 {

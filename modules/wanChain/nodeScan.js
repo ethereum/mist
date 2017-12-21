@@ -66,7 +66,7 @@ class nodeScan  {
 
     checkOtainDb() {
         scanBlockIndexDb = self.getScanedBlock(currentScanAddressDB);
-        lastBlockNumberDb = wanchainDB.getScanedByWaddr(null);
+        lastBlockNumberDb = wanchainDB.getScanedByWaddr(ethereumNode.otaDbKey);
         let checkinterval = 10000;
         if(  scanBlockIndexDb === lastBlockNumberDb && scanBlockIndexDb !== 0 ) {
             otaDbTimer = setTimeout(self.checkOtainDb, checkinterval);

@@ -418,7 +418,7 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
     address = address.toLowerCase().slice(2);
-    let keystorePath = getKsFullName();
+    let keystorePath = ethereumNode.getDatadir(true);
     log.debug("keystore path:",keystorePath);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
@@ -511,26 +511,6 @@ function getTransactionReceipt(rfHashs)
     });
 }
 
-function getKsFullName(){
-    let ksdir = "";
-    let keystorePath = Settings.userHomePath;
-    if(Settings.network === 'pluto'){
-        ksdir = "wanchain/pluto/keystore";
-    }else{
-        ksdir = "wanchain/keystore";
-    }
-    if (process.platform === 'darwin') keystorePath += '/Library/' + ksdir;
-
-    if (process.platform === 'freebsd' ||
-        process.platform === 'linux' ||
-        process.platform === 'sunos') keystorePath += '/.' + ksdir;
-
-    if (process.platform === 'win32') keystorePath = `${Settings.appDataPath}\\` + ksdir;
-
-    log.debug("keystore path:",keystorePath);
-    return  keystorePath;
-}
-
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let address = rfOta.rfAddress.toLowerCase().slice(2);
     const mainWindow = Windows.getByType('main');
@@ -541,7 +521,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let otaNumber = rfOta.otaNumber;
 
     let keyFound = false;
-    let keystorePath = getKsFullName(address);
+    let keystorePath = ethereumNode.getDatadir(true);
     fs.readdir(keystorePath, async function(err, files) {
         if(err){
             log.error("readdir",err);

@@ -55,7 +55,7 @@ Template['popupWindows_inputAccountPassword'].events({
         var pw = template.find('input.password').value;
         var data = Session.get('data');
         const action = data.action;
-        console.log("popupWindows_inputAccountPassword data",data);
+        //console.log("popupWindows_inputAccountPassword data",data);
         TemplateVar.set('unlocking', true);
         setTimeout((e)=>{
             if(action === 'refundCoin') {

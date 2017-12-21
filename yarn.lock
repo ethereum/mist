@@ -5645,9 +5645,9 @@ walkdir@^0.0.11:
   version "0.0.11"
   resolved "https://registry.yarnpkg.com/walkdir/-/walkdir-0.0.11.tgz#a16d025eb931bd03b52f308caed0f40fcebe9532"
 
-wanchain-util@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/wanchain-util/-/wanchain-util-1.0.2.tgz#c73cf8fa3f2bf548f4bf57f16180d499c3663f90"
+wanchain-util@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/wanchain-util/-/wanchain-util-1.0.3.tgz#564385f1a1e3cfdb31cea99a5fb20fae325abe5e"
   dependencies:
     ethereumjs-tx "1.1.2"
     ethereumjs-util "5.1.2"

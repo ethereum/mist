@@ -256,7 +256,7 @@
                 "gotoMainnet": "Use the main network",
                 "gotoMainnetDescription": "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",
                 "doYouHaveAWalletFile": "Do you have a wallet file?",
-                "walletFileDescription": "<p>Move any wallet file here to import.<br>If you participated in the Wanchain Pre-sale 2014, you should have a file named <code>ethereum_wallet_backup.json</code>. It was downloaded after the sale and also sent to your email</p>",
+                "walletFileDescription": "<p>Just wanWallet file here to import.</p>",
                 "dropFilesHere": "Drop wallet file",
                 "creating": "Creating...",
                 "importing": "Importing...",

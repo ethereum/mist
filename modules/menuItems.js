@@ -539,9 +539,10 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+1',
                     checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
-                        restartNode(ethereumNode.type, 'main');
+                        if(!ethereumNode.isMainNetwork)
+                            restartNode(ethereumNode.type, 'main');
                     },
                 },
                 {
@@ -549,9 +550,10 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+3',
                     checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
-                        restartNode(ethereumNode.type, 'test');
+                        if(ethereumNode.network !== 'test')
+                            restartNode(ethereumNode.type, 'test');
                     },
                 },
                 {
@@ -559,9 +561,10 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+2',
                     checked: ethereumNode.isOwnNode && ethereumNode.network === 'pluto',
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
-                        restartNode(ethereumNode.type, 'pluto');
+                        if(ethereumNode.network !== 'pluto')
+                            restartNode(ethereumNode.type, 'pluto');
                     },
                 }
             ] });
@@ -575,9 +578,10 @@ let menuTempl = function (webviews) {
                     accelerator: 'CommandOrControl+Alt+1',
                     checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
                     enabled: ethereumNode.isOwnNode,
-                    type: 'checkbox',
+                    type: 'radio',
                     click() {
-                        restartNode(ethereumNode.type, 'main');
+                        if(!ethereumNode.isMainNetwork)
+                            restartNode(ethereumNode.type, 'main');
                     },
                 }
             ] });

@@ -234,6 +234,8 @@ let menuTempl = function (webviews) {
                                 if (process.platform === 'win32') {
                                     userPath = `${Settings.appDataPath}\\${kestorePath}\\keystore`;
                                 }
+
+                                userPath = ethereumNode.getDatadir(true);
                             }
 
                             shell.showItemInFolder(userPath);

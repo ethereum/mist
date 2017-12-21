@@ -13,7 +13,11 @@ const log = require('../utils/logger').create('nodeScanOta');
 const SolidityCoder = require('web3/lib/solidity/coder');
 let wanUtil = require('wanchain-util');
 const wanchainDB = require('./wanChainOTAs');
+const Web3 = require("web3");
+const Settings = require('../settings');
+const net = require('net');
 
+var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
 
 let scanBlockIndex = 0;
 let lastBlockNumber = 0;
@@ -46,7 +50,19 @@ function parseContractMethodPara(paraData, abi, method) {
 
     return dict;
 }
-
+function web3SendTransaction(web3Func, paras){
+    return new Promise(function(success, fail){
+        function _cb(err, hash){
+            if(err){
+                fail(err);
+            } else {
+                success(hash);
+            }
+        }
+        paras.push(_cb);
+        web3Func.apply(null, paras);
+    });
+}
 
 class nodeScanOta  extends EventEmitter{
     constructor() {
@@ -61,11 +77,16 @@ class nodeScanOta  extends EventEmitter{
         wanchainDB.setScanedByWaddr(ethereumNode.otaDbKey, scaned);
     }
 
-    scanBlock() {
+    async scanBlock() {
         scanBlockIndex = self.getScanedBlock();
-        ethereumNode.send('eth_blockNumber', [])
-            .then(async (ret) => {
-                lastBlockNumber = parseInt(ret.result);
+        try {
+            lastBlockNumber = await web3SendTransaction(web3.eth.getBlockNumber, []);
+        } catch (error) {
+            log.info('getBlockNumber:', error);
+        }
+
+        {
+
                 let checkInterval = 10000;
                 if(scanBlockIndex === lastBlockNumber){
                     scanTimer = setTimeout(self.scanBlock,checkInterval);
@@ -79,31 +100,33 @@ class nodeScanOta  extends EventEmitter{
                 }
                 log.info("scanBlock blockCur,blockEnd: ",blockCur,blockEnd);
                 while(blockCur <= blockEnd ) {
-                    let paramArrary = ['0x'+blockCur.toString(16), true];
-                    await ethereumNode.send('eth_getBlockByNumber', paramArrary)
-                        .then((retBlock) => {
-                            const block = retBlock.result;
-                            retBlock.result.transactions.forEach((tx) => {
-                                if (tx.to == coinContractAddr) {
-                                    let cmd = tx.input.slice(2, 10).toString('hex');
-                                    if (cmd != fhs_buyCoinNote) {
-                                        return;
-                                    }
-                                    let inputPara = tx.input.slice(10);
-                                    let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, 'buyCoinNote');
-                                    wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, block.timeStamp, tx.from, blockCur, tx.hash);
-                                    log.debug("new ota found:", paras.OtaAddr, blockCur);
-                                }
-                            });
-                        })
-                        .catch((error)=>{
-                            log.debug("failed to get BlockNumber. Has geth crashed? ");
-                        });
+                    let paramArrary = [blockCur, true];
+
+                    let lastBlock;
+                    try {
+                        lastBlock = await web3SendTransaction(web3.eth.getBlock, paramArrary);
+                    } catch (error) {
+                        log.info('getBlockByNumber:', error);
+                    }
+                    lastBlock.transactions.forEach((tx) => {
+                        if (tx.to == coinContractAddr) {
+                            let cmd = tx.input.slice(2, 10).toString('hex');
+                            if (cmd != fhs_buyCoinNote) {
+                                return;
+                            }
+                            let inputPara = tx.input.slice(10);
+                            let paras = parseContractMethodPara(inputPara, wanUtil.coinSCAbi, 'buyCoinNote');
+                            wanchainDB.insertOtabyWaddr('', paras.OtaAddr, tx.value, 0, lastBlock.timeStamp, tx.from, blockCur, tx.hash);
+                            log.debug("new ota found:", paras.OtaAddr, blockCur);
+                        }
+                    });
+
                     blockCur += 1;
                 }
                 wanchainDB.setScanedByWaddr(ethereumNode.otaDbKey, blockEnd);
                 scanTimer = setTimeout(self.scanBlock,checkInterval);
-            });
+        }
+
     }
     start() {
         scanBlockIndex = this.getScanedBlock();

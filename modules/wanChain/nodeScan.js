@@ -10,6 +10,8 @@ const EventEmitter = require('events').EventEmitter;
 const log = require('../utils/logger').create('nodeScan');
 let wanUtil = require('wanchain-util');
 const wanchainDB = require('./wanChainOTAs');
+const ethereumNode = require('../ethereumNode');
+
 let checkBurst = 5000;
 let scanBlockIndexDb = 0;
 let lastBlockNumberDb = 0;

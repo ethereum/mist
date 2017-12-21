@@ -80,9 +80,6 @@ class EthereumNode extends EventEmitter {
             process.platform === 'sunos') keystorePath += '/.' + ksdir;
 
         if (process.platform === 'win32') keystorePath = Settings.appDataPath + '\\' + ksdir;
-        console.log("this.network: ",this.network);
-        console.log("this._network: ",this._network);
-        console.log("this.isOwnNode: ",this.isOwnNode);
 
 
         if(this._network == 'internal'){
@@ -91,7 +88,7 @@ class EthereumNode extends EventEmitter {
         if(isKs){
             keystorePath =  path.join(keystorePath, 'keystore');
         }
-        console.log("the path:",keystorePath);
+        log.debug("the path:",keystorePath);
         return  keystorePath;
     }
     get otaDbKey(){

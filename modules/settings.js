@@ -42,7 +42,8 @@ const argv = require('yargs')
         },
         network: {
             demand: false,
-            default: defaultConfig.internal ? 'internal' : 'testnet', // currently, beta need --testnet, this is a little ..
+            default: 'testnet',
+            //default: defaultConfig.internal ? 'internal' : 'testnet', // currently, beta need --testnet, this is a little ..
             describe: 'Network to connect to: main-beta, internal, pluto',
             requiresArg: true,
             nargs: 1,
@@ -235,7 +236,9 @@ class Settings {
     get inProductionMode() {
         return defaultConfig.production;
     }
-
+    get internal() {
+        return defaultConfig.internal ? defaultConfig.internal : false;
+    }
     get inAutoTestMode() {
         return !!process.env.TEST_MODE;
     }
@@ -308,7 +311,7 @@ class Settings {
     }
 
     get network() {
-        return argv.network ? argv.network : 'main';
+        return argv.network ? argv.network : 'testnet';
     }
 
     get syncmode() {

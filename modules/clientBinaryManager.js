@@ -15,7 +15,7 @@ const log = require('./utils/logger').create('ClientBinaryManager');
 // should be       'https://raw.githubusercontent.com/ethereum/mist/master/clientBinaries.json'
 // const BINARY_URL = 'http://47.104.60.142:/clientBinaries.json';
 let BINARY_URL;
-if (Settings.network === 'internal') {
+if (Settings.internal) {
     BINARY_URL = 'http://47.104.60.142:/clientBinaries.json';
 } else {
     BINARY_URL = 'https://raw.githubusercontent.com/wanchain/wanwallet/develop/clientBinaries.json';

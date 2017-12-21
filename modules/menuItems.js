@@ -34,6 +34,8 @@ const createMenu = function (webviews) {
 
 
 const restartNode = function (newType, newNetwork, syncMode, webviews) {
+    if(ethereumNode.network === newNetwork)
+        return;
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
@@ -541,8 +543,7 @@ let menuTempl = function (webviews) {
                     enabled: ethereumNode.isOwnNode,
                     type: 'radio',
                     click() {
-                        if(!ethereumNode.isMainNetwork)
-                            restartNode(ethereumNode.type, 'main');
+                        restartNode(ethereumNode.type, 'main');
                     },
                 },
                 {
@@ -552,8 +553,7 @@ let menuTempl = function (webviews) {
                     enabled: ethereumNode.isOwnNode,
                     type: 'radio',
                     click() {
-                        if(ethereumNode.network !== 'test')
-                            restartNode(ethereumNode.type, 'test');
+                        restartNode(ethereumNode.type, 'test');
                     },
                 },
                 {
@@ -563,8 +563,7 @@ let menuTempl = function (webviews) {
                     enabled: ethereumNode.isOwnNode,
                     type: 'radio',
                     click() {
-                        if(ethereumNode.network !== 'pluto')
-                            restartNode(ethereumNode.type, 'pluto');
+                        restartNode(ethereumNode.type, 'pluto');
                     },
                 }
             ] });
@@ -580,8 +579,7 @@ let menuTempl = function (webviews) {
                     enabled: ethereumNode.isOwnNode,
                     type: 'radio',
                     click() {
-                        if(!ethereumNode.isMainNetwork)
-                            restartNode(ethereumNode.type, 'main');
+                        restartNode(ethereumNode.type, 'main');
                     },
                 }
             ] });

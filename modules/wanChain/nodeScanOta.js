@@ -17,7 +17,6 @@ const Web3 = require("web3");
 const Settings = require('../settings');
 const net = require('net');
 
-var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
 
 let scanBlockIndex = 0;
 let lastBlockNumber = 0;
@@ -79,6 +78,7 @@ class nodeScanOta  extends EventEmitter{
 
     async scanBlock() {
         scanBlockIndex = self.getScanedBlock();
+        var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
         try {
             lastBlockNumber = await web3SendTransaction(web3.eth.getBlockNumber, []);
         } catch (error) {

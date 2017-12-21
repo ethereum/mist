@@ -34,7 +34,7 @@ const createMenu = function (webviews) {
 
 
 const restartNode = function (newType, newNetwork, syncMode, webviews) {
-    if(ethereumNode.network === newNetwork)
+    if(ethereumNode._network === newNetwork)
         return;
     newNetwork = newNetwork || ethereumNode.network;
 

@@ -49,9 +49,8 @@ Template['layout_browserBar'].helpers({
     */
     'dappAccounts': function () {
         if (this.permissions) {
-            return _.find(store.getState().accounts.active, function (account) {
-                return this.permissions.accounts.includes(account.address);
-            });
+             var accounts = _.pluck(store.getState().accounts.active, 'address');
+             return _.intersection(accounts, this.permissions.accounts)
         }
     },
     /**

@@ -30,12 +30,12 @@
 
                                     {{#if $neq _id 'wallet'}}
                                         <div class="accounts">
-                                            {{#if dappAccounts.count}}
+                                            {{#if dappAccounts}}
                                                 <button class="display">
                                                     <span>{{dappAccounts.count}} {{i18n 'mist.sidebar.submenu.account' count=dappAccounts.count}}</span>
                                                         <span class="dapp-identicon-container">
-                                                        {{#each (dappAccounts 3)}}
-                                                            {{> dapp_identicon identity=address class="dapp-tiny"}}
+                                                        {{#each dappAccounts}}
+                                                            {{> dapp_identicon identity=this class="dapp-tiny"}}
                                                         {{/each}}
                                                     </span>
                                                 </button>

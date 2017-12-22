@@ -102,10 +102,10 @@ Template['layout_sidebar'].helpers({
 
     @method (dappAccounts)
     */
-    'dappAccounts': function (limit) {
+    'dappAccounts': function () {
         if (this.permissions) {
              var accounts = _.pluck(store.getState().accounts.active, 'address');
-             return _.intersection(accounts, this.permissions.accounts)
+             return _.intersection(accounts, this.permissions.accounts);
         }
     },
     /**

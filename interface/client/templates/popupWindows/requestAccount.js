@@ -63,19 +63,22 @@ Template['popupWindows_requestAccount'].events({
             TemplateVar.set('creating', true);
 
             // Give the UI 300ms to update 'Generating...' before creating
-            setTimeout(function(pw = pw) {
+            setTimeout(function(password = pw) {
                 const mnemonic = bip39.generateMnemonic();
                 const bip32 = hdkey.fromMasterSeed(mnemonic);
                 const wallet = bip32.getWallet();
-                const walletJSON = wallet.toV3(pw);
+                const walletJSON = wallet.toV3(password);
                 const walletFileName = wallet.getV3Filename(Date.now());
                 ipc.send('backendAction_saveNewWallet', walletFileName, walletJSON);
 
                 TemplateVar.set(template, 'creating', false);
 
+                ipc.send('backendAction_windowMessageToOwner', null, wallet.getAddress());
+
                 // Notifiy about backing up!
                 alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
-                alert(mnemonic);
+
+                // TODO: Design flow to have them write down their `mnemonic`, and then optionally verify it
 
                 ipc.send('backendAction_closePopupWindow');
             }, 300, pw);

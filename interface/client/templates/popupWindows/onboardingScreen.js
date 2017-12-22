@@ -1,3 +1,7 @@
+import ethereumjsWallet from 'ethereumjs-wallet';
+import hdkey from 'ethereumjs-wallet/hdkey';
+import bip39 from 'bip39';
+
 /**
 Template Controllers
 
@@ -13,17 +17,14 @@ The onboardingScreen template
 
 Template['popupWindows_onboardingScreen'].onCreated(function () {
     var template = this;
-    var oldData;
+
     TemplateVar.set('readyToLaunch', false);
-
     TemplateVar.set('newAccount', false);
-    web3.eth.getAccounts((err, acc) => {
-        console.log('newAccount', err, acc);
-        if (acc.length > 0) {
-            TemplateVar.set(template, 'newAccount', acc[0]);
-        }
-    });
 
+    const accounts = store.getState().accounts.active;
+    if (accounts.length > 0) {
+        TemplateVar.set(template, 'newAccount', accounts[0]);
+    }
 
     TemplateVar.set('currentActive', 'start');
 
@@ -38,71 +39,6 @@ Template['popupWindows_onboardingScreen'].helpers({
     newAccountLowerCase() {
         var account = TemplateVar.get('newAccount');
         return (account) ? account.toLowerCase() : '';
-    },
-    /**
-    Updates the Sync Data
-
-    @method syncStatus
-    */
-    syncStatus() {
-
-        // This functions loops trhough numbers while waiting for the node to respond
-        var template = Template.instance();
-
-        Meteor.clearInterval(template._intervalId);
-
-        // Create an interval to quickly iterate trough the numbers
-        template._intervalId = Meteor.setInterval(function () {
-            // load the sync information
-            var syncing = TemplateVar.get(template, 'syncing');
-
-            if (syncing) {
-                // If it's syncing, then it's not ready
-                TemplateVar.set(template, 'readyToLaunch', false);
-
-                // Calculates a block t display that is always getting a few % closer to target
-                syncing._displayBlock = (syncing._displayBlock + 2 * (syncing.currentBlock - syncing._displayBlock) / 100) || Number(syncing.startingBlock);
-
-                syncing._displayStatesDownload = Number(syncing._displayStatesDownload + (syncing.pulledStates / (1 + syncing.knownStates) - syncing._displayStatesDownload) / 100) || Number(syncing.pulledStates) / Number(syncing.knownStates + 1);
-
-                // Calculates progress
-                syncing.progress = 100 * (syncing._displayBlock - syncing.startingBlock) / (1 + Number(syncing.highestBlock) - syncing.startingBlock);
-
-                // Makes fancy strings
-                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
-                syncing.highestBlockString = numeral(syncing.highestBlock).format('0,0');
-                syncing.displayBlock = numeral(Math.round(syncing._displayBlock)).format('0,0');
-                syncing.statesPercent = numeral(Math.round(syncing._displayStatesDownload * 10000) / 100).format('0.00');
-
-                // Saves the data back to the object
-                TemplateVar.set(template, 'syncing', syncing);
-
-
-                // If it's close enough, show the synced button
-
-                if (Number(syncing.highestBlock) - syncing.currentBlock < 100) {
-                    TemplateVar.set(template, 'readyToLaunch', true);
-                }
-
-                // Only show states if they are changing
-                if (Math.round(1000 * Number(syncing._displayStatesDownload)) !== Math.round(1000 * Number(syncing.pulledStates / (syncing.knownStates + 1)))) {
-                    TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessageWithStates', syncing));
-                } else if (syncing.displayBlock === '0') {
-                    TemplateVar.set(template, 'syncStatusMessageLive', '');
-                } else {
-                    TemplateVar.set(template, 'syncStatusMessageLive', TAPi18n.__('mist.popupWindows.onboarding.syncMessage', syncing));
-                }
-            }
-
-        }, 50);
-    },
-    /**
-    Updates the Sync Message live
-
-    @method syncStatusMessage
-    */
-    syncStatusMessage() {
-        return TemplateVar.get('syncStatusMessageLive');
     }
 });
 
@@ -112,27 +48,6 @@ Template['popupWindows_onboardingScreen'].events({
     },
     'click .goto-import-account': function () {
         TemplateVar.set('currentActive', 'import-account');
-
-        // if testnet, make sure to switch to the mainnet
-        if (TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', /* isTestNet: */ false);
-            TemplateVar.set('testnet', false);
-            TemplateVar.set('syncing', null);
-        }
-    },
-    'click .start-testnet': function (e, template) {
-        if (!TemplateVar.get('testnet')) {
-            ipc.send('onBoarding_changeNet', /* isMainNet: */ true);
-            TemplateVar.set('testnet', true);
-            TemplateVar.set('syncing', null);
-        }
-
-        if (!TemplateVar.get('newAccount')) {
-            TemplateVar.set('currentActive', 'testnet');
-            template.$('.onboarding-testnet input.password').focus();
-        } else {
-            TemplateVar.set('currentActive', 'account');
-        }
     },
     'click .goto-password': function (e, template) {
         TemplateVar.set('currentActive', 'password');
@@ -143,21 +58,15 @@ Template['popupWindows_onboardingScreen'].events({
     },
     'click .goto-tutorial-1': function () {
         TemplateVar.set('currentActive', 'tutorial-1');
-        if (!TemplateVar.get('syncing')) {
-            TemplateVar.set('readyToLaunch', true);
-        }
+        TemplateVar.set('readyToLaunch', true);
     },
     'click .goto-tutorial-2': function () {
         TemplateVar.set('currentActive', 'tutorial-2');
-        if (!TemplateVar.get('syncing')) {
-            TemplateVar.set('readyToLaunch', true);
-        }
+        TemplateVar.set('readyToLaunch', true);
     },
     'click .goto-tutorial-3': function () {
         TemplateVar.set('currentActive', 'tutorial-3');
-        if (!TemplateVar.get('syncing')) {
-            TemplateVar.set('readyToLaunch', true);
-        }
+        TemplateVar.set('readyToLaunch', true);
     },
     /**
     Start the application
@@ -232,19 +141,16 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
             ipc.on('uiAction_checkedWalletFile', function (ev, error, type) {
                 switch (type) {
                 case 'presale':
-                    console.log(`Imported ${type} account`);
+                    console.log(`Importing ${type} account`);
                     TemplateVar.set(template, 'filePath', files[0].path);
                     Tracker.afterFlush(function () {
                         template.$('.password').focus();
                     });
                     break;
                 case 'web3':
-                    console.log(`Imported ${type} account`);
+                    console.log(`Importing ${type} account`);
                     TemplateVar.set(template, 'filePath', files[0].path);
-                    TemplateVar.set(template, 'importing', true);
-                    setTimeout(function () {
-                        ipc.send('backendAction_closePopupWindow');
-                    }, 750);
+                    TemplateVar.set(template, 'importing', false);
                     break;
                 default:
                     GlobalNotification.warning({
@@ -281,7 +187,6 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
     'submit form': function (e, template) {
         var pw = template.find('input.password').value;
 
-
         ipc.send('backendAction_importWalletFile', TemplateVar.get('filePath'), pw);
 
         TemplateVar.set('importing', true);
@@ -295,7 +200,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
 
                 // move to add account screen, when in the onboarding window
                 if ($('.onboarding-start')[0]) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(address));
+                    TemplateVar.setTo('.onboarding-account', 'newAccount', address);
                     TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 
                 // otherwise simply close the window
@@ -314,8 +219,7 @@ Template['popupWindows_onboardingScreen_importAccount'].events({
                     });
                 } else {
                     GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', { error
-                        }),
+                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.importFailed', { error }),
                         duration: 4
                     });
                 }
@@ -400,27 +304,32 @@ Template['popupWindows_onboardingScreen_password'].events({
             });
         } else if (pw && pw.length >= 8) {
             TemplateVar.set('creatingPassword', true);
-            web3.personal.newAccount(pw, function (e, res) {
+
+            // Give the UI 300ms to update before creating
+            setTimeout(function(password = pw, template = template) {
+                const mnemonic = bip39.generateMnemonic();
+                const bip32 = hdkey.fromMasterSeed(mnemonic);
+                const wallet = bip32.getWallet();
+                const walletJSON = wallet.toV3(password);
+                const walletFileName = wallet.getV3Filename(Date.now());
+                ipc.send('backendAction_saveNewWallet', walletFileName, walletJSON);
+
                 TemplateVar.set(template, 'creatingPassword', false);
 
-                // notifiy about backing up!
+                // ipc.send('backendAction_windowMessageToOwner', null, wallet.getAddress());
+
+                TemplateVar.setTo('.onboarding-account', 'newAccount', wallet.getChecksumAddressString());
+                TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
+
+                // Notifiy about backing up!
                 alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
-                if (!e) {
-                    TemplateVar.setTo('.onboarding-account', 'newAccount', web3.toChecksumAddress(res));
-                    TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
+                // TODO: Design flow to have them write down their `mnemonic`, and then optionally verify it
 
-                    // clear form
-                    pw = null;
-                    pwRepeat = null;
-
-                } else {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.onboarding.errors.nodeNotStartedYet'),
-                        duration: 4
-                    });
-                }
-            });
+                // clear form
+                pw = null;
+                pwRepeat = null;
+            }, 300, pw, template);
         }
     }
 });

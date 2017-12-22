@@ -122,12 +122,16 @@
     }
 
     footer {
-        z-index: 2;
+        z-index: 1000;
         flex: 0 @gridHeight * 4;
         height: @gridHeight * 4;
         padding: @gridHeight/2 @gridWidth/4;
         display: flex;
         flex-flow: row wrap;
+
+        position: absolute;
+        width: 100%;
+        bottom: 0;
 
         progress {
             width: 100%;

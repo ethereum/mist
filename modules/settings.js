@@ -237,6 +237,10 @@ class Settings {
         this.saveConfig('swarm.enableOnStart', bool);
     }
 
+    set enableIPFSOnStart(bool) {
+        this.saveConfig('ipfs.enableOnStart', bool);
+    }
+
     get keystorePath() {
         return path.join(this.userDataPath, 'accounts');
     }
@@ -254,6 +258,10 @@ class Settings {
                 let accounts = [];
 
                 for (var file of files) {
+                    if (file.startsWith('.')) { // Ignore hidden files
+                        continue; 
+                    }
+                    
                     try {
                         const accountData = JSON.parse(fs.readFileSync(path.join(keystorePath, file)));
                         accounts.push(accountData);

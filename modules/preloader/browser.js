@@ -4,7 +4,6 @@
 const _ = require('underscore');
 require('./include/common')('browser');
 const { ipcRenderer, webFrame, remote } = require('electron');
-const mist = require('./include/mistAPI.js');
 require('./include/getFavicon.js');
 require('./include/getMetaTags.js');
 require('./include/setBasePath')('interface');
@@ -54,8 +53,7 @@ window.addEventListener('message', function message(event) {
     }
 
     // mistAPI
-    } else if (/^mistAPI_[a-z]/i.test(data.type)) {
-
+    if (/^mistAPI_[a-z]/i.test(data.type)) {
         if (data.type === 'mistAPI_requestAccount') {
             ipcRenderer.send(data.type, data.message);
         } else {
@@ -101,6 +99,8 @@ const postMessage = function (payload) {
         });
     });
 });
+
+let mistAPI = fs.readFileSync(path.join(__dirname, '/injected/mistAPI.js')).toString();
 
 mistAPI = mistAPI.replace('__version__', packageJson.version)
         .replace('__license__', packageJson.license)

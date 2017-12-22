@@ -4,9 +4,7 @@ const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
 const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/socketManager');
-const Windows = require('./modules/windows');
 const Q = require('bluebird');
-const windowStateKeeper = require('electron-window-state');
 const log = logger.create('main');
 const Settings = require('./modules/settings');
 
@@ -16,7 +14,8 @@ import { setLanguageOnMain, toggleSwarm, runClientBinaryManager, runUpdateChecke
 import { runSwarm } from './modules/core/swarm/actions';
 import { runIPFS } from './modules/core/ipfs/actions';
 import { startEthereumNode } from './modules/core/ethereum_node/actions';
-import { handleOnboarding } from './modules/core/accounts/actions';
+import { syncAccounts, handleOnboarding } from './modules/core/accounts/actions';
+import { createCoreWindows, startMainWindow } from './modules/core/windows/actions';
 import { NodeState } from './modules/core/constants';
 import swarmNode from './modules/swarmNode.js';
 
@@ -123,8 +122,6 @@ app.on('before-quit', async (event) => {
     }
 });
 
-let mainWindow;
-
 app.on('ready', async () => {
     try {
         await global.db.init();
@@ -144,8 +141,6 @@ function onReady() {
 
     dbSync.initializeListeners();
 
-    Windows.init();
-
     enableSwarmProtocol();
 
     store.dispatch(runUpdateChecker());
@@ -155,7 +150,7 @@ function onReady() {
 
     appMenu();
 
-    createCoreWindows();
+    store.dispatch(createCoreWindows());
 
     // store.dispatch(checkTimeSync());  // TODO: Investigate if this is still necessary 
 
@@ -191,19 +186,7 @@ function enableSwarmProtocol() {
     });
 }
 
-function createCoreWindows() {
-    global.defaultWindow = windowStateKeeper({ defaultWidth: 1024 + 208, defaultHeight: 720 });
-
-    // Create the browser window.
-    mainWindow = Windows.create('main');
-
-    // Delegating events to save window bounds on windowStateKeeper
-    global.defaultWindow.manage(mainWindow.window);
-}
-
-function kickStart() {
-    store.dispatch(handleOnboarding());
-
+async function kickStart() {
     store.dispatch(runClientBinaryManager());
 
     store.dispatch(startEthereumNode());
@@ -215,42 +198,5 @@ function kickStart() {
     // Update menu, to show node switching possibilities
     appMenu();
 
-    startMainWindow();
-}
-
-function startMainWindow() {
-    log.info(`Loading Interface at ${global.interfaceAppUrl}`);
-    initializeMainWindowListeners();
-    initializeTabs();
-}
-
-function initializeMainWindowListeners() {
-    mainWindow.on('ready', () => {
-        mainWindow.show();
-    });
-
-    mainWindow.load(global.interfaceAppUrl);
-
-    mainWindow.on('closed', () => store.dispatch(quitApp()));
-}
-
-function initializeTabs() {
-    const Tabs = global.db.getCollection('UI_tabs');
-    const sortedTabs = Tabs.getDynamicView('sorted_tabs') || Tabs.addDynamicView('sorted_tabs');
-    sortedTabs.applySimpleSort('position', false);
-
-    const refreshMenu = () => {
-        clearTimeout(global._refreshMenuFromTabsTimer);
-
-        global._refreshMenuFromTabsTimer = setTimeout(() => {
-            log.debug('Refresh menu with tabs');
-            global.webviews = sortedTabs.data();
-            appMenu(global.webviews);
-            store.dispatch({ type: '[MAIN]:MENU:REFRESH' });
-        }, 1000);
-    };
-
-    Tabs.on('insert', refreshMenu);
-    Tabs.on('update', refreshMenu);
-    Tabs.on('delete', refreshMenu);
+    store.dispatch(handleOnboarding());
 }

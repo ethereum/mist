@@ -1,5 +1,3 @@
-
-
 const _ = global._;
 const BaseProcessor = require('./base');
 const db = require('../../db');

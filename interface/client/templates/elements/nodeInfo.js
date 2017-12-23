@@ -4,15 +4,32 @@ Template Controllers
 @module Templates
 */
 
+var _dep = new Deps.Dependency();
+
+function select(state) {
+  return state.ethereumNode.latestBlockHeader
+}
+let currentValue;
+function handleChange() {
+  let previousValue = currentValue;
+  currentValue = select(store.getState());
+
+  if (previousValue !== currentValue) {
+    _dep.changed();
+  }
+}
+let unsubscribe = store.subscribe(handleChange);
+
 /**
 Update the peercount
 
 @method getPeerCount
 */
 var getPeerCount = function(template) {
-    web3.net.getPeerCount(function(e, res) {
-        if(!e)
-            TemplateVar.set(template, 'peerCount', res);
+    web3.eth.net.getPeerCount(function(error, result) {
+        if (!error) {
+            TemplateVar.set(template, 'peerCount', result);
+        }
     });
 };
 
@@ -22,11 +39,11 @@ Update the mining hashrate
 @method getMining
 */
 var getMining = function(template) {
-    web3.eth.getMining(function(e, res) {
-        if(!e && res) {
-            web3.eth.getHashrate(function(e, res) {
-                if(!e) {
-                    TemplateVar.set(template, 'mining', numeral(res/1000).format('0,0.0'));
+    web3.eth.isMining(function(error, result) {
+        if(!error && result) {
+            web3.eth.getHashrate(function(error, result) {
+                if(!error) {
+                    TemplateVar.set(template, 'mining', numeral(result/1000).format('0,0.0'));
                 }
             });
         } else {
@@ -46,13 +63,13 @@ Template['elements_nodeInfo'].onCreated(function(){
     var template = this;
 
     // CHECK FOR NETWORK
-    web3.eth.getBlock(0, function(e, res){
-        if(!e){
-            const network = Helpers.detectNetwork(res.hash);
+    web3.eth.getBlock(0, function(error, result){
+        if (!error) {
+            const network = Helpers.detectNetwork(result.hash);
             TemplateVar.set(template, 'network', network.type);
             TemplateVar.set(template, 'networkName', network.name);
         }
-    });
+    })
 
     // CHECK SYNCING
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
@@ -111,6 +128,8 @@ Template['elements_nodeInfo'].onDestroyed(function() {
     if (this.syncFilter) {
         this.syncFilter.stopWatching();
     }
+
+    unsubscribe();
 });
 
 
@@ -122,7 +141,10 @@ Template['elements_nodeInfo'].helpers({
     @return {String}
     */
     formattedBlockNumber: function () {
-        return numeral(EthBlocks.latest.number).format('0,0');
+        _dep.depend();
+        const latestBlockHeader = store.getState().ethereumNode.latestBlockHeader;
+        if (!latestBlockHeader) { return "Loading..." }
+        return numeral(latestBlockHeader.number).format('0,0');
     },
     /**
     Formats the time since the last block
@@ -130,11 +152,15 @@ Template['elements_nodeInfo'].helpers({
     @method (timeSinceBlock)
     */
     timeSinceBlock: function () {
-        var timeSince = moment(EthBlocks.latest.timestamp, 'X');
+        _dep.depend();
+        const latestBlockHeader = store.getState().ethereumNode.latestBlockHeader;
+        if (!latestBlockHeader) { return "Loading..." }
+
+        var timeSince = moment(latestBlockHeader.timestamp, 'X');
         var now = moment();
         var diff = now.diff(timeSince, 'seconds');
 
-        if (!EthBlocks.latest.timestamp) {
+        if (!latestBlockHeader.timestamp) {
             return '-';
         }
 

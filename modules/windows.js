@@ -575,7 +575,7 @@ class Windows {
 
         // If generic window is available, recycle it (unless on blacklist)
         const genericWindow = this.getByType('generic');
-        const genericWindowBlacklist = ['remix', 'updateAvailable', 'connectAccount'];
+        const genericWindowBlacklist = ['remix', 'updateAvailable', 'connectAccount', 'onboardingScreen'];
         if (!genericWindowBlacklist.includes(type) && genericWindow && genericWindow.isAvailable) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;

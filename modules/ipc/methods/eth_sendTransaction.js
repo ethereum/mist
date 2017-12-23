@@ -1,5 +1,3 @@
-
-
 const BaseProcessor = require('./base');
 const Windows = require('../../windows');
 const Q = require('bluebird');

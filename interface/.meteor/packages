@@ -19,10 +19,6 @@ sacha:spin
 chuangbo:cookie
 agnito:simptip
 mrt:jquery-ui-sortable
-ethereum:web3
-ethereum:elements
-ethereum:accounts
-ethereum:blocks
 ethereum:dapp-styles
 meteor-base@1.0.4
 mobile-experience@1.0.4
@@ -44,3 +40,5 @@ shell-server
 ecmascript
 numeral:numeral
 numeral:languages
+ethereum:accounts
+ethereum:elements

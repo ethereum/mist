@@ -1,3 +1,4 @@
+require('babel-register');
 /**
 @module preloader PopupWindows
 */
@@ -8,7 +9,6 @@ const mist = require('./include/mistAPI.js');
 const dbSync = require('../dbSync.js');
 require('./include/setBasePath')('interface');
 require('./include/openExternal.js');
-
 
 // receive data in from SendData
 ipcRenderer.on('uiAction_sendData', (e, data) => {

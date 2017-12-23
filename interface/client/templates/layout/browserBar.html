@@ -20,8 +20,8 @@
                 {{#unless permissions.admin}}
                 <button class="accounts">
                     {{#each dappAccounts}}
-                        <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
-                            {{> dapp_identicon identity=address class="dapp-tiny"}}
+                        <span class="simptip-position-left simptip-movable" data-tooltip="{{this}}">
+                            {{> dapp_identicon identity=this class="dapp-tiny"}}
                         </span>
                     {{else}}
                         <span class="connect-button">

@@ -1,3 +1,4 @@
+require('babel-register');
 /**
 @module preloader MistUI
 */
@@ -6,42 +7,31 @@
 window.store = require('./rendererStore');
 
 require('./include/common')('mist');
-require('./include/web3CurrentProvider.js');
 const { ipcRenderer, remote, webFrame } = require('electron');  // eslint-disable-line import/newline-after-import
 const { Menu, MenuItem } = remote;
 const dbSync = require('../dbSync.js');
 const i18n = require('../i18n.js');
 const mist = require('./include/mistAPI.js');
-const web3Admin = require('../web3Admin.js');
 
 require('./include/setBasePath')('interface');
 
-
-// add admin later
-setTimeout(() => {
-    web3Admin.extend(window.web3);
-}, 1000);
-
+window.web3 = global.web3;
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipcRenderer;
 
-
 // remove require and module, because node-integration is on
 delete window.module;
 delete window.require;
-
 
 // prevent overwriting the Dapps Web3
 // delete global.Web3;
 // delete window.Web3;
 
-
 // set the langauge for the electron interface
 // ipcRenderer.send('setLanguage', navigator.language.substr(0,2));
-
 
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
@@ -77,7 +67,6 @@ ipcRenderer.on('uiAction_toggleWebviewDevTool', (e, id) => {
         webview.openDevTools();
     }
 });
-
 
 // randomize accounts and drop half
 // also certainly remove the web3.ethbase one
@@ -128,26 +117,39 @@ ipcRenderer.on('uiAction_runTests', (e, type) => {
 
 const currentMousePosition = { x: 0, y: 0 };
 const menu = new Menu();
-// menu.append(new MenuItem({ type: 'separator' }));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click() {
-    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview) {
-        webview.reloadIgnoringCache();
-    }
-} }));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click() {
-    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview) {
-        webview.openDevTools();
-    }
-} }));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click() {
-    const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if (webview) {
-        webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
-    }
-} }));
 
+menu.append(
+    new MenuItem({
+        label: i18n.t('mist.rightClick.reload'),
+        accelerator: 'Command+R',
+        click() {
+            const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+            if (webview) {
+                webview.reloadIgnoringCache();
+            }
+        }
+    })
+);
+menu.append(
+    new MenuItem({
+        label: i18n.t('mist.rightClick.openDevTools'), click() {
+            const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+            if (webview) {
+                webview.openDevTools();
+            }
+        }
+    })
+);
+menu.append(
+    new MenuItem({
+        label: i18n.t('mist.rightClick.inspectElements'), click() {
+            const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+            if (webview) {
+                webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
+            }
+        }
+    })
+);
 
 window.addEventListener('contextmenu', (e) => {
     e.preventDefault();
@@ -159,7 +161,6 @@ window.addEventListener('contextmenu', (e) => {
         menu.popup(remote.getCurrentWindow());
     }
 }, false);
-
 
 document.addEventListener('keydown', (e) => {
     // RELOAD current webview

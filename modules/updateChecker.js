@@ -1,4 +1,4 @@
-const _ = global._;
+const _ = require('./utils/underscore');
 const Windows = require('./windows');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('updateChecker');
@@ -11,7 +11,7 @@ const semver = require('semver');
  * @return {[type]} [description]
  */
 const check = exports.check = () => {
-    log.info('Check for update...');
+    log.info('Checking for update...');
 
     let str = null;
 

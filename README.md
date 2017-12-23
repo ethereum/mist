@@ -61,12 +61,14 @@ Now you're ready to initialise Mist for development:
     $ git clone https://github.com/ethereum/mist.git
     $ cd mist
     $ yarn
+    $ yarn dev:rebuild  # rebuild node modules for electron's node version
 
 To update Mist in the future, run:
 
     $ cd mist
     $ git pull
     $ yarn
+    $ yarn dev:rebuild
 
 ### Run Mist
 

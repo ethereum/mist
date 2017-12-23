@@ -9,9 +9,11 @@ const updateChecker = require('./updateChecker');
 const ethereumNode = require('./ethereumNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
-import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
-import { SwarmState } from './core/settings/reducer';
+import { setLanguage } from './core/settings/actions';
+import { toggleSwarm, toggleSwarmOnStart } from './core/swarm/actions';
+import { NodeState } from './core/constants';
 import swarmNode from './swarmNode.js';
+import { NodeNetwork } from './core/ethereum_node/reducer';
 
 // Make easier to return values for specific systems
 const switchForSystem = function (options) {
@@ -171,7 +173,7 @@ let menuTempl = function (webviews) {
         {
             label: i18n.t('mist.applicationMenu.file.swarmUpload'),
             accelerator: 'Shift+CommandOrControl+U',
-            enabled: store.getState().settings.swarmState == SwarmState.Enabled,
+            enabled: store.getState().swarm.nodeState == NodeState.Enabled,
             click() {
                 const focusedWindow = BrowserWindow.getFocusedWindow();
                 const paths = dialog.showOpenDialog(focusedWindow, {
@@ -213,7 +215,7 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.file.importPresale'),
                 accelerator: 'CommandOrControl+I',
-                enabled: ethereumNode.isMainNetwork,
+                enabled: store.getState().ethereumNode.network === NodeNetwork.Main,
                 click() {
                     Windows.createPopup('importAccount');
                 },
@@ -227,34 +229,7 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
-                            let userPath = Settings.userHomePath;
-
-                            // eth
-                            if (ethereumNode.isEth) {
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Web3\\keys`;
-                                } else {
-                                    userPath += '/.web3/keys';
-                                }
-
-                            // geth
-                            } else {
-                                if (process.platform === 'darwin') {
-                                    userPath += '/Library/Ethereum/keystore';
-                                }
-
-                                if (process.platform === 'freebsd' ||
-                                process.platform === 'linux' ||
-                                process.platform === 'sunos') {
-                                    userPath += '/.ethereum/keystore';
-                                }
-
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\Ethereum\\keystore`;
-                                }
-                            }
-
-                            shell.showItemInFolder(userPath);
+                            shell.showItemInFolder(Settings.keystorePath);
                         },
                     }, {
                         label: i18n.t('mist.applicationMenu.file.backupMist'),
@@ -563,7 +538,7 @@ let menuTempl = function (webviews) {
         {
             label: i18n.t('mist.applicationMenu.develop.enableSwarm'),
             enabled: true,
-            checked: [SwarmState.Enabling, SwarmState.Enabled].includes(global.store.getState().settings.swarmState),
+            checked: [NodeState.Enabling, NodeState.Enabled].includes(global.store.getState().swarm.nodeState),
             type: 'checkbox',
             click() {
                 store.dispatch(toggleSwarm());

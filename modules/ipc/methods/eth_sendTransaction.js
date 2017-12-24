@@ -73,7 +73,8 @@ module.exports = class extends BaseProcessor {
 
                 // user cancelled?
                 if (!modalWindow.processed) {
-                    reject(this.ERRORS.METHOD_DENIED);
+                    // reject(this.ERRORS.METHOD_DENIED);
+                    reject('Transaction not confirmed');
                 }
             });
 

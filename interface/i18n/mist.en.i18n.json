@@ -191,7 +191,7 @@
                 "enterPassword": "Enter password",
                 "repeatPassword": "Repeat password",
                 "creating": "Generating account...",
-                "backupHint": "Make sure you backup your keyfiles AND password!\n\nYou can find your keyfiles folder using the main menu -> Accounts -> Backup -> Accounts. Keep a copy of the \"keystore\" folder where you can't lose it!",
+                "backupHint": "Make sure you backup your KEYFILES and PASSWORD!\n\nYou can find your keyfiles folder using the main File -> Backup -> Accounts. Keep a copy of the \"keystore\" folder where you can't lose it!",
                 "errors": {
                     "passwordMismatch": "Your passwords don't match.",
                     "passwordTooShort": "Make a longer password"
@@ -255,9 +255,9 @@
                 "goToTestnetDescription": "Test the technology freely in a sandboxed testnet, without using real Ether.",
                 "gotoMainnet": "Use the main network",
                 "gotoMainnetDescription": "You’ll need some Ether to create and execute contracts. Don't worry, we'll help you get some...",
-                "doYouHaveAWalletFile": "Do you have a wallet file?",
-                "walletFileDescription": "<p>Just wanWallet file here to import.</p>",
-                "dropFilesHere": "Drop wallet file",
+                "doYouHaveAWalletFile": "Already have a Wanchain wallet keystore?",
+                "walletFileDescription": "<p>Please drag and drop your Wanchain wallet keystore file to import.</p>",
+                "dropFilesHere": "Drop the keystore file here.",
                 "creating": "Creating...",
                 "importing": "Importing...",
                 "skip": "Skip this step",

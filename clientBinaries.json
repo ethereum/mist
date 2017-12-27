@@ -1,7 +1,7 @@
 {
     "clients": {
         "Geth": {
-            "version": "0.3.3",
+            "version": "0.9.01",
             "platforms": {
                 "linux": {
                     "x64": {
@@ -19,7 +19,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.3.3"
+                                    "0.9.01"
                                 ]
                             }
                         }
@@ -28,10 +28,10 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.3.3/geth-mac-amd64-0.3.3-ff421334.tar.gz",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.9.01/geth-mac-amd64-0.9.01-580dc87a.tar.gz",
                             "type": "tar",
-                            "md5": "b9a364db097092340fe79febac12940e",
-                            "bin": "geth-mac-amd64-0.3.3-ff421334/geth"
+                            "md5": "bce0970243a755146c63b1bf83e79d12",
+                            "bin": "geth-mac-amd64-0.9.01-580dc87a/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -41,7 +41,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.3.3"
+                                    "0.9.01"
                                 ]
                             }
                         }
@@ -63,7 +63,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "0.3.3"
+                                    "0.9.01"
                                 ]
                             }
                         }

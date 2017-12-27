@@ -65,7 +65,7 @@ ${EndIf}
 
     SetShellVarContext current
     StrCpy $DATADIR "$APPDATA\${APPNAME}"
-    StrCpy $NODEDATADIR "$APPDATA\wanwallet"
+    StrCpy $NODEDATADIR "$APPDATA\Wanchain"
     StrCpy $SHORTCUTDIR "$SMPROGRAMS\${APPNAMENOHYPEN}"
     StrCpy $DESKTOPDIR "$DESKTOP"
 

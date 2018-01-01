@@ -11,8 +11,6 @@ const Q = require('bluebird');
 const shell = require('shelljs');
 const version = require('../package.json').version;
 
-
-
 const type = options.type;
 let applicationName;
 if (options.internal) {
@@ -215,7 +213,7 @@ gulp.task('release-dist', (done) => {
 
     const appNameHypen = applicationName.replace(/\s/, '-');
     const appNameNoSpace = applicationName.replace(/\s/, '');
-    const versionDashed = version.replace(/\./g, '-');
+    const versionDashed = version; //.replace(/\./g, '-');
 
     const cp = (inputPath, outputPath) => {
         console.info(`Copying from ${path.join(distPath, inputPath)} to ${path.join(releasePath, outputPath)}`);

@@ -117,7 +117,7 @@ gulp.task('download-signatures', (cb) => {
 
 gulp.task('update-i18n', (cb) => {
     /**
-     * This script w-ill update Mist's i18n files
+     * This script will update Mist's i18n files
      *  - adds missing english strings to all translations
      *  - removes obsolet keys from translations
      */

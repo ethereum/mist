@@ -28,11 +28,7 @@ if (Settings.cli.version) {
 
     process.exit(0);
 }
-if (Settings.cli.test) {
-    log.info("Testint...");
 
-    process.exit(0);
-}
 if (Settings.cli.ignoreGpuBlacklist) {
     app.commandLine.appendSwitch('ignore-gpu-blacklist', 'true');
 }
@@ -255,6 +251,12 @@ onReady = () => {
 
     // Delegating events to save window bounds on windowStateKeeper
     defaultWindow.manage(mainWindow.window);
+    const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+        console.log("Another instance exist.")
+    })
+    if (shouldQuit) {
+        app.quit();
+    }
 
     if (!Settings.inAutoTestMode) {
         splashWindow = Windows.create('splash', {
@@ -279,7 +281,7 @@ onReady = () => {
     if (!Settings.skiptimesynccheck) {
         timesync.checkEnabled((err, enabled) => {
             if (err) {
-                log.error('Couldn\'t infer if computer automatically syncs time.');
+                log.error('Couldn\'t infer if computer automatically syncs time.', err);
                 return;
             }
 
@@ -403,7 +405,7 @@ onReady = () => {
             return ethereumNode.send('eth_accounts', []);
         })
         .then(function onboarding(resultData) {
-
+            // don't popup the network select window, because that will result in socket error to change network.
             if (false && ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
                 log.info('No accounts setup yet, lets do onboarding first.');
 

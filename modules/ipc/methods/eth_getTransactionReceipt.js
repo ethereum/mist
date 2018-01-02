@@ -21,7 +21,7 @@ module.exports = class extends BaseProcessor {
         });
 
         // If that contains a contractAddress already, fine.
-        if (ret.result.contractAddress != null) {
+        if (ret.result.result && ret.result.result.contractAddress != null) {
             return ret.result;
         }
 

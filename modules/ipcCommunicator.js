@@ -301,22 +301,6 @@ function generatePubkeyIWQforRing(Pubs, I, w, q){
 }
 const CoinContractAddr = wanUtil.contractCoinAddress;
 
-function wan_sendTransaction(tx)
-{
-    return new Promise(function(success, fail){
-        var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
-        web3.eth.sendRawTransaction(tx,(err,hash)=>{
-           if(err){
-               fail(err);
-           } else {
-               success(hash);
-           }
-        });
-    });
-}
-
-
-
 async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,value, gas, gasPrice, password){
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     web3Admin.extend(web3);
@@ -375,25 +359,6 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
 
 }
 
-
-
-function wan_windowMessageToOwner(e, error, value) {
-    const windowId = e.sender.id;
-    const senderWindow = Windows.getById(windowId);
-    if (senderWindow.ownerId) {
-        const ownerWindow = Windows.getById(senderWindow.ownerId);
-        const mainWindow = Windows.getByType('main');
-
-        if (ownerWindow) {
-            ownerWindow.send('uiAction_windowMessage', senderWindow.type, error, value);
-        }
-
-        // send through the mainWindow to the webviews
-        if (mainWindow) {
-            mainWindow.send('uiAction_windowMessage', senderWindow.type, senderWindow.ownerId, error, value);
-        }
-    }
-}
 ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
     var web3 = new Web3(new Web3.providers.IpcProvider( Settings.rpcIpcPath, net));
     web3Admin.extend(web3);
@@ -437,7 +402,6 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                     try {
                         privKeyB = keythereum.recover(keyPassword, keyBObj);
                     }catch(error){
-                        // mainWindow.send('uiAction_windowMessage', "startScan",  "wrong password", "");
                         log.error("wan_startScan:", "Wrong password");
                         senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
                         return;
@@ -446,9 +410,8 @@ ipc.on('wan_startScan', (e, address, keyPassword)=> {
                     log.debug("myWaddr:",myWaddr);
                     nodeScan.restart(myWaddr, privKeyB);
                     mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
-
                     senderWindow.send('uiAction_sendKeyData', 'startScan', true);
-                    // senderWindow.close();
+                    return;
                 }
             }
 
@@ -567,6 +530,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                         if(error.indexOf('Error: OTA is reused') === 0) {
                             log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
                             wanOTAs.updateOtaStatus(otas[c].otaddr);
+                            continue;
                         }else{
                             // common error
                             mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again:"+error, "");
@@ -645,9 +609,7 @@ ipc.on('wan_requestOTACollection',(event,address)=>{
     mainWindow.send('uiAction_windowMessage', 'requestOTACollection',  null, OTAArray);
 
 });
-ipc.on('wan_requestScanOTAbyBlock',(event,address)=>{
-    wanOTAs.scanOTAsByblocks(address.address);
-});
+
 ipc.on('wan_changeAccountPassword', (e,param) => {
     log.debug("ipc.on wan_changeAccountPassword");
     log.debug("param:",param);

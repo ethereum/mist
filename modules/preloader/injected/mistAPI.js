@@ -117,13 +117,7 @@
                 state:state
             });
         },
-        requestScanOTAbyBlock(address)
-        {
-            postMessage({
-                type: 'wan_requestScanOTAbyBlock',
-                address: address
-            });
-        },
+
 
         startScan(addr, callback) {
             if (callback) {

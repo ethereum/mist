@@ -204,11 +204,6 @@ let menuTempl = function (webviews) {
                     {
                         label: i18n.t('mist.applicationMenu.file.backupKeyStore'),
                         click() {
-                            let kestorePath = 'wanchain';
-                            if(ethereumNode.network === 'pluto')
-                            {
-                                kestorePath = 'wanchain/pluto';
-                            }
                             let userPath = Settings.userHomePath;
 
                             // eth
@@ -221,19 +216,6 @@ let menuTempl = function (webviews) {
 
                             // geth
                             } else {
-                                if (process.platform === 'darwin') {
-                                    userPath += '/Library/'+kestorePath+'/keystore';
-                                }
-
-                                if (process.platform === 'freebsd' ||
-                                process.platform === 'linux' ||
-                                process.platform === 'sunos') {
-                                    userPath += '/.'+kestorePath+'/keystore';
-                                }
-
-                                if (process.platform === 'win32') {
-                                    userPath = `${Settings.appDataPath}\\${kestorePath}\\keystore`;
-                                }
 
                                 userPath = ethereumNode.getDatadir(true);
                             }

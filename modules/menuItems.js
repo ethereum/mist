@@ -93,67 +93,67 @@ let menuTempl = function (webviews) {
     // APP
     const fileMenu = [];
 
-    if (process.platform === 'darwin') {
-        fileMenu.push(
-            {
-                label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
-                click() {
-                    Windows.createPopup('about', {
-                        electronOptions: {
-                            width: 420,
-                            height: 230,
-                            alwaysOnTop: true,
-                        },
-                    });
-                },
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
-                click() {
-                    updateChecker.runVisibly();
-                },
-            }, {
-                label: i18n.t('mist.applicationMenu.app.checkForNodeUpdates'),
-                click() {
-                    // remove skipVersion
-                    fs.writeFileSync(
-                        path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
-                        '' // write no version
-                    );
-
-                    // true = will restart after updating and user consent
-                    ClientBinaryManager.init(true);
-                },
-            }, {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.services', { app: Settings.appName }),
-                role: 'services',
-                submenu: [],
-            },
-            {
-                type: 'separator',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.hide', { app: Settings.appName }),
-                accelerator: 'Command+H',
-                role: 'hide',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.hideOthers', { app: Settings.appName }),
-                accelerator: 'Command+Alt+H',
-                role: 'hideothers',
-            },
-            {
-                label: i18n.t('mist.applicationMenu.app.showAll', { app: Settings.appName }),
-                role: 'unhide',
-            },
-            {
-                type: 'separator',
-            }
-        );
-    }
+    // if (process.platform === 'darwin') {
+    //     fileMenu.push(
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.about', { app: Settings.appName }),
+    //             click() {
+    //                 Windows.createPopup('about', {
+    //                     electronOptions: {
+    //                         width: 420,
+    //                         height: 230,
+    //                         alwaysOnTop: true,
+    //                     },
+    //                 });
+    //             },
+    //         },
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.checkForUpdates'),
+    //             click() {
+    //                 updateChecker.runVisibly();
+    //             },
+    //         }, {
+    //             label: i18n.t('mist.applicationMenu.app.checkForNodeUpdates'),
+    //             click() {
+    //                 // remove skipVersion
+    //                 fs.writeFileSync(
+    //                     path.join(Settings.userDataPath, 'skippedNodeVersion.json'),
+    //                     '' // write no version
+    //                 );
+    //
+    //                 // true = will restart after updating and user consent
+    //                 ClientBinaryManager.init(true);
+    //             },
+    //         }, {
+    //             type: 'separator',
+    //         },
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.services', { app: Settings.appName }),
+    //             role: 'services',
+    //             submenu: [],
+    //         },
+    //         {
+    //             type: 'separator',
+    //         },
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.hide', { app: Settings.appName }),
+    //             accelerator: 'Command+H',
+    //             role: 'hide',
+    //         },
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.hideOthers', { app: Settings.appName }),
+    //             accelerator: 'Command+Alt+H',
+    //             role: 'hideothers',
+    //         },
+    //         {
+    //             label: i18n.t('mist.applicationMenu.app.showAll', { app: Settings.appName }),
+    //             role: 'unhide',
+    //         },
+    //         {
+    //             type: 'separator',
+    //         }
+    //     );
+    // }
     fileMenu.push(
         { label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
             accelerator: 'CommandOrControl+Q',

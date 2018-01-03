@@ -253,7 +253,7 @@ onReady = () => {
     defaultWindow.manage(mainWindow.window);
     const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
         console.log("Another instance exist.")
-    })
+    });
     if (shouldQuit) {
         app.quit();
     }
@@ -281,7 +281,7 @@ onReady = () => {
     if (!Settings.skiptimesynccheck) {
         timesync.checkEnabled((err, enabled) => {
             if (err) {
-                log.error('Couldn\'t infer if computer automatically syncs time.', err);
+                log.error('Couldn\'t infer if computer automatically syncs time.');
                 return;
             }
 

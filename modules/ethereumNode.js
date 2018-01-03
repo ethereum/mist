@@ -82,7 +82,7 @@ class EthereumNode extends EventEmitter {
         if (process.platform === 'win32') keystorePath = Settings.appDataPath + '\\' + ksdir;
 
 
-        if(this._network == 'internal'){
+        if(this._network == 'internal' || this.defaultNetwork == 'internal'){
             keystorePath =  path.join(keystorePath, 'internal');
         }
         if(isKs){

@@ -7,8 +7,8 @@ Window communication
 const _ = global._;
 const wanOTAs = require('./wanChain/wanChainOTAs');
 const fs = require('fs');
+const path = require('path');
 const { app, ipcMain: ipc, shell, webContents } = require('electron');
-
 
 const Windows = require('./windows');
 const logger = require('./utils/logger');
@@ -332,7 +332,6 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
 
 
     let CoinContract = web3.eth.contract(coinSCDefinition);
-    log.debug("CoinContract:", CoinContract);
     let CoinContractInstance = CoinContract.at(CoinContractAddr);
 
     let all = CoinContractInstance.refundCoin.getData(KIWQ,value);
@@ -353,7 +352,7 @@ async function otaRefund(rfAddr, otaDestAddress, number, privKeyA, privKeyB,valu
         log.info('tx hash:',hash);
         return {error:null, hash:hash};
     } catch (error) {
-        log.info('otaRefund:', error);
+        log.info('otaRefund:', error.toString());
         return {error:error.toString(), hash:null};
     }
 
@@ -383,42 +382,33 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
     address = address.toLowerCase().slice(2);
-    let keystorePath = ethereumNode.getDatadir(true);
-    log.debug("keystore path:",keystorePath);
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
-    fs.readdir(keystorePath, function(err, files) {
-        if(err){
-            log.error("readdir",err);
-        }else{
-            for(let i=0; i<files.length; i++){
-                let filepath = keystorePath+'/'+files[i];
-                if(-1 != filepath.indexOf(address)){
-                    log.debug("find:", filepath);
-                    let keystoreStr = fs.readFileSync(filepath,"utf8");
-                    let keystore = JSON.parse(keystoreStr);
-                    let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
-                    let privKeyB;
-                    try {
-                        privKeyB = keythereum.recover(keyPassword, keyBObj);
-                    }catch(error){
-                        log.error("wan_startScan:", "Wrong password");
-                        senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
-                        return;
-                    };
-                    let myWaddr = keystore.waddress;
-                    log.debug("myWaddr:",myWaddr);
-                    nodeScan.restart(myWaddr, privKeyB);
-                    mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
-                    senderWindow.send('uiAction_sendKeyData', 'startScan', true);
-                    return;
-                }
-            }
 
-        }
-
-    });
-
+    let filepath = getKsfullnamebyAddr(address);
+    log.debug("keystore path:",filepath);
+    if(!filepath){
+        console.log("Faild to find address: ", address);
+        senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
+        return;
+    }
+    let keystoreStr = fs.readFileSync(filepath,"utf8");
+    let keystore = JSON.parse(keystoreStr);
+    let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+    let privKeyB;
+    try {
+        privKeyB = keythereum.recover(keyPassword, keyBObj);
+    }catch(error){
+        log.error("wan_startScan:", "Wrong password");
+        senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
+        return;
+    }
+    let myWaddr = keystore.waddress;
+    log.debug("myWaddr:",myWaddr);
+    nodeScan.restart(myWaddr, privKeyB);
+    mainWindow.send('uiAction_windowMessage', "startScan",  null, "scan started.");
+    senderWindow.send('uiAction_sendKeyData', 'startScan', true);
+    return;
 });
 function web3SendTransaction(web3Func, paras){
     return new Promise(function(success, fail){
@@ -474,6 +464,22 @@ function getTransactionReceipt(rfHashs)
     });
 }
 
+// addr has no '0x' already.
+function getKsfullnamebyAddr(addr){
+    let addrl = addr.toLowerCase();
+    let keystorePath = ethereumNode.getDatadir(true);
+    let files = fs.readdirSync(keystorePath);
+    let i=0;
+    for(i =0; i<files.length; i++){
+        if(files[i].toLowerCase().indexOf(addrl) != -1){
+            break;
+        }
+    }
+    if( i == files.length ){
+        return "";
+    }
+    return path.join(keystorePath, files[i]);
+}
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let address = rfOta.rfAddress.toLowerCase().slice(2);
     const mainWindow = Windows.getByType('main');
@@ -483,83 +489,66 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
     let gasPrice = rfOta.gasPrice;
     let otaNumber = rfOta.otaNumber;
 
-    let keyFound = false;
-    let keystorePath = ethereumNode.getDatadir(true);
-    fs.readdir(keystorePath, async function(err, files) {
-        if(err){
-            log.error("readdir",err);
-            mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
-        }else{
-            let filepath;
-            for(let i=0; i<files.length; i++){
-                filepath = keystorePath+'/'+files[i];
-                if(-1 != filepath.indexOf(address)){
-                    log.debug("find:", filepath);
-                    keyFound = true;
-                    break;
+    let filepath = getKsfullnamebyAddr(address);
+    if(!filepath){
+        log.error("Can't find keystore:", address);
+        mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
+        return;
+    }
+
+    let keystoreStr = fs.readFileSync(filepath,"utf8");
+    let keystore = JSON.parse(keystoreStr);
+    let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
+    let keyAObj = {version:keystore.version, crypto:keystore.crypto};
+    let privKeyA;
+    let privKeyB;
+    try {
+        privKeyA = keythereum.recover(keyPassword, keyAObj);
+        privKeyB = keythereum.recover(keyPassword, keyBObj);
+    }catch(error){
+        log.error('wan_refundCoin', 'wrong password');
+        senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
+        return;
+    }
+
+    let rfHashs = [];
+    try{
+        for (let c=0; c<otas.length; c++) {
+            let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, gas, gasPrice, keyPassword);
+            let error = ra.error;
+            let hash = ra.hash;
+            if(error){
+                if(error.indexOf('Error: OTA is reused') === 0) {
+                    log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
+                    wanOTAs.updateOtaStatus(otas[c].otaddr);
+                    continue;
+                }else{
+                    // common error
+                    mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again:"+error, "");
+                    log.error("Refund Error:", error);
+                    senderWindow.close();
+                    return;
                 }
             }
-            if(!keyFound){
-                log.error("Can't find keystore:", address);
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  "keystore files don't exist", "");
-                return;
-            }
-
-            let keystoreStr = fs.readFileSync(filepath,"utf8");
-            let keystore = JSON.parse(keystoreStr);
-            let keyBObj = {version:keystore.version, crypto:keystore.crypto2};
-            let keyAObj = {version:keystore.version, crypto:keystore.crypto};
-            let privKeyA;
-            let privKeyB;
-            try {
-                privKeyA = keythereum.recover(keyPassword, keyAObj);
-                privKeyB = keythereum.recover(keyPassword, keyBObj);
-            }catch(error){
-                log.error('wan_refundCoin', 'wrong password');
-                senderWindow.send('uiAction_sendKeyData', 'masterPasswordWrong', true);
-                return;
-            }
-
-            let rfHashs = [];
-            try{
-                for (let c=0; c<otas.length; c++) {
-                    let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, gas, gasPrice, keyPassword);
-                    let error = ra.error;
-                    let hash = ra.hash;
-                    if(error){
-                        if(error.indexOf('Error: OTA is reused') === 0) {
-                            log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
-                            wanOTAs.updateOtaStatus(otas[c].otaddr);
-                            continue;
-                        }else{
-                            // common error
-                            mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again:"+error, "");
-                            log.error("Refund Error:", error);
-                            senderWindow.close();
-                            return;
-                        }
-                    }
-                    rfHashs.push({hash:hash, ota:otas[c].otaddr});
-                }
-            }catch(error){
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", error.toString());
-                log.error("catch refund Error:", error);
-                senderWindow.close();
-                return;
-            }
-            let retHash = rfHashs.slice(0);
-            try {
-                log.debug("try to get receipt");
-                await getTransactionReceipt(rfHashs);
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  null, retHash);
-            }catch(error){
-                log.error("get receipt error:", error);
-                mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "refund error");
-            }
-            senderWindow.close();
+            rfHashs.push({hash:hash, ota:otas[c].otaddr});
         }
+    }catch(error){
+        mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", error.toString());
+        log.error("catch refund Error:", error);
+        senderWindow.close();
+        return;
+    }
+    let retHash = rfHashs.slice(0);
+    try {
+        log.debug("try to get receipt");
+        await getTransactionReceipt(rfHashs);
+        mainWindow.send('uiAction_windowMessage', "refundCoin",  null, retHash);
+    }catch(error){
+        log.error("get receipt error:", error);
+        mainWindow.send('uiAction_windowMessage', "refundCoin",  error, "refund error");
+    }
+    senderWindow.close();
 
-    });
 
 });
 

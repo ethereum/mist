@@ -381,7 +381,10 @@ ipc.on('wan_updateAccount', (e, address, oldpw,  pw,)=> {
 });
 
 ipc.on('wan_startScan', (e, address, keyPassword)=> {
-    address = address.toLowerCase().slice(2);
+    if(address.indexOf('0x') == 0){
+        address = address.slice(2);
+    }
+    address = address.toLowerCase();
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
 
@@ -481,7 +484,10 @@ function getKsfullnamebyAddr(addr){
     return path.join(keystorePath, files[i]);
 }
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
-    let address = rfOta.rfAddress.toLowerCase().slice(2);
+    if(address.indexOf('0x') == 0){
+        address = address.slice(2);
+    }
+    let address = rfOta.rfAddress.toLowerCase();
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
     let otas = rfOta.otas;

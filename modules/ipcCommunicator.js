@@ -517,11 +517,12 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
             let ra = await otaRefund(address, otas[c].otaddr, otaNumber, privKeyA, privKeyB,otas[c].otaValue, gas, gasPrice, keyPassword);
             let error = ra.error;
             let hash = ra.hash;
+            let used = false;
             if(error){
                 if(error.indexOf('Error: OTA is reused') === 0) {
                     log.debug("Ota is reused, set status as 1:", otas[c].otaddr);
                     wanOTAs.updateOtaStatus(otas[c].otaddr);
-                    continue;
+                    used = true;
                 }else{
                     // common error
                     mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again:"+error, "");
@@ -530,7 +531,7 @@ ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
                     return;
                 }
             }
-            rfHashs.push({hash:hash, ota:otas[c].otaddr});
+            rfHashs.push({hash:hash, ota:otas[c].otaddr, used: used});
         }
     }catch(error){
         mainWindow.send('uiAction_windowMessage', "refundCoin",  "Failed to refund, check your balance again.", error.toString());

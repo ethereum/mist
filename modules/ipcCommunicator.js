@@ -484,10 +484,10 @@ function getKsfullnamebyAddr(addr){
     return path.join(keystorePath, files[i]);
 }
 ipc.on('wan_refundCoin', async (e, rfOta, keyPassword)=> {
+    let address = rfOta.rfAddress.toLowerCase();
     if(address.indexOf('0x') == 0){
         address = address.slice(2);
     }
-    let address = rfOta.rfAddress.toLowerCase();
     const mainWindow = Windows.getByType('main');
     const senderWindow = Windows.getById(e.sender.id);
     let otas = rfOta.otas;

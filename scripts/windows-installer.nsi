@@ -40,7 +40,7 @@ RequestExecutionLevel admin
 # Define some script globals
 Name "${GROUPNAME} ${APPNAME}"
 Icon "..\dist_${TYPE}\build\icon.ico"
-OutFile "..\dist_${TYPE}\release\${APPNAME}-installer-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.exe"
+OutFile "..\dist_${TYPE}\release\${APPNAME}-installer-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.exe"
 var FILEDIR
 var DATADIR
 var NODEDATADIR
@@ -136,16 +136,16 @@ Section Mist MIST_IDX
     # set the installation directory as the destination for the following actions
     SetOutPath $TEMP
     # include both architecture zip files
-    file "..\dist_${TYPE}\release\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-    # file "..\dist_${TYPE}\release\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    file "..\dist_${TYPE}\release\${APPNAME}-win64-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip"
+    # file "..\dist_${TYPE}\release\${APPNAME}-win32-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip"
     file "..\dist_${TYPE}\build\icon.ico"
 
     # Extract the zip file from TEMP to the user's selected installation directory
     # ${If} ${RunningX64}
-      ZipDLL::extractALL "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
+      ZipDLL::extractALL "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip" "$FILEDIR"
       StrCpy $ARCHDIR "win-unpacked"
     # ${Else}
-    #  ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip" "$FILEDIR"
+    #  ZipDLL::extractALL "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip" "$FILEDIR"
     #  StrCpy $ARCHDIR "win-ia32-unpacked"
     # ${Endif}
 
@@ -199,8 +199,8 @@ Section Mist MIST_IDX
     WriteRegStr HKCU "Software\${GROUPNAME} ${APPNAME}" "DESKTOPDIR" "$DESKTOPDIR"
 
     # Clean up temporary files
-    # Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
-    Delete "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}-${VERSIONMINOR}-${VERSIONBUILD}.zip"
+    # Delete "$TEMP\${APPNAME}-win32-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip"
+    Delete "$TEMP\${APPNAME}-win64-${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.zip"
 SectionEnd
 
 Function .onInstSuccess

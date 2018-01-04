@@ -6,10 +6,10 @@
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.9.01/geth-linux-amd64-0.9.01-580dc87a.tar.gz",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.9.3/geth-linux-amd64-0.9.3-3676f9a1.tar.gz",
                             "type": "tar",
-                            "md5": "c85f111783c41aef237b9ae7bf2ebc45",
-                            "bin": "geth-linux-amd64-0.9.01-580dc87a/geth"
+                            "md5": "32e415f9f90fff9efe4cd5a98f95d662",
+                            "bin": "geth-linux-amd64-0.9.3-3676f9a1/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -50,10 +50,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.9.01/geth-windows-amd64-0.9.01-580dc87a.zip",
+                            "url": "https://github.com/wanchain/go-wanchain/releases/download/v0.9.3/geth-windows-amd64-0.9.3-3676f9a1.zip",
                             "type": "zip",
-                            "md5": "3fc14f16b264a02978d5bfa67f3de51c",
-                            "bin": "geth-windows-amd64-0.9.01-580dc87a/geth.exe"
+                            "md5": "0179eea8eab659088900b4df71ae95a8",
+                            "bin": "geth-windows-amd64-0.9.3-3676f9a1/geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {

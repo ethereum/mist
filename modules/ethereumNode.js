@@ -413,13 +413,23 @@ class EthereumNode extends EventEmitter {
 
                 // Starts Ropsten network
                 case 'main':
-                    args = [
-                        '--testnet',
-                        '--datadir', this.getDatadir(),
-                        '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
+                    if (Settings.internal) {
+                        args = [
+                            '--datadir', this.getDatadir(),
+                            '--syncmode', syncMode,
+                            '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                            '--ipcpath', Settings.rpcIpcPath
+                        ];
+                    } else {
+                        args = [
+                            '--testnet',
+                            '--datadir', this.getDatadir(),
+                            '--syncmode', syncMode,
+                            '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                            '--ipcpath', Settings.rpcIpcPath
+                        ];
+                    }
+
                     break;
 
                 // Starts Rinkeby network
@@ -433,6 +443,7 @@ class EthereumNode extends EventEmitter {
                     break;
                 case 'internal':
                     args = [
+                        '--internal',
                         '--syncmode', syncMode,
                         '--datadir', this.getDatadir(),
                         '--cache', ((process.arch === 'x64') ? '1024' : '512'),

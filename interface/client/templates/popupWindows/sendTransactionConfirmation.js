@@ -292,11 +292,11 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event change .provided-gas, input .provided-gas
     */
-    // 'change .provided-gas, input .provided-gas': function (e, template) {
-    //     var gas = template.$('.provided-gas').text().replace(/[, ]+/g, '');// template.$('.provided-gas').text();
-    //
-    //     TemplateVar.set('providedGas', gas);
-    // },
+    'change .provided-gas, input .provided-gas': function (e, template) {
+        var gas = template.$('.provided-gas').text().replace(/[, ]+/g, '');// template.$('.provided-gas').text();
+
+        TemplateVar.set('providedGas', gas);
+    },
     /**
     Increase the estimated gas
 

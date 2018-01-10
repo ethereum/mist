@@ -167,30 +167,34 @@ export function setSwarmEnableOnStart() {
 }
 
 export function handleNodeSync() {
-    dispatch({ type: '[MAIN]:NODE_SYNC:START' });
+    return dispatch => {
+        dispatch({ type: '[MAIN]:NODE_SYNC:START' });
 
-    try {
-        nodeSync.on('nodeSyncing', (result) => {
-            console.log('∆∆∆ result', result);
-            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
-        });
+        try {
+            nodeSync.on('nodeSyncing', (result) => {
+                // console.log('∆∆∆ nodeSyncing result', result);
+                // TODO: Send periodic updates to Redux
+                // Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+            });
 
-        nodeSync.on('stopped', () => {
-            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
-        });
+            nodeSync.on('stopped', () => {
+                console.log('∆∆∆ nodeSyncing stopped');
+                // Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+            });
 
-        nodeSync.on('error', (error) => {
-            log.error('Error syncing node', error);
+            nodeSync.on('error', (error) => {
+                log.error('Error syncing node', error);
+                dispatch({ type: '[MAIN]:NODE_SYNC:FAILURE', error });
+            });
+
+            nodeSync.on('finished', () => {
+                nodeSync.removeAllListeners('error');
+                nodeSync.removeAllListeners('finished');
+                dispatch({ type: '[MAIN]:NODE_SYNC:FINISHED' });
+            });
+        } catch (error) {
+            console.log('∆∆∆ handleNodeSync error', error);
             dispatch({ type: '[MAIN]:NODE_SYNC:FAILURE', error });
-        });
-
-        nodeSync.on('finished', () => {
-            nodeSync.removeAllListeners('error');
-            nodeSync.removeAllListeners('finished');
-            dispatch({ type: '[MAIN]:NODE_SYNC:FINISHED' });
-        });
-    } catch (error) {
-        console.log('∆∆∆ handleNodeSync error', error);
-        dispatch({ type: '[MAIN]:NODE_SYNC:FAILURE', error });
+        }
     }
 }

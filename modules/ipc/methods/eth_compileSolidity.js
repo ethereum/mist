@@ -1,6 +1,6 @@
 
 
-const _ = global._;
+const _ = require('../../utils/underscore.js');
 const solc = require('solc');
 const Q = require('bluebird');
 const BaseProcessor = require('./base');

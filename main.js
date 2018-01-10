@@ -116,7 +116,6 @@ app.on('before-quit', async (event) => {
 
 
 let mainWindow;
-// let splashWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
@@ -169,7 +168,6 @@ async function onReady() {
     checkTimeSync();
 
     kickStart();
-    // splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }
 
 function enableSwarmProtocol() {
@@ -209,8 +207,6 @@ function createCoreWindows() {
 
     // Delegating events to save window bounds on windowStateKeeper
     global.defaultWindow.manage(mainWindow.window);
-
-    // if (!Settings.inAutoTestMode) { splashWindow = Windows.create('splash'); }
 }
 
 function checkTimeSync() {
@@ -235,8 +231,6 @@ function checkTimeSync() {
 }
 
 async function kickStart() {
-    await startMainWindow();
-
     initializeKickStartListeners();
 
     checkForLegacyChain();
@@ -255,8 +249,9 @@ async function kickStart() {
 
     // await handleOnboarding();
 
-    // if (splashWindow) { splashWindow.show(); }
     if (!Settings.inAutoTestMode) { store.dispatch(handleNodeSync()); }
+
+    await startMainWindow();
 }
 
 function checkForLegacyChain() {
@@ -333,8 +328,6 @@ async function handleOnboarding() {
 
                 resolve();
             });
-
-            // if (splashWindow) { splashWindow.hide(); }
         });
     }
 }
@@ -347,7 +340,6 @@ function startMainWindow() {
 
 function initializeMainWindowListeners() {
     mainWindow.on('ready', () => {
-        // if (splashWindow) { splashWindow.close(); }
         mainWindow.show();
     });
 

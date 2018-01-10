@@ -1,4 +1,4 @@
-const _ = global._;
+const _ = require('../utils/underscore.js');
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 
@@ -124,7 +124,6 @@ class Socket extends EventEmitter {
         if (!this._disconnectPromise) {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
-                console.log('∆∆∆ this._socket', this._socket);
 
                 this._state = STATE.DISCONNECTING;
 

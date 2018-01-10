@@ -385,23 +385,6 @@ class Windows {
                         webPreferences: mainWebPreferences[global.mode],
                     },
                 };
-            case 'splash':
-                return {
-                    primary: true,
-                    url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
-                    show: true,
-                    electronOptions: {
-                        width: 400,
-                        height: 230,
-                        resizable: false,
-                        backgroundColor: '#F6F6F6',
-                        useContentSize: true,
-                        frame: false,
-                        webPreferences: {
-                            preload: `${__dirname}/preloader/splashScreen.js`,
-                        },
-                    },
-                };
             case 'loading':
                 return {
                     show: false,

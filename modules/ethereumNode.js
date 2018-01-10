@@ -1,4 +1,4 @@
-const _ = global._;
+const _ = require('./utils/underscore.js');
 const fs = require('fs');
 const Q = require('bluebird');
 const spawn = require('child_process').spawn;
@@ -30,6 +30,7 @@ const STATES = {
     ERROR: -1, /* Unexpected error */
 };
 
+let instance;
 
 /**
  * Etheruem nodes manager.
@@ -37,6 +38,8 @@ const STATES = {
 class EthereumNode extends EventEmitter {
     constructor() {
         super();
+
+        if (!instance) { instance = this; }
 
         this.STATES = STATES;
 
@@ -49,6 +52,8 @@ class EthereumNode extends EventEmitter {
         this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
         this.on('data', _.bind(this._logNodeData, this));
+
+        return instance;
     }
 
     get isOwnNode() {

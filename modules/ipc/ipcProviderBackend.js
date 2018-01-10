@@ -6,7 +6,7 @@ The IPC provider backend filter and tunnel all incoming request to the ethereum 
 @module ipcProviderBackend
 */
 
-const _ = global._;
+const _ = require('../utils/underscore.js');
 const Q = require('bluebird');
 const { ipcMain: ipc } = require('electron');
 const fs = require('fs');

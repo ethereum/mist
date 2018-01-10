@@ -124,6 +124,7 @@ class Socket extends EventEmitter {
         if (!this._disconnectPromise) {
             this._disconnectPromise = new Q((resolve, reject) => {
                 this._log.info('Disconnecting...');
+                console.log('∆∆∆ this._socket', this._socket);
 
                 this._state = STATE.DISCONNECTING;
 

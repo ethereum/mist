@@ -3,6 +3,7 @@ const Settings = require('../../settings');
 import logger from '../../utils/logger';
 import swarmNode from '../../swarmNode';
 import { SwarmState } from './reducer';
+import nodeSync from '../../nodeSync';
 
 const swarmLog = logger.create('swarm');
 
@@ -163,4 +164,33 @@ export function toggleSwarm(event) {
 
 export function setSwarmEnableOnStart() {
     return { type: '[MAIN]:SWARM:ENABLE_ON_START' };
+}
+
+export function handleNodeSync() {
+    dispatch({ type: '[MAIN]:NODE_SYNC:START' });
+
+    try {
+        nodeSync.on('nodeSyncing', (result) => {
+            console.log('∆∆∆ result', result);
+            Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
+        });
+
+        nodeSync.on('stopped', () => {
+            Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
+        });
+
+        nodeSync.on('error', (error) => {
+            log.error('Error syncing node', error);
+            dispatch({ type: '[MAIN]:NODE_SYNC:FAILURE', error });
+        });
+
+        nodeSync.on('finished', () => {
+            nodeSync.removeAllListeners('error');
+            nodeSync.removeAllListeners('finished');
+            dispatch({ type: '[MAIN]:NODE_SYNC:FINISHED' });
+        });
+    } catch (error) {
+        console.log('∆∆∆ handleNodeSync error', error);
+        dispatch({ type: '[MAIN]:NODE_SYNC:FAILURE', error });
+    }
 }

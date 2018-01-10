@@ -5,7 +5,7 @@ checks the current node whether its synching or not and how much it kept up alre
 @module nodeSync
 */
 
-const _ = global._;
+const _ = require('./utils/underscore.js');
 const Q = require('bluebird');
 const EventEmitter = require('events').EventEmitter;
 const { ipcMain: ipc } = require('electron');

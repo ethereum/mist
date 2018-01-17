@@ -153,11 +153,11 @@ class EthereumNode extends EventEmitter {
         return this._socket.connect(Settings.rpcConnectConfig)
             .then(() => {
                 this.state = STATES.CONNECTED;
-
+                store.dispatch({ type: '[MAIN]:LOCAL_NODE:CONNECTED' });
                 this.emit('runningNodeFound');
             })
             .catch(() => {
-                ethereumNodeLog.warn('Failed to connect to node. Maybe it\'s not running so let\'s start our own...');
+                ethereumNodeLog.warn('Failed to connect to an existing local node. Starting our own...');
 
                 ethereumNodeLog.info(`Node type: ${this.defaultNodeType}`);
                 ethereumNodeLog.info(`Network: ${this.defaultNetwork}`);
@@ -252,6 +252,8 @@ class EthereumNode extends EventEmitter {
      * @return {Promise} resolves to result or error.
      */
     send(method, params) {
+        console.log('∆∆∆ ethereumNode method', method);
+        console.log('∆∆∆ ethereumNode params', params);
         return this._socket.send({
             method,
             params,
@@ -268,9 +270,7 @@ class EthereumNode extends EventEmitter {
     _start(nodeType, network, syncMode) {
         ethereumNodeLog.info(`Start node: ${nodeType} ${network} ${syncMode}`);
 
-        const isTestNet = (network === 'test');
-
-        if (isTestNet) {
+        if (network === 'test') {
             ethereumNodeLog.debug('Node will connect to the test network');
         }
 

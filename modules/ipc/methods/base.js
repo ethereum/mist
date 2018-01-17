@@ -1,6 +1,6 @@
 
 
-const _ = global._;
+const _ = require('../../utils/underscore.js');
 const Q = require('bluebird');
 
 const log = require('../../utils/logger').create('method');

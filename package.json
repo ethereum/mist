@@ -12,6 +12,7 @@
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "open http://remotedev.io/local/",
+    "dev:rebuild": "./node_modules/.bin/electron-rebuild",
     "test:basic": "gulp test --test=basic",
     "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
     "test:unit:once": "mocha --compilers babel-register tests/unit/**/*"
@@ -22,6 +23,7 @@
     "bluebird": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-string": "^1.3.0",
+    "electron-rebuild": "^1.7.3",
     "electron-redux": "^1.3.1",
     "electron-window-state": "^4.0.1",
     "ethereum-client-binaries": "ethereum/ethereum-client-binaries",
@@ -50,6 +52,7 @@
     "underscore-deep-extend": "^1.1.5",
     "uuid": "^3.0.1",
     "web3": "^0.18.4",
+    "web3-1.0": "npm:web3@1.0.0-beta.27",
     "yargs": "^7.0.2"
   },
   "devDependencies": {

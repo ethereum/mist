@@ -18,6 +18,7 @@ import { quitApp } from './modules/core/ui/actions';
 import { handleNodeSync, setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
 import { SwarmState } from './modules/core/settings/reducer';
 import swarmNode from './modules/swarmNode.js';
+import ethereumNodeRemote from './modules/ethereumNodeRemote';
 
 Q.config({
     cancellation: true,
@@ -239,6 +240,9 @@ async function kickStart() {
 
     await ethereumNode.init();
 
+    // TODO: find right home and API design for Remote
+    await ethereumNodeRemote.subscribe();
+
     if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
 
     if (!ethereumNode.isIpcConnected) { throw new Error('Either the node didn\'t start or IPC socket failed to connect.'); }
@@ -249,7 +253,7 @@ async function kickStart() {
 
     // await handleOnboarding();
 
-    if (!Settings.inAutoTestMode) { store.dispatch(handleNodeSync()); }
+    // if (!Settings.inAutoTestMode) { store.dispatch(handleNodeSync()); }
 
     await startMainWindow();
 }

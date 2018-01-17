@@ -95,6 +95,7 @@ module.exports = class Web3Socket extends Socket {
 
     /**
      * Handle responses from Geth.
+     * Responses are false, a single object, or an array of objects
      */
     _handleSocketResponse() {
         oboe(this)
@@ -102,11 +103,8 @@ module.exports = class Web3Socket extends Socket {
             this._log.trace('JSON response', result);
 
             try {
-           
                 const isBatch = _.isArray(result);
-
                 const firstItem = isBatch ? result[0] : result;
-
                 const req = firstItem.id ? this._sendRequests[firstItem.id] : null;
 
                 if (req) {

@@ -12,3 +12,9 @@ config.json
 mist.log
 npm-debug.log
 /yarn.lock
+wallet/app/browser
+wallet/app/packages
+wallet/app/packages/*
+wallet/packages/
+wallet/app/public/i18n/*.json
+wallet/app/.meteor/dev_bundle

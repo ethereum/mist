@@ -372,60 +372,15 @@ class EthereumNode extends EventEmitter {
                     return reject(err);
                 }
 
-                let args;
-
-                switch (network) {
-
-                // Starts Ropsten network
-                case 'test':
-                    args = [
-                        '--testnet',
-                        '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
-
-                // Starts Rinkeby network
-                case 'rinkeby':
-                    args = [
-                        '--rinkeby',
-                        '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
-
-                // Starts local network
-                case 'dev':
-                    args = [
-                        '--dev',
-                        '--minerthreads', '1',
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
-
-                // Starts Main net
-                default:
-                    args = (nodeType === 'geth')
-                        ? [
-                            '--syncmode', syncMode,
-                            '--cache', ((process.arch === 'x64') ? '1024' : '512')
-                        ]
-                        : ['--unsafe-transactions'];
-                }
-
-                const nodeOptions = Settings.nodeOptions;
-
-                if (nodeOptions && nodeOptions.length) {
-                    ethereumNodeLog.debug('Custom node options', nodeOptions);
-
-                    args = args.concat(nodeOptions);
-                }
-
                 ethereumNodeLog.trace('Spawn', binPath, args);
 
-                const proc = spawn(binPath, args);
+                const proc = spawn(binPath, [
+                    '--sprouts.testnet',
+                    '--bootnodes',
+                    'enode://80993f2f625e2952f58aa6cec9bccf4ff6db29174e6f32b07d2b719a646d41f335d5236584eeceaeae04cee3a1d2d8d38a7f0807da033897d8b19c7b2d5457f8@94.130.216.246:30302',
+                    '--syncmode',
+                    'full'
+                ]);
 
                 // node has a problem starting
                 proc.once('error', (error) => {
@@ -542,8 +497,10 @@ class EthereumNode extends EventEmitter {
         ethereumNodeLog.trace('Load defaults');
 
         this.defaultNodeType = Settings.nodeType || Settings.loadUserData('node') || DEFAULT_NODE_TYPE;
-        this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
-        this.defaultSyncMode = Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE;
+//        this.defaultNetwork = Settings.network || Settings.loadUserData('network') || DEFAULT_NETWORK;
+        this.defaultNetwork = 'sprouts.testnet';
+        // this.defaultSyncMode = Settings.syncmode || Settings.loadUserData('syncmode') || DEFAULT_SYNCMODE;
+        this.defaultSyncMode = 'full';
 
         ethereumNodeLog.info(Settings.syncmode, Settings.loadUserData('syncmode'), DEFAULT_SYNCMODE);
         ethereumNodeLog.info(`Defaults loaded: ${this.defaultNodeType} ${this.defaultNetwork} ${this.defaultSyncMode}`);

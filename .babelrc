@@ -1,3 +1,4 @@
 {
-  "presets": ["es2016-node5"]
+  "presets": ["es2016-node5"],
+  "retainLines": true
 }

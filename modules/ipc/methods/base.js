@@ -29,9 +29,7 @@ module.exports = class BaseProcessor {
     async exec(conn, payload) {
         this._log.trace('Execute request', payload);
 
-        const ret = await conn.socket.send(payload, {
-            fullResult: true,
-        });
+        const ret = await conn.socket.send(payload, { fullResult: true });
 
         return ret.result;
     }

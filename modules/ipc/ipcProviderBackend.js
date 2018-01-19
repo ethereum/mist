@@ -157,6 +157,7 @@ class IpcProviderBackend {
                         }
                     })
                     .then(() => {
+                        // TODO allow for infura connection here?
                         return socket.connect(Settings.rpcConnectConfig, {
                             timeout: 5000,
                         });

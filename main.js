@@ -241,7 +241,7 @@ async function kickStart() {
     await ethereumNode.init();
 
     // TODO: find right home and API design for Remote
-    await ethereumNodeRemote.subscribe();
+    await ethereumNodeRemote.watchBlockHeaders();
 
     if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
 

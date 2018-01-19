@@ -1,6 +1,8 @@
 const EventEmitter = require('events').EventEmitter;
 import logger from './utils/logger';
 const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
+const Sockets = require('./socketManager');
+const Web3 = require('web3-1.0');
 
 const STATES = {
     STARTING: 0, /* Node about to be started */
@@ -32,23 +34,23 @@ export const InfuraEndpoints = {
     }
 }
 
+let instance;
+
 class EthereumNodeRemote extends EventEmitter {
     constructor() {
         super();
 
-        // TODO: fetch previously used network
+        if (!instance) { instance = this; }
 
-        // Infura needs to handle:
-        // getBlock, isSyncing, getPeerCount?
+        // TODO: fetch previously used network from local storage
 
-        const provider = InfuraEndpoints.ethereum.websockets.Main;
-        const Web3 = require('web3-1.0');
-		this.web3 = new Web3(provider);
+        this.start();
+
+        return instance;
     }
 
     start() {
-        const provider = InfuraEndpoints.ethereum.websockets.Main;
-        const Web3 = require('web3-1.0');
+        const provider = InfuraEndpoints.ethereum.websockets.Rinkeby;
         this.web3 = new Web3(provider);
     }
 
@@ -60,16 +62,16 @@ class EthereumNodeRemote extends EventEmitter {
         // TODO:
     }
 
-    subscribe() {
-        console.log('∆∆∆ starting subscribe...');
+    watchBlockHeaders() {
+        console.log('∆∆∆ starting watchBlockHeaders...');
         this._syncSubscription = this.web3.eth.subscribe('newBlockHeaders', (error, sync) => {
             if (error) { console.log('Subscription error:', error); }
         })
         .on("data", blockHeader => {
-            console.log('∆∆∆ blockHeader', blockHeader);
+            // console.log('∆∆∆ blockHeader', blockHeader);
             if (blockHeader.number) {
                 store.dispatch({
-                    type: '[MAIN]:INFURA_BLOCK_HEADER:RECEIVED',
+                    type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
                     payload: {
                         blockNumber: blockHeader.number,
                         timestamp: blockHeader.timestamp

@@ -344,6 +344,14 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         TemplateVar.set('unlocking', true);
 
+        // TODO: know if using infura
+        // if so, eth_getTransactionCount (get nonce)
+        // eth_signTransaction (add payload and nonce) (to local node)
+
+        // sign in local node and retrieve signed data here?
+        // personal_signTransaction?
+        // web.eth.sendRawTransaction
+
         // unlock and send transaction!
         web3.personal.sendTransaction(data, pw || '', function (e, res) {
             pw = null;

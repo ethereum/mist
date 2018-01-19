@@ -28,9 +28,6 @@ window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipcRenderer;
 
-const Web3one = require('web3-1.0');
-window.web3one = new Web3one('https://mainnet.infura.io/mist');
-
 // remove require and module, because node-integration is on
 delete window.module;
 delete window.require;

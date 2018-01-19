@@ -50,8 +50,6 @@ const ipcProviderWrapper = {
     @param  {Funciton} callback
     */
     on(name, callback) {
-        console.log('∆∆∆ ipcProviderWrapper #on name', name);
-        console.log('∆∆∆ ipcProviderWrapper #on callback', callback);
         // console.debug('ipcProviderWrapper: add listener', name);
 
         ipcRenderer.on(`ipcProvider-${name}`, (e, result) => {

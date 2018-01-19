@@ -31,7 +31,6 @@ class Manager extends EventEmitter {
         // check every hour
         setInterval(() => this._checkForNewConfig(true), 1000 * 60 * 60);
 
-        this._resolveEthBinPath();
         return this._checkForNewConfig(restart);
     }
 
@@ -73,7 +72,7 @@ class Manager extends EventEmitter {
             log.warn('Error fetching client binaries config from repo', err);
         })
         .then((latestConfig) => {
-            if(!latestConfig) return;
+            if (!latestConfig) return;
 
             let localConfig;
             let skipedVersion;
@@ -129,16 +128,7 @@ class Manager extends EventEmitter {
 
                     log.debug('New client binaries config found, asking user if they wish to update...');
 
-                    const wnd = Windows.createPopup('clientUpdateAvailable', _.extend({
-                        useWeb3: false,
-                        electronOptions: {
-                            width: 600,
-                            height: 340,
-                            alwaysOnTop: false,
-                            resizable: false,
-                            maximizable: false,
-                        },
-                    }, {
+                    const wnd = Windows.createPopup('clientUpdateAvailable', {
                         sendData: {
                             uiAction_sendData: {
                                 name: nodeType,
@@ -148,7 +138,7 @@ class Manager extends EventEmitter {
                                 restart,
                             },
                         },
-                    }), (update) => {
+                    }, (update) => {
                         // update
                         if (update === 'update') {
                             this._writeLocalConfig(latestConfig);

@@ -9,6 +9,9 @@ gulp.task('test', () => {
     ]).pipe(mocha({
         timeout: 60000,
         ui: 'exports',
-        reporter: 'spec'
+        reporter: 'spec',
+        compilers: [
+            'js:babel-core/register',
+        ]
     }));
 });

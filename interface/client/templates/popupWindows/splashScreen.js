@@ -39,6 +39,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
         TemplateVar.set(template, 'showNetworkIndicator', status === 'done');
         TemplateVar.set(template, 'showProgressBar', false);
         TemplateVar.set(template, 'showStartAppButton', false);
+        TemplateVar.set(template, 'showRetryConnectionButton', false);
         TemplateVar.set(template, 'logText', null);
     });
 
@@ -51,6 +52,7 @@ Template['popupWindows_splashScreen'].onCreated(function () {
             TemplateVar.set(template, 'logText', null);
             TemplateVar.set(template, 'showProgressBar', false);
             TemplateVar.set(template, 'showStartAppButton', false);
+            TemplateVar.set(template, 'showRetryConnectionButton', false);
             break;
 
         case 'started':
@@ -80,26 +82,8 @@ Template['popupWindows_splashScreen'].onCreated(function () {
             errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
 
             TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
-            break;
-        }
-    });
-
-    ipc.on('uiAction_swarmStatus', function (e, status, data) {
-        switch (status) {
-        case 'starting':
-            TemplateVar.set(template, 'text', 'Starting Swarm');
-            TempalteVar.set(template, 'showProgressBar', false);
-            break;
-
-        case 'downloadProgress':
-            TemplateVar.set(template, 'text', `Downloading Swarm binary: ${(data * 100).toFixed(0)}%`);
-            TempalteVar.set(template, 'showProgressBar', true);
-            TempalteVar.set(template, 'progress', data * 100);
-            break;
-
-        case 'started':
-            TemplateVar.set(template, 'text', 'Started Swarm');
-            TempalteVar.set(template, 'showProgressBar', false);
+            TemplateVar.set(template, 'showRetryConnectionButton', true);
+            TemplateVar.set(template, 'retryConnectionButtonText', TAPi18n.__('mist.startScreen.retryConnection'));
             break;
         }
     });
@@ -254,5 +238,9 @@ Template['popupWindows_splashScreen'].helpers({
 Template['popupWindows_splashScreen'].events({
     'click .start-app': function () {
         ipc.send('backendAction_skipSync');
+    },
+
+    'click .retry-connection': function () {
+        ipc.send('retryConnection');
     }
 });

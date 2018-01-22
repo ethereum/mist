@@ -14,9 +14,12 @@ Please note that this repository is the Electron host for the Meteor based walle
 
 ## Help and troubleshooting
 
-Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+In order to get help regarding Mist or Ethereum Wallet, please follow:
 
-Or the [Gitter Channel](https://gitter.im/ethereum/mist), to connect with the community for instant help.
+1. Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+1. Go to the [Gitter Channel](https://gitter.im/ethereum/mist) to connect with the community for instant help.
+1. Search for [similar issues](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Canonical%22) and potential help.
+1. Or create a [new issue](https://github.com/ethereum/mist/issues).
 
 ## How to contribute
 

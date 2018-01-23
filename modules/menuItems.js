@@ -10,6 +10,7 @@ const ethereumNode = require('./ethereumNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
+import { changeNetwork } from './core/nodes/actions';
 import { SwarmState } from './core/settings/reducer';
 import swarmNode from './swarmNode.js';
 
@@ -38,6 +39,8 @@ const restartNode = function (newType, newNetwork, syncMode, webviews) {
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
+
+    store.dispatch(changeNetwork(newNetwork));
 
     return ethereumNode.restart(newType, newNetwork, syncMode)
         .then(() => {

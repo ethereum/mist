@@ -3,6 +3,7 @@ import logger from './utils/logger';
 const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
 const Sockets = require('./socketManager');
 const Web3 = require('web3-1.0');
+const Settings = require('./settings');
 
 const STATES = {
     STARTING: 0, /* Node about to be started */
@@ -42,16 +43,39 @@ class EthereumNodeRemote extends EventEmitter {
 
         if (!instance) { instance = this; }
 
-        // TODO: fetch previously used network from local storage
-
         this.start();
 
         return instance;
     }
 
     start() {
-        const provider = InfuraEndpoints.ethereum.websockets.Rinkeby;
+        this.network = Settings.network || Settings.loadUserData('network') || 'main';
+        const provider = this._getProvider(this.network);
         this.web3 = new Web3(provider);
+    }
+
+    setNetwork(network) {
+        this.network = network;
+        const provider = this._getProvider(network);
+        this.web3.setProvider(provider);
+        this.watchBlockHeaders();
+    }
+
+    _getProvider(network) {
+        switch(network) {
+            case 'main':
+                return InfuraEndpoints.ethereum.websockets.Main;
+            case 'test':
+                // fall-through (uses Ropsten)
+            case 'ropsten':
+                return InfuraEndpoints.ethereum.websockets.Ropsten;
+            case 'rinkeby':
+                return InfuraEndpoints.ethereum.websockets.Rinkeby;
+            case 'kovan':
+                return InfuraEndpoints.ethereum.websockets.Kovan;
+            default:
+                throw Error('unsupported network type')
+        }
     }
 
     stop() {
@@ -63,12 +87,10 @@ class EthereumNodeRemote extends EventEmitter {
     }
 
     watchBlockHeaders() {
-        console.log('∆∆∆ starting watchBlockHeaders...');
         this._syncSubscription = this.web3.eth.subscribe('newBlockHeaders', (error, sync) => {
             if (error) { console.log('Subscription error:', error); }
         })
         .on("data", blockHeader => {
-            // console.log('∆∆∆ blockHeader', blockHeader);
             if (blockHeader.number) {
                 store.dispatch({
                     type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',

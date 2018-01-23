@@ -1,3 +1,7 @@
+import ethereumjsWallet from 'ethereumjs-wallet';
+import hdkey from 'ethereumjs-wallet/hdkey';
+import bip39 from 'bip39';
+
 /**
 Template Controllers
 
@@ -44,7 +48,7 @@ Template['popupWindows_requestAccount'].events({
         }
 
         // check passwords
-         if ( pw !== pwRepeat) {
+        if (pw !== pwRepeat) {
             GlobalNotification.warning({
                 content: TAPi18n.__('mist.popupWindows.requestAccount.errors.passwordMismatch'),
                 duration: 3
@@ -57,21 +61,27 @@ Template['popupWindows_requestAccount'].events({
         } else if (pw && pw.length >= 8) {
 
             TemplateVar.set('creating', true);
-            web3.personal.newAccount(pwRepeat, function (e, res) {
-                if (!e) {
-                    ipc.send('backendAction_windowMessageToOwner', null, res);
-                } else {
-                    ipc.send('backendAction_windowMessageToOwner', e);
-                }
+
+            // Give the UI 300ms to update 'Generating...' before creating
+            setTimeout(function(password = pw) {
+                const mnemonic = bip39.generateMnemonic();
+                const bip32 = hdkey.fromMasterSeed(mnemonic);
+                const wallet = bip32.getWallet();
+                const walletJSON = wallet.toV3(password);
+                const walletFileName = wallet.getV3Filename(Date.now());
+                ipc.send('backendAction_saveNewWallet', walletFileName, walletJSON);
 
                 TemplateVar.set(template, 'creating', false);
 
-                // notifiy about backing up!
+                ipc.send('backendAction_windowMessageToOwner', null, wallet.getAddress());
+
+                // Notifiy about backing up!
                 alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
+                // TODO: Design flow to have them write down their `mnemonic`, and then optionally verify it
+
                 ipc.send('backendAction_closePopupWindow');
-            });
-        
+            }, 300, pw);
         }
 
         TemplateVar.set('password-repeat', false);

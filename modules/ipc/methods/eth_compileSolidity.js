@@ -1,5 +1,3 @@
-
-
 const _ = global._;
 const solc = require('solc');
 const Q = require('bluebird');

@@ -5,6 +5,7 @@
             
             {{#if TemplateVar.get "creating"}}
                 <h2>{{i18n "mist.popupWindows.requestAccount.creating"}}</h2>
+                {{> spinner}}
             {{else}}
                 <div class="field-container {{#if TemplateVar.get 'password-repeat'}}repeat-field{{/if}}">
                     

@@ -1,150 +1,28 @@
-const _ = require('./utils/underscore');
-const fs = require('fs');
-const Q = require('bluebird');
 const spawn = require('child_process').spawn;
 const { dialog } = require('electron');
 const Windows = require('./windows.js');
 const Settings = require('./settings');
-const logRotate = require('log-rotate');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
-const ClientBinaryManager = require('./clientBinaryManager');
+import WebSocket from 'rpc-websockets'.Client
 
-import logger from './utils/logger';
-const ethereumNodeLog = logger.create('EthereumNode');
+import logger as ethereumNodeLog from './utils/logger'.create('EthereumNode');
+// const ethereumNodeLog = logger.create('EthereumNode');
 
-const DEFAULT_NODE_TYPE = 'geth';
-const DEFAULT_NETWORK = 'main';
-const DEFAULT_SYNCMODE = 'fast';
-
-const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
-const NODE_START_WAIT_MS = 3000;
-
-const STATES = {
-    STARTING: 0, /* Node about to be started */
-    STARTED: 1, /* Node started */
-    CONNECTED: 2, /* IPC connected - all ready */
-    STOPPING: 3, /* Node about to be stopped */
-    STOPPED: 4, /* Node stopped */
-    ERROR: -1, /* Unexpected error */
-};
-
+const store = global.store
 
 /**
- * Etheruem nodes manager.
+ * Ethereum node manager
  */
 class EthereumNode extends EventEmitter {
-    constructor() {
-        super();
-
-        this.STATES = STATES;
-
-        this._loadDefaults();
-
-        this._node = null;
-        this._type = null;
-        this._network = null;
-
-        this._socket = Sockets.get('node-ipc', Settings.rpcMode);
-
-        this.on('data', _.bind(this._logNodeData, this));
-    }
-
-    get isOwnNode() {
-        return !!this._node;
-    }
-
-    get isExternalNode() {
-        return !this._node;
-    }
-
-    get isIpcConnected() {
-        return this._socket.isConnected;
-    }
-
-    get type() {
-        return this.isOwnNode ? this._type : null;
-    }
-
-    get network() {
-        return this.isOwnNode ? this._network : null;
-    }
-
-    get syncMode() {
-        return this._syncMode;
-    }
-
-    get isEth() {
-        return this._type === 'eth';
-    }
-
-    get isGeth() {
-        return this._type === 'geth';
-    }
-
-    get isMainNetwork() {
-        return this.network === 'main';
-    }
-
-    get isTestNetwork() {
-        return this.network === 'test';
-    }
-
-    get isRinkebyNetwork() {
-        return this.network === 'rinkeby';
-    }
-
-    get isDevNetwork() {
-        return this.network === 'dev';
-    }
-
-    get isLightMode() {
-        return this._syncMode === 'light';
-    }
-
-    get state() {
-        return this._state;
-    }
-
-    get stateAsText() {
-        switch (this._state) {
-        case STATES.STARTING:
-            return 'starting';
-        case STATES.STARTED:
-            return 'started';
-        case STATES.CONNECTED:
-            return 'connected';
-        case STATES.STOPPING:
-            return 'stopping';
-        case STATES.STOPPED:
-            return 'stopped';
-        case STATES.ERROR:
-            return 'error';
-        default:
-            return false;
-        }
-    }
-
-    set state(newState) {
-        this._state = newState;
-
-        this.emit('state', this.state, this.stateAsText);
-    }
-
-    get lastError() {
-        return this._lastErr;
-    }
-
-    set lastError(err) {
-        this._lastErr = err;
-    }
-
     /**
      * This method should always be called first to initialise the connection.
      * @return {Promise}
      */
     init() {
+
+
         return this._socket.connect(Settings.rpcConnectConfig)
             .then(() => {
                 this.state = STATES.CONNECTED;
@@ -165,6 +43,18 @@ class EthereumNode extends EventEmitter {
                         throw err;
                     });
             });
+    }
+
+    enable() {
+
+    }
+
+    connect() {
+
+    }
+
+    disconnect() {
+
     }
 
 

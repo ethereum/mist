@@ -5,7 +5,9 @@ const packageJson = require('../package.json');
 const _ = require('./utils/underscore');
 const lodash = require('lodash');
 
-import { syncBuildConfig, syncFlags, setSwarmEnableOnStart } from './core/settings/actions';
+import { syncBuildConfig, syncFlags } from './core/settings/actions';
+import { setSwarmEnableOnStart } from './core/swarm/actions';
+import { setIPFSEnableOnStart } from './core/ipfs/actions';
 import logger from './utils/logger';
 
 const settingsLog = logger.create('Settings');
@@ -58,11 +60,10 @@ class Settings {
         store.dispatch(syncBuildConfig('uiMode', this.uiMode));
     }
 
-
-    // @returns "Application Support/Mist" in production mode
-    // @returns "Application Support/Electron" in development mode
+    // @returns "Application Support/Mist"
     get userDataPath() {
-        return app.getPath('userData');
+        // app.getPath('userData') returns "Application Support/Electron" in development
+        return app.getPath('userData').replace(/Electron/i, this.appName);
     }
 
     get dbFilePath() {
@@ -213,9 +214,66 @@ class Settings {
         return enableOnStart;
     }
 
+    get enableIPFSOnStart() {
+        if (global.mode === 'wallet') {
+            return false;
+        }
+
+        if (argv.ipfs) {
+            return true;
+        }
+
+        const enableOnStart = this.loadConfig('ipfs.enableOnStart');
+
+        // Sync to redux
+        if (enableOnStart) {
+            store.dispatch(setIPFSEnableOnStart());
+        }
+
+        return enableOnStart;
+    }
+
     set enableSwarmOnStart(bool) {
         this.saveConfig('swarm.enableOnStart', bool);
     }
+
+    set enableIPFSOnStart(bool) {
+        this.saveConfig('ipfs.enableOnStart', bool);
+    }
+
+    get keystorePath() {
+        return path.join(this.userDataPath, 'accounts');
+    }
+
+    get accounts() {
+        const keystorePath = this.keystorePath;
+
+        return new Promise(function (resolve, reject) {
+            fs.readdir(keystorePath, function (error, files) {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+
+                let accounts = [];
+
+                for (var file of files) {
+                    if (file.startsWith('.')) { // Ignore hidden files
+                        continue; 
+                    }
+                    
+                    try {
+                        const accountData = JSON.parse(fs.readFileSync(path.join(keystorePath, file)));
+                        accounts.push(accountData);
+                    } catch (error) {
+                        settingsLog.error(error);
+                    }
+                }
+
+                resolve(accounts);
+            });
+        });
+   }
 
     get skiptimesynccheck() {
         return argv.skiptimesynccheck;
@@ -228,6 +286,9 @@ class Settings {
             },
             swarm: {
                 enableOnStart: argv.swarm
+            },
+            ipfs: {
+                enableOnStart: argv.ipfs
             }
         });
     }
@@ -365,6 +426,13 @@ const argv = require('yargs')
         },
         swarm: {
             describe: 'Enable Swarm on start.',
+            requiresArg: false,
+            nargs: 0,
+            type: 'boolean',
+            group: 'Mist options:',
+        },
+        ipfs: {
+            describe: 'Enable IPFS on start.',
             requiresArg: false,
             nargs: 0,
             type: 'boolean',

@@ -27,8 +27,15 @@
             </div>
         {{/with}}
 
+        {{#if $eq (TemplateVar.get "network") "mainnet"}}
+          <span class="chain-info primary" title="{{i18n 'mist.nodeInfo.mainnetExplain' name=(TemplateVar.get 'networkName')}}">
+            {{TemplateVar.get "networkName"}}
+          </span>
+        {{/if}}
         {{#if $neq (TemplateVar.get "network") "mainnet"}}
-          <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{TemplateVar.get "networkName"}}</span>
+          <span class="chain-info danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">
+            {{TemplateVar.get "networkName"}}
+          </span>
         {{/if}}
     </div>
 </template>

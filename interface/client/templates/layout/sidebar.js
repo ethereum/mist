@@ -102,13 +102,10 @@ Template['layout_sidebar'].helpers({
 
     @method (dappAccounts)
     */
-    'dappAccounts': function (limit) {
+    'dappAccounts': function () {
         if (this.permissions) {
-            if (limit) {
-                return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } },
-                    { limit: limit });
-            }
-            return EthAccounts.find({ address: { $in: this.permissions.accounts || [] } });
+             var accounts = _.pluck(store.getState().accounts.active, 'address');
+             return _.intersection(accounts, this.permissions.accounts);
         }
     },
     /**

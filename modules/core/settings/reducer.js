@@ -1,11 +1,3 @@
-export const SwarmState = {
-    Enabled: 'Enabled',
-    Enabling: 'Enabling',
-    Disabling: 'Disabling',
-    Disabled: 'Disabled',
-    Error: 'Error'
-}
-
 export const initialState = {
     appVersion: '',
     autoTestMode: false,
@@ -17,8 +9,6 @@ export const initialState = {
     productionMode: null,
     protocols: [],
     rpcMode: '',
-    swarmState: SwarmState.Disabled,
-    swarmEnableOnStart: false,
     uiMode: '',
     updateCheckerRan: false,
     cliFlags: {}
@@ -45,20 +35,6 @@ const settings = (state = initialState, action) => {
             return Object.assign({}, state, { cliFlags: action.payload.cliFlags });
         case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
             return Object.assign({}, state, { i18n: action.payload.i18n });
-        case '[MAIN]:SWARM:ENABLING':
-            return Object.assign({}, state, { swarmState: SwarmState.Enabling });
-        case '[MAIN]:SWARM:ENABLED':
-            return Object.assign({}, state, { swarmState: SwarmState.Enabled });
-        case '[MAIN]:SWARM:DISABLING':
-            return Object.assign({}, state, { swarmState: SwarmState.Disabling });
-        case '[MAIN]:SWARM:DISABLED':
-            return Object.assign({}, state, { swarmState: SwarmState.Disabled });
-        case '[MAIN]:SWARM:FAILURE':
-            return Object.assign({}, state, { swarmState: SwarmState.Error });
-        case '[MAIN]:SWARM:ENABLE_ON_START':
-            return Object.assign({}, state, { swarmEnableOnStart: true });
-        case '[MAIN]:SWARM:DISABLE_ON_START':
-            return Object.assign({}, state, { swarmEnableOnStart: false });
         case '[MAIN]:UPDATE_CHECKER:FINISH':
             return Object.assign({}, state, { updateCheckerRan: true });
         case '[MAIN]:IPC_PROVIDER_BACKEND:FINISH':

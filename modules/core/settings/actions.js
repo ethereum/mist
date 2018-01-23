@@ -1,10 +1,10 @@
-const Settings = require('../../settings');
-
+import Settings from '../../settings';
+import timesync from 'os-timesync';
+import { dialog } from 'electron';
+import clientBinaryManager from '../../clientBinaryManager';
+import UpdateChecker from '../..//updateChecker';
 import logger from '../../utils/logger';
-import swarmNode from '../../swarmNode';
-import { SwarmState } from './reducer';
-
-const swarmLog = logger.create('swarm');
+const settingsLog = logger.create('Settings');
 
 export function syncFlags(argv) {
     return { type: '[MAIN]:CLI_FLAGS:SYNC', payload: { cliFlags: argv } };
@@ -98,69 +98,43 @@ export function getLanguage(event) {
     }
 }
 
-export function toggleSwarm(event) {
-    return (dispatch, getState) => {
-        if ([SwarmState.Enabled, SwarmState.Enabling].includes(getState().settings.swarmState)) {
-            dispatch({ type: '[MAIN]:SWARM:STOP' });
+export function runClientBinaryManager() {
+    clientBinaryManager.init();
+    return { type: '[MAIN]:CLIENT_BINARY_MANAGER:RUN' };
+}
 
-            try {
-                swarmNode.on('stopping', () => {
-                    swarmLog.info('Stopping Swarm');
-                    dispatch({ type: '[MAIN]:SWARM:DISABLING' });
-                });
-
-                swarmNode.on('stopped', () => {
-                    swarmLog.info('Swarm stopped');
-                    dispatch({ type: '[MAIN]:SWARM:DISABLED' });
-                    dispatch(resetMenu());
-                });
-
-                swarmNode.stop();
-
-                if (getState().settings.swarmEnableOnStart) {
-                    Settings.enableSwarmOnStart = false;
-                    dispatch({ type: '[MAIN]:SWARM:DISABLE_ON_START' });
-                }
-
-            } catch (error) {
-                dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
-                swarmLog.error(error);
-            }
-
-        } else {
-            dispatch({ type: '[MAIN]:SWARM:START' });
-
-            try {
-                swarmNode.on('starting', () => {
-                    swarmLog.info('Starting Swarm');
-                    dispatch({ type: '[MAIN]:SWARM:ENABLING' });
-                });
-
-                swarmNode.on('downloadProgress', (progress) => {
-                    swarmLog.info(`Downloading Swarm binary: ${(progress * 100).toFixed(1)}%`);
-                });
-
-                swarmNode.on('started', () => {
-                    swarmLog.info('Swarm started');
-                    dispatch({ type: '[MAIN]:SWARM:ENABLED' });
-                    dispatch(resetMenu());
-                });
-
-                swarmNode.init();
-
-                if (!getState().settings.swarmEnableOnStart) {
-                    Settings.enableSwarmOnStart = true;
-                    dispatch({ type: '[MAIN]:SWARM:ENABLE_ON_START' });
-                }
-
-            } catch (error) {
-                dispatch({ type: '[MAIN]:SWARM:FAILURE', error });
-                swarmLog.error(error);
-            }
-        }
+export function runUpdateChecker() {
+    if (!Settings.inAutoTestMode) {
+        UpdateChecker.run();
+        return { type: '[MAIN]:UPDATE_CHECKER:START' };
     }
 }
 
-export function setSwarmEnableOnStart() {
-    return { type: '[MAIN]:SWARM:ENABLE_ON_START' };
+export function checkTimeSync() {
+    if (Settings.skiptimesynccheck) {
+        return { type: '[MAIN]:TIME_SYNC:SKIP' };
+    }
+
+    return (dispatch, getState) => {
+        timesync.checkEnabled((error, enabled) => {
+            if (error) {
+                settingsLog.error('Couldn\'t infer if computer automatically syncs time.', error);
+                dispatch({type: '[MAIN]:TIME_SYNC:ERROR', error });
+            }
+
+            if (!enabled) {
+                dialog.showMessageBox({
+                    type: 'warning',
+                    buttons: ['OK'],
+                    message: global.i18n.t('mist.errors.timeSync.title'),
+                    detail: `${global.i18n.t('mist.errors.timeSync.description')}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`,
+                }, () => {
+                });
+            }
+
+            dispatch({ type: '[MAIN]:TIME_SYNC:COMPLETE', enabled });
+        });
+    }
+
 }
+

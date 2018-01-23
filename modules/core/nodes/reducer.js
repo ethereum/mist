@@ -1,5 +1,6 @@
 export const initialState = {
-    connectedClient: '',
+    active: 'remote',
+    network: 'main',
     remote: {
         client: 'infura',
         blockNumber: 0,
@@ -35,6 +36,10 @@ const nodes = (state = initialState, action) => {
                     blockNumber: action.payload.blockNumber,
                     timestamp: action.payload.timestamp,
                 }
+            });
+        case '[MAIN]:NODES:CHANGE_ACTIVE':
+            return Object.assign({}, state, {
+                active: action.payload.active,
             });
         default:
             return state;

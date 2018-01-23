@@ -13,5 +13,26 @@ export default function configureReduxStore() {
 
     replayActionMain(store);
 
+    store.subscribe(() => {
+        const { active, local, remote } = store.getState().nodes;
+        // if geth is behind infura by 50 or more blocks, active node is infura
+
+        if (active === 'remote') {
+            if ((remote.blockNumber - local.currentBlock) < 50) {
+                store.dispatch({
+                    type: '[MAIN]:NODES:CHANGE_ACTIVE',
+                    payload: { active: 'local' },
+                });
+            }
+        } else {
+            if ((remote.blockNumber - local.currentBlock) >= 50) {
+                store.dispatch({
+                    type: '[MAIN]:NODES:CHANGE_ACTIVE',
+                    payload: { active: 'remote' },
+                });
+            }
+        }
+    });
+
     return store;
 }

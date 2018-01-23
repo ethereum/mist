@@ -252,12 +252,12 @@ class EthereumNode extends EventEmitter {
      * @return {Promise} resolves to result or error.
      */
     async send(method, params) {
-        console.log('∆∆∆ ethereumNode #send method', method);
-        console.log('∆∆∆ ethereumNode #send params', params);
+        // console.log('∆∆∆ ethereumNode #send method', method);
+        // console.log('∆∆∆ ethereumNode #send params', params);
 
         const ret = await this._socket.send({ method, params });
 
-        console.log('∆∆∆ ethereumNode #send response', ret);
+        // console.log('∆∆∆ ethereumNode #send response', ret);
 
         if (method === 'eth_syncing' && ret.result) {
             store.dispatch({

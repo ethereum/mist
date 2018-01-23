@@ -11,13 +11,17 @@ module.exports = class extends BaseProcessor {
      * @override
      */
     async exec(conn, payload) {
-        // TODO: have infura handle this only if geth isn't synced
-        const ret = await ethereumNodeRemote.web3.eth.getBalance(...payload.params);
+        if (store.getState().nodes.active === 'remote') {
+            const ret = await ethereumNodeRemote.web3.eth.getBalance(...payload.params);
 
-        return {
-            jsonrpc: '2.0', 
-            id: payload.id, 
-            result: ret.toString(16)
-        };
+            return {
+                jsonrpc: '2.0',
+                id: payload.id,
+                result: ret.toString(16)
+            };
+        } else {
+            const ret = await conn.socket.send(payload, { fullResult: true });
+            return ret.return;
+        }
     }
 };

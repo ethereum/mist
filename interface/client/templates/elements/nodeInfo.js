@@ -10,9 +10,10 @@ Update the peercount
 @method getPeerCount
 */
 var getPeerCount = function(template) {
-    web3.net.getPeerCount(function(e, res) {
-        if(!e)
-            TemplateVar.set(template, 'peerCount', res);
+    web3.net.getPeerCount(function(error, result) {
+        if (!error) {
+            TemplateVar.set(template, 'peerCount', result);
+        }
     });
 };
 
@@ -68,7 +69,7 @@ Template['elements_nodeInfo'].onCreated(function(){
 
     // CHECK FOR NETWORK
     web3.eth.getBlock(0, function(e, res){
-        if(!e){
+        if(!e) {
             const network = Helpers.detectNetwork(res.hash);
             TemplateVar.set(template, 'network', network.type);
             TemplateVar.set(template, 'networkName', network.name);
@@ -76,25 +77,27 @@ Template['elements_nodeInfo'].onCreated(function(){
     });
 
     // CHECK SYNCING
+    
     this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
-        if(!error) {
+        if (error) {
+            console.log(`Node isSyncing error: ${error}`);
+            return;
+        }
 
-            if(syncing === true) {
-                console.log('Node started syncing, stopping app operation');
-                web3.reset(true);
+        if (syncing === true) {
+            console.log('Node started syncing, stopping app operation');
+            web3.reset(true);
 
-            } else if(_.isObject(syncing)) {
+        } else if(_.isObject(syncing)) {
+            syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
+            syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
 
-                syncing.progress = Math.floor(((syncing.currentBlock - syncing.startingBlock) / (syncing.highestBlock - syncing.startingBlock)) * 100);
-                syncing.blockDiff = numeral(syncing.highestBlock - syncing.currentBlock).format('0,0');
+            TemplateVar.set(template, 'syncing', syncing);
 
-                TemplateVar.set(template, 'syncing', syncing);
+        } else {
+            console.log('Restart app operation again');
 
-            } else {
-                console.log('Restart app operation again');
-
-                TemplateVar.set(template, 'syncing', false);
-            }
+            TemplateVar.set(template, 'syncing', false);
         }
     });
 

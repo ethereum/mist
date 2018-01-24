@@ -34,8 +34,9 @@ class NodeSync extends EventEmitter {
         }
 
         this._syncPromise = Q.try(() => {
-            if (!ethereumNode.isIpcConnected) {
-                throw new Error('Cannot sync - Ethereum node not yet connected');
+            if (ethereumNode.stateAsText !== 'connected') {
+                log.error('Cannot sync - Ethereum node not yet connected');
+                return;
             }
 
             return new Q((resolve, reject) => {

@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'remote-redux-devtools';
 import thunk from 'redux-thunk';
 import { app } from 'electron';
 import rootReducer from './rootReducer';
+import { InfuraEndpoints } from '../constants';
 
 export default function configureReduxStore() {
     const store = createStore(
@@ -25,8 +26,8 @@ function checkActiveNode(state) {
     // Otherwise, local should be active.
     const { active, network, local, remote } = state.nodes;
 
-    const supported_remote_networks = ['main', 'ropsten', 'rinkeby', 'kovan'];
-    if (!supported_remote_networks.includes(network)) {
+    const supportedRemoteNetworks = Object.keys(InfuraEndpoints.ethereum.websockets).map(network => network.toLowerCase());
+    if (!supportedRemoteNetworks.includes(network)) {
         if (active === 'remote') {
             store.dispatch({
                 type: '[MAIN]:NODES:CHANGE_ACTIVE',

@@ -5,6 +5,7 @@ const Sockets = require('./socketManager');
 const Web3 = require('web3-1.0');
 const Settings = require('./settings');
 import { resetRemoteNode } from './core/nodes/actions';
+import { InfuraEndpoints } from './constants';
 
 const STATES = {
     STARTING: 0, /* Node about to be started */
@@ -14,27 +15,6 @@ const STATES = {
     STOPPED: 4, /* Node stopped */
     ERROR: -1, /* Unexpected error */
 };
-
-export const InfuraEndpoints = {
-    ethereum: {
-        http: {
-            Main: 'https://mainnet.infura.io/mist',
-            Ropsten: 'https://ropsten.infura.io/mist',
-            Rinkeby: 'https://rinkeby.infura.io/mist',
-            Kovan: 'https://kovan.infura.io/mist'
-        },
-        websockets: {
-            Main: 'wss://mainnet.infura.io/ws',
-            Ropsten: 'wss://ropsten.infura.io/ws',
-            Rinkeby: 'wss://rinkeby.infura.io/ws',
-            Kovan: 'wss://kovan.infura.io/ws'
-        }
-    },
-    ipfs: {
-        gateway: 'https://ipfs.infura.io',
-        rpc: 'https://ipfs.infura.io:5001'
-    }
-}
 
 let instance;
 
@@ -65,7 +45,7 @@ class EthereumNodeRemote extends EventEmitter {
         this.network = network;
 
         const provider = this._getProvider(network);
-        
+
         if (!provider) {
             this.stop();
             return;

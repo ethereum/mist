@@ -30,5 +30,11 @@
         {{#if $neq (TemplateVar.get "network") "mainnet"}}
           <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{TemplateVar.get "networkName"}}</span>
         {{/if}}
+
+        {{#if TemplateVar.get "remote"}}
+            <div title="{{i18n 'mist.nodeInfo.remote'}}">
+                <span class="remote-indicator simptip-position-top simptip-movable">Remote</span>
+            </div>
+        {{/if}}
     </div>
 </template>

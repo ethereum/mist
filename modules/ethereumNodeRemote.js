@@ -84,7 +84,17 @@ class EthereumNodeRemote extends EventEmitter {
 
     watchBlockHeaders() {
         this._syncSubscription = this.web3.eth.subscribe('newBlockHeaders', (error, sync) => {
-            if (error) { console.log('Subscription error:', error); }
+            if (error) {
+                console.log('Subscription error:', error);
+
+                if (error.reason.includes('Connection dropped by remote peer.')) {
+                    // Try restarting connection
+                    this.start();
+                } else {
+                    // Try restarting subscription
+                    this.watchBlockHeaders();
+                }
+            }
         })
         .on("data", blockHeader => {
             if (blockHeader.number) {

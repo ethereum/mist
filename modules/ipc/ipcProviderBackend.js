@@ -17,6 +17,7 @@ const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 
+import { syncLocalNode } from '../core/nodes/actions';
 
 const ERRORS = {
     INVALID_PAYLOAD: { code: -32600, message: "Payload, or some of its content properties are invalid. Please check if they are valid HEX with '0x' prefix." },
@@ -338,6 +339,10 @@ class IpcProviderBackend {
         })
         .then((result) => {
             log.trace('Got result', result);
+
+            if (result[0] && result[0].method === 'eth_syncing') {
+                store.dispatch(syncLocalNode(result[0].result));
+            }
 
             return this._makeResponsePayload(payload, result);
         })

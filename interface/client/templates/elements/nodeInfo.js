@@ -41,19 +41,17 @@ Set TemplateVar 'remote' whether remote node is active
 @method watchRemote
 */
 var watchRemote = function(template) {
-    let isRemote = false;
-    if (store.getState().nodes.active === 'remote') {
-        isRemote = true;
-    }
+    const isRemote = store.getState().nodes.active === 'remote';
     TemplateVar.set(template, 'remote', isRemote);
 
     let currentValue;
     this.storeUnsubscribe = store.subscribe(() => {
        let previousValue = currentValue;
-       currentValue = store.getState().nodes.active
+       currentValue = store.getState().nodes.active;
 
         if (previousValue !== currentValue) {
-            TemplateVar.set(template, 'remote', currentValue === 'remote');
+            const isRemote = currentValue === 'remote';
+            TemplateVar.set(template, 'remote', isRemote);
         }
     });
 }

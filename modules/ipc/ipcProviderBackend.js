@@ -340,7 +340,7 @@ class IpcProviderBackend {
         .then((result) => {
             log.trace('Got result', result);
 
-            if (result[0] && result[0].method === 'eth_syncing') {
+            if (result[0] && result[0].result.currentBlock) {
                 store.dispatch(syncLocalNode(result[0].result));
             }
 

@@ -71,7 +71,8 @@
                 "lightNode": "Use light Node (experimental!)",
                 "startMining": "⛏ Start mining",
                 "stopMining": "⛏ Stop mining",
-                "enableSwarm": "Enable Swarm"
+                "enableSwarm": "Enable Swarm",
+                "remoteOnly": "Remote only"
             },
             "window": {
                 "label": "Window",

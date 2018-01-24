@@ -499,7 +499,7 @@ let menuTempl = function (webviews) {
 
         nodeSubmenu.push(
             {
-                label: `Off`,
+                label: i18n.t('mist.applicationMenu.develop.remoteOnly'),
                 checked: ethereumNode.stateAsText === 'stopped',
                 enabled: ethereumNode.isOwnNode,
                 // enabled: false,

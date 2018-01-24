@@ -10,6 +10,7 @@ const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
+import { resetLocalNode } from './core/nodes/actions';
 
 import logger from './utils/logger';
 const ethereumNodeLog = logger.create('EthereumNode');
@@ -43,6 +44,10 @@ class EthereumNode extends EventEmitter {
 
         this.STATES = STATES;
 
+        // Set default states
+        this.state = STATES.STOPPED;
+        this.isExternalNode = false;
+
         this._loadDefaults();
 
         this._node = null;
@@ -57,11 +62,7 @@ class EthereumNode extends EventEmitter {
     }
 
     get isOwnNode() {
-        return !!this._node;
-    }
-
-    get isExternalNode() {
-        return !this._node;
+        return !this.isExternalNode;
     }
 
     get isIpcConnected() {
@@ -93,7 +94,7 @@ class EthereumNode extends EventEmitter {
     }
 
     get isTestNetwork() {
-        return this.network === 'test';
+        return this.network === 'test' || this.network === 'ropsten';
     }
 
     get isRinkebyNetwork() {
@@ -152,18 +153,20 @@ class EthereumNode extends EventEmitter {
     init() {
         return this._socket.connect(Settings.rpcConnectConfig)
             .then(() => {
+                this.isExternalNode = true;
                 this.state = STATES.CONNECTED;
                 store.dispatch({ type: '[MAIN]:LOCAL_NODE:CONNECTED' });
                 this.emit('runningNodeFound');
             })
             .catch(() => {
+                this.isExternalNode = false;
+
                 ethereumNodeLog.warn('Failed to connect to an existing local node. Starting our own...');
 
                 ethereumNodeLog.info(`Node type: ${this.defaultNodeType}`);
                 ethereumNodeLog.info(`Network: ${this.defaultNetwork}`);
                 ethereumNodeLog.info(`SyncMode: ${this.defaultSyncMode}`);
 
-                // if not, start node yourself
                 return this._start(this.defaultNodeType, this.defaultNetwork, this.defaultSyncMode)
                     .catch((err) => {
                         ethereumNodeLog.error('Failed to start node', err);
@@ -239,6 +242,9 @@ class EthereumNode extends EventEmitter {
             .then(() => {
                 this.state = STATES.STOPPED;
                 this._stopPromise = null;
+            }).then(() => {
+                // Reset block values in store
+                store.dispatch(resetLocalNode());
             });
         }
         ethereumNodeLog.debug('Disconnection already in progress, returning Promise.');
@@ -266,7 +272,7 @@ class EthereumNode extends EventEmitter {
     _start(nodeType, network, syncMode) {
         ethereumNodeLog.info(`Start node: ${nodeType} ${network} ${syncMode}`);
 
-        if (network === 'test') {
+        if (network === 'test' || network === 'ropsten') {
             ethereumNodeLog.debug('Node will connect to the test network');
         }
 

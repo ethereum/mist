@@ -35,12 +35,26 @@ const createMenu = function (webviews) {
 };
 
 
+const changeNodeNetwork = function(network, webviews) {
+    store.dispatch(changeNetwork(network));
+
+    if (ethereumNode.stateAsText === 'STOPPED') {
+        return;
+    }
+
+    Settings.saveUserData('network', network);
+
+    restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
+}
+
 const restartNode = function (newType, newNetwork, syncMode, webviews) {
     newNetwork = newNetwork || ethereumNode.network;
 
     log.info('Switch node', newType, newNetwork);
 
     store.dispatch(changeNetwork(newNetwork));
+
+    Settings.enableLocalNodeOnStart = true;
 
     return ethereumNode.restart(newType, newNetwork, syncMode)
         .then(() => {
@@ -54,6 +68,11 @@ const restartNode = function (newType, newNetwork, syncMode, webviews) {
         });
 };
 
+const stopEthereumNode = async function (webviews) {
+    await ethereumNode.stop();
+    createMenu(webviews);
+    Settings.enableLocalNodeOnStart = false;
+}
 
 const startMining = (webviews) => {
     ethereumNode.send('miner_start', [1])
@@ -454,7 +473,7 @@ let menuTempl = function (webviews) {
         if (gethClient) {
             nodeSubmenu.push({
                 label: `Geth ${gethClient.version}`,
-                checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
+                checked: ethereumNode.isOwnNode && ethereumNode.isGeth && ethereumNode.stateAsText !== 'stopped',
                 enabled: ethereumNode.isOwnNode,
                 type: 'checkbox',
                 click() {
@@ -467,7 +486,7 @@ let menuTempl = function (webviews) {
             nodeSubmenu.push(
                 {
                     label: `Eth ${ethClient.version} (C++)`,
-                    checked: ethereumNode.isOwnNode && ethereumNode.isEth,
+                    checked: ethereumNode.isOwnNode && ethereumNode.isEth && ethereumNode.stateAsText !== 'stopped',
                     enabled: ethereumNode.isOwnNode,
                     // enabled: false,
                     type: 'checkbox',
@@ -477,6 +496,19 @@ let menuTempl = function (webviews) {
                 }
             );
         }
+
+        nodeSubmenu.push(
+            {
+                label: `Off`,
+                checked: ethereumNode.stateAsText === 'stopped',
+                enabled: ethereumNode.isOwnNode,
+                // enabled: false,
+                type: 'checkbox',
+                click() {
+                    stopEthereumNode(webviews);
+                },
+            }
+        );
 
         devToolsMenu.push({
             label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
@@ -491,31 +523,28 @@ let menuTempl = function (webviews) {
             {
                 label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
                 accelerator: 'CommandOrControl+Alt+1',
-                checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-                enabled: ethereumNode.isOwnNode,
+                checked: store.getState().nodes.network === 'main',
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'main');
+                    changeNodeNetwork('main', webviews);
                 },
             },
             {
                 label: 'Ropsten - Test network',
                 accelerator: 'CommandOrControl+Alt+2',
-                checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
-                enabled: ethereumNode.isOwnNode,
+                checked: store.getState().nodes.network === 'ropsten',
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'test');
+                    changeNodeNetwork('ropsten', webviews);
                 },
             },
             {
                 label: 'Rinkeby - Test network',
                 accelerator: 'CommandOrControl+Alt+3',
-                checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
-                enabled: ethereumNode.isOwnNode,
+                checked: store.getState().nodes.network === 'rinkeby',
                 type: 'checkbox',
                 click() {
-                    restartNode(ethereumNode.type, 'rinkeby');
+                    changeNodeNetwork('rinkeby', webviews);
                 },
             },
             {

@@ -1,22 +1,27 @@
 global._ = require('./modules/utils/underscore');
+
 const { app, dialog, ipcMain, shell, protocol } = require('electron');
+const Q = require('bluebird');
+const windowStateKeeper = require('electron-window-state');
 const timesync = require('os-timesync');
+
 const dbSync = require('./modules/dbSync.js');
 const i18n = require('./modules/i18n.js');
-const logger = require('./modules/utils/logger');
 const Sockets = require('./modules/socketManager');
 const Windows = require('./modules/windows');
 const ClientBinaryManager = require('./modules/clientBinaryManager');
 const UpdateChecker = require('./modules/updateChecker');
-const Q = require('bluebird');
-const windowStateKeeper = require('electron-window-state');
-const log = logger.create('main');
+const log = require('./modules/utils/logger').create('main');
 const Settings = require('./modules/settings');
 
 import configureReduxStore from './modules/core/store';
+
 import { quitApp } from './modules/core/ui/actions';
 import { handleNodeSync, setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
+import { syncInitialNetwork } from './modules/core/nodes/actions';
+
 import { SwarmState } from './modules/core/settings/reducer';
+
 import swarmNode from './modules/swarmNode.js';
 import ethereumNodeRemote from './modules/ethereumNodeRemote';
 
@@ -238,17 +243,21 @@ async function kickStart() {
 
     await ClientBinaryManager.init();
 
-    await ethereumNode.init();
+    store.dispatch(syncInitialNetwork());
 
-    // TODO: find right home and API design for Remote
-    await ethereumNodeRemote.watchBlockHeaders();
+    if (Settings.enableLocalNodeOnStart) {
+        await ethereumNode.init();
+
+        if (!ethereumNode.isIpcConnected) {
+            throw new Error('Either the node didn\'t start or IPC socket failed to connect.');
+        }
+    }
+
+    await ethereumNodeRemote.start();
 
     if (Settings.enableSwarmOnStart) { store.dispatch(toggleSwarm()); }
 
-    if (!ethereumNode.isIpcConnected) { throw new Error('Either the node didn\'t start or IPC socket failed to connect.'); }
-    log.info('Connected via IPC to node.');
-
-    // Update menu, to show node switching possibilities
+    // Update menu (to show node switching possibilities)
     appMenu();
 
     // await handleOnboarding();

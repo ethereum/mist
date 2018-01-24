@@ -29,6 +29,14 @@ const nodes = (state = initialState, action) => {
                     startingBlock: action.payload.startingBlock,
                 }
             });
+        case '[MAIN]:LOCAL_NODE:RESET':
+            return Object.assign({}, state, {
+                local: initialState.local
+            });
+        case '[MAIN]:REMOTE_NODE:RESET':
+            return Object.assign({}, state, {
+                remote: initialState.remote
+            });
         case '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED':
             return Object.assign({}, state, {
                 remote: {

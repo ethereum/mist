@@ -217,6 +217,21 @@ class Settings {
         this.saveConfig('swarm.enableOnStart', bool);
     }
 
+    get enableLocalNodeOnStart() {
+        if (argv.node === 'off') {
+            return false;
+        }
+
+        const enableLocalNodeOnStart = this.loadConfig('localNode.enableOnStart');
+
+        return enableLocalNodeOnStart;
+    }
+
+    set enableLocalNodeOnStart(bool) {
+        this.saveConfig('localNode.enableOnStart', bool);
+    }
+
+
     get skiptimesynccheck() {
         return argv.skiptimesynccheck;
     }
@@ -225,6 +240,9 @@ class Settings {
         global.config.insert({
             ui: {
                 i18n: i18n.getBestMatchedLangCode(app.getLocale())
+            },
+            localNode: {
+                enableOnStart: argv.node !== 'off'
             },
             swarm: {
                 enableOnStart: argv.swarm
@@ -340,7 +358,7 @@ const argv = require('yargs')
         node: {
             demand: false,
             default: null,
-            describe: 'Node to use: geth, eth',
+            describe: 'Node to use: geth, eth, off',
             requiresArg: true,
             nargs: 1,
             type: 'string',

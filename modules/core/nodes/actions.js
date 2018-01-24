@@ -1,4 +1,10 @@
+import Settings from '../../settings';
 import ethereumNodeRemote from '../../ethereumNodeRemote';
+
+export function syncInitialNetwork() {
+    const network = Settings.network || Settings.loadUserData('network') || 'main';
+    return { type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } };
+}
 
 export function changeNetwork(network) {
     ethereumNodeRemote.setNetwork(network);
@@ -16,4 +22,12 @@ export function syncLocalNode(payload) {
             startingBlock: parseInt(payload.startingBlock, 16),
         }
     };
+}
+
+export function resetLocalNode() {
+    return { type: '[MAIN]:LOCAL_NODE:RESET' };
+}
+
+export function resetRemoteNode() {
+    return { type: '[MAIN]:REMOTE_NODE:RESET' };
 }

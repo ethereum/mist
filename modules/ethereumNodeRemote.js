@@ -4,6 +4,7 @@ const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
 const Sockets = require('./socketManager');
 const Web3 = require('web3-1.0');
 const Settings = require('./settings');
+import { resetRemoteNode } from './core/nodes/actions';
 
 const STATES = {
     STARTING: 0, /* Node about to be started */
@@ -43,21 +44,34 @@ class EthereumNodeRemote extends EventEmitter {
 
         if (!instance) { instance = this; }
 
-        this.start();
-
         return instance;
     }
 
     start() {
         this.network = Settings.network || Settings.loadUserData('network') || 'main';
+
         const provider = this._getProvider(this.network);
+
+        if (!provider) {
+            return;
+        }
+
         this.web3 = new Web3(provider);
+
+        return this.watchBlockHeaders();
     }
 
     setNetwork(network) {
         this.network = network;
+
         const provider = this._getProvider(network);
-        this.web3.setProvider(provider);
+        
+        if (!provider) {
+            this.stop();
+            return;
+        }
+
+        this.web3 = new Web3(provider);
         this.watchBlockHeaders();
     }
 
@@ -74,12 +88,14 @@ class EthereumNodeRemote extends EventEmitter {
             case 'kovan':
                 return InfuraEndpoints.ethereum.websockets.Kovan;
             default:
-                throw Error('unsupported network type')
+                ethereumNodeRemoteLog.error(`Unsupported network type: ${network}`);
+                return null;
         }
     }
 
     stop() {
         this.web3 = null;
+        store.dispatch(resetRemoteNode());
     }
 
     send(method) {
@@ -107,6 +123,10 @@ class EthereumNodeRemote extends EventEmitter {
         this._syncSubscription.unsubscribe((err, success) => {
             if (success) { console.log('∆∆∆ succesfully unsubscribed'); }
         });
+    }
+
+    get connected() {
+        return this.web3 && this.web3.givenProvider
     }
 }
 

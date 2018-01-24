@@ -23,7 +23,18 @@ export default function configureReduxStore() {
 function checkActiveNode(state) {
     // If local node is 50 or more blocks behind remote, ensure remote is active.
     // Otherwise, local should be active.
-    const { active, local, remote } = state.nodes;
+    const { active, network, local, remote } = state.nodes;
+
+    const supported_remote_networks = ['main', 'ropsten', 'rinkeby', 'kovan'];
+    if (!supported_remote_networks.includes(network)) {
+        if (active === 'remote') {
+            store.dispatch({
+                type: '[MAIN]:NODES:CHANGE_ACTIVE',
+                payload: { active: 'local' },
+            });
+        }
+        return;
+    }
 
     if (active === 'remote') {
         if ((remote.blockNumber - local.currentBlock) < 50) {

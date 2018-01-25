@@ -1,14 +1,22 @@
 import Settings from '../../settings';
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 
-export function syncInitialNetwork() {
-    const network = Settings.network || Settings.loadUserData('network') || 'main';
-    return { type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } };
+export function syncNodeDefaults() {
+    return dispatch => {
+        const network = Settings.network || Settings.loadUserData('network') || 'main';
+        const syncMode = Settings.syncmode || Settings.loadUserData('syncmode') || 'fast';
+        dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } });
+        dispatch({ type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } });
+    }
 }
 
 export function changeNetwork(network) {
     ethereumNodeRemote.setNetwork(network);
     return { type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } };
+}
+
+export function changeSyncMode(syncMode) {
+    return { type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } };
 }
 
 export function syncLocalNode(payload) {

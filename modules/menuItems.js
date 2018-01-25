@@ -10,7 +10,7 @@ const ethereumNode = require('./ethereumNode.js');
 const ClientBinaryManager = require('./clientBinaryManager');
 
 import { setLanguage, toggleSwarm, toggleSwarmOnStart } from './core/settings/actions';
-import { changeNetwork } from './core/nodes/actions';
+import { changeNetwork, changeSyncMode } from './core/nodes/actions';
 import { SwarmState } from './core/settings/reducer';
 import swarmNode from './swarmNode.js';
 
@@ -34,19 +34,6 @@ const createMenu = function (webviews) {
     Menu.setApplicationMenu(menu);
 };
 
-
-const changeNodeNetwork = function(network, webviews) {
-    store.dispatch(changeNetwork(network));
-
-    if (ethereumNode.stateAsText === 'STOPPED') {
-        return;
-    }
-
-    Settings.saveUserData('network', network);
-
-    restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
-}
-
 const restartNode = function (newType, newNetwork, syncMode, webviews) {
     newNetwork = newNetwork || ethereumNode.network;
 
@@ -67,6 +54,31 @@ const restartNode = function (newType, newNetwork, syncMode, webviews) {
             log.error('Error switching node', err);
         });
 };
+
+const changeNodeNetwork = function(network, webviews) {
+    store.dispatch(changeNetwork(network));
+
+    Settings.saveUserData('network', network);
+
+    if (ethereumNode.stateAsText !== 'stopped') {
+        restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
+    }
+
+    createMenu(webviews);
+}
+
+const changeNodeSyncMode = function(syncMode, webviews) {
+    store.dispatch(changeSyncMode(syncMode));
+
+    Settings.saveUserData('syncmode', syncMode);
+
+    if (ethereumNode.stateAsText !== 'stopped') {
+        restartNode(ethereumNode.type, ethereumNode.network, syncMode, webviews);
+    }
+
+    createMenu(webviews);
+}
+
 
 const stopEthereumNode = async function (webviews) {
     await ethereumNode.stop();
@@ -559,22 +571,45 @@ let menuTempl = function (webviews) {
             }
         ] });
 
-    // Light mode switch should appear when not in Solo Mode (dev network)
-    if (ethereumNode.isOwnNode && ethereumNode.isGeth && !ethereumNode.isDevNetwork) {
-        devToolsMenu.push({
-            label: 'Sync with Light client (beta)',
-            enabled: true,
-            checked: ethereumNode.isLightMode,
-            type: 'checkbox',
-            click() {
-                restartNode('geth', null, (ethereumNode.isLightMode) ? 'fast' : 'light');
+    // add sync mode switch
+    devToolsMenu.push({
+        label: i18n.t('mist.applicationMenu.develop.syncMode'),
+        submenu: [
+            {
+                label: i18n.t('mist.applicationMenu.develop.syncModeFull'),
+                enabled: ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped',
+                checked: store.getState().nodes.local.syncMode === 'full',
+                type: 'checkbox',
+                click() {
+                    changeNodeSyncMode('full', webviews);
+                },
             },
-        });
-    }
+            {
+                label: i18n.t('mist.applicationMenu.develop.syncModeFast'),
+                enabled: ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped' && !ethereumNode.isDevNetwork,
+                checked: store.getState().nodes.local.syncMode === 'fast',
+                type: 'checkbox',
+                click() {
+                    changeNodeSyncMode('fast', webviews);
+                },
+            },
+            {
+                label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
+                enabled: ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped' && ethereumNode.isGeth && !ethereumNode.isDevNetwork,
+                checked: store.getState().nodes.local.syncMode === 'light',
+                type: 'checkbox',
+                click() {
+                    changeNodeSyncMode('light', webviews);
+                },
+            },
+        ] });
 
     // Enables mining menu: only in Solo mode and Ropsten network (testnet)
     if (ethereumNode.isOwnNode && (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)) {
         devToolsMenu.push({
+            type: 'separator'
+        },
+        {
             label: (global.mining) ? i18n.t('mist.applicationMenu.develop.stopMining') : i18n.t('mist.applicationMenu.develop.startMining'),
             accelerator: 'CommandOrControl+Shift+M',
             enabled: true,

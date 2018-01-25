@@ -18,7 +18,7 @@ import configureReduxStore from './modules/core/store';
 
 import { quitApp } from './modules/core/ui/actions';
 import { handleNodeSync, setLanguageOnMain, toggleSwarm } from './modules/core/settings/actions';
-import { syncInitialNetwork } from './modules/core/nodes/actions';
+import { syncNodeDefaults } from './modules/core/nodes/actions';
 
 import { SwarmState } from './modules/core/settings/reducer';
 
@@ -243,7 +243,7 @@ async function kickStart() {
 
     await ClientBinaryManager.init();
 
-    store.dispatch(syncInitialNetwork());
+    store.dispatch(syncNodeDefaults());
 
     if (Settings.enableLocalNodeOnStart) {
         await ethereumNode.init();

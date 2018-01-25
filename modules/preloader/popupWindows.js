@@ -1,3 +1,4 @@
+require('babel-register');
 /**
 @module preloader PopupWindows
 */

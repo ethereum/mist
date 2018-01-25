@@ -340,7 +340,14 @@ class IpcProviderBackend {
         .then((result) => {
             log.trace('Got result', result);
 
-            if (result[0] && result[0].result.currentBlock) {
+            // Update Redux with (throttled) sync results
+            // i.e. only send action if currentBlock or knownStates updates
+            if (
+                result[0] &&
+                result[0].result.currentBlock &&
+                (store.getState().nodes.local.currentBlock !== parseInt(result[0].result.currentBlock, 16) ||
+                store.getState().nodes.local.knownStates !== parseInt(result[0].result.knownStates, 16))
+            ) {
                 store.dispatch(syncLocalNode(result[0].result));
             }
 

@@ -39,4 +39,3 @@ export function resetLocalNode() {
 export function resetRemoteNode() {
     return { type: '[MAIN]:REMOTE_NODE:RESET' };
 }
-

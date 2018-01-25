@@ -218,7 +218,7 @@ class Settings {
     }
 
     get enableLocalNodeOnStart() {
-        if (argv.node === 'off') {
+        if (argv.node === 'remote-only') {
             return false;
         }
 
@@ -242,7 +242,7 @@ class Settings {
                 i18n: i18n.getBestMatchedLangCode(app.getLocale())
             },
             localNode: {
-                enableOnStart: argv.node !== 'off'
+                enableOnStart: argv.node !== 'remote-only'
             },
             swarm: {
                 enableOnStart: argv.swarm
@@ -358,7 +358,7 @@ const argv = require('yargs')
         node: {
             demand: false,
             default: null,
-            describe: 'Node to use: geth, eth, off',
+            describe: 'Node to use: geth, eth, remote-only',
             requiresArg: true,
             nargs: 1,
             type: 'string',

@@ -11,7 +11,7 @@ Number of blocks synchronized: 0
 
 <!--
 
-Check the already existing issues to keep duplicates at a minimum.
+Check the already existing issues to keep duplicates to a minimum.
 
 
 You'll find possible solutions for these common issues below on Mist Wiki: https://github.com/ethereum/mist/wiki.

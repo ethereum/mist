@@ -21,7 +21,7 @@ module.exports = class extends BaseProcessor {
             };
         } else {
             const ret = await conn.socket.send(payload, { fullResult: true });
-            return ret.return;
+            return ret.result;
         }
     }
 };

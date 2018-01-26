@@ -77,6 +77,7 @@ module.exports = class extends BaseProcessor {
                     } else {
                         this._log.info('Transaction sent', result);
 
+                        console.log('∆∆∆ unlocked... result', result);
                         resolve(result);
                     }
 
@@ -86,6 +87,7 @@ module.exports = class extends BaseProcessor {
             });
         })
         .then((result) => {
+            console.log('∆∆∆ override result', result);
             return _.extend({}, payload, {
                 result,
             });

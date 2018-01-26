@@ -7,15 +7,6 @@ const Settings = require('./settings');
 import { resetRemoteNode } from './core/nodes/actions';
 import { InfuraEndpoints } from './constants';
 
-const STATES = {
-    STARTING: 0, /* Node about to be started */
-    STARTED: 1, /* Node started */
-    CONNECTED: 2, /* IPC connected - all ready */
-    STOPPING: 3, /* Node about to be stopped */
-    STOPPED: 4, /* Node stopped */
-    ERROR: -1, /* Unexpected error */
-};
-
 let instance;
 
 class EthereumNodeRemote extends EventEmitter {

@@ -352,47 +352,72 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         // personal_signTransaction?
         // web.eth.sendRawTransaction
 
-        // unlock and send transaction!
-        web3.personal.sendTransaction(data, pw || '', function (e, res) {
-            pw = null;
-            TemplateVar.set(template, 'unlocking', false);
+        const nonce = web3.eth.getTransactionCount(data.from);
+        console.log('∆∆∆ nonce', nonce);
+        const request = Object.assign({}, data, { nonce: `0x${nonce.toString(16)}` });
+        console.log('∆∆∆ request', request);
+        // window.signer.signWithSigner(request, pw, signerFeedback => {
+            // console.log('∆∆∆ signerFeedback!', signerFeedback);
+            // // sendSignedTransaction(signedRequest);
+        // });
 
-            if (!e && res) {
-                ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
+        window.signer.signWithJS(request, pw, signedTx => {
+            console.log('∆∆∆ signedTx', signedTx);
+            web3.eth.sendRawTransaction(signedTx, (err, result) => {
+                if (err) { console.log('∆∆∆ !!! err', err); }
 
-            } else {
-                Tracker.afterFlush(function () {
-                    template.find('input[type="password"]').value = '';
-                    template.$('input[type="password"]').focus();
-                });
-                if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
-                        duration: 5
-                    });
-                } else if (e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
-                        duration: 3
-                    });
-                } else if (e.message.indexOf('multiple keys match address') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
-                        duration: 10
-                    });
-                } else if (e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
-                    GlobalNotification.warning({
-                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
-                        duration: 5
-                    });
-                } else {
-                    GlobalNotification.warning({
-                        content: e.message,
-                        duration: 5
-                    });
+                console.log('∆∆∆ !!! result', result);
+
+                TemplateVar.set(template, 'unlocking', false);
+
+                if (!err && result) {
+                    ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
                 }
-            }
+            });
         });
+
+
+        // unlock and send transaction!
+        // web3.personal.sendTransaction(data, pw || '', function (e, res) {
+            // pw = null;
+            // TemplateVar.set(template, 'unlocking', false);
+
+            // if (!e && res) {
+                // ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
+
+            // } else {
+                // Tracker.afterFlush(function () {
+                    // template.find('input[type="password"]').value = '';
+                    // template.$('input[type="password"]').focus();
+                // });
+                // if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
+                    // GlobalNotification.warning({
+                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
+                        // duration: 5
+                    // });
+                // } else if (e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
+                    // GlobalNotification.warning({
+                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+                        // duration: 3
+                    // });
+                // } else if (e.message.indexOf('multiple keys match address') !== -1) {
+                    // GlobalNotification.warning({
+                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
+                        // duration: 10
+                    // });
+                // } else if (e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
+                    // GlobalNotification.warning({
+                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
+                        // duration: 5
+                    // });
+                // } else {
+                    // GlobalNotification.warning({
+                        // content: e.message,
+                        // duration: 5
+                    // });
+                // }
+            // }
+        // });
     },
 
     'click .data .toggle-panel': function () {

@@ -1,10 +1,8 @@
-
-
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 const BaseProcessor = require('./base');
 
 /**
- * Process method: eth_getBalance
+ * Process method: eth_getTransactionCount
  */
 module.exports = class extends BaseProcessor {
     /**

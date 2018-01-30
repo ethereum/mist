@@ -1,5 +1,3 @@
-
-
 const _ = require('../../utils/underscore.js');
 const Q = require('bluebird');
 

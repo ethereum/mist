@@ -1,5 +1,3 @@
-
-
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 const BaseProcessor = require('./base');
 

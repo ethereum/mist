@@ -208,7 +208,7 @@ gulp.task('release-dist', (done) => {
 
     console.info('*** Listing dist files ***');
     console.info(shell.ls('-lR', distPath));
-    
+
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
@@ -224,25 +224,35 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            cp(
-                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
-            cp(
-                `${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+            // WINDOWS:
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32-win.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-win32-0-9-4.zip
+            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32-win.zip
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-win.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-win64-0-9-4.zip
+            cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
         case 'mac':
-            cp(
-                path.join('mac', `${applicationName}-${version}.dmg`),
-                `${appNameHypen}-macosx-${versionDashed}.dmg`);
+            // MAC:
+            //     Copying from /Users/travis/build/ethereum/mist/dist_mist/dist/mac/Mist-0.9.4.dmg to /Users/travis/build/ethereum/mist/dist_mist/release/Mist-macosx-0-9-4.dmg
+            //     cp: no such file or directory: /Users/travis/build/ethereum/mist/dist_mist/dist/mac/Mist-0.9.4.dmg
+            cp(`${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            cp(
-                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(
-                `${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
+            // LINUX:
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_i386.deb to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux32-0-9-4.deb
+            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_i386.deb
+            //
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux32-0-9-4.zip
+            //
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_amd64.deb to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux64-0-9-4.deb
+            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_amd64.deb
+            //
+            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux64-0-9-4.zip
+
+            cp(`${appNameNoSpace}-${version}-i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+            cp(`${appNameNoSpace}-${version}-amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }
     });

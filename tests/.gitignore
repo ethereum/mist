@@ -1,3 +1,4 @@
 mist.log
-webdriver.log
+webdriver/
 chrome.log
+

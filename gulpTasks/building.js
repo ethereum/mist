@@ -206,6 +206,9 @@ gulp.task('release-dist', (done) => {
     const distPath = path.join(__dirname, `../dist_${type}`, 'dist');
     const releasePath = path.join(__dirname, `../dist_${type}`, 'release');
 
+    console.info('*** Listing dist files ***');
+    console.info(shell.ls('-lR', distPath));
+    
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 

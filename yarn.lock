@@ -5694,9 +5694,9 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-spectron@3.7.2:
-  version "3.7.2"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.7.2.tgz#86f41306a9b70ed6ee1500f7f7d3adc389afb446"
+spectron@3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.7.3.tgz#b096e497a1b4aaa23144ad1f7874cb3b16aa1aa6"
   dependencies:
     dev-null "^0.1.1"
     electron-chromedriver "~1.7.1"

@@ -66,14 +66,10 @@ class Signer {
         console.log('∆∆∆ data in signWithJS', data);
         const strippedAddress = data.from.slice(2);
 
-        // Fetch proper keystore file based on public key in data.from
-        const keystoreDir = path.join(os.homedir(), 'Library', 'Ethereum', 'rinkeby', 'keystore');
-        console.log('∆∆∆ keystoreDir', keystoreDir);
-
         let keystoreFile;
         let keystoreData;
 
-        await fs.readdir(keystoreDir, (err, items) => {
+        await fs.readdir(this.keystorePath, (err, items) => {
             console.log('∆∆∆ items', items);
 
             items.forEach(item => {
@@ -83,7 +79,7 @@ class Signer {
             });
             console.log('∆∆∆ keystoreFile', keystoreFile);
 
-            fs.readFile(path.join(keystoreDir, keystoreFile), 'utf8', (err, data1) => {
+            fs.readFile(path.join(this.keystorePath, keystoreFile), 'utf8', (err, data1) => {
                 if (err) { console.log('error', err); }
                 keystoreData = data1;
                 console.log('∆∆∆ keystoreData', keystoreData);
@@ -101,7 +97,7 @@ class Signer {
 					to: data.to,
 					value: data.value,
 					data: data.data,
-                    chainId: 4 // TODO: remove hardcoding
+                    chainId: this.chainId
                 };
                 const tx = new EthTx(txParams)
                 tx.sign(pkBuffer);

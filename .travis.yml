@@ -27,6 +27,7 @@ matrix:
             - graphicsmagick
             - xz-utils
             - nsis
+            - g++-multilib
           sources:
             - mono
       before_install:

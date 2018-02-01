@@ -109,19 +109,19 @@ class Signer {
     }
 
     async signWithSigner(data, pw, callback) {
+        let error;
+
         console.log('∆∆∆ data in sign method', data);
 
-        // this.signer = spawn('../signerBin/signer', ['-keystore', this.keystorePath, '-chainid', this.chainId, '-stdio-ui']);
         const signer = spawn('./signerBin/signer', [
             '-4bytedb', './signerBin/4byte.json',
-            '-keystore', './keystoreTest', // this.keystorePath
-            '-chainid', 4, // this.chainId
+            '-keystore', this.keystorePath,
+            '-chainid', this.chainId,
             '-stdio-ui'
         ]);
 
-        // payload pulled https://github.com/holiman/go-ethereum/blob/signer_mhs/cmd/signer/README.md#sample-call-2
 		const req = {
-		  "id": 999,
+		  "id": 1,
 		  "jsonrpc": "2.0",
 		  "method": "account_signTransaction",
 		  "params": [
@@ -132,7 +132,7 @@ class Signer {
 			  "nonce": data.nonce,
 			  "to": data.to,
 			  "value": data.value,
-              // "input": data.data,
+              "data": data.data
 			},
 		  ],
 		};
@@ -145,15 +145,10 @@ class Signer {
             if (data.method === 'ShowError') {
                 signerLog.error(`ShowError: ${data.params[0].text}`);
                 console.error(`ShowError: ${data.params[0].text}`);
+                error = data.params[0].text;
             }
 
             if (data.method === 'ApproveTx') { 
-                const reject = {
-                    id: data.id,
-                    jsonrpc: '2.0',
-                    result: { approved: false },
-                };
-
                 const confirm = {
                     id: data.id,
                     jsonrpc: '2.0',
@@ -169,8 +164,6 @@ class Signer {
 
                 signer.stdin.write(JSON.stringify(confirm));
             }
-
-            // callback(signerStdout);
         });
 
         //  Child process output
@@ -189,13 +182,16 @@ class Signer {
                         'Content-Type': 'application/json',
                     },
                 });
-                const result = await response.json();
-                if (result.result) {
-                    console.log(`∆∆∆ signed transaction: ${result.result}`);
+                const data = await response.json();
+                if (data.result) {
+                    callback(data.result, error);
+                    console.log(`∆∆∆ data.result: ${data.result}`);
                 } else {
+                    callback(null, result);
                     console.error(`∆∆∆ error: ${result}`);
                 }
             } catch (e) {
+                callback(null, e);
                 console.log('∆∆∆ e!', e);
             } finally {
                 // Kill process
@@ -208,17 +204,3 @@ class Signer {
 }  
 
 module.exports = new Signer();
-
-// TODO: for testing; remove
-const req = {
-    data: '',
-    from: '0xc3d97ff30555c4100c72fe1ad3db6dc46dc68325',
-    gas: '0x1d8a8',
-    gasPrice: '0x430e23400',
-    to: '0x9d7c92bc5d17f5ec43adbda8df8ba0f17a3bfb3f',
-    value: '0x16345785d8a0000',
-    nonce: '0x4'
-};
-const signer = new Signer();
-signer.signWithSigner(req, 'omgomgomg', (data) => { console.log('[signer cb]', data) })
-// signer.signWithJS(req)

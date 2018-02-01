@@ -25,13 +25,15 @@ gulp.task('clean-dist', (cb) => {
 
 
 gulp.task('copy-app-source-files', () => {
-    return gulp.src([
+    gulp.src([
         'node_modules/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
         './clientBinaries.json',
         './tests/**/*.*',
         '!./tests/wallet/*',
+        '!./tests/mist/*',
+        '!./tests/unit/*',
         `./icons/${type}/*`,
         './sounds/*',
         './errorPages/*',
@@ -40,6 +42,7 @@ gulp.task('copy-app-source-files', () => {
         base: './'
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
+    
 });
 
 

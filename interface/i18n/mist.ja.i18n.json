@@ -5,17 +5,17 @@
                 "label": "__app__",
                 "about": "__app__ について",
                 "checkForUpdates": "アップデートの確認...",
-                "checkForNodeUpdates": "Check for Ethereum node updates...",
+                "checkForNodeUpdates": "Ethereum ノードのアップデートの確認...",
                 "services": "サービス",
                 "hide": "__app__ を隠す",
                 "hideOthers": "ほかを隠す",
                 "showAll": "すべてを表示",
-                "quit": " __app__ を中止する"
+                "quit": " __app__ を終了する"
             },
             "edit": {
                 "label": "編集",
-                "undo": "Undo",
-                "redo": "Redo",
+                "undo": "元に戻す",
+                "redo": "やり直す",
                 "cut": "カット",
                 "copy": "コピー",
                 "paste": "ペースト",
@@ -23,46 +23,46 @@
             },
             "view": {
                 "label": "ビュー",
-                "fullscreen": "フルスクリーンをトグルする",
-                "default": "Default"
+                "fullscreen": "フルスクリーン",
+                "default": "デフォルト"
             },
             "file": {
                 "label": "アカウント",
                 "importPresale": "アカウントを読み込む",
                 "newAccount": "新規アカウント",
-                "backup": "バックアップ",
+                "backup": "バックアップを取る",
                 "backupKeyStore": "アカウント",
                 "backupMist": "アプリケーションデータ"
             },
             "develop": {
-                "uploadToSwarm": "Swarmにアップロード",
-                "label": "Develop",
-                "devTools": "開発者用ツールをトグルする",
+                "uploadToSwarm": "Swarm にアップロード",
+                "label": "開発",
+                "devTools": "開発者用ツール",
                 "devToolsMistUI": "Mist UI",
                 "devToolsWalletUI": "Wallet UI",
                 "devToolsWebview": "__webview__",
-                "runTests": "テストを走らせる",
+                "runTests": "テストを実行する",
                 "logFiles": "ログファイルを表示する",
                 "ethereumNode": "Ethereum ノード",
                 "network": "ネットワーク",
                 "mainNetwork": "メインネットワーク",
                 "startMining": "⛏ マイニングを始める",
                 "stopMining": "⛏ マイニングを中止する",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "externalNode": "外部のノードを使用する",
+                "openRemix": "Remix IDE を開く",
+                "nodeMode": "チェーンダウンロード",
+                "fullNode": "フルノードを保存する",
+                "lightNode": "ライトノードを使う (実験的なものです!)"
             },
             "window": {
-                "label": "Window",
-                "minimize": "最小化する",
+                "label": "ウィンドウ",
+                "minimize": "最小化",
                 "close": "閉じる",
-                "toFront": "全てを全面に持ってくる"
+                "toFront": "前面に表示"
             },
             "help": {
                 "label": "ヘルプ",
-                "reportBug": "Report an issue on Github"
+                "reportBug": "バグレポート"
             }
         },
         "errors": {
@@ -72,16 +72,16 @@
                 "title": "コンピューターのクロックが未だ同期されていません.",
                 "description": "Ethereum のネットワークと同期を成功させるためには、時間を同期させるサーバーとあなたのコンピューターを同期させる必要があります。",
                 "win32": "システム設定を開き、「インターネットの時間設定」を開いてチェックボックスにチェックを入れて下さい。詳しくはこちらのガイドをご覧下さい: http://www.guidingtech.com/3119/windows-clock-sync/",
-                "linux": "時間を同期させるサーバーを使うためには、 \"ntp\" を \"apt-get install ntp\"　をコマンドラインから入力してインストールする必要があります。",
-                "darwin": "時間を同期するためには、時間設定を開き \"時間と日にちを同期自動で同期\"　にチェックすることが必要です."
+                "linux": "時間を同期させるサーバーを使うためには、 \"ntp\" を \"apt-get install ntp\" をコマンドラインから入力してインストールする必要があります。",
+                "darwin": "時間を同期するためには、時間設定を開き \"時間と日付を自動で同期\" にチェックすることが必要です."
             },
             "nodeChecksumMismatch": {
-                "title": "Checksum mismatch in downloaded node!",
-                "description": "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+                "title": "ダウンロードしたノードのチェックサムの照合に失敗しました!",
+                "description": "__algorithm__: __hash__\n\nノード __type__ バージョン __version__ を手動でインストールしてください."
             },
             "legacyChain": {
-                "title": "Legacy chain detected",
-                "description": "Your node is currently on the unsupported Ethereum Classic chain. To use this chain use tools provided by the ethereum classic project at\nhttps://ethereumclassic.github.io.\n\nTo revert to the main ethereum chain follow the tutorial here:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+                "title": "レガシーチェーンを検出しました",
+                "description": "あなたのノードは現在サポートされていません. Ethereum のクラシックプロジェクトによって提供されるこのチェーン使用ツールを使用するには \nhttps://ethereumclassic.github.io.\n\nメイン Ethereum チェーンに戻す方法のチュートリアルはこちら:\nhttps://github.com/ethereum/mist/releases/0.8.2"
             }
         },
         "rightClick": {
@@ -94,15 +94,15 @@
             "blockReceived": "新しいブロックを受け取りました",
             "timeSinceBlock": "最後のブロックから",
             "peers": "ピアー",
-            "blockNumber": "Your latest block number",
-            "checkingWhichNetwork": "Checking network...",
-            "mainNetwork": "Main-net",
-            "testNetwork": "Test-net",
-            "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
-            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
-            "unknownnetExplain": "Unable to determine which network you are on"
+            "blockNumber": "ブロック番号",
+            "checkingWhichNetwork": "ネットワークをチェックしています...",
+            "mainNetwork": "メインネット",
+            "testNetwork": "テストネット",
+            "privateNetwork": "プライベートネット",
+            "mainnetExplain": "ここは Ethereum のメインネットです",
+            "testnetExplain": "ここはテストネットです。絶対に本物の ehter を送らないでください",
+            "privatenetExplain": "ここはプライベートっとです。絶対に本物の ether を送らないでください",
+            "unknownnetExplain": "どこのネットワークにいるか判定できませんでした"
         },
         "sidebar": {
             "buttons": {
@@ -112,37 +112,37 @@
         "browserBar": {
             "buttons": {
                 "noAccounts": "アカウントがセットされていません",
-                "connect": "Connect"
+                "connect": "接続"
             }
         },
         "startScreen": {
-            "runningNodeFound": "走っているEthereum nodeを見つけました!",
+            "runningNodeFound": "起動している Ethereum ノードを見つけました!",
             "startingNode": "Ethereum ノードを開始しています。",
-            "startedNode": "アプリケーションを開始しています...",
-            "nodeConnectionTimeout": "Ethereum nodeをスタート出来ませんでした!<br><small>もし<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a>をインストールしているならば,このコマンドを使ってみてください: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>もしくは問題を報告して下さい。 </a></small>",
-            "nodeBinaryNotFound": "Ethereum node バイナリーが見つかりませんでした。<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 手動でスタートして下さい。 </a> </small>",
-            "nodeSyncing": "Ethereum node は同期中です...",
-            "nodeSyncInfo": "blockをダウンロードしています。 __displayBlock__ of __highestBlock__.",
+            "startedNode": "Ethereum ノードは開始されました...",
+            "nodeConnectionTimeout": "Ethereum ノードをスタート出来ませんでした!<br><small>もし<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a>をインストールしているならば,このコマンドを使ってみてください: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>もしくは問題を報告して下さい。 </a></small>",
+            "nodeBinaryNotFound": "Ethereum ノードバイナリーが見つかりませんでした。<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 手動でスタートして下さい。 </a> </small>",
+            "nodeSyncing": "Ethereum ノードは同期中です...",
+            "nodeSyncInfo": "ブロックをダウンロードしています。 __displayBlock__ / __highestBlock__.",
             "nodeSyncConnecting": "ピアーを探しています。...",
             "peerSearchTimeout": "ピアーの検索を中止しています",
-            "stoppingNode": "Stopping Ethereum node...",
-            "nodeStarting": "Ethereum node starting up...",
-            "nodeStarted": "Ethereum node started",
-            "nodeConnected": "Ethereum node connected",
-            "nodeStopping": "Ethereum node stopping...",
-            "nodeStopped": "Ethereum node stopped",
-            "nodeError": "Ethereum node connection error :'(",
-            "unableToBindPort": "Ethereum node cannot run. Is another instance already running?",
-            "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
-            "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
-            "launchApp": "Launch Application",
+            "stoppingNode": "ノードを終了しています...",
+            "nodeStarting": "ノードを起動しています...",
+            "nodeStarted": "ノードは起動されました",
+            "nodeConnected": "ノードは接続されました",
+            "nodeStopping": "ノードを終了しています...",
+            "nodeStopped": "ノードは終了しました",
+            "nodeError": "ノード接続エラー :'(",
+            "unableToBindPort": "Ethereum ノードが実行できません。既に他のインスタンスが立ち上がっていませんか？",
+            "nodeSyncInfoStates": "ブロック __displayBlock__ / __highestBlock__ ダウンロード中, <br> チェーン構造 __displayState__ / __displayKnownStates__ ダウンロード中",
+            "nodeSyncFoundPeers": "ピアー __peers__ に接続中...",
+            "launchApp": "アプリケーションを起動",
             "clientBinaries": {
-                "scanning": "Checking for node update...",
-                "downloading": "Downloading new node...",
-                "loadConfig": "Loading client config...",
-                "filtering": "Filtering client binaries...",
-                "done": "Ethereum node up-to-date...",
-                "error": "Error running downloaded binary."
+                "scanning": "ノードのアップデートを確認中...",
+                "downloading": "新たなノードをダウンロード中...",
+                "loadConfig": "クライアントの設定を読み込み中...",
+                "filtering": "クライアントのバイナリをフィルタリング中...",
+                "done": "Ethereum ノードは最新です",
+                "error": "ダウンロードしたバイナリでエラーが発生."
             }
         },
         "popupWindows": {
@@ -152,8 +152,8 @@
                 "repeatPassword": "パスワードを繰り返し入力する",
                 "creating": "アカウントを生成しています...",
                 "errors": {
-                    "passwordMismatch": "あなたのパスワードはあっていません",
-                    "passwordTooShort": "Make a longer password"
+                    "passwordMismatch": "パスワードが正しくありません",
+                    "passwordTooShort": "もっと長いパスワードにしてください"
                 }
             },
             "unlockMasterPassword": {
@@ -167,7 +167,7 @@
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "トランザクションを送信する",
-                    "contractExecution": "コントラクト実効する",
+                    "contractExecution": "コントラクトを実行する",
                     "createContract": "コントラクトを作成する"
                 },
                 "contractExecutionInfo": "コントラクトの関数を実行しようとしています。これはバリューの移転を含むことがあります。",
@@ -176,10 +176,10 @@
                 "unlocking": "承認しています...",
                 "createContract": "コントラクトを作成する",
                 "estimatedFee": "推定されるトランザクションフィーの消費",
-                "estimatedGasError": "データが実行できませんでした、そのため全てのgas が消費されます。",
-                "gasPrice": "ガスプライス",
-                "perMillionGas": "百万gas ごとのEther",
-                "gasLimit": "最大のフィーを提供",
+                "estimatedGasError": "データが実行できませんでした、そのため全ての GAS が消費されます。",
+                "gasPrice": "GAS 価格",
+                "perMillionGas": "100 万 GAS ごとの Ether",
+                "gasLimit": "GAS リミット",
                 "data": "データ",
                 "buttons": {
                     "sendTransaction": "トランザクションを送信"
@@ -187,46 +187,46 @@
                 "errors": {
                     "connectionTimeout": "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
                     "wrongPassword": "パスワードが間違っています",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
-                    "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
-                    "sameAccount": "Can't send to itself"
+                    "multipleKeysMatchAddress": "複数のキーが一致する場合は、キーストアから重複を削除してください (menu -> accounts -> backup -> accounts)",
+                    "insufficientFundsForGas": "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
+                    "sameAccount": "同一アカウントには送信できません"
                 },
-                "transactionThrow": "The contract won't allow this transaction to be executed",
-                "noEstimate": "We couldn't estimate the gas.",
-                "parameters": "Parameters",
-                "showRawBytecode": "show raw data",
-                "showDecodedParameters": "show decoded parameters",
-                "lookupData": "Try to decode data",
-                "lookupDataExplainer": "Look this up on the internet",
-                "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
-                "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
+                "transactionThrow": "契約により、この取引は実行されません",
+                "noEstimate": "GAS を見積もることができませんでした",
+                "parameters": "パラメータ",
+                "showRawBytecode": "生データを見る",
+                "showDecodedParameters": "デコードされたパラメータを見る",
+                "lookupData": "データをデコードする",
+                "lookupDataExplainer": "インターネットでこれを確認してください",
+                "overBlockGasLimit": "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
+                "notEnoughGas": "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください."
             },
             "onboarding": {
                 "description": "Ethereum は分散型のプラットフォームで、ブロックチェーン上でアプリケーションを作成することが出来ます。価値を転送することが出来、永続的に稼働するセキュリティの高いソフトウェアを作ることが出来ます。",
                 "goToTestnet": "テストネットワークを使用する (Rinkeby)",
-                "goToTestnetDescription": "サンドボックスのテストネットで、テクノロジーを自由に使う。本当のEtherを使うことなく.",
+                "goToTestnetDescription": "本物の Ether を使わず、サンドボックスのテストネットで、テクノロジーを自由に使う。",
                 "gotoMainnet": "メインネットワークを使用する",
-                "gotoMainnetDescription": "コントラクトを作成して実行するためにいくらかのEtherが必要となるでしょう。心配することはありません、手に入れるためにこちらの方法があります。...",
+                "gotoMainnetDescription": "コントラクトを作成して実行するためにいくらかの Ether が必要となるでしょう。心配することはありません、手に入れるためにこちらの方法があります。...",
                 "doYouHaveAWalletFile": "ウォレットファイルを持っていますか?",
-                "walletFileDescription": "<p>もし2014年のプリセールに参加していたら、 <code>ethereum_wallet_backup.json</code>という名前のファイルを持っているはずです。プリセールのあとにダウンロードしているか、もしくはEmailにて受け取っているはずです。</p>",
+                "walletFileDescription": "<p>もし2014年のプリセールに参加していたら、 <code>ethereum_wallet_backup.json</code>という名前のファイルを持っているはずです。プリセールのあとにダウンロードしているか、もしくは Email にて受け取っているはずです。</p>",
                 "dropFilesHere": "プリセールファイルを削除する",
                 "creating": "作成しています...",
-                "importing": "...",
+                "importing": "インポート中です...",
                 "skip": "このステップをスキップする",
                 "next": "次へ",
                 "protectTitle": "アカウントを守る",
-                "protectDescription": "新しいアカウントのためにパスワードを作成する. 必ず強いキーにしてください!",
+                "protectDescription": "新しいアカウントのためにパスワードを作成する. 必ず強いパスワードにしてください!",
                 "accountTitle": "もっとダウンロードする!",
                 "accountTitleTestnet": "マイニングを行う!",
-                "etherDescription": "The ethereum network  “Ether”. Ethereum networkで何かを行うためには必ず必要となります。",
-                "loadItDescription": "既にもし Bitcoinを持っているか, もしくは他の暗号通貨を持っている場合には簡単にShapeshiftから変換する事ができます。 <br><br> 私たちは <strong>0.25 to 1 ether</strong>を変換することをおすすめします.",
-                "mineItDescription": "<strong>テストネットでは自分自身でマイニングを行うか、 <em>Develop</em> メニューから <em>マイニングを始める</em>を選んで. </strong> <br> <strong> 絶対にこのアドレスにはEtherを送らないでください </strong>",
+                "etherDescription": "Ethereum ネットワークは“Ether と呼ばれるトークンに基づき成り立っています. Ethereumネットワークで何かを行うためには必ず必要となります。",
+                "loadItDescription": "既にもし Bitcoin を持っているか, もしくは他の暗号通貨を持っている場合には簡単に Shapeshift で変換する事ができます。 <br><br> 私たちは <strong>0.25 から 1 ether の間で</strong>変換することをおすすめします.",
+                "mineItDescription": "<strong>テストネットでは自分自身でマイニングを行うか、 <em>Develop</em> メニューから <em>マイニングを始める</em>を選んでください. </strong> <br> <strong> 絶対にこのアドレスには Ether を送らないでください </strong>",
                 "you": "あなた",
                 "etherbase": "メインアカウント(etherbase)",
-                "depositBitcoin": "Bitcoinをデポジットする",
-                "learnIt": "待っている間にEthereumWalletのことを学ぶ",
+                "depositBitcoin": "Bitcoin をデポジットする",
+                "learnIt": "待っている間に EthereumWallet のことを学ぶ",
                 "downloadingBlocks": "ブロックをダウンロードする",
-                "tutorial1Description": "<p> 全て終わり、後はダウンロードが終了するのは待つだけです。ここにいくつかのサジェスチョンがあります。: </p> <h4>あなたのお金を発行する </h4> <p> 暗号通貨を一定の供給と共に作成することが出来、トークンを現実世界のアセットと関連付ける事ができます。</p>",
+                "tutorial1Description": "<p> 全て終わり、後はダウンロードが終了するのは待つだけです。いくつか次の提案があります。: </p> <h4>あなたのお金を発行する </h4> <p> 暗号通貨を一定の供給と共に作成することが出来、トークンを現実世界のアセットと関連付ける事ができます。</p>",
                 "tutorial2Description": "<h4>クラウドセールを作成する </h4> <p>第三者の介入無く共通のゴールを目指して一緒に進みましょう. 従来のファンディングシステムではとは異なり、ブロックチェーンを用いてダイレクトに資金を集める事ができます。</p>",
                 "tutorial3Description": "<h4>ブロックチェーン組織 </h4> <p> どのようにして資金を使うのか、そして誰が決定するのかについて破ることが出来ないルールを持った自律的な組織を作成しましょう。そして、あなたの支援者に、どのように資金が使われるのかをアクティブに考え、行動してもらうことが出来ます。</p>",
                 "buttons": {
@@ -236,33 +236,33 @@
                     "learnReceipt": "このレシピを学ぶ"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "ノードが開始して再度起動する迄もう少し待つ",
-                    "unknownFile": "ファイルが認識できませんでした.",
-                    "wrongPassword": "passwordが間違っています",
+                    "nodeNotStartedYet": "ノードが起動するまでもう少し待ってください",
+                    "unknownFile": "ファイルを認識できませんでした.",
+                    "wrongPassword": "パスワードが間違っています",
                     "importFailed": "ファイルが読み込めませんでした: __error__のエラーです"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
+                "viaShapeshift": "<a href='https://shapeshift.io/' target='_blank'>Shapeshift</a> で簡単にコインを変換",
+                "syncMessage": "ブロック __displayBlock__ / __highestBlockString__",
+                "syncMessageWithStates": "ブロック __displayBlock__ / __highestBlockString__ (チェーン構造 __statesPercent__%)",
+                "startingSync": "動機を開始しています..."
             },
             "updateAvailable": {
-                "newVersionAvailable": "New __name__ version available",
-                "version": "Version",
-                "downloadURL": "Download URL",
-                "checksum": "Checksum",
-                "downloadAndRestart": "Update and Restart",
-                "download": "Download new version",
-                "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
-                "checking": "Checking for updates to __name__...",
-                "noUpdateFound": "No update found. You are running the latest version of __name__."
+                "newVersionAvailable": "新しバージョン __name__ が利用可能です",
+                "version": "バージョン",
+                "downloadURL": "ダウンロード URL",
+                "checksum": "チェックサム",
+                "downloadAndRestart": "アップデートして再起動",
+                "download": "新しいバージョンをダウンロード",
+                "skipUpdate": "アップデートをスキップ",
+                "notNow": "今はしない",
+                "checking": "__name__ のバージョンにアップデートがないか確認しています...",
+                "noUpdateFound": "新しいバージョンは見つかりませんでした. あなたの __name__ は最新バージョンです."
             },
             "connectAccount": {
-                "chooseAccountTitle": "Choose account",
-                "createAccount": "Create new account",
-                "pinToSidebar": "Pin app to the sidebar",
-                "connectAccountDescription": "You are sharing your identity with __dappName__. This allows the app to see any public information of your accounts, including balances connected to it."
+                "chooseAccountTitle": "アカウントを選ぶ",
+                "createAccount": "アカウントを新規作成",
+                "pinToSidebar": "サイドバーにピンする",
+                "connectAccountDescription": "__dappName__ であなたの身元を共有しています。これにより、アプリはアカウントに接続された残高を含むアカウントの公開情報をすべて表示することができます。"
             }
         }
     },

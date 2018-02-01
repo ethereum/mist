@@ -114,8 +114,8 @@ class Signer {
         // this.signer = spawn('../signerBin/signer', ['-keystore', this.keystorePath, '-chainid', this.chainId, '-stdio-ui']);
         const signer = spawn('./signerBin/signer', [
             '-4bytedb', './signerBin/4byte.json',
-            '-keystore', './keystoreTest',
-            '-chainid', 4,
+            '-keystore', './keystoreTest', // this.keystorePath
+            '-chainid', 4, // this.chainId
             '-stdio-ui'
         ]);
 
@@ -141,38 +141,33 @@ class Signer {
             const data = JSON.parse(dataBuffer.toString());
             signerLog.log(`data: ${data}`);
             console.log('∆∆∆ data', data);
+
+            if (data.method === 'ShowError') {
+                signerLog.error(`ShowError: ${data.params[0].text}`);
+                console.error(`ShowError: ${data.params[0].text}`);
+            }
+
             if (data.method === 'ApproveTx') { 
-                const confirmation = {
+                const reject = {
                     id: data.id,
                     jsonrpc: '2.0',
                     result: { approved: false },
                 };
-                // const confirmation = {
-                    // approved: true,
-                    // transaction: data.params[0].transaction,
-                    // from: data.params[0].from,
-                    // password: pw,
-                // };
-                console.log('∆∆∆ confirmation!', confirmation);
 
-                // const jsonrpc = Object.assign({}, data, { params: [ confirmation ] });
-                // console.log('∆∆∆ jsonrpc', jsonrpc);
+                const confirm = {
+                    id: data.id,
+                    jsonrpc: '2.0',
+                    result: {
+                        approved: true,
+                        transaction: data.params[0].transaction,
+                        from: data.params[0].from,
+                        password: pw
+                    }
+                };
 
-                signer.stdin.write(JSON.stringify(confirmation));
-                signer.stdin.write('\n');
+                console.log('∆∆∆ confirm!', confirm);
 
-                // try {
-                    // const response = await fetch('http://localhost:8550', {
-                        // method: 'POST',
-                        // body: JSON.stringify(jsonrpc),
-                        // headers: {
-                            // 'Content-Type': 'application/json',
-                        // },
-                    // });
-                    // console.log('∆∆∆ approveTx response', response);
-                // } catch (e) {
-                    // console.log('∆∆∆ approveTx e!', e);
-                // }
+                signer.stdin.write(JSON.stringify(confirm));
             }
 
             // callback(signerStdout);
@@ -194,15 +189,21 @@ class Signer {
                         'Content-Type': 'application/json',
                     },
                 });
-                console.log('∆∆∆ response', response);
+                const result = await response.json();
+                if (result.result) {
+                    console.log(`∆∆∆ signed transaction: ${result.result}`);
+                } else {
+                    console.error(`∆∆∆ error: ${result}`);
+                }
             } catch (e) {
                 console.log('∆∆∆ e!', e);
+            } finally {
+                // Kill process
+                signer.stdin.pause();
+                signer.kill();
             }
-            // signer.stdin.write(JSON.stringify(req));
-            // Result: "dropping weird message"
         }, 2000);
 
-        // TODO: kill process after resolution
     }
 }  
 

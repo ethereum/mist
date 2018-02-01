@@ -344,37 +344,33 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         TemplateVar.set('unlocking', true);
 
-        // TODO: know if using infura
-        // if so, eth_getTransactionCount (get nonce)
-        // eth_signTransaction (add payload and nonce) (to local node)
-
-        // sign in local node and retrieve signed data here?
-        // personal_signTransaction?
-        // web.eth.sendRawTransaction
-
+        // TODO: Get nonce, sign transaction, send to network
         const nonce = web3.eth.getTransactionCount(data.from);
         console.log('∆∆∆ nonce', nonce);
         const request = Object.assign({}, data, { nonce: `0x${nonce.toString(16)}` });
         console.log('∆∆∆ request', request);
-        // window.signer.signWithSigner(request, pw, signerFeedback => {
-            // console.log('∆∆∆ signerFeedback!', signerFeedback);
-            // // sendSignedTransaction(signedRequest);
-        // });
 
-        window.signer.signWithJS(request, pw, signedTx => {
-            console.log('∆∆∆ signedTx', signedTx);
-            web3.eth.sendRawTransaction(signedTx, (err, result) => {
-                if (err) { console.log('∆∆∆ !!! err', err); }
-
-                console.log('∆∆∆ !!! result', result);
-
-                TemplateVar.set(template, 'unlocking', false);
-
-                if (!err && result) {
-                    ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
-                }
-            });
+        // [Geth signer implementation]
+        window.signer.signWithSigner(request, pw, signerFeedback => {
+            console.log('∆∆∆ signerFeedback!', signerFeedback);
+            // sendSignedTransaction(signedRequest);
         });
+
+        // [JS signer implementation]
+        // window.signer.signWithJS(request, pw, signedTx => {
+            // console.log('∆∆∆ signedTx', signedTx);
+            // web3.eth.sendRawTransaction(signedTx, (err, result) => {
+                // if (err) { console.log('∆∆∆ !!! err', err); }
+
+                // console.log('∆∆∆ !!! result', result);
+
+                // TemplateVar.set(template, 'unlocking', false);
+
+                // if (!err && result) {
+                    // ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
+                // }
+            // });
+        // });
 
 
         // unlock and send transaction!

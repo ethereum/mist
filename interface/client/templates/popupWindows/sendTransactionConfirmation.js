@@ -351,9 +351,27 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         console.log('∆∆∆ request', request);
 
         // [Geth signer implementation]
-        window.signer.signWithSigner(request, pw, signerFeedback => {
-            console.log('∆∆∆ signerFeedback!', signerFeedback);
-            // sendSignedTransaction(signedRequest);
+        window.signer.signWithSigner(request, pw, (signedTx, error) => {
+            console.log('∆∆∆ signerFeedback!', signedTx);
+            if (error) {
+                GlobalNotification.warning({
+                    content: error,
+                    duration: 5
+                });
+                return;
+            }
+
+            web3.eth.sendRawTransaction(signedTx, (err, result) => {
+                if (err) { console.log('∆∆∆ !!! err', err); }
+
+                console.log('∆∆∆ !!! result', result);
+
+                TemplateVar.set(template, 'unlocking', false);
+
+                if (!err && result) {
+                    ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
+                }
+            });
         });
 
         // [JS signer implementation]
@@ -372,7 +390,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             // });
         // });
 
-
+        // [Previous implementation]
         // unlock and send transaction!
         // web3.personal.sendTransaction(data, pw || '', function (e, res) {
             // pw = null;

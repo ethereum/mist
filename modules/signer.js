@@ -63,51 +63,6 @@ class Signer {
 		}
 	}
 
-    signWithJS(data, pw, callback) {
-        console.log('∆∆∆ data in signWithJS', data);
-        const strippedAddress = data.from.slice(2);
-
-        fs.readdir(this.keystorePath, (err, items) => {
-            console.log('∆∆∆ items', items);
-
-            let keystoreFile;
-            items.forEach(item => {
-                if (item.includes(strippedAddress)) {
-                    keystoreFile = item;
-                }
-            });
-            console.log('∆∆∆ keystoreFile', keystoreFile);
-
-            fs.readFile(path.join(this.keystorePath, keystoreFile), 'utf8', (err, keystoreData) => {
-                if (err) { console.log('error', err); }
-
-                console.log('∆∆∆ keystoreData', keystoreData);
-
-                // Use ethereumjs-wallet to derive pk
-                const wallet = ethWallet.fromV3(keystoreData, pw);
-                const pkBuffer = wallet.getPrivateKey();
-                console.log('∆∆∆ pkBuffer', pkBuffer);
-
-                // use ethereumjs-tx to sign the tx
-                const txParams = {
-					nonce: data.nonce,
-					gasPrice: data.gasPrice,
-					gasLimit: data.gas,
-					to: data.to,
-					value: data.value,
-					data: data.data,
-                    chainId: this.chainId
-                };
-                const tx = new EthTx(txParams)
-                tx.sign(pkBuffer);
-                const serializedTx = tx.serialize().toString('hex');
-                console.log('∆∆∆ serializedTx', serializedTx);
-
-                callback(`0x${serializedTx}`);
-            });
-        });
-    }
-
     async signWithSigner(data, pw, callback) {
         let error;
 
@@ -116,7 +71,7 @@ class Signer {
         const signer = spawn('./signerBin/signer', [
             '-4bytedb', './signerBin/4byte.json',
             '-keystore', this.keystorePath,
-            '-chainid', this.chainId,
+            '-networkid', this.chainId,
             '-stdio-ui'
         ]);
 
@@ -132,7 +87,7 @@ class Signer {
 			  "nonce": data.nonce,
 			  "to": data.to,
 			  "value": data.value,
-              "data": data.data
+              "data": data.data || '0x'
 			},
 		  ],
 		};
@@ -143,9 +98,14 @@ class Signer {
             console.log('∆∆∆ data', data);
 
             if (data.method === 'ShowError') {
-                signerLog.error(`ShowError: ${data.params[0].text}`);
-                console.error(`ShowError: ${data.params[0].text}`);
+                signerLog.error(`ShowError from signer: ${data.params[0].text}`);
+                console.error(`ShowError from signer: ${data.params[0].text}`);
                 error = data.params[0].text;
+                callback(null, error);
+                // Kill process
+                signer.stdin.pause();
+                signer.kill();
+                return;
             }
 
             if (data.method === 'ApproveTx') { 
@@ -191,7 +151,6 @@ class Signer {
                     console.error(`∆∆∆ error: ${result}`);
                 }
             } catch (e) {
-                callback(null, e);
                 console.log('∆∆∆ e!', e);
             } finally {
                 // Kill process

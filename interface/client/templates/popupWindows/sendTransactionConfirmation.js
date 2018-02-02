@@ -344,94 +344,70 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
         TemplateVar.set('unlocking', true);
 
-        // TODO: Get nonce, sign transaction, send to network
         const nonce = web3.eth.getTransactionCount(data.from);
         console.log('∆∆∆ nonce', nonce);
+
         const request = Object.assign({}, data, { nonce: `0x${nonce.toString(16)}` });
         console.log('∆∆∆ request', request);
 
-        // [Geth signer implementation]
+        // [Standalone signer implementation]
         window.signer.signWithSigner(request, pw, (signedTx, error) => {
+            pw = null;
+            TemplateVar.set(template, 'unlocking', false);
+
             console.log('∆∆∆ signerFeedback!', signedTx);
+            
             if (error) {
-                GlobalNotification.warning({
-                    content: error,
-                    duration: 5
+                console.error(`Error from signWithSigner: ${error}`);
+                Tracker.afterFlush(function () {
+                    template.find('input[type="password"]').value = '';
+                    template.$('input[type="password"]').focus();
                 });
+                if (error.includes('could not decrypt key with given passphrase')) {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
+                        duration: 3
+                    });
+                } else if (error.includes('multiple keys match address')) {
+                    GlobalNotification.warning({
+                        content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
+                        duration: 10
+                    });
+                } else {
+                    GlobalNotification.warning({
+                        content: error,
+                        duration: 5
+                    });
+                }
                 return;
             }
 
-            web3.eth.sendRawTransaction(signedTx, (err, result) => {
-                if (err) { console.log('∆∆∆ !!! err', err); }
-
-                console.log('∆∆∆ !!! result', result);
-
-                TemplateVar.set(template, 'unlocking', false);
-
-                if (!err && result) {
-                    ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
+            web3.eth.sendRawTransaction(signedTx, (error, hash) => {
+                if (error) {
+                    console.error(`Error from sendRawTransaction: ${error}`);
+                    if (error.message.includes('Unable to connect to socket: timeout')) {
+                        GlobalNotification.warning({
+                            content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
+                            duration: 5
+                        });
+                    } else if (error.message.includes('Insufficient funds for gas * price + value')) {
+                        GlobalNotification.warning({
+                            content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
+                            duration: 5
+                        });
+                    } else {
+                        GlobalNotification.warning({
+                            content: error,
+                            duration: 5
+                        });
+                    }
+                    return;
                 }
+
+                console.log('∆∆∆ !!! hash', hash);
+                ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
             });
         });
-
-        // [JS signer implementation]
-        // window.signer.signWithJS(request, pw, signedTx => {
-            // console.log('∆∆∆ signedTx', signedTx);
-            // web3.eth.sendRawTransaction(signedTx, (err, result) => {
-                // if (err) { console.log('∆∆∆ !!! err', err); }
-
-                // console.log('∆∆∆ !!! result', result);
-
-                // TemplateVar.set(template, 'unlocking', false);
-
-                // if (!err && result) {
-                    // ipc.send('backendAction_unlockedAccountAndSentTransaction', null, result);
-                // }
-            // });
-        // });
-
-        // [Previous implementation]
-        // unlock and send transaction!
-        // web3.personal.sendTransaction(data, pw || '', function (e, res) {
-            // pw = null;
-            // TemplateVar.set(template, 'unlocking', false);
-
-            // if (!e && res) {
-                // ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
-
-            // } else {
-                // Tracker.afterFlush(function () {
-                    // template.find('input[type="password"]').value = '';
-                    // template.$('input[type="password"]').focus();
-                // });
-                // if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
-                    // GlobalNotification.warning({
-                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'),
-                        // duration: 5
-                    // });
-                // } else if (e.message.indexOf('could not decrypt key with given passphrase') !== -1) {
-                    // GlobalNotification.warning({
-                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'),
-                        // duration: 3
-                    // });
-                // } else if (e.message.indexOf('multiple keys match address') !== -1) {
-                    // GlobalNotification.warning({
-                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'),
-                        // duration: 10
-                    // });
-                // } else if (e.message.indexOf('Insufficient funds for gas * price + value') !== -1) {
-                    // GlobalNotification.warning({
-                        // content: TAPi18n.__('mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'),
-                        // duration: 5
-                    // });
-                // } else {
-                    // GlobalNotification.warning({
-                        // content: e.message,
-                        // duration: 5
-                    // });
-                // }
-            // }
-        // });
     },
 
     'click .data .toggle-panel': function () {

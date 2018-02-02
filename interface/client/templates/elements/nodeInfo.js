@@ -73,9 +73,6 @@ Template['elements_nodeInfo'].onCreated(function(){
                 console.log('Restart app operation again');
 
                 TemplateVar.set(template, 'syncing', false);
-
-                // re-gain app operation
-                mistInit();
             }
         }
     });

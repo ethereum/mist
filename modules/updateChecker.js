@@ -78,6 +78,7 @@ exports.run = () => {
                 },
             });
         }
+        store.dispatch({ type: '[MAIN]:UPDATE_CHECKER:FINISHED' });
     }).catch((err) => {
         log.error(err);
     });

@@ -34,6 +34,14 @@ you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 
+#### Linux .zip installs
+
+In order to install from .zip files, please install `libgconf2-4` first:
+
+```
+apt-get install libgconf2-4
+```
+
 #### Config folder
 The data folder for Mist is stored in other places:
 

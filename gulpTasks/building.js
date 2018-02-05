@@ -25,7 +25,7 @@ gulp.task('clean-dist', (cb) => {
 
 
 gulp.task('copy-app-source-files', () => {
-    gulp.src([
+    return gulp.src([
         'node_modules/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',

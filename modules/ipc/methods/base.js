@@ -4,6 +4,7 @@ const Q = require('bluebird');
 const log = require('../../utils/logger').create('method');
 const Windows = require('../../windows');
 const db = require('../../db');
+import ethereumNodeRemote from '../../ethereumNodeRemote';
 
 
 /**
@@ -25,11 +26,62 @@ module.exports = class BaseProcessor {
      * @return {Promise}
      */
     async exec(conn, payload) {
+        console.log('$$$');
+        console.log(payload);
         this._log.trace('Execute request', payload);
 
-        const ret = await conn.socket.send(payload, { fullResult: true });
+        const remoteIgnoreMethods = [
+            'eth_syncing',
+            'eth_accounts'
+        ];
 
-        return ret.result;
+        const isRemote = store.getState().nodes.active === 'remote';
+
+        if (isRemote && !remoteIgnoreMethods.includes(payload.method)) {
+            if (Array.isArray(payload)) {
+                const result = []; 
+                payload.forEach((value) => {
+                    if (!remoteIgnoreMethods.includes(value.method)) {
+                        result.push(this._sendToRemote(value));
+                    } else {
+                        result.push(new Promise(async (resolve) => {
+                            const ret = await conn.socket.send(value, { fullResult: true });
+                            resolve(ret.result);
+                        }));
+                    }
+                });
+                const ret = await Promise.all(result);
+                console.log('&&&');
+                console.log(ret);
+                return ret;
+            } else {
+                const remoteResult = await this._sendToRemote(payload);
+                return remoteResult;
+            }
+        } else {
+            const ret = await conn.socket.send(payload, { fullResult: true });
+            console.log('***');
+            console.log(ret);
+            console.log(ret.result);
+            return ret.result;
+        }
+    }
+
+    async _sendToRemote(payload) {
+        return new Promise((resolve, reject) => {
+            ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
+                if (error) {
+                    log.error(`Error: ${error}`);
+                    reject(error);
+                    return;
+                }
+
+                console.log('%%%');
+                console.log(result);
+
+                resolve(result);
+            });
+        });
     }
 
 

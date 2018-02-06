@@ -1,16 +1,3 @@
-// ∆∆∆ TODO: remove. This is for debugging - logs out spawn args
-(function() {
-	var childProcess = require("child_process");
-	var oldSpawn = childProcess.spawn;
-	function mySpawn() {
-		console.log('spawn called');
-		console.log(arguments);
-		var result = oldSpawn.apply(this, arguments);
-		return result;
-	}
-	childProcess.spawn = mySpawn;
-})();
-
 const spawn = require('child_process').spawn;
 const path = require('path');
 const logger = require('./utils/logger');
@@ -22,46 +9,46 @@ import EthTx from 'ethereumjs-tx';
 import fetch from 'node-fetch';
 
 class Signer {
-	get chainId() {
-		switch (store.getState().nodes.network) {
-			case 'main':
-				return 1;
-			case 'test':
-				// fall-through
-			case 'ropsten':
-				return 3;
-			case 'rinkeby':
-				return 4;
-			case 'kovan':
-				return 42;
-		}
-	}
+    get chainId() {
+        switch (store.getState().nodes.network) {
+            case 'main':
+                return 1;
+            case 'test':
+                // fall-through
+            case 'ropsten':
+                return 3;
+            case 'rinkeby':
+                return 4;
+            case 'kovan':
+                return 42;
+        }
+    }
 
-	get keystorePath() {
-		const network = store.getState().nodes.network;
+    get keystorePath() {
+        const network = store.getState().nodes.network;
         console.log('∆∆∆ network', network);
-		let basePath;
-		switch (process.platform) {
-			case 'darwin':
+        let basePath;
+        switch (process.platform) {
+            case 'darwin':
                 basePath = path.join(os.homedir(), 'Library', 'Ethereum');
-				break;
-			case 'sunos':
-				// fall-through
-			case 'linux':
-				basePath = path.join('.ethereum');
-				break;
-			case 'win32':
-				basePath = path.join(process.env.APPDATA, 'Ethereum');
+                break;
+            case 'sunos':
+                // fall-through
+            case 'linux':
+                basePath = path.join('.ethereum');
+                break;
+            case 'win32':
+                basePath = path.join(process.env.APPDATA, 'Ethereum');
         }
 
-		if (network === 'main') {
-			return path.join(basePath, 'keystore');
-		} else if (network === 'rinkeby') {
-			return path.join(basePath, 'rinkeby', 'keystore');
-		} else {
-			return path.join(basePath, 'testnet', 'keystore');
-		}
-	}
+        if (network === 'main') {
+            return path.join(basePath, 'keystore');
+        } else if (network === 'rinkeby') {
+            return path.join(basePath, 'rinkeby', 'keystore');
+        } else {
+            return path.join(basePath, 'testnet', 'keystore');
+        }
+    }
 
     async signWithSigner(data, pw, callback) {
         let error;
@@ -75,28 +62,47 @@ class Signer {
             '-stdio-ui'
         ]);
 
-		const req = {
-		  "id": 1,
-		  "jsonrpc": "2.0",
-		  "method": "account_signTransaction",
-		  "params": [
-			data.from,
-			{
-			  "gas": data.gas,
-			  "gasPrice": data.gasPrice,
-			  "nonce": data.nonce,
-			  "to": data.to,
-			  "value": data.value,
+        const req = {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "account_signTransaction",
+          "params": [
+            data.from,
+            {
+              "gas": data.gas,
+              "gasPrice": data.gasPrice,
+              "nonce": data.nonce,
+              "to": data.to,
+              "value": data.value,
               "data": data.data || '0x'
-			},
-		  ],
-		};
+            },
+          ],
+        };
+
+        // If stdout is longer than a certain length, its buffer may arrive chunked.
+        // incompleteData is used to store the previous data to try JSON.parse again.
+        var incompleteData;  
 
         signer.stdout.on('data', async (dataBuffer) => {
-            const data = JSON.parse(dataBuffer.toString());
+            var dataString = dataBuffer.toString();
+
+            if (incompleteData) {
+                dataString = incompleteData.concat(dataString);
+            }
+
+            try {
+                data = JSON.parse(dataString);
+            } catch (error) {
+                console.log('error parsing output into JSON. adding to incompleteData and will try again');
+                incompleteData = (incompleteData || '') + dataString;
+                return;
+            }
+
+            incompleteData = null; // Reset
+
             signerLog.log(`data: ${data}`);
             console.log('∆∆∆ data', data);
-
+            
             if (data.method === 'ShowError') {
                 signerLog.error(`ShowError from signer: ${data.params[0].text}`);
                 console.error(`ShowError from signer: ${data.params[0].text}`);
@@ -158,8 +164,7 @@ class Signer {
                 signer.kill();
             }
         }, 2000);
-
     }
-}  
+}
 
 module.exports = new Signer();

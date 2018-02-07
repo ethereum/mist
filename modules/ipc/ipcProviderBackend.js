@@ -344,6 +344,7 @@ class IpcProviderBackend {
             // i.e. only send action if currentBlock or knownStates updates
             if (
                 result[0] &&
+                result[0].result &&
                 result[0].result.currentBlock &&
                 (store.getState().nodes.local.currentBlock !== parseInt(result[0].result.currentBlock, 16) ||
                 store.getState().nodes.local.knownStates !== parseInt(result[0].result.knownStates, 16))

@@ -18,7 +18,7 @@ const applicationName = (options.wallet) ? 'Ethereum Wallet' : 'Mist';
 
 gulp.task('clean-dist', (cb) => {
     return del([
-        `./dist_${type}/**/*`,
+        `./dist_${type}`,
         './meteor-dapp-wallet'
     ], cb);
 });
@@ -134,6 +134,7 @@ gulp.task('build-dist', (cb) => {
             },
             linux: {
                 category: 'WebBrowser',
+                icon: `./app/${type}/icons`,
                 target: [
                     'zip',
                     'deb'
@@ -210,9 +211,7 @@ gulp.task('release-dist', (done) => {
     const releasePath = path.join(__dirname, `../dist_${type}`, 'release');
 
     console.info('∆∆∆ Listing dist files ***');
-    console.info(shell.ls('-l', distPath));
-    console.info('∆∆∆ Listing release files ***');
-    console.info(shell.ls('-l', releasePath));
+    console.info(shell.ls('-l', distPath).map(e => e.name));
 
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
@@ -243,24 +242,20 @@ gulp.task('release-dist', (done) => {
             cp(`${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            // LINUX:
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_i386.deb to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux32-0-9-4.deb
-            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_i386.deb
-            //
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux32-0-9-4.zip
-            //
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_amd64.deb to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux64-0-9-4.deb
-            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist_0.9.4_amd64.deb
-            //
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux64-0-9-4.zip
+            // .deb have underscore separators
+            cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
 
-            cp(`${appNameNoSpace}-${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            // .zip have dash separators
             cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(`${appNameNoSpace}-${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
             cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }
     });
+
+    console.info('∆∆∆ Listing release files ***');
+    console.info(shell.ls('-l', releasePath).map(e => e.name));
+
 
     done();
 });

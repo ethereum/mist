@@ -27,22 +27,22 @@ gulp.task('clean-dist', (cb) => {
 gulp.task('copy-app-source-files', () => {
     return gulp.src([
         'node_modules/**/*',
-        '!node_modules/electron/',
-        '!node_modules/electron/**/*',
         './clientBinaries.json',
         './tests/**/*.*',
-        '!./tests/wallet/*',
-        '!./tests/mist/*',
-        '!./tests/unit/*',
         `./icons/${type}/*`,
         './sounds/*',
         './errorPages/*',
-        'customProtocols.js'
+        'customProtocols.js',
+        '!node_modules/electron/',
+        '!node_modules/electron/**/*',
+        '!./tests/wallet/*',
+        '!./tests/mist/*',
+        '!./tests/unit/*',
     ], {
         base: './'
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
-    
+
 });
 
 
@@ -252,9 +252,9 @@ gulp.task('release-dist', (done) => {
             //
             //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-linux64-0-9-4.zip
 
-            cp(`${appNameNoSpace}-${version}-i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
             cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(`${appNameNoSpace}-${version}-amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}-${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
             cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }

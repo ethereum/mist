@@ -111,7 +111,7 @@ Template['elements_nodeInfo'].onCreated(function(){
     Meteor.clearInterval(this.peerCountIntervalId);
     this.peerCountIntervalId = setInterval(function() {
         getPeerCount(template);
-    }, 1000);
+    }, 3000);
 
     // CHECK MINING and HASHRATE
     this.miningIntervalId = null;
@@ -125,7 +125,7 @@ Template['elements_nodeInfo'].onCreated(function(){
     Meteor.clearInterval(this.miningIntervalId);
     this.miningIntervalId = setInterval(function() {
         getMining(template);
-    }, 1000);
+    }, 3000);
 });
 
 

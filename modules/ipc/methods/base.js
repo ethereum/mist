@@ -17,7 +17,27 @@ module.exports = class BaseProcessor {
         this._log = log.create(name);
         this._ipcProviderBackend = ipcProviderBackend;
         this.ERRORS = this._ipcProviderBackend.ERRORS;
+
+        this.remoteIgnoreMethods = [    
+            'net_peerCount',
+            'eth_mining',
+            'eth_accounts'
+        ];
+
+        this.throttleMethods = [
+            'eth_getStorageAt',
+            'eth_getFilterChanges',
+            'eth_getBalance',
+            'eth_getTransactionReceipt',
+            'eth_getTransactionByHash',
+            'eth_getBlockByHash',
+            'eth_call',
+            'eth_syncing'
+        ];
+
+        this.throttles = {};
     }
+
 
     /**
      * Execute given request.
@@ -26,45 +46,95 @@ module.exports = class BaseProcessor {
      * @return {Promise}
      */
     async exec(conn, payload) {
-        console.log('$$$');
-        console.log(payload);
-        this._log.trace('Execute request', payload);
+        // console.log('$$$');
+        // console.log(payload);
+        // this._log.trace('Execute request', payload);
 
-        const remoteIgnoreMethods = [
-            'eth_syncing',
-            'eth_accounts'
-        ];
-
-        const isRemote = store.getState().nodes.active === 'remote';
-
-        if (isRemote && !remoteIgnoreMethods.includes(payload.method)) {
-            if (Array.isArray(payload)) {
-                const result = []; 
-                payload.forEach((value) => {
-                    if (!remoteIgnoreMethods.includes(value.method)) {
-                        result.push(this._sendToRemote(value));
-                    } else {
-                        result.push(new Promise(async (resolve) => {
-                            const ret = await conn.socket.send(value, { fullResult: true });
-                            resolve(ret.result);
-                        }));
+        if (Array.isArray(payload)) {
+            const result = []; 
+            payload.forEach((value) => {
+                if (this.throttleMethods.includes(value.method)) {
+                    const requestSignature = this._requestSignature(value, conn);
+                    if (!this.throttles[requestSignature]) {
+                        this.throttles[requestSignature] = _.throttle(_.bind(this._sendPayload, this), 7500);
                     }
-                });
-                const ret = await Promise.all(result);
-                console.log('&&&');
+                    result.push(this.throttles[this._requestSignature(value, conn)](value, payload));
+                } else {
+                    result.push(this._sendPayload(value, conn));
+                }
+            });
+            const ret = await Promise.all(result);
+            console.log('&&&');
+            console.log(ret);
+            return ret;
+        } else {
+            if (this.throttleMethods.includes(payload.method)) {
+                const requestSignature = this._requestSignature(payload, conn);
+                if (!this.throttles[requestSignature]) {
+                    this.throttles[requestSignature] = _.throttle(_.bind(this._sendPayload, this), 7500);
+                }
+                const throttle = await this.throttles[requestSignature](payload, conn);
+                const ret = Object.assign(throttle, {id: payload.id});
+                console.log('throttle');
                 console.log(ret);
                 return ret;
             } else {
-                const remoteResult = await this._sendToRemote(payload);
-                return remoteResult;
+                return await this._sendPayload(payload, conn);
             }
-        } else {
-            const ret = await conn.socket.send(payload, { fullResult: true });
-            console.log('***');
-            console.log(ret);
-            console.log(ret.result);
-            return ret.result;
         }
+    }
+
+    _requestSignature(payload, conn) {
+        const requestDetails = [payload.method, payload.params];
+
+        if (conn && conn.owner && conn.owner.history) {
+            requestDetails.push(conn.owner.history[0]);
+        }
+
+        const stringify = JSON.stringify(requestDetails);
+        const signature = bitwise(stringify);
+        return signature;
+    };
+
+    async _sendPayload(payload, conn) {
+        return new Promise(async (resolve) => {
+            if (this._shouldSendToRemote(payload, conn)) {
+                const remoteResult = await this._sendToRemote(payload);
+                resolve(remoteResult);
+            } else {
+                const ret = await conn.socket.send(payload, { fullResult: true });
+                console.log('***');
+                console.log(ret);
+                resolve(ret.result);
+            }
+        });
+    }
+
+    _shouldSendToRemote(payload, conn) {
+        const method = payload.method;
+
+        const isRemote = store.getState().nodes.active === 'remote';
+
+        if (!isRemote) {
+            return false;
+        }
+
+        if (this.remoteIgnoreMethods.includes(method)) {
+            return false;
+        }
+
+        if (conn && conn.owner && conn.owner.history) {
+            console.log('###');
+            console.log(method);
+            console.log(conn.owner.history[0]);
+            console.log(payload.id);
+            if (method === 'eth_syncing' && conn.owner.history[0] === 'http://localhost:3000/') {
+                console.log('@@@');
+                return false;
+            }
+        }
+
+        return true;
     }
 
     async _sendToRemote(payload) {
@@ -154,3 +224,15 @@ module.exports = class BaseProcessor {
         }
     }
 };
+
+// Function for generating payload signature for throttling
+function bitwise(str) {
+    var hash = 0;
+    if (str.length == 0) return hash;
+    var i;
+    for (i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+    }
+    return hash;
+}

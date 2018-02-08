@@ -1668,7 +1668,7 @@ electron-builder-lib@19.56.0:
     semver "^5.5.0"
     temp-file "^3.1.1"
 
-electron-builder@^19.49.0:
+electron-builder@^19.55.0:
   version "19.56.0"
   resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-19.56.0.tgz#ad5a64c73ce50b561fc8e2bcf9309de0f6ad4e5e"
   dependencies:
@@ -1686,9 +1686,9 @@ electron-builder@^19.49.0:
     update-notifier "^2.3.0"
     yargs "^11.0.0"
 
-electron-chromedriver@~1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-1.7.1.tgz#008c97976007aa4eb18491ee095e94d17ee47610"
+electron-chromedriver@~1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-1.8.0.tgz#901714133cf6f6093d365e1f44a52d99624d8241"
   dependencies:
     electron-download "^4.1.0"
     extract-zip "^1.6.5"
@@ -5685,12 +5685,12 @@ spdx-license-ids@^1.0.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-1.2.2.tgz#c9df7a3424594ade6bd11900d596696dc06bac57"
 
-spectron@3.7.3:
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.7.3.tgz#b096e497a1b4aaa23144ad1f7874cb3b16aa1aa6"
+spectron@3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-3.8.0.tgz#122c3562fd7e92b7cdf6f94094aa495b150dfa51"
   dependencies:
     dev-null "^0.1.1"
-    electron-chromedriver "~1.7.1"
+    electron-chromedriver "~1.8.0"
     request "^2.81.0"
     split "^1.0.0"
     webdriverio "^4.8.0"

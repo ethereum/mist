@@ -60,7 +60,7 @@
     "del": "^2.2.2",
     "ecstatic": "^2.1.0",
     "electron": "1.8.2",
-    "electron-builder": "^19.49.0",
+    "electron-builder": "^19.55.0",
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",
@@ -79,7 +79,7 @@
     "run-sequence": "^1.2.1",
     "semver-compare": "^1.0.0",
     "shelljs": "^0.7.7",
-    "spectron": "3.7.3",
+    "spectron": "3.8.0",
     "xml2js": "^0.4.17"
   }
 }

@@ -82,8 +82,8 @@ script:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
 
   # debug purposes - see what builds were successfully created
-  - ls /home/travis/build/ethereum/mist/dist_mist
-  - ls /home/travis/build/ethereum/mist/dist_wallet
+  - ls -la /home/travis/build/ethereum/mist/dist_mist
+  - ls -la /home/travis/build/ethereum/mist
 
   # prepare integration tests
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
@@ -94,8 +94,8 @@ after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
 
 after_failure:
-  - ls -la /home/travis/build/ethereum/mist/tests/
   - cat /home/travis/build/ethereum/mist/tests/*.log
+
 
 notifications:
   webhooks:

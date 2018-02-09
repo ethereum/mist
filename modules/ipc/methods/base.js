@@ -36,7 +36,7 @@ module.exports = class BaseProcessor {
             'eth_syncing'
         ];
 
-        this.throttles = {};
+        this.cachedResponses = {};
     }
 
 
@@ -46,54 +46,36 @@ module.exports = class BaseProcessor {
      * @param  {Object|Array} payload  payload
      * @return {Promise}
      */
-    exec(conn, payload) {
+    async exec(conn, payload) {
         this._log.trace('Execute request', payload);
 
+        const isRemote = store.getState().nodes.active === 'remote';
+        if (!isRemote) {
+            const ret = await conn.socket.send(payload, { fullResult: true });
+            return ret.result;
+        }
+
         if (Array.isArray(payload)) {
-            return this._handleArrayExec(conn, payload);
+            return await this._handleArrayExec(conn, payload);
         } else {
-            return this._handleObjectExec(conn, payload);
+            return await this._handleObjectExec(conn, payload);
         }
     }
 
-    async _handleObjectExec(conn, payload) {
-        if (this.throttleMethods.includes(payload.method)) {
-            const requestSignature = this._requestSignature(payload, conn);
-            if (!this.throttles[requestSignature]) {
-                this.throttles[requestSignature] = throttle(_.bind(this._sendPayload, this), 5000);
-            }
-            const throttledResponse = await this.throttles[requestSignature](payload, conn);
-            const ret = Object.assign({}, throttledResponse, { id: payload.id });
-            return ret;
-        } else {
-            return await this._sendPayload(payload, conn);
-        }
+    _handleObjectExec(conn, payload) {
+        return this._sendPayload(payload, conn);
     }
 
-    async _handleArrayExec(conn, payload) {
+    _handleArrayExec(conn, payload) {
         const result = [];
         const ids = payload.map(v => v.id);
         console.log('∆∆∆ payload ids', ids);
 
         payload.forEach((value) => {
-            if (this.throttleMethods.includes(value.method)) {
-                const requestSignature = this._requestSignature(value, conn);
-                if (!this.throttles[requestSignature]) {
-                    this.throttles[requestSignature] = throttle(_.bind(this._sendPayload, this), 5000);
-                }
-                result.push(this.throttles[this._requestSignature(value, conn)](value, payload));
-            } else {
-                result.push(this._sendPayload(value, conn));
-            }
+            result.push(this._handleObjectExec(conn, value));
         });
 
-        const ret = await Promise.all(result);
-        const updatedRet = ret.map((result, i) => {
-            console.log('∆∆∆ SWAP-FROM!', result.id);
-            console.log('∆∆∆ SWAP-TO!', ids[i]);
-            return Object.assign({}, result, { id: ids[i] })
-        })
-        return updatedRet;
+        return new Promise(async (resolve) => { resolve(await Promise.all(result)) });
     }
 
     _requestSignature(payload, conn) {
@@ -109,15 +91,57 @@ module.exports = class BaseProcessor {
     };
 
     async _sendPayload(payload, conn) {
-        return new Promise(async (resolve) => {
-            if (this._shouldSendToRemote(payload, conn)) {
-                const remoteResult = await this._sendToRemote(payload);
-                resolve(remoteResult);
-            } else {
-                const ret = await conn.socket.send(payload, { fullResult: true });
-                resolve(ret.result);
-            }
-        });
+        const requestSignature = this._requestSignature(payload, conn);
+        const cached = await this._getCache(payload, conn, requestSignature);
+        if (cached) {
+            return cached;
+        }
+
+        if (this._shouldSendToRemote(payload, conn)) {
+            const remotePromise = this._sendToRemote(payload);
+            this.cachedResponses[requestSignature] = {promise: remotePromise, timestamp: Date.now()};
+
+            const remoteResult = await remotePromise;
+            console.log('result', payload.method, remoteResult);
+            this.cachedResponses[requestSignature] = {result: remoteResult, timestamp: Date.now()};
+
+            return remoteResult;
+        } else {
+            const localPromise = conn.socket.send(payload, { fullResult: true });
+            this.cachedResponses[requestSignature] = {promise: localPromise, timestamp: Date.now()};
+
+            const localResult = await localPromise;
+            this.cachedResponses[requestSignature] = {result: localResult.result, timestamp: Date.now()};
+
+            return localResult.result;
+        }
+    }
+
+    async _getCache(payload, conn, requestSignature) {
+        if (!this.throttleMethods.includes(payload.method)) {
+            return false;
+        }
+
+        if (!this.cachedResponses[requestSignature]) {
+            return false;
+        }
+
+        if (this.cachedResponses[requestSignature].timestamp < (Date.now() - 10000)) {
+            return false;
+        }
+
+        if (this.cachedResponses[requestSignature].result) {
+            const result = this.cachedResponses[requestSignature].result
+            console.log(`returning cached result for payload.id ${payload.id}:`, payload.method, result)
+            return Object.assign({}, result, {id: payload.id});
+        }
+        
+        if (this.cachedResponses[requestSignature].promise) {
+            console.log(`returning cached promise for payload.id ${payload.id}:`, payload.method, this.cachedResponses[requestSignature].promise)
+            const result = await this.cachedResponses[requestSignature].promise;
+            console.log(`swapping id ${result.id} for ${payload.id}`);
+            return Object.assign({}, result, {id: payload.id});
+        }
     }
 
     _shouldSendToRemote(payload, conn) {
@@ -130,7 +154,7 @@ module.exports = class BaseProcessor {
         const method = payload.method;
         if (this.remoteIgnoreMethods.includes(method)) { return false; }
 
-        // 3. the method is 'eth_syncing' originating from the local node
+        // 3. the method is 'eth_syncing' originating from the mist interface
         if (conn && conn.owner && conn.owner.history) {
             if (method === 'eth_syncing' && conn.owner.history[0] === 'http://localhost:3000/') {
                 console.log('∆∆∆ local node sync call');
@@ -141,7 +165,7 @@ module.exports = class BaseProcessor {
         return true;
     }
 
-    async _sendToRemote(payload) {
+    _sendToRemote(payload) {
         return new Promise((resolve, reject) => {
             ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
                 if (error) {
@@ -149,7 +173,6 @@ module.exports = class BaseProcessor {
                     reject(error);
                     return;
                 }
-                // console.log('∆∆∆ result from NodeRemote', result);
                 resolve(result);
             });
         });
@@ -226,7 +249,7 @@ module.exports = class BaseProcessor {
     }
 };
 
-// Function for generating payload signature for throttling
+// Function for generating payload signature for throttling/caching
 function bitwise(str) {
     var hash = 0;
     if (str.length == 0) return hash;

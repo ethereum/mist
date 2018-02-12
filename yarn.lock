@@ -4387,7 +4387,7 @@ os-locale@^1.4.0:
   dependencies:
     lcid "^1.0.0"
 
-os-timesync@^1.0.8:
+os-timesync@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/os-timesync/-/os-timesync-1.0.9.tgz#5e7235f08d618658ae83793a8f7650a390073614"
 

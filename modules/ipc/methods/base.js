@@ -77,7 +77,6 @@ module.exports = class BaseProcessor {
 
     _throttle(payload, conn) {
         if (this.lastThrottleBypass[payload.method]) {
-            console.log(payload.method, Date.now(), this.lastThrottleBypass[payload.method], Date.now() - this.lastThrottleBypass[payload.method]);
             if (Date.now() - this.lastThrottleBypass[payload.method] > this.throttleTimeout[payload.method]) {
                 // Bypass
                 this.lastThrottleBypass[payload.method] = Date.now();

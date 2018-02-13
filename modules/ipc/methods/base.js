@@ -28,15 +28,7 @@ module.exports = class BaseProcessor {
         this.throttleMethods = [
             'eth_getStorageAt',
             'eth_getFilterChanges',
-            'eth_getBalance',
-            'eth_getTransactionReceipt',
-            'eth_getTransactionByHash',
-            'eth_getBlockByHash',
-            'eth_call',
-            'eth_syncing'
         ];
-
-        this.cachedResponses = {};
     }
 
 
@@ -56,91 +48,49 @@ module.exports = class BaseProcessor {
         }
 
         if (Array.isArray(payload)) {
-            return await this._handleArrayExec(conn, payload);
+            return await this._handleArrayExec(payload, conn);
         } else {
-            return await this._handleObjectExec(conn, payload);
+            return await this._handleObjectExec(payload, conn);
         }
     }
 
-    _handleObjectExec(conn, payload) {
-        return this._sendPayload(payload, conn);
+    _handleObjectExec(payload, conn) {
+        return this._throttle(payload, conn);
     }
 
-    _handleArrayExec(conn, payload) {
+    _handleArrayExec(payload, conn) {
         const result = [];
-        const ids = payload.map(v => v.id);
-        console.log('∆∆∆ payload ids', ids);
 
         payload.forEach((value) => {
-            result.push(this._handleObjectExec(conn, value));
+            result.push(this._handleObjectExec(value, conn));
         });
 
         return new Promise(async (resolve) => { resolve(await Promise.all(result)) });
     }
 
-    _requestSignature(payload, conn) {
-        const requestDetails = [payload.method, payload.params];
+    _throttle(payload, conn) {
+        // throttle by immediately returning every 2 calls
+        if (this.throttleMethods.includes(payload.method) && payload.id % 20 !== 1) {
+            console.log('throttling', payload.method, payload.id);
 
-        if (conn && conn.owner && conn.owner.history) {
-            requestDetails.push(conn.owner.history[0]);
+            if (payload.method === 'eth_getFilterChanges') {
+                return {
+                    jsonrpc: '2.0',
+                    id: payload.id,
+                    result: []
+                }
+            }
         }
 
-        const stringify = JSON.stringify(requestDetails);
-        const signature = bitwise(stringify);
-        return signature;
-    };
-
-    async _sendPayload(payload, conn) {
-        const requestSignature = this._requestSignature(payload, conn);
-        const cached = await this._getCache(payload, conn, requestSignature);
-        if (cached) {
-            return cached;
-        }
-
-        if (this._shouldSendToRemote(payload, conn)) {
-            const remotePromise = this._sendToRemote(payload);
-            this.cachedResponses[requestSignature] = {promise: remotePromise, timestamp: Date.now()};
-
-            const remoteResult = await remotePromise;
-            console.log('result', payload.method, remoteResult);
-            this.cachedResponses[requestSignature] = {result: remoteResult, timestamp: Date.now()};
-
-            return remoteResult;
-        } else {
-            const localPromise = conn.socket.send(payload, { fullResult: true });
-            this.cachedResponses[requestSignature] = {promise: localPromise, timestamp: Date.now()};
-
-            const localResult = await localPromise;
-            this.cachedResponses[requestSignature] = {result: localResult.result, timestamp: Date.now()};
-
-            return localResult.result;
-        }
+        return this._sendPayload(payload, conn);
     }
 
-    async _getCache(payload, conn, requestSignature) {
-        if (!this.throttleMethods.includes(payload.method)) {
-            return false;
-        }
-
-        if (!this.cachedResponses[requestSignature]) {
-            return false;
-        }
-
-        if (this.cachedResponses[requestSignature].timestamp < (Date.now() - 10000)) {
-            return false;
-        }
-
-        if (this.cachedResponses[requestSignature].result) {
-            const result = this.cachedResponses[requestSignature].result
-            console.log(`returning cached result for payload.id ${payload.id}:`, payload.method, result)
-            return Object.assign({}, result, {id: payload.id});
-        }
-        
-        if (this.cachedResponses[requestSignature].promise) {
-            console.log(`returning cached promise for payload.id ${payload.id}:`, payload.method, this.cachedResponses[requestSignature].promise)
-            const result = await this.cachedResponses[requestSignature].promise;
-            console.log(`swapping id ${result.id} for ${payload.id}`);
-            return Object.assign({}, result, {id: payload.id});
+    async _sendPayload(payload, conn) {
+        if (this._shouldSendToRemote(payload, conn)) {
+            return await this._sendToRemote(payload);
+        } else {
+            const result = conn.socket.send(payload, { fullResult: true });
+            return await result.result;
         }
     }
 
@@ -173,6 +123,7 @@ module.exports = class BaseProcessor {
                     reject(error);
                     return;
                 }
+                console.log('result from ethereumNodeRemote', payload.method, payload.id);
                 resolve(result);
             });
         });
@@ -248,15 +199,3 @@ module.exports = class BaseProcessor {
         }
     }
 };
-
-// Function for generating payload signature for throttling/caching
-function bitwise(str) {
-    var hash = 0;
-    if (str.length == 0) return hash;
-    var i;
-    for (i = 0; i < str.length; i++) {
-        var char = str.charCodeAt(i);
-        hash = ((hash<<5)-hash)+char;
-    }
-    return hash;
-}

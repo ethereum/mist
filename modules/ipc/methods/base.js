@@ -25,10 +25,17 @@ module.exports = class BaseProcessor {
             'eth_accounts'
         ];
 
-        this.throttleMethods = [
-            'eth_getStorageAt',
-            'eth_getFilterChanges',
-        ];
+        this.throttleTimeout = {
+            'eth_getFilterChanges': 5000,
+            'eth_getStorageAt': 5000,
+            'eth_syncing': 2000,
+        };
+
+        this.lastThrottleBypass = {
+            'eth_getStorageAt': 1,
+            'eth_getFilterChanges': 1,
+            'eth_syncing': 1,
+        };
     }
 
 
@@ -69,15 +76,17 @@ module.exports = class BaseProcessor {
     }
 
     _throttle(payload, conn) {
-        // throttle by immediately returning every 2 calls
-        if (this.throttleMethods.includes(payload.method) && payload.id % 20 !== 1) {
-            console.log('throttling', payload.method, payload.id);
-
-            if (payload.method === 'eth_getFilterChanges') {
+        if (this.lastThrottleBypass[payload.method]) {
+            console.log(payload.method, Date.now(), this.lastThrottleBypass[payload.method], Date.now() - this.lastThrottleBypass[payload.method]);
+            if (Date.now() - this.lastThrottleBypass[payload.method] > this.throttleTimeout[payload.method]) {
+                // Bypass
+                this.lastThrottleBypass[payload.method] = Date.now();
+            } else {
+                // Throttle
+                console.log('throttling', payload.method, payload.id);
                 return {
                     jsonrpc: '2.0',
-                    id: payload.id,
-                    result: []
+                    id: payload.id
                 }
             }
         }

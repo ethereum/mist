@@ -2216,9 +2216,9 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
-ethereum-client-binaries@^1.6.1:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/ethereum-client-binaries/-/ethereum-client-binaries-1.6.2.tgz#7fa65f655f870643ef5e202ee9901e4179d3a13d"
+ethereum-client-binaries@ethereum/ethereum-client-binaries:
+  version "1.6.4"
+  resolved "https://codeload.github.com/ethereum/ethereum-client-binaries/tar.gz/4f41455dc8b69f222fbceb8dee366e8abd2b317d"
   dependencies:
     buffered-spawn "^3.3.2"
     got "^6.5.0"
@@ -2226,8 +2226,8 @@ ethereum-client-binaries@^1.6.1:
     lodash.isempty "^4.4.0"
     lodash.values "^4.3.0"
     mkdirp "^0.5.1"
-    node-unzip-2 "^0.2.1"
     tmp "0.0.29"
+    unzip "github:glebdmitriew/node-unzip-2"
 
 ethereum-keyfile-recognizer@^1.0.2:
   version "1.0.2"
@@ -2694,22 +2694,13 @@ fstream-ignore@^1.0.5:
     inherits "2"
     minimatch "^3.0.0"
 
-fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2, fstream@^1.0.8:
+fstream@^1.0.0, fstream@^1.0.10, fstream@^1.0.2, fstream@^1.0.8, fstream@~1.0.10:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/fstream/-/fstream-1.0.11.tgz#5c1fb1f117477114f0632a0eb4b71b3cb0fd3171"
   dependencies:
     graceful-fs "^4.1.2"
     inherits "~2.0.0"
     mkdirp ">=0.5 0"
-    rimraf "2"
-
-fstream@~0.1.21:
-  version "0.1.31"
-  resolved "https://registry.yarnpkg.com/fstream/-/fstream-0.1.31.tgz#7337f058fbbbbefa8c9f561a28cab0849202c988"
-  dependencies:
-    graceful-fs "~3.0.2"
-    inherits "~2.0.0"
-    mkdirp "0.5"
     rimraf "2"
 
 ftp@~0.3.10:
@@ -2979,12 +2970,6 @@ got@^7.1.0:
 graceful-fs@^4.0.0, graceful-fs@^4.1.0, graceful-fs@^4.1.10, graceful-fs@^4.1.11, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.1.9:
   version "4.1.11"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.1.11.tgz#0e8bdfe4d1ddb8854d64e04ea7c00e2a026e5658"
-
-graceful-fs@~3.0.2:
-  version "3.0.11"
-  resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-3.0.11.tgz#7613c778a1afea62f25c630a086d7f3acbbdd818"
-  dependencies:
-    natives "^1.1.0"
 
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
@@ -4408,7 +4393,7 @@ mkdirp-promise@^5.0.1:
   dependencies:
     mkdirp "*"
 
-mkdirp@*, mkdirp@0.5, mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
+mkdirp@*, mkdirp@0.5.1, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -4503,10 +4488,6 @@ nanomatch@^1.2.5:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-natives@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/natives/-/natives-1.1.1.tgz#011acce1f7cbd87f7ba6b3093d6cd9392be1c574"
-
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
@@ -4534,17 +4515,6 @@ node-pre-gyp@^0.6.39:
     semver "^5.3.0"
     tar "^2.2.1"
     tar-pack "^3.4.0"
-
-node-unzip-2@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/node-unzip-2/-/node-unzip-2-0.2.1.tgz#8e4a0e5a68f7b03d33b8dc52b83a93d1d003cdd8"
-  dependencies:
-    binary "~0.3.0"
-    fstream "~0.1.21"
-    match-stream "~0.0.2"
-    pullstream "~0.4.0"
-    readable-stream "~1.0.0"
-    setimmediate "~1.0.1"
 
 node-uuid@~1.4.7:
   version "1.4.8"
@@ -6742,6 +6712,17 @@ unzip-response@^1.0.0:
 unzip-response@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
+
+"unzip@github:glebdmitriew/node-unzip-2":
+  version "0.2.1"
+  resolved "https://codeload.github.com/glebdmitriew/node-unzip-2/tar.gz/4af1bffaf7fb64b0b62ec52d50564996f8f4fdaf"
+  dependencies:
+    binary "~0.3.0"
+    fstream "~1.0.10"
+    match-stream "~0.0.2"
+    pullstream "~0.4.0"
+    readable-stream "~1.0.0"
+    setimmediate "~1.0.1"
 
 upath@^1.0.0:
   version "1.0.2"

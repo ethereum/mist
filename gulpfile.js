@@ -86,12 +86,7 @@ gulp.task('default', gulp.series(
         'copy-i18n',
         'build-dist',
         'release-dist',
-	() => {
-	    if (options.win) gulp.series('build-nsis');
-	}
+	// () => {
+	//     if (options.win) gulp.series('build-nsis');
+	// }
 ));
-
-
-
-
-

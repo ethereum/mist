@@ -11,16 +11,19 @@ const { shell } = require('electron');
 document.addEventListener('click', (e) => {
     let node = false;
 
-
     if (e.target.nodeName === 'A') {
         node = e.target;
     } else if (e.target.parentNode && e.target.parentNode.nodeName === 'A') {
         node = e.target.parentNode;
     }
 
+    console.log("I am in openExternal.js", node, node.attributes || 'no attr');
+
     // open in browser
     if (node && node.attributes.target && node.attributes.target.value === '_blank') {
         e.preventDefault();
         shell.openExternal(node.href);
+    } else if (node && node.attributes) {
+
     }
 }, false);

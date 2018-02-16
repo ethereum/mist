@@ -219,7 +219,7 @@
                 "accountTitle": "Cargarla!",
                 "accountTitleTestnet": "Minar algunos!",
                 "etherDescription": "La red ethereum está basada en un token llamado “Ether”. Necesitarás una pequeña cantidad de él para hacer cualquier cosa en la red Ethereum.",
-                "loadItDescription": "Si ya dispone de Bitcoin o cualquier otra criptomoneda, puede convertirlas fácilmente a ether utilizando shapeshift. <br><br> Recomendamos una cuantía de entre <strong>0.25 a 1 ether</strong>.",
+                "loadItDescription": "Si ya dispone de Bitcoin o cualquier otra criptomoneda, puede convertirlas fácilmente a ether utilizando changelly. <br><br> Recomendamos una cuantía de entre <strong>0.25 a 1 ether</strong>.",
                 "mineItDescription": "<strong>En la red de pruebas puedes minar ether tú mismo desde el menú <em>Desarrollar</em> y eligiendo <em>Empezar a minar</em>. </strong> <br> <strong> NO INTENTE ENVIAR ETHER REALES A ESTA DIRECCIÓN </strong>",
                 "you": "TÚ",
                 "etherbase": "Cuenta principal (etherbase)",
@@ -241,7 +241,8 @@
                     "wrongPassword": "Contraseña incorrecta.",
                     "importFailed": "No se pudo importar el archivo por el error: __error__"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "buyEther": "Buy Ether",
+                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
                 "startingSync": "Getting ready to sync.."

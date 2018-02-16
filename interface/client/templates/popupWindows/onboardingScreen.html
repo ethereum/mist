@@ -60,13 +60,15 @@
                         <h6 class="address"> {{TemplateVar.get "newAccount"}} </h6>
 
                         {{#unless TemplateVar.get "testnet"}}
-                            <a href="https://shapeshift.io/shifty.html?destination={{newAccountLowerCase}}&amp;output=ETH&amp;apiKey=ef8312d8c9b9dda64fb852e8683eac6c33123f8743ff11383fb3bab29a364c01c27343fced4e628db8d5d66d763565763f8699c0fc903ec23db31cb908a944c8" class="button dapp-block-button dapp-small shapeshift" target="_popup"> {{i18n "mist.popupWindows.onboarding.depositBitcoin"}}  </a>
-                            <h6> {{{i18n "mist.popupWindows.onboarding.viaShapeshift"}}} </h6>
+                            <a href="https://changelly.com/widget/v1?auth=email&from=USD&to=ETH&merchant_id=47f87f7cddda&address={{newAccountLowerCase}}&amount=1&ref_id=e25c5a2e8719&color=02a8f3" target="_blank" class="button dapp-block-button dapp-small shapeshift">
+                              {{i18n "mist.popupWindows.onboarding.buyEther"}}
+                            </a>
+                            <h6> {{{i18n "mist.popupWindows.onboarding.viaChangelly"}}} </h6>
                         {{/unless}}
                     {{/if}}
                 </div>
                 <div class="col col-12 footer-buttons">
-                    <button class="goto-start"> {{i18n "buttons.back"}} </button>                
+                    <button class="goto-start"> {{i18n "buttons.back"}} </button>
                     <button class="goto-tutorial-1 right-align"> {{i18n "buttons.next"}} </button>
                 </div>
             </div>

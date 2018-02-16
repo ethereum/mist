@@ -8,9 +8,6 @@ const Q = require('bluebird');
 const web3Admin = require('../web3Admin.js');
 const https = require('https');
 
-require('./include/openPopup.js');
-
-
 
 web3Admin.extend(window.web3);
 

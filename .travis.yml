@@ -67,7 +67,7 @@ install:
   - echo $PATH
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
   - export PATH=$PATH:`yarn global bin`
-  - yarn global add gulp-cli meteor-build-client
+  - yarn global add gulp-cli meteor-build-client electron@1.8.2
   - yarn
 
 script:

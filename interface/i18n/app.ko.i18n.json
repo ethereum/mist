@@ -1,7 +1,7 @@
 {
     "app": {
-        "loading": "로딩 중...",
-        "offline": "연결실패, 오프라인입니까?",
+        "loading": "불러오는 중...",
+        "offline": "연결실패, 인터넷 연결을 확인하세요.",
         "logginIn": "로그인 중..."
     },
     "error": {
@@ -18,7 +18,7 @@
         "back": "뒤로",
         "skip": "건너뛰기",
         "sending": "보내는 중...",
-        "create": "만들기",
+        "create": "생성",
         "tryToReconnect": "재연결 시도",
         "stayAnonymous": "Stay anonymous",
         "authorize": "권한 인증"

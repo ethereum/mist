@@ -1,9 +1,10 @@
 # Mist Browser<sup>beta</sup>
 
 [![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)]()
-[![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
-[![Code Climate](https://codeclimate.com/github/ethereum/mist/badges/gpa.svg)](https://codeclimate.com/github/ethereum/mist)
+[![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist)
+[![Code Triagers Badge](https://www.codetriage.com/ethereum/mist/badges/users.svg)](https://www.codetriage.com/ethereum/mist)
+
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
@@ -13,9 +14,18 @@ Please note that this repository is the Electron host for the Meteor based walle
 
 ## Help and troubleshooting
 
-Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+In order to get help regarding Mist or Ethereum Wallet, please follow:
 
-Or the [Gitter Channel](https://gitter.im/ethereum/mist), to connect with the community for instant help.
+1. Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+1. Go to the [Gitter Channel](https://gitter.im/ethereum/mist) to connect with the community for instant help.
+1. Search for [similar issues](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Canonical%22) and potential help.
+1. Or create a [new issue](https://github.com/ethereum/mist/issues).
+
+## How to contribute
+
+Contributions via Pull Requests are so welcome. You can see where to help looking for issues with the [Enhancement](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Enhancement%22) or [Bug](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Bug%22) labels. We can help guiding you towards the solution.
+
+You can also help by [responding to issues](https://github.com/ethereum/mist/issues?q=is%3Aissue+is%3Aopen+label%3A%22Status%3A+Triage%22). Sign up on [CodeTriage](https://www.codetriage.com/ethereum/mist) and it'll send you gentle notifications with a configurable frequency. It is a nice way to help while learning.
 
 ## Installation
 
@@ -23,6 +33,14 @@ If you want to install the app from a pre-built version on the [release page](ht
 you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
+
+#### Linux .zip installs
+
+In order to install from .zip files, please install `libgconf2-4` first:
+
+```
+apt-get install libgconf2-4
+```
 
 #### Config folder
 The data folder for Mist is stored in other places:

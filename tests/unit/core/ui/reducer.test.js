@@ -21,10 +21,10 @@ describe('the ui reducer', () => {
         });
         const action = {
             type: '[MAIN]:WINDOW:OPEN',
-            payload: { windowType: 'onboarding' },
+            payload: { windowType: 'importAccount' },
         };
         const expectedState = Object.assign({}, state, {
-            windowsOpen: ['about', 'onboarding']
+            windowsOpen: ['about', 'importAccount']
         });
 
         assert.deepEqual(reducer(state, action), expectedState);
@@ -32,11 +32,11 @@ describe('the ui reducer', () => {
 
     it('should handle the "[MAIN]:WINDOW:CLOSE" action', () => {
         const state = Object.assign({}, initialState, {
-            windowsOpen: ['about', 'onboarding']
+            windowsOpen: ['about', 'importAccount']
         });
         const action = {
             type: '[MAIN]:WINDOW:CLOSE',
-            payload: { windowType: 'onboarding' },
+            payload: { windowType: 'importAccount' },
         };
         const expectedState = Object.assign({}, state, {
             windowsOpen: ['about']

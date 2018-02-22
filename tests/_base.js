@@ -128,10 +128,6 @@ exports.mocha = (_module, options) => {
 
             this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
             this.app = new Application({
-                path: appPath});
-
-/*
-            this.app = new Application({
                 requireName: 'electronRequire',
                 startTimeout: 10000,
                 waitTimeout: 10000,
@@ -146,7 +142,7 @@ exports.mocha = (_module, options) => {
                 webdriverLogPath: webdriverLogDir,
                 chromeDriverLogPath: chromeLogFile,
             });
-*/
+
             console.info('Starting app...');
             yield this.app.start();
             console.info('App started');

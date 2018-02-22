@@ -4,12 +4,11 @@ strict,
 prefer-spread
 */
 
-'use strict';
-
 const _ = require('underscore');
 const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
+
 
 // available crossplatform builds
 let platforms;

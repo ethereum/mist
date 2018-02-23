@@ -17,13 +17,9 @@ document.addEventListener('click', (e) => {
         node = e.target.parentNode;
     }
 
-    console.log("I am in openExternal.js", node, node.attributes || 'no attr');
-
     // open in browser
     if (node && node.attributes.target && node.attributes.target.value === '_blank') {
         e.preventDefault();
         shell.openExternal(node.href);
-    } else if (node && node.attributes) {
-
     }
 }, false);

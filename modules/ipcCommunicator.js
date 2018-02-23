@@ -232,7 +232,12 @@ ipc.on('mistAPI_requestAccount', (e) => {
     if (global.mode === 'wallet') {
         createAccountPopup(e);
     } else { // Mist
-        Windows.createPopup('connectAccount', { ownerId: e.sender.id });
+        // if coming from wallet, skip connect, go straight to create
+        if (e.sender.history[0] === 'https://wallet.ethereum.org/') {
+            createAccountPopup(e);
+        } else {
+            Windows.createPopup('connectAccount', { ownerId: e.sender.id });
+        }
     }
 });
 

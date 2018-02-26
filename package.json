@@ -8,7 +8,7 @@
     "url": "https://github.com/ethereum/mist.git"
   },
   "scripts": {
-    "postinstall": "cd interface && yarn",
+    "postinstall": "electron-builder install-app-deps; cd interface && yarn",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "open http://remotedev.io/local/",
@@ -60,7 +60,7 @@
     "del": "^3.0.0",
     "ecstatic": "^2.1.0",
     "electron": "1.8.2",
-    "electron-builder": "^19.55.0",
+    "electron-builder": "^20.0.8",
     "eslint": "^3.14.1",
     "eslint-config-airbnb-base": "^11.0.1",
     "eslint-plugin-import": "^2.2.0",

@@ -126,7 +126,7 @@ gulp.task('build-dist', (cb) => {
         description: applicationName,
         homepage: 'https://github.com/ethereum/mist',
         build: {
-            appId: `com.ethereum.${type}`,
+            appId: `org.ethereum.${type}`,
             asar: true,
             directories: {
                 buildResources: '../build',
@@ -210,9 +210,6 @@ gulp.task('release-dist', (done) => {
     const distPath = path.join(__dirname, `../dist_${type}`, 'dist');
     const releasePath = path.join(__dirname, `../dist_${type}`, 'release');
 
-    console.info('∆∆∆ Listing dist files ***');
-    console.info(shell.ls('-l', distPath).map(e => e.name));
-
     shell.rm('-rf', releasePath);
     shell.mkdir('-p', releasePath);
 
@@ -228,17 +225,10 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            // WINDOWS:
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32-win.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-win32-0-9-4.zip
-            //     cp: no such file or directory: /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-ia32-win.zip
-            //     Copying from /home/travis/build/ethereum/mist/dist_mist/dist/Mist-0.9.4-win.zip to /home/travis/build/ethereum/mist/dist_mist/release/Mist-win64-0-9-4.zip
             cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
             cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
         case 'mac':
-            // MAC:
-            //     Copying from /Users/travis/build/ethereum/mist/dist_mist/dist/mac/Mist-0.9.4.dmg to /Users/travis/build/ethereum/mist/dist_mist/release/Mist-macosx-0-9-4.dmg
-            //     cp: no such file or directory: /Users/travis/build/ethereum/mist/dist_mist/dist/mac/Mist-0.9.4.dmg
             cp(`${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
@@ -255,7 +245,6 @@ gulp.task('release-dist', (done) => {
 
     console.info('∆∆∆ Listing release files ***');
     console.info(shell.ls('-l', releasePath).map(e => e.name));
-
 
     done();
 });

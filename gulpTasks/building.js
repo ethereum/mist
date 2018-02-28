@@ -136,8 +136,7 @@ gulp.task('build-dist', (cb) => {
                 category: 'WebBrowser',
                 icon: `./app/${type}/icons`,
                 target: [
-                    'zip',
-                    'deb'
+                    'zip'
                 ]
             },
             win: {

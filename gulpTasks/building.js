@@ -251,7 +251,7 @@ gulp.task('release-dist', (done) => {
 
 
 gulp.task('build-nsis', (cb) => {
-    if (!options.win) return done();
+    if (!options.win) return true;
 
     const typeString = `-DTYPE=${type}`;
     const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;

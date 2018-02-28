@@ -77,7 +77,7 @@ script:
   - if [[ $GULP_PLATFORM == "win" && $TRAVIS_BRANCH == "master" ]]; then export CSC_LINK=$CSC_WIN_LINK && CSC_KEY_PASSWORD=$CSC_WIN_KEY_PASSWORD; fi
   # build mist
   - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
-  - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
+  - if [[ $GULP_PLATFORM != "mac" ]]; then travis_wait 20 gulp --$GULP_PLATFORM; fi
   # build wallet if on master branch
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
 

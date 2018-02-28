@@ -78,7 +78,7 @@ script:
 
   # build mist
   #- if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
-  - if [[ $GULP_PLATFORM != "mac" ]]; then DEBUG="*" gulp --$GULP_PLATFORM; fi
+  - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
  
  # build wallet if on master branch
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi

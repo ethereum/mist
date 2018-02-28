@@ -250,8 +250,8 @@ gulp.task('release-dist', (done) => {
 });
 
 
-gulp.task('build-nsis', (cb) => {
-    if (!options.win) return true;
+gulp.task('build-nsis', (done) => {
+    if (!options.win) return done();
 
     const typeString = `-DTYPE=${type}`;
     const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
@@ -260,5 +260,5 @@ gulp.task('build-nsis', (cb) => {
 
     const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
-    exec(cmdString, cb);
+    exec(cmdString, done);
 });

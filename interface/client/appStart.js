@@ -1,3 +1,5 @@
+const { getLanguage } = require('./actions.js');
+
 /**
 The init function of Mist
 
@@ -7,6 +9,13 @@ mistInit = function () {
     console.info('Initialise Mist Interface');
 
     EthBlocks.init();
+    const ethBlocksInterval = setInterval(() => {
+        if (_.isEmpty(EthBlocks.latest)) {
+            EthBlocks.init();
+        } else {
+            clearInterval(ethBlocksInterval);
+        }
+    }, 500);
 
     Tabs.onceSynced.then(function () {
         if (location.search.indexOf('reset-tabs') >= 0) {
@@ -65,9 +74,7 @@ Meteor.startup(function () {
         mistInit();
     }
 
-    console.debug('Setting language');
-
-    TAPi18n.setLanguage(ipc.sendSync('backendAction_getLanguage'));
+    store.dispatch(getLanguage());
 
     // change moment and numeral language, when language changes
     Tracker.autorun(function () {

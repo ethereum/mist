@@ -20,17 +20,17 @@
         "sending": "送信中...",
         "create": "作成中",
         "tryToReconnect": "再接続しています。",
-        "stayAnonymous": "Stay anonymous",
-        "authorize": "Authorize"
+        "stayAnonymous": "匿名を保つ",
+        "authorize": "認証"
     },
     "commonWords": {
-        "you": "You",
+        "you": "あなた",
         "send": "送る",
         "or": "または",
-        "of": "of",
-        "with": "with",
-        "and": "and",
-        "on": "on",
-        "per": "per"
+        "of": "の",
+        "with": "と",
+        "and": "と",
+        "on": "の上に",
+        "per": "ごとに"
     }
 }

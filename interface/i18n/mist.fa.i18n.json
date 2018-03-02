@@ -47,7 +47,7 @@
                 "ethereumNode": "Ethereum Node",
                 "network": "Network",
                 "mainNetwork": "Main Network",
-                "startMining": "⛏ Start Mining (Testnet only)",
+                "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stop Mining",
                 "openRemix": "Open Remix IDE",
                 "nodeMode": "Chain download",

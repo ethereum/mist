@@ -1,9 +1,116 @@
-const _ = global._;
 const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
+import {
+    closeWindow,
+    openWindow,
+    resetGenericWindow,
+    reuseGenericWindow,
+} from './core/ui/actions';
 
+class GenericWindow extends EventEmitter {
+    constructor(mgr) {
+        super();
+
+        this._mgr = mgr;
+        this._log = log.create('generic');
+        this.isPrimary = false;
+        this.type = 'generic';
+        this.isPopup = true;
+        this.ownerId = null;
+        this.isAvailable = true;
+        this.actingType = null;
+
+        this._log.debug('Creating generic window');
+        let electronOptions = this._mgr.getDefaultOptionsForType('generic');
+        this.window = new BrowserWindow(electronOptions);
+
+        // set Accept_Language header
+        this.session = this.window.webContents.session;
+        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+
+        this.webContents = this.window.webContents;
+        this.webContents.once('did-finish-load', () => {
+            this._log.debug(`Content loaded, id: ${this.id}`);
+            this.emit('ready');
+        });
+
+        // prevent dropping files
+        this.webContents.on('will-navigate', e => e.preventDefault());
+
+        this.window.once('closed', () => {
+            this._log.debug('Closed');
+            this.emit('closed');
+        });
+
+        this.window.on('close', (e) => {
+            // Preserve window unless quitting Mist
+            if (store.getState().ui.appQuit) { return this.emit('close', e); }
+            e.preventDefault();
+            this.hide();
+        });
+
+        this.window.on('show', e => this.emit('show', e));
+
+        this.window.on('hide', e => this.emit('hide', e));
+
+        this.load(`${global.interfacePopupsUrl}#generic`);
+    }
+
+    load(url) {
+        this._log.debug(`Load URL: ${url}`);
+        this.window.loadURL(url);
+    }
+
+    send() {
+        this._log.trace('Sending data', arguments);
+        this.webContents.send.apply(this.webContents, arguments);
+    }
+
+    hide() {
+        this._log.debug('Hide');
+        this.window.hide();
+        this.send('uiAction_switchTemplate', 'generic');
+        this.actingType = null;
+        this.isAvailable = true;
+        this.emit('hidden');
+        store.dispatch(resetGenericWindow());
+    }
+
+    show() {
+        this._log.debug('Show');
+        this.window.show();
+    }
+
+    close() {
+        this._log.debug('Avoiding close of generic window');
+        this.hide();
+    }
+
+    reuse(type, options, callback) {
+        this.isAvailable = false;
+        this.actingType = type;
+        if (callback) { this.callback = callback; }
+        if (options.ownerId) { this.ownerId = options.ownerId; }
+        if (options.sendData) {
+            if (_.isString(options.sendData)) {
+                this.send(options.sendData);
+            } else if (_.isObject(options.sendData)) {
+                for (const key in options.sendData) {
+                    if ({}.hasOwnProperty.call(options.sendData, key)) {
+                        this.send(key, options.sendData[key]);
+                    }
+                }
+            }
+        }
+        this.window.setSize(options.electronOptions.width, options.electronOptions.height);
+        this.window.setAlwaysOnTop(true, 'floating', 1);
+        this.send('uiAction_switchTemplate', type);
+        this.show();
+        store.dispatch(reuseGenericWindow(type));
+    }
+}
 
 class Window extends EventEmitter {
     constructor(mgr, type, opts) {
@@ -88,6 +195,7 @@ class Window extends EventEmitter {
             this.isContentReady = false;
 
             this.emit('closed');
+            store.dispatch(closeWindow(this.type));
         });
 
         this.window.once('close', (e) => {
@@ -154,6 +262,8 @@ class Window extends EventEmitter {
         this.window.show();
 
         this.isShown = true;
+
+        store.dispatch(openWindow(this.type));
     }
 
 
@@ -178,25 +288,16 @@ class Windows {
     init() {
         log.info('Creating commonly-used windows');
 
-        this.loading = this.create('loading', {
-            show: false,
-            url: `${global.interfacePopupsUrl}#loadingWindow`,
-            electronOptions: {
-                title: '',
-                alwaysOnTop: true,
-                resizable: false,
-                width: 100,
-                height: 80,
-                center: true,
-                frame: false,
-                useContentSize: true,
-                titleBarStyle: '', // hidden-inset: more space
-                skipTaskbar: true,
-            },
-        });
+        this.loading = this.create('loading');
+        this.generic = this.createGenericWindow();
 
         this.loading.on('show', () => {
             this.loading.window.center();
+            store.dispatch(openWindow('loading'));
+        });
+
+        this.loading.on('hide', () => {
+            store.dispatch(closeWindow('loading'));
         });
 
         // when a window gets initalized it will send us its id
@@ -216,11 +317,19 @@ class Windows {
                 wnd.id = id;
             }
         });
+
+        store.dispatch({ type: '[MAIN]:WINDOWS:INIT_FINISH' });
     }
 
+    createGenericWindow() {
+        const wnd = this._windows.generic = new GenericWindow(this);
+        return wnd;
+    }
 
-    create(type, options, callback) {
-        options = options || {};
+    create(type, opts, callback) {
+        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
+
+        const options = _.deepExtend(this.getDefaultOptionsForType(type), opts || {});
 
         const existing = this.getByType(type);
 
@@ -241,14 +350,189 @@ class Windows {
             wnd.callback = callback;
         }
 
+        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
+
         return wnd;
     }
 
 
-    createPopup(type, options, callback) {
-        options = options || {};
+    getDefaultOptionsForType(type) {
+        const mainWebPreferences = {
+            mist: {
+                nodeIntegration: true, /* necessary for webviews;
+                    require will be removed through preloader */
+                preload: `${__dirname}/preloader/mistUI.js`,
+                'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
+                experimentalFeatures: true,
+            },
+            wallet: {
+                preload: `${__dirname}/preloader/walletMain.js`,
+                'overlay-fullscreen-video': true,
+                'overlay-scrollbars': true,
+            }
+        }
 
-        let opts = {
+        switch (type) {
+            case 'main':
+                return {
+                    primary: true,
+                    electronOptions: {
+                        width: Math.max(global.defaultWindow.width, 500),
+                        height: Math.max(global.defaultWindow.height, 440),
+                        x: global.defaultWindow.x,
+                        y: global.defaultWindow.y,
+                        webPreferences: mainWebPreferences[global.mode],
+                    },
+                };
+            case 'splash':
+                return {
+                    primary: true,
+                    url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
+                    show: true,
+                    electronOptions: {
+                        width: 400,
+                        height: 230,
+                        resizable: false,
+                        backgroundColor: '#F6F6F6',
+                        useContentSize: true,
+                        frame: false,
+                        webPreferences: {
+                            preload: `${__dirname}/preloader/splashScreen.js`,
+                        },
+                    },
+                };
+            case 'loading':
+                return {
+                    show: false,
+                    url: `${global.interfacePopupsUrl}#loadingWindow`,
+                    electronOptions: {
+                        title: '',
+                        alwaysOnTop: true,
+                        resizable: false,
+                        width: 100,
+                        height: 80,
+                        center: true,
+                        frame: false,
+                        useContentSize: true,
+                        titleBarStyle: '', // hidden-inset: more space
+                        skipTaskbar: true,
+                        webPreferences: {
+                            preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`,
+                        },
+                    },
+                };
+            case 'onboardingScreen':
+                return {
+                    primary: true,
+                    electronOptions: {
+                        width: 576,
+                        height: 442,
+                    },
+                };
+            case 'about':
+                return {
+                    url: `${global.interfacePopupsUrl}#about`,
+                    electronOptions: {
+                        width: 420,
+                        height: 230,
+                        alwaysOnTop: true,
+                    },
+                };
+            case 'remix':
+                return {
+                    url: 'https://remix.ethereum.org',
+                    electronOptions: {
+                        width: 1024,
+                        height: 720,
+                        center: true,
+                        frame: true,
+                        resizable: true,
+                        titleBarStyle: 'default',
+                    }
+                };
+            case 'importAccount':
+                return {
+                    electronOptions: {
+                        width: 600,
+                        height: 370,
+                        alwaysOnTop: true,
+                    },
+                };
+            case 'requestAccount':
+                return {
+                    electronOptions: {
+                        width: 420,
+                        height: 230,
+                        alwaysOnTop: true,
+                    },
+                };
+            case 'connectAccount':
+                return {
+                    electronOptions: {
+                        width: 460,
+                        height: 520,
+                        maximizable: false,
+                        minimizable: false,
+                        alwaysOnTop: true,
+                    },
+                };
+            case 'sendTransactionConfirmation':
+                return {
+                    electronOptions: {
+                        width: 580,
+                        height: 550,
+                        alwaysOnTop: true,
+                        enableLargerThanScreen: false,
+                        resizable: true
+                    },
+                };
+            case 'updateAvailable':
+                return {
+                    useWeb3: false,
+                    electronOptions: {
+                        width: 580,
+                        height: 250,
+                        alwaysOnTop: true,
+                        resizable: false,
+                        maximizable: false,
+                    },
+                };
+            case 'clientUpdateAvailable':
+                return {
+                    useWeb3: false,
+                    electronOptions: {
+                        width: 600,
+                        height: 340,
+                        alwaysOnTop: false,
+                        resizable: false,
+                        maximizable: false,
+                    },
+                };
+            case 'generic':
+                return {
+                    title: Settings.appName,
+                    show: false,
+                    icon: global.icon,
+                    titleBarStyle: 'hidden-inset', // hidden-inset: more space
+                    backgroundColor: '#F6F6F6',
+                    acceptFirstMouse: true,
+                    darkTheme: true,
+                    webPreferences: {
+                        preload: `${__dirname}/preloader/popupWindows.js`,
+                        nodeIntegration: false,
+                        webaudio: true,
+                        webgl: false,
+                        webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
+                        textAreasAreResizable: true,
+                    },
+                };
+        }
+    }
+
+
+    createPopup(type, options, callback) {
+        const defaultPopupOpts = {
             url: `${global.interfacePopupsUrl}#${type}`,
             show: true,
             ownerId: null,
@@ -268,6 +552,8 @@ class Windows {
             }
         };
 
+        let opts = _.deepExtend(defaultPopupOpts, this.getDefaultOptionsForType(type), options || {});
+
         // always show on top of main window
         const parent = _.find(this._windows, (w) => {
             return w.type === 'main';
@@ -278,8 +564,6 @@ class Windows {
         }
 
 
-        opts = _.deepExtend(opts, options);
-
         // mark it as a pop-up window
         opts.isPopup = true;
 
@@ -287,6 +571,20 @@ class Windows {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`;
         } else {
             opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
+        }
+
+        // If generic window is available, recycle it (unless on blacklist)
+        const genericWindow = this.getByType('generic');
+        const genericWindowBlacklist = ['remix', 'updateAvailable', 'connectAccount'];
+        if (!genericWindowBlacklist.includes(type) && genericWindow && genericWindow.isAvailable) {
+            genericWindow.reuse(type, opts, callback);
+            return genericWindow;
+        } else if (genericWindow) {
+            // If a generic window exists of the same actingType, focus that window
+            if (genericWindow.actingType === type) {
+                genericWindow.webContents.focus();
+                return genericWindow;
+            }
         }
 
         this.loading.show();

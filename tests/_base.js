@@ -13,10 +13,13 @@ const http = require('http');
 const ecstatic = require('ecstatic');
 const express = require('express');
 const ClientBinaryManager = require('ethereum-client-binaries').Manager;
+const logger = require('../modules/utils/logger');
 
 chai.should();
 
 process.env.TEST_MODE = 'true';
+
+const log = logger.create('base');
 
 const startGeth = function* () {
     let gethPath;
@@ -50,11 +53,16 @@ const startGeth = function* () {
             rpcport: 58545,
         },
     });
+
+    console.info('Geth starting...');
     yield geth.start();
+    console.info('Geth started');
+
     return geth;
 };
 
 const startFixtureServer = function (serverPort) {
+    log.info('Starting fixture server...');
     const app = express();
     app.use(express.static(path.join(__dirname, 'fixtures')));
 
@@ -63,6 +71,7 @@ const startFixtureServer = function (serverPort) {
         res.redirect(302, req.query.to);
     });
     app.listen(serverPort);
+    log.info('Fixture server started');
     return app;
 };
 
@@ -81,17 +90,19 @@ exports.mocha = (_module, options) => {
             this.expect = chai.expect;
 
             const mistLogFile = path.join(__dirname, 'mist.log');
-            const webdriverLogFile = path.join(__dirname, 'webdriver.log');
             const chromeLogFile = path.join(__dirname, 'chrome.log');
+            const webdriverLogDir = path.join(__dirname, 'webdriver');
 
-            _.each([mistLogFile, webdriverLogFile, chromeLogFile], (e) => {
-                shell.rm('-f', e);
+            _.each([mistLogFile, webdriverLogDir, chromeLogFile], (e) => {
+                console.info('Removing log files', e);
+                shell.rm('-rf', e);
             });
 
             this.geth = yield startGeth();
 
             const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
             const platformArch = `${process.platform}-${process.arch}`;
+            console.info(`${appFileName} :: ${platformArch}`);
 
             let appPath;
             const ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
@@ -108,6 +119,7 @@ exports.mocha = (_module, options) => {
             default:
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
             }
+            console.info(`appPath: ${appPath}`);
 
             // check that appPath exists
             if (!shell.test('-f', appPath)) {
@@ -127,11 +139,14 @@ exports.mocha = (_module, options) => {
                     '--node-datadir', this.geth.dataDir,
                     '--rpc', ipcProviderPath,
                 ],
-                webdriverLogPath: webdriverLogFile,
+                webdriverLogPath: webdriverLogDir,
                 chromeDriverLogPath: chromeLogFile,
             });
 
+            console.info('Starting app...');
             yield this.app.start();
+            console.info('App started');
+
             this.client = this.app.client;
 
             /*
@@ -140,13 +155,6 @@ exports.mocha = (_module, options) => {
             const serverPort = 8080;
             this.httpServer = startFixtureServer(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
-
-            // this.httpServer = http.createServer(
-            //     ecstatic({root: path.join(__dirname, 'fixtures')})
-            // ).listen(serverPort);
-            // this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
-            //
-            // this.client = this.app.client;
 
             /*
                 Utility methods
@@ -157,7 +165,8 @@ exports.mocha = (_module, options) => {
 
             // Loop over windows trying to select Main Window
             const app = this;
-            const selectMainWindow = function* (mainWindowSearch) {
+            const selectMainWindow = function* (mainWindowSearch, retries = 20) {
+                console.log(`selectMainWindow retries remaining: ${retries}`);
                 let windowHandles = (yield app.client.windowHandles()).value;
 
                 for (let handle in windowHandles) {
@@ -167,13 +176,16 @@ exports.mocha = (_module, options) => {
                     if (isMainWindow) return true;
                 }
 
-                // not main window. try again after 1 second.
-                yield Q.delay(1000);
-                yield selectMainWindow(mainWindowSearch);
+                if (retries === 0) throw new Error('Failed to select main window');
+
+                // not main window. try again after 2 seconds.
+                yield Q.delay(2000);
+                yield selectMainWindow(mainWindowSearch, --retries);
             };
 
             const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
             yield selectMainWindow(mainWindowSearch);
+            console.log('Main window selected');
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
         },
@@ -201,8 +213,7 @@ exports.mocha = (_module, options) => {
 
                 LocalStore.set('selectedTab', 'browser');
             });
-            yield Q.delay(2000);
-            // yield this.client.reload();
+            yield Q.delay(1000);
         },
 
         // * afterEach() { },
@@ -253,23 +264,22 @@ const Utils = {
 
         return elem.value;
     },
-    * openAndFocusNewWindow(fnPromise) {
-        const client = this.client;
-
-        const existingHandles = (yield client.windowHandles()).value;
-
+    * openAndFocusNewWindow(type, fnPromise) {
         yield fnPromise();
+        const handle = yield this.selectWindowHandleByType(type);
+        yield this.client.window(handle);
+    },
+    * selectWindowHandleByType(type) {
+        const client = this.client;
+        const windowHandles = (yield client.windowHandles()).value;
 
-        yield this.waitUntil('new window visible', function checkForAddWindow() {
-            return client.windowHandles().then((handles) => {
-                return handles.value.length === existingHandles.length + 1;
-            });
-        });
-
-        const newHandles = (yield client.windowHandles()).value;
-
-        // focus on new window
-        yield client.window(newHandles.pop());
+        for (let handle in windowHandles) {
+            yield client.window(windowHandles[handle]);
+            const windowUrl = yield client.getUrl();
+            if (new RegExp(type).test(windowUrl)) {
+                return windowHandles[handle];
+            }
+        }
     },
     * execElemsMethod(clientElementIdMethod, selector) {
         const elems = yield this.client.elements(selector);
@@ -380,18 +390,23 @@ const Utils = {
 
     * pinCurrentTab() {
         const client = this.client;
-
-        yield this.openAndFocusNewWindow(() => {
+        yield this.openAndFocusNewWindow('connectAccount', () => {
             return client.click('span.connect-button');
         });
         yield client.click('.dapp-primary-button');
-
+        yield this.delay(500);
         yield client.window(this.mainWindowHandle); // selects main window again
-        yield Q.delay(500);
 
         const pinnedWebview = (yield client.windowHandles()).value.pop();
         return pinnedWebview;
     },
+
+    * delay(ms) {
+        yield this.waitUntil('delay', async () => {
+            return new Promise(resolve => setTimeout(() => resolve(true), ms));
+        });
+    },
+
     * navigateTo(url) {
         const client = this.client;
         yield client.setValue('#url-input', url);

@@ -4,12 +4,11 @@ strict,
 prefer-spread
 */
 
-'use strict';
-
 const _ = require('underscore');
 const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
+
 
 // available crossplatform builds
 let platforms;
@@ -24,12 +23,13 @@ if (process.platform === 'darwin') {
 // parse commandline arguments
 const args = process.argv.slice(2);
 const options = minimist(args, {
-    string: ['walletSource', 'test'],
+    string: ['walletSource', 'test', 'skipTasks'],
     boolean: _.flatten(['wallet', platforms]),
     default: {
         wallet: false,
         walletSource: 'master',
         test: 'basic',
+        skipTasks: '',
     },
 });
 
@@ -61,25 +61,6 @@ exports.options = options;
 require('require-dir')('./gulpTasks');
 
 
-// tasks
-gulp.task('default', ['buildQueue']);
-
-
-gulp.task('buildQueue', (cb) => {
-    const tasks = [];
-
-    tasks.push('clean-dist');
-    tasks.push('copy-app-source-files');
-    tasks.push('copy-build-folder-files');
-    tasks.push('switch-production');
-    tasks.push('bundling-interface');
-    tasks.push('copy-i18n');
-    tasks.push('build-dist');
-    tasks.push('release-dist');
-    if (options.win) tasks.push('build-nsis');
-
-    runSeq.apply(null, _.flatten([tasks, cb]));
-});
 
 
 gulp.task('uploadQueue', (cb) => {
@@ -91,3 +72,18 @@ gulp.task('uploadQueue', (cb) => {
     runSeq.apply(null, _.flatten([tasks, cb]));
 });
 
+
+// tasks
+gulp.task('default', gulp.series(
+        'clean-dist',
+        'copy-app-source-files',
+        'transpile-main',
+        'transpile-modules',
+        'copy-build-folder-files',
+        'switch-production',
+        'bundling-interface',
+        'copy-i18n',
+        'build-dist',
+        'release-dist',
+        'build-nsis',
+));

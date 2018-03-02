@@ -47,7 +47,7 @@
                 "ethereumNode": "Ethereum Softwareknoten",
                 "network": "Netzwerk",
                 "mainNetwork": "Hauptnetzwerk",
-                "startMining": "⛏ Mining starten (nur auf Testnetz)",
+                "startMining": "⛏ Mining starten",
                 "stopMining": "⛏ Mining stoppen",
                 "externalNode": "externer Softwareknoten aktiv",
                 "nodeMode": "Chain herunterladen",

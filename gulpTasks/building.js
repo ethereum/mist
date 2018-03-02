@@ -4,6 +4,7 @@ const del = require('del');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const gulp = require('gulp');
+const babel = require('gulp-babel');
 const options = require('../gulpfile.js').options;
 const path = require('path');
 const Q = require('bluebird');
@@ -17,7 +18,7 @@ const applicationName = (options.wallet) ? 'Ethereum Wallet' : 'Mist';
 
 gulp.task('clean-dist', (cb) => {
     return del([
-        `./dist_${type}/**/*`,
+        `./dist_${type}`,
         './meteor-dapp-wallet'
     ], cb);
 });
@@ -26,21 +27,36 @@ gulp.task('clean-dist', (cb) => {
 gulp.task('copy-app-source-files', () => {
     return gulp.src([
         'node_modules/**/*',
-        '!node_modules/electron/',
-        '!node_modules/electron/**/*',
-        './main.js',
         './clientBinaries.json',
-        './modules/**',
         './tests/**/*.*',
-        '!./tests/wallet/*',
         `./icons/${type}/*`,
         './sounds/*',
         './errorPages/*',
-        'customProtocols.js'
+        'customProtocols.js',
+        '!node_modules/electron/',
+        '!node_modules/electron/**/*',
+        '!./tests/wallet/*',
+        '!./tests/mist/*',
+        '!./tests/unit/*',
     ], {
         base: './'
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
+
+});
+
+
+gulp.task('transpile-main', () => {
+    return gulp.src('./main.js')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app`));
+});
+
+
+gulp.task('transpile-modules', () => {
+    return gulp.src('./modules/**')
+        .pipe(babel({ presets: ['es2016-node5'] }))
+        .pipe(gulp.dest(`./dist_${type}/app/modules`));
 });
 
 
@@ -110,7 +126,7 @@ gulp.task('build-dist', (cb) => {
         description: applicationName,
         homepage: 'https://github.com/ethereum/mist',
         build: {
-            appId: `com.ethereum.${type}`,
+            appId: `org.ethereum.${type}`,
             asar: true,
             directories: {
                 buildResources: '../build',
@@ -118,9 +134,9 @@ gulp.task('build-dist', (cb) => {
             },
             linux: {
                 category: 'WebBrowser',
+                icon: `./app/${type}/icons`,
                 target: [
-                    'zip',
-                    'deb'
+                    'zip'
                 ]
             },
             win: {
@@ -208,34 +224,34 @@ gulp.task('release-dist', (done) => {
     _.each(options.activePlatforms, (platform) => {
         switch (platform) { // eslint-disable-line default-case
         case 'win':
-            cp(
-                `${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
-            cp(
-                `${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-ia32-win.zip`, `${appNameHypen}-win32-${versionDashed}.zip`);
+            cp(`${applicationName}-${version}-win.zip`, `${appNameHypen}-win64-${versionDashed}.zip`);
             break;
         case 'mac':
-            cp(
-                path.join('mac', `${applicationName}-${version}.dmg`),
-                `${appNameHypen}-macosx-${versionDashed}.dmg`);
+            cp(`${applicationName}-${version}.dmg`, `${appNameHypen}-macosx-${versionDashed}.dmg`);
             break;
         case 'linux':
-            cp(
-                `${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
-            cp(
-                `${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
-            cp(
-                `${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
+            // .deb have underscore separators
+            cp(`${appNameNoSpace}_${version}_i386.deb`, `${appNameHypen}-linux32-${versionDashed}.deb`);
+            cp(`${appNameNoSpace}_${version}_amd64.deb`, `${appNameHypen}-linux64-${versionDashed}.deb`);
+
+            // .zip have dash separators
+            cp(`${appNameNoSpace}-${version}-ia32.zip`, `${appNameHypen}-linux32-${versionDashed}.zip`);
+            cp(`${appNameNoSpace}-${version}.zip`, `${appNameHypen}-linux64-${versionDashed}.zip`);
             break;
         }
     });
+
+    console.info('∆∆∆ Listing release files ***');
+    console.info(shell.ls('-l', releasePath).map(e => e.name));
 
     done();
 });
 
 
-gulp.task('build-nsis', (cb) => {
+gulp.task('build-nsis', (done) => {
+    if (!options.win) return done();
+
     const typeString = `-DTYPE=${type}`;
     const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
     const versionParts = version.split('.');
@@ -243,5 +259,5 @@ gulp.task('build-nsis', (cb) => {
 
     const cmdString = `makensis ${versionString} ${typeString} ${appNameString} scripts/windows-installer.nsi`;
 
-    exec(cmdString, cb);
+    exec(cmdString, done);
 });

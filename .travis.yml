@@ -1,4 +1,11 @@
 language: node_js
+node_js: '8'
+cache:
+  yarn: true
+  directories:
+    - node_modules
+    - 'interface/.meteor'
+
 sudo: required
 
 branches:
@@ -9,11 +16,9 @@ branches:
 
 matrix:
   include:
-
     # WINDOWS cross-built from linux
     - os: linux
       dist: trusty
-      node_js: 6
       env:
           - GULP_PLATFORM=win
       addons:
@@ -23,6 +28,7 @@ matrix:
             - graphicsmagick
             - xz-utils
             - nsis
+            - g++-multilib
           sources:
             - mono
       before_install:
@@ -30,11 +36,9 @@ matrix:
         - sudo apt-get update -q
         - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
 
-
     # LINUX
     - os: linux
       dist: trusty
-      node_js: 6
       env:
           - GULP_PLATFORM=linux
       addons:
@@ -48,8 +52,7 @@ matrix:
 
     # MAC
     - os: osx
-      osx_image: xcode8  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
-      node_js: 6
+      osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
       env:
           - GULP_PLATFORM=mac
       before_install:
@@ -60,13 +63,12 @@ matrix:
 
   fast_finish: true
 
-cache:
-  yarn: true
 
 install:
   - echo $PATH
-  - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/master/configure.sh | /bin/sh
-  - yarn global add gulp-cli meteor-build-client
+  - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+  - export PATH=$PATH:`yarn global bin`
+  - yarn global add gulp-cli meteor-build-client electron@1.8.2
   - yarn
 
 script:
@@ -74,17 +76,25 @@ script:
   - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi
   # windows code-signing on master branch
   - if [[ $GULP_PLATFORM == "win" && $TRAVIS_BRANCH == "master" ]]; then export CSC_LINK=$CSC_WIN_LINK && CSC_KEY_PASSWORD=$CSC_WIN_KEY_PASSWORD; fi
+
   # build mist
   - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
   - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
-  # build wallet if on master branch
+ 
+ # build wallet if on master branch
   - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
-  # prepare and run integration tests
+
+  # debug purposes - see what builds were successfully created
+  - ls -la ~/build/ethereum/mist/dist_mist/dist
+
+  # prepare integration tests
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
+  # currently, tests should run in linux and mac
   - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
+
 
 notifications:
   webhooks:

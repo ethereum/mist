@@ -17,7 +17,7 @@ describe('ui actions:', () => {
             const actions = store.getActions();
 
             assert.equal(actions.length, 2);
-            assert.equal(actions[0].type, '[MAIN]:APP_QUIT:START');
+            assert.equal(actions[0].type, '[MAIN]:APP_QUIT:FORCE_ERROR');
         });
     });
 });

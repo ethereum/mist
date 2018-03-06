@@ -72,7 +72,7 @@
                         "download": {
                             "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.2-b8b9f7f4.zip",
                             "type": "zip",
-                            "md5": "3080558f77ea924596379d15b3df5dcd",
+                            "md5": "f498df54aaa42f4269c2d2d06df482fd",
                             "bin": "geth-windows-amd64-1.8.2-b8b9f7f4\\geth.exe"
                         },
                         "bin": "geth.exe",

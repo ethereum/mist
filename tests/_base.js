@@ -54,9 +54,9 @@ const startGeth = function* () {
         },
     });
 
-    log.info('Geth starting...');
+    console.info('Geth starting...');
     yield geth.start();
-    log.info('Geth started');
+    console.info('Geth started');
 
     return geth;
 };
@@ -94,7 +94,7 @@ exports.mocha = (_module, options) => {
             const webdriverLogDir = path.join(__dirname, 'webdriver');
 
             _.each([mistLogFile, webdriverLogDir, chromeLogFile], (e) => {
-                log.info('Removing log files', e);
+                console.info('Removing log files', e);
                 shell.rm('-rf', e);
             });
 
@@ -102,7 +102,7 @@ exports.mocha = (_module, options) => {
 
             const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
             const platformArch = `${process.platform}-${process.arch}`;
-            log.info(`${appFileName} :: ${platformArch}`);
+            console.info(`${appFileName} :: ${platformArch}`);
 
             let appPath;
             const ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
@@ -119,7 +119,7 @@ exports.mocha = (_module, options) => {
             default:
                 throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
             }
-            log.info(`appPath: ${appPath}`);
+            console.info(`appPath: ${appPath}`);
 
             // check that appPath exists
             if (!shell.test('-f', appPath)) {
@@ -143,9 +143,9 @@ exports.mocha = (_module, options) => {
                 chromeDriverLogPath: chromeLogFile,
             });
 
-            log.info('Starting app...');
+            console.info('Starting app...');
             yield this.app.start();
-            log.info('App started');
+            console.info('App started');
 
             this.client = this.app.client;
 
@@ -155,13 +155,6 @@ exports.mocha = (_module, options) => {
             const serverPort = 8080;
             this.httpServer = startFixtureServer(serverPort);
             this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
-
-            // this.httpServer = http.createServer(
-            //     ecstatic({root: path.join(__dirname, 'fixtures')})
-            // ).listen(serverPort);
-            // this.fixtureBaseUrl = `http://localhost:${serverPort}/`;
-            //
-            // this.client = this.app.client;
 
             /*
                 Utility methods

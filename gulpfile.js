@@ -4,12 +4,11 @@ strict,
 prefer-spread
 */
 
-'use strict';
-
 const _ = require('underscore');
 const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
+
 
 // available crossplatform builds
 let platforms;
@@ -62,31 +61,6 @@ exports.options = options;
 require('require-dir')('./gulpTasks');
 
 
-// tasks
-gulp.task('default', ['buildQueue']);
-
-
-gulp.task('buildQueue', (cb) => {
-    const skipTasks = options.skipTasks.split(',');
-    let tasks = [
-        'clean-dist',
-        'copy-app-source-files',
-        'transpile-main',
-        'transpile-modules',
-        'copy-build-folder-files',
-        'switch-production',
-        'bundling-interface',
-        'copy-i18n',
-        'build-dist',
-        'release-dist',
-    ];
-
-    if (options.win) tasks.push('build-nsis');
-
-    tasks = _.difference(tasks, skipTasks);
-
-    runSeq.apply(null, _.flatten([tasks, cb]));
-});
 
 
 gulp.task('uploadQueue', (cb) => {
@@ -97,3 +71,19 @@ gulp.task('uploadQueue', (cb) => {
 
     runSeq.apply(null, _.flatten([tasks, cb]));
 });
+
+
+// tasks
+gulp.task('default', gulp.series(
+        'clean-dist',
+        'copy-app-source-files',
+        'transpile-main',
+        'transpile-modules',
+        'copy-build-folder-files',
+        'switch-production',
+        'bundling-interface',
+        'copy-i18n',
+        'build-dist',
+        'release-dist',
+        'build-nsis',
+));

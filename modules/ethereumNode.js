@@ -16,7 +16,7 @@ const ethereumNodeLog = logger.create('EthereumNode');
 
 const DEFAULT_NODE_TYPE = 'geth';
 const DEFAULT_NETWORK = 'main';
-const DEFAULT_SYNCMODE = 'fast';
+const DEFAULT_SYNCMODE = 'light';
 
 const UNABLE_TO_BIND_PORT_ERROR = 'unableToBindPort';
 const NODE_START_WAIT_MS = 3000;
@@ -358,145 +358,118 @@ class EthereumNode extends EventEmitter {
     __startProcess(nodeType, network, binPath, _syncMode) {
         let syncMode = _syncMode;
         if (nodeType === 'geth' && !syncMode) {
-            syncMode = 'fast';
+            syncMode = DEFAULT_SYNCMODE;
         }
 
         return new Q((resolve, reject) => {
             ethereumNodeLog.trace('Rotate log file');
 
-            // rotate the log file
-            logRotate(path.join(Settings.userDataPath, 'logs', 'all.log'), { count: 5 }, (err) => {
-                if (err) {
-                    ethereumNodeLog.error('Log rotation problems', err);
-
-                    return reject(err);
+            logRotate(path.join(Settings.userDataPath, 'logs', 'all.log'), { count: 5 }, (error) => {
+                if (error) {
+                    ethereumNodeLog.error('Log rotation problems', error);
+                    return reject(error);
                 }
+            });
 
-                let args;
+            logRotate(path.join(Settings.userDataPath, 'logs', 'category', 'ethereum_node.log'), { count: 5 }, (error) => {
+                if (error) {
+                    ethereumNodeLog.error('Log rotation problems', error);
+                    return reject(error);
+                }
+            });
 
-                switch (network) {
+            let args;
 
-                // Starts Ropsten network
-                case 'test':
-                    args = [
-                        '--testnet',
+            switch (network) {
+
+            // Starts Ropsten network
+            case 'test':
+                args = [
+                    '--testnet',
+                    '--syncmode', syncMode,
+                    '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                    '--ipcpath', Settings.rpcIpcPath
+                ];
+                break;
+
+            // Starts Rinkeby network
+            case 'rinkeby':
+                args = [
+                    '--rinkeby',
+                    '--syncmode', syncMode,
+                    '--cache', ((process.arch === 'x64') ? '1024' : '512'),
+                    '--ipcpath', Settings.rpcIpcPath
+                ];
+                break;
+
+            // Starts local network
+            case 'dev':
+                args = [
+                    '--dev',
+                    '--minerthreads', '1',
+                    '--ipcpath', Settings.rpcIpcPath
+                ];
+                break;
+
+            // Starts Main net
+            default:
+                args = (nodeType === 'geth')
+                    ? [
                         '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
+                        '--cache', ((process.arch === 'x64') ? '1024' : '512')
+                    ]
+                    : ['--unsafe-transactions'];
+            }
 
-                // Starts Rinkeby network
-                case 'rinkeby':
-                    args = [
-                        '--rinkeby',
-                        '--syncmode', syncMode,
-                        '--cache', ((process.arch === 'x64') ? '1024' : '512'),
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
+            const nodeOptions = Settings.nodeOptions;
 
-                // Starts local network
-                case 'dev':
-                    args = [
-                        '--dev',
-                        '--minerthreads', '1',
-                        '--ipcpath', Settings.rpcIpcPath
-                    ];
-                    break;
+            if (nodeOptions && nodeOptions.length) {
+                ethereumNodeLog.debug('Custom node options', nodeOptions);
 
-                // Starts Main net
-                default:
-                    args = (nodeType === 'geth')
-                        ? [
-                            '--syncmode', syncMode,
-                            '--cache', ((process.arch === 'x64') ? '1024' : '512')
-                        ]
-                        : ['--unsafe-transactions'];
+                args = args.concat(nodeOptions);
+            }
+
+            ethereumNodeLog.trace('Spawn', binPath, args);
+
+            const proc = spawn(binPath, args);
+
+            proc.once('error', (error) => {
+                if (this.state === STATES.STARTING) {
+                    this.state = STATES.ERROR;
+
+                    ethereumNodeLog.info('Node startup error');
+
+                    // TODO: detect this properly
+                    // this.emit('nodeBinaryNotFound');
+
+                    reject(error);
                 }
+            });
 
-                const nodeOptions = Settings.nodeOptions;
+            proc.stdout.on('data', (data) => {
+                ethereumNodeLog.trace('Got stdout data', data.toString());
+                this.emit('data', data);
+            });
 
-                if (nodeOptions && nodeOptions.length) {
-                    ethereumNodeLog.debug('Custom node options', nodeOptions);
+            proc.stderr.on('data', (data) => {
+                ethereumNodeLog.trace('Got stderr data', data.toString());
+                ethereumNodeLog.info(data.toString());  // TODO: This should be ethereumNodeLog.error(), but not sure why regular stdout data is coming in through stderror
+                this.emit('data', data);
+            });
 
-                    args = args.concat(nodeOptions);
-                }
-
-                ethereumNodeLog.trace('Spawn', binPath, args);
-
-                const proc = spawn(binPath, args);
-
-                // node has a problem starting
-                proc.once('error', (error) => {
+            // when data is first received
+            this.once('data', () => {
+                /*
+                    We wait a short while before marking startup as successful
+                    because we may want to parse the initial node output for
+                    errors, etc (see geth port-binding error above)
+                */
+                setTimeout(() => {
                     if (STATES.STARTING === this.state) {
-                        this.state = STATES.ERROR;
-
-                        ethereumNodeLog.info('Node startup error');
-
-                        // TODO: detect this properly
-                        // this.emit('nodeBinaryNotFound');
-
-                        reject(error);
+                        ethereumNodeLog.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`);
+                        resolve(proc);
                     }
-                });
-
-                // we need to read the buff to prevent node from not working
-                proc.stderr.pipe(
-                    fs.createWriteStream(path.join(Settings.userDataPath, 'logs', 'all.log'), { flags: 'a' })
-                );
-
-                // when proc outputs data
-                proc.stdout.on('data', (data) => {
-                    ethereumNodeLog.trace('Got stdout data');
-
-                    this.emit('data', data);
-
-                    // check for startup errors
-                    if (STATES.STARTING === this.state) {
-                        const dataStr = data.toString().toLowerCase();
-
-                        if (nodeType === 'geth') {
-                            if (dataStr.indexOf('fatal: error') >= 0) {
-                                const error = new Error(`Geth error: ${dataStr}`);
-
-                                if (dataStr.indexOf('bind') >= 0) {
-                                    error.tag = UNABLE_TO_BIND_PORT_ERROR;
-                                }
-
-                                ethereumNodeLog.debug(error);
-
-                                return reject(error);
-                            }
-                        }
-                    }
-                });
-
-                // when proc outputs data in stderr
-                proc.stderr.on('data', (data) => {
-                    ethereumNodeLog.trace('Got stderr data');
-
-                    this.emit('data', data);
-                });
-
-
-                this.on('data', _.bind(this._logNodeData, this));
-
-                // when data is first received
-                this.once('data', () => {
-                    /*
-                        We wait a short while before marking startup as successful
-                        because we may want to parse the initial node output for
-                        errors, etc (see geth port-binding error above)
-                    */
-                    setTimeout(() => {
-                        if (STATES.STARTING === this.state) {
-                            ethereumNodeLog.info(`${NODE_START_WAIT_MS}ms elapsed, assuming node started up successfully`);
-
-                            resolve(proc);
-                        }
-                    }, NODE_START_WAIT_MS);
-                });
+                }, NODE_START_WAIT_MS);
             });
         });
     }
@@ -534,6 +507,23 @@ class EthereumNode extends EventEmitter {
 
         if (!/^-*$/.test(cleanData) && !_.isEmpty(cleanData)) {
             this.emit('nodeLog', cleanData);
+        }
+
+        // check for geth startup errors
+        if (STATES.STARTING === this.state) {
+            const dataStr = data.toString().toLowerCase();
+            if (nodeType === 'geth') {
+                if (dataStr.indexOf('fatal: error') >= 0) {
+                    const error = new Error(`Geth error: ${dataStr}`);
+
+                    if (dataStr.indexOf('bind') >= 0) {
+                        error.tag = UNABLE_TO_BIND_PORT_ERROR;
+                    }
+
+                    ethereumNodeLog.error(error);
+                    return reject(error);
+                }
+            }
         }
     }
 

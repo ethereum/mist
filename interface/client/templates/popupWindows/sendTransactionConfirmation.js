@@ -198,13 +198,20 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function () {
 
 Template['popupWindows_sendTransactionConfirmation'].onRendered(function () {
     var template = this;
-
-    Meteor.setTimeout(function () {
-        template.$('input[type="password"]').focus();
-    }, 200);
+    this.$('input.password').focus();
+    TemplateVar.set('showPassword', false);
 });
 
 Template['popupWindows_sendTransactionConfirmation'].helpers({
+    /**
+     * Returns if password should be visible
+     *
+     * @method (passwordInputType)
+     */
+    passwordInputType: function () {
+        return TemplateVar.get('showPassword') ? 'text' : 'password';
+    },
+
     /**
     Returns the total amount
 
@@ -321,7 +328,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         e.preventDefault();
 
         var data = Session.get('data'),
-            pw = template.find('input[type="password"]').value,
+            pw = template.find('input.password').value,
             gas = web3.fromDecimal(TemplateVar.get('providedGas'));
 
         // check if account is about to send to itself
@@ -354,8 +361,8 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
             } else {
                 Tracker.afterFlush(function () {
-                    template.find('input[type="password"]').value = '';
-                    template.$('input[type="password"]').focus();
+                    template.find('input.password').value = '';
+                    template.$('input.password').focus();
                 });
                 if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
                     GlobalNotification.warning({
@@ -415,5 +422,9 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             TemplateVar.set(template, 'executionFunction', bytesSignature);
             TemplateVar.set(template, 'hasSignature', false);
         });
+    },
+
+    'click .show-password': function (e) {
+        TemplateVar.set('showPassword', e.currentTarget.checked);
     }
 });

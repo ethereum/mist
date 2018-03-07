@@ -69,23 +69,20 @@
             background: linear-gradient(transparent 50%, @colorGrayLight 70%);
         }
 	}
-
 	.info.dapp-error{
 		color: @colorError;
 		font-weight: 600;
 	}
 
 	&.update-available {
-        -webkit-user-select: auto;
-        user-select: auto;
-
+		-webkit-user-select: auto;
+		user-select: auto;
 		.text {
 			text-align: left;
 		}
 		h1 {
 			font-size: 200%;
 			margin-bottom: 20px;
-
 			&.no-update {
 				font-size: 180%;
 			}
@@ -152,19 +149,19 @@
 					font-weight: 600;
 				}
 			}
-            .function-signature {
-                font-weight: 400;
-				font-size: 1.5em;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                text-transform: uppercase;
-                max-width: @gridWidth * 10;
+      .function-signature {
+          font-weight: 400;
+					font-size: 1.5em;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          text-transform: uppercase;
+          max-width: @gridWidth * 10;
 
-                &.has-signature {
-                    text-transform: none;
-                }
-            }
+          &.has-signature {
+              text-transform: none;
+          }
+    	}
 		}
 		table,
 		.data,
@@ -187,63 +184,62 @@
 		// Parameters
 		.fees,
 		.parameters {
-            font-size: 0.9em;
-            text-align: left;
-            ul, ol {
-                counter-reset: item;
-                padding: 0;
-                list-style-type: none;
-                list-style-position: inside;
-                li {
-                	display: flex;
-                	min-height: @gridHeight * 2;
-                	align-items: center;
+        font-size: 0.9em;
+        text-align: left;
+        ul, ol {
+            counter-reset: item;
+            padding: 0;
+            list-style-type: none;
+            list-style-position: inside;
+            li {
+            	display: flex;
+            	min-height: @gridHeight * 2;
+            	align-items: center;
 
-                    .allowSelection;
-                    font-weight: 200;
-                    transition: background 0.5s ease-out;
+                .allowSelection;
+                font-weight: 200;
+                transition: background 0.5s ease-out;
 
-                    &> div {
-                    	padding: 0 @gridWidth/4;
-                    }
-                    .value {
-                    	flex: 1;
-                    	overflow: hidden;
-					    text-overflow: ellipsis;
-					    .icon {
-					    	position: relative;
-					    	top: 1px;
-					    }
-                        &:hover strong {
-                            word-break: break-all;
-                        }
-
-                    }
-                    .type {
-                    	text-align: right;
-                    	max-width: @gridWidth * 10;
-                    }
-
-                    &:hover {
-                    	background-color: #FFF;
-                    	transition: background 0.1s ease-in;
+                &> div {
+                	padding: 0 @gridWidth/4;
+                }
+                .value {
+                	flex: 1;
+                	overflow: hidden;
+							    text-overflow: ellipsis;
+								    .icon {
+								    	position: relative;
+								    	top: 1px;
+								    }
+                    &:hover strong {
+                        word-break: break-all;
                     }
                 }
+                .type {
+                	text-align: right;
+                	max-width: @gridWidth * 10;
+                }
 
-                ::selection {
-                    color: #FFF;
-                    background: @colorLink;
+                &:hover {
+                	background-color: #FFF;
+                	transition: background 0.1s ease-in;
                 }
             }
 
-            ol li::before {
-            	counter-increment: item;
-				content: counter(item);
-				opacity: 0.5;
-				color: @colorGrayDark;
-				font-weight: 400;
+            ::selection {
+                color: #FFF;
+                background: @colorLink;
             }
         }
+
+        ol li::before {
+        	counter-increment: item;
+					content: counter(item);
+					opacity: 0.5;
+					color: @colorGrayDark;
+					font-weight: 400;
+        }
+    }
 
 		.overlap-icon {
 			position: absolute;
@@ -251,10 +247,9 @@
 			font-size: 18px;
 			text-align: center;
 			color: #FFF;
-		    width: @gridWidth*2;
-		    opacity: 0.75;
-		    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-
+	    width: @gridWidth*2;
+	    opacity: 0.75;
+	    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
 		}
 		.circle-icon {
 			display: inline-block;
@@ -280,7 +275,7 @@
 				outline: 0;
 			}
 		}
-		input[type="password"] {
+		input.password {
 			width: @gridWidth * 12;
 		}
 		.data,
@@ -302,6 +297,23 @@
 				span.function {
 					font-weight: 600;
 				}
+			}
+		}
+
+		.show-password-container {
+			width: @gridWidth * 12;
+			margin: 0 auto 0;
+			padding: 12px 0 0;
+			text-align: left;
+			input[type=checkbox] {
+				margin-left: 16px;
+			}
+			label {
+				position: relative;
+				top: -7px;
+				left: 6px;
+				opacity: 0.9;
+				font-size: 14px;
 			}
 		}
 	}

@@ -219,7 +219,7 @@
                 "accountTitle": "正在裝載！",
                 "accountTitleTestnet": "挖到一些以太幣！",
                 "etherDescription": "以太坊網路是基於一種叫做“以太幣”的代幣。您需要一點以太幣來嘗試在以太坊網路上的任何操作。",
-                "loadItDescription": "如果您已經擁有比特幣或者任何其他加密貨幣，您可以使用shapeshift來方便地轉換爲以太幣。<br><br>我們推薦您存入<strong>0.25到1以太幣</strong>.",
+                "loadItDescription": "如果您已經擁有比特幣或者任何其他加密貨幣，您可以使用changelly來方便地轉換爲以太幣。<br><br>我們推薦您存入<strong>0.25到1以太幣</strong>.",
                 "mineItDescription": "<strong>如果您在testnet測試網路中，您可以自己挖掘一些以太幣，點擊<em>開發</em>選單並選擇<em>開啓挖礦</em>。</strong> <br> <strong>請勿將真正的以太幣發往該地址！</strong>",
                 "you": "您本人",
                 "etherbase": "主帳號（etherbase）",
@@ -241,7 +241,8 @@
                     "wrongPassword": "密碼錯誤。",
                     "importFailed": "無法匯入該文件，錯誤：__error__"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "buyEther": "Buy Ether",
+                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
                 "startingSync": "Getting ready to sync.."

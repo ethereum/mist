@@ -219,7 +219,7 @@
                 "accountTitle": "Fyll den opp!",
                 "accountTitleTestnet": "Mine noen!",
                 "etherDescription": "Ethereum-nettverket er basert på en enhet kalt \"ether\". Du trenger en liten mengde av den for å gjøre noe på Ethereum-nettverket.",
-                "loadItDescription": "Hvis du allerede eier bitcoin, eller hvilken som helst annen kryptovaluta, kan du enkelt konvertere den til ether via Shapeshift. <br><br> Vi anbefaler å fylle opp med mellom <strong>0.25 til 1 ether</strong>.",
+                "loadItDescription": "Hvis du allerede eier bitcoin, eller hvilken som helst annen kryptovaluta, kan du enkelt konvertere den til ether via changelly. <br><br> Vi anbefaler å fylle opp med mellom <strong>0.25 til 1 ether</strong>.",
                 "mineItDescription": "<strong>På testnettet kan du mine ether selv ved å gå til <em>Utvikle</em> menyvalget og velge <em>Start Mining</em>. </strong> <br> <strong> IKKE PRØV Å SENDE EKTE ETHER TIL DENNE ADRESSEN </strong>",
                 "you": "DU",
                 "etherbase": "Hovedkonto (etherbase)",
@@ -241,7 +241,8 @@
                     "wrongPassword": "Feil passord.",
                     "importFailed": "Kunne ikke importere filen, fikk: __error__"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "buyEther": "Buy Ether",
+                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
                 "startingSync": "Getting ready to sync.."

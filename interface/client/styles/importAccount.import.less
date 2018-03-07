@@ -1,8 +1,4 @@
-// .app-blur .onboarding-screen {
-//     background: @colorOSBackgroundBlur;
-// }
-
-.onboarding-screen {
+.import-account {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -281,28 +277,10 @@
     }
 
 
-    .onboarding-tutorial-1,
-    .onboarding-tutorial-2,
-    .onboarding-tutorial-3 {
-        .col-6 {
-            transition: transform 0.2s ease-in-out, opacity 0.2s;
-            transform: translateX(50px) translateY(10px) rotateY(180deg) scale(0.7);
-            backface-visibility: hidden;
-        }
-        .col-6.col-left {
-            opacity: 0;
-            transform: translateX(-100px);
-        }
-    }
-
-
     &.active-import-account .onboarding-import-account,
     &.active-password .onboarding-password,
     &.active-testnet .onboarding-testnet,
-    &.active-account .onboarding-account,
-    &.active-tutorial-1 .onboarding-tutorial-1,
-    &.active-tutorial-2 .onboarding-tutorial-2,
-    &.active-tutorial-3 .onboarding-tutorial-3 {
+    &.active-account .onboarding-account {
         display: block;
         opacity: 1;
         z-index: 100;
@@ -322,36 +300,5 @@
         transition-delay: 0;
         transition-duration: 0;
         transition: none;
-    }
-
-    &.active-account .onboarding-account,
-    &.active-tutorial-1 .onboarding-tutorial-1,
-    &.active-tutorial-2 .onboarding-tutorial-2,
-    &.active-tutorial-3 .onboarding-tutorial-3 {
-        .col-6 {
-            transition-delay: 0;
-        }
-    } 
-
-    .onboarding-tutorial-1 .tutorial-token, 
-    .onboarding-tutorial-2 .tutorial-crowdsale, 
-    .onboarding-tutorial-3 .tutorial-dao {
-        position: relative;
-        top: @gridHeight * -1;
-        height: @gridHeight * 12;
-        background-image: url('/images/tutorial-token.png');
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-    }
-
-    .onboarding-tutorial-2 .tutorial-crowdsale {
-        background-image: url('/images/tutorial-crowdsale.png');
-    }
-    .onboarding-tutorial-3 .tutorial-dao {
-        position: relative;
-        top: -20px;
-        height: 70%;
-        background-image: url('/images/tutorial-dao.png');
     }
 }

@@ -42,7 +42,7 @@ mistInit = function () {
             );
         }
 
-        // overwrite wallet on start again, but use $set to dont remove titles
+        // overwrite wallet on start again, but use $set to preserve account titles
         Tabs.upsert(
             { _id: 'wallet' },
             {
@@ -56,9 +56,7 @@ mistInit = function () {
                 }
             });
 
-        // Sets browser as default tab if:
-        // 1) there's no record of selected tab
-        // 2) data is corrupted (no saved tab matches localstore)
+        // on first use of Mist, show the wallet to nudge the user to create an account
         if (!LocalStore.get('selectedTab') || !Tabs.findOne(LocalStore.get('selectedTab'))) {
             LocalStore.set('selectedTab', 'wallet');
         }

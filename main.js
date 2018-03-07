@@ -248,8 +248,6 @@ async function kickStart() {
     // Update menu, to show node switching possibilities
     appMenu();
 
-    await handleOnboarding();
-
     if (splashWindow) { splashWindow.show(); }
     if (!Settings.inAutoTestMode) { await handleNodeSync(); }
 
@@ -290,50 +288,6 @@ function initializeKickStartListeners() {
             ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
         );
     });
-}
-
-async function handleOnboarding() {
-    // Fetch accounts; if none, show the onboarding process
-    const resultData = await ethereumNode.send('eth_accounts', []);
-
-    if (ethereumNode.isGeth && (resultData.result === null || (_.isArray(resultData.result) && resultData.result.length === 0))) {
-        log.info('No accounts setup yet, lets do onboarding first.');
-
-        await new Q((resolve, reject) => {
-            const onboardingWindow = Windows.createPopup('onboardingScreen');
-
-            onboardingWindow.on('closed', () => store.dispatch(quitApp()));
-
-            // Handle changing network types (mainnet, testnet)
-            ipcMain.on('onBoarding_changeNet', (e, testnet) => {
-                const newType = ethereumNode.type;
-                const newNetwork = testnet ? 'rinkeby' : 'main';
-
-                log.debug('Onboarding change network', newType, newNetwork);
-
-                ethereumNode.restart(newType, newNetwork)
-                    .then(function nodeRestarted() {
-                        appMenu();
-                    })
-                    .catch((err) => {
-                        log.error('Error restarting node', err);
-                        reject(err);
-                    });
-            });
-
-            ipcMain.on('onBoarding_launchApp', () => {
-                onboardingWindow.removeAllListeners('closed');
-                onboardingWindow.close();
-
-                ipcMain.removeAllListeners('onBoarding_changeNet');
-                ipcMain.removeAllListeners('onBoarding_launchApp');
-
-                resolve();
-            });
-
-            if (splashWindow) { splashWindow.hide(); }
-        });
-    }
 }
 
 function handleNodeSync() {

@@ -422,14 +422,6 @@ class Windows {
                         },
                     },
                 };
-            case 'onboardingScreen':
-                return {
-                    primary: true,
-                    electronOptions: {
-                        width: 576,
-                        height: 442,
-                    },
-                };
             case 'about':
                 return {
                     url: `${global.interfacePopupsUrl}#about`,

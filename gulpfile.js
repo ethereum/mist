@@ -72,18 +72,19 @@ gulp.task('uploadQueue', (cb) => {
     runSeq.apply(null, _.flatten([tasks, cb]));
 });
 
+const skipTasks = options.skipTasks.replace(/\s/g,'').split(',');
+const tasks = [
+    'clean-dist',
+    'copy-app-source-files',
+    'transpile-main',
+    'transpile-modules',
+    'copy-build-folder-files',
+    'switch-production',
+    'bundling-interface',
+    'copy-i18n',
+    'build-dist',
+    'release-dist',
+    'build-nsis'
+].filter(task => !skipTasks.includes(task));
 
-// tasks
-gulp.task('default', gulp.series(
-        'clean-dist',
-        'copy-app-source-files',
-        'transpile-main',
-        'transpile-modules',
-        'copy-build-folder-files',
-        'switch-production',
-        'bundling-interface',
-        'copy-i18n',
-        'build-dist',
-        'release-dist',
-        'build-nsis',
-));
+gulp.task('default', gulp.series(tasks));

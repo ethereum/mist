@@ -275,7 +275,7 @@ $ gulp checksums [--wallet]
 
 #### Cutting a release
 
-1. Install [release](https://github.com/zeit/release):
+1. Install [release](https://github.com/zeit/release) globally:
 
     ```bash
     $ yarn global add release

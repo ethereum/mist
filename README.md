@@ -287,6 +287,8 @@ $ gulp checksums [--wallet]
     $ release <major|minor|patch>
     ```
 
+3. A generated release draft will open in the default browser. Edit the information and add assets as necessary.
+
 ## Testing
 
 Tests are ran using [Spectron](https://github.com/electron/spectron/), a webdriver.io runner built for Electron.

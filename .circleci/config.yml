@@ -29,8 +29,9 @@ jobs:
       # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
       - run: meteor || curl https://install.meteor.com | /bin/sh
       - run: export PATH=$PATH:`yarn global bin`
-      - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
-      - run: yarn install
+      - run: npm install -g gulp-cli
+      - run: yarn global add meteor-build-client electron@1.8.3
+      - run: yarn
 
       - save_cache:
           paths:

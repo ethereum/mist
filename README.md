@@ -34,15 +34,15 @@ you can simply run the executeable after download.
 
 For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 
-#### Linux .zip installs
+### Linux .zip installs
 
 In order to install from .zip files, please install `libgconf2-4` first:
 
-```
+```bash
 apt-get install libgconf2-4
 ```
 
-#### Config folder
+### Config folder
 The data folder for Mist is stored in other places:
 
 - Windows `%APPDATA%\Mist`
@@ -67,36 +67,46 @@ To run mist in development you need:
 
 Install the latter ones via:
 
-    $ curl https://install.meteor.com/ | sh
-    $ curl -o- -L https://yarnpkg.com/install.sh | bash
-    $ yarn global add electron@1.7.11
-    $ yarn global add gulp
+```bash
+$ curl https://install.meteor.com/ | sh
+$ curl -o- -L https://yarnpkg.com/install.sh | bash
+$ yarn global add electron@1.7.11
+$ yarn global add gulp
+```
 
 ### Initialisation
 
 Now you're ready to initialise Mist for development:
 
-    $ git clone https://github.com/ethereum/mist.git
-    $ cd mist
-    $ yarn
+```bash
+$ git clone https://github.com/ethereum/mist.git
+$ cd mist
+$ yarn
+```
 
 To update Mist in the future, run:
 
-    $ cd mist
-    $ git pull
-    $ yarn
+```bash
+$ cd mist
+$ git pull
+$ yarn
+```
 
 ### Run Mist
 
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
-    $ cd mist/interface && meteor --no-release-check
+```bash
+$ cd mist/interface && meteor --no-release-check
+```
 
 In the original window you can then start Mist with:
 
-    $ cd mist
-    $ yarn dev:electron
+```bash
+$ cd mist
+$ yarn dev:electron
+```
 
 *NOTE: client-binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)*
 
@@ -106,17 +116,22 @@ In the original window you can then start Mist with:
 
 Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd mist/interface && meteor --no-release-check
+```bash
+$ cd mist/interface && meteor --no-release-check
+```
 
-    // and in another terminal
+In another terminal:
 
-    $ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
+```bash
+$ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
+```
 
 In the original window you can then start Mist using wallet mode:
 
-    $ cd mist
-    $ yarn dev:electron --mode wallet
-
+```bash
+$ cd mist
+$ yarn dev:electron --mode wallet
+```
 
 ### Connecting to node via HTTP instead of IPC
 
@@ -181,28 +196,38 @@ Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](htt
 
 [meteor-build-client](https://github.com/frozeman/meteor-build-client) bundles the [meteor](https://www.meteor.com/)-based interface. Install it via:
 
-    $ npm install -g meteor-build-client
+```bash
+$ npm install -g meteor-build-client
+```
 
 Furthermore cross-platform builds require additional [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#linux). On macOS those are:
 
-    // windows deps
-    $ brew install wine --without-x11 mono makensis
 
-    // linux deps
-    $ brew install gnu-tar libicns graphicsmagick xz
+Windows deps:
+```bash
+$ brew install wine --without-x11 mono makensis
+```
+
+Linux deps:
+```bash
+$ brew install gnu-tar libicns graphicsmagick xz
+```
 
 #### Generate packages
 
 To generate the binaries for Mist run:
 
-    $ gulp
+```bash
+$ gulp
+```
 
 To generate the Ethereum Wallet (this will pack the one Ðapp from https://github.com/ethereum/meteor-dapp-wallet):
 
-    $ gulp --wallet
+```bash
+$ gulp --wallet
+```
 
 The generated binaries will be under `dist_mist/release` or `dist_wallet/release`.
-
 
 #### Options
 
@@ -210,21 +235,17 @@ The generated binaries will be under `dist_mist/release` or `dist_wallet/release
 
 To build binaries for specific platforms (default: all available) use the following flags:
 
-    // on mac
-    $ gulp --win --linux --mac
-
-    // on linux
-    $ gulp --win --linux
-
-    // on win
-    $ gulp --win
+```bash
+$ gulp --mac      # mac
+$ gulp --linux    # linux
+$ gulp --win      # windows
+```
 
 ##### walletSource
 
 With the `walletSource` you can specify the Wallet branch to use, default is `master`:
 
     $ gulp --wallet --walletSource develop
-
 
 Options are:
 
@@ -234,20 +255,39 @@ Options are:
 
 *Note: applicable only when combined with `--wallet`*
 
-#### skipTasks
+##### skipTasks
 
 When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
-  $ gulp --mac --skipTasks=bundling-interface,release-dist
+```bash
+$ gulp --mac --skipTasks=bundling-interface,release-dist
+```
 
-#### Checksums
+##### Checksums
 
 Spits out the MD5 checksums of distributables.
 
 It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
-    $ gulp checksums [--wallet]
+```bash
+$ gulp checksums [--wallet]
+```
 
+#### Cutting a release
+
+1. Install [release](https://github.com/zeit/release) globally:
+
+    ```bash
+    $ yarn global add release
+    ```
+
+2. Create a git tag and a GitHub release:
+
+    ```bash
+    $ release <major|minor|patch>
+    ```
+
+3. A generated release draft will open in the default browser. Edit the information and add assets as necessary.
 
 ## Testing
 
@@ -255,10 +295,14 @@ Tests are ran using [Spectron](https://github.com/electron/spectron/), a webdriv
 
 First make sure to build Mist with:
 
-    $ gulp
+```bash
+$ gulp
+```
 
 Then run the tests:
 
-    $ gulp test
+```bash
+$ gulp test
+```
 
 *Note: Integration tests are not yet supported on Windows.*

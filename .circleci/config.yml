@@ -20,7 +20,7 @@ jobs:
       - checkout
 
       - run: python --version
-      
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -47,9 +47,6 @@ jobs:
 
       - run: yarn install
 
-
-
-
       - save_cache:
           paths:
             - node_modules
@@ -57,5 +54,5 @@ jobs:
 
       # run tests!
       - run: yarn test:unit:once
-      - run: gulp --linux || cat /home/circleci/.npm/_logs/*
+      - run: gulp --linux; cat /home/circleci/.npm/_logs/*
       - run: gulp test

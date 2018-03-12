@@ -19,6 +19,8 @@ jobs:
     steps:
       - checkout
 
+      - run: python --version
+      
       # Download and cache dependencies
       - restore_cache:
           keys:

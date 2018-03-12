@@ -32,6 +32,11 @@ jobs:
       # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - run: export CXX_host="g++ -m32"
 
+      # Debug node-gyp with sha3@1.2.0
+      - run: yarn global add node-gyp
+      - run: node-gyp --version
+      - run: yarn add sha3@1.2.0
+
       # Adding global dependencies
       - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
 
@@ -40,6 +45,9 @@ jobs:
 
       - run: yarn install
 
+
+
+
       - save_cache:
           paths:
             - node_modules
@@ -47,5 +55,5 @@ jobs:
 
       # run tests!
       - run: yarn test:unit:once
-      - run: gulp --linux
+      - run: gulp --linux || cat /home/circleci/.npm/_logs/*
       - run: gulp test

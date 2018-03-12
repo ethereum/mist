@@ -27,14 +27,13 @@ jobs:
           - v1-dependencies-
 
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
-      - run: yarn global bin
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
-      - run: echo $PATH
-      - run: cat `echo $BASH_ENV`
 
-      - run: yarn global add gulp-cli
-      - run: yarn global add meteor-build-client electron@1.8.3
-      - run: ls -la `yarn global bin`
+      # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
+      - run: export CXX_host="g++ -m32"
+
+      # Adding global dependencies
+      - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
 
       # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
       - run: meteor || curl https://install.meteor.com | /bin/sh

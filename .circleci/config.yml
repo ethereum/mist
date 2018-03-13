@@ -34,10 +34,8 @@ jobs:
       # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - run: export CXX_host="g++ -m32"
 
-      # Debug node-gyp with sha3@1.2.0
-      - run: yarn global add node-gyp
-      - run: node-gyp --version
-      - run: yarn add sha3@1.2.0
+      # Installing multilib (build for 32 and 64 architectures)
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
 
       # Adding global dependencies
       - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
@@ -45,7 +43,7 @@ jobs:
       # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
       - run: meteor || curl https://install.meteor.com | /bin/sh
 
-      - run: yarn install
+      - run: yarn
 
       - save_cache:
           paths:

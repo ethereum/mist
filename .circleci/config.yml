@@ -4,6 +4,10 @@
 # TODO: store_artifacts
 # TODO: store_test_results
 # TODO: one docker image per arch
+# TODO: improve caching
+# TODO: mac job
+# TODO: windows job
+# TODO: build .deb or .AppImage
 #
 
 # Javascript Node CircleCI 2.0 configuration file
@@ -41,6 +45,9 @@ jobs:
       # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - run: export CXX_host="g++ -m32"
 
+      # Video config for testing
+      # - run: export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+
       # Installing multilib (build for 32 and 64 architectures): https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
       - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
 
@@ -60,4 +67,4 @@ jobs:
       # run tests!
       - run: yarn test:unit:once
       - run: gulp --linux
-      - run: gulp test
+      - run: xvfb-run gulp test

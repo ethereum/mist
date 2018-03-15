@@ -1,4 +1,4 @@
-const Windows = require("./windows");
+const Windows = require('./windows');
 
 class BlurOverlay {
   static enable() {
@@ -10,8 +10,8 @@ class BlurOverlay {
   }
 
   static setBlurOverlay(flag) {
-    const mainWindow = Windows.getByType("main");
-    mainWindow.send("uiAction_enableBlurOverlay", flag);
+    const mainWindow = Windows.getByType('main');
+    mainWindow.send('uiAction_enableBlurOverlay', flag);
   }
 }
 

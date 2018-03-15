@@ -2,23 +2,23 @@
 global-require
 */
 
-const _ = require("underscore");
-const cmp = require("semver-compare");
-const compare = require("json-structure-diff").compareJSONObjects;
-const fs = require("fs");
-const got = require("got");
-const gulp = require("gulp");
-const parseJson = require("xml2js").parseString;
-const clientBinaries = require("../clientBinaries.json");
+const _ = require('underscore');
+const cmp = require('semver-compare');
+const compare = require('json-structure-diff').compareJSONObjects;
+const fs = require('fs');
+const got = require('got');
+const gulp = require('gulp');
+const parseJson = require('xml2js').parseString;
+const clientBinaries = require('../clientBinaries.json');
 
-gulp.task("update-nodes", cb => {
+gulp.task('update-nodes', cb => {
   const clientBinariesGeth = clientBinaries.clients.Geth;
   const localGethVersion = clientBinariesGeth.version;
   const newJson = clientBinaries;
   const geth = newJson.clients.Geth;
 
   // Query latest geth version
-  got("https://api.github.com/repos/ethereum/go-ethereum/releases/latest", {
+  got('https://api.github.com/repos/ethereum/go-ethereum/releases/latest', {
     json: true
   })
     .then(response => {
@@ -45,7 +45,7 @@ gulp.task("update-nodes", cb => {
 
             // Query Azure assets for md5 hashes
             got(
-              "https://gethstore.blob.core.windows.net/builds?restype=container&comp=list",
+              'https://gethstore.blob.core.windows.net/builds?restype=container&comp=list',
               { xml: true }
             )
               .then(response => {
@@ -85,17 +85,17 @@ gulp.task("update-nodes", cb => {
                       if (
                         String(blob.Name) ===
                         _.last(
-                          geth.platforms[platform][arch].download.url.split("/")
+                          geth.platforms[platform][arch].download.url.split('/')
                         )
                       ) {
                         const sum = new Buffer(
-                          blob.Properties[0]["Content-MD5"][0],
-                          "base64"
+                          blob.Properties[0]['Content-MD5'][0],
+                          'base64'
                         );
 
                         geth.platforms[platform][
                           arch
-                        ].download.md5 = sum.toString("hex");
+                        ].download.md5 = sum.toString('hex');
                       }
                     });
                   });
@@ -104,7 +104,7 @@ gulp.task("update-nodes", cb => {
               // Update clientBinares.json
               .then(() => {
                 fs.writeFile(
-                  "./clientBinaries.json",
+                  './clientBinaries.json',
                   JSON.stringify(newJson, null, 4)
                 );
                 cb();
@@ -115,9 +115,9 @@ gulp.task("update-nodes", cb => {
     .catch(cb);
 });
 
-gulp.task("download-signatures", cb => {
+gulp.task('download-signatures', cb => {
   got(
-    "https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at",
+    'https://www.4byte.directory/api/v1/signatures/?page_size=20000&ordering=created_at',
     {
       json: true
     }
@@ -135,7 +135,7 @@ gulp.task("download-signatures", cb => {
       });
 
       fs.writeFileSync(
-        "interface/client/lib/signatures.js",
+        'interface/client/lib/signatures.js',
         `window.SIGNATURES = ${JSON.stringify(signatures, null, 4)};`
       );
 
@@ -144,24 +144,24 @@ gulp.task("download-signatures", cb => {
     .catch(cb);
 });
 
-gulp.task("update-i18n", cb => {
+gulp.task('update-i18n', cb => {
   /**
    * This script will update Mist's i18n files
    *  - adds missing english strings to all translations
    *  - removes obsolet keys from translations
    */
 
-  const mistEN = require("../interface/i18n/mist.en.i18n.json"); // eslint-disable-line no-unused-vars
-  const appEN = require("../interface/i18n/app.en.i18n.json"); // eslint-disable-line no-unused-vars
+  const mistEN = require('../interface/i18n/mist.en.i18n.json'); // eslint-disable-line no-unused-vars
+  const appEN = require('../interface/i18n/app.en.i18n.json'); // eslint-disable-line no-unused-vars
 
   try {
-    ["mist", "app"].forEach(mode => {
+    ['mist', 'app'].forEach(mode => {
       const en = {
-        parent: "en",
+        parent: 'en',
         content: eval(`${mode}EN`) // eslint-disable-line no-eval
       };
 
-      const files = fs.readdirSync("./interface/i18n");
+      const files = fs.readdirSync('./interface/i18n');
 
       files.forEach(file => {
         if (
@@ -170,7 +170,7 @@ gulp.task("update-i18n", cb => {
         ) {
           const langJson = require(`../interface/i18n/${file}`); // eslint-disable-line import/no-dynamic-require
           const lang = {
-            parent: "lang",
+            parent: 'lang',
             content: langJson
           };
           let error;
@@ -179,10 +179,10 @@ gulp.task("update-i18n", cb => {
           error = compare([lang, en]);
           if (error) {
             error.forEach(diff => {
-              if (diff.typeOfComparedParent === "undefined") {
+              if (diff.typeOfComparedParent === 'undefined') {
                 eval(
                   `delete lang.content.${diff.parent.slice(
-                    diff.parent.indexOf(".") + 1
+                    diff.parent.indexOf('.') + 1
                   )}`
                 ); // eslint-disable-line no-eval
               }
@@ -195,14 +195,14 @@ gulp.task("update-i18n", cb => {
             error.forEach(diff => {
               if (
                 diff.typeOfComparedParent !== diff.typeOfParent &&
-                diff.parent !== "en.mist.applicationMenu.view.languages" &&
-                diff.parent !== "en.mist.applicationMenu.view.langCodes"
+                diff.parent !== 'en.mist.applicationMenu.view.languages' &&
+                diff.parent !== 'en.mist.applicationMenu.view.langCodes'
               ) {
                 eval(
                   `lang.content.${diff.comparedParent.slice(
-                    diff.comparedParent.indexOf(".") + 1
+                    diff.comparedParent.indexOf('.') + 1
                   )} = en.content.${diff.parent.slice(
-                    diff.parent.indexOf(".") + 1
+                    diff.parent.indexOf('.') + 1
                   )}`
                 ); // eslint-disable-line no-eval
               }

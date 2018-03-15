@@ -5,15 +5,15 @@ The IPC provider backend filter and tunnel all incoming request to the ethereum 
 */
 
 const _ = global._;
-const Q = require("bluebird");
-const { ipcMain: ipc } = require("electron");
-const fs = require("fs");
-const path = require("path");
+const Q = require('bluebird');
+const { ipcMain: ipc } = require('electron');
+const fs = require('fs');
+const path = require('path');
 
-const log = require("../utils/logger").create("ipcProviderBackend");
-const Sockets = require("../socketManager");
-const Settings = require("../settings");
-const ethereumNode = require("../ethereumNode");
+const log = require('../utils/logger').create('ipcProviderBackend');
+const Sockets = require('../socketManager');
+const Settings = require('../settings');
+const ethereumNode = require('../ethereumNode');
 
 const ERRORS = {
   INVALID_PAYLOAD: {
@@ -21,21 +21,21 @@ const ERRORS = {
     message:
       "Payload, or some of its content properties are invalid. Please check if they are valid HEX with '0x' prefix."
   },
-  METHOD_DENIED: { code: -32601, message: "Method __method__ not allowed." },
+  METHOD_DENIED: { code: -32601, message: 'Method __method__ not allowed.' },
   METHOD_TIMEOUT: {
     code: -32603,
-    message: "Request timed out for method  __method__."
+    message: 'Request timed out for method  __method__.'
   },
-  TX_DENIED: { code: -32603, message: "Transaction denied" },
+  TX_DENIED: { code: -32603, message: 'Transaction denied' },
   BATCH_TX_DENIED: {
     code: -32603,
     message:
-      "Transactions denied, sendTransaction is not allowed in batch requests."
+      'Transactions denied, sendTransaction is not allowed in batch requests.'
   },
   BATCH_COMPILE_DENIED: {
     code: -32603,
     message:
-      "Compilation denied, compileSolidity is not allowed in batch requests."
+      'Compilation denied, compileSolidity is not allowed in batch requests.'
   }
 };
 
@@ -48,31 +48,31 @@ class IpcProviderBackend {
 
     this.ERRORS = ERRORS;
 
-    ethereumNode.on("state", _.bind(this._onNodeStateChanged, this));
+    ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
 
-    ipc.on("ipcProvider-create", _.bind(this._getOrCreateConnection, this));
-    ipc.on("ipcProvider-destroy", _.bind(this._destroyConnection, this));
-    ipc.on("ipcProvider-write", _.bind(this._sendRequest, this, false));
-    ipc.on("ipcProvider-writeSync", _.bind(this._sendRequest, this, true));
+    ipc.on('ipcProvider-create', _.bind(this._getOrCreateConnection, this));
+    ipc.on('ipcProvider-destroy', _.bind(this._destroyConnection, this));
+    ipc.on('ipcProvider-write', _.bind(this._sendRequest, this, false));
+    ipc.on('ipcProvider-writeSync', _.bind(this._sendRequest, this, true));
 
     this._connectionPromise = {};
 
     // dynamically load in method processors
-    const processors = fs.readdirSync(path.join(__dirname, "methods"));
+    const processors = fs.readdirSync(path.join(__dirname, 'methods'));
 
     // get response processors
     this._processors = {};
     processors.forEach(p => {
-      const name = path.basename(p, ".js");
+      const name = path.basename(p, '.js');
 
-      const PClass = require(path.join(__dirname, "methods", p));
+      const PClass = require(path.join(__dirname, 'methods', p));
 
       this._processors[name] = new PClass(name, this);
     });
 
-    log.trace("Loaded processors", _.keys(this._processors));
+    log.trace('Loaded processors', _.keys(this._processors));
 
-    store.dispatch({ type: "[MAIN]:IPC_PROVIDER_BACKEND:INIT" });
+    store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
   }
 
   /**
@@ -105,7 +105,7 @@ class IpcProviderBackend {
           };
 
           // if something goes wrong destroy the socket
-          ["error", "timeout", "end"].forEach(ev => {
+          ['error', 'timeout', 'end'].forEach(ev => {
             socket.on(ev, data => {
               log.debug(
                 `Destroy socket connection due to event: ${ev}, id=${ownerId}`
@@ -122,15 +122,15 @@ class IpcProviderBackend {
             });
           });
 
-          socket.on("connect", data => {
+          socket.on('connect', data => {
             if (!owner.isDestroyed()) {
-              owner.send("ipcProvider-connect", JSON.stringify(data));
+              owner.send('ipcProvider-connect', JSON.stringify(data));
             }
           });
 
           // pass notifications back up the chain
-          socket.on("data-notification", data => {
-            log.trace("Notification received", ownerId, data);
+          socket.on('data-notification', data => {
+            log.trace('Notification received', ownerId, data);
 
             if (data.error) {
               data = this._makeErrorResponsePayload(data, data);
@@ -139,7 +139,7 @@ class IpcProviderBackend {
             }
 
             if (!owner.isDestroyed()) {
-              owner.send("ipcProvider-data", JSON.stringify(data));
+              owner.send('ipcProvider-data', JSON.stringify(data));
             }
           });
         }
@@ -158,7 +158,7 @@ class IpcProviderBackend {
                 return new Q((resolve, reject) => {
                   const onStateChange = newState => {
                     if (ethereumNode.STATES.CONNECTED === newState) {
-                      ethereumNode.removeListener("state", onStateChange);
+                      ethereumNode.removeListener('state', onStateChange);
 
                       log.debug(
                         `Ethereum node connected, resume connecting socket ${ownerId}`
@@ -168,7 +168,7 @@ class IpcProviderBackend {
                     }
                   };
 
-                  ethereumNode.on("state", onStateChange);
+                  ethereumNode.on('state', onStateChange);
                 });
               }
             })
@@ -190,7 +190,7 @@ class IpcProviderBackend {
       })
       .then(() => {
         if (!owner.isDestroyed()) {
-          owner.send("ipcProvider-setWritable", true);
+          owner.send('ipcProvider-setWritable', true);
         }
 
         return this._connections[ownerId];
@@ -204,9 +204,9 @@ class IpcProviderBackend {
     const ownerId = event.sender.id;
 
     if (this._connections[ownerId]) {
-      log.debug("Destroy socket connection", ownerId);
+      log.debug('Destroy socket connection', ownerId);
 
-      this._connections[ownerId].owner.send("ipcProvider-setWritable", false);
+      this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
 
       this._connections[ownerId].socket.destroy();
       delete this._connections[ownerId];
@@ -225,7 +225,7 @@ class IpcProviderBackend {
     switch (state) { // eslint-disable-line default-case
       // stop syncing when node about to be stopped
       case ethereumNode.STATES.STOPPING:
-        log.info("Ethereum node stopping, disconnecting sockets");
+        log.info('Ethereum node stopping, disconnecting sockets');
 
         Q.all(
           _.map(this._connections, item => {
@@ -235,13 +235,13 @@ class IpcProviderBackend {
                   `Tell owner ${item.id} that socket is not currently writeable`
                 );
 
-                item.owner.send("ipcProvider-setWritable", false);
+                item.owner.send('ipcProvider-setWritable', false);
               });
             }
             return Q.resolve();
           })
         ).catch(err => {
-          log.error("Error disconnecting sockets", err);
+          log.error('Error disconnecting sockets', err);
         });
 
         break;
@@ -257,7 +257,7 @@ class IpcProviderBackend {
   _sendRequest(isSync, event, payload) {
     const ownerId = event.sender.id;
 
-    log.trace("sendRequest", isSync ? "sync" : "async", ownerId, payload);
+    log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
 
     const originalPayloadStr = payload;
 
@@ -269,7 +269,7 @@ class IpcProviderBackend {
     })
       .then(conn => {
         if (!conn.socket.isConnected) {
-          log.trace("Socket not connected.");
+          log.trace('Socket not connected.');
 
           throw this.ERRORS.METHOD_TIMEOUT;
         }
@@ -315,7 +315,7 @@ class IpcProviderBackend {
             return [];
           }
         }).then(ret => {
-          log.trace("Got result", ret);
+          log.trace('Got result', ret);
 
           let finalResult = [];
 
@@ -351,15 +351,15 @@ class IpcProviderBackend {
         });
       })
       .then(result => {
-        log.trace("Got result", result);
+        log.trace('Got result', result);
 
         return this._makeResponsePayload(payload, result);
       })
       .catch(err => {
-        log.error("Send request failed", err);
+        log.error('Send request failed', err);
 
         err = this._makeErrorResponsePayload(payload || {}, {
-          message: typeof err === "string" ? err : err.message,
+          message: typeof err === 'string' ? err : err.message,
           code: err.code
         });
 
@@ -368,12 +368,12 @@ class IpcProviderBackend {
       .then(returnValue => {
         returnValue = JSON.stringify(returnValue);
 
-        log.trace("Return", ownerId, returnValue);
+        log.trace('Return', ownerId, returnValue);
 
         if (isSync) {
           event.returnValue = returnValue;
         } else if (!event.sender.isDestroyed()) {
-          event.sender.send("ipcProvider-data", returnValue);
+          event.sender.send('ipcProvider-data', returnValue);
         }
       });
   }
@@ -389,7 +389,7 @@ class IpcProviderBackend {
   _sanitizeRequestPayload(conn, payload) {
     if (_.isArray(payload)) {
       _.each(payload, p => {
-        if (p.method === "eth_sendTransaction") {
+        if (p.method === 'eth_sendTransaction') {
           p.error = ERRORS.BATCH_TX_DENIED;
         } else {
           this._processors.base.sanitizePayload(conn, p);
@@ -410,7 +410,7 @@ class IpcProviderBackend {
     const e = [].concat(originalPayload).map(item => {
       const e = _.extend(
         {
-          jsonrpc: "2.0"
+          jsonrpc: '2.0'
         },
         error
       );
@@ -471,7 +471,7 @@ class IpcProviderBackend {
         delete ret.method;
       }
 
-      ret.jsonrpc = "2.0";
+      ret.jsonrpc = '2.0';
 
       return ret;
     });

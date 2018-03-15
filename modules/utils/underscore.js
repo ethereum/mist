@@ -1,6 +1,6 @@
-const _ = (module.exports = require("underscore"));
-const uuid = require("uuid");
-const underscoreDeepExtend = require("underscore-deep-extend");
+const _ = (module.exports = require('underscore'));
+const uuid = require('uuid');
+const underscoreDeepExtend = require('underscore-deep-extend');
 
 _.mixin({
   /**
@@ -13,11 +13,11 @@ _.mixin({
    * @return {*} Returns value if found; otherwise the fallbackVAlue.
    */
   get(obj, path, fallbackValue) {
-    if (this.isUndefined(obj) || obj === null || typeof path !== "string") {
+    if (this.isUndefined(obj) || obj === null || typeof path !== 'string') {
       return fallbackValue;
     }
 
-    const fields = path.split(".");
+    const fields = path.split('.');
     let result = obj;
 
     for (let i = 0; i < fields.length; ++i) {

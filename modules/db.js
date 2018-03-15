@@ -1,8 +1,8 @@
-const fs = require("fs");
-const Q = require("bluebird");
-const Loki = require("lokijs");
-const Settings = require("./settings");
-const log = require("./utils/logger").create("Db");
+const fs = require('fs');
+const Q = require('bluebird');
+const Loki = require('lokijs');
+const Settings = require('./settings');
+const log = require('./utils/logger').create('Db');
 
 let db;
 
@@ -19,7 +19,7 @@ exports.init = () => {
       log.info(`Creating db: ${filePath}`);
 
       const tempdb = new Loki(filePath, {
-        env: "NODEJS",
+        env: 'NODEJS',
         autoload: false
       });
 
@@ -30,14 +30,14 @@ exports.init = () => {
 
     return new Q((resolve, reject) => {
       db = new Loki(filePath, {
-        env: "NODEJS",
+        env: 'NODEJS',
         autosave: true,
         autosaveInterval: 5000,
         autoload: true,
         autoloadCallback(err) {
           if (err) {
             log.error(err);
-            reject(new Error("Error instantiating db"));
+            reject(new Error('Error instantiating db'));
           }
           resolve();
         }
@@ -49,7 +49,7 @@ exports.init = () => {
 exports.getCollection = name => {
   if (!db.getCollection(name)) {
     db.addCollection(name, {
-      unique: ["_id"]
+      unique: ['_id']
     });
   }
 

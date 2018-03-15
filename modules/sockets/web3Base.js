@@ -1,7 +1,7 @@
 const _ = global._;
-const Q = require("bluebird");
-const oboe = require("oboe");
-const SocketBase = require("./base");
+const Q = require('bluebird');
+const oboe = require('oboe');
+const SocketBase = require('./base');
 
 const Socket = SocketBase.Socket;
 const STATE = SocketBase.STATE;
@@ -26,7 +26,7 @@ module.exports = class Web3Socket extends Socket {
   send(payload, options) {
     return Q.try(() => {
       if (!this.isConnected) {
-        throw new Error("Not connected");
+        throw new Error('Not connected');
       }
 
       const isBatch = _.isArray(payload);
@@ -43,7 +43,7 @@ module.exports = class Web3Socket extends Socket {
              */
       const id = isBatch ? finalPayload[0].id : finalPayload.id;
 
-      this._log.trace(isBatch ? "Batch request" : "Request", id, finalPayload);
+      this._log.trace(isBatch ? 'Batch request' : 'Request', id, finalPayload);
 
       this._sendRequests[id] = {
         options,
@@ -72,11 +72,11 @@ module.exports = class Web3Socket extends Socket {
    */
   _finalizeSinglePayload(payload) {
     if (!payload.method) {
-      throw new Error("Method required");
+      throw new Error('Method required');
     }
 
     return {
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       id: _.uuid(),
       method: payload.method,
       params: payload.params || []
@@ -89,7 +89,7 @@ module.exports = class Web3Socket extends Socket {
   _handleSocketResponse() {
     oboe(this)
       .done(result => {
-        this._log.trace("JSON response", result);
+        this._log.trace('JSON response', result);
 
         try {
           const isBatch = _.isArray(result);
@@ -100,13 +100,13 @@ module.exports = class Web3Socket extends Socket {
 
           if (req) {
             this._log.trace(
-              isBatch ? "Batch response" : "Response",
+              isBatch ? 'Batch response' : 'Response',
               firstItem.id,
               result
             );
 
             // if we don't want full JSON result, send just the result
-            if (!_.get(req, "options.fullResult")) {
+            if (!_.get(req, 'options.fullResult')) {
               if (isBatch) {
                 result = _.map(result, r => r.result);
               } else {
@@ -131,14 +131,14 @@ module.exports = class Web3Socket extends Socket {
             });
           } else {
             // not a response to a request so pass it on as a notification
-            this.emit("data-notification", result);
+            this.emit('data-notification', result);
           }
         } catch (err) {
-          this._log.error("Error handling socket response", err);
+          this._log.error('Error handling socket response', err);
         }
       })
       .fail(err => {
-        this._log.error("Socket response error", err);
+        this._log.error('Socket response error', err);
 
         _.each(this._sendRequests, req => {
           req.reject(err);

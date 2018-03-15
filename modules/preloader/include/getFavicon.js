@@ -4,10 +4,10 @@ Gets the favicon url
 @module getFavicon
 */
 
-const { ipcRenderer } = require("electron");
+const { ipcRenderer } = require('electron');
 
 (function() {
-  document.addEventListener("DOMContentLoaded", DOMContentLoaded, false);
+  document.addEventListener('DOMContentLoaded', DOMContentLoaded, false);
 
   function DOMContentLoaded(event) {
     const icon =
@@ -18,11 +18,11 @@ const { ipcRenderer } = require("electron");
       document.querySelector('link[rel="icon"]');
 
     if (icon) {
-      ipcRenderer.sendToHost("favicon", icon.href);
+      ipcRenderer.sendToHost('favicon', icon.href);
     } else {
-      ipcRenderer.sendToHost("favicon", null);
+      ipcRenderer.sendToHost('favicon', null);
     }
 
-    document.removeEventListener("DOMContentLoaded", DOMContentLoaded, false);
+    document.removeEventListener('DOMContentLoaded', DOMContentLoaded, false);
   }
 })();

@@ -1,7 +1,7 @@
 showError = function(tabId, e) {
   if (e.isMainFrame || e.killed) {
     var url,
-      path = "file://" + dirname + "/errorPages/";
+      path = 'file://' + dirname + '/errorPages/';
 
     if (e.killed) {
       e.errorCode = 500;
@@ -9,13 +9,13 @@ showError = function(tabId, e) {
 
     switch (e.errorCode) {
       case -105:
-        url = path + "404.html";
+        url = path + '404.html';
         break;
       case 404:
-        url = path + "404.html";
+        url = path + '404.html';
         break;
       case 500:
-        url = path + "500.html";
+        url = path + '500.html';
         break;
     }
 
@@ -30,7 +30,7 @@ showError = function(tabId, e) {
 };
 
 webviewChangeUrl = function(tabId, e) {
-  if (e.type === "did-navigate-in-page" && !e.isMainFrame) {
+  if (e.type === 'did-navigate-in-page' && !e.isMainFrame) {
     return;
   }
 
@@ -38,16 +38,16 @@ webviewChangeUrl = function(tabId, e) {
 
   console.log(e.type, tabId, url);
 
-  if (e.type === "did-navigate") {
+  if (e.type === 'did-navigate') {
     // destroy socket when navigating away
-    ipc.send("ipcProvider-destroy", this.getWebContents().id);
+    ipc.send('ipcProvider-destroy', this.getWebContents().id);
   }
 
   // make sure to not store error pages in history
   if (
     !url ||
-    url.indexOf("mist/errorPages/") !== -1 ||
-    url.indexOf("app.asar/errorPages/") !== -1
+    url.indexOf('mist/errorPages/') !== -1 ||
+    url.indexOf('app.asar/errorPages/') !== -1
   ) {
     return;
   }
@@ -69,7 +69,7 @@ webviewLoadStop = function(tabId, e) {
   console.log(e.type, tabId, url);
 
   // IS BROWSER
-  if (tabId === "browser") {
+  if (tabId === 'browser') {
     // ADD to doogle last visited pages
     if (
       (find = _.find(LastVisitedPages.find().fetch(), function(historyEntry) {
@@ -115,7 +115,7 @@ webviewLoadStop = function(tabId, e) {
 webviewLoadStart = function(currentTabId, e) {
   var webview = this;
 
-  if (e.type === "did-get-redirect-request" && !e.isMainFrame) {
+  if (e.type === 'did-get-redirect-request' && !e.isMainFrame) {
     return;
   }
 
@@ -125,7 +125,7 @@ webviewLoadStart = function(currentTabId, e) {
   e.preventDefault(); // doesnt work
   webview.stop(); // doesnt work
   ipc.sendSync(
-    "backendAction_stopWebviewNavigation",
+    'backendAction_stopWebviewNavigation',
     webview.getWebContents().id
   );
 
@@ -133,8 +133,8 @@ webviewLoadStart = function(currentTabId, e) {
   var tabId = Helpers.getTabIdByUrl(url);
 
   // if new window (_blank) open in tab, or browser
-  if (e.type === "new-window" && tabId === currentTabId) {
-    tabId = "browser";
+  if (e.type === 'new-window' && tabId === currentTabId) {
+    tabId = 'browser';
   }
 
   var tab = Tabs.findOne(tabId);
@@ -147,5 +147,5 @@ webviewLoadStart = function(currentTabId, e) {
       }
     });
   }
-  LocalStore.set("selectedTab", tabId);
+  LocalStore.set('selectedTab', tabId);
 };

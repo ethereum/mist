@@ -1,6 +1,6 @@
 const _ = global._;
-const BaseProcessor = require("./base");
-const eth = require("ethereumjs-util");
+const BaseProcessor = require('./base');
+const eth = require('ethereumjs-util');
 
 /**
  * Process method: eth_getTransactionReceipt
@@ -30,9 +30,9 @@ module.exports = class extends BaseProcessor {
       // 1. GET TRANSACTION from AND nonce VALUES
       const transactionInfo = await conn.socket.send(
         {
-          jsonrpc: "2.0",
+          jsonrpc: '2.0',
           id: _.uuid(),
-          method: "eth_getTransactionByHash",
+          method: 'eth_getTransactionByHash',
           params: [txHash]
         },
         { fullResult: true }
@@ -42,15 +42,15 @@ module.exports = class extends BaseProcessor {
       const nonce = parseInt(transactionInfo.result.result.nonce, 16);
       const possibleContractAddress = `0x${eth
         .generateAddress(fromAddress, nonce)
-        .toString("hex")}`;
+        .toString('hex')}`;
 
       // 2. GET CODE FROM ADDRESS
       const contractCode = await conn.socket.send(
         {
-          jsonrpc: "2.0",
+          jsonrpc: '2.0',
           id: _.uuid(),
-          method: "eth_getCode",
-          params: [possibleContractAddress, "latest"]
+          method: 'eth_getCode',
+          params: [possibleContractAddress, 'latest']
         },
         { fullResult: true }
       );
@@ -62,7 +62,7 @@ module.exports = class extends BaseProcessor {
         ret.result.result.contractAddress = possibleContractAddress;
       }
     } catch (e) {
-      console.warn("[WARN]", txHash, e);
+      console.warn('[WARN]', txHash, e);
       return ret.result;
     }
     return ret.result;

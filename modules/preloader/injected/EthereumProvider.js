@@ -2,13 +2,13 @@
   var EventEmitter = window.EventEmitter;
 
   var postMessage = function(payload) {
-    if (typeof payload === "object") {
+    if (typeof payload === 'object') {
       payload = JSON.stringify(payload);
     }
 
     window.postMessage(
       payload,
-      !location.origin || location.origin === "null" ? "*" : location.origin
+      !location.origin || location.origin === 'null' ? '*' : location.origin
     );
   };
 
@@ -27,7 +27,7 @@
     this._reconnectCheck();
 
     // Wait for response messages
-    window.addEventListener("message", function(event) {
+    window.addEventListener('message', function(event) {
       var data;
       try {
         data = JSON.parse(event.data);
@@ -36,21 +36,21 @@
       }
 
       if (
-        typeof data !== "object" ||
+        typeof data !== 'object' ||
         (data.message &&
-          (!Object.prototype.hasOwnProperty.call(data.message, "jsonrpc") &&
-            !Object.prototype.hasOwnProperty.call(data.message[0], "jsonrpc")))
+          (!Object.prototype.hasOwnProperty.call(data.message, 'jsonrpc') &&
+            !Object.prototype.hasOwnProperty.call(data.message[0], 'jsonrpc')))
       ) {
         return;
       }
 
-      if (data.type === "data") {
+      if (data.type === 'data') {
         var id = null;
         var result = data.message;
 
         // get the id which matches the returned id
         if (
-          typeof result === "object" &&
+          typeof result === 'object' &&
           result.forEach &&
           isFinite(result.length)
         ) {
@@ -65,13 +65,13 @@
         if (
           !id &&
           result.method &&
-          result.method.indexOf("_subscription") !== -1
+          result.method.indexOf('_subscription') !== -1
         ) {
           // _this.listeners('data').forEach(function(callback){
           //     if(typeof callback === 'function')
           //         callback(null, result);
           // });
-          _this.emit("data", result);
+          _this.emit('data', result);
 
           // fire the callback
         } else if (_this.responseCallbacks[id]) {
@@ -86,7 +86,7 @@
         //         callback(null, data.message);
         // });
         // TODO check if secure
-        _this.emit("data.type", data.message);
+        _this.emit('data.type', data.message);
       }
     });
   }
@@ -107,9 +107,9 @@
     var id = payload.id || payload[0].id;
     var method = payload.method || payload[0].method;
 
-    if (typeof callback !== "function") {
+    if (typeof callback !== 'function') {
       throw new Error(
-        "No callback given, sync calls are not possible anymore in Mist. Please use only async calls."
+        'No callback given, sync calls are not possible anymore in Mist. Please use only async calls.'
       );
     }
 
@@ -126,13 +126,13 @@
     var _this = this;
     var reconnectIntervalId;
 
-    this.on("end", function() {
+    this.on('end', function() {
       reconnectIntervalId = setInterval(function() {
         _this._connect();
       }, 500);
     });
 
-    this.on("connect", function() {
+    this.on('connect', function() {
       clearInterval(reconnectIntervalId);
     });
   };
@@ -144,7 +144,7 @@
      */
   EthereumProvider.prototype._connect = function(payload, callback) {
     postMessage({
-      type: "create"
+      type: 'create'
     });
   };
 
@@ -160,7 +160,7 @@
     this._addResponseCallback(payload, callback);
     postMessage(
       {
-        type: "write",
+        type: 'write',
         message: payload
       },
       this.origin
@@ -174,10 +174,10 @@
   // For backwards compatibility of web3.currentProvider;
   EthereumProvider.prototype.sendSync = function() {
     return {
-      jsonrpc: "2.0",
+      jsonrpc: '2.0',
       error: {
         code: -32603,
-        message: "Sync calls are not anymore supported in Mist :\\"
+        message: 'Sync calls are not anymore supported in Mist :\\'
       }
     };
   };

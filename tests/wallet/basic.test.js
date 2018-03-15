@@ -1,20 +1,20 @@
-const _ = require("underscore");
-const Q = require("bluebird");
-const fs = require("fs");
-const path = require("path");
+const _ = require('underscore');
+const Q = require('bluebird');
+const fs = require('fs');
+const path = require('path');
 
-const test = require("../_base").mocha(module, {
-  app: "wallet"
+const test = require('../_base').mocha(module, {
+  app: 'wallet'
 });
 
-test["Title test"] = function*() {
+test['Title test'] = function*() {
   const client = this.client;
 
   yield client.waitUntilWindowLoaded();
-  (yield client.getTitle()).should.eql("Ethereum Wallet");
+  (yield client.getTitle()).should.eql('Ethereum Wallet');
 };
 
-test["account balances"] = function*() {
+test['account balances'] = function*() {
   const web3 = this.web3;
   const client = this.client;
 
@@ -22,7 +22,7 @@ test["account balances"] = function*() {
   const appBalances = this.getUiAccountBalances();
 
   realBalances.should.not.be.null;
-  realBalances.should.eql("5");
+  realBalances.should.eql('5');
   appBalances.should.eql(realBalances);
 };
 
@@ -41,7 +41,7 @@ test["account balances"] = function*() {
 //   appBalances.should.eql(realBalances);
 // };
 
-test["deposit into account"] = function*() {
+test['deposit into account'] = function*() {
   const web3 = this.web3;
   const client = this.client;
 
@@ -54,7 +54,7 @@ test["deposit into account"] = function*() {
   yield this.openAccountInUi(newAccount);
 
   // links
-  const accLinks = yield this.getUiElements(".dapp-actionbar li");
+  const accLinks = yield this.getUiElements('.dapp-actionbar li');
   yield client.elementIdClick(accLinks[0].ELEMENT);
 
   // fill in send form and submit
@@ -76,16 +76,16 @@ const _createNewAccount = function*() {
 
   // open password window
   yield this.openAndFocusNewWindow(() => {
-    return client.click("button.create.account");
+    return client.click('button.create.account');
   });
 
   // enter password
-  yield client.setValue("form .password", "1234");
-  yield client.click("form button.ok");
+  yield client.setValue('form .password', '1234');
+  yield client.click('form button.ok');
 
   // re-enter password
-  yield client.setValue("form .password-repeat", "1234");
-  yield client.click("form button.ok");
+  yield client.setValue('form .password-repeat', '1234');
+  yield client.click('form button.ok');
 
   yield Q.delay(10000);
 
@@ -96,16 +96,16 @@ const _completeSendForm = function*(amt) {
   const client = this.client;
 
   // enter password
-  yield client.setValue("form input[name=amount]", `${amt}`);
+  yield client.setValue('form input[name=amount]', `${amt}`);
 
   // open password window
   yield this.openAndFocusNewWindow(() => {
-    return client.click("form button[type=submit]");
+    return client.click('form button[type=submit]');
   });
 
   // fill in password and submit
-  yield client.setValue("form input[type=password]", "1234");
-  yield client.click("form button.ok");
+  yield client.setValue('form input[type=password]', '1234');
+  yield client.click('form button.ok');
 
   yield Q.delay(5000);
 };

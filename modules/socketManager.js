@@ -1,9 +1,9 @@
 const _ = global._;
-const Q = require("bluebird");
-const log = require("./utils/logger").create("Sockets");
+const Q = require('bluebird');
+const log = require('./utils/logger').create('Sockets');
 
-const Web3IpcSocket = require("./sockets/web3Ipc");
-const Web3HttpSocket = require("./sockets/web3Http");
+const Web3IpcSocket = require('./sockets/web3Ipc');
+const Web3HttpSocket = require('./sockets/web3Http');
 
 /**
  * `Socket` manager.
@@ -22,10 +22,10 @@ class SocketManager {
     log.debug(`Create socket, id=${id}, type=${type}`);
 
     switch (type) {
-      case "ipc":
+      case 'ipc':
         this._sockets[id] = new Web3IpcSocket(this, id);
         break;
-      case "http":
+      case 'http':
         this._sockets[id] = new Web3HttpSocket(this, id);
         break;
       default:
@@ -52,7 +52,7 @@ class SocketManager {
    * @return {Promise}
    */
   destroyAll() {
-    log.info("Destroy all sockets");
+    log.info('Destroy all sockets');
 
     return Q.all(
       _.map(this._sockets, (s, id) => {

@@ -20,20 +20,20 @@
  * @date 2015
  */
 
-"use strict";
+'use strict';
 
-var _ = require("underscore");
+var _ = require('underscore');
 var errors = {
   InvalidConnection: function(host) {
     return new Error(
-      "CONNECTION ERROR: Couldn't connect to node " + host + "."
+      "CONNECTION ERROR: Couldn't connect to node " + host + '.'
     );
   },
   InvalidResponse: function(result) {
     var message =
       !!result && !!result.error && !!result.error.message
         ? result.error.message
-        : "Invalid JSON RPC response: " + JSON.stringify(result);
+        : 'Invalid JSON RPC response: ' + JSON.stringify(result);
     return new Error(message);
   }
 };
@@ -45,17 +45,17 @@ var IpcProvider = function(path, net) {
 
   this.connection = net.connect({ path: this.path });
 
-  this.connection.on("error", function(e) {
-    console.error("IPC Connection Error", e);
+  this.connection.on('error', function(e) {
+    console.error('IPC Connection Error', e);
     _this._timeout();
   });
 
-  this.connection.on("end", function() {
+  this.connection.on('end', function() {
     _this._timeout();
   });
 
   // LISTEN FOR CONNECTION RESPONSES
-  this.connection.on("data", function(data) {
+  this.connection.on('data', function(data) {
     /*jshint maxcomplexity: 6 */
 
     _this._parseResponse(data.toString()).forEach(function(result) {
@@ -91,11 +91,11 @@ IpcProvider.prototype._parseResponse = function(data) {
 
   // DE-CHUNKER
   var dechunkedData = data
-    .replace(/\}[\n\r]?\{/g, "}|--|{") // }{
-    .replace(/\}\][\n\r]?\[\{/g, "}]|--|[{") // }][{
-    .replace(/\}[\n\r]?\[\{/g, "}|--|[{") // }[{
-    .replace(/\}\][\n\r]?\{/g, "}]|--|{") // }]{
-    .split("|--|");
+    .replace(/\}[\n\r]?\{/g, '}|--|{') // }{
+    .replace(/\}\][\n\r]?\[\{/g, '}]|--|[{') // }][{
+    .replace(/\}[\n\r]?\[\{/g, '}|--|[{') // }[{
+    .replace(/\}\][\n\r]?\{/g, '}]|--|{') // }]{
+    .split('|--|');
 
   dechunkedData.forEach(function(data) {
     // prepend the last chunk
@@ -150,7 +150,7 @@ Timeout all requests when the end/error event is fired
 IpcProvider.prototype._timeout = function() {
   for (var key in this.responseCallbacks) {
     if (this.responseCallbacks.hasOwnProperty(key)) {
-      this.responseCallbacks[key](errors.InvalidConnection("on IPC"));
+      this.responseCallbacks[key](errors.InvalidConnection('on IPC'));
       delete this.responseCallbacks[key];
     }
   }

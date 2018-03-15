@@ -1,4 +1,4 @@
 /**
 @module preloader dapps
 */
-require("./browser.js");
+require('./browser.js');

@@ -11,46 +11,46 @@ The request account popup window template
 @constructor
 */
 
-Template["popupWindows_unlockMasterPassword"].onRendered(function() {
+Template['popupWindows_unlockMasterPassword'].onRendered(function() {
   var template = this;
 
-  template.$("input.password").focus();
+  template.$('input.password').focus();
 
   template.autorun(function() {
-    var data = Session.get("data");
+    var data = Session.get('data');
 
     if (data && data.masterPasswordWrong) {
-      TemplateVar.set("unlocking", false);
+      TemplateVar.set('unlocking', false);
 
       Tracker.afterFlush(function() {
-        template.$("input.password").focus();
+        template.$('input.password').focus();
       });
 
       GlobalNotification.warning({
         content: TAPi18n.__(
-          "mist.popupWindows.unlockMasterPassword.errors.wrongPassword"
+          'mist.popupWindows.unlockMasterPassword.errors.wrongPassword'
         ),
         duration: 3
       });
 
-      Session.set("data", false);
+      Session.set('data', false);
     }
   });
 });
 
-Template["popupWindows_unlockMasterPassword"].events({
-  "click .cancel": function() {
-    ipc.send("backendAction_closePopupWindow");
+Template['popupWindows_unlockMasterPassword'].events({
+  'click .cancel': function() {
+    ipc.send('backendAction_closePopupWindow');
   },
-  "submit form": function(e, template) {
+  'submit form': function(e, template) {
     e.preventDefault();
-    var pw = template.find("input.password").value;
+    var pw = template.find('input.password').value;
 
-    TemplateVar.set("unlocking", true);
+    TemplateVar.set('unlocking', true);
 
-    ipc.send("backendAction_unlockedMasterPassword", null, pw);
+    ipc.send('backendAction_unlockedMasterPassword', null, pw);
 
-    template.find("input.password").value = "";
+    template.find('input.password').value = '';
     pw = null;
   }
 });

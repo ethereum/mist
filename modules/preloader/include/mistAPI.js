@@ -2,13 +2,13 @@
 @module MistAPI
 */
 
-const _ = require("underscore");
-const { ipcRenderer } = require("electron");
-const packageJson = require("./../../../package.json");
+const _ = require('underscore');
+const { ipcRenderer } = require('electron');
+const packageJson = require('./../../../package.json');
 
 module.exports = () => {
   let queue = [];
-  const prefix = "entry_";
+  const prefix = 'entry_';
   const MIST_SUBMENU_LIMIT = 100;
 
   // todo: error handling
@@ -17,13 +17,13 @@ module.exports = () => {
       return false;
     }
 
-    return ["name"].every(e => e in options);
+    return ['name'].every(e => e in options);
   };
 
   // filterId the id to only contain a-z A-Z 0-9
   const filterId = str => {
     const filteredStr = String(str);
-    let newStr = "";
+    let newStr = '';
     if (filteredStr) {
       for (let i = 0; i < filteredStr.length; i += 1) {
         if (/[a-zA-Z0-9_-]/.test(filteredStr.charAt(i))) {
@@ -55,7 +55,7 @@ module.exports = () => {
         this.callbacks.connectAccount.push(callback);
       }
 
-      ipcRenderer.send("mistAPI_requestAccount");
+      ipcRenderer.send('mistAPI_requestAccount');
     },
     solidity: {
       version: String(packageJson.dependencies.solc).match(/\d+\.\d+\.\d+/)[0]
@@ -63,19 +63,19 @@ module.exports = () => {
     sounds: {
       bip: function playSound() {
         ipcRenderer.sendToHost(
-          "mistAPI_sound",
+          'mistAPI_sound',
           `file://${__dirname}/../../../sounds/bip.mp3`
         );
       },
       bloop: function playSound() {
         ipcRenderer.sendToHost(
-          "mistAPI_sound",
+          'mistAPI_sound',
           `file://${__dirname}/../../../sounds/bloop.mp3`
         );
       },
       invite: function playSound() {
         ipcRenderer.sendToHost(
-          "mistAPI_sound",
+          'mistAPI_sound',
           `file://${__dirname}/../../../sounds/invite.mp3`
         );
       }
@@ -93,7 +93,7 @@ module.exports = () => {
             @param {String} text
             */
       setBadge(text) {
-        ipcRenderer.sendToHost("mistAPI_setBadge", text);
+        ipcRenderer.sendToHost('mistAPI_setBadge', text);
       },
       /**
             Adds/Updates a menu entry
@@ -138,7 +138,7 @@ module.exports = () => {
         }
 
         const entry = {
-          id: filteredId || "mist_defaultId",
+          id: filteredId || 'mist_defaultId',
           position: options.position,
           selected: !!options.selected,
           name: options.name,
@@ -146,7 +146,7 @@ module.exports = () => {
         };
 
         queue.push({
-          action: "addMenu",
+          action: 'addMenu',
           entry
         });
 
@@ -183,7 +183,7 @@ module.exports = () => {
         delete this.entries[filteredId];
 
         queue.push({
-          action: "removeMenu",
+          action: 'removeMenu',
           filteredId
         });
       },
@@ -195,7 +195,7 @@ module.exports = () => {
             */
       select(id) {
         const filteredId = prefix + filterId(id);
-        queue.push({ action: "selectMenu", id: filteredId });
+        queue.push({ action: 'selectMenu', id: filteredId });
 
         for (const e in this.entries) {
           if ({}.hasOwnProperty.call(this.entries, e)) {
@@ -210,19 +210,19 @@ module.exports = () => {
             */
       clear() {
         this.entries = {};
-        queue.push({ action: "clearMenu" });
+        queue.push({ action: 'clearMenu' });
       }
     }
   };
 
-  ipcRenderer.on("mistAPI_callMenuFunction", (e, id) => {
+  ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
     if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
       mist.menu.entries[id].callback();
     }
   });
 
-  ipcRenderer.on("uiAction_windowMessage", (e, type, error, value) => {
-    console.log("uiAction_windowMessage", type, error, value);
+  ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
+    console.log('uiAction_windowMessage', type, error, value);
     if (mist.callbacks[type]) {
       mist.callbacks[type].forEach(cb => {
         cb(error, value);
@@ -234,7 +234,7 @@ module.exports = () => {
   // work up queue every 500ms
   setInterval(() => {
     if (queue.length > 0) {
-      ipcRenderer.sendToHost("mistAPI_menuChanges", queue);
+      ipcRenderer.sendToHost('mistAPI_menuChanges', queue);
       queue = [];
     }
   }, 500);

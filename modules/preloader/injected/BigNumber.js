@@ -1,7 +1,7 @@
 (function() {
   /* bignumber.js v4.0.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
   !(function(e) {
-    "use strict";
+    'use strict';
     function n(e) {
       function a(e, n) {
         var t,
@@ -12,21 +12,21 @@
           s,
           l = this;
         if (!(l instanceof a))
-          return z && x(26, "constructor call without new", e), new a(e, n);
-        if (null != n && V(n, 2, 64, C, "base")) {
-          if (((n = 0 | n), (s = e + ""), 10 == n))
+          return z && x(26, 'constructor call without new', e), new a(e, n);
+        if (null != n && V(n, 2, 64, C, 'base')) {
+          if (((n = 0 | n), (s = e + ''), 10 == n))
             return (l = new a(e instanceof a ? e : s)), I(l, B + l.e + 1, P);
           if (
-            ((o = "number" == typeof e) && 0 * e != 0) ||
+            ((o = 'number' == typeof e) && 0 * e != 0) ||
             !new RegExp(
-              "^-?" + (t = "[" + v.slice(0, n) + "]+") + "(?:\\." + t + ")?$",
-              37 > n ? "i" : ""
+              '^-?' + (t = '[' + v.slice(0, n) + ']+') + '(?:\\.' + t + ')?$',
+              37 > n ? 'i' : ''
             ).test(s)
           )
             return U(l, s, o, n);
           o
             ? ((l.s = 0 > 1 / e ? ((s = s.slice(1)), -1) : 1),
-              z && s.replace(/^0\.0*|\./, "").length > 15 && x(C, w, e),
+              z && s.replace(/^0\.0*|\./, '').length > 15 && x(C, w, e),
               (o = !1))
             : (l.s = 45 === s.charCodeAt(0) ? ((s = s.slice(1)), -1) : 1),
             (s = A(s, 10, n, l.s));
@@ -38,19 +38,19 @@
               (l.c = (e = e.c) ? e.slice() : e),
               void (C = 0)
             );
-          if ((o = "number" == typeof e) && 0 * e == 0) {
+          if ((o = 'number' == typeof e) && 0 * e == 0) {
             if (((l.s = 0 > 1 / e ? ((e = -e), -1) : 1), e === ~~e)) {
               for (r = 0, i = e; i >= 10; i /= 10, r++);
               return (l.e = r), (l.c = [e]), void (C = 0);
             }
-            s = e + "";
+            s = e + '';
           } else {
-            if (!h.test((s = e + ""))) return U(l, s, o);
+            if (!h.test((s = e + ''))) return U(l, s, o);
             l.s = 45 === s.charCodeAt(0) ? ((s = s.slice(1)), -1) : 1;
           }
         }
         for (
-          (r = s.indexOf(".")) > -1 && (s = s.replace(".", "")),
+          (r = s.indexOf('.')) > -1 && (s = s.replace('.', '')),
             (i = s.search(/e/i)) > 0
               ? (0 > r && (r = i),
                 (r += +s.slice(i + 1)),
@@ -82,7 +82,7 @@
                 l.c.push(+s.slice(i, (i += b)));
               (s = s.slice(i)), (i = b - s.length);
             } else i -= u;
-            for (; i--; s += "0");
+            for (; i--; s += '0');
             l.c.push(+s);
           }
         else l.c = [(l.e = 0)];
@@ -96,7 +96,7 @@
           h,
           g,
           p,
-          d = e.indexOf("."),
+          d = e.indexOf('.'),
           m = B,
           w = P;
         for (
@@ -104,7 +104,7 @@
             d >= 0 &&
               ((l = W),
               (W = 0),
-              (e = e.replace(".", "")),
+              (e = e.replace('.', '')),
               (p = new a(t)),
               (h = p.pow(e.length - d)),
               (W = l),
@@ -115,7 +115,7 @@
           0 == g[--l];
           g.pop()
         );
-        if (!g[0]) return "0";
+        if (!g[0]) return '0';
         if (
           (0 > d
             ? --u
@@ -141,12 +141,12 @@
                     w == (h.s < 0 ? 8 : 7)))),
           1 > o || !g[0])
         )
-          e = c ? f("1", -m) : "0";
+          e = c ? f('1', -m) : '0';
         else {
           if (((g.length = o), c))
             for (--n; ++g[--o] > n; ) (g[o] = 0), o || (++u, g.unshift(1));
           for (l = g.length; !g[--l]; );
-          for (d = 0, e = ""; l >= d; e += v.charAt(g[d++]));
+          for (d = 0, e = ''; l >= d; e += v.charAt(g[d++]));
           e = f(e, u);
         }
         return e;
@@ -165,13 +165,13 @@
           (c = h.length),
           19 == i || (24 == i && (u >= n || q >= u)))
         ) {
-          for (; n > c; h += "0", c++);
+          for (; n > c; h += '0', c++);
           h = l(h, u);
         } else if (((n -= s), (h = f(h, u)), u + 1 > c)) {
-          if (--n > 0) for (h += "."; n--; h += "0");
+          if (--n > 0) for (h += '.'; n--; h += '0');
         } else if (((n += u - c), n > 0))
-          for (u + 1 == c && (h += "."); n--; h += "0");
-        return e.s < 0 && o ? "-" + h : h;
+          for (u + 1 == c && (h += '.'); n--; h += '0');
+        return e.s < 0 && o ? '-' + h : h;
       }
       function D(e, n) {
         var t,
@@ -191,8 +191,8 @@
           (n > e || e > t || e != c(e)) &&
             x(
               r,
-              (i || "decimal places") +
-                (n > e || e > t ? " out of range" : " not an integer"),
+              (i || 'decimal places') +
+                (n > e || e > t ? ' out of range' : ' not an integer'),
               e
             ),
           !0
@@ -211,40 +211,40 @@
       function x(e, n, t) {
         var r = new Error(
           [
-            "new BigNumber",
-            "cmp",
-            "config",
-            "div",
-            "divToInt",
-            "eq",
-            "gt",
-            "gte",
-            "lt",
-            "lte",
-            "minus",
-            "mod",
-            "plus",
-            "precision",
-            "random",
-            "round",
-            "shift",
-            "times",
-            "toDigits",
-            "toExponential",
-            "toFixed",
-            "toFormat",
-            "toFraction",
-            "pow",
-            "toPrecision",
-            "toString",
-            "BigNumber"
+            'new BigNumber',
+            'cmp',
+            'config',
+            'div',
+            'divToInt',
+            'eq',
+            'gt',
+            'gte',
+            'lt',
+            'lte',
+            'minus',
+            'mod',
+            'plus',
+            'precision',
+            'random',
+            'round',
+            'shift',
+            'times',
+            'toDigits',
+            'toExponential',
+            'toFixed',
+            'toFormat',
+            'toFraction',
+            'pow',
+            'toPrecision',
+            'toString',
+            'BigNumber'
           ][e] +
-            "() " +
+            '() ' +
             n +
-            ": " +
+            ': ' +
             t
         );
-        throw ((r.name = "BigNumber Error"), (C = 0), r);
+        throw ((r.name = 'BigNumber Error'), (C = 0), r);
       }
       function I(e, n, t, r) {
         var i,
@@ -344,11 +344,11 @@
         H = 1,
         W = 0,
         J = {
-          decimalSeparator: ".",
-          groupSeparator: ",",
+          decimalSeparator: '.',
+          groupSeparator: ',',
           groupSize: 3,
           secondaryGroupSize: 0,
-          fractionGroupSeparator: " ",
+          fractionGroupSeparator: ' ',
           fractionGroupSize: 0
         };
       return (
@@ -371,7 +371,7 @@
             i = arguments,
             s = i[0],
             l =
-              s && "object" == typeof s
+              s && 'object' == typeof s
                 ? function() {
                     return s.hasOwnProperty(n) ? null != (e = s[n]) : void 0;
                   }
@@ -379,18 +379,18 @@
                     return i.length > t ? null != (e = i[t++]) : void 0;
                   };
           return (
-            l((n = "DECIMAL_PLACES")) && V(e, 0, S, 2, n) && (B = 0 | e),
+            l((n = 'DECIMAL_PLACES')) && V(e, 0, S, 2, n) && (B = 0 | e),
             (r[n] = B),
-            l((n = "ROUNDING_MODE")) && V(e, 0, 8, 2, n) && (P = 0 | e),
+            l((n = 'ROUNDING_MODE')) && V(e, 0, 8, 2, n) && (P = 0 | e),
             (r[n] = P),
-            l((n = "EXPONENTIAL_AT")) &&
+            l((n = 'EXPONENTIAL_AT')) &&
               (u(e)
                 ? V(e[0], -S, 0, 2, n) &&
                   V(e[1], 0, S, 2, n) &&
                   ((q = 0 | e[0]), (k = 0 | e[1]))
                 : V(e, -S, S, 2, n) && (q = -(k = 0 | (0 > e ? -e : e)))),
             (r[n] = [q, k]),
-            l((n = "RANGE")) &&
+            l((n = 'RANGE')) &&
               (u(e)
                 ? V(e[0], -S, -1, 2, n) &&
                   V(e[1], 1, S, 2, n) &&
@@ -398,35 +398,35 @@
                 : V(e, -S, S, 2, n) &&
                   (0 | e
                     ? ($ = -(G = 0 | (0 > e ? -e : e)))
-                    : z && x(2, n + " cannot be zero", e))),
+                    : z && x(2, n + ' cannot be zero', e))),
             (r[n] = [$, G]),
-            l((n = "ERRORS")) &&
+            l((n = 'ERRORS')) &&
               (e === !!e || 1 === e || 0 === e
                 ? ((C = 0), (V = (z = !!e) ? F : o))
                 : z && x(2, n + d, e)),
             (r[n] = z),
-            l((n = "CRYPTO")) &&
+            l((n = 'CRYPTO')) &&
               (e === !0 || e === !1 || 1 === e || 0 === e
                 ? e
-                  ? ((e = "undefined" == typeof crypto),
+                  ? ((e = 'undefined' == typeof crypto),
                     !e &&
                     crypto &&
                     (crypto.getRandomValues || crypto.randomBytes)
                       ? (j = !0)
                       : z
-                        ? x(2, "crypto unavailable", e ? void 0 : crypto)
+                        ? x(2, 'crypto unavailable', e ? void 0 : crypto)
                         : (j = !1))
                   : (j = !1)
                 : z && x(2, n + d, e)),
             (r[n] = j),
-            l((n = "MODULO_MODE")) && V(e, 0, 9, 2, n) && (H = 0 | e),
+            l((n = 'MODULO_MODE')) && V(e, 0, 9, 2, n) && (H = 0 | e),
             (r[n] = H),
-            l((n = "POW_PRECISION")) && V(e, 0, S, 2, n) && (W = 0 | e),
+            l((n = 'POW_PRECISION')) && V(e, 0, S, 2, n) && (W = 0 | e),
             (r[n] = W),
-            l((n = "FORMAT")) &&
-              ("object" == typeof e
+            l((n = 'FORMAT')) &&
+              ('object' == typeof e
                 ? (J = e)
-                : z && x(2, n + " not an object", e)),
+                : z && x(2, n + ' not an object', e)),
             (r[n] = J),
             r
           );
@@ -489,7 +489,7 @@
                       ? crypto.randomBytes(7).copy(t, s)
                       : (l.push(u % 1e14), (s += 7));
                 s = o / 7;
-              } else (j = !1), z && x(14, "crypto unavailable", crypto);
+              } else (j = !1), z && x(14, 'crypto unavailable', crypto);
             if (!j) for (; o > s; ) (u = n()), 9e15 > u && (l[s++] = u % 1e14);
             for (
               o = l[--s],
@@ -649,22 +649,22 @@
             i = /^\s*\+(?=[\w.])|^\s+|\s+$/g;
           return function(o, u, s, l) {
             var f,
-              c = s ? u : u.replace(i, "");
+              c = s ? u : u.replace(i, '');
             if (r.test(c)) o.s = isNaN(c) ? null : 0 > c ? -1 : 1;
             else {
               if (
                 !s &&
                 ((c = c.replace(e, function(e, n, t) {
                   return (
-                    (f = "x" == (t = t.toLowerCase()) ? 16 : "b" == t ? 2 : 8),
+                    (f = 'x' == (t = t.toLowerCase()) ? 16 : 'b' == t ? 2 : 8),
                     l && l != f ? e : n
                   );
                 })),
-                l && ((f = l), (c = c.replace(n, "$1").replace(t, "0.$1"))),
+                l && ((f = l), (c = c.replace(n, '$1').replace(t, '0.$1'))),
                 u != c)
               )
                 return new a(c, f);
-              z && x(C, "not a" + (l ? " base " + l : "") + " number", u),
+              z && x(C, 'not a' + (l ? ' base ' + l : '') + ' number', u),
                 (o.s = null);
             }
             (o.c = o.e = null), (C = 0);
@@ -854,7 +854,7 @@
               e !== !!e &&
               1 !== e &&
               0 !== e &&
-              (z && x(13, "argument" + d, e), e != !!e && (e = null)),
+              (z && x(13, 'argument' + d, e), e != !!e && (e = null)),
             !i)
           )
             return null;
@@ -878,8 +878,8 @@
         }),
         (M.shift = function(e) {
           var n = this;
-          return V(e, -y, y, 16, "argument")
-            ? n.times("1e" + c(e))
+          return V(e, -y, y, 16, 'argument')
+            ? n.times('1e' + c(e))
             : new a(
                 n.c && n.c[0] && (-y > e || e > y)
                   ? n.s * (0 > e ? 0 : 1 / 0)
@@ -897,22 +897,22 @@
             f = s.s,
             c = s.e,
             h = B + 4,
-            g = new a("0.5");
+            g = new a('0.5');
           if (1 !== f || !l || !l[0])
             return new a(!f || (0 > f && (!l || l[0])) ? NaN : l ? s : 1 / 0);
           if (
             ((f = Math.sqrt(+s)),
             0 == f || f == 1 / 0
               ? ((n = r(l)),
-                (n.length + c) % 2 == 0 && (n += "0"),
+                (n.length + c) % 2 == 0 && (n += '0'),
                 (f = Math.sqrt(n)),
                 (c = t((c + 1) / 2) - (0 > c || c % 2)),
                 f == 1 / 0
-                  ? (n = "1e" + c)
+                  ? (n = '1e' + c)
                   : ((n = f.toExponential()),
-                    (n = n.slice(0, n.indexOf("e") + 1) + c)),
+                    (n = n.slice(0, n.indexOf('e') + 1) + c)),
                 (i = new a(n)))
-              : (i = new a(f + "")),
+              : (i = new a(f + '')),
             i.c[0])
           )
             for (c = i.e, f = c + h, 3 > f && (f = 0); ; )
@@ -924,9 +924,9 @@
                 if (
                   (i.e < c && --f,
                   (n = n.slice(f - 3, f + 1)),
-                  "9999" != n && (o || "4999" != n))
+                  '9999' != n && (o || '4999' != n))
                 ) {
-                  (!+n || (!+n.slice(1) && "5" == n.charAt(0))) &&
+                  (!+n || (!+n.slice(1) && '5' == n.charAt(0))) &&
                     (I(i, i.e + B + 2, 1), (e = !i.times(i).eq(s)));
                   break;
                 }
@@ -995,7 +995,7 @@
         (M.toDigits = function(e, n) {
           var t = new a(this);
           return (
-            (e = null != e && V(e, 1, S, 18, "precision") ? 0 | e : null),
+            (e = null != e && V(e, 1, S, 18, 'precision') ? 0 | e : null),
             (n = null != n && V(n, 0, 8, 18, m) ? 0 | n : P),
             e ? I(t, e, n) : t
           );
@@ -1020,7 +1020,7 @@
           );
           if (this.c) {
             var r,
-              i = t.split("."),
+              i = t.split('.'),
               o = +J.groupSize,
               u = +J.secondaryGroupSize,
               s = J.groupSeparator,
@@ -1032,15 +1032,15 @@
             if ((u && ((r = o), (o = u), (u = r), (h -= r)), o > 0 && h > 0)) {
               for (r = h % o || o, l = a.substr(0, r); h > r; r += o)
                 l += s + a.substr(r, o);
-              u > 0 && (l += s + a.slice(r)), c && (l = "-" + l);
+              u > 0 && (l += s + a.slice(r)), c && (l = '-' + l);
             }
             t = f
               ? l +
                 J.decimalSeparator +
                 ((u = +J.fractionGroupSize)
                   ? f.replace(
-                      new RegExp("\\d{" + u + "}\\B", "g"),
-                      "$&" + J.fractionGroupSeparator
+                      new RegExp('\\d{' + u + '}\\B', 'g'),
+                      '$&' + J.fractionGroupSeparator
                     )
                   : f)
               : l;
@@ -1072,8 +1072,8 @@
                 (z &&
                   x(
                     22,
-                    "max denominator " +
-                      (h ? "out of range" : "not an integer"),
+                    'max denominator ' +
+                      (h ? 'out of range' : 'not an integer'),
                     e
                   ),
                 (e = !h && s.c && I(s, s.e + 1, 1).gte(T) ? s : null))),
@@ -1130,7 +1130,7 @@
             u = this;
           if (
             (null != n && ((C = 23), (n = new a(n))),
-            (!V(e, -y, y, 23, "exponent") &&
+            (!V(e, -y, y, 23, 'exponent') &&
               (!isFinite(e) ||
                 (o > y && (e /= 0)) ||
                 (parseFloat(e) != e && !(e = NaN)))) ||
@@ -1164,7 +1164,7 @@
         (M.toPrecision = function(e, n) {
           return E(
             this,
-            null != e && V(e, 1, S, 24, "precision") ? 0 | e : null,
+            null != e && V(e, 1, S, 24, 'precision') ? 0 | e : null,
             n,
             24
           );
@@ -1176,13 +1176,13 @@
             o = t.e;
           return (
             null === o
-              ? i ? ((n = "Infinity"), 0 > i && (n = "-" + n)) : (n = "NaN")
+              ? i ? ((n = 'Infinity'), 0 > i && (n = '-' + n)) : (n = 'NaN')
               : ((n = r(t.c)),
                 (n =
-                  null != e && V(e, 2, 64, 25, "base")
+                  null != e && V(e, 2, 64, 25, 'base')
                     ? A(f(n, o), 0 | e, 10, i)
                     : q >= o || o >= k ? l(n, o) : f(n, o)),
-                0 > i && t.c[0] && (n = "-" + n)),
+                0 > i && t.c[0] && (n = '-' + n)),
             n
           );
         }),
@@ -1197,7 +1197,7 @@
             ? n.toString()
             : ((e = r(n.c)),
               (e = q >= t || t >= k ? l(e, t) : f(e, t)),
-              n.s < 0 ? "-" + e : e);
+              n.s < 0 ? '-' + e : e);
         }),
         (M.isBigNumber = !0),
         null != e && a.config(e),
@@ -1209,8 +1209,8 @@
       return e > 0 || e === n ? n : n - 1;
     }
     function r(e) {
-      for (var n, t, r = 1, i = e.length, o = e[0] + ""; i > r; ) {
-        for (n = e[r++] + "", t = b - n.length; t--; n = "0" + n);
+      for (var n, t, r = 1, i = e.length, o = e[0] + ''; i > r; ) {
+        for (n = e[r++] + '', t = b - n.length; t--; n = '0' + n);
         o += n;
       }
       for (i = o.length; 48 === o.charCodeAt(--i); );
@@ -1239,7 +1239,7 @@
       return (e = c(e)) >= n && t >= e;
     }
     function u(e) {
-      return "[object Array]" == Object.prototype.toString.call(e);
+      return '[object Array]' == Object.prototype.toString.call(e);
     }
     function s(e, n, t) {
       for (var r, i, o = [0], u = 0, s = e.length; s > u; ) {
@@ -1254,20 +1254,20 @@
     }
     function l(e, n) {
       return (
-        (e.length > 1 ? e.charAt(0) + "." + e.slice(1) : e) +
-        (0 > n ? "e" : "e+") +
+        (e.length > 1 ? e.charAt(0) + '.' + e.slice(1) : e) +
+        (0 > n ? 'e' : 'e+') +
         n
       );
     }
     function f(e, n) {
       var t, r;
       if (0 > n) {
-        for (r = "0."; ++n; r += "0");
+        for (r = '0.'; ++n; r += '0');
         e = r + e;
       } else if (((t = e.length), ++n > t)) {
-        for (r = "0", n -= t; --n; r += "0");
+        for (r = '0', n -= t; --n; r += '0');
         e += r;
-      } else t > n && (e = e.slice(0, n) + "." + e.slice(n));
+      } else t > n && (e = e.slice(0, n) + '.' + e.slice(n));
       return e;
     }
     function c(e) {
@@ -1277,10 +1277,10 @@
       h = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
       g = Math.ceil,
       p = Math.floor,
-      d = " not a boolean or binary digit",
-      m = "rounding mode",
-      w = "number type has more than 15 significant digits",
-      v = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_",
+      d = ' not a boolean or binary digit',
+      m = 'rounding mode',
+      w = 'number type has more than 15 significant digits',
+      v = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
       N = 1e14,
       b = 14,
       y = 9007199254740991,
@@ -1303,16 +1303,16 @@
       R = 1e7,
       S = 1e9;
     (a = n()),
-      (a["default"] = a.BigNumber = a),
-      "function" == typeof define && define.amd
+      (a['default'] = a.BigNumber = a),
+      'function' == typeof define && define.amd
         ? define(function() {
             return a;
           })
-        : "undefined" != typeof module && module.exports
+        : 'undefined' != typeof module && module.exports
           ? (module.exports = a)
           : (e ||
               (e =
-                "undefined" != typeof self ? self : Function("return this")()),
+                'undefined' != typeof self ? self : Function('return this')()),
             (e.BigNumber = a));
   })(this);
   //# sourceMappingURL=bignumber.js.map

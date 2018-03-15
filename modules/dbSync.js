@@ -1,39 +1,39 @@
 /**
 @module dbSync
 */
-const { ipcMain, ipcRenderer } = require("electron");
+const { ipcMain, ipcRenderer } = require('electron');
 
 /**
  * Sync IPC calls received from given window into given db table.
  * @param  {Object} coll Db collection to save to.
  */
 exports.initializeListeners = function() {
-  let log = require("./utils/logger").create("dbSync"),
-    db = require("./db"),
+  let log = require('./utils/logger').create('dbSync'),
+    db = require('./db'),
     ipc = ipcMain;
 
-  ipc.on("dbSync-add", (event, args) => {
+  ipc.on('dbSync-add', (event, args) => {
     let collName = args.collName,
       coll = db.getCollection(`UI_${collName}`);
 
-    log.trace("dbSync-add", collName, args._id);
+    log.trace('dbSync-add', collName, args._id);
 
     const _id = args._id;
 
-    if (!coll.by("_id", _id)) {
+    if (!coll.by('_id', _id)) {
       args.fields._id = _id;
       coll.insert(args.fields);
     }
   });
 
-  ipc.on("dbSync-changed", (event, args) => {
+  ipc.on('dbSync-changed', (event, args) => {
     let collName = args.collName,
       coll = db.getCollection(`UI_${collName}`);
 
-    log.trace("dbSync-changed", collName, args._id);
+    log.trace('dbSync-changed', collName, args._id);
 
     const _id = args._id;
-    const item = coll.by("_id", _id);
+    const item = coll.by('_id', _id);
 
     if (item) {
       for (const k in args.fields) {
@@ -44,39 +44,39 @@ exports.initializeListeners = function() {
 
       coll.update(item);
     } else {
-      log.error("Item not found in db", _id);
+      log.error('Item not found in db', _id);
     }
   });
 
-  ipc.on("dbSync-removed", (event, args) => {
+  ipc.on('dbSync-removed', (event, args) => {
     let collName = args.collName,
       coll = db.getCollection(`UI_${collName}`);
 
-    log.trace("dbSync-removed", collName, args._id);
+    log.trace('dbSync-removed', collName, args._id);
 
     const _id = args._id;
-    const item = coll.by("_id", _id);
+    const item = coll.by('_id', _id);
 
     if (item) {
       coll.remove(item);
     } else {
-      log.error("Item not found in db", _id);
+      log.error('Item not found in db', _id);
     }
   });
 
   // Get all data (synchronous)
-  ipc.on("dbSync-reloadSync", (event, args) => {
+  ipc.on('dbSync-reloadSync', (event, args) => {
     let collName = args.collName,
       coll = db.getCollection(`UI_${collName}`),
       docs = coll.find();
 
-    log.debug("dbSync-reloadSync, no. of docs:", collName, docs.length);
+    log.debug('dbSync-reloadSync, no. of docs:', collName, docs.length);
 
     docs = docs.map(doc => {
       const ret = {};
 
       for (const k in doc) {
-        if (k !== "meta" && k !== "$loki") {
+        if (k !== 'meta' && k !== '$loki') {
           ret[k] = doc[k];
         }
       }
@@ -93,10 +93,10 @@ const syncDataFromBackend = function(coll) {
 
   const collName = coll._name;
 
-  console.debug("Load collection data from backend: ", collName);
+  console.debug('Load collection data from backend: ', collName);
 
   return new Promise((resolve, reject) => {
-    const dataJson = ipc.sendSync("dbSync-reloadSync", {
+    const dataJson = ipc.sendSync('dbSync-reloadSync', {
       collName
     });
 
@@ -118,7 +118,7 @@ const syncDataFromBackend = function(coll) {
             // page, the application process crashes.
             if (
               _.isString(record.redirect) &&
-              record.redirect.indexOf("//about:blank") > -1
+              record.redirect.indexOf('//about:blank') > -1
             ) {
               record.redirect = null;
             }
@@ -164,28 +164,28 @@ exports.frontendSyncInit = function(coll) {
       // start watching for changes
       coll.find().observeChanges({
         added(id, fields) {
-          ipc.send("dbSync-add", {
+          ipc.send('dbSync-add', {
             collName,
             _id: id,
             fields
           });
         },
         changed(id, fields) {
-          ipc.send("dbSync-changed", {
+          ipc.send('dbSync-changed', {
             collName,
             _id: id,
             fields
           });
         },
         removed(id) {
-          ipc.send("dbSync-removed", {
+          ipc.send('dbSync-removed', {
             collName,
             _id: id
           });
         }
       });
 
-      console.debug("Sync collection data to backend started: ", collName);
+      console.debug('Sync collection data to backend started: ', collName);
 
       syncDoneResolver();
     });

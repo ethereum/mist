@@ -1,8 +1,8 @@
 (function() {
-  "use strict";
+  'use strict';
 
   var has = Object.prototype.hasOwnProperty,
-    prefix = "~";
+    prefix = '~';
 
   /**
    * Constructor to create a storage for our `EE` objects.
@@ -332,7 +332,7 @@
   //
   // Expose the module.
   //
-  if ("undefined" !== typeof module) {
+  if ('undefined' !== typeof module) {
     module.exports = EventEmitter;
   }
 

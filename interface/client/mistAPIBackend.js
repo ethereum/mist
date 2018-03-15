@@ -2,7 +2,7 @@
 @module MistAPI Backend
 */
 
-var allowedBrowserBarStyles = ["transparent"];
+var allowedBrowserBarStyles = ['transparent'];
 
 /**
 Filters a id the id to only contain a-z A-Z 0-9 _ -.
@@ -10,7 +10,7 @@ Filters a id the id to only contain a-z A-Z 0-9 _ -.
 @method filterId
 */
 var filterId = function(str) {
-  var newStr = "";
+  var newStr = '';
   var i;
   for (i = 0; i < str.length; i += 1) {
     if (/[a-zA-Z0-9_-]/.test(str.charAt(i))) {
@@ -20,7 +20,7 @@ var filterId = function(str) {
   return newStr;
 };
 
-var sound = document.createElement("audio");
+var sound = document.createElement('audio');
 
 /**
 The backend side of the mist API.
@@ -34,35 +34,35 @@ mistAPIBackend = function(event) {
 
   // console.trace('mistAPIBackend event', event);
 
-  if (event.channel === "setWebviewId") {
+  if (event.channel === 'setWebviewId') {
     Tabs.update(template.data._id, {
       $set: { webviewId: webview.getWebContents().id }
     });
   }
 
   // Send TEST DATA
-  if (event.channel === "sendTestData") {
-    var tests = Tabs.findOne("tests");
+  if (event.channel === 'sendTestData') {
+    var tests = Tabs.findOne('tests');
 
     if (tests) {
       web3.eth.getCoinbase(function(e, coinbase) {
-        webview.send("uiAction_sendTestData", tests.permissions, coinbase);
+        webview.send('uiAction_sendTestData', tests.permissions, coinbase);
       });
     }
   }
 
   // SET FAVICON
-  if (event.channel === "favicon") {
+  if (event.channel === 'favicon') {
     Tabs.update(template.data._id, {
       $set: {
-        icon: Blaze._escape(arg || "")
+        icon: Blaze._escape(arg || '')
       }
     });
   }
 
   // SET APPBAR
-  if (event.channel === "appBar") {
-    var appBarClass = Blaze._escape(arg || "");
+  if (event.channel === 'appBar') {
+    var appBarClass = Blaze._escape(arg || '');
 
     Tabs.update(template.data._id, {
       $set: {
@@ -72,20 +72,20 @@ mistAPIBackend = function(event) {
       }
     });
   }
-  if (event.channel === "mistAPI_sound") {
+  if (event.channel === 'mistAPI_sound') {
     sound.pause();
-    sound.src = Blaze._escape("file://" + dirname + "/sounds/" + arg + ".mp3");
+    sound.src = Blaze._escape('file://' + dirname + '/sounds/' + arg + '.mp3');
     sound.play();
   }
 
   // STOP HERE, IF BROWSER
-  if (template.data._id === "browser") {
+  if (template.data._id === 'browser') {
     return;
   }
 
   // Actions: --------
 
-  if (event.channel === "mistAPI_setBadge") {
+  if (event.channel === 'mistAPI_setBadge') {
     Tabs.update(template.data._id, {
       $set: {
         badge: arg
@@ -93,11 +93,11 @@ mistAPIBackend = function(event) {
     });
   }
 
-  if (event.channel === "mistAPI_menuChanges" && arg instanceof Array) {
+  if (event.channel === 'mistAPI_menuChanges' && arg instanceof Array) {
     arg.forEach(function(eventArg) {
       var query;
 
-      if (eventArg.action === "addMenu") {
+      if (eventArg.action === 'addMenu') {
         // filter ID
         if (eventArg.entry && eventArg.entry.id) {
           eventArg.entry.id = filterId(eventArg.entry.id);
@@ -106,29 +106,29 @@ mistAPIBackend = function(event) {
         query = { $set: {} };
 
         if (eventArg.entry.id) {
-          query.$set["menu." + eventArg.entry.id + ".id"] = eventArg.entry.id;
+          query.$set['menu.' + eventArg.entry.id + '.id'] = eventArg.entry.id;
         }
 
-        query.$set["menu." + eventArg.entry.id + ".selected"] = !!eventArg.entry
+        query.$set['menu.' + eventArg.entry.id + '.selected'] = !!eventArg.entry
           .selected;
 
         if (!_.isUndefined(eventArg.entry.position)) {
-          query.$set["menu." + eventArg.entry.id + ".position"] =
+          query.$set['menu.' + eventArg.entry.id + '.position'] =
             eventArg.entry.position;
         }
         if (!_.isUndefined(eventArg.entry.name)) {
-          query.$set["menu." + eventArg.entry.id + ".name"] =
+          query.$set['menu.' + eventArg.entry.id + '.name'] =
             eventArg.entry.name;
         }
         if (!_.isUndefined(eventArg.entry.badge)) {
-          query.$set["menu." + eventArg.entry.id + ".badge"] =
+          query.$set['menu.' + eventArg.entry.id + '.badge'] =
             eventArg.entry.badge;
         }
 
         Tabs.update(template.data._id, query);
       }
 
-      if (eventArg.action === "selectMenu") {
+      if (eventArg.action === 'selectMenu') {
         var tab = Tabs.findOne(template.data._id);
 
         for (var e in tab.menu) {
@@ -139,15 +139,15 @@ mistAPIBackend = function(event) {
         Tabs.update(template.data._id, { $set: { menu: tab.menu } });
       }
 
-      if (eventArg.action === "removeMenu") {
+      if (eventArg.action === 'removeMenu') {
         var removeQuery = { $unset: {} };
 
-        removeQuery.$unset["menu." + eventArg.id] = "";
+        removeQuery.$unset['menu.' + eventArg.id] = '';
 
         Tabs.update(template.data._id, removeQuery);
       }
 
-      if (eventArg.action === "clearMenu") {
+      if (eventArg.action === 'clearMenu') {
         Tabs.update(template.data._id, { $set: { menu: {} } });
       }
     });

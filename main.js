@@ -1,26 +1,26 @@
-global._ = require("./modules/utils/underscore");
-const { app, dialog, ipcMain, shell, protocol } = require("electron");
-const timesync = require("os-timesync");
-const dbSync = require("./modules/dbSync.js");
-const i18n = require("./modules/i18n.js");
-const logger = require("./modules/utils/logger");
-const Sockets = require("./modules/socketManager");
-const Windows = require("./modules/windows");
-const ClientBinaryManager = require("./modules/clientBinaryManager");
-const UpdateChecker = require("./modules/updateChecker");
-const Q = require("bluebird");
-const windowStateKeeper = require("electron-window-state");
-const log = logger.create("main");
-const Settings = require("./modules/settings");
+global._ = require('./modules/utils/underscore');
+const { app, dialog, ipcMain, shell, protocol } = require('electron');
+const timesync = require('os-timesync');
+const dbSync = require('./modules/dbSync.js');
+const i18n = require('./modules/i18n.js');
+const logger = require('./modules/utils/logger');
+const Sockets = require('./modules/socketManager');
+const Windows = require('./modules/windows');
+const ClientBinaryManager = require('./modules/clientBinaryManager');
+const UpdateChecker = require('./modules/updateChecker');
+const Q = require('bluebird');
+const windowStateKeeper = require('electron-window-state');
+const log = logger.create('main');
+const Settings = require('./modules/settings');
 
-import configureReduxStore from "./modules/core/store";
-import { quitApp } from "./modules/core/ui/actions";
+import configureReduxStore from './modules/core/store';
+import { quitApp } from './modules/core/ui/actions';
 import {
   setLanguageOnMain,
   toggleSwarm
-} from "./modules/core/settings/actions";
-import { SwarmState } from "./modules/core/settings/reducer";
-import swarmNode from "./modules/swarmNode.js";
+} from './modules/core/settings/actions';
+import { SwarmState } from './modules/core/settings/reducer';
+import swarmNode from './modules/swarmNode.js';
 
 Q.config({
   cancellation: true
@@ -30,13 +30,13 @@ global.store = configureReduxStore();
 
 Settings.init();
 
-const db = (global.db = require("./modules/db"));
+const db = (global.db = require('./modules/db'));
 
-require("./modules/ipcCommunicator.js");
-const appMenu = require("./modules/menuItems");
-const ipcProviderBackend = require("./modules/ipc/ipcProviderBackend.js");
-const ethereumNode = require("./modules/ethereumNode.js");
-const nodeSync = require("./modules/nodeSync.js");
+require('./modules/ipcCommunicator.js');
+const appMenu = require('./modules/menuItems');
+const ipcProviderBackend = require('./modules/ipc/ipcProviderBackend.js');
+const ethereumNode = require('./modules/ethereumNode.js');
+const nodeSync = require('./modules/nodeSync.js');
 
 // Define global vars; The preloader makes some globals available to the client.
 global.webviews = [];
@@ -48,72 +48,72 @@ global.i18n = i18n;
 
 // INTERFACE PATHS
 // - WALLET
-if (global.mode === "wallet") {
-  log.info("Starting in Wallet mode");
+if (global.mode === 'wallet') {
+  log.info('Starting in Wallet mode');
 
   global.interfaceAppUrl = Settings.inProductionMode
     ? `file://${__dirname}/interface/wallet/index.html`
-    : "http://localhost:3050";
+    : 'http://localhost:3050';
   global.interfacePopupsUrl = Settings.inProductionMode
     ? `file://${__dirname}/interface/index.html`
-    : "http://localhost:3000";
+    : 'http://localhost:3000';
 
   // - MIST
 } else {
-  log.info("Starting in Mist mode");
+  log.info('Starting in Mist mode');
 
   let url = Settings.inProductionMode
     ? `file://${__dirname}/interface/index.html`
-    : "http://localhost:3000";
+    : 'http://localhost:3000';
 
   if (Settings.cli.resetTabs) {
-    url += "?reset-tabs=true";
+    url += '?reset-tabs=true';
   }
 
   global.interfaceAppUrl = global.interfacePopupsUrl = url;
 }
 
 // prevent crashes and close gracefully
-process.on("uncaughtException", error => {
-  log.error("UNCAUGHT EXCEPTION", error);
+process.on('uncaughtException', error => {
+  log.error('UNCAUGHT EXCEPTION', error);
   store.dispatch(quitApp());
 });
 
 // Quit when all windows are closed.
-app.on("window-all-closed", () => store.dispatch(quitApp()));
+app.on('window-all-closed', () => store.dispatch(quitApp()));
 
 // Listen to custom protocol incoming messages, needs registering of URL schemes
-app.on("open-url", (e, url) => log.info("Open URL", url));
+app.on('open-url', (e, url) => log.info('Open URL', url));
 
 let killedSocketsAndNodes = false;
 
-app.on("before-quit", async event => {
+app.on('before-quit', async event => {
   if (!killedSocketsAndNodes) {
-    log.info("Defer quitting until sockets and node are shut down");
+    log.info('Defer quitting until sockets and node are shut down');
 
     event.preventDefault();
 
     // sockets manager
     try {
       await Sockets.destroyAll();
-      store.dispatch({ type: "[MAIN]:SOCKETS:DESTROY" });
+      store.dispatch({ type: '[MAIN]:SOCKETS:DESTROY' });
     } catch (e) {
-      log.error("Error shutting down sockets");
+      log.error('Error shutting down sockets');
     }
 
     // delay quit, so the sockets can close
     setTimeout(async () => {
       await ethereumNode.stop();
-      store.dispatch({ type: "[MAIN]:ETH_NODE:STOP" });
+      store.dispatch({ type: '[MAIN]:ETH_NODE:STOP' });
 
       killedSocketsAndNodes = true;
       await db.close();
-      store.dispatch({ type: "[MAIN]:DB:CLOSE" });
+      store.dispatch({ type: '[MAIN]:DB:CLOSE' });
 
       store.dispatch(quitApp());
     }, 500);
   } else {
-    log.info("About to quit...");
+    log.info('About to quit...');
   }
 });
 
@@ -122,11 +122,11 @@ let splashWindow;
 
 // This method will be called when Electron has done everything
 // initialization and ready for creating browser windows.
-app.on("ready", async () => {
+app.on('ready', async () => {
   // if using HTTP RPC then inform user
-  if (Settings.rpcMode === "http") {
+  if (Settings.rpcMode === 'http') {
     dialog.showErrorBox(
-      "Insecure RPC connection",
+      'Insecure RPC connection',
       `
 WARNING: You are connecting to an Ethereum node via: ${Settings.rpcHttpPath}
 
@@ -140,7 +140,7 @@ Only do this if you have secured your HTTP connection or you know what you are d
   // initialise the db
   try {
     await global.db.init();
-    store.dispatch({ type: "[MAIN]:DB:INIT" });
+    store.dispatch({ type: '[MAIN]:DB:INIT' });
     onReady();
   } catch (e) {
     log.error(e);
@@ -148,14 +148,14 @@ Only do this if you have secured your HTTP connection or you know what you are d
   }
 });
 
-protocol.registerStandardSchemes(["bzz"]);
+protocol.registerStandardSchemes(['bzz']);
 store.dispatch({
-  type: "[MAIN]:PROTOCOL:REGISTER",
-  payload: { protocol: "bzz" }
+  type: '[MAIN]:PROTOCOL:REGISTER',
+  payload: { protocol: 'bzz' }
 });
 
 async function onReady() {
-  global.config = db.getCollection("SYS_config");
+  global.config = db.getCollection('SYS_config');
 
   dbSync.initializeListeners();
 
@@ -178,35 +178,35 @@ async function onReady() {
 
   checkTimeSync();
 
-  splashWindow ? splashWindow.on("ready", kickStart) : kickStart();
+  splashWindow ? splashWindow.on('ready', kickStart) : kickStart();
 }
 
 function enableSwarmProtocol() {
   protocol.registerHttpProtocol(
-    "bzz",
+    'bzz',
     (request, callback) => {
       if (
         [SwarmState.Disabling, SwarmState.Disabled].includes(
           store.getState().settings.swarmState
         )
       ) {
-        const error = global.i18n.t("mist.errors.swarm.notEnabled");
-        dialog.showErrorBox("Note", error);
+        const error = global.i18n.t('mist.errors.swarm.notEnabled');
+        dialog.showErrorBox('Note', error);
         callback({ error });
         store.dispatch({
-          type: "[MAIN]:PROTOCOL:ERROR",
-          payload: { protocol: "bzz", error }
+          type: '[MAIN]:PROTOCOL:ERROR',
+          payload: { protocol: 'bzz', error }
         });
         return;
       }
 
       const redirectPath = `${Settings.swarmURL}/${request.url.replace(
-        "bzz:/",
-        "bzz://"
+        'bzz:/',
+        'bzz://'
       )}`;
 
       if (store.getState().settings.swarmState === SwarmState.Enabling) {
-        swarmNode.on("started", () => {
+        swarmNode.on('started', () => {
           callback({
             method: request.method,
             referrer: request.referrer,
@@ -223,8 +223,8 @@ function enableSwarmProtocol() {
       }
 
       store.dispatch({
-        type: "[MAIN]:PROTOCOL:REQUEST",
-        payload: { protocol: "bzz" }
+        type: '[MAIN]:PROTOCOL:REQUEST',
+        payload: { protocol: 'bzz' }
       });
     },
     error => {
@@ -242,13 +242,13 @@ function createCoreWindows() {
   });
 
   // Create the browser window.
-  mainWindow = Windows.create("main");
+  mainWindow = Windows.create('main');
 
   // Delegating events to save window bounds on windowStateKeeper
   global.defaultWindow.manage(mainWindow.window);
 
   if (!Settings.inAutoTestMode) {
-    splashWindow = Windows.create("splash");
+    splashWindow = Windows.create('splash');
   }
 }
 
@@ -263,11 +263,11 @@ function checkTimeSync() {
       if (!enabled) {
         dialog.showMessageBox(
           {
-            type: "warning",
-            buttons: ["OK"],
-            message: global.i18n.t("mist.errors.timeSync.title"),
+            type: 'warning',
+            buttons: ['OK'],
+            message: global.i18n.t('mist.errors.timeSync.title'),
             detail: `${global.i18n.t(
-              "mist.errors.timeSync.description"
+              'mist.errors.timeSync.description'
             )}\n\n${global.i18n.t(`mist.errors.timeSync.${process.platform}`)}`
           },
           () => {}
@@ -292,7 +292,7 @@ async function kickStart() {
       "Either the node didn't start or IPC socket failed to connect."
     );
   }
-  log.info("Connected via IPC to node.");
+  log.info('Connected via IPC to node.');
 
   // Update menu, to show node switching possibilities
   appMenu();
@@ -308,40 +308,40 @@ async function kickStart() {
 }
 
 function checkForLegacyChain() {
-  if ((Settings.loadUserData("daoFork") || "").trim() === "false") {
+  if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
     dialog.showMessageBox(
       {
-        type: "warning",
-        buttons: ["OK"],
-        message: global.i18n.t("mist.errors.legacyChain.title"),
-        detail: global.i18n.t("mist.errors.legacyChain.description")
+        type: 'warning',
+        buttons: ['OK'],
+        message: global.i18n.t('mist.errors.legacyChain.title'),
+        detail: global.i18n.t('mist.errors.legacyChain.description')
       },
       () => {
-        shell.openExternal("https://github.com/ethereum/mist/releases");
+        shell.openExternal('https://github.com/ethereum/mist/releases');
         store.dispatch(quitApp());
       }
     );
 
-    throw new Error("Cant start client due to legacy non-Fork setting.");
+    throw new Error('Cant start client due to legacy non-Fork setting.');
   }
 }
 
 function initializeKickStartListeners() {
-  ClientBinaryManager.on("status", (status, data) => {
-    Windows.broadcast("uiAction_clientBinaryStatus", status, data);
+  ClientBinaryManager.on('status', (status, data) => {
+    Windows.broadcast('uiAction_clientBinaryStatus', status, data);
   });
 
-  ethereumNode.on("nodeConnectionTimeout", () => {
-    Windows.broadcast("uiAction_nodeStatus", "connectionTimeout");
+  ethereumNode.on('nodeConnectionTimeout', () => {
+    Windows.broadcast('uiAction_nodeStatus', 'connectionTimeout');
   });
 
-  ethereumNode.on("nodeLog", data => {
-    Windows.broadcast("uiAction_nodeLogText", data.replace(/^.*[0-9]]/, ""));
+  ethereumNode.on('nodeLog', data => {
+    Windows.broadcast('uiAction_nodeLogText', data.replace(/^.*[0-9]]/, ''));
   });
 
-  ethereumNode.on("state", (state, stateAsText) => {
+  ethereumNode.on('state', (state, stateAsText) => {
     Windows.broadcast(
-      "uiAction_nodeStatus",
+      'uiAction_nodeStatus',
       stateAsText,
       ethereumNode.STATES.ERROR === state ? ethereumNode.lastError : null
     );
@@ -350,23 +350,23 @@ function initializeKickStartListeners() {
 
 function handleNodeSync() {
   return new Q((resolve, reject) => {
-    nodeSync.on("nodeSyncing", result => {
-      Windows.broadcast("uiAction_nodeSyncStatus", "inProgress", result);
+    nodeSync.on('nodeSyncing', result => {
+      Windows.broadcast('uiAction_nodeSyncStatus', 'inProgress', result);
     });
 
-    nodeSync.on("stopped", () => {
-      Windows.broadcast("uiAction_nodeSyncStatus", "stopped");
+    nodeSync.on('stopped', () => {
+      Windows.broadcast('uiAction_nodeSyncStatus', 'stopped');
     });
 
-    nodeSync.on("error", err => {
-      log.error("Error syncing node", err);
+    nodeSync.on('error', err => {
+      log.error('Error syncing node', err);
 
       reject(err);
     });
 
-    nodeSync.on("finished", () => {
-      nodeSync.removeAllListeners("error");
-      nodeSync.removeAllListeners("finished");
+    nodeSync.on('finished', () => {
+      nodeSync.removeAllListeners('error');
+      nodeSync.removeAllListeners('finished');
 
       resolve();
     });
@@ -380,7 +380,7 @@ function startMainWindow() {
 }
 
 function initializeMainWindowListeners() {
-  mainWindow.on("ready", () => {
+  mainWindow.on('ready', () => {
     if (splashWindow) {
       splashWindow.close();
     }
@@ -389,27 +389,27 @@ function initializeMainWindowListeners() {
 
   mainWindow.load(global.interfaceAppUrl);
 
-  mainWindow.on("closed", () => store.dispatch(quitApp()));
+  mainWindow.on('closed', () => store.dispatch(quitApp()));
 }
 
 function initializeTabs() {
-  const Tabs = global.db.getCollection("UI_tabs");
+  const Tabs = global.db.getCollection('UI_tabs');
   const sortedTabs =
-    Tabs.getDynamicView("sorted_tabs") || Tabs.addDynamicView("sorted_tabs");
-  sortedTabs.applySimpleSort("position", false);
+    Tabs.getDynamicView('sorted_tabs') || Tabs.addDynamicView('sorted_tabs');
+  sortedTabs.applySimpleSort('position', false);
 
   const refreshMenu = () => {
     clearTimeout(global._refreshMenuFromTabsTimer);
 
     global._refreshMenuFromTabsTimer = setTimeout(() => {
-      log.debug("Refresh menu with tabs");
+      log.debug('Refresh menu with tabs');
       global.webviews = sortedTabs.data();
       appMenu(global.webviews);
-      store.dispatch({ type: "[MAIN]:MENU:REFRESH" });
+      store.dispatch({ type: '[MAIN]:MENU:REFRESH' });
     }, 1000);
   };
 
-  Tabs.on("insert", refreshMenu);
-  Tabs.on("update", refreshMenu);
-  Tabs.on("delete", refreshMenu);
+  Tabs.on('insert', refreshMenu);
+  Tabs.on('update', refreshMenu);
+  Tabs.on('delete', refreshMenu);
 }

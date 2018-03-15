@@ -11,7 +11,7 @@ The main section template
 @constructor
 */
 
-Template["layout_webviews"].helpers({
+Template['layout_webviews'].helpers({
   /**
     Return the tabs
 

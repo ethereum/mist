@@ -19,12 +19,12 @@ You have three different possibilities to use `web3`:
 web3;
 
 // 2. optionally use web3 from Mist or load if outside of Mist
-if (typeof web3 === "undefined")
-  web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+if (typeof web3 === 'undefined')
+  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 // 3. always use web3 provided by the dapp ("Web3" won't be supplied by Mist), but the provider from Mist
-if (typeof web3 !== "undefined") web3 = new Web3(web3.currentProvider);
-else web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+if (typeof web3 !== 'undefined') web3 = new Web3(web3.currentProvider);
+else web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 ```
 
 ## API
@@ -65,7 +65,7 @@ Asks the user to provide, or create a new account.
 
 ```js
 mist.requestAccount(function(e, address) {
-  console.log("Added new account", address);
+  console.log('Added new account', address);
 });
 ```
 
@@ -94,27 +94,27 @@ Adds/Updates a sub menu entry, which is placed below you dapp button in the side
 #### Minimal example
 
 ```js
-mist.menu.add({ name: "My account" });
+mist.menu.add({ name: 'My account' });
 ```
 
 #### Full example
 
 ```js
 mist.menu.add(
-  "tkrzU",
+  'tkrzU',
   {
-    name: "My Meny Entry",
+    name: 'My Meny Entry',
     badge: 50,
     position: 1,
     selected: true
   },
   function() {
     // Redirect
-    window.location = "http://domain.com/send";
+    window.location = 'http://domain.com/send';
     // Using history pushstate
-    history.pushState(null, null, "/my-entry");
+    history.pushState(null, null, '/my-entry');
     // In Meteor iron:router
-    Router.go("/send");
+    Router.go('/send');
   }
 );
 ```
@@ -179,7 +179,7 @@ Works like `mist.menu.add()`, but only the `id` parameter is required.
 #### Example
 
 ```js
-mist.menu.update("tkrzU", {
+mist.menu.update('tkrzU', {
   badge: 50,
   position: 2
 });

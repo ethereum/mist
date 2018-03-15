@@ -11,52 +11,52 @@ The tab template
 @constructor
 */
 
-Template["views_webview"].onRendered(function() {
+Template['views_webview'].onRendered(function() {
   var template = this,
     tabId = template.data._id,
-    webview = template.find("webview");
+    webview = template.find('webview');
 
-  ipc.on("uiAction_reloadSelectedTab", function(e) {
-    console.log("uiAction_reloadSelectedTab", LocalStore.get("selectedTab"));
-    if (LocalStore.get("selectedTab") === this._id) {
-      var webview = Helpers.getWebview(LocalStore.get("selectedTab"));
+  ipc.on('uiAction_reloadSelectedTab', function(e) {
+    console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
+    if (LocalStore.get('selectedTab') === this._id) {
+      var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
       webview.reload();
     }
   });
 
-  webview.addEventListener("did-start-loading", function(e) {
-    TemplateVar.set(template, "loading", true);
+  webview.addEventListener('did-start-loading', function(e) {
+    TemplateVar.set(template, 'loading', true);
   });
-  webview.addEventListener("did-stop-loading", function(e) {
-    TemplateVar.set(template, "loading", false);
+  webview.addEventListener('did-stop-loading', function(e) {
+    TemplateVar.set(template, 'loading', false);
   });
 
   // change url
   webview.addEventListener(
-    "did-navigate",
+    'did-navigate',
     webviewChangeUrl.bind(webview, tabId)
   );
   webview.addEventListener(
-    "did-navigate-in-page",
+    'did-navigate-in-page',
     webviewChangeUrl.bind(webview, tabId)
   );
   webview.addEventListener(
-    "did-get-redirect-request",
+    'did-get-redirect-request',
     webviewChangeUrl.bind(webview, tabId)
   );
   webview.addEventListener(
-    "did-stop-loading",
+    'did-stop-loading',
     webviewChangeUrl.bind(webview, tabId)
   );
 
   // set page history
-  webview.addEventListener("dom-ready", function(e) {
+  webview.addEventListener('dom-ready', function(e) {
     var titleFull = webview.getTitle(),
       title = titleFull;
 
     if (titleFull && titleFull.length > 40) {
       title = titleFull.substr(0, 40);
-      title += "…";
+      title += '…';
     }
 
     // update the title
@@ -72,12 +72,12 @@ Template["views_webview"].onRendered(function() {
   });
 
   // show error pages
-  webview.addEventListener("did-fail-load", showError.bind(webview, tabId));
-  webview.addEventListener("crashed", showError.bind(webview, tabId));
+  webview.addEventListener('did-fail-load', showError.bind(webview, tabId));
+  webview.addEventListener('crashed', showError.bind(webview, tabId));
 
   // Forward SWARM status code errors to showError
-  webview.addEventListener("did-get-response-details", function(e) {
-    if (e && e.resourceType === "mainFrame" && /^bzz:\//i.test(e.newURL)) {
+  webview.addEventListener('did-get-response-details', function(e) {
+    if (e && e.resourceType === 'mainFrame' && /^bzz:\//i.test(e.newURL)) {
       switch (e.httpResponseCode) {
         case 500:
           showError.call(webview, tabId, {
@@ -91,18 +91,18 @@ Template["views_webview"].onRendered(function() {
 
   // navigate page, and redirect to browser tab if necessary
   webview.addEventListener(
-    "will-navigate",
+    'will-navigate',
     webviewLoadStart.bind(webview, tabId)
   );
   webview.addEventListener(
-    "did-get-redirect-request",
+    'did-get-redirect-request',
     webviewLoadStart.bind(webview, tabId)
   );
-  webview.addEventListener("new-window", webviewLoadStart.bind(webview, tabId));
+  webview.addEventListener('new-window', webviewLoadStart.bind(webview, tabId));
 
   // MIST API for installed tabs/dapps
   webview.addEventListener(
-    "ipc-message",
+    'ipc-message',
     mistAPIBackend.bind({
       template: template,
       webview: webview
@@ -110,7 +110,7 @@ Template["views_webview"].onRendered(function() {
   );
 });
 
-Template["views_webview"].helpers({
+Template['views_webview'].helpers({
   /**
     Gets the correct preloader file
 
@@ -118,12 +118,12 @@ Template["views_webview"].helpers({
     */
   preloaderFile: function() {
     switch (this._id) {
-      case "browser":
-        return "file://" + Helpers.preloaderDirname + "/browser.js";
-      case "tests":
-        return "file://" + Helpers.preloaderDirname + "/tests.js";
+      case 'browser':
+        return 'file://' + Helpers.preloaderDirname + '/browser.js';
+      case 'tests':
+        return 'file://' + Helpers.preloaderDirname + '/tests.js';
       default:
-        return "file://" + Helpers.preloaderDirname + "/dapps.js";
+        return 'file://' + Helpers.preloaderDirname + '/dapps.js';
     }
   },
   /**
@@ -132,7 +132,7 @@ Template["views_webview"].helpers({
     @method (isVisible)
     */
   isVisible: function() {
-    return LocalStore.get("selectedTab") === this._id ? "" : "hidden";
+    return LocalStore.get('selectedTab') === this._id ? '' : 'hidden';
   },
   /**
     Gets the current url
@@ -152,13 +152,13 @@ Template["views_webview"].helpers({
         // remove redirect
         Tabs.update(this._id, {
           $unset: {
-            redirect: ""
+            redirect: ''
           }
         });
       }
 
       // allow error pages
-      if (url && url.indexOf("file://" + dirname + "/errorPages/") === 0) {
+      if (url && url.indexOf('file://' + dirname + '/errorPages/') === 0) {
         return url;
       }
 
@@ -167,12 +167,12 @@ Template["views_webview"].helpers({
         // Prevent websites usingt the history back attacks
         if (template.view.isRendered) {
           // get the current webview
-          var webview = template.find("webview");
+          var webview = template.find('webview');
           webview.clearHistory();
         }
 
-        console.warn("Not allowed URL: " + template.url);
-        return "file://" + dirname + "/errorPages/400.html";
+        console.warn('Not allowed URL: ' + template.url);
+        return 'file://' + dirname + '/errorPages/400.html';
       }
 
       // add url

@@ -2,8 +2,8 @@
 var expect = chai.expect;
 var idCount = 500;
 
-describe("IPC connection", function() {
-  describe("ipcProvider", function() {
+describe('IPC connection', function() {
+  describe('ipcProvider', function() {
     it("shouldn't allow admin functionality [sync]", function() {
       var id = idCount++;
 
@@ -11,9 +11,9 @@ describe("IPC connection", function() {
 
       var data = ipcProvider.writeSync(
         JSON.stringify({
-          jsonrpc: "2.0",
+          jsonrpc: '2.0',
           id: id,
-          method: "admin_nodeInfo",
+          method: 'admin_nodeInfo',
           params: []
         })
       );
@@ -34,15 +34,15 @@ describe("IPC connection", function() {
       var data = ipcProvider.writeSync(
         JSON.stringify([
           {
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             id: id,
-            method: "admin_nodeInfo",
+            method: 'admin_nodeInfo',
             params: []
           },
           {
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             id: id + 1,
-            method: "eth_accounts",
+            method: 'eth_accounts',
             params: []
           }
         ])
@@ -66,14 +66,14 @@ describe("IPC connection", function() {
 
       ipcProvider.write(
         JSON.stringify({
-          jsonrpc: "2.0",
+          jsonrpc: '2.0',
           id: id,
-          method: "admin_nodeInfo",
+          method: 'admin_nodeInfo',
           params: []
         })
       );
 
-      ipcProvider.on("data", function(data) {
+      ipcProvider.on('data', function(data) {
         data = data.toString();
         data = JSON.parse(data);
 
@@ -94,21 +94,21 @@ describe("IPC connection", function() {
       ipcProvider.write(
         JSON.stringify([
           {
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             id: id,
-            method: "admin_nodeInfo",
+            method: 'admin_nodeInfo',
             params: []
           },
           {
-            jsonrpc: "2.0",
+            jsonrpc: '2.0',
             id: id + 1,
-            method: "eth_accounts",
+            method: 'eth_accounts',
             params: []
           }
         ])
       );
 
-      ipcProvider.on("data", function(data) {
+      ipcProvider.on('data', function(data) {
         data = data.toString();
         data = JSON.parse(data);
 

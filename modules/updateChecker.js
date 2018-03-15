@@ -1,44 +1,44 @@
 const _ = global._;
-const Windows = require("./windows");
-const Settings = require("./settings");
-const log = require("./utils/logger").create("updateChecker");
-const got = require("got");
-const semver = require("semver");
+const Windows = require('./windows');
+const Settings = require('./settings');
+const log = require('./utils/logger').create('updateChecker');
+const got = require('got');
+const semver = require('semver');
 
 /**
  * Check for updates to the app.
  * @return {[type]} [description]
  */
 const check = (exports.check = () => {
-  log.info("Check for update...");
+  log.info('Check for update...');
 
   let str = null;
 
   switch (Settings.uiMode) { // eslint-disable-line default-case
-    case "mist":
-      str = "mist";
+    case 'mist':
+      str = 'mist';
       break;
-    case "wallet":
-      str = "wallet";
+    case 'wallet':
+      str = 'wallet';
       break;
   }
 
-  return got("https://api.github.com/repos/ethereum/mist/releases", {
+  return got('https://api.github.com/repos/ethereum/mist/releases', {
     timeout: 3000,
     json: true
   })
     .then(res => {
       const releases = _.filter(res.body, release => {
         return (
-          !_.get(release, "draft") &&
-          _.get(release, "name", "")
+          !_.get(release, 'draft') &&
+          _.get(release, 'name', '')
             .toLowerCase()
             .indexOf(str) >= 0
         );
       });
 
       if (!releases.length) {
-        log.debug("No releases available to check against.");
+        log.debug('No releases available to check against.');
 
         return;
       }
@@ -59,17 +59,17 @@ const check = (exports.check = () => {
         };
       }
 
-      log.info("App is up-to-date.");
+      log.info('App is up-to-date.');
     })
     .catch(err => {
-      log.error("Error checking for update", err);
+      log.error('Error checking for update', err);
     });
 });
 
 function showWindow(options) {
-  log.debug("Show update checker window");
+  log.debug('Show update checker window');
 
-  return Windows.createPopup("updateAvailable", options);
+  return Windows.createPopup('updateAvailable', options);
 }
 
 exports.run = () => {
@@ -82,7 +82,7 @@ exports.run = () => {
           }
         });
       }
-      store.dispatch({ type: "[MAIN]:UPDATE_CHECKER:FINISHED" });
+      store.dispatch({ type: '[MAIN]:UPDATE_CHECKER:FINISHED' });
     })
     .catch(err => {
       log.error(err);
@@ -91,10 +91,10 @@ exports.run = () => {
 
 exports.runVisibly = () => {
   const wnd = showWindow({
-    sendData: "uiAction_checkUpdateInProgress"
+    sendData: 'uiAction_checkUpdateInProgress'
   });
 
-  wnd.on("ready", () => {
+  wnd.on('ready', () => {
     check()
       .then(update => {
         wnd.send({
@@ -104,7 +104,7 @@ exports.runVisibly = () => {
       .catch(err => {
         log.error(err);
 
-        wnd.send("uiAction_checkUpdateDone");
+        wnd.send('uiAction_checkUpdateDone');
       });
   });
 };

@@ -19,120 +19,120 @@ Contains the last state of the data
 var lastSyncData = {},
   showNodeLog = true;
 
-Template["popupWindows_splashScreen"].onCreated(function() {
+Template['popupWindows_splashScreen'].onCreated(function() {
   var template = this;
   template._intervalId = null;
 
-  ipc.on("uiAction_nodeLogText", function(e, text, data) {
+  ipc.on('uiAction_nodeLogText', function(e, text, data) {
     if (showNodeLog && data) {
-      TemplateVar.set(template, "logText", data);
-      TemplateVar.set(template, "syncStatusMessage", false);
+      TemplateVar.set(template, 'logText', data);
+      TemplateVar.set(template, 'syncStatusMessage', false);
       return;
     }
   });
 
-  ipc.on("uiAction_clientBinaryStatus", function(e, status) {
+  ipc.on('uiAction_clientBinaryStatus', function(e, status) {
     TemplateVar.set(
       template,
-      "text",
-      TAPi18n.__("mist.startScreen.clientBinaries." + status)
+      'text',
+      TAPi18n.__('mist.startScreen.clientBinaries.' + status)
     );
-    TemplateVar.set(template, "showNetworkIndicator", status === "done");
-    TemplateVar.set(template, "showProgressBar", false);
-    TemplateVar.set(template, "showStartAppButton", false);
-    TemplateVar.set(template, "showRetryConnectionButton", false);
-    TemplateVar.set(template, "logText", null);
+    TemplateVar.set(template, 'showNetworkIndicator', status === 'done');
+    TemplateVar.set(template, 'showProgressBar', false);
+    TemplateVar.set(template, 'showStartAppButton', false);
+    TemplateVar.set(template, 'showRetryConnectionButton', false);
+    TemplateVar.set(template, 'logText', null);
   });
 
-  ipc.on("uiAction_nodeStatus", function(e, status, errorTag) {
+  ipc.on('uiAction_nodeStatus', function(e, status, errorTag) {
     switch (status) {
-      case "starting":
+      case 'starting':
         TemplateVar.set(
           template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeStarting")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeStarting')
         );
         showNodeLog = true;
-        TemplateVar.set(template, "logText", null);
-        TemplateVar.set(template, "showProgressBar", false);
-        TemplateVar.set(template, "showStartAppButton", false);
-        TemplateVar.set(template, "showRetryConnectionButton", false);
+        TemplateVar.set(template, 'logText', null);
+        TemplateVar.set(template, 'showProgressBar', false);
+        TemplateVar.set(template, 'showStartAppButton', false);
+        TemplateVar.set(template, 'showRetryConnectionButton', false);
         break;
 
-      case "started":
+      case 'started':
         TemplateVar.set(
           template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeStarted")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeStarted')
         );
         break;
 
-      case "connected":
+      case 'connected':
         TemplateVar.set(
           template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeConnected")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeConnected')
         );
         lastSyncData = {};
         break;
 
-      case "stopping":
+      case 'stopping':
         TemplateVar.set(
           template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeStopping")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeStopping')
         );
-        TemplateVar.set(template, "showProgressBar", false);
-        TemplateVar.set(template, "showStartAppButton", false);
+        TemplateVar.set(template, 'showProgressBar', false);
+        TemplateVar.set(template, 'showStartAppButton', false);
         break;
 
-      case "stopped":
+      case 'stopped':
         TemplateVar.set(
           template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeStopped")
-        );
-        break;
-
-      case "connectionTimeout":
-        TemplateVar.set(
-          template,
-          "text",
-          TAPi18n.__("mist.startScreen.nodeConnectionTimeout")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeStopped')
         );
         break;
 
-      case "error":
-        errorTag = "mist.startScreen." + (errorTag || "nodeError");
-
-        TemplateVar.set(template, "text", TAPi18n.__(errorTag));
-        TemplateVar.set(template, "showRetryConnectionButton", true);
+      case 'connectionTimeout':
         TemplateVar.set(
           template,
-          "retryConnectionButtonText",
-          TAPi18n.__("mist.startScreen.retryConnection")
+          'text',
+          TAPi18n.__('mist.startScreen.nodeConnectionTimeout')
+        );
+        break;
+
+      case 'error':
+        errorTag = 'mist.startScreen.' + (errorTag || 'nodeError');
+
+        TemplateVar.set(template, 'text', TAPi18n.__(errorTag));
+        TemplateVar.set(template, 'showRetryConnectionButton', true);
+        TemplateVar.set(
+          template,
+          'retryConnectionButtonText',
+          TAPi18n.__('mist.startScreen.retryConnection')
         );
         break;
     }
   });
 
-  ipc.on("uiAction_nodeSyncStatus", function(e, status, data) {
-    console.trace("Node sync status", status, data);
+  ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+    console.trace('Node sync status', status, data);
 
-    TemplateVar.set(template, "smallClass", "small");
+    TemplateVar.set(template, 'smallClass', 'small');
 
-    if (status === "inProgress") {
-      TemplateVar.set(template, "showStartAppButton", true);
+    if (status === 'inProgress') {
+      TemplateVar.set(template, 'showStartAppButton', true);
       TemplateVar.set(
         template,
-        "startAppButtonText",
-        TAPi18n.__("mist.startScreen.launchApp")
+        'startAppButtonText',
+        TAPi18n.__('mist.startScreen.launchApp')
       );
 
       if (data !== false) {
         // if state is "in progress" and we have data
         showNodeLog = false;
-        var translationString = "";
+        var translationString = '';
 
         // add the data received to the object lastSyncData
         lastSyncData = _.extend(lastSyncData, data || {});
@@ -148,14 +148,14 @@ Template["popupWindows_splashScreen"].onCreated(function() {
                 Math.round(lastSyncData._displayKnownStates))
           ) {
             // Mostly downloading new states
-            translationString = "mist.startScreen.nodeSyncInfoStates";
+            translationString = 'mist.startScreen.nodeSyncInfoStates';
           } else {
             // Mostly downloading blocks
-            translationString = "mist.startScreen.nodeSyncInfo";
+            translationString = 'mist.startScreen.nodeSyncInfo';
           }
         } else {
           // Not online
-          translationString = "mist.startScreen.nodeSyncConnecting";
+          translationString = 'mist.startScreen.nodeSyncConnecting';
         }
 
         // Saves data as numbers (hex)
@@ -163,36 +163,36 @@ Template["popupWindows_splashScreen"].onCreated(function() {
 
         // saves data as pretty strings
         lastSyncData.highestBlock = numeral(lastSyncData.highestBlock).format(
-          "0,0"
+          '0,0'
         );
 
         // saves to template
-        TemplateVar.set(template, "lastSyncData", lastSyncData);
+        TemplateVar.set(template, 'lastSyncData', lastSyncData);
       } else {
         // It's not connected anymore
         if (web3.net.peerCount > 1) {
-          translationString = "mist.startScreen.nodeSyncFoundPeers";
+          translationString = 'mist.startScreen.nodeSyncFoundPeers';
         } else {
-          translationString = "mist.startScreen.nodeSyncConnecting";
+          translationString = 'mist.startScreen.nodeSyncConnecting';
         }
 
-        TemplateVar.set(template, "lastSyncData", {
+        TemplateVar.set(template, 'lastSyncData', {
           peers: web3.net.peerCount
         });
       }
 
-      TemplateVar.set(template, "logText", false);
+      TemplateVar.set(template, 'logText', false);
       TemplateVar.set(
         template,
-        "text",
-        TAPi18n.__("mist.startScreen.nodeSyncing")
+        'text',
+        TAPi18n.__('mist.startScreen.nodeSyncing')
       );
-      TemplateVar.set(template, "syncStatusMessage", translationString);
+      TemplateVar.set(template, 'syncStatusMessage', translationString);
     }
   });
 });
 
-Template["popupWindows_splashScreen"].helpers({
+Template['popupWindows_splashScreen'].helpers({
   /**
     Returns the current splash screen mode
 
@@ -208,7 +208,7 @@ Template["popupWindows_splashScreen"].helpers({
     */
   iconPath: function() {
     return (
-      "file://" + window.dirname + "/icons/" + window.mistMode + "/icon2x.png"
+      'file://' + window.dirname + '/icons/' + window.mistMode + '/icon2x.png'
     );
   },
   /**
@@ -224,8 +224,8 @@ Template["popupWindows_splashScreen"].helpers({
     // Create an interval to quickly iterate trough the numbers
     template._intervalId = Meteor.setInterval(function() {
       // loads data from templates
-      var syncData = TemplateVar.get(template, "lastSyncData", lastSyncData);
-      var translationString = TemplateVar.get(template, "syncStatusMessage");
+      var syncData = TemplateVar.get(template, 'lastSyncData', lastSyncData);
+      var translationString = TemplateVar.get(template, 'syncStatusMessage');
 
       if (!(syncData._displayBlock > -1)) {
         // initialize the display numbers
@@ -246,13 +246,13 @@ Template["popupWindows_splashScreen"].helpers({
       // Create the fancy strings
       lastSyncData.displayBlock = numeral(
         Math.round(lastSyncData._displayBlock)
-      ).format("0,0");
+      ).format('0,0');
       lastSyncData.displayState = numeral(
         Math.round(lastSyncData._displayState)
-      ).format("0,0");
+      ).format('0,0');
       lastSyncData.displayKnownStates = numeral(
         Math.round(lastSyncData._displayKnownStates)
-      ).format("0,0");
+      ).format('0,0');
 
       // Translate it
       var translatedMessage = TAPi18n.__(translationString, syncData);
@@ -271,30 +271,30 @@ Template["popupWindows_splashScreen"].helpers({
         100;
 
       // Saves data back to templates
-      TemplateVar.set(template, "syncStatusMessageLive", translatedMessage);
-      TemplateVar.set(template, "lastSyncData", syncData);
+      TemplateVar.set(template, 'syncStatusMessageLive', translatedMessage);
+      TemplateVar.set(template, 'lastSyncData', syncData);
 
       // set progress value
       if (_.isFinite(progress)) {
-        TemplateVar.set(template, "showProgressBar", true);
-        TemplateVar.set(template, "progress", progress);
+        TemplateVar.set(template, 'showProgressBar', true);
+        TemplateVar.set(template, 'progress', progress);
         if (null !== stateProgress) {
-          TemplateVar.set(template, "showStateProgressBar", true);
-          TemplateVar.set(template, "stateProgress", stateProgress);
+          TemplateVar.set(template, 'showStateProgressBar', true);
+          TemplateVar.set(template, 'stateProgress', stateProgress);
         }
       }
     }, 10);
 
-    return TemplateVar.get(template, "syncStatusMessageLive");
+    return TemplateVar.get(template, 'syncStatusMessageLive');
   }
 });
 
-Template["popupWindows_splashScreen"].events({
-  "click .start-app": function() {
-    ipc.send("backendAction_skipSync");
+Template['popupWindows_splashScreen'].events({
+  'click .start-app': function() {
+    ipc.send('backendAction_skipSync');
   },
 
-  "click .retry-connection": function() {
-    ipc.send("retryConnection");
+  'click .retry-connection': function() {
+    ipc.send('retryConnection');
   }
 });

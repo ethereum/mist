@@ -17,7 +17,7 @@ The preloader dirname
 
 @property preloaderDirname
 **/
-Helpers.preloaderDirname = window.dirname + "/modules/preloader";
+Helpers.preloaderDirname = window.dirname + '/modules/preloader';
 
 /**
 Reruns functions reactively, based on an interval. Use it like so:
@@ -28,8 +28,8 @@ Reruns functions reactively, based on an interval. Use it like so:
 @method rerun
 **/
 Helpers.rerun = {
-  "10s": new ReactiveTimer(10),
-  "1s": new ReactiveTimer(1)
+  '10s': new ReactiveTimer(10),
+  '1s': new ReactiveTimer(1)
 };
 
 /**
@@ -54,7 +54,7 @@ Helpers.getTabIdByUrl = function(url, returnEmpty) {
   url = Helpers.sanitizeUrl(url);
 
   var foundTab = _.find(tabs, function(tab) {
-    if (tab._id === "browser" || !tab.url) {
+    if (tab._id === 'browser' || !tab.url) {
       return false;
     }
     var tabOrigin = new URL(tab.url).origin;
@@ -65,7 +65,7 @@ Helpers.getTabIdByUrl = function(url, returnEmpty) {
   if (foundTab) {
     foundTab = foundTab._id;
   } else {
-    foundTab = "browser";
+    foundTab = 'browser';
   }
 
   return foundTab;
@@ -83,16 +83,16 @@ Helpers.formatUrl = function(url) {
   // add http:// if no protocol is present
   if (url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
     // if the url looks like a hash, add bzz
-    url = "bzz://" + url;
+    url = 'bzz://' + url;
   } else if (!!url.match(/^([a-z]*:\/\/)?[^/]*\.eth(\/.*)?$/i)) {
     // if uses .eth as a TLD
-    url = "bzz://" + url.replace(/^([a-z]*:\/\/)?/i, "");
+    url = 'bzz://' + url.replace(/^([a-z]*:\/\/)?/i, '');
   } else if (!!url.match(/^[^\.\/]*$/i)) {
     // doesn't have a protocol nor a TLD
-    url = "bzz://" + url + ".eth";
-  } else if (url.indexOf("://") === -1) {
+    url = 'bzz://' + url + '.eth';
+  } else if (url.indexOf('://') === -1) {
     // if it doesn't have a protocol
-    url = "http://" + url;
+    url = 'http://' + url;
   }
 
   return url;
@@ -107,8 +107,8 @@ Sanatizes URLs to prevent phishing and XSS attacks
 Helpers.sanitizeUrl = function(url, returnEmptyURL) {
   url = String(url);
 
-  url = url.replace(/[\t\n\r\s]+/g, "");
-  url = url.replace(/^[:\/]{1,3}/i, "http://");
+  url = url.replace(/[\t\n\r\s]+/g, '');
+  url = url.replace(/^[:\/]{1,3}/i, 'http://');
 
   if (returnEmptyURL && /^(?:file|javascript|data):/i.test(url)) {
     url = false;
@@ -135,21 +135,21 @@ Helpers.generateBreadcrumb = function(url) {
     hash: Blaze._escape(url.hash)
   };
 
-  filteredUrl.pathname += filteredUrl.search.replace(/\?/g, "/");
-  filteredUrl.pathname += filteredUrl.hash.replace(/#/g, "/");
+  filteredUrl.pathname += filteredUrl.search.replace(/\?/g, '/');
+  filteredUrl.pathname += filteredUrl.hash.replace(/#/g, '/');
 
   pathname = _.reject(
-    filteredUrl.pathname.replace(/\/$/g, "").split("/"),
+    filteredUrl.pathname.replace(/\/$/g, '').split('/'),
     function(el) {
-      return el === "";
+      return el === '';
     }
   );
 
   return new Spacebars.SafeString(
     filteredUrl.protocol +
-      "//" +
-      _.flatten(["<span>" + filteredUrl.host + " </span>", pathname]).join(
-        " ▸ "
+      '//' +
+      _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(
+        ' ▸ '
       )
   );
 };
@@ -182,7 +182,7 @@ Helpers.selectTabWithIndex = function(index) {
     { sort: { position: 1 }, fields: { _id: 1 } }
   ).fetch();
   if (index < tabList.length) {
-    LocalStore.set("selectedTab", tabList[index]._id);
+    LocalStore.set('selectedTab', tabList[index]._id);
   }
 };
 
@@ -196,7 +196,7 @@ Helpers.selectLastTab = function() {
     {},
     { sort: { position: -1 }, fields: { _id: 1 }, limit: 1 }
   );
-  LocalStore.set("selectedTab", lastTab._id);
+  LocalStore.set('selectedTab', lastTab._id);
 };
 
 /**
@@ -214,16 +214,16 @@ Helpers.selectTabWithOffset = function(offset) {
   }
   tabList = _.pluck(
     Tabs.find({}, { sort: { position: 1 }, fields: { _id: 1 } }).fetch(),
-    "_id"
+    '_id'
   );
-  currentTabIndex = tabList.indexOf(LocalStore.get("selectedTab"));
+  currentTabIndex = tabList.indexOf(LocalStore.get('selectedTab'));
 
   newTabIndex = (currentTabIndex + offset) % tabList.length;
   if (newTabIndex < 0) {
     newTabIndex = tabList.length - 1;
   }
 
-  LocalStore.set("selectedTab", tabList[newTabIndex]);
+  LocalStore.set('selectedTab', tabList[newTabIndex]);
 };
 
 /**
@@ -235,34 +235,34 @@ Helpers.detectNetwork = function(hash) {
   var network = {};
 
   switch (hash) {
-    case "0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3":
-      console.log("Network is mainnet");
-      network.type = "mainnet";
-      network.name = "Main";
+    case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
+      console.log('Network is mainnet');
+      network.type = 'mainnet';
+      network.name = 'Main';
       break;
 
-    case "0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d":
-      console.log("Network is Testnet #3 (Ropsten)");
-      network.type = "testnet";
-      network.name = "Ropsten";
+    case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
+      console.log('Network is Testnet #3 (Ropsten)');
+      network.type = 'testnet';
+      network.name = 'Ropsten';
       break;
 
-    case "0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177":
-      console.log("Network is Testnet #4 (Rinkeby)");
-      network.type = "testnet";
-      network.name = "Rinkeby";
+    case '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177':
+      console.log('Network is Testnet #4 (Rinkeby)');
+      network.type = 'testnet';
+      network.name = 'Rinkeby';
       break;
 
-    case "0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303":
-      console.log("Network is Testnet #2 (Morden)");
-      network.type = "testnet";
-      network.name = "Morden";
+    case '0x0cd786a2425d16f152c658316c423e6ce1181e15c3295826d7c9904cba9ce303':
+      console.log('Network is Testnet #2 (Morden)');
+      network.type = 'testnet';
+      network.name = 'Morden';
       break;
 
     default:
-      console.log("Network is privatenet");
-      network.type = "privatenet";
-      network.name = "Private";
+      console.log('Network is privatenet');
+      network.type = 'privatenet';
+      network.name = 'Private';
   }
 
   return network;

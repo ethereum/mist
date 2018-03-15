@@ -1,29 +1,29 @@
-const _ = require("underscore");
-const Q = require("bluebird");
-const fs = require("fs");
-const githubUpload = Q.promisify(require("gh-release-assets"));
-const got = require("got");
-const gulp = require("gulp");
-const options = require("../gulpfile.js").options;
-const path = require("path");
-const shell = require("shelljs");
-const version = require("../package.json").version;
+const _ = require('underscore');
+const Q = require('bluebird');
+const fs = require('fs');
+const githubUpload = Q.promisify(require('gh-release-assets'));
+const got = require('got');
+const gulp = require('gulp');
+const options = require('../gulpfile.js').options;
+const path = require('path');
+const shell = require('shelljs');
+const version = require('../package.json').version;
 
 const checksums = [];
 const type = options.type;
 
-gulp.task("checksums", cb => {
+gulp.task('checksums', cb => {
   const releasePath = `./dist_${type}/release`;
   const files = fs.readdirSync(releasePath);
 
   let command;
-  let argument = "";
+  let argument = '';
 
-  if (process.platform === "win32") {
-    command = "certUtil -hashfile";
-    argument = "SHA256";
+  if (process.platform === 'win32') {
+    command = 'certUtil -hashfile';
+    argument = 'SHA256';
   } else {
-    command = "shasum -a 256";
+    command = 'shasum -a 256';
   }
 
   files.forEach(file => {
@@ -42,14 +42,14 @@ gulp.task("checksums", cb => {
   cb();
 });
 
-gulp.task("upload-binaries", cb => {
+gulp.task('upload-binaries', cb => {
   // if CI detected only upload if on master branch
-  if (process.env.CI && process.env.TRAVIS_BRANCH !== "master") return;
+  if (process.env.CI && process.env.TRAVIS_BRANCH !== 'master') return;
 
   // personal access token (public_repo) must be set using travis' ENVs
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
-  console.info("Checking Github releases...");
+  console.info('Checking Github releases...');
 
   // query github releases
   got(
@@ -59,7 +59,7 @@ gulp.task("upload-binaries", cb => {
     // filter draft with current version's tag
     .then(res => {
       const draft =
-        res.body[_.indexOf(_.pluck(res.body, "tag_name"), `v${version}`)];
+        res.body[_.indexOf(_.pluck(res.body, 'tag_name'), `v${version}`)];
 
       if (draft === undefined)
         throw new Error(
@@ -77,14 +77,14 @@ gulp.task("upload-binaries", cb => {
         const filePaths = _.map(files, file => {
           return path.join(dir, file);
         });
-        console.log("Upload files: ", filePaths);
+        console.log('Upload files: ', filePaths);
         // check if draft already contains target binaries
         // note: github replaces spaces in filenames with dots
         const existingAssets = _.intersection(
           files.map(file => {
-            return file.replace(/\s/g, ".");
+            return file.replace(/\s/g, '.');
           }),
-          _.pluck(draft.assets, "name")
+          _.pluck(draft.assets, 'name')
         );
         if (!_.isEmpty(existingAssets))
           throw new Error(
@@ -107,16 +107,16 @@ gulp.task("upload-binaries", cb => {
             // append checksums to draft text
             .then(() => {
               console.info(
-                "Appending checksums to release notes...",
+                'Appending checksums to release notes...',
                 checksums
               );
               if (draft.body && checksums) {
                 const checksumRows = checksums
                   .map(e => {
-                    const line = e.replace("\n", "").split("  ");
+                    const line = e.replace('\n', '').split('  ');
                     return `<sub>${line[1]}</sub> | <sub>\`${line[0]}\`</sub>`;
                   })
-                  .join("\n");
+                  .join('\n');
                 got.patch(
                   `https://api.github.com/repos/ethereum/mist/releases/${
                     draft.id

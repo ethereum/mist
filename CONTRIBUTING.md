@@ -12,7 +12,7 @@ To help improve Mist (_Ethereum Wallet_), please include the following:
 
 If applicable:
 
-*   Log file (Linux: `~/.config/Mist/*.log`, Windows: `%APPDATA%/Roaming/Mist/*.log`, MacOSX: `~/Library/Application Support/Mist/*.log`)
+*   Log file (Linux: `~/.config/Mist/logs/all.log`, Windows: `%APPDATA%/Roaming/Mist/logs/all.log`, MacOSX: `~/Library/Application Support/Mist/logs/all.log`)
 *   Screenshot (for GUI related issues)
 
 ## Pull Requests

@@ -4,13 +4,13 @@
     height: 100%;
     position: relative;
     // background: lighten(@colorOSBackgroundFocus, 10%);
-    
+
     .main-content {
         z-index: 1;
         flex: 1 100%;
 
         h1 {
-            margin: @gridHeight*2 0 @gridHeight/2;
+            margin: @gridHeight*2 0 @gridHeight / 2;
         }
 
         .description {
@@ -22,7 +22,8 @@
             padding: 0;
         }
 
-        button, a.button {
+        button,
+        a.button {
             display: block;
             text-transform: uppercase;
             font-weight: 500;
@@ -37,12 +38,13 @@
 
         .onboarding-start {
             padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
-            background-image: url('/images/onboarding-logo-metal.png');
+            background-image: url("/images/onboarding-logo-metal.png");
             background-repeat: no-repeat;
             background-position-y: @gridHeight*4;
             background-size: 255px 257px;
 
-            button, a.button {
+            button,
+            a.button {
                 font-size: 110%;
                 text-align: left;
             }
@@ -67,7 +69,7 @@
         .dapp-block-button {
             margin: 0 auto;
             background-color: transparent;
-            border: solid 1px @colorLinkActive; 
+            border: solid 1px @colorLinkActive;
             font-size: 80%;
         }
 
@@ -78,14 +80,14 @@
 
         input.name {
             text-align: center;
-            margin: @gridHeight/2 0 @gridHeight;
+            margin: @gridHeight / 2 0 @gridHeight;
         }
 
-        input[type='checkbox'] {
+        input[type="checkbox"] {
             margin-left: 14px;
         }
 
-        input[type='checkbox'] + label {
+        input[type="checkbox"] + label {
             position: relative;
             top: -7px;
             left: 9px;
@@ -94,7 +96,7 @@
 
         h6 {
             opacity: 0.2;
-            margin: 0 0 @gridHeight/2;
+            margin: 0 0 @gridHeight / 2;
         }
 
         .footer-buttons {
@@ -106,7 +108,7 @@
             }
         }
         .right-align {
-            right: @gridWidth * 2; 
+            right: @gridWidth * 2;
         }
 
         .col-left {
@@ -121,7 +123,7 @@
         z-index: 2;
         flex: 0 @gridHeight * 4;
         height: @gridHeight * 4;
-        padding: @gridHeight/2 @gridWidth/4;
+        padding: @gridHeight / 2 @gridWidth / 4;
         display: flex;
         flex-flow: row wrap;
 
@@ -139,7 +141,7 @@
                 opacity: 0.15;
 
                 &::-webkit-progress-value {
-                    background:#000;
+                    background: #000;
                 }
             }
         }
@@ -164,10 +166,9 @@
             font-size: 80%;
             font-weight: 500;
             opacity: 0.5;
-            padding: 0 @gridWidth/2;
+            padding: 0 @gridWidth / 2;
         }
     }
-
 
     /* Screen transitions */
 
@@ -198,7 +199,7 @@
     &.active-start .onboarding-start {
         display: block;
         opacity: 1;
-        background-position-x: @gridWidth;        
+        background-position-x: @gridWidth;
         z-index: 100;
         transition-delay: 0.3s;
         p {
@@ -213,10 +214,9 @@
         transition-duration: 0s;
         .col-6.col-left {
             transform: scale(0.9) translateZ(-10px);
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;  
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
         }
     }
-
 
     .dapp-identicon.dapp-icon-loading {
         position: relative;
@@ -225,8 +225,8 @@
     }
 
     .onboarding-account .col-deposit {
-            text-align: center;        
-    }    
+        text-align: center;
+    }
 
     .onboarding-password {
         transition: none;
@@ -240,20 +240,20 @@
         }
     }
 
-    .onboarding-testnet ,
+    .onboarding-testnet,
     .onboarding-account {
         transition: opacity 0.4s ease-in-out;
 
         .col-6 {
             transition: transform 0.2s ease-in-out, opacity 0.2s;
-            transform: translateX(0)
+            transform: translateX(0);
         }
         .col-6.col-left {
             opacity: 0;
-            transform: translateX(-100px)
+            transform: translateX(-100px);
         }
 
-        .dapp-identicon.dapp-icon-loading{
+        .dapp-identicon.dapp-icon-loading {
             margin-left: 0 auto;
         }
 
@@ -276,7 +276,6 @@
         }
     }
 
-
     &.active-import-account .onboarding-import-account,
     &.active-password .onboarding-password,
     &.active-testnet .onboarding-testnet,
@@ -295,8 +294,8 @@
         }
     }
 
-    .onboarding-testnet ,
-    &.active-account .onboarding-account{
+    .onboarding-testnet,
+    &.active-account .onboarding-account {
         transition-delay: 0;
         transition-duration: 0;
         transition: none;

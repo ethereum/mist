@@ -14,7 +14,8 @@ aside.sidebar {
 
         ul.sub-menu {
             li {
-                transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
+                transition: background 0.05s ease-in-out, height 0.25s ease-out,
+                    opacity 0.25s ease-out;
             }
             .badge {
                 // ANIMATION
@@ -23,7 +24,6 @@ aside.sidebar {
         }
     }
 }
-
 
 // Browser bar
 .browser-bar {
@@ -36,26 +36,26 @@ aside.sidebar {
     position: relative;
     perspective: 800px;
 
-    .field-container{
+    .field-container {
         transform-style: preserve-3d;
         transition: transform 0.5s;
-        transition-timing-function:  ease-out;
-        transition-timing-function:  cubic-bezier(0.000, 1.125, 0.335, 1.650);
+        transition-timing-function: ease-out;
+        transition-timing-function: cubic-bezier(0, 1.125, 0.335, 1.65);
         height: @gridHeight*1.5;
 
-        &>* {
+        & > * {
             position: absolute;
             left: @gridWidth*2;
-            top: -1*@gridHeight;
+            top: -1 * @gridHeight;
             backface-visibility: hidden;
         }
 
         .password-repeat {
-            transform: rotateX( 180deg );
+            transform: rotateX(180deg);
         }
 
         &.repeat-field {
-            transform: rotateX( 180deg );
+            transform: rotateX(180deg);
         }
     }
 }

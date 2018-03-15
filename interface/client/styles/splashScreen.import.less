@@ -1,8 +1,8 @@
 @font-face {
-  font-family: 'Source Sans Pro';
-  src: url('fonts/SourceSansPro.otf');
-  font-weight: 500;
-  font-style: normal;
+    font-family: "Source Sans Pro";
+    src: url("fonts/SourceSansPro.otf");
+    font-weight: 500;
+    font-style: normal;
 }
 
 .splash-screen {
@@ -13,7 +13,8 @@
     bottom: 0;
     color: #fff;
     text-align: center;
-    font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
+    font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", verdana,
+        arial;
     overflow: hidden;
 
     background-size: cover;
@@ -21,45 +22,46 @@
     -webkit-app-region: drag;
 
     &.wallet {
-        background-image: url('/images/bg-homestead.jpg');
+        background-image: url("/images/bg-homestead.jpg");
 
         h1 {
             color: #fff;
         }
         button.start-app,
         button.retry-connection {
-            color: #BCD3E6;
+            color: #bcd3e6;
             &:hover {
-                color: darken(#BCD3E6, 5%);
+                color: darken(#bcd3e6, 5%);
             }
         }
         button.close {
-            color: rgba(0,0,0, 0.3);
+            color: rgba(0, 0, 0, 0.3);
 
             &:hover {
-                color: rgba(0,0,0, 0.8);
+                color: rgba(0, 0, 0, 0.8);
             }
         }
     }
     &.mist {
-        background-image: url('/images/bg-metropolis.jpg');
+        background-image: url("/images/bg-metropolis.jpg");
 
         h1 {
             color: #152f58;
-            text-shadow: 0 1px 5px rgba(255,255,255,0.75);
+            text-shadow: 0 1px 5px rgba(255, 255, 255, 0.75);
         }
 
         .network-indicator {
-            color: #FFF;
+            color: #fff;
             opacity: 0.9;
             .unknown {
                 color: #152f58;
-                text-shadow: 0 1px 5px rgba(255,255,255,0.75);        
+                text-shadow: 0 1px 5px rgba(255, 255, 255, 0.75);
             }
         }
     }
 
-    h1, small {
+    h1,
+    small {
         cursor: default;
     }
 
@@ -71,7 +73,7 @@
         background: none;
         border: 0;
         outline: 0;
-        padding: @defaultMargin/2;
+        padding: @defaultMargin / 2;
         font-size: 0.8em;
     }
     button:active {
@@ -83,10 +85,10 @@
         top: 0;
         right: 3px;
         font-size: 20px;
-        color: rgba(255,255,255, 0.3);
+        color: rgba(255, 255, 255, 0.3);
     }
     button.close:hover {
-        color: rgba(255,255,255, 0.8);
+        color: rgba(255, 255, 255, 0.8);
     }
     /* start app button */
     button.start-app,
@@ -98,27 +100,28 @@
         margin: 0;
         padding: 0;
         text-align: center;
-        color: #4A90E2;
+        color: #4a90e2;
         text-transform: uppercase;
-        font-family: 'Source Sans Pro', 'Helvetica Neue', 'Helvetica', verdana, arial;
+        font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", verdana,
+            arial;
         font-size: 1em;
         font-weight: bold;
     }
     button.start-app:hover,
     button.retry-connection:hover {
-        color: #2A6ED0;
+        color: #2a6ed0;
     }
 
     img {
         margin-top: 7px;
         width: 110px;
-        transition: width 0.5s  ease-in-out;
+        transition: width 0.5s ease-in-out;
     }
     &.small img {
         width: 80px;
     }
     img.shadow {
-        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
         border-radius: 50%;
     }
     h1 {
@@ -155,16 +158,16 @@
     }
 
     progress[value]::-webkit-progress-bar {
-        background-color: rgba(255,255,255, 0.2);
+        background-color: rgba(255, 255, 255, 0.2);
         border-radius: 2px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
     }
 
     progress.wallet::-webkit-progress-value {
-        background-image: -webkit-linear-gradient(left, #DCCAB6, #fff);
+        background-image: -webkit-linear-gradient(left, #dccab6, #fff);
     }
     progress.mist::-webkit-progress-value {
-        background-image: -webkit-linear-gradient(left, #3185CC, #ADA1E2);
+        background-image: -webkit-linear-gradient(left, #3185cc, #ada1e2);
     }
     progress::-webkit-progress-value {
         opacity: 0.7;

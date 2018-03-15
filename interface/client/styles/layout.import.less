@@ -1,15 +1,13 @@
-
 // Platform specifics
 // Mac OSX
-@colorOSBackgroundFocus: #F1F1F1;
-@colorOSBackgroundBlur: #F6F6F6;
+@colorOSBackgroundFocus: #f1f1f1;
+@colorOSBackgroundBlur: #f6f6f6;
 
-@colorWinBackgroundFocus: #F0F0F0;
-@colorWinBackgroundBlur: #F0F0F0;
+@colorWinBackgroundFocus: #f0f0f0;
+@colorWinBackgroundBlur: #f0f0f0;
 
 // WINDOWS
 .win32 {
-
 }
 
 // LINUX
@@ -17,19 +15,18 @@
 .linux {
 }
 
-
 // MAC
-.darwin, .linux {
+.darwin,
+.linux {
     body {
         background: @colorOSBackgroundFocus;
 
         &.app-blur {
             background: @colorOSBackgroundBlur;
         }
-}
+    }
 
-
-.darwin {
+    .darwin {
         aside {
             top: @gridHeight * 2;
             height: calc(100% - @gridHeight * 2);
@@ -45,8 +42,8 @@
     }
 }
 
-
-body, html {
+body,
+html {
     height: 100%;
     padding: 0;
     margin: 0;
@@ -64,19 +61,26 @@ body, html {
     -ms-user-select: none;
     user-select: none;
 }
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
     cursor: default;
 }
 pre {
     .allowSelection;
     cursor: text;
 }
-a h1, a h2, a h3, a p,
-button h1, button h2, button h3, button p {
+a h1,
+a h2,
+a h3,
+a p,
+button h1,
+button h2,
+button h3,
+button p {
     cursor: pointer;
 }
-
-
 
 main {
     z-index: 1;
@@ -97,7 +101,6 @@ main {
     -webkit-app-region: drag;
 }
 
-
 // Fading Mist interface when sendTransactionConfirmationPopup is shown.
 html {
     &.has-blur-overlay {
@@ -105,11 +108,10 @@ html {
         opacity: 0.7;
         body {
             -webkit-filter: blur(3px);
-            transform: scale(1.001) translate3d(0,0,0);
+            transform: scale(1.001) translate3d(0, 0, 0);
         }
     }
 }
-
 
 .webview {
     position: absolute;
@@ -117,8 +119,8 @@ html {
     left: 0;
     right: 0;
     bottom: 0;
-    border-left: 1px solid #E2E2E2;
-    background: #FFF;
+    border-left: 1px solid #e2e2e2;
+    background: #fff;
     overflow: hidden;
     opacity: 1;
     z-index: 10;
@@ -147,28 +149,27 @@ webview {
     top: 0;
 }
 
-
 // Scrollbars
 // Reference: https://gist.github.com/devinrhode2/2573411
 aside.sidebar {
     ::-webkit-scrollbar {
-      width: 7px;
-      background-color: rgba(0,0,0,0);
-      -webkit-border-radius: 100px;
+        width: 7px;
+        background-color: rgba(0, 0, 0, 0);
+        -webkit-border-radius: 100px;
     }
     ::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.09);
+        background-color: rgba(0, 0, 0, 0.09);
     }
 
     ::-webkit-scrollbar-thumb:vertical {
-      background: rgba(0,0,0,0.5);
-      -webkit-border-radius: 100px;
+        background: rgba(0, 0, 0, 0.5);
+        -webkit-border-radius: 100px;
     }
     ::-webkit-scrollbar-thumb:vertical:active {
-      background: rgba(0,0,0,0.61);
-      -webkit-border-radius: 100px;
-      background-clip: padding-box;
-      border: 2px solid rgba(0, 0, 0, 0);
+        background: rgba(0, 0, 0, 0.61);
+        -webkit-border-radius: 100px;
+        background-clip: padding-box;
+        border: 2px solid rgba(0, 0, 0, 0);
     }
 
     ::-webkit-scrollbar {
@@ -183,16 +184,14 @@ aside.sidebar {
 
     .submenu-container {
         ::-webkit-scrollbar-thumb:vertical {
-            background: rgba(255,255,255,0.5);
+            background: rgba(255, 255, 255, 0.5);
             border: 2px solid rgba(0, 0, 0, 0);
             background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:vertical:active {
-            background: rgba(255,255,255,0.61);
+            background: rgba(255, 255, 255, 0.61);
             border: 2px solid rgba(0, 0, 0, 0);
             background-clip: padding-box;
         }
-
     }
-
 }

@@ -9,7 +9,7 @@
     font-family: @sourceSansPro;
 
     button.icon {
-        padding: @gridHeight/4 @gridWidth/4;
+        padding: @gridHeight / 4 @gridWidth / 4;
 
         &:focus {
             border: 0;
@@ -21,9 +21,9 @@
         position: relative;
         .display(flex);
         flex-grow: 1;
-        margin: @gridHeight/4 @gridWidth/4;
-        padding: @gridHeight/4 @gridWidth/4;
-        background: #fff;//#F6F6F6;
+        margin: @gridHeight / 4 @gridWidth / 4;
+        padding: @gridHeight / 4 @gridWidth / 4;
+        background: #fff; //#F6F6F6;
         // border-radius: 3px;
         // box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
         height: @gridHeight*1.7;
@@ -32,7 +32,8 @@
         // ANIMATION
         transition: height 0.25s, box-shadow 0.5s;
 
-        > .dapp-info, > button {
+        > .dapp-info,
+        > button {
             color: #6691c2;
             position: relative;
             padding-left: 0;
@@ -74,7 +75,8 @@
                 margin-right: 8px;
                 text-transform: uppercase;
             }
-            .connect-button, .dapp-info span {
+            .connect-button,
+            .dapp-info span {
                 line-height: 21px;
                 display: inline-block;
             }
@@ -123,7 +125,8 @@
                     opacity: 1;
                 }
 
-                &:focus + .url-breadcrumb, &:hover + .url-breadcrumb {
+                &:focus + .url-breadcrumb,
+                &:hover + .url-breadcrumb {
                     opacity: 0;
                     word-spacing: -4px;
                 }
@@ -136,7 +139,8 @@
                 font-size: 80%;
                 text-align: center;
                 font-weight: 400;
-                transition: opacity 0.2s ease-in-out, word-spacing 0.1s ease-in-out 0.1s;
+                transition: opacity 0.2s ease-in-out,
+                    word-spacing 0.1s ease-in-out 0.1s;
                 line-height: @gridHeight;
                 height: @gridHeight;
                 overflow: hidden;
@@ -155,7 +159,8 @@
             &:hover > .url-breadcrumb {
                 opacity: 0;
                 word-spacing: -3px;
-                transition: opacity 0.2s ease-in-out 0.1s, word-spacing 0.2s ease-in-out;
+                transition: opacity 0.2s ease-in-out 0.1s,
+                    word-spacing 0.2s ease-in-out;
             }
         }
 
@@ -168,20 +173,20 @@
             left: 0;
             right: 0;
             bottom: 0;
-            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 3;
-            margin: 0 @gridWidth/4  0;
-            border-top: solid 1px #BDB6B6;
+            padding: @gridHeight / 2 @gridWidth / 4 @gridHeight * 3;
+            margin: 0 @gridWidth / 4 0;
+            border-top: solid 1px #bdb6b6;
         }
 
         div.accounts {
             .message {
                 flex-grow: 1;
-                padding: @gridHeight/2 @gridWidth/2 0 0;
+                padding: @gridHeight / 2 @gridWidth / 2 0 0;
 
                 h3 {
                     font-size: @fontSizeLarge;
                     text-transform: none;
-                    color: #4A4A4A;
+                    color: #4a4a4a;
                     font-weight: 400;
 
                     em {
@@ -210,8 +215,8 @@
                     font-weight: 500;
                     text-transform: uppercase;
                     font-family: @sourceSansPro;
-                    padding: @gridHeight/4 @gridWidth/2;
-                    line-height: @gridHeight
+                    padding: @gridHeight / 4 @gridWidth / 2;
+                    line-height: @gridHeight;
                 }
 
                 button.cancel {
@@ -222,7 +227,8 @@
     }
 
     &.url-bar-transparent {
-        button.reload, button.back {
+        button.reload,
+        button.back {
             display: none;
         }
 
@@ -232,10 +238,9 @@
         }
 
         .app-bar {
-            margin-left: @gridWidth /2;
-            margin-right: @gridWidth /2;
+            margin-left: @gridWidth / 2;
+            margin-right: @gridWidth / 2;
         }
-
     }
 }
 .linux .browser-bar {
@@ -265,10 +270,12 @@
     animation-duration: 0.5s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
-    background: linear-gradient(to left,
+    background: linear-gradient(
+        to left,
         darken(@colorLinkActive, 30%) 0,
         saturate(@colorLinkActive, 100%),
-        darken(@colorLinkActive, 30%)) !important;
+        darken(@colorLinkActive, 30%)
+    ) !important;
     background-size: 200px !important;
     background-repeat: repeat-x;
     -webkit-background-clip: text !important;
@@ -279,7 +286,7 @@
     0% {
         transform: scale(0.992) translateZ(0);
         opacity: 0.7;
-        background-position-x:0px;
+        background-position-x: 0px;
     }
     50% {
         transform: scale(1) translateZ(0);
@@ -288,7 +295,7 @@
     100% {
         transform: scale(0.992) translateZ(0);
         opacity: 0.7;
-        background-position-x:-200px;
+        background-position-x: -200px;
     }
 }
 
@@ -299,36 +306,33 @@
     animation-duration: 12s;
     animation-iteration-count: infinite;
     animation-timing-function: ease-out;
-    background-image: linear-gradient(to top,
+    background-image: linear-gradient(
+        to top,
         saturate(@colorLinkActive, 100%),
-        @colorGrayDark) !important;
+        @colorGrayDark
+    ) !important;
     background-size: 150px 150px;
-    background-position-y:0;
+    background-position-y: 0;
 
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent;
-
 }
 
 @keyframes color-ping {
     0% {
         transform: scale(1) translateZ(0);
-        background-position-y:0;
-
+        background-position-y: 0;
     }
     5% {
         transform: scale(0.95) translateZ(0);
-        background-position-y:30px;
+        background-position-y: 30px;
     }
     100% {
         background-color: @colorGrayDark;
         transform: scale(1) translateZ(0);
-        background-position-y:150px;
-
+        background-position-y: 150px;
     }
 }
-
-
 
 .rotating {
     animation-name: rotating;
@@ -346,17 +350,17 @@
     }
 }
 
-@media screen and (max-width: 960px ) {
+@media screen and (max-width: 960px) {
     .browser-bar .accounts {
-      width: 0;
-      text-overflow: clip;
-      padding-left: @gridWidth * 0.75;
+        width: 0;
+        text-overflow: clip;
+        padding-left: @gridWidth * 0.75;
     }
 }
 
-@media screen and (max-width: 800px ) {
+@media screen and (max-width: 800px) {
     .browser-bar div.dapp-info {
-      width: 0;
-      text-overflow: clip;
+        width: 0;
+        text-overflow: clip;
     }
 }

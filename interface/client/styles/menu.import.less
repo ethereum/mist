@@ -1,5 +1,5 @@
 .gradient-tip {
-    content: '';
+    content: "";
     display: block;
     width: 100%;
     height: @gridHeight * 0.75;
@@ -41,7 +41,11 @@ aside.sidebar {
         .gradient-tip();
         top: @gridHeight / 2;
         height: 8px;
-        background-image: linear-gradient(to top, rgba(241, 241, 241, 0) 0%, rgba(241, 241, 241, 1) 100%);
+        background-image: linear-gradient(
+            to top,
+            rgba(241, 241, 241, 0) 0%,
+            rgba(241, 241, 241, 1) 100%
+        );
     }
 
     nav {
@@ -79,7 +83,10 @@ aside.sidebar {
                     }
                 }
 
-                &.selected, &:active, &:hover, &:focus {
+                &.selected,
+                &:active,
+                &:hover,
+                &:focus {
                     button.main {
                         opacity: 1;
                     }
@@ -88,7 +95,7 @@ aside.sidebar {
                     height: 55px;
                     width: 54px;
                     display: block;
-                    opacity: .6;
+                    opacity: 0.6;
                     transition: 100ms opacity linear;
 
                     &:focus {
@@ -104,10 +111,11 @@ aside.sidebar {
                         padding-top: 10px;
                     }
 
-                    img, .icon-globe {
+                    img,
+                    .icon-globe {
                         width: 54px;
                         height: 54px;
-                        -webkit-mask-image: url('icons/mask-icon.svg');
+                        -webkit-mask-image: url("icons/mask-icon.svg");
                         -webkit-mask-size: cover;
                     }
                 }
@@ -132,7 +140,7 @@ aside.sidebar {
 
             &::before {
                 @tipSize: 8px;
-                content: '';
+                content: "";
                 margin-left: -@tipSize;
                 margin-top: 19px + 11px;
                 display: block;
@@ -142,11 +150,12 @@ aside.sidebar {
                 border: 0px solid transparent;
                 border-width: @tipSize;
                 border-left: 0;
-                border-right-color: rgba(0,0,0,0.78);
+                border-right-color: rgba(0, 0, 0, 0.78);
             }
 
             button {
-                &:active, &:focus {
+                &:active,
+                &:focus {
                     transform: none;
                     border: none;
                 }
@@ -168,14 +177,15 @@ aside.sidebar {
                 span {
                     font-weight: 400;
                 }
-                a, button {
+                a,
+                button {
                     color: #fff;
                 }
                 .badge {
                     font-size: 11px;
                 }
                 .remove-tab {
-                    color: #A6A6A6;
+                    color: #a6a6a6;
                     position: absolute;
                     right: 5px;
                     top: 4px;
@@ -194,7 +204,7 @@ aside.sidebar {
                         width: 100%;
                     }
                     .connect {
-                        background-color: #4C92E6;
+                        background-color: #4c92e6;
                         border-radius: 4px;
                         padding: 3px 0;
                     }
@@ -254,7 +264,7 @@ aside.sidebar {
                         }
                         .badge {
                             display: block;
-                            opacity: .8;
+                            opacity: 0.8;
                         }
                     }
                 }
@@ -270,7 +280,11 @@ aside.sidebar {
             .gradient-tip();
             height: 20px;
             top: -(20px - 1);
-            background-image: linear-gradient(to bottom, rgba(241, 241, 241, 0) 0%, rgba(241, 241, 241, 1) 100%);
+            background-image: linear-gradient(
+                to bottom,
+                rgba(241, 241, 241, 0) 0%,
+                rgba(241, 241, 241, 1) 100%
+            );
         }
 
         display: flex;
@@ -280,8 +294,9 @@ aside.sidebar {
         font-size: 0.9em;
         color: @colorTextSecondary;
 
-        div, span {
-            padding: @gridHeight/2 1px;
+        div,
+        span {
+            padding: @gridHeight / 2 1px;
             flex: 1;
             text-align: center;
         }
@@ -312,5 +327,9 @@ aside.sidebar {
 }
 
 .app-blur aside.newsidebar nav::after {
-    background-image: linear-gradient(to bottom, rgba(246, 246, 246, 0) 0%, rgba(246, 246, 246, 1) 100%);
+    background-image: linear-gradient(
+        to bottom,
+        rgba(246, 246, 246, 0) 0%,
+        rgba(246, 246, 246, 1) 100%
+    );
 }

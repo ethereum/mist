@@ -14,7 +14,7 @@ const LegacyWeb3IpcProvider = require("./legacyWeb3IpcProvider.js");
 // LEGACY
 window.BigNumber = BigNumber;
 window.web3 = {
-    currentProvider: new LegacyWeb3IpcProvider("", ipcProviderWrapper)
+  currentProvider: new LegacyWeb3IpcProvider("", ipcProviderWrapper)
 };
 
 // for now still add this too: WILL BE REMOVED with web3 1.0

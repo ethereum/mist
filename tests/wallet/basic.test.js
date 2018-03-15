@@ -4,26 +4,26 @@ const fs = require("fs");
 const path = require("path");
 
 const test = require("../_base").mocha(module, {
-    app: "wallet"
+  app: "wallet"
 });
 
 test["Title test"] = function*() {
-    const client = this.client;
+  const client = this.client;
 
-    yield client.waitUntilWindowLoaded();
-    (yield client.getTitle()).should.eql("Ethereum Wallet");
+  yield client.waitUntilWindowLoaded();
+  (yield client.getTitle()).should.eql("Ethereum Wallet");
 };
 
 test["account balances"] = function*() {
-    const web3 = this.web3;
-    const client = this.client;
+  const web3 = this.web3;
+  const client = this.client;
 
-    const realBalances = this.getRealAccountBalances();
-    const appBalances = this.getUiAccountBalances();
+  const realBalances = this.getRealAccountBalances();
+  const appBalances = this.getUiAccountBalances();
 
-    realBalances.should.not.be.null;
-    realBalances.should.eql("5");
-    appBalances.should.eql(realBalances);
+  realBalances.should.not.be.null;
+  realBalances.should.eql("5");
+  appBalances.should.eql(realBalances);
 };
 
 // test['create account'] = function*() {
@@ -42,70 +42,70 @@ test["account balances"] = function*() {
 // };
 
 test["deposit into account"] = function*() {
-    const web3 = this.web3;
-    const client = this.client;
+  const web3 = this.web3;
+  const client = this.client;
 
-    const accounts = web3.eth.accounts;
+  const accounts = web3.eth.accounts;
 
-    yield _createNewAccount.call(this);
+  yield _createNewAccount.call(this);
 
-    const newAccount = _.difference(web3.eth.accounts, accounts)[0];
+  const newAccount = _.difference(web3.eth.accounts, accounts)[0];
 
-    yield this.openAccountInUi(newAccount);
+  yield this.openAccountInUi(newAccount);
 
-    // links
-    const accLinks = yield this.getUiElements(".dapp-actionbar li");
-    yield client.elementIdClick(accLinks[0].ELEMENT);
+  // links
+  const accLinks = yield this.getUiElements(".dapp-actionbar li");
+  yield client.elementIdClick(accLinks[0].ELEMENT);
 
-    // fill in send form and submit
-    yield _completeSendForm.call(this, 1);
+  // fill in send form and submit
+  yield _completeSendForm.call(this, 1);
 
-    // do some mining
-    yield this.startMining();
-    yield Q.delay(10000);
-    yield this.stopMining();
+  // do some mining
+  yield this.startMining();
+  yield Q.delay(10000);
+  yield this.stopMining();
 
-    // check balances
-    const realBalances = yield this.getRealAccountBalances();
+  // check balances
+  const realBalances = yield this.getRealAccountBalances();
 
-    realBalances[newAccount].should.eql(1);
+  realBalances[newAccount].should.eql(1);
 };
 
 const _createNewAccount = function*() {
-    const client = this.client;
+  const client = this.client;
 
-    // open password window
-    yield this.openAndFocusNewWindow(() => {
-        return client.click("button.create.account");
-    });
+  // open password window
+  yield this.openAndFocusNewWindow(() => {
+    return client.click("button.create.account");
+  });
 
-    // enter password
-    yield client.setValue("form .password", "1234");
-    yield client.click("form button.ok");
+  // enter password
+  yield client.setValue("form .password", "1234");
+  yield client.click("form button.ok");
 
-    // re-enter password
-    yield client.setValue("form .password-repeat", "1234");
-    yield client.click("form button.ok");
+  // re-enter password
+  yield client.setValue("form .password-repeat", "1234");
+  yield client.click("form button.ok");
 
-    yield Q.delay(10000);
+  yield Q.delay(10000);
 
-    yield client.window(this.mainWindowHandle);
+  yield client.window(this.mainWindowHandle);
 };
 
 const _completeSendForm = function*(amt) {
-    const client = this.client;
+  const client = this.client;
 
-    // enter password
-    yield client.setValue("form input[name=amount]", `${amt}`);
+  // enter password
+  yield client.setValue("form input[name=amount]", `${amt}`);
 
-    // open password window
-    yield this.openAndFocusNewWindow(() => {
-        return client.click("form button[type=submit]");
-    });
+  // open password window
+  yield this.openAndFocusNewWindow(() => {
+    return client.click("form button[type=submit]");
+  });
 
-    // fill in password and submit
-    yield client.setValue("form input[type=password]", "1234");
-    yield client.click("form button.ok");
+  // fill in password and submit
+  yield client.setValue("form input[type=password]", "1234");
+  yield client.click("form button.ok");
 
-    yield Q.delay(5000);
+  yield Q.delay(5000);
 };

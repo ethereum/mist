@@ -17,7 +17,7 @@ A simple template helper to log objects in the console.
 @method (debug)
 **/
 Template.registerHelper("debug", function(object) {
-    console.log(object);
+  console.log(object);
 });
 
 /**
@@ -26,7 +26,7 @@ Returns the current block
 @method (CurrentBlock)
 **/
 Template.registerHelper("CurrentBlock", function() {
-    return EthBlocks.latest;
+  return EthBlocks.latest;
 });
 
 /**
@@ -35,7 +35,7 @@ Return the dirname.
 @method (dirname)
 **/
 Template.registerHelper("dirname", function() {
-    return window.dirname;
+  return window.dirname;
 });
 
 /**
@@ -44,7 +44,7 @@ Return the Mist API.
 @method (mist)
 **/
 Template.registerHelper("mist", function() {
-    return window.mist;
+  return window.mist;
 });
 
 /**
@@ -53,7 +53,7 @@ Return the app mode.
 @method (mode)
 **/
 Template.registerHelper("mode", function() {
-    return window.mistMode;
+  return window.mistMode;
 });
 
 /**
@@ -62,7 +62,7 @@ Return the friendly app name.
 @method (appName)
 **/
 Template.registerHelper("appName", function() {
-    return window.mistMode === "mist" ? "Mist" : "Ethereum Wallet";
+  return window.mistMode === "mist" ? "Mist" : "Ethereum Wallet";
 });
 
 /**
@@ -71,9 +71,9 @@ Return the app icon path.
 @method (iconPath)
 **/
 Template.registerHelper("appIconPath", function() {
-    return (
-        "file://" + window.dirname + "/icons/" + window.mistMode + "/icon2x.png"
-    );
+  return (
+    "file://" + window.dirname + "/icons/" + window.mistMode + "/icon2x.png"
+  );
 });
 
 /**
@@ -82,7 +82,7 @@ Get all accounts
 @method (accounts)
 **/
 Template.registerHelper("accounts", function(identity) {
-    return EthAccounts.find({}, { sort: { name: 1 } });
+  return EthAccounts.find({}, { sort: { name: 1 } });
 });
 
 /**
@@ -99,19 +99,19 @@ Return the right wallet icon
 @method (walletIcon)
 **/
 Template.registerHelper("walletIcon", function() {
-    var icon = "";
+  var icon = "";
 
-    if (this.type === "wallet") {
-        if (Helpers.isWatchOnly(this._id)) {
-            icon = '<i class="icon-eye" title="Watch only"></i>';
-        } else {
-            icon = '<i class="icon-wallet" title="Wallet"></i>';
-        }
-    } else if (this.type === "account") {
-        icon = '<i class="icon-key" title="Account"></i>';
+  if (this.type === "wallet") {
+    if (Helpers.isWatchOnly(this._id)) {
+      icon = '<i class="icon-eye" title="Watch only"></i>';
+    } else {
+      icon = '<i class="icon-wallet" title="Wallet"></i>';
     }
+  } else if (this.type === "account") {
+    icon = '<i class="icon-key" title="Account"></i>';
+  }
 
-    return new Spacebars.SafeString(icon);
+  return new Spacebars.SafeString(icon);
 });
 
 /**
@@ -121,12 +121,12 @@ Get the account name or display the address
 @param {String} address
 */
 Template.registerHelper("accountNameOrAddress", function(address) {
-    var account = EthAccounts.findOne({ address: address });
-    if (account) {
-        return account.name;
-    } else {
-        return address;
-    }
+  var account = EthAccounts.findOne({ address: address });
+  if (account) {
+    return account.name;
+  } else {
+    return address;
+  }
 });
 
 /**

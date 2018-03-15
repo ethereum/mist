@@ -45,9 +45,9 @@ apt-get install libgconf2-4
 
 The data folder for Mist is stored in other places:
 
-*   Windows `%APPDATA%\Mist`
-*   macOS `~/Library/Application\ Support/Mist`
-*   Linux `~/.config/Mist`
+* Windows `%APPDATA%\Mist`
+* macOS `~/Library/Application\ Support/Mist`
+* Linux `~/.config/Mist`
 
 ## Development
 
@@ -58,11 +58,11 @@ Once a Mist version is released the Meteor frontend part is bundled using the `m
 
 To run mist in development you need:
 
-*   [Node.js](https://nodejs.org) `v7.x` (use the prefered installation method for your OS)
-*   [Meteor](https://www.meteor.com/install) javascript app framework
-*   [Yarn](https://yarnpkg.com/) package manager
-*   [Electron](http://electron.atom.io/) `v1.7.11` cross platform desktop app framework
-*   [Gulp](http://gulpjs.com/) build and automation system
+* [Node.js](https://nodejs.org) `v7.x` (use the prefered installation method for your OS)
+* [Meteor](https://www.meteor.com/install) javascript app framework
+* [Yarn](https://yarnpkg.com/) package manager
+* [Electron](http://electron.atom.io/) `v1.7.11` cross platform desktop app framework
+* [Gulp](http://gulpjs.com/) build and automation system
 
 Install the latter ones via:
 
@@ -245,9 +245,9 @@ With the `walletSource` you can specify the Wallet branch to use, default is `ma
 
 Options are:
 
-*   `master`
-*   `develop`
-*   `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
+* `master`
+* `develop`
+* `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
 
 _Note: applicable only when combined with `--wallet`_
 

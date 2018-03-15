@@ -9,20 +9,18 @@ The IPC provider wrapper to communicate to the backend
 @constructor
 */
 
-const { ipcRenderer } = require('electron');
-
+const { ipcRenderer } = require("electron");
 
 /**
 Gets the writable property.
 
 @method on('ipcProvider-setWritable')
 */
-ipcRenderer.on('ipcProvider-setWritable', (e, writable) => {
+ipcRenderer.on("ipcProvider-setWritable", (e, writable) => {
     // console.debug('ipcProvider-setWritable', writable);
 
     ipcProviderWrapper.writable = writable;
 });
-
 
 const ipcProviderWrapper = {
     writable: false,
@@ -38,7 +36,7 @@ const ipcProviderWrapper = {
     connect(path) {
         // console.debug('ipcProviderWrapper: connect');
 
-        ipcRenderer.send('ipcProvider-create', path);
+        ipcRenderer.send("ipcProvider-create", path);
 
         return this;
     },
@@ -92,10 +90,10 @@ const ipcProviderWrapper = {
         if (name) {
             ipcRenderer.removeAllListeners(`ipcProvider-${name}`);
         } else {
-            ipcRenderer.removeAllListeners('ipcProvider-error');
-            ipcRenderer.removeAllListeners('ipcProvider-end');
-            ipcRenderer.removeAllListeners('ipcProvider-timeout');
-            ipcRenderer.removeAllListeners('ipcProvider-connect');
+            ipcRenderer.removeAllListeners("ipcProvider-error");
+            ipcRenderer.removeAllListeners("ipcProvider-end");
+            ipcRenderer.removeAllListeners("ipcProvider-timeout");
+            ipcRenderer.removeAllListeners("ipcProvider-connect");
         }
     },
     /**
@@ -106,7 +104,7 @@ const ipcProviderWrapper = {
     write(payload) {
         // console.debug('ipcProviderWrapper: write payload');
 
-        ipcRenderer.send('ipcProvider-write', payload);
+        ipcRenderer.send("ipcProvider-write", payload);
     },
     /**
     Write synchronous to the IPC connection through the backend
@@ -116,10 +114,8 @@ const ipcProviderWrapper = {
     writeSync(payload) {
         // console.debug('ipcProviderWrapper: write payload (sync)');
 
-        return ipcRenderer.sendSync('ipcProvider-writeSync', payload);
-    },
-
+        return ipcRenderer.sendSync("ipcProvider-writeSync", payload);
+    }
 };
-
 
 module.exports = ipcProviderWrapper;

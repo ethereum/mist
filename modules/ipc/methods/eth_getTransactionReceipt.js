@@ -1,6 +1,6 @@
 const _ = global._;
-const BaseProcessor = require('./base');
-const eth = require('ethereumjs-util');
+const BaseProcessor = require("./base");
+const eth = require("ethereumjs-util");
 
 /**
  * Process method: eth_getTransactionReceipt
@@ -9,7 +9,6 @@ const eth = require('ethereumjs-util');
  */
 
 module.exports = class extends BaseProcessor {
-
     sanitizeRequestPayload(conn, payload, isPartOfABatch) {
         return super.sanitizeRequestPayload(conn, payload, isPartOfABatch);
     }
@@ -24,30 +23,40 @@ module.exports = class extends BaseProcessor {
 
         try {
             // If that contains a contractAddress already, fine.
-            if (ret.result.result && ret.result.result.contractAddress != null) {
+            if (
+                ret.result.result &&
+                ret.result.result.contractAddress != null
+            ) {
                 return ret.result;
             }
 
             // 1. GET TRANSACTION from AND nonce VALUES
-            const transactionInfo = await conn.socket.send({
-                jsonrpc: '2.0',
-                id: _.uuid(),
-                method: 'eth_getTransactionByHash',
-                params: [txHash]
-            }, { fullResult: true });
+            const transactionInfo = await conn.socket.send(
+                {
+                    jsonrpc: "2.0",
+                    id: _.uuid(),
+                    method: "eth_getTransactionByHash",
+                    params: [txHash]
+                },
+                { fullResult: true }
+            );
 
             const fromAddress = transactionInfo.result.result.from;
             const nonce = parseInt(transactionInfo.result.result.nonce, 16);
-            const possibleContractAddress = `0x${eth.generateAddress(fromAddress, nonce).toString('hex')}`;
-
+            const possibleContractAddress = `0x${eth
+                .generateAddress(fromAddress, nonce)
+                .toString("hex")}`;
 
             // 2. GET CODE FROM ADDRESS
-            const contractCode = await conn.socket.send({
-                jsonrpc: '2.0',
-                id: _.uuid(),
-                method: 'eth_getCode',
-                params: [possibleContractAddress, 'latest']
-            }, { fullResult: true });
+            const contractCode = await conn.socket.send(
+                {
+                    jsonrpc: "2.0",
+                    id: _.uuid(),
+                    method: "eth_getCode",
+                    params: [possibleContractAddress, "latest"]
+                },
+                { fullResult: true }
+            );
 
             const contractCodeResult = contractCode.result.result;
 
@@ -56,7 +65,7 @@ module.exports = class extends BaseProcessor {
                 ret.result.result.contractAddress = possibleContractAddress;
             }
         } catch (e) {
-            console.warn('[WARN]', txHash, e);
+            console.warn("[WARN]", txHash, e);
             return ret.result;
         }
         return ret.result;

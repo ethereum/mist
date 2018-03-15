@@ -22,55 +22,56 @@
 
 "use strict";
 
-var _ = require('underscore');
+var _ = require("underscore");
 var errors = {
-    InvalidConnection: function (host){
-        return new Error('CONNECTION ERROR: Couldn\'t connect to node '+ host +'.');
+    InvalidConnection: function(host) {
+        return new Error(
+            "CONNECTION ERROR: Couldn't connect to node " + host + "."
+        );
     },
-    InvalidResponse: function (result){
-        var message = !!result && !!result.error && !!result.error.message ? result.error.message : 'Invalid JSON RPC response: ' + JSON.stringify(result);
+    InvalidResponse: function(result) {
+        var message =
+            !!result && !!result.error && !!result.error.message
+                ? result.error.message
+                : "Invalid JSON RPC response: " + JSON.stringify(result);
         return new Error(message);
     }
 };
 
-
-var IpcProvider = function (path, net) {
+var IpcProvider = function(path, net) {
     var _this = this;
     this.responseCallbacks = {};
     this.path = path;
-    
-    this.connection = net.connect({path: this.path});
 
-    this.connection.on('error', function(e){
-        console.error('IPC Connection Error', e);
+    this.connection = net.connect({ path: this.path });
+
+    this.connection.on("error", function(e) {
+        console.error("IPC Connection Error", e);
         _this._timeout();
     });
 
-    this.connection.on('end', function(){
+    this.connection.on("end", function() {
         _this._timeout();
-    }); 
-
+    });
 
     // LISTEN FOR CONNECTION RESPONSES
-    this.connection.on('data', function(data) {
+    this.connection.on("data", function(data) {
         /*jshint maxcomplexity: 6 */
 
-        _this._parseResponse(data.toString()).forEach(function(result){
-
+        _this._parseResponse(data.toString()).forEach(function(result) {
             var id = null;
 
             // get the id which matches the returned id
-            if(_.isArray(result)) {
-                result.forEach(function(load){
-                    if(_this.responseCallbacks[load.id])
-                        id = load.id;
+            if (_.isArray(result)) {
+                result.forEach(function(load) {
+                    if (_this.responseCallbacks[load.id]) id = load.id;
                 });
             } else {
                 id = result.id;
             }
 
             // fire the callback
-            if(_this.responseCallbacks[id]) {
+            if (_this.responseCallbacks[id]) {
                 _this.responseCallbacks[id](null, result);
                 delete _this.responseCallbacks[id];
             }
@@ -87,33 +88,29 @@ Will parse the response and make an array out of it.
 IpcProvider.prototype._parseResponse = function(data) {
     var _this = this,
         returnValues = [];
-    
+
     // DE-CHUNKER
     var dechunkedData = data
-        .replace(/\}[\n\r]?\{/g,'}|--|{') // }{
-        .replace(/\}\][\n\r]?\[\{/g,'}]|--|[{') // }][{
-        .replace(/\}[\n\r]?\[\{/g,'}|--|[{') // }[{
-        .replace(/\}\][\n\r]?\{/g,'}]|--|{') // }]{
-        .split('|--|');
+        .replace(/\}[\n\r]?\{/g, "}|--|{") // }{
+        .replace(/\}\][\n\r]?\[\{/g, "}]|--|[{") // }][{
+        .replace(/\}[\n\r]?\[\{/g, "}|--|[{") // }[{
+        .replace(/\}\][\n\r]?\{/g, "}]|--|{") // }]{
+        .split("|--|");
 
-    dechunkedData.forEach(function(data){
-
+    dechunkedData.forEach(function(data) {
         // prepend the last chunk
-        if(_this.lastChunk)
-            data = _this.lastChunk + data;
+        if (_this.lastChunk) data = _this.lastChunk + data;
 
         var result = null;
 
         try {
             result = JSON.parse(data);
-
-        } catch(e) {
-
+        } catch (e) {
             _this.lastChunk = data;
 
             // start timeout to cancel all requests
             clearTimeout(_this.lastChunkTimeout);
-            _this.lastChunkTimeout = setTimeout(function(){
+            _this.lastChunkTimeout = setTimeout(function() {
                 _this._timeout();
                 throw errors.InvalidResponse(data);
             }, 1000 * 15);
@@ -125,13 +122,11 @@ IpcProvider.prototype._parseResponse = function(data) {
         clearTimeout(_this.lastChunkTimeout);
         _this.lastChunk = null;
 
-        if(result)
-            returnValues.push(result);
+        if (result) returnValues.push(result);
     });
 
     return returnValues;
 };
-
 
 /**
 Get the adds a callback to the responseCallbacks object,
@@ -153,14 +148,13 @@ Timeout all requests when the end/error event is fired
 @method _timeout
 */
 IpcProvider.prototype._timeout = function() {
-    for(var key in this.responseCallbacks) {
-        if(this.responseCallbacks.hasOwnProperty(key)){
-            this.responseCallbacks[key](errors.InvalidConnection('on IPC'));
+    for (var key in this.responseCallbacks) {
+        if (this.responseCallbacks.hasOwnProperty(key)) {
+            this.responseCallbacks[key](errors.InvalidConnection("on IPC"));
             delete this.responseCallbacks[key];
         }
     }
 };
-
 
 /**
 Check if the current connection is still valid.
@@ -171,41 +165,41 @@ IpcProvider.prototype.isConnected = function() {
     var _this = this;
 
     // try reconnect, when connection is gone
-    if(!_this.connection.writable)
-        _this.connection.connect({path: _this.path});
+    if (!_this.connection.writable)
+        _this.connection.connect({ path: _this.path });
 
     return !!this.connection.writable;
 };
 
-IpcProvider.prototype.send = function (payload) {
-
-    if(this.connection.writeSync) {
+IpcProvider.prototype.send = function(payload) {
+    if (this.connection.writeSync) {
         var result;
 
         // try reconnect, when connection is gone
-        if(!this.connection.writable)
-            this.connection.connect({path: this.path});
+        if (!this.connection.writable)
+            this.connection.connect({ path: this.path });
 
         var data = this.connection.writeSync(JSON.stringify(payload));
 
         try {
             result = JSON.parse(data);
-        } catch(e) {
-            throw errors.InvalidResponse(data);                
+        } catch (e) {
+            throw errors.InvalidResponse(data);
         }
 
         return result;
-
     } else {
-        throw new Error('You tried to send "'+ payload.method +'" synchronously. Synchronous requests are not supported by the IPC provider.');
+        throw new Error(
+            'You tried to send "' +
+                payload.method +
+                '" synchronously. Synchronous requests are not supported by the IPC provider.'
+        );
     }
 };
 
-IpcProvider.prototype.sendAsync = function (payload, callback) {
+IpcProvider.prototype.sendAsync = function(payload, callback) {
     // try reconnect, when connection is gone
-    if(!this.connection.writable)
-        this.connection.connect({path: this.path});
-
+    if (!this.connection.writable) this.connection.connect({ path: this.path });
 
     this.connection.write(JSON.stringify(payload));
     this._addResponseCallback(payload, callback);

@@ -1,10 +1,7 @@
-
-
 const _ = global._;
-const solc = require('solc');
-const Q = require('bluebird');
-const BaseProcessor = require('./base');
-
+const solc = require("solc");
+const Q = require("bluebird");
+const BaseProcessor = require("./base");
 
 /**
  * Process method: eth_compileSolidity
@@ -15,22 +12,22 @@ module.exports = class extends BaseProcessor {
      */
     exec(conn, payload) {
         return Q.try(() => {
-            this._log.debug('Compile solidity');
+            this._log.debug("Compile solidity");
 
             const output = solc.compile(payload.params[0], 1); // 1 activates the optimiser
 
             const finalResult = _.extend({}, payload);
 
             if (!output || output.errors) {
-                let msg = (output ? output.errors : 'Compile error');
+                let msg = output ? output.errors : "Compile error";
 
                 if (_.isArray(msg)) {
-                    msg = msg.join(', ');
+                    msg = msg.join(", ");
                 }
 
                 finalResult.error = {
                     code: -32700,
-                    message: msg,
+                    message: msg
                 };
             } else {
                 finalResult.result = output.contracts;
@@ -51,4 +48,3 @@ module.exports = class extends BaseProcessor {
         return super.sanitizeRequestPayload(conn, payload, isPartOfABatch);
     }
 };
-

@@ -1,12 +1,10 @@
-const fs = require('fs');
-const Q = require('bluebird');
-const Loki = require('lokijs');
-const Settings = require('./settings');
-const log = require('./utils/logger').create('Db');
-
+const fs = require("fs");
+const Q = require("bluebird");
+const Loki = require("lokijs");
+const Settings = require("./settings");
+const log = require("./utils/logger").create("Db");
 
 let db;
-
 
 exports.init = () => {
     const filePath = Settings.dbFilePath;
@@ -21,49 +19,46 @@ exports.init = () => {
             log.info(`Creating db: ${filePath}`);
 
             const tempdb = new Loki(filePath, {
-                env: 'NODEJS',
-                autoload: false,
+                env: "NODEJS",
+                autoload: false
             });
 
             return new Q.promisify(tempdb.saveDatabase, { context: tempdb })();
         }
-    })
-    .then(() => {
+    }).then(() => {
         log.info(`Loading db: ${filePath}`);
 
         return new Q((resolve, reject) => {
             db = new Loki(filePath, {
-                env: 'NODEJS',
+                env: "NODEJS",
                 autosave: true,
                 autosaveInterval: 5000,
                 autoload: true,
                 autoloadCallback(err) {
                     if (err) {
                         log.error(err);
-                        reject(new Error('Error instantiating db'));
+                        reject(new Error("Error instantiating db"));
                     }
                     resolve();
-                },
+                }
             });
         });
     });
 };
 
-
-exports.getCollection = (name) => {
+exports.getCollection = name => {
     if (!db.getCollection(name)) {
         db.addCollection(name, {
-            unique: ['_id']
+            unique: ["_id"]
         });
     }
 
     return db.getCollection(name);
 };
 
-
 exports.close = () => {
     return new Q((resolve, reject) => {
-        db.close((err) => {
+        db.close(err => {
             if (err) {
                 reject(err);
             } else {

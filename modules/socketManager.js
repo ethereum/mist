@@ -1,10 +1,9 @@
 const _ = global._;
-const Q = require('bluebird');
-const log = require('./utils/logger').create('Sockets');
+const Q = require("bluebird");
+const log = require("./utils/logger").create("Sockets");
 
-const Web3IpcSocket = require('./sockets/web3Ipc');
-const Web3HttpSocket = require('./sockets/web3Http');
-
+const Web3IpcSocket = require("./sockets/web3Ipc");
+const Web3HttpSocket = require("./sockets/web3Http");
 
 /**
  * `Socket` manager.
@@ -23,14 +22,14 @@ class SocketManager {
         log.debug(`Create socket, id=${id}, type=${type}`);
 
         switch (type) {
-        case 'ipc':
-            this._sockets[id] = new Web3IpcSocket(this, id);
-            break;
-        case 'http':
-            this._sockets[id] = new Web3HttpSocket(this, id);
-            break;
-        default:
-            throw new Error(`Unrecognized socket type: ${type}`);
+            case "ipc":
+                this._sockets[id] = new Web3IpcSocket(this, id);
+                break;
+            case "http":
+                this._sockets[id] = new Web3HttpSocket(this, id);
+                break;
+            default:
+                throw new Error(`Unrecognized socket type: ${type}`);
         }
 
         return this._sockets[id];
@@ -49,17 +48,18 @@ class SocketManager {
         return this._sockets[id];
     }
 
-
     /**
      * @return {Promise}
      */
     destroyAll() {
-        log.info('Destroy all sockets');
+        log.info("Destroy all sockets");
 
-        return Q.all(_.map(this._sockets, (s, id) => {
-            this.remove(id);
-            return s.destroy();
-        }));
+        return Q.all(
+            _.map(this._sockets, (s, id) => {
+                this.remove(id);
+                return s.destroy();
+            })
+        );
     }
 
     /**
@@ -72,8 +72,6 @@ class SocketManager {
 
         delete this._sockets[id];
     }
-
 }
-
 
 module.exports = new SocketManager();

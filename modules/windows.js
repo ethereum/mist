@@ -1,59 +1,64 @@
-const { app, BrowserWindow, ipcMain: ipc } = require('electron');
-const Settings = require('./settings');
-const log = require('./utils/logger').create('Windows');
-const EventEmitter = require('events').EventEmitter;
+const { app, BrowserWindow, ipcMain: ipc } = require("electron");
+const Settings = require("./settings");
+const log = require("./utils/logger").create("Windows");
+const EventEmitter = require("events").EventEmitter;
 import {
     closeWindow,
     openWindow,
     resetGenericWindow,
-    reuseGenericWindow,
-} from './core/ui/actions';
+    reuseGenericWindow
+} from "./core/ui/actions";
 
 class GenericWindow extends EventEmitter {
     constructor(mgr) {
         super();
 
         this._mgr = mgr;
-        this._log = log.create('generic');
+        this._log = log.create("generic");
         this.isPrimary = false;
-        this.type = 'generic';
+        this.type = "generic";
         this.isPopup = true;
         this.ownerId = null;
         this.isAvailable = true;
         this.actingType = null;
 
-        this._log.debug('Creating generic window');
-        let electronOptions = this._mgr.getDefaultOptionsForType('generic');
+        this._log.debug("Creating generic window");
+        let electronOptions = this._mgr.getDefaultOptionsForType("generic");
         this.window = new BrowserWindow(electronOptions);
 
         // set Accept_Language header
         this.session = this.window.webContents.session;
-        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+        this.session.setUserAgent(
+            this.session.getUserAgent(),
+            Settings.language
+        );
 
         this.webContents = this.window.webContents;
-        this.webContents.once('did-finish-load', () => {
+        this.webContents.once("did-finish-load", () => {
             this._log.debug(`Content loaded, id: ${this.id}`);
-            this.emit('ready');
+            this.emit("ready");
         });
 
         // prevent dropping files
-        this.webContents.on('will-navigate', e => e.preventDefault());
+        this.webContents.on("will-navigate", e => e.preventDefault());
 
-        this.window.once('closed', () => {
-            this._log.debug('Closed');
-            this.emit('closed');
+        this.window.once("closed", () => {
+            this._log.debug("Closed");
+            this.emit("closed");
         });
 
-        this.window.on('close', (e) => {
+        this.window.on("close", e => {
             // Preserve window unless quitting Mist
-            if (store.getState().ui.appQuit) { return this.emit('close', e); }
+            if (store.getState().ui.appQuit) {
+                return this.emit("close", e);
+            }
             e.preventDefault();
             this.hide();
         });
 
-        this.window.on('show', e => this.emit('show', e));
+        this.window.on("show", e => this.emit("show", e));
 
-        this.window.on('hide', e => this.emit('hide', e));
+        this.window.on("hide", e => this.emit("hide", e));
 
         this.load(`${global.interfacePopupsUrl}#generic`);
     }
@@ -64,35 +69,39 @@ class GenericWindow extends EventEmitter {
     }
 
     send() {
-        this._log.trace('Sending data', arguments);
+        this._log.trace("Sending data", arguments);
         this.webContents.send.apply(this.webContents, arguments);
     }
 
     hide() {
-        this._log.debug('Hide');
+        this._log.debug("Hide");
         this.window.hide();
-        this.send('uiAction_switchTemplate', 'generic');
+        this.send("uiAction_switchTemplate", "generic");
         this.actingType = null;
         this.isAvailable = true;
-        this.emit('hidden');
+        this.emit("hidden");
         store.dispatch(resetGenericWindow());
     }
 
     show() {
-        this._log.debug('Show');
+        this._log.debug("Show");
         this.window.show();
     }
 
     close() {
-        this._log.debug('Avoiding close of generic window');
+        this._log.debug("Avoiding close of generic window");
         this.hide();
     }
 
     reuse(type, options, callback) {
         this.isAvailable = false;
         this.actingType = type;
-        if (callback) { this.callback = callback; }
-        if (options.ownerId) { this.ownerId = options.ownerId; }
+        if (callback) {
+            this.callback = callback;
+        }
+        if (options.ownerId) {
+            this.ownerId = options.ownerId;
+        }
         if (options.sendData) {
             if (_.isString(options.sendData)) {
                 this.send(options.sendData);
@@ -104,9 +113,12 @@ class GenericWindow extends EventEmitter {
                 }
             }
         }
-        this.window.setSize(options.electronOptions.width, options.electronOptions.height);
-        this.window.setAlwaysOnTop(true, 'floating', 1);
-        this.send('uiAction_switchTemplate', type);
+        this.window.setSize(
+            options.electronOptions.width,
+            options.electronOptions.height
+        );
+        this.window.setAlwaysOnTop(true, "floating", 1);
+        this.send("uiAction_switchTemplate", type);
         this.show();
         store.dispatch(reuseGenericWindow(type));
     }
@@ -131,8 +143,8 @@ class Window extends EventEmitter {
             width: 1100,
             height: 720,
             icon: global.icon,
-            titleBarStyle: 'hidden-inset', // hidden-inset: more space
-            backgroundColor: '#F6F6F6',
+            titleBarStyle: "hidden-inset", // hidden-inset: more space
+            backgroundColor: "#F6F6F6",
             acceptFirstMouse: true,
             darkTheme: true,
             webPreferences: {
@@ -140,23 +152,26 @@ class Window extends EventEmitter {
                 webaudio: true,
                 webgl: false,
                 webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
-                textAreasAreResizable: true,
-            },
+                textAreasAreResizable: true
+            }
         };
 
         electronOptions = _.deepExtend(electronOptions, opts.electronOptions);
 
-        this._log.debug('Creating browser window');
+        this._log.debug("Creating browser window");
 
         this.window = new BrowserWindow(electronOptions);
 
         // set Accept_Language header
         this.session = this.window.webContents.session;
-        this.session.setUserAgent(this.session.getUserAgent(), Settings.language);
+        this.session.setUserAgent(
+            this.session.getUserAgent(),
+            Settings.language
+        );
 
         this.webContents = this.window.webContents;
 
-        this.webContents.once('did-finish-load', () => {
+        this.webContents.once("did-finish-load", () => {
             this.isContentReady = true;
 
             this._log.debug(`Content loaded, id: ${this.id}`);
@@ -177,37 +192,35 @@ class Window extends EventEmitter {
                 this.show();
             }
 
-            this.emit('ready');
+            this.emit("ready");
         });
 
-
         // prevent droping files
-        this.webContents.on('will-navigate', (e) => {
+        this.webContents.on("will-navigate", e => {
             e.preventDefault();
         });
 
-
-        this.window.once('closed', () => {
-            this._log.debug('Closed');
+        this.window.once("closed", () => {
+            this._log.debug("Closed");
 
             this.isShown = false;
             this.isClosed = true;
             this.isContentReady = false;
 
-            this.emit('closed');
+            this.emit("closed");
             store.dispatch(closeWindow(this.type));
         });
 
-        this.window.once('close', (e) => {
-            this.emit('close', e);
+        this.window.once("close", e => {
+            this.emit("close", e);
         });
 
-        this.window.on('show', (e) => {
-            this.emit('show', e);
+        this.window.on("show", e => {
+            this.emit("show", e);
         });
 
-        this.window.on('hide', (e) => {
-            this.emit('hide', e);
+        this.window.on("hide", e => {
+            this.emit("hide", e);
         });
 
         if (opts.url) {
@@ -230,34 +243,29 @@ class Window extends EventEmitter {
             return;
         }
 
-        this._log.trace('Sending data', arguments);
+        this._log.trace("Sending data", arguments);
 
-        this.webContents.send.apply(
-            this.webContents,
-            arguments
-        );
+        this.webContents.send.apply(this.webContents, arguments);
     }
-
 
     hide() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug('Hide');
+        this._log.debug("Hide");
 
         this.window.hide();
 
         this.isShown = false;
     }
 
-
     show() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug('Show');
+        this._log.debug("Show");
 
         this.window.show();
 
@@ -266,49 +274,46 @@ class Window extends EventEmitter {
         store.dispatch(openWindow(this.type));
     }
 
-
     close() {
         if (this.isClosed) {
             return;
         }
 
-        this._log.debug('Close');
+        this._log.debug("Close");
 
         this.window.close();
     }
 }
-
 
 class Windows {
     constructor() {
         this._windows = {};
     }
 
-
     init() {
-        log.info('Creating commonly-used windows');
+        log.info("Creating commonly-used windows");
 
-        this.loading = this.create('loading');
+        this.loading = this.create("loading");
         this.generic = this.createGenericWindow();
 
-        this.loading.on('show', () => {
+        this.loading.on("show", () => {
             this.loading.window.center();
-            store.dispatch(openWindow('loading'));
+            store.dispatch(openWindow("loading"));
         });
 
-        this.loading.on('hide', () => {
-            store.dispatch(closeWindow('loading'));
+        this.loading.on("hide", () => {
+            store.dispatch(closeWindow("loading"));
         });
 
         // when a window gets initalized it will send us its id
-        ipc.on('backendAction_setWindowId', (event) => {
+        ipc.on("backendAction_setWindowId", event => {
             const id = event.sender.id;
 
-            log.debug('Set window id', id);
+            log.debug("Set window id", id);
 
             const bwnd = BrowserWindow.fromWebContents(event.sender);
-            const wnd = _.find(this._windows, (w) => {
-                return (w.window === bwnd);
+            const wnd = _.find(this._windows, w => {
+                return w.window === bwnd;
             });
 
             if (wnd) {
@@ -318,63 +323,76 @@ class Windows {
             }
         });
 
-        store.dispatch({ type: '[MAIN]:WINDOWS:INIT_FINISH' });
+        store.dispatch({ type: "[MAIN]:WINDOWS:INIT_FINISH" });
     }
 
     createGenericWindow() {
-        const wnd = this._windows.generic = new GenericWindow(this);
+        const wnd = (this._windows.generic = new GenericWindow(this));
         return wnd;
     }
 
     create(type, opts, callback) {
-        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
+        store.dispatch({
+            type: "[MAIN]:WINDOW:CREATE_START",
+            payload: { type }
+        });
 
-        const options = _.deepExtend(this.getDefaultOptionsForType(type), opts || {});
+        const options = _.deepExtend(
+            this.getDefaultOptionsForType(type),
+            opts || {}
+        );
 
         const existing = this.getByType(type);
 
         if (existing && existing.ownerId === options.ownerId) {
-            log.debug(`Window ${type} with owner ${options.ownerId} already existing.`);
+            log.debug(
+                `Window ${type} with owner ${options.ownerId} already existing.`
+            );
 
             return existing;
         }
 
-        const category = options.primary ? 'primary' : 'secondary';
+        const category = options.primary ? "primary" : "secondary";
 
-        log.info(`Create ${category} window: ${type}, owner: ${options.ownerId || 'notset'}`);
+        log.info(
+            `Create ${category} window: ${type}, owner: ${options.ownerId ||
+                "notset"}`
+        );
 
-        const wnd = this._windows[type] = new Window(this, type, options);
-        wnd.on('closed', this._onWindowClosed.bind(this, wnd));
+        const wnd = (this._windows[type] = new Window(this, type, options));
+        wnd.on("closed", this._onWindowClosed.bind(this, wnd));
 
         if (callback) {
             wnd.callback = callback;
         }
 
-        store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
+        store.dispatch({
+            type: "[MAIN]:WINDOW:CREATE_FINISH",
+            payload: { type }
+        });
 
         return wnd;
     }
 
-
     getDefaultOptionsForType(type) {
         const mainWebPreferences = {
             mist: {
-                nodeIntegration: true, /* necessary for webviews;
-                    require will be removed through preloader */
+                nodeIntegration: true /* necessary for webviews;
+                    require will be removed through preloader */,
                 preload: `${__dirname}/preloader/mistUI.js`,
-                'overlay-fullscreen-video': true,
-                'overlay-scrollbars': true,
-                experimentalFeatures: true,
+                "overlay-fullscreen-video": true,
+                "overlay-scrollbars": true,
+                experimentalFeatures: true
             },
             wallet: {
                 preload: `${__dirname}/preloader/walletMain.js`,
-                'overlay-fullscreen-video': true,
-                'overlay-scrollbars': true,
+                "overlay-fullscreen-video": true,
+                "overlay-scrollbars": true
             }
-        }
+        };
 
         switch (type) {
-            case 'main':
+            case "main":
                 return {
                     primary: true,
                     electronOptions: {
@@ -382,32 +400,34 @@ class Windows {
                         height: Math.max(global.defaultWindow.height, 440),
                         x: global.defaultWindow.x,
                         y: global.defaultWindow.y,
-                        webPreferences: mainWebPreferences[global.mode],
-                    },
+                        webPreferences: mainWebPreferences[global.mode]
+                    }
                 };
-            case 'splash':
+            case "splash":
                 return {
                     primary: true,
-                    url: `${global.interfacePopupsUrl}#splashScreen_${global.mode}`,
+                    url: `${global.interfacePopupsUrl}#splashScreen_${
+                        global.mode
+                    }`,
                     show: true,
                     electronOptions: {
                         width: 400,
                         height: 230,
                         resizable: false,
-                        backgroundColor: '#F6F6F6',
+                        backgroundColor: "#F6F6F6",
                         useContentSize: true,
                         frame: false,
                         webPreferences: {
-                            preload: `${__dirname}/preloader/splashScreen.js`,
-                        },
-                    },
+                            preload: `${__dirname}/preloader/splashScreen.js`
+                        }
+                    }
                 };
-            case 'loading':
+            case "loading":
                 return {
                     show: false,
                     url: `${global.interfacePopupsUrl}#loadingWindow`,
                     electronOptions: {
-                        title: '',
+                        title: "",
                         alwaysOnTop: true,
                         resizable: false,
                         width: 100,
@@ -415,61 +435,61 @@ class Windows {
                         center: true,
                         frame: false,
                         useContentSize: true,
-                        titleBarStyle: '', // hidden-inset: more space
+                        titleBarStyle: "", // hidden-inset: more space
                         skipTaskbar: true,
                         webPreferences: {
-                            preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`,
-                        },
-                    },
+                            preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`
+                        }
+                    }
                 };
-            case 'about':
+            case "about":
                 return {
                     url: `${global.interfacePopupsUrl}#about`,
                     electronOptions: {
                         width: 420,
                         height: 230,
-                        alwaysOnTop: true,
-                    },
+                        alwaysOnTop: true
+                    }
                 };
-            case 'remix':
+            case "remix":
                 return {
-                    url: 'https://remix.ethereum.org',
+                    url: "https://remix.ethereum.org",
                     electronOptions: {
                         width: 1024,
                         height: 720,
                         center: true,
                         frame: true,
                         resizable: true,
-                        titleBarStyle: 'default',
+                        titleBarStyle: "default"
                     }
                 };
-            case 'importAccount':
+            case "importAccount":
                 return {
                     electronOptions: {
                         width: 600,
                         height: 370,
-                        alwaysOnTop: true,
-                    },
+                        alwaysOnTop: true
+                    }
                 };
-            case 'requestAccount':
+            case "requestAccount":
                 return {
                     electronOptions: {
                         width: 420,
                         height: 230,
-                        alwaysOnTop: true,
-                    },
+                        alwaysOnTop: true
+                    }
                 };
-            case 'connectAccount':
+            case "connectAccount":
                 return {
                     electronOptions: {
                         width: 460,
                         height: 520,
                         maximizable: false,
                         minimizable: false,
-                        alwaysOnTop: true,
-                    },
+                        alwaysOnTop: true
+                    }
                 };
-            case 'sendTransactionConfirmation':
+            case "sendTransactionConfirmation":
                 return {
                     electronOptions: {
                         width: 580,
@@ -477,9 +497,9 @@ class Windows {
                         alwaysOnTop: true,
                         enableLargerThanScreen: false,
                         resizable: true
-                    },
+                    }
                 };
-            case 'updateAvailable':
+            case "updateAvailable":
                 return {
                     useWeb3: false,
                     electronOptions: {
@@ -487,10 +507,10 @@ class Windows {
                         height: 250,
                         alwaysOnTop: true,
                         resizable: false,
-                        maximizable: false,
-                    },
+                        maximizable: false
+                    }
                 };
-            case 'clientUpdateAvailable':
+            case "clientUpdateAvailable":
                 return {
                     useWeb3: false,
                     electronOptions: {
@@ -498,16 +518,16 @@ class Windows {
                         height: 340,
                         alwaysOnTop: false,
                         resizable: false,
-                        maximizable: false,
-                    },
+                        maximizable: false
+                    }
                 };
-            case 'generic':
+            case "generic":
                 return {
                     title: Settings.appName,
                     show: false,
                     icon: global.icon,
-                    titleBarStyle: 'hidden-inset', // hidden-inset: more space
-                    backgroundColor: '#F6F6F6',
+                    titleBarStyle: "hidden-inset", // hidden-inset: more space
+                    backgroundColor: "#F6F6F6",
                     acceptFirstMouse: true,
                     darkTheme: true,
                     webPreferences: {
@@ -516,12 +536,11 @@ class Windows {
                         webaudio: true,
                         webgl: false,
                         webSecurity: false, // necessary to make routing work on file:// protocol for assets in windows and popups. Not webviews!
-                        textAreasAreResizable: true,
-                    },
+                        textAreasAreResizable: true
+                    }
                 };
         }
     }
-
 
     createPopup(type, options, callback) {
         const defaultPopupOpts = {
@@ -530,31 +549,34 @@ class Windows {
             ownerId: null,
             useWeb3: true,
             electronOptions: {
-                title: '',
+                title: "",
                 width: 400,
                 height: 400,
                 resizable: false,
                 center: true,
                 useContentSize: true,
-                titleBarStyle: 'hidden', // hidden-inset: more space
+                titleBarStyle: "hidden", // hidden-inset: more space
                 autoHideMenuBar: true, // TODO: test on windows
                 webPreferences: {
-                    textAreasAreResizable: false,
+                    textAreasAreResizable: false
                 }
             }
         };
 
-        let opts = _.deepExtend(defaultPopupOpts, this.getDefaultOptionsForType(type), options || {});
+        let opts = _.deepExtend(
+            defaultPopupOpts,
+            this.getDefaultOptionsForType(type),
+            options || {}
+        );
 
         // always show on top of main window
-        const parent = _.find(this._windows, (w) => {
-            return w.type === 'main';
+        const parent = _.find(this._windows, w => {
+            return w.type === "main";
         });
 
         if (parent) {
             opts.electronOptions.parent = parent.window;
         }
-
 
         // mark it as a pop-up window
         opts.isPopup = true;
@@ -566,9 +588,17 @@ class Windows {
         }
 
         // If generic window is available, recycle it (unless on blacklist)
-        const genericWindow = this.getByType('generic');
-        const genericWindowBlacklist = ['remix', 'updateAvailable', 'connectAccount'];
-        if (!genericWindowBlacklist.includes(type) && genericWindow && genericWindow.isAvailable) {
+        const genericWindow = this.getByType("generic");
+        const genericWindowBlacklist = [
+            "remix",
+            "updateAvailable",
+            "connectAccount"
+        ];
+        if (
+            !genericWindowBlacklist.includes(type) &&
+            genericWindow &&
+            genericWindow.isAvailable
+        ) {
             genericWindow.reuse(type, opts, callback);
             return genericWindow;
         } else if (genericWindow) {
@@ -585,42 +615,38 @@ class Windows {
 
         const wnd = this.create(type, opts, callback);
 
-        wnd.once('ready', () => {
+        wnd.once("ready", () => {
             this.loading.hide();
         });
 
         return wnd;
     }
 
-
     getByType(type) {
-        log.trace('Get by type', type);
+        log.trace("Get by type", type);
 
-        return _.find(this._windows, (w) => {
+        return _.find(this._windows, w => {
             return w.type === type;
         });
     }
 
-
     getById(id) {
-        log.trace('Get by id', id);
+        log.trace("Get by id", id);
 
-        return _.find(this._windows, (w) => {
-            return (w.id === id);
+        return _.find(this._windows, w => {
+            return w.id === id;
         });
     }
-
 
     broadcast() {
         const data = arguments;
 
-        log.trace('Broadcast', data);
+        log.trace("Broadcast", data);
 
-        _.each(this._windows, (wnd) => {
+        _.each(this._windows, wnd => {
             wnd.send(...data);
         });
     }
-
 
     /**
      * Handle a window being closed.
@@ -643,17 +669,18 @@ class Windows {
             }
         }
 
-        const anyOpen = _.find(this._windows, (wnd) => {
+        const anyOpen = _.find(this._windows, wnd => {
             return wnd.isPrimary && !wnd.isClosed && wnd.isShown;
         });
 
         if (!anyOpen) {
-            log.info('All primary windows closed/invisible, so quitting app...');
+            log.info(
+                "All primary windows closed/invisible, so quitting app..."
+            );
 
             app.quit();
         }
     }
 }
-
 
 module.exports = new Windows();

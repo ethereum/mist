@@ -1,12 +1,9 @@
-
-
 const _ = global._;
-const Q = require('bluebird');
+const Q = require("bluebird");
 
-const log = require('../../utils/logger').create('method');
-const Windows = require('../../windows');
-const db = require('../../db');
-
+const log = require("../../utils/logger").create("method");
+const Windows = require("../../windows");
+const db = require("../../db");
 
 /**
  * Process a request.
@@ -27,25 +24,25 @@ module.exports = class BaseProcessor {
      * @return {Promise}
      */
     async exec(conn, payload) {
-        this._log.trace('Execute request', payload);
+        this._log.trace("Execute request", payload);
 
         const ret = await conn.socket.send(payload, {
-            fullResult: true,
+            fullResult: true
         });
 
         return ret.result;
     }
 
-
     _isAdminConnection(conn) {
         // main window or popupwindows - always allow requests
         const wnd = Windows.getById(conn.id);
-        const tab = db.getCollection('UI_tabs').findOne({ webviewId: conn.id });
+        const tab = db.getCollection("UI_tabs").findOne({ webviewId: conn.id });
 
-        return ((wnd && (wnd.type === 'main' || wnd.isPopup)) ||
-                (tab && _.get(tab, 'permissions.admin') === true));
+        return (
+            (wnd && (wnd.type === "main" || wnd.isPopup)) ||
+            (tab && _.get(tab, "permissions.admin") === true)
+        );
     }
-
 
     /**
     Sanitize a request payload.
@@ -57,11 +54,10 @@ module.exports = class BaseProcessor {
     @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
     sanitizeRequestPayload(conn, payload, isPartOfABatch) {
-        this._log.trace('Sanitize request payload', payload);
+        this._log.trace("Sanitize request payload", payload);
 
         this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
     }
-
 
     /**
     Sanitize a response payload.
@@ -73,11 +69,10 @@ module.exports = class BaseProcessor {
     @param {Boolean} isPartOfABatch Whether it's part of a batch payload.
     */
     sanitizeResponsePayload(conn, payload, isPartOfABatch) {
-        this._log.trace('Sanitize response payload', payload);
+        this._log.trace("Sanitize response payload", payload);
 
         this._sanitizeRequestResponsePayload(conn, payload, isPartOfABatch);
     }
-
 
     /**
     Sanitize a request or response payload.
@@ -101,7 +96,10 @@ module.exports = class BaseProcessor {
         if (!/^eth_|^bzz_|^shh_|^net_|^web3_|^db_/.test(payload.method)) {
             delete payload.result;
             const err = _.clone(this.ERRORS.METHOD_DENIED);
-            err.message = err.message.replace('__method__', `"${payload.method}"`);
+            err.message = err.message.replace(
+                "__method__",
+                `"${payload.method}"`
+            );
             payload.error = err;
         }
     }

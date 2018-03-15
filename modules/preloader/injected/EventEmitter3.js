@@ -1,10 +1,8 @@
+(function() {
+    "use strict";
 
-(function () {
-
-    'use strict';
-
-    var has = Object.prototype.hasOwnProperty
-        , prefix = '~';
+    var has = Object.prototype.hasOwnProperty,
+        prefix = "~";
 
     /**
      * Constructor to create a storage for our `EE` objects.
@@ -67,14 +65,15 @@
      * @api public
      */
     EventEmitter.prototype.eventNames = function eventNames() {
-        var names = []
-            , events
-            , name;
+        var names = [],
+            events,
+            name;
 
         if (this._eventsCount === 0) return names;
 
         for (name in (events = this._events)) {
-            if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+            if (has.call(events, name))
+                names.push(prefix ? name.slice(1) : name);
         }
 
         if (Object.getOwnPropertySymbols) {
@@ -93,8 +92,8 @@
      * @api public
      */
     EventEmitter.prototype.listeners = function listeners(event, exists) {
-        var evt = prefix ? prefix + event : event
-            , available = this._events[evt];
+        var evt = prefix ? prefix + event : event,
+            available = this._events[evt];
 
         if (exists) return !!available;
         if (!available) return [];
@@ -119,44 +118,85 @@
 
         if (!this._events[evt]) return false;
 
-        var listeners = this._events[evt]
-            , len = arguments.length
-            , args
-            , i;
+        var listeners = this._events[evt],
+            len = arguments.length,
+            args,
+            i;
 
         if (listeners.fn) {
-            if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+            if (listeners.once)
+                this.removeListener(event, listeners.fn, undefined, true);
 
             switch (len) {
-                case 1: return listeners.fn.call(listeners.context), true;
-                case 2: return listeners.fn.call(listeners.context, a1), true;
-                case 3: return listeners.fn.call(listeners.context, a1, a2), true;
-                case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
-                case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
-                case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+                case 1:
+                    return listeners.fn.call(listeners.context), true;
+                case 2:
+                    return listeners.fn.call(listeners.context, a1), true;
+                case 3:
+                    return listeners.fn.call(listeners.context, a1, a2), true;
+                case 4:
+                    return (
+                        listeners.fn.call(listeners.context, a1, a2, a3), true
+                    );
+                case 5:
+                    return (
+                        listeners.fn.call(listeners.context, a1, a2, a3, a4),
+                        true
+                    );
+                case 6:
+                    return (
+                        listeners.fn.call(
+                            listeners.context,
+                            a1,
+                            a2,
+                            a3,
+                            a4,
+                            a5
+                        ),
+                        true
+                    );
             }
 
-            for (i = 1, args = new Array(len -1); i < len; i++) {
+            for (i = 1, args = new Array(len - 1); i < len; i++) {
                 args[i - 1] = arguments[i];
             }
 
             listeners.fn.apply(listeners.context, args);
         } else {
-            var length = listeners.length
-                , j;
+            var length = listeners.length,
+                j;
 
             for (i = 0; i < length; i++) {
-                if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+                if (listeners[i].once)
+                    this.removeListener(
+                        event,
+                        listeners[i].fn,
+                        undefined,
+                        true
+                    );
 
                 switch (len) {
-                    case 1: listeners[i].fn.call(listeners[i].context); break;
-                    case 2: listeners[i].fn.call(listeners[i].context, a1); break;
-                    case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
-                    case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+                    case 1:
+                        listeners[i].fn.call(listeners[i].context);
+                        break;
+                    case 2:
+                        listeners[i].fn.call(listeners[i].context, a1);
+                        break;
+                    case 3:
+                        listeners[i].fn.call(listeners[i].context, a1, a2);
+                        break;
+                    case 4:
+                        listeners[i].fn.call(listeners[i].context, a1, a2, a3);
+                        break;
                     default:
-                        if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
-                            args[j - 1] = arguments[j];
-                        }
+                        if (!args)
+                            for (
+                                j = 1, args = new Array(len - 1);
+                                j < len;
+                                j++
+                            ) {
+                                args[j - 1] = arguments[j];
+                            }
 
                         listeners[i].fn.apply(listeners[i].context, args);
                 }
@@ -176,10 +216,11 @@
      * @api public
      */
     EventEmitter.prototype.on = function on(event, fn, context) {
-        var listener = new EE(fn, context || this)
-            , evt = prefix ? prefix + event : event;
+        var listener = new EE(fn, context || this),
+            evt = prefix ? prefix + event : event;
 
-        if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+        if (!this._events[evt])
+            (this._events[evt] = listener), this._eventsCount++;
         else if (!this._events[evt].fn) this._events[evt].push(listener);
         else this._events[evt] = [this._events[evt], listener];
 
@@ -196,10 +237,11 @@
      * @api public
      */
     EventEmitter.prototype.once = function once(event, fn, context) {
-        var listener = new EE(fn, context || this, true)
-            , evt = prefix ? prefix + event : event;
+        var listener = new EE(fn, context || this, true),
+            evt = prefix ? prefix + event : event;
 
-        if (!this._events[evt]) this._events[evt] = listener, this._eventsCount++;
+        if (!this._events[evt])
+            (this._events[evt] = listener), this._eventsCount++;
         else if (!this._events[evt].fn) this._events[evt].push(listener);
         else this._events[evt] = [this._events[evt], listener];
 
@@ -216,7 +258,12 @@
      * @returns {EventEmitter} `this`.
      * @api public
      */
-    EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+    EventEmitter.prototype.removeListener = function removeListener(
+        event,
+        fn,
+        context,
+        once
+    ) {
         var evt = prefix ? prefix + event : event;
 
         if (!this._events[evt]) return this;
@@ -230,19 +277,23 @@
 
         if (listeners.fn) {
             if (
-                listeners.fn === fn
-                && (!once || listeners.once)
-                && (!context || listeners.context === context)
+                listeners.fn === fn &&
+                (!once || listeners.once) &&
+                (!context || listeners.context === context)
             ) {
                 if (--this._eventsCount === 0) this._events = new Events();
                 else delete this._events[evt];
             }
         } else {
-            for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+            for (
+                var i = 0, events = [], length = listeners.length;
+                i < length;
+                i++
+            ) {
                 if (
-                    listeners[i].fn !== fn
-                    || (once && !listeners[i].once)
-                    || (context && listeners[i].context !== context)
+                    listeners[i].fn !== fn ||
+                    (once && !listeners[i].once) ||
+                    (context && listeners[i].context !== context)
                 ) {
                     events.push(listeners[i]);
                 }
@@ -251,7 +302,8 @@
             //
             // Reset the array, or remove it completely if we have no more listeners.
             //
-            if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+            if (events.length)
+                this._events[evt] = events.length === 1 ? events[0] : events;
             else if (--this._eventsCount === 0) this._events = new Events();
             else delete this._events[evt];
         }
@@ -266,7 +318,9 @@
      * @returns {EventEmitter} `this`.
      * @api public
      */
-    EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+    EventEmitter.prototype.removeAllListeners = function removeAllListeners(
+        event
+    ) {
         var evt;
 
         if (event) {
@@ -309,10 +363,9 @@
     //
     // Expose the module.
     //
-    if ('undefined' !== typeof module) {
+    if ("undefined" !== typeof module) {
         module.exports = EventEmitter;
     }
-
 
     window.EventEmitter = EventEmitter;
 })();

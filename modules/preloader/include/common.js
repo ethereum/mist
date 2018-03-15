@@ -1,5 +1,5 @@
-module.exports = (windowType) => {
-    const { ipcRenderer, webFrame } = require('electron');
+module.exports = windowType => {
+    const { ipcRenderer, webFrame } = require("electron");
 
     if (process.env.TEST_MODE) {
         window.electronRequire = require;
@@ -8,9 +8,9 @@ module.exports = (windowType) => {
     // disable pinch zoom
     webFrame.setZoomLevelLimits(1, 1);
 
-    require('./consoleLogCapture')(windowType); // !!!
-    require('./suppressWindowPrompt')();
+    require("./consoleLogCapture")(windowType); // !!!
+    require("./suppressWindowPrompt")();
 
     // register with window manager
-    ipcRenderer.send('backendAction_setWindowId');
+    ipcRenderer.send("backendAction_setWindowId");
 };

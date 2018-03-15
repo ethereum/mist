@@ -1,41 +1,41 @@
-require('co-mocha');
-const _ = require('underscore');
-const genomatic = require('genomatic');
-const Q = require('bluebird');
-const fs = require('fs');
-const Web3 = require('web3');
-const shell = require('shelljs');
-const path = require('path');
-const gethPrivate = require('geth-private');
-const Application = require('spectron').Application;
-const chai = require('chai');
-const http = require('http');
-const ecstatic = require('ecstatic');
-const express = require('express');
-const ClientBinaryManager = require('ethereum-client-binaries').Manager;
-const logger = require('../modules/utils/logger');
+require("co-mocha");
+const _ = require("underscore");
+const genomatic = require("genomatic");
+const Q = require("bluebird");
+const fs = require("fs");
+const Web3 = require("web3");
+const shell = require("shelljs");
+const path = require("path");
+const gethPrivate = require("geth-private");
+const Application = require("spectron").Application;
+const chai = require("chai");
+const http = require("http");
+const ecstatic = require("ecstatic");
+const express = require("express");
+const ClientBinaryManager = require("ethereum-client-binaries").Manager;
+const logger = require("../modules/utils/logger");
 
 chai.should();
 
-process.env.TEST_MODE = 'true';
+process.env.TEST_MODE = "true";
 
-const log = logger.create('base');
+const log = logger.create("base");
 
-const startGeth = function* () {
+const startGeth = function*() {
     let gethPath;
 
     const config = JSON.parse(
-        fs.readFileSync(path.join('clientBinaries.json')).toString()
+        fs.readFileSync(path.join("clientBinaries.json")).toString()
     );
     const manager = new ClientBinaryManager(config);
     yield manager.init();
 
     if (!manager.clients.Geth.state.available) {
         gethPath = manager.clients.Geth.activeCli.fullPath;
-        console.info('Downloading geth...');
-        const downloadedGeth = yield manager.download('Geth');
+        console.info("Downloading geth...");
+        const downloadedGeth = yield manager.download("Geth");
         gethPath = downloadedGeth.client.activeCli.fullPath;
-        console.info('Geth downloaded at:', gethPath);
+        console.info("Geth downloaded at:", gethPath);
     }
 
     const geth = gethPrivate({
@@ -43,109 +43,134 @@ const startGeth = function* () {
         balance: 5,
         genesisBlock: {
             config: {
-                chainId: 33333,
+                chainId: 33333
             },
-            difficulty: '0x01',
-            extraData: '0x01',
+            difficulty: "0x01",
+            extraData: "0x01"
         },
         gethOptions: {
             port: 58546,
-            rpcport: 58545,
-        },
+            rpcport: 58545
+        }
     });
 
-    console.info('Geth starting...');
+    console.info("Geth starting...");
     yield geth.start();
-    console.info('Geth started');
+    console.info("Geth started");
 
     return geth;
 };
 
-const startFixtureServer = function (serverPort) {
-    log.info('Starting fixture server...');
+const startFixtureServer = function(serverPort) {
+    log.info("Starting fixture server...");
     const app = express();
-    app.use(express.static(path.join(__dirname, 'fixtures')));
+    app.use(express.static(path.join(__dirname, "fixtures")));
 
-    app.get('/redirect', (req, res) => {
+    app.get("/redirect", (req, res) => {
         // Redirects to param ?url=XX
         res.redirect(302, req.query.to);
     });
     app.listen(serverPort);
-    log.info('Fixture server started');
+    log.info("Fixture server started");
     return app;
 };
 
 exports.mocha = (_module, options) => {
     const tests = {};
 
-    options = _.extend({
-        app: 'mist',
-    }, options);
+    options = _.extend(
+        {
+            app: "mist"
+        },
+        options
+    );
 
     _module.exports[options.name || path.basename(_module.filename)] = {
-        * before() {
+        *before() {
             this.timeout(1e7);
 
             this.assert = chai.assert;
             this.expect = chai.expect;
 
-            const mistLogFile = path.join(__dirname, 'mist.log');
-            const chromeLogFile = path.join(__dirname, 'chrome.log');
-            const webdriverLogDir = path.join(__dirname, 'webdriver');
+            const mistLogFile = path.join(__dirname, "mist.log");
+            const chromeLogFile = path.join(__dirname, "chrome.log");
+            const webdriverLogDir = path.join(__dirname, "webdriver");
 
-            _.each([mistLogFile, webdriverLogDir, chromeLogFile], (e) => {
-                console.info('Removing log files', e);
-                shell.rm('-rf', e);
+            _.each([mistLogFile, webdriverLogDir, chromeLogFile], e => {
+                console.info("Removing log files", e);
+                shell.rm("-rf", e);
             });
 
             this.geth = yield startGeth();
 
-            const appFileName = (options.app === 'wallet') ? 'Ethereum Wallet' : 'Mist';
+            const appFileName =
+                options.app === "wallet" ? "Ethereum Wallet" : "Mist";
             const platformArch = `${process.platform}-${process.arch}`;
             console.info(`${appFileName} :: ${platformArch}`);
 
             let appPath;
-            const ipcProviderPath = path.join(this.geth.dataDir, 'geth.ipc');
+            const ipcProviderPath = path.join(this.geth.dataDir, "geth.ipc");
 
             switch (platformArch) {
-            case 'darwin-x64':
-                appPath = path.join(process.cwd(), `dist_${options.app}`, 'dist', 'mac',
-                    `${appFileName}.app`, 'Contents', 'MacOS', appFileName
-                );
-                break;
-            case 'linux-x64':
-                appPath = path.join(process.cwd(), `dist_${options.app}`, 'dist', 'linux-unpacked', appFileName.toLowerCase());
-                break;
-            default:
-                throw new Error(`Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`);
+                case "darwin-x64":
+                    appPath = path.join(
+                        process.cwd(),
+                        `dist_${options.app}`,
+                        "dist",
+                        "mac",
+                        `${appFileName}.app`,
+                        "Contents",
+                        "MacOS",
+                        appFileName
+                    );
+                    break;
+                case "linux-x64":
+                    appPath = path.join(
+                        process.cwd(),
+                        `dist_${options.app}`,
+                        "dist",
+                        "linux-unpacked",
+                        appFileName.toLowerCase()
+                    );
+                    break;
+                default:
+                    throw new Error(
+                        `Cannot run tests on ${platformArch}, please run on: darwin-x64, linux-x64`
+                    );
             }
             console.info(`appPath: ${appPath}`);
 
             // check that appPath exists
-            if (!shell.test('-f', appPath)) {
+            if (!shell.test("-f", appPath)) {
                 throw new Error(`Cannot find binary: ${appPath}`);
             }
 
-            this.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:58545'));
+            this.web3 = new Web3(
+                new Web3.providers.HttpProvider("http://localhost:58545")
+            );
             this.app = new Application({
-                requireName: 'electronRequire',
+                requireName: "electronRequire",
                 startTimeout: 10000,
                 waitTimeout: 10000,
                 quitTimeout: 10000,
                 path: appPath,
                 args: [
-                    '--loglevel', 'debug',
-                    '--logfile', mistLogFile,
-                    '--node-datadir', this.geth.dataDir,
-                    '--rpc', ipcProviderPath,
+                    "--loglevel",
+                    "debug",
+                    "--logfile",
+                    mistLogFile,
+                    "--node-datadir",
+                    this.geth.dataDir,
+                    "--rpc",
+                    ipcProviderPath
                 ],
                 webdriverLogPath: webdriverLogDir,
-                chromeDriverLogPath: chromeLogFile,
+                chromeDriverLogPath: chromeLogFile
             });
 
-            console.info('Starting app...');
+            console.info("Starting app...");
             yield this.app.start();
-            console.info('App started');
+            console.info("App started");
 
             this.client = this.app.client;
 
@@ -165,7 +190,7 @@ exports.mocha = (_module, options) => {
 
             // Loop over windows trying to select Main Window
             const app = this;
-            const selectMainWindow = function* (mainWindowSearch, retries = 20) {
+            const selectMainWindow = function*(mainWindowSearch, retries = 20) {
                 console.log(`selectMainWindow retries remaining: ${retries}`);
                 let windowHandles = (yield app.client.windowHandles()).value;
 
@@ -176,100 +201,118 @@ exports.mocha = (_module, options) => {
                     if (isMainWindow) return true;
                 }
 
-                if (retries === 0) throw new Error('Failed to select main window');
+                if (retries === 0)
+                    throw new Error("Failed to select main window");
 
                 // not main window. try again after 2 seconds.
                 yield Q.delay(2000);
                 yield selectMainWindow(mainWindowSearch, --retries);
             };
 
-            const mainWindowSearch = (options.app === 'wallet') ? /^file:\/\/\/$/ : /interface\/index\.html$/;
+            const mainWindowSearch =
+                options.app === "wallet"
+                    ? /^file:\/\/\/$/
+                    : /interface\/index\.html$/;
             yield selectMainWindow(mainWindowSearch);
-            console.log('Main window selected');
+            console.log("Main window selected");
 
             this.mainWindowHandle = (yield this.client.windowHandle()).value;
         },
 
-        * beforeEach() {
+        *beforeEach() {
             yield this.app.client.window(this.mainWindowHandle);
 
-            yield this.client.execute(() => { // Code executed in context of browser
+            yield this.client.execute(() => {
+                // Code executed in context of browser
                 Tabs.remove({});
                 LastVisitedPages.remove({});
                 History.remove({});
 
                 Tabs.insert({
-                    _id: 'browser',
-                    url: 'http://localhost:8080/',
-                    redirect: 'http://localhost:8080/',
+                    _id: "browser",
+                    url: "http://localhost:8080/",
+                    redirect: "http://localhost:8080/",
                     position: 0
                 });
-                Tabs.upsert({_id: 'wallet'}, {$set: {
-                    url: 'https://wallet.ethereum.org',
-                    redirect: 'https://wallet.ethereum.org',
-                    position: 1,
-                    permissions: { admin: true }
-                }});
+                Tabs.upsert(
+                    { _id: "wallet" },
+                    {
+                        $set: {
+                            url: "https://wallet.ethereum.org",
+                            redirect: "https://wallet.ethereum.org",
+                            position: 1,
+                            permissions: { admin: true }
+                        }
+                    }
+                );
 
-                LocalStore.set('selectedTab', 'browser');
+                LocalStore.set("selectedTab", "browser");
             });
             yield Q.delay(1000);
         },
 
         // * afterEach() { },
 
-        * after() {
+        *after() {
             if (this.app && this.app.isRunning()) {
-                console.log('Stopping app...');
+                console.log("Stopping app...");
                 yield this.app.stop();
             }
 
             if (this.geth && this.geth.isRunning) {
-                console.log('Stopping geth...');
+                console.log("Stopping geth...");
                 yield this.geth.stop();
             }
 
             if (this.httpServer && this.httpServer.isListening) {
-                console.log('Stopping http server...');
+                console.log("Stopping http server...");
                 yield this.httpServer.close();
             }
         },
 
-        tests,
+        tests
     };
 
     return tests;
 };
 
-
 const Utils = {
-    * waitUntil(msg, promiseFn) {
+    *waitUntil(msg, promiseFn) {
         yield this.client.waitUntil(promiseFn, 10000, msg, 500);
     },
-    * waitForText(selector, text, ms = 5000, message = 'Element couldn\'t be found') {
+    *waitForText(
+        selector,
+        text,
+        ms = 5000,
+        message = "Element couldn't be found"
+    ) {
         const client = this.client;
-        yield client.waitUntil(() => {
-            return client.getText(selector).then((e) => {
-                return e === text;
-            });
-        }, ms, message);
+        yield client.waitUntil(
+            () => {
+                return client.getText(selector).then(e => {
+                    return e === text;
+                });
+            },
+            ms,
+            message
+        );
     },
-    * getUiElements(selector) {
+    *getUiElements(selector) {
         const elems = yield this.client.elements(selector);
 
         return elems.value;
     },
-    * getUiElement(selector) {
+    *getUiElement(selector) {
         const elem = yield this.client.element(selector);
 
         return elem.value;
     },
-    * openAndFocusNewWindow(type, fnPromise) {
+    *openAndFocusNewWindow(type, fnPromise) {
         yield fnPromise();
         const handle = yield this.selectWindowHandleByType(type);
         yield this.client.window(handle);
     },
-    * selectWindowHandleByType(type) {
+    *selectWindowHandleByType(type) {
         const client = this.client;
         const windowHandles = (yield client.windowHandles()).value;
 
@@ -281,16 +324,16 @@ const Utils = {
             }
         }
     },
-    * execElemsMethod(clientElementIdMethod, selector) {
+    *execElemsMethod(clientElementIdMethod, selector) {
         const elems = yield this.client.elements(selector);
 
-        const values = yield elems.value.map(
-      e => this.client[clientElementIdMethod](e.ELEMENT)
-    );
+        const values = yield elems.value.map(e =>
+            this.client[clientElementIdMethod](e.ELEMENT)
+        );
 
         return values.map(r => r.value);
     },
-    * execElemMethod(clientElementIdMethod, selector) {
+    *execElemMethod(clientElementIdMethod, selector) {
         const e = yield this.client.element(selector);
 
         console.log(e);
@@ -299,39 +342,49 @@ const Utils = {
 
         return value.value;
     },
-    * capturePage() {
+    *capturePage() {
         const pageImage = yield this.app.browserWindow.capturePage();
 
         if (!pageImage) {
-            throw new Error('Page capture failed');
+            throw new Error("Page capture failed");
         }
 
-        fs.writeFileSync(path.join(__dirname, 'mist.png'), pageImage);
+        fs.writeFileSync(path.join(__dirname, "mist.png"), pageImage);
     },
-    * getRealAccountBalances() {
+    *getRealAccountBalances() {
         let accounts = this.web3.eth.accounts;
 
-        let balances = accounts.map(acc =>
-      `${this.web3.fromWei(this.web3.eth.getBalance(acc), 'ether')}`
-    );
+        let balances = accounts.map(
+            acc =>
+                `${this.web3.fromWei(this.web3.eth.getBalance(acc), "ether")}`
+        );
 
         accounts = accounts.map(a => a.toLowerCase());
         balances = balances.map(b => parseInt(b, 10));
 
         return _.object(accounts, balances);
     },
-    * getUiAccountBalances() {
+    *getUiAccountBalances() {
         // check balances on the pgetUiAccountsBalancesage
-        let _accounts = yield this.execElemsMethod('elementIdText', '.wallet-box .account-id');
-        let _balances = yield this.execElemsMethod('elementIdText', '.wallet-box .account-balance');
+        let _accounts = yield this.execElemsMethod(
+            "elementIdText",
+            ".wallet-box .account-id"
+        );
+        let _balances = yield this.execElemsMethod(
+            "elementIdText",
+            ".wallet-box .account-balance"
+        );
 
         _accounts = _accounts.map(a => a.toLowerCase());
         _balances = _balances.map(b => parseInt(b, 10));
 
         return _.object(_accounts, _balances);
     },
-    * openAccountInUi(accId) {
-        const _accounts = yield this.execElemsMethod('elementIdText', '.wallet-box .account-id');
+    *openAccountInUi(accId) {
+        const _accounts = yield this.execElemsMethod(
+            "elementIdText",
+            ".wallet-box .account-id"
+        );
 
         let idx = -1;
 
@@ -344,56 +397,63 @@ const Utils = {
         }
 
         if (idx < 0) {
-            throw new Error('Unable to find account in UI');
+            throw new Error("Unable to find account in UI");
         }
 
-        const accLinks = yield this.client.elements('.wallet-box');
+        const accLinks = yield this.client.elements(".wallet-box");
 
         yield this.client.elementIdClick(accLinks.value[idx].ELEMENT);
 
         yield Q.delay(1000);
     },
-    * startMining() {
-        yield this.geth.consoleExec('miner.start();');
+    *startMining() {
+        yield this.geth.consoleExec("miner.start();");
     },
-    * stopMining() {
-        yield this.geth.consoleExec('miner.stop();');
+    *stopMining() {
+        yield this.geth.consoleExec("miner.stop();");
     },
 
-    * selectTab(tabId) {
+    *selectTab(tabId) {
         yield this.getUiElement(`.sidebar [data-tab-id=${tabId}]`);
         yield this.client.click(`.sidebar [data-tab-id=${tabId}] button.main`);
         // TODO: returns webview reference
     },
 
-    * getSelectedWebviewParam(param) {
+    *getSelectedWebviewParam(param) {
         const selectedTabId = (yield this.client.execute(() => {
-            return localStorage.getItem('selectedTab');
+            return localStorage.getItem("selectedTab");
         })).value;
-        return yield this.client.getAttribute(`webview[data-id=${selectedTabId}]`, param);
+        return yield this.client.getAttribute(
+            `webview[data-id=${selectedTabId}]`,
+            param
+        );
     },
 
-    * loadFixture(uri = '') {
+    *loadFixture(uri = "") {
         const client = this.client;
-        yield client.setValue('#url-input', `${this.fixtureBaseUrl}${uri}`);
-        yield client.submitForm('form.url');
-        yield client.waitUntil(() => {
-            return client.getText('.dapp-info span', (e) => {
-                /Fixture/.test(e);
-            });
-        }, 3000, 'expected to properly load fixture');
+        yield client.setValue("#url-input", `${this.fixtureBaseUrl}${uri}`);
+        yield client.submitForm("form.url");
+        yield client.waitUntil(
+            () => {
+                return client.getText(".dapp-info span", e => {
+                    /Fixture/.test(e);
+                });
+            },
+            3000,
+            "expected to properly load fixture"
+        );
     },
 
-    * getBrowserBarText() {
-        return yield this.client.getText('.url-breadcrumb');
+    *getBrowserBarText() {
+        return yield this.client.getText(".url-breadcrumb");
     },
 
-    * pinCurrentTab() {
+    *pinCurrentTab() {
         const client = this.client;
-        yield this.openAndFocusNewWindow('connectAccount', () => {
-            return client.click('span.connect-button');
+        yield this.openAndFocusNewWindow("connectAccount", () => {
+            return client.click("span.connect-button");
         });
-        yield client.click('.dapp-primary-button');
+        yield client.click(".dapp-primary-button");
         yield this.delay(500);
         yield client.window(this.mainWindowHandle); // selects main window again
 
@@ -401,16 +461,16 @@ const Utils = {
         return pinnedWebview;
     },
 
-    * delay(ms) {
-        yield this.waitUntil('delay', async () => {
+    *delay(ms) {
+        yield this.waitUntil("delay", async () => {
             return new Promise(resolve => setTimeout(() => resolve(true), ms));
         });
     },
 
-    * navigateTo(url) {
+    *navigateTo(url) {
         const client = this.client;
-        yield client.setValue('#url-input', url);
-        yield client.submitForm('form.url');
+        yield client.setValue("#url-input", url);
+        yield client.submitForm("form.url");
     },
 
     /*
@@ -419,8 +479,9 @@ const Utils = {
     @param search: function that tells how to search by window
     @param tries: amount of tries left until give up searching for
     */
-    * getWindowByUrl(search, tries = 5) {
-        if (tries < 0) throw new Error('Couldn\'t select window using given parameters.');
+    *getWindowByUrl(search, tries = 5) {
+        if (tries < 0)
+            throw new Error("Couldn't select window using given parameters.");
         const windowHandles = (yield this.client.windowHandles()).value;
         for (let handle in windowHandles) {
             yield this.client.window(windowHandles[handle]);

@@ -19,7 +19,7 @@ If applicable:
 
 If you want to make a PR please make sure you add a understandable description of what it is you're adding/changing/fixing.
 
-For formatting we use 4 _spaces_ as indentation.
+For formatting we use 2 _spaces_ as indentation.
 
 If you add any modules or files, please give them a module description and or a class description:
 

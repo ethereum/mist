@@ -18,7 +18,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.9
+      - image: circleci/node:8.9.4
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -30,6 +30,7 @@ jobs:
     steps:
       - checkout
 
+      # DEBUG: node-gyp uses python
       - run: python --version
 
       # Download and cache dependencies

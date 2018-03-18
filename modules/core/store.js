@@ -6,12 +6,12 @@ import { app } from 'electron';
 import rootReducer from './rootReducer';
 
 export default function configureReduxStore() {
-    const store = createStore(
-        rootReducer, 
-        composeWithDevTools(applyMiddleware(thunk, forwardToRenderer)),
-    );
+  const store = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk, forwardToRenderer))
+  );
 
-    replayActionMain(store);
+  replayActionMain(store);
 
-    return store;
+  return store;
 }

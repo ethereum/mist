@@ -1,601 +1,622 @@
 @-webkit-keyframes slideInLeft {
-	from {
-		transform: translate3d(50%, 0, 0) rotate(45deg);
-		opacity: 0;
-	}
-	to {
-		transform: translate3d(0, 0, 0);
-		opacity: 1;
-	}
+  from {
+    transform: translate3d(50%, 0, 0) rotate(45deg);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes slideInRight {
-	from {
-		transform: translate3d(-50%, 0, 0) rotate(-45deg);
-		opacity: 0;
-	}
-	to {
-		transform: none;
-		opacity: 1;
-	}
+  from {
+    transform: translate3d(-50%, 0, 0) rotate(-45deg);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 @-webkit-keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .popup-windows {
-	text-align: center;
-	height: 100vh;
+  text-align: center;
+  height: 100vh;
 
-	a,
-	button {
-		color: @colorLinkActive;
-	}
-	a:focus {
-		color: @colorLinkFocus;
-	}
+  a,
+  button {
+    color: @colorLinkActive;
+  }
+  a:focus {
+    color: @colorLinkFocus;
+  }
 
-	h3 {
-		color: @colorGrayDark;
-		a {
-			float: right;
-			font-weight: 400;
-		}
-	}
-	img.left-overlay {
-		position: relative;
-		top: -40px;
-		left: -160%;
-		width: 300%;
-        z-index: 1;
-	}
+  h3 {
+    color: @colorGrayDark;
+    a {
+      float: right;
+      font-weight: 400;
+    }
+  }
+  img.left-overlay {
+    position: relative;
+    top: -40px;
+    left: -160%;
+    width: 300%;
+    z-index: 1;
+  }
 
-	footer {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		padding: 0 @gridHeight;
-        padding-top: @gridHeight * 3;
-        background: linear-gradient(transparent 0%, @colorGrayLight 35%);
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 @gridHeight;
+    padding-top: @gridHeight * 3;
+    background: linear-gradient(transparent 0%, @colorGrayLight 35%);
 
-        &.dapp-small {
-            background: linear-gradient(transparent 50%, @colorGrayLight 70%);
+    &.dapp-small {
+      background: linear-gradient(transparent 50%, @colorGrayLight 70%);
+    }
+  }
+
+  .info.dapp-error {
+    color: @colorError;
+    font-weight: 600;
+  }
+
+  &.update-available {
+    -webkit-user-select: auto;
+    user-select: auto;
+
+    .text {
+      text-align: left;
+    }
+    h1 {
+      font-size: 200%;
+      margin-bottom: 20px;
+
+      &.no-update {
+        font-size: 180%;
+      }
+    }
+  }
+  &.tx-info {
+    .container {
+      overflow: auto;
+      height: 80vh;
+      padding-bottom: 120px;
+    }
+
+    .transaction-parties {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      margin: 0 @gridWidth;
+
+      > div {
+        // flex: 1 1 auto;
+        color: @colorTextSecondary;
+        position: relative;
+      }
+
+      div.connection {
+        padding: @gridHeight @gridWidth / 2;
+      }
+
+      div.amount,
+      div.function-signature {
+        flex: 1 50%;
+      }
+
+      // amount
+      div.amount {
+        position: relative;
+        margin-top: -30px;
+        height: 40px;
+        font-size: 1.5em;
+        color: darken(@colorTextSecondary, 8%);
+        border-bottom: 1px solid @colorTextSecondary;
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          right: 0;
+          border: 5px solid @colorTextSecondary;
+          border-color: transparent @colorTextSecondary @colorTextSecondary
+            transparent;
+          .rotate(-45deg);
         }
-	}
-
-	.info.dapp-error{
-		color: @colorError;
-		font-weight: 600;
-	}
-
-	&.update-available {
-        -webkit-user-select: auto;
-        user-select: auto;
-
-		.text {
-			text-align: left;
-		}
-		h1 {
-			font-size: 200%;
-			margin-bottom: 20px;
-
-			&.no-update {
-				font-size: 180%;
-			}
-		}
-	}
-	&.tx-info {
-
-		.container {
-			overflow: auto;
-			height: 80vh;
-			padding-bottom: 120px;
-		}
-
-		.transaction-parties {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: center;
-			margin: 0 @gridWidth;
-
-			> div {
-				// flex: 1 1 auto;
-				color: @colorTextSecondary;
-				position: relative;
-			}
-
-			div.connection {
-				padding: @gridHeight @gridWidth/2;
-			}
-
-			div.amount, div.function-signature {
-				flex: 1 50%;
-			}
-
-			// amount
-			div.amount {
-				position: relative;
-				margin-top: -30px;
-				height: 40px;
-				font-size: 1.5em;
-				color: darken(@colorTextSecondary, 8%);
-				border-bottom: 1px solid @colorTextSecondary;
-				&:after {
-					content: '';
-					position: absolute;
-					bottom: -5px;
-					right: 0;
-					border: 5px solid @colorTextSecondary;
-					border-color: transparent @colorTextSecondary @colorTextSecondary transparent;
-					.rotate(-45deg);
-				}
-				.unit {
-					font-size: 0.6em;
-					font-weight: 400;
-				}
-				.execute-function {
-					display: block;
-					position: absolute;
-					bottom: -30px;
-					left: 0;
-					right: 0;
-					font-size: 0.6em;
-					text-align: center;
-					font-weight: 600;
-				}
-			}
-            .function-signature {
-                font-weight: 400;
-				font-size: 1.5em;
-                overflow: hidden;
-                white-space: nowrap;
-                text-overflow: ellipsis;
-                text-transform: uppercase;
-                max-width: @gridWidth * 10;
-
-                &.has-signature {
-                    text-transform: none;
-                }
-            }
-		}
-		table,
-		.data,
-		.parameters,
-		.fees,
-		.info {
-			width: 420px;
-			margin: @defaultMargin*2 auto;
-		}
-		table {
-			td:nth-child(1) {
-				text-align: left;
-			}
-			td:nth-child(2) {
-				text-align: right;
-				font-weight: 400;
-			}
-		}
-
-		// Parameters
-		.fees,
-		.parameters {
-            font-size: 0.9em;
-            text-align: left;
-            ul, ol {
-                counter-reset: item;
-                padding: 0;
-                list-style-type: none;
-                list-style-position: inside;
-                li {
-                	display: flex;
-                	min-height: @gridHeight * 2;
-                	align-items: center;
-
-                    .allowSelection;
-                    font-weight: 200;
-                    transition: background 0.5s ease-out;
-
-                    &> div {
-                    	padding: 0 @gridWidth/4;
-                    }
-                    .value {
-                    	flex: 1;
-                    	overflow: hidden;
-					    text-overflow: ellipsis;
-					    .icon {
-					    	position: relative;
-					    	top: 1px;
-					    }
-                        &:hover strong {
-                            word-break: break-all;
-                        }
-
-                    }
-                    .type {
-                    	text-align: right;
-                    	max-width: @gridWidth * 10;
-                    }
-
-                    &:hover {
-                    	background-color: #FFF;
-                    	transition: background 0.1s ease-in;
-                    }
-                }
-
-                ::selection {
-                    color: #FFF;
-                    background: @colorLink;
-                }
-            }
-
-            ol li::before {
-            	counter-increment: item;
-				content: counter(item);
-				opacity: 0.5;
-				color: @colorGrayDark;
-				font-weight: 400;
-            }
+        .unit {
+          font-size: 0.6em;
+          font-weight: 400;
         }
-
-		.overlap-icon {
-			position: absolute;
-			top: 34px;
-			font-size: 18px;
-			text-align: center;
-			color: #FFF;
-		    width: @gridWidth*2;
-		    opacity: 0.75;
-		    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-
-		}
-		.circle-icon {
-			display: inline-block;
-			background-color: @colorGrayLight;
-			.border-radius(50%);
-			font-size: 33px;
-			padding: @defaultMargin;
-			// + span {
-			//     display: inline-block;
-			// }
-		}
-		.provided-gas {
-			display: inline;
-			width: 70px;
-			padding: 0;
-			margin: 0;
-			color: @colorLink;
-			background-color: transparent;
-			border: 0;
-			text-align: right;
-			border-bottom: 1px dotted @colorLink;
-			&:focus {
-				outline: 0;
-			}
-		}
-		input[type="password"] {
-			width: @gridWidth * 12;
-		}
-		.data,
-		.info {
-			text-align: left;
-			padding: 0 @defaultMargin/2;
-		}
-		.data {
-			font-size: 0.9em;
-			pre {
-				margin: 0 -@defaultMargin;
-				overflow: auto;
-				height: 90px;
-				background-color: @colorGrayLight; //lighten(@colorGray, 10%);
-				color: @colorTextPrimary;
-				span.zero {
-					color: fadeout(@colorTextSecondary, 30%);
-				}
-				span.function {
-					font-weight: 600;
-				}
-			}
-		}
-	}
-	&.request-account {
-		h1 {
-			margin-bottom: 20px;
-		}
-		.fields-container {
-            // addresses
-            > div:nth-child(odd) {
-                position: relative;
-                padding: 0 @defaultMargin*2;
-                font-weight: 400;
-            }
-            > div:nth-child(1) {
-                .overlap-icon {
-                    right: @defaultMargin * 1.25;
-                }
-            }
-            > div:nth-child(3) {
-                .overlap-icon {
-                    left: @defaultMargin * 1;
-                }
-            }
-            // amount
-            > div.amount {
-                position: relative;
-                margin-top: -30px;
-                height: 40px;
-                width: @defaultMargin * 10;
-                font-size: 1.5em;
-                color: darken(@colorTextSecondary, 8%);
-                border-bottom: 1px solid @colorTextSecondary;
-
-                &:after {
-                    content: '';
-                    position: absolute;
-                    bottom: -5px;
-                    right: 0;
-                    border: 5px solid @colorTextSecondary;
-                    border-color: transparent @colorTextSecondary @colorTextSecondary transparent;
-                    .rotate(-45deg);
-                }
-
-                .unit {
-                    font-size: 0.6em;
-                    font-weight: 400;
-                }
-            }
+        .execute-function {
+          display: block;
+          position: absolute;
+          bottom: -30px;
+          left: 0;
+          right: 0;
+          font-size: 0.6em;
+          text-align: center;
+          font-weight: 600;
         }
+      }
+      .function-signature {
+        font-weight: 400;
+        font-size: 1.5em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        max-width: @gridWidth * 10;
 
-        table,
-        .data,
-        .info {
-            width: 420px;
-            margin: @defaultMargin*2 auto;
+        &.has-signature {
+          text-transform: none;
         }
-        table {
+      }
+    }
+    table,
+    .data,
+    .parameters,
+    .fees,
+    .info {
+      width: 420px;
+      margin: @defaultMargin*2 auto;
+    }
+    table {
+      td:nth-child(1) {
+        text-align: left;
+      }
+      td:nth-child(2) {
+        text-align: right;
+        font-weight: 400;
+      }
+    }
 
-            td:nth-child(1) {
-                text-align: left;
+    // Parameters
+    .fees,
+    .parameters {
+      font-size: 0.9em;
+      text-align: left;
+      ul,
+      ol {
+        counter-reset: item;
+        padding: 0;
+        list-style-type: none;
+        list-style-position: inside;
+        li {
+          display: flex;
+          min-height: @gridHeight * 2;
+          align-items: center;
+
+          .allowSelection;
+          font-weight: 200;
+          transition: background 0.5s ease-out;
+
+          & > div {
+            padding: 0 @gridWidth / 4;
+          }
+          .value {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            .icon {
+              position: relative;
+              top: 1px;
             }
-            td:nth-child(2) {
-                text-align: right;
-                font-weight: 400;
+            &:hover strong {
+              word-break: break-all;
             }
-        }
-
-        .overlap-icon {
-            position: absolute;
-            top: 20px;
-            font-size: 20px;
-        }
-        .circle-icon {
-            display: inline-block;
-            background-color: @colorGrayLight;
-            .border-radius(50%);
-            font-size: 33px;
-            padding: @defaultMargin;
-
-            // + span {
-            //     display: inline-block;
-            // }
-        }
-
-        .provided-gas {
-            display: inline;
-            width: 70px;
-            padding: 0;
-            margin: 0;
-            color: @colorLink;
-            background-color: transparent;
-            border: 0;
+          }
+          .type {
             text-align: right;
-            border-bottom: 1px dotted @colorLink;
+            max-width: @gridWidth * 10;
+          }
 
-            &:focus {
-                outline: 0;
-            }
+          &:hover {
+            background-color: #fff;
+            transition: background 0.1s ease-in;
+          }
         }
 
-		.show-password-container {
-			width: 300px;
-			margin: 0 auto 0;
-			padding: 12px 0 0;
-			text-align: left;
-			input[type=checkbox] {
-				margin-left: 16px;
-			}
-			label {
-				position: relative;
-				top: -7px;
-				left: 6px;
-				opacity: 0.9;
-				font-size: 14px;
-			}
-		}
-	}
-	&.connect-account {
-		text-align: left;
-		box-sizing: border-box;
-		margin: 0 auto;
-		padding: 0 60px;
-		form {
-			display: -webkit-flex;
-			display: flex;
-			flex-direction: column;
-			align-content: space-between;
-			height: 100vh;
-
-			> * {
-				flex: 0;
-			}
-		}
-		p strong {
-			font-weight: 400;
-		}
-		.account-dapp-user-container {
-			display: -webkit-flex;
-			display: flex;
-			height: 64px;
-			justify-content: center;
-			align-items: center;
-			margin: 30px 0 15px;
-			flex: 0 64px;
-		}
-		.account-dapp-user {
-			margin: 0 5px;
-			position: relative;
-			width: 120px;
-			height: 64px;
-			& > * {
-				position: absolute;
-				top: 0;
-				display: inline-block;
-				width: 64px;
-				height: 64px;
-				border-radius: 50%;
-				&.is-empty {
-					background-color: #6E6C6F;
-					border-radius: 50%;
-					i {
-						color: #fff;
-						display: block;
-						text-align: center;
-						line-height: 64px;
-						font-size: 2.8em;
-					}
-				}
-				&.no-account {
-					background-image: url(/images/anonymous-icon.png);
-					background-size: cover;
-					background-position: 50%;
-				}
-			}
-			.user-icon,
-			.simptip-position-left {
-				z-index: 2;
-				left: 0;
-				animation: .7s cubic-bezier(0, 0, 0.13, 1) slideInLeft;
-				&:first-child {left: 0px;}
-				&:nth-of-type(2) { left: 5px; }
-				&:nth-of-type(3) { left: 10px; }
-				&:nth-of-type(4) { left: 15px; }
-				&:nth-of-type(5) { left: 20px; }
-				&:nth-of-type(6) { left: 25px; }
-			}
-			.app-icon {
-				z-index: 1;
-				left: 55px;
-				animation: .7s cubic-bezier(0, 0, 0.13, 1) slideInRight;
-			}
-		}
-		.dapp-account-list {
-			flex-grow: 5;
-			position: relative;
-			overflow: auto;
-			padding: 0;
-			margin: 0;
-			&::after {
-
-				position: fixed;
-				content: '';
-				display: block;
-				bottom: 130px;
-				width: 100%;
-				height: @gridHeight * 1.5;
-				pointer-events: none;
-				background: -webkit-linear-gradient(top, rgba(241, 241, 241, 0), rgba(241, 241, 241, 1));
-			}
-			li:last-child {
-				margin-bottom: 25px;
-			}
-		}
-		.create-account-icon {
-			background-color: @colorLinkActive;
-			box-shadow: none;
-			&:after {
-				color: #fff;
-				content: '+';
-				display: block;
-				text-align: center;
-				line-height: 32px;
-				font-size: 1.7em;
-				font-weight: 400;
-			}
-		}
-		.checkbox-container {
-			display: flex;
-			flex: 0 50px;
-			padding: 1em 0;
-			input {
-				margin-right: 6px;
-			}
-			label {
-				color: @colorLinkActive;
-				font-weight: 500;
-			}
-		}
-		.dapp-modal-buttons {
-			flex: 0 62px;
-		}
-		.dapp-modal-buttons,
-		.dapp-modal-buttons button:last-of-type {
-			margin-right: 0;
-		}
-		span.account-address,
-		span.dapp-url {
-			animation: .9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
-			display: inline-block;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-			overflow: hidden;
-			width: 100px;
-			font-size: 14px;
-			color: #AEAEAE;
-		}
-
-		.data,
-        .info {
-            text-align: left;
-            padding: 0 @defaultMargin/2;
-            position: relative;
-            .toggle-panel {
-                position: absolute;
-                right: 0;
-                top: 0;
-                font-weight: 500;
-                font-size: 0.8em;
-            }
+        ::selection {
+          color: #fff;
+          background: @colorLink;
         }
-        .data {
-            font-size: 0.9em;
+      }
 
-            pre {
-                margin: 0 -@defaultMargin;
-                overflow: auto;
-                height: 90px;
-                background-color: @colorGrayLight;//lighten(@colorGray, 10%);
-                color: @colorTextPrimary;
+      ol li::before {
+        counter-increment: item;
+        content: counter(item);
+        opacity: 0.5;
+        color: @colorGrayDark;
+        font-weight: 400;
+      }
+    }
 
-                span.zero {
-                    color: fadeout(@colorTextSecondary, 30%);
-                }
-                span.function {
-                    font-weight: 600;
-                }
-            }
+    .overlap-icon {
+      position: absolute;
+      top: 34px;
+      font-size: 18px;
+      text-align: center;
+      color: #fff;
+      width: @gridWidth*2;
+      opacity: 0.75;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    }
+    .circle-icon {
+      display: inline-block;
+      background-color: @colorGrayLight;
+      .border-radius(50%);
+      font-size: 33px;
+      padding: @defaultMargin;
+      // + span {
+      //     display: inline-block;
+      // }
+    }
+    .provided-gas {
+      display: inline;
+      width: 70px;
+      padding: 0;
+      margin: 0;
+      color: @colorLink;
+      background-color: transparent;
+      border: 0;
+      text-align: right;
+      border-bottom: 1px dotted @colorLink;
+      &:focus {
+        outline: 0;
+      }
+    }
+    input[type='password'] {
+      width: @gridWidth * 12;
+    }
+    .data,
+    .info {
+      text-align: left;
+      padding: 0 @defaultMargin / 2;
+    }
+    .data {
+      font-size: 0.9em;
+      pre {
+        margin: 0 -@defaultMargin;
+        overflow: auto;
+        height: 90px;
+        background-color: @colorGrayLight; //lighten(@colorGray, 10%);
+        color: @colorTextPrimary;
+        span.zero {
+          color: fadeout(@colorTextSecondary, 30%);
+        }
+        span.function {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  &.request-account {
+    h1 {
+      margin-bottom: 20px;
+    }
+    .fields-container {
+      // addresses
+      > div:nth-child(odd) {
+        position: relative;
+        padding: 0 @defaultMargin*2;
+        font-weight: 400;
+      }
+      > div:nth-child(1) {
+        .overlap-icon {
+          right: @defaultMargin * 1.25;
+        }
+      }
+      > div:nth-child(3) {
+        .overlap-icon {
+          left: @defaultMargin * 1;
+        }
+      }
+      // amount
+      > div.amount {
+        position: relative;
+        margin-top: -30px;
+        height: 40px;
+        width: @defaultMargin * 10;
+        font-size: 1.5em;
+        color: darken(@colorTextSecondary, 8%);
+        border-bottom: 1px solid @colorTextSecondary;
+
+        &:after {
+          content: '';
+          position: absolute;
+          bottom: -5px;
+          right: 0;
+          border: 5px solid @colorTextSecondary;
+          border-color: transparent @colorTextSecondary @colorTextSecondary
+            transparent;
+          .rotate(-45deg);
         }
 
-	}
+        .unit {
+          font-size: 0.6em;
+          font-weight: 400;
+        }
+      }
+    }
+
+    table,
+    .data,
+    .info {
+      width: 420px;
+      margin: @defaultMargin*2 auto;
+    }
+    table {
+      td:nth-child(1) {
+        text-align: left;
+      }
+      td:nth-child(2) {
+        text-align: right;
+        font-weight: 400;
+      }
+    }
+
+    .overlap-icon {
+      position: absolute;
+      top: 20px;
+      font-size: 20px;
+    }
+    .circle-icon {
+      display: inline-block;
+      background-color: @colorGrayLight;
+      .border-radius(50%);
+      font-size: 33px;
+      padding: @defaultMargin;
+
+      // + span {
+      //     display: inline-block;
+      // }
+    }
+
+    .provided-gas {
+      display: inline;
+      width: 70px;
+      padding: 0;
+      margin: 0;
+      color: @colorLink;
+      background-color: transparent;
+      border: 0;
+      text-align: right;
+      border-bottom: 1px dotted @colorLink;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    .show-password-container {
+      width: 300px;
+      margin: 0 auto 0;
+      padding: 12px 0 0;
+      text-align: left;
+      input[type='checkbox'] {
+        margin-left: 16px;
+      }
+      label {
+        position: relative;
+        top: -7px;
+        left: 6px;
+        opacity: 0.9;
+        font-size: 14px;
+      }
+    }
+  }
+  &.connect-account {
+    text-align: left;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 0 60px;
+    form {
+      display: -webkit-flex;
+      display: flex;
+      flex-direction: column;
+      align-content: space-between;
+      height: 100vh;
+
+      > * {
+        flex: 0;
+      }
+    }
+    p strong {
+      font-weight: 400;
+    }
+    .account-dapp-user-container {
+      display: -webkit-flex;
+      display: flex;
+      height: 64px;
+      justify-content: center;
+      align-items: center;
+      margin: 30px 0 15px;
+      flex: 0 64px;
+    }
+    .account-dapp-user {
+      margin: 0 5px;
+      position: relative;
+      width: 120px;
+      height: 64px;
+      & > * {
+        position: absolute;
+        top: 0;
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        &.is-empty {
+          background-color: #6e6c6f;
+          border-radius: 50%;
+          i {
+            color: #fff;
+            display: block;
+            text-align: center;
+            line-height: 64px;
+            font-size: 2.8em;
+          }
+        }
+        &.no-account {
+          background-image: url(/images/anonymous-icon.png);
+          background-size: cover;
+          background-position: 50%;
+        }
+      }
+      .user-icon,
+      .simptip-position-left {
+        z-index: 2;
+        left: 0;
+        animation: 0.7s cubic-bezier(0, 0, 0.13, 1) slideInLeft;
+        &:first-child {
+          left: 0px;
+        }
+        &:nth-of-type(2) {
+          left: 5px;
+        }
+        &:nth-of-type(3) {
+          left: 10px;
+        }
+        &:nth-of-type(4) {
+          left: 15px;
+        }
+        &:nth-of-type(5) {
+          left: 20px;
+        }
+        &:nth-of-type(6) {
+          left: 25px;
+        }
+      }
+      .app-icon {
+        z-index: 1;
+        left: 55px;
+        animation: 0.7s cubic-bezier(0, 0, 0.13, 1) slideInRight;
+      }
+    }
+    .dapp-account-list {
+      flex-grow: 5;
+      position: relative;
+      overflow: auto;
+      padding: 0;
+      margin: 0;
+      &::after {
+        position: fixed;
+        content: '';
+        display: block;
+        bottom: 130px;
+        width: 100%;
+        height: @gridHeight * 1.5;
+        pointer-events: none;
+        background: -webkit-linear-gradient(
+          top,
+          rgba(241, 241, 241, 0),
+          rgba(241, 241, 241, 1)
+        );
+      }
+      li:last-child {
+        margin-bottom: 25px;
+      }
+    }
+    .create-account-icon {
+      background-color: @colorLinkActive;
+      box-shadow: none;
+      &:after {
+        color: #fff;
+        content: '+';
+        display: block;
+        text-align: center;
+        line-height: 32px;
+        font-size: 1.7em;
+        font-weight: 400;
+      }
+    }
+    .checkbox-container {
+      display: flex;
+      flex: 0 50px;
+      padding: 1em 0;
+      input {
+        margin-right: 6px;
+      }
+      label {
+        color: @colorLinkActive;
+        font-weight: 500;
+      }
+    }
+    .dapp-modal-buttons {
+      flex: 0 62px;
+    }
+    .dapp-modal-buttons,
+    .dapp-modal-buttons button:last-of-type {
+      margin-right: 0;
+    }
+    span.account-address,
+    span.dapp-url {
+      animation: 0.9s cubic-bezier(0.74, 0, 1, 0.29) fadeIn;
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100px;
+      font-size: 14px;
+      color: #aeaeae;
+    }
+
+    .data,
+    .info {
+      text-align: left;
+      padding: 0 @defaultMargin / 2;
+      position: relative;
+      .toggle-panel {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-weight: 500;
+        font-size: 0.8em;
+      }
+    }
+    .data {
+      font-size: 0.9em;
+
+      pre {
+        margin: 0 -@defaultMargin;
+        overflow: auto;
+        height: 90px;
+        background-color: @colorGrayLight; //lighten(@colorGray, 10%);
+        color: @colorTextPrimary;
+
+        span.zero {
+          color: fadeout(@colorTextSecondary, 30%);
+        }
+        span.function {
+          font-weight: 600;
+        }
+      }
+    }
+  }
 }
 
-
-body.app-blur .popup-windows.connect-account .cards-container .switch-card ul::after {
-	background: -webkit-linear-gradient(top, rgba(246, 246, 246, 0), rgba(246, 246, 246, 1));
+body.app-blur
+  .popup-windows.connect-account
+  .cards-container
+  .switch-card
+  ul::after {
+  background: -webkit-linear-gradient(
+    top,
+    rgba(246, 246, 246, 0),
+    rgba(246, 246, 246, 1)
+  );
 }

@@ -13,33 +13,39 @@ The body template
 
 // Generic windows reuse windows by switching the template
 ipc.on('uiAction_switchTemplate', (e, templateName) => {
-    TemplateVar.setTo('#generic-body', 'MainRenderTemplate', `popupWindows_${templateName}`);
+  TemplateVar.setTo(
+    '#generic-body',
+    'MainRenderTemplate',
+    `popupWindows_${templateName}`
+  );
 });
 
 Template.body.helpers({
-    /**
+  /**
     Chooses the view to render at start
 
     @method renderApp
     */
-    'renderApp': function () {
-        // Generic windows return the TemplateVar if set in the ipc call above
-        const template = TemplateVar.get('MainRenderTemplate');
-        if (template) { return template; }
-
-        if (_.isEmpty(location.hash)) {
-            $('title').text('Mist');
-            return 'layout_main';
-        } else {
-            var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
-
-            if (renderWindow.length > 0) {
-                return 'popupWindows_' + renderWindow[1];
-            } else {
-                return false;
-            }
-        }
+  renderApp: function() {
+    // Generic windows return the TemplateVar if set in the ipc call above
+    const template = TemplateVar.get('MainRenderTemplate');
+    if (template) {
+      return template;
     }
+
+    if (_.isEmpty(location.hash)) {
+      $('title').text('Mist');
+      return 'layout_main';
+    } else {
+      var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
+
+      if (renderWindow.length > 0) {
+        return 'popupWindows_' + renderWindow[1];
+      } else {
+        return false;
+      }
+    }
+  }
 });
 
 /*

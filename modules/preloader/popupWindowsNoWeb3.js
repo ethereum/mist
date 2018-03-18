@@ -9,10 +9,9 @@ const dbSync = require('../dbSync.js');
 require('./include/setBasePath')('interface');
 require('./include/openExternal.js');
 
-
 // receive data in from SendData
 ipcRenderer.on('uiAction_sendData', (e, data) => {
-    Session.set('data', data);
+  Session.set('data', data);
 });
 
 window.mist = mist();

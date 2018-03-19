@@ -9,7 +9,6 @@ const web3Admin = require('../web3Admin.js');
 const https = require('https');
 const signer = require('../signer.js');
 
-
 web3Admin.extend(window.web3);
 
 // make variables globally accessable

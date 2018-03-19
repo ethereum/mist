@@ -1,15 +1,13 @@
-
 // Platform specifics
 // Mac OSX
-@colorOSBackgroundFocus: #F1F1F1;
-@colorOSBackgroundBlur: #F6F6F6;
+@colorOSBackgroundFocus: #f1f1f1;
+@colorOSBackgroundBlur: #f6f6f6;
 
-@colorWinBackgroundFocus: #F0F0F0;
-@colorWinBackgroundBlur: #F0F0F0;
+@colorWinBackgroundFocus: #f0f0f0;
+@colorWinBackgroundBlur: #f0f0f0;
 
 // WINDOWS
 .win32 {
-
 }
 
 // LINUX
@@ -17,182 +15,183 @@
 .linux {
 }
 
-
 // MAC
-.darwin, .linux {
-    body {
-        background: @colorOSBackgroundFocus;
-
-        &.app-blur {
-            background: @colorOSBackgroundBlur;
-        }
-}
-
-
-.darwin {
-        aside {
-            top: @gridHeight * 2;
-            height: calc(100% - @gridHeight * 2);
-        }
-
-        div.browser-bar {
-            top: @gridHeight * 1.5;
-        }
-
-        .node-info {
-            top: @gridHeight;
-        }
-    }
-}
-
-
-body, html {
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
-    background: @colorWinBackgroundFocus;
+.darwin,
+.linux {
+  body {
+    background: @colorOSBackgroundFocus;
 
     &.app-blur {
-        background: @colorWinBackgroundBlur;
+      background: @colorOSBackgroundBlur;
+    }
+  }
+
+  .darwin {
+    aside {
+      top: @gridHeight * 2;
+      height: calc(100% - @gridHeight * 2);
     }
 
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    div.browser-bar {
+      top: @gridHeight * 1.5;
+    }
+
+    .node-info {
+      top: @gridHeight;
+    }
+  }
 }
-h1, h2, h3, p {
-    cursor: default;
+
+body,
+html {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background: @colorWinBackgroundFocus;
+
+  &.app-blur {
+    background: @colorWinBackgroundBlur;
+  }
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+h1,
+h2,
+h3,
+p {
+  cursor: default;
 }
 pre {
-    .allowSelection;
-    cursor: text;
+  .allowSelection;
+  cursor: text;
 }
-a h1, a h2, a h3, a p,
-button h1, button h2, button h3, button p {
-    cursor: pointer;
+a h1,
+a h2,
+a h3,
+a p,
+button h1,
+button h2,
+button h3,
+button p {
+  cursor: pointer;
 }
-
-
 
 main {
-    z-index: 1;
-    position: absolute;
-    right: 0;
-    left: @widthSideBar;
-    top: 0;
-    bottom: 0;
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  left: @widthSideBar;
+  top: 0;
+  bottom: 0;
 }
 
 .drag-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
 }
-
 
 // Fading Mist interface when sendTransactionConfirmationPopup is shown.
 html {
-    &.has-blur-overlay {
-        pointer-events: none;
-        opacity: 0.7;
-        body {
-            -webkit-filter: blur(3px);
-            transform: scale(1.001) translate3d(0,0,0);
-        }
+  &.has-blur-overlay {
+    pointer-events: none;
+    opacity: 0.7;
+    body {
+      -webkit-filter: blur(3px);
+      transform: scale(1.001) translate3d(0, 0, 0);
     }
+  }
 }
 
-
 .webview {
-    position: absolute;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-left: 1px solid #e2e2e2;
+  background: #fff;
+  overflow: hidden;
+  opacity: 1;
+  z-index: 10;
+
+  &.hidden {
+    z-index: 0;
+  }
+
+  &.app-bar-transparent webview {
     top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-left: 1px solid #E2E2E2;
-    background: #FFF;
-    overflow: hidden;
-    opacity: 1;
-    z-index: 10;
-
-    &.hidden {
-        z-index: 0;
-    }
-
-    &.app-bar-transparent webview {
-        top: 0;
-        margin-top: 0;
-    }
+    margin-top: 0;
+  }
 }
 
 webview {
-    position: absolute;
-    top: @gridHeight * 1.5;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    margin-top: @gridHeight*2;
-    border-top: solid 1px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: @gridHeight * 1.5;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  margin-top: @gridHeight*2;
+  border-top: solid 1px rgba(0, 0, 0, 0.1);
 }
 .linux webview {
-    top: 0;
+  top: 0;
 }
-
 
 // Scrollbars
 // Reference: https://gist.github.com/devinrhode2/2573411
 aside.sidebar {
-    ::-webkit-scrollbar {
-      width: 7px;
-      background-color: rgba(0,0,0,0);
-      -webkit-border-radius: 100px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.09);
-    }
+  ::-webkit-scrollbar {
+    width: 7px;
+    background-color: rgba(0, 0, 0, 0);
+    -webkit-border-radius: 100px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.09);
+  }
 
+  ::-webkit-scrollbar-thumb:vertical {
+    background: rgba(0, 0, 0, 0.5);
+    -webkit-border-radius: 100px;
+  }
+  ::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(0, 0, 0, 0.61);
+    -webkit-border-radius: 100px;
+    background-clip: padding-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:vertical {
+    background-clip: padding-box;
+    border: 2px solid rgba(0, 0, 0, 0);
+    min-height: 30px;
+  }
+
+  .submenu-container {
     ::-webkit-scrollbar-thumb:vertical {
-      background: rgba(0,0,0,0.5);
-      -webkit-border-radius: 100px;
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px solid rgba(0, 0, 0, 0);
+      background-clip: padding-box;
     }
     ::-webkit-scrollbar-thumb:vertical:active {
-      background: rgba(0,0,0,0.61);
-      -webkit-border-radius: 100px;
-      background-clip: padding-box;
+      background: rgba(255, 255, 255, 0.61);
       border: 2px solid rgba(0, 0, 0, 0);
+      background-clip: padding-box;
     }
-
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:vertical {
-        background-clip: padding-box;
-        border: 2px solid rgba(0, 0, 0, 0);
-        min-height: 30px;
-    }
-
-    .submenu-container {
-        ::-webkit-scrollbar-thumb:vertical {
-            background: rgba(255,255,255,0.5);
-            border: 2px solid rgba(0, 0, 0, 0);
-            background-clip: padding-box;
-        }
-        ::-webkit-scrollbar-thumb:vertical:active {
-            background: rgba(255,255,255,0.61);
-            border: 2px solid rgba(0, 0, 0, 0);
-            background-clip: padding-box;
-        }
-
-    }
-
+  }
 }

@@ -7,49 +7,51 @@ import rootReducer from './rootReducer';
 import { InfuraEndpoints } from '../constants';
 
 export default function configureReduxStore() {
-    const store = createStore(
-        rootReducer, 
-        composeWithDevTools(applyMiddleware(thunk, forwardToRenderer)),
-    );
+  const store = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk, forwardToRenderer))
+  );
 
-    replayActionMain(store);
+  replayActionMain(store);
 
-    store.subscribe(() => {
-        checkActiveNode(store.getState());
-    });
+  store.subscribe(() => {
+    checkActiveNode(store.getState());
+  });
 
-    return store;
+  return store;
 }
 
 function checkActiveNode(state) {
-    // If local node is 50 or more blocks behind remote, ensure remote is active.
-    // Otherwise, local should be active.
-    const { active, network, local, remote } = state.nodes;
+  // If local node is 50 or more blocks behind remote, ensure remote is active.
+  // Otherwise, local should be active.
+  const { active, network, local, remote } = state.nodes;
 
-    const supportedRemoteNetworks = Object.keys(InfuraEndpoints.ethereum.websockets).map(network => network.toLowerCase());
-    if (!supportedRemoteNetworks.includes(network)) {
-        if (active === 'remote') {
-            store.dispatch({
-                type: '[MAIN]:NODES:CHANGE_ACTIVE',
-                payload: { active: 'local' },
-            });
-        }
-        return;
-    }
-
+  const supportedRemoteNetworks = Object.keys(
+    InfuraEndpoints.ethereum.websockets
+  ).map(network => network.toLowerCase());
+  if (!supportedRemoteNetworks.includes(network)) {
     if (active === 'remote') {
-        if ((remote.blockNumber - local.currentBlock) < 50) {
-            store.dispatch({
-                type: '[MAIN]:NODES:CHANGE_ACTIVE',
-                payload: { active: 'local' },
-            });
-        }
-    } else {
-        if ((remote.blockNumber - local.currentBlock) >= 50) {
-            store.dispatch({
-                type: '[MAIN]:NODES:CHANGE_ACTIVE',
-                payload: { active: 'remote' },
-            });
-        }
+      store.dispatch({
+        type: '[MAIN]:NODES:CHANGE_ACTIVE',
+        payload: { active: 'local' }
+      });
     }
+    return;
+  }
+
+  if (active === 'remote') {
+    if (remote.blockNumber - local.currentBlock < 50) {
+      store.dispatch({
+        type: '[MAIN]:NODES:CHANGE_ACTIVE',
+        payload: { active: 'local' }
+      });
+    }
+  } else {
+    if (remote.blockNumber - local.currentBlock >= 50) {
+      store.dispatch({
+        type: '[MAIN]:NODES:CHANGE_ACTIVE',
+        payload: { active: 'remote' }
+      });
+    }
+  }
 }

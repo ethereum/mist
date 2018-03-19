@@ -12,12 +12,12 @@ The main section template
 */
 
 Template['layout_webviews'].helpers({
-    /**
+  /**
     Return the tabs
 
     @method (tabs)
     */
-    'tabs': function () {
-        return Tabs.find({}, { field: { position: 1 } });
-    }
+  tabs: function() {
+    return Tabs.find({}, { field: { position: 1 } });
+  }
 });

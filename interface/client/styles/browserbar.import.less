@@ -1,362 +1,364 @@
 .browser-bar {
-    .display(flex);
-    position: absolute;
-    top: @gridHeight * 1.5;
-    left: @widthSideBar;
-    right: 0;
-    z-index: 3;
-    height: @gridHeight * 2;
-    font-family: @sourceSansPro;
+  .display(flex);
+  position: absolute;
+  top: @gridHeight * 1.5;
+  left: @widthSideBar;
+  right: 0;
+  z-index: 3;
+  height: @gridHeight * 2;
+  font-family: @sourceSansPro;
 
-    button.icon {
-        padding: @gridHeight/4 @gridWidth/4;
+  button.icon {
+    padding: @gridHeight / 4 @gridWidth / 4;
+
+    &:focus {
+      border: 0;
+      color: @colorLinkFocus;
+    }
+  }
+
+  .app-bar {
+    position: relative;
+    .display(flex);
+    flex-grow: 1;
+    margin: @gridHeight / 4 @gridWidth / 4;
+    padding: @gridHeight / 4 @gridWidth / 4;
+    background: #fff; //#F6F6F6;
+    // border-radius: 3px;
+    // box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+    height: @gridHeight*1.7;
+    overflow: hidden;
+
+    // ANIMATION
+    transition: height 0.25s, box-shadow 0.5s;
+
+    > .dapp-info,
+    > button {
+      color: #6691c2;
+      position: relative;
+      padding-left: 0;
+      margin-top: 1px;
+      max-width: 33%;
+      height: 21px;
+      font-family: @sourceSansPro;
+      font-size: @fontSizeSmall;
+      font-weight: 500;
+      line-height: 21px;
+      white-space: nowrap;
+      margin-top: -1px;
+
+      &.has-icon {
+        padding-left: @gridWidth * 0.84;
+      }
+
+      &:focus {
+        border-bottom: 0;
+      }
+
+      &.dapp-info {
+        .dapp-shorten-text;
+      }
+
+      .app-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 21px;
+        height: 21px;
+        border-radius: 50%;
+        -webkit-user-drag: none;
+        user-drag: none;
+      }
+
+      .connect-button {
+        float: left;
+        margin-right: 8px;
+        text-transform: uppercase;
+      }
+      .connect-button,
+      .dapp-info span {
+        line-height: 21px;
+        display: inline-block;
+      }
+
+      span.no-accounts {
+        background-image: url(/images/anonymous-icon.png);
+        background-size: cover;
+        background-position: 50%;
+        width: 21px;
+        height: 21px;
+        display: inline-block;
+        border-radius: 50%;
+      }
+    }
+
+    > form {
+      position: relative;
+      flex-grow: 1;
+      height: @gridHeight;
+
+      .url-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        background: transparent;
+        border: none;
+        text-align: center;
+        color: @colorLinkBlur;
+        opacity: 0;
+        transform: translateX(-20px) translateZ(0);
+        font-size: 80%;
+        font-family: @sourceSansPro;
+        font-weight: 400;
+        transition: opacity 0.2s ease-in-out;
+        line-height: @gridHeight;
+        z-index: 10;
 
         &:focus {
-            border: 0;
-            color: @colorLinkFocus;
+          color: @colorLinkActive;
+          opacity: 1;
         }
+
+        &:focus + .url-breadcrumb,
+        &:hover + .url-breadcrumb {
+          opacity: 0;
+          word-spacing: -4px;
+        }
+      }
+
+      .url-breadcrumb {
+        color: lighten(@colorLinkBlur, 40%);
+        background-color: #fff;
+        opacity: 1;
+        font-size: 80%;
+        text-align: center;
+        font-weight: 400;
+        transition: opacity 0.2s ease-in-out, word-spacing 0.1s ease-in-out 0.1s;
+        line-height: @gridHeight;
+        height: @gridHeight;
+        overflow: hidden;
+        z-index: 1;
+
+        span {
+          color: @colorLinkBlur;
+        }
+      }
+
+      &:hover > .url-input {
+        opacity: 1;
+        transition: opacity 0.2s ease-in-out 0.1s;
+      }
+
+      &:hover > .url-breadcrumb {
+        opacity: 0;
+        word-spacing: -3px;
+        transition: opacity 0.2s ease-in-out 0.1s, word-spacing 0.2s ease-in-out;
+      }
+    }
+
+    div.dapp-info,
+    div.accounts,
+    div.url {
+      display: none;
+      position: absolute;
+      top: @gridHeight * 2;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: @gridHeight / 2 @gridWidth / 4 @gridHeight * 3;
+      margin: 0 @gridWidth / 4 0;
+      border-top: solid 1px #bdb6b6;
+    }
+
+    div.accounts {
+      .message {
+        flex-grow: 1;
+        padding: @gridHeight / 2 @gridWidth / 2 0 0;
+
+        h3 {
+          font-size: @fontSizeLarge;
+          text-transform: none;
+          color: #4a4a4a;
+          font-weight: 400;
+
+          em {
+            font-weight: 700;
+          }
+        }
+      }
+
+      .dapp-account-list {
+        min-width: @gridWidth * 10;
+      }
+
+      .bar-actions {
+        display: flex;
+        justify-content: flex-end;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: @gridHeight * 3;
+        padding-top: @gridHeight;
+
+        button {
+          display: inline-block;
+          font-size: 100%;
+          font-weight: 500;
+          text-transform: uppercase;
+          font-family: @sourceSansPro;
+          padding: @gridHeight / 4 @gridWidth / 2;
+          line-height: @gridHeight;
+        }
+
+        button.cancel {
+          font-weight: 300;
+        }
+      }
+    }
+  }
+
+  &.url-bar-transparent {
+    button.reload,
+    button.back {
+      display: none;
+    }
+
+    button.icon-close {
+      width: @gridWidth;
+      padding: 0;
     }
 
     .app-bar {
-        position: relative;
-        .display(flex);
-        flex-grow: 1;
-        margin: @gridHeight/4 @gridWidth/4;
-        padding: @gridHeight/4 @gridWidth/4;
-        background: #fff;//#F6F6F6;
-        // border-radius: 3px;
-        // box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
-        height: @gridHeight*1.7;
-        overflow: hidden;
-
-        // ANIMATION
-        transition: height 0.25s, box-shadow 0.5s;
-
-        > .dapp-info, > button {
-            color: #6691c2;
-            position: relative;
-            padding-left: 0;
-            margin-top: 1px;
-            max-width: 33%;
-            height: 21px;
-            font-family: @sourceSansPro;
-            font-size: @fontSizeSmall;
-            font-weight: 500;
-            line-height: 21px;
-            white-space: nowrap;
-            margin-top: -1px;
-
-            &.has-icon {
-                padding-left: @gridWidth * 0.84;
-            }
-
-            &:focus {
-                border-bottom: 0;
-            }
-
-            &.dapp-info {
-                .dapp-shorten-text;
-            }
-
-            .app-icon {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 21px;
-                height: 21px;
-                border-radius: 50%;
-                -webkit-user-drag: none;
-                user-drag: none;
-            }
-
-            .connect-button {
-                float: left;
-                margin-right: 8px;
-                text-transform: uppercase;
-            }
-            .connect-button, .dapp-info span {
-                line-height: 21px;
-                display: inline-block;
-            }
-
-            span.no-accounts {
-                background-image: url(/images/anonymous-icon.png);
-                background-size: cover;
-                background-position: 50%;
-                width: 21px;
-                height: 21px;
-                display: inline-block;
-                border-radius: 50%;
-            }
-        }
-
-        > form {
-            position: relative;
-            flex-grow: 1;
-            height: @gridHeight;
-
-            .url-input {
-                position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                padding: 0;
-                margin: 0;
-                width: 100%;
-                max-width: none;
-                background: transparent;
-                border: none;
-                text-align: center;
-                color: @colorLinkBlur;
-                opacity: 0;
-                transform: translateX(-20px) translateZ(0);
-                font-size: 80%;
-                font-family: @sourceSansPro;
-                font-weight: 400;
-                transition: opacity 0.2s ease-in-out;
-                line-height: @gridHeight;
-                z-index: 10;
-
-                &:focus {
-                    color: @colorLinkActive;
-                    opacity: 1;
-                }
-
-                &:focus + .url-breadcrumb, &:hover + .url-breadcrumb {
-                    opacity: 0;
-                    word-spacing: -4px;
-                }
-            }
-
-            .url-breadcrumb {
-                color: lighten(@colorLinkBlur, 40%);
-                background-color: #fff;
-                opacity: 1;
-                font-size: 80%;
-                text-align: center;
-                font-weight: 400;
-                transition: opacity 0.2s ease-in-out, word-spacing 0.1s ease-in-out 0.1s;
-                line-height: @gridHeight;
-                height: @gridHeight;
-                overflow: hidden;
-                z-index: 1;
-
-                span {
-                    color: @colorLinkBlur;
-                }
-            }
-
-            &:hover > .url-input {
-                opacity: 1;
-                transition: opacity 0.2s ease-in-out 0.1s;
-            }
-
-            &:hover > .url-breadcrumb {
-                opacity: 0;
-                word-spacing: -3px;
-                transition: opacity 0.2s ease-in-out 0.1s, word-spacing 0.2s ease-in-out;
-            }
-        }
-
-        div.dapp-info,
-        div.accounts,
-        div.url {
-            display: none;
-            position: absolute;
-            top: @gridHeight * 2;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding: @gridHeight/2 @gridWidth/4  @gridHeight * 3;
-            margin: 0 @gridWidth/4  0;
-            border-top: solid 1px #BDB6B6;
-        }
-
-        div.accounts {
-            .message {
-                flex-grow: 1;
-                padding: @gridHeight/2 @gridWidth/2 0 0;
-
-                h3 {
-                    font-size: @fontSizeLarge;
-                    text-transform: none;
-                    color: #4A4A4A;
-                    font-weight: 400;
-
-                    em {
-                        font-weight: 700;
-                    }
-                }
-            }
-
-            .dapp-account-list {
-                min-width: @gridWidth * 10;
-            }
-
-            .bar-actions {
-                display: flex;
-                justify-content: flex-end;
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: @gridHeight * 3;
-                padding-top: @gridHeight;
-
-                button {
-                    display: inline-block;
-                    font-size: 100%;
-                    font-weight: 500;
-                    text-transform: uppercase;
-                    font-family: @sourceSansPro;
-                    padding: @gridHeight/4 @gridWidth/2;
-                    line-height: @gridHeight
-                }
-
-                button.cancel {
-                    font-weight: 300;
-                }
-            }
-        }
+      margin-left: @gridWidth / 2;
+      margin-right: @gridWidth / 2;
     }
-
-    &.url-bar-transparent {
-        button.reload, button.back {
-            display: none;
-        }
-
-        button.icon-close {
-            width: @gridWidth;
-            padding: 0;
-        }
-
-        .app-bar {
-            margin-left: @gridWidth /2;
-            margin-right: @gridWidth /2;
-        }
-
-    }
+  }
 }
 .linux .browser-bar {
-    top: 0;
-    &.url-bar-transparent {
-        top: @gridHeight * 1.5;
-    }
+  top: 0;
+  &.url-bar-transparent {
+    top: @gridHeight * 1.5;
+  }
 }
 
 .loading {
-    .url-input {
-        .color-pulse;
-        opacity: 1 !important;
-    }
-    .url-breadcrumb {
-        visibility: hidden;
-        word-spacing: -3px;
-        transition: word-spacing 0.5s ease-in-out;
-    }
-    .reload {
-        .rotating;
-    }
+  .url-input {
+    .color-pulse;
+    opacity: 1 !important;
+  }
+  .url-breadcrumb {
+    visibility: hidden;
+    word-spacing: -3px;
+    transition: word-spacing 0.5s ease-in-out;
+  }
+  .reload {
+    .rotating;
+  }
 }
 
 .color-pulse {
-    animation-name: color-pulse;
-    animation-duration: 0.5s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-    background: linear-gradient(to left,
-        darken(@colorLinkActive, 30%) 0,
-        saturate(@colorLinkActive, 100%),
-        darken(@colorLinkActive, 30%)) !important;
-    background-size: 200px !important;
-    background-repeat: repeat-x;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent;
+  animation-name: color-pulse;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  background: linear-gradient(
+    to left,
+    darken(@colorLinkActive, 30%) 0,
+    saturate(@colorLinkActive, 100%),
+    darken(@colorLinkActive, 30%)
+  ) !important;
+  background-size: 200px !important;
+  background-repeat: repeat-x;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent;
 }
 
 @keyframes color-pulse {
-    0% {
-        transform: scale(0.992) translateZ(0);
-        opacity: 0.7;
-        background-position-x:0px;
-    }
-    50% {
-        transform: scale(1) translateZ(0);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(0.992) translateZ(0);
-        opacity: 0.7;
-        background-position-x:-200px;
-    }
+  0% {
+    transform: scale(0.992) translateZ(0);
+    opacity: 0.7;
+    background-position-x: 0px;
+  }
+  50% {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.992) translateZ(0);
+    opacity: 0.7;
+    background-position-x: -200px;
+  }
 }
 
 @colorBlockchain: #c3d825;
 
 .color-ping {
-    animation-name: color-ping;
-    animation-duration: 12s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-out;
-    background-image: linear-gradient(to top,
-        saturate(@colorLinkActive, 100%),
-        @colorGrayDark) !important;
-    background-size: 150px 150px;
-    background-position-y:0;
+  animation-name: color-ping;
+  animation-duration: 12s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-out;
+  background-image: linear-gradient(
+    to top,
+    saturate(@colorLinkActive, 100%),
+    @colorGrayDark
+  ) !important;
+  background-size: 150px 150px;
+  background-position-y: 0;
 
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent;
-
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent;
 }
 
 @keyframes color-ping {
-    0% {
-        transform: scale(1) translateZ(0);
-        background-position-y:0;
-
-    }
-    5% {
-        transform: scale(0.95) translateZ(0);
-        background-position-y:30px;
-    }
-    100% {
-        background-color: @colorGrayDark;
-        transform: scale(1) translateZ(0);
-        background-position-y:150px;
-
-    }
+  0% {
+    transform: scale(1) translateZ(0);
+    background-position-y: 0;
+  }
+  5% {
+    transform: scale(0.95) translateZ(0);
+    background-position-y: 30px;
+  }
+  100% {
+    background-color: @colorGrayDark;
+    transform: scale(1) translateZ(0);
+    background-position-y: 150px;
+  }
 }
 
-
-
 .rotating {
-    animation-name: rotating;
-    animation-duration: 0.5s;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
+  animation-name: rotating;
+  animation-duration: 0.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 @keyframes rotating {
-    0% {
-        transform: rotate(0deg) translate3d(0, 0, 0);
-    }
-    100% {
-        transform: rotate(-180deg) translate3d(0, 1px, 0);
-    }
+  0% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotate(-180deg) translate3d(0, 1px, 0);
+  }
 }
 
-@media screen and (max-width: 960px ) {
-    .browser-bar .accounts {
-      width: 0;
-      text-overflow: clip;
-      padding-left: @gridWidth * 0.75;
-    }
+@media screen and (max-width: 960px) {
+  .browser-bar .accounts {
+    width: 0;
+    text-overflow: clip;
+    padding-left: @gridWidth * 0.75;
+  }
 }
 
-@media screen and (max-width: 800px ) {
-    .browser-bar div.dapp-info {
-      width: 0;
-      text-overflow: clip;
-    }
+@media screen and (max-width: 800px) {
+  .browser-bar div.dapp-info {
+    width: 0;
+    text-overflow: clip;
+  }
 }

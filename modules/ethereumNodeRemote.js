@@ -10,105 +10,111 @@ import { InfuraEndpoints } from './constants';
 let instance;
 
 class EthereumNodeRemote extends EventEmitter {
-    constructor() {
-        super();
+  constructor() {
+    super();
 
-        if (!instance) { instance = this; }
-
-        return instance;
+    if (!instance) {
+      instance = this;
     }
 
-    start() {
-        this.network = Settings.network || Settings.loadUserData('network') || 'main';
+    return instance;
+  }
 
-        const provider = this._getProvider(this.network);
+  start() {
+    this.network =
+      Settings.network || Settings.loadUserData('network') || 'main';
 
-        if (!provider) {
-            return;
+    const provider = this._getProvider(this.network);
+
+    if (!provider) {
+      return;
+    }
+
+    this.web3 = new Web3(provider);
+
+    return this.watchBlockHeaders();
+  }
+
+  setNetwork(network) {
+    this.network = network;
+
+    const provider = this._getProvider(network);
+
+    if (!provider) {
+      this.stop();
+      return;
+    }
+
+    this.web3 = new Web3(provider);
+    this.watchBlockHeaders();
+  }
+
+  _getProvider(network) {
+    switch (network) {
+      case 'main':
+        return InfuraEndpoints.ethereum.websockets.Main;
+      case 'test':
+      // fall-through (uses Ropsten)
+      case 'ropsten':
+        return InfuraEndpoints.ethereum.websockets.Ropsten;
+      case 'rinkeby':
+        return InfuraEndpoints.ethereum.websockets.Rinkeby;
+      case 'kovan':
+        return InfuraEndpoints.ethereum.websockets.Kovan;
+      default:
+        ethereumNodeRemoteLog.error(`Unsupported network type: ${network}`);
+        return null;
+    }
+  }
+
+  stop() {
+    this.web3 = null;
+    store.dispatch(resetRemoteNode());
+  }
+
+  send(method) {
+    // TODO:
+  }
+
+  watchBlockHeaders() {
+    this._syncSubscription = this.web3.eth
+      .subscribe('newBlockHeaders', (error, sync) => {
+        if (error) {
+          console.log('Subscription error:', error);
+
+          if (error.reason.includes('Connection dropped by remote peer.')) {
+            // Try restarting connection
+            this.start();
+          } else {
+            // Try restarting subscription
+            this.watchBlockHeaders();
+          }
         }
-
-        this.web3 = new Web3(provider);
-
-        return this.watchBlockHeaders();
-    }
-
-    setNetwork(network) {
-        this.network = network;
-
-        const provider = this._getProvider(network);
-
-        if (!provider) {
-            this.stop();
-            return;
-        }
-
-        this.web3 = new Web3(provider);
-        this.watchBlockHeaders();
-    }
-
-    _getProvider(network) {
-        switch(network) {
-            case 'main':
-                return InfuraEndpoints.ethereum.websockets.Main;
-            case 'test':
-                // fall-through (uses Ropsten)
-            case 'ropsten':
-                return InfuraEndpoints.ethereum.websockets.Ropsten;
-            case 'rinkeby':
-                return InfuraEndpoints.ethereum.websockets.Rinkeby;
-            case 'kovan':
-                return InfuraEndpoints.ethereum.websockets.Kovan;
-            default:
-                ethereumNodeRemoteLog.error(`Unsupported network type: ${network}`);
-                return null;
-        }
-    }
-
-    stop() {
-        this.web3 = null;
-        store.dispatch(resetRemoteNode());
-    }
-
-    send(method) {
-        // TODO:
-    }
-
-    watchBlockHeaders() {
-        this._syncSubscription = this.web3.eth.subscribe('newBlockHeaders', (error, sync) => {
-            if (error) {
-                console.log('Subscription error:', error);
-
-                if (error.reason.includes('Connection dropped by remote peer.')) {
-                    // Try restarting connection
-                    this.start();
-                } else {
-                    // Try restarting subscription
-                    this.watchBlockHeaders();
-                }
+      })
+      .on('data', blockHeader => {
+        if (blockHeader.number) {
+          store.dispatch({
+            type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
+            payload: {
+              blockNumber: blockHeader.number,
+              timestamp: blockHeader.timestamp
             }
-        })
-        .on("data", blockHeader => {
-            if (blockHeader.number) {
-                store.dispatch({
-                    type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
-                    payload: {
-                        blockNumber: blockHeader.number,
-                        timestamp: blockHeader.timestamp
-                    }
-                });
-            }
-        });
-    }
+          });
+        }
+      });
+  }
 
-    unsubscribe() {
-        this._syncSubscription.unsubscribe((err, success) => {
-            if (success) { console.log('∆∆∆ succesfully unsubscribed'); }
-        });
-    }
+  unsubscribe() {
+    this._syncSubscription.unsubscribe((err, success) => {
+      if (success) {
+        console.log('∆∆∆ succesfully unsubscribed');
+      }
+    });
+  }
 
-    get connected() {
-        return this.web3 && this.web3.givenProvider
-    }
+  get connected() {
+    return this.web3 && this.web3.givenProvider;
+  }
 }
 
 module.exports = new EthereumNodeRemote();

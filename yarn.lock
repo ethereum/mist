@@ -1960,9 +1960,9 @@ electron-window-state@^4.0.1:
     jsonfile "^2.2.3"
     mkdirp "^0.5.1"
 
-electron@1.8.3:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.8.3.tgz#001416ea3a25ce594e317cb5531bc41eadd22f7f"
+electron@1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.8.4.tgz#cca8d0e6889f238f55b414ad224f03e03b226a38"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^3.0.1"
@@ -2214,9 +2214,9 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
-ethereum-client-binaries@ethereum/ethereum-client-binaries:
+ethereum-client-binaries@1.6.4:
   version "1.6.4"
-  resolved "https://codeload.github.com/ethereum/ethereum-client-binaries/tar.gz/2f09d516d1dcb3679d1f2ebb011d401fe6df1401"
+  resolved "https://registry.yarnpkg.com/ethereum-client-binaries/-/ethereum-client-binaries-1.6.4.tgz#c4fcf97e873d6c66f7f33cb501b4059868baaee5"
   dependencies:
     buffered-spawn "^3.3.2"
     got "^6.5.0"
@@ -2224,7 +2224,7 @@ ethereum-client-binaries@ethereum/ethereum-client-binaries:
     lodash.isempty "^4.4.0"
     lodash.values "^4.3.0"
     mkdirp "^0.5.1"
-    node-unzip-2 "github:glebdmitriew/node-unzip-2"
+    node-unzip-2 "^0.2.7"
     tmp "0.0.29"
 
 ethereum-keyfile-recognizer@^1.0.2:
@@ -4510,9 +4510,9 @@ node-pre-gyp@^0.6.39:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-"node-unzip-2@github:glebdmitriew/node-unzip-2":
+node-unzip-2@^0.2.7:
   version "0.2.7"
-  resolved "https://codeload.github.com/glebdmitriew/node-unzip-2/tar.gz/3702bce9596496bf45442e156541c68eb965b9f9"
+  resolved "https://registry.yarnpkg.com/node-unzip-2/-/node-unzip-2-0.2.7.tgz#33433d018ded3ca9219e757990cc0b990e4fa51b"
   dependencies:
     binary "~0.3.0"
     fstream "~1.0.10"

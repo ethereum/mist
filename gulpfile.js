@@ -9,82 +9,85 @@ const gulp = require('gulp');
 const minimist = require('minimist');
 const runSeq = require('run-sequence');
 
-
 // available crossplatform builds
 let platforms;
 if (process.platform === 'darwin') {
-    platforms = ['mac', 'linux', 'win'];
+  platforms = ['mac', 'linux', 'win'];
 } else if (process.platform === 'win32') {
-    platforms = ['win'];
+  platforms = ['win'];
 } else {
-    platforms = ['linux', 'win'];
+  platforms = ['linux', 'win'];
 }
 
 // parse commandline arguments
 const args = process.argv.slice(2);
 const options = minimist(args, {
-    string: ['walletSource', 'test', 'skipTasks'],
-    boolean: _.flatten(['wallet', platforms]),
-    default: {
-        wallet: false,
-        walletSource: 'master',
-        test: 'basic',
-        skipTasks: '',
-    },
+  string: ['walletSource', 'test', 'skipTasks'],
+  boolean: _.flatten(['wallet', platforms]),
+  default: {
+    wallet: false,
+    walletSource: 'master',
+    test: 'basic',
+    skipTasks: ''
+  }
 });
-
 
 // echo version info and usage hints
 console.log('Mist version:', require('./package.json').version);
 console.log('Electron version:', require('electron/package.json').version);
 
 if (_.isEmpty(_.intersection(args, ['--wallet']))) {
-    console.log('Many gulp tasks can be run in wallet mode using:  --wallet');
+  console.log('Many gulp tasks can be run in wallet mode using:  --wallet');
 }
 
-const platformFlags = platforms.map((platform) => { return `--${platform}`; });
+const platformFlags = platforms.map(platform => {
+  return `--${platform}`;
+});
 if (_.isEmpty(_.intersection(args, platformFlags))) {
-    console.log(`To specify a platform (default: all) use:  ${platformFlags.join(' ')}`);
-    _.each(platforms, (platform) => { options[platform] = true; }); // activate all platform flags
+  console.log(
+    `To specify a platform (default: all) use:  ${platformFlags.join(' ')}`
+  );
+  _.each(platforms, platform => {
+    options[platform] = true;
+  }); // activate all platform flags
 }
-
 
 // prepare global variables (shared with other gulp task files)
-options.type = (options.wallet) ? 'wallet' : 'mist';
+options.type = options.wallet ? 'wallet' : 'mist';
 options.platforms = platforms;
-options.activePlatforms = _.keys(_.pick(_.pick(options, platforms), (key) => { return key; }));
+options.activePlatforms = _.keys(
+  _.pick(_.pick(options, platforms), key => {
+    return key;
+  })
+);
 
 exports.options = options;
-
 
 // import gulp tasks
 require('require-dir')('./gulpTasks');
 
+gulp.task('uploadQueue', cb => {
+  const tasks = [];
 
+  tasks.push('checksums');
+  tasks.push('upload-binaries');
 
-
-gulp.task('uploadQueue', (cb) => {
-    const tasks = [];
-
-    tasks.push('checksums');
-    tasks.push('upload-binaries');
-
-    runSeq.apply(null, _.flatten([tasks, cb]));
+  runSeq.apply(null, _.flatten([tasks, cb]));
 });
 
-const skipTasks = options.skipTasks.replace(/\s/g,'').split(',');
+const skipTasks = options.skipTasks.replace(/\s/g, '').split(',');
 const tasks = [
-    'clean-dist',
-    'copy-app-source-files',
-    'transpile-main',
-    'transpile-modules',
-    'copy-build-folder-files',
-    'switch-production',
-    'bundling-interface',
-    'copy-i18n',
-    'build-dist',
-    'release-dist',
-    'build-nsis'
+  'clean-dist',
+  'copy-app-source-files',
+  'transpile-main',
+  'transpile-modules',
+  'copy-build-folder-files',
+  'switch-production',
+  'bundling-interface',
+  'copy-i18n',
+  'build-dist',
+  'release-dist',
+  'build-nsis'
 ].filter(task => !skipTasks.includes(task));
 
 gulp.task('default', gulp.series(tasks));

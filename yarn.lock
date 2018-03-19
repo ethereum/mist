@@ -2214,9 +2214,9 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
-ethereum-client-binaries@ethereum/ethereum-client-binaries:
+ethereum-client-binaries@1.6.4:
   version "1.6.4"
-  resolved "https://codeload.github.com/ethereum/ethereum-client-binaries/tar.gz/c7cad554581f4038f3bb553622d5aee17c152e3a"
+  resolved "https://registry.yarnpkg.com/ethereum-client-binaries/-/ethereum-client-binaries-1.6.4.tgz#c4fcf97e873d6c66f7f33cb501b4059868baaee5"
   dependencies:
     buffered-spawn "^3.3.2"
     got "^6.5.0"
@@ -2224,8 +2224,8 @@ ethereum-client-binaries@ethereum/ethereum-client-binaries:
     lodash.isempty "^4.4.0"
     lodash.values "^4.3.0"
     mkdirp "^0.5.1"
+    node-unzip-2 "^0.2.7"
     tmp "0.0.29"
-    unzip "github:glebdmitriew/node-unzip-2"
 
 ethereum-keyfile-recognizer@^1.0.2:
   version "1.0.2"
@@ -4492,6 +4492,17 @@ node-pre-gyp@^0.6.39:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
+node-unzip-2@^0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/node-unzip-2/-/node-unzip-2-0.2.7.tgz#33433d018ded3ca9219e757990cc0b990e4fa51b"
+  dependencies:
+    binary "~0.3.0"
+    fstream "~1.0.10"
+    match-stream "~0.0.2"
+    pullstream "~0.4.0"
+    readable-stream "~1.0.0"
+    setimmediate "~1.0.1"
+
 node-uuid@~1.4.7:
   version "1.4.8"
   resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.8.tgz#b040eb0923968afabf8d32fb1f17f1167fdab907"
@@ -6666,17 +6677,6 @@ unset-value@^1.0.0:
 unzip-response@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/unzip-response/-/unzip-response-2.0.1.tgz#d2f0f737d16b0615e72a6935ed04214572d56f97"
-
-"unzip@github:glebdmitriew/node-unzip-2":
-  version "0.2.7"
-  resolved "https://codeload.github.com/glebdmitriew/node-unzip-2/tar.gz/3702bce9596496bf45442e156541c68eb965b9f9"
-  dependencies:
-    binary "~0.3.0"
-    fstream "~1.0.10"
-    match-stream "~0.0.2"
-    pullstream "~0.4.0"
-    readable-stream "~1.0.0"
-    setimmediate "~1.0.1"
 
 upath@^1.0.0:
   version "1.0.4"

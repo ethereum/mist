@@ -1,68 +1,68 @@
-const _ = require('underscore');
-const builder = require('electron-builder');
-const del = require('del');
-const exec = require('child_process').exec;
-const fs = require('fs');
-const gulp = require('gulp');
-const babel = require('gulp-babel');
-const options = require('../gulpfile.js').options;
-const path = require('path');
-const Q = require('bluebird');
-const shell = require('shelljs');
-const version = require('../package.json').version;
+const _ = require("underscore");
+const builder = require("electron-builder");
+const del = require("del");
+const exec = require("child_process").exec;
+const fs = require("fs");
+const gulp = require("gulp");
+const babel = require("gulp-babel");
+const options = require("../gulpfile.js").options;
+const path = require("path");
+const Q = require("bluebird");
+const shell = require("shelljs");
+const version = require("../package.json").version;
 
 const type = options.type;
-const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
+const applicationName = options.wallet ? "Ethereum Wallet" : "Mist";
 
-gulp.task('clean-dist', cb => {
-  return del([`./dist_${type}`, './meteor-dapp-wallet'], cb);
+gulp.task("clean-dist", cb => {
+  return del([`./dist_${type}`, "./meteor-dapp-wallet"], cb);
 });
 
-gulp.task('copy-app-source-files', () => {
+gulp.task("copy-app-source-files", () => {
   return gulp
     .src(
       [
-        'node_modules/**/*',
-        './clientBinaries.json',
-        './tests/**/*.*',
+        "node_modules/**/*",
+        "./clientBinaries.json",
+        "./tests/**/*.*",
         `./icons/${type}/*`,
-        './sounds/*',
-        './errorPages/*',
-        'customProtocols.js',
-        '!node_modules/electron/',
-        '!node_modules/electron/**/*',
-        '!./tests/wallet/*',
-        '!./tests/mist/*',
-        '!./tests/unit/*'
+        "./sounds/*",
+        "./errorPages/*",
+        "customProtocols.js",
+        "!node_modules/electron/",
+        "!node_modules/electron/**/*",
+        "!./tests/wallet/*",
+        "!./tests/mist/*",
+        "!./tests/unit/*"
       ],
       {
-        base: './'
+        base: "./"
       }
     )
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
-gulp.task('transpile-main', () => {
+gulp.task("transpile-main", () => {
   return gulp
-    .src('./main.js')
-    .pipe(babel({ presets: ['es2016-node5'] }))
+    .src("./main.js")
+    .pipe(babel({ presets: ["es2016-node5"] }))
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
-gulp.task('transpile-modules', () => {
+gulp.task("transpile-modules", () => {
   return gulp
-    .src('./modules/**')
-    .pipe(babel({ presets: ['es2016-node5'] }))
+    .src("./modules/**")
+    .pipe(babel({ presets: ["es2016-node5"] }))
     .pipe(gulp.dest(`./dist_${type}/app/modules`));
 });
 
-gulp.task('copy-build-folder-files', () => {
+gulp.task("copy-build-folder-files", () => {
   return gulp
-    .src([`./icons/${type}/*`, './interface/public/images/dmg-background.jpg'])
+    .src([`./icons/${type}/*`, "./interface/public/images/dmg-background.jpg"])
     .pipe(gulp.dest(`./dist_${type}/build`));
 });
 
-gulp.task('switch-production', cb => {
+gulp.task("switch-production", cb => {
   fs.writeFile(
     `./dist_${type}/app/config.json`,
     JSON.stringify({
@@ -73,15 +73,15 @@ gulp.task('switch-production', cb => {
   );
 });
 
-gulp.task('bundling-interface', cb => {
+gulp.task("bundling-interface", cb => {
   const bundle = additionalCommands => {
     exec(
       `cd interface \
             && meteor-build-client ${path.join(
-              '..',
+              "..",
               `dist_${type}`,
-              'app',
-              'interface'
+              "app",
+              "interface"
             )} -p "" \
             ${additionalCommands}`,
       (err, stdout) => {
@@ -91,9 +91,9 @@ gulp.task('bundling-interface', cb => {
     );
   };
 
-  if (type === 'wallet') {
-    if (options.walletSource === 'local') {
-      console.log('Use local wallet at ../meteor-dapp-wallet/app');
+  if (type === "wallet") {
+    if (options.walletSource === "local") {
+      console.log("Use local wallet at ../meteor-dapp-wallet/app");
       bundle(`&& cd ../../meteor-dapp-wallet/app \
                 && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
     } else {
@@ -114,53 +114,53 @@ gulp.task('bundling-interface', cb => {
   }
 });
 
-gulp.task('copy-i18n', () => {
+gulp.task("copy-i18n", () => {
   return gulp
-    .src(['./interface/i18n/*.*', './interface/project-tap.i18n'], {
-      base: './'
+    .src(["./interface/i18n/*.*", "./interface/project-tap.i18n"], {
+      base: "./"
     })
     .pipe(gulp.dest(`./dist_${type}/app`));
 });
 
-gulp.task('build-dist', cb => {
-  const appPackageJson = _.extend({}, require('../package.json'), {
+gulp.task("build-dist", cb => {
+  const appPackageJson = _.extend({}, require("../package.json"), {
     // eslint-disable-line global-require
-    name: applicationName.replace(/\s/, ''),
+    name: applicationName.replace(/\s/, ""),
     productName: applicationName,
     description: applicationName,
-    homepage: 'https://github.com/ethereum/mist',
+    homepage: "https://github.com/ethereum/mist",
     build: {
       appId: `org.ethereum.${type}`,
       asar: true,
       directories: {
-        buildResources: '../build',
-        output: '../dist'
+        buildResources: "../build",
+        output: "../dist"
       },
       linux: {
-        category: 'WebBrowser',
+        category: "WebBrowser",
         icon: `./app/${type}/icons`,
-        target: ['zip']
+        target: ["zip"]
       },
       win: {
-        target: ['zip']
+        target: ["zip"]
       },
       mac: {
-        category: 'public.app-category.productivity'
+        category: "public.app-category.productivity"
       },
       dmg: {
-        background: '../build/dmg-background.jpg',
+        background: "../build/dmg-background.jpg",
         iconSize: 128,
         contents: [
           {
             x: 441,
             y: 448,
-            type: 'link',
-            path: '/Applications'
+            type: "link",
+            path: "/Applications"
           },
           {
             x: 441,
             y: 142,
-            type: 'file'
+            type: "file"
           }
         ]
       }
@@ -168,9 +168,9 @@ gulp.task('build-dist', cb => {
   });
 
   fs.writeFileSync(
-    path.join(__dirname, `../dist_${type}`, 'app', 'package.json'),
+    path.join(__dirname, `../dist_${type}`, "app", "package.json"),
     JSON.stringify(appPackageJson, null, 2),
-    'utf-8'
+    "utf-8"
   );
 
   const targets = [];
@@ -180,17 +180,17 @@ gulp.task('build-dist', cb => {
 
   builder
     .build({
-      targets: builder.createTargets(targets, null, 'all'),
-      projectDir: path.join(__dirname, `../dist_${type}`, 'app'),
-      publish: 'never',
+      targets: builder.createTargets(targets, null, "all"),
+      projectDir: path.join(__dirname, `../dist_${type}`, "app"),
+      publish: "never",
       config: {
         afterPack(params) {
           return Q.try(() => {
             shell.cp(
               [
-                path.join(__dirname, '..', 'LICENSE'),
-                path.join(__dirname, '..', 'README.md'),
-                path.join(__dirname, '..', 'AUTHORS')
+                path.join(__dirname, "..", "LICENSE"),
+                path.join(__dirname, "..", "README.md"),
+                path.join(__dirname, "..", "AUTHORS")
               ],
               params.appOutDir
             );
@@ -206,16 +206,16 @@ gulp.task('build-dist', cb => {
     });
 });
 
-gulp.task('release-dist', done => {
-  const distPath = path.join(__dirname, `../dist_${type}`, 'dist');
-  const releasePath = path.join(__dirname, `../dist_${type}`, 'release');
+gulp.task("release-dist", done => {
+  const distPath = path.join(__dirname, `../dist_${type}`, "dist");
+  const releasePath = path.join(__dirname, `../dist_${type}`, "release");
 
-  shell.rm('-rf', releasePath);
-  shell.mkdir('-p', releasePath);
+  shell.rm("-rf", releasePath);
+  shell.mkdir("-p", releasePath);
 
-  const appNameHypen = applicationName.replace(/\s/, '-');
-  const appNameNoSpace = applicationName.replace(/\s/, '');
-  const versionDashed = version.replace(/\./g, '-');
+  const appNameHypen = applicationName.replace(/\s/, "-");
+  const appNameNoSpace = applicationName.replace(/\s/, "");
+  const versionDashed = version.replace(/\./g, "-");
 
   const cp = (inputPath, outputPath) => {
     console.info(
@@ -232,7 +232,7 @@ gulp.task('release-dist', done => {
 
   _.each(options.activePlatforms, platform => {
     switch (platform) { // eslint-disable-line default-case
-      case 'win':
+      case "win":
         cp(
           `${applicationName}-${version}-ia32-win.zip`,
           `${appNameHypen}-win32-${versionDashed}.zip`
@@ -242,13 +242,13 @@ gulp.task('release-dist', done => {
           `${appNameHypen}-win64-${versionDashed}.zip`
         );
         break;
-      case 'mac':
+      case "mac":
         cp(
           `${applicationName}-${version}.dmg`,
           `${appNameHypen}-macosx-${versionDashed}.dmg`
         );
         break;
-      case 'linux':
+      case "linux":
         // .deb have underscore separators
         cp(
           `${appNameNoSpace}_${version}_i386.deb`,
@@ -272,18 +272,18 @@ gulp.task('release-dist', done => {
     }
   });
 
-  console.info('∆∆∆ Listing release files ***');
-  console.info(shell.ls('-l', releasePath).map(e => e.name));
+  console.info("∆∆∆ Listing release files ***");
+  console.info(shell.ls("-l", releasePath).map(e => e.name));
 
   done();
 });
 
-gulp.task('build-nsis', done => {
+gulp.task("build-nsis", done => {
   if (!options.win) return done();
 
   const typeString = `-DTYPE=${type}`;
-  const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, '-')}`;
-  const versionParts = version.split('.');
+  const appNameString = `-DAPPNAME=${applicationName.replace(/\s/, "-")}`;
+  const versionParts = version.split(".");
   const versionString = `-DVERSIONMAJOR=${versionParts[0]} -DVERSIONMINOR=${
     versionParts[1]
   } -DVERSIONBUILD=${versionParts[2]}`;

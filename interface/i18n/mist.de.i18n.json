@@ -217,7 +217,7 @@
                 "accountTitle": "Lade die Datei hoch!",
                 "accountTitleTestnet": "Ether minen!",
                 "etherDescription": "Das Ethereum Netz basiert auf einem Tokan namens “Ether”. Du benötigst eine kleine Menge davon, um irgendetwas auf dem Ethereum-Netz zu tun.",
-                "loadItDescription": "Wenn du bereits über Bitcoin oder eine andere Kryptowährung verfügst, kannst du diese mit Shapeshift einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
+                "loadItDescription": "Wenn du bereits über Bitcoin oder eine andere Kryptowährung verfügst, kannst du diese mit changelly einfach in Ether umtauschen. <br><br> Wir empfehlen, ca. <strong>0.25 bis 1 ether</strong> einzutauschen.",
                 "mineItDescription": "<strong>Auf dem Testnetz kannst du selbst Ether minen. Bitte gehe dazu in den Menüpunkt <em>Entwicklung</em> menu und wähle <em>Mining starten</em>. </strong> <br> <strong> VERSUCHE NICHT, ECHTE ETHER AN DIESE ADRESSE ZU SENDEN! </strong>",
                 "you": "DU",
                 "etherbase": "Hauptkonto (etherbase)",
@@ -239,7 +239,8 @@
                     "wrongPassword": "Falsches Passwort.",
                     "importFailed": "Beim Import der Datei ist folgender Fehler aufgetreten: __error__"
                 },
-                "viaShapeshift": "Sofortige Konversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "buyEther": "Buy Ether",
+                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
                 "syncMessage": "Block __displayBlock__ von __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ von __highestBlockString__ (Chain Struktur __statesPercent__%)",
                 "startingSync": "Bereite Synchronisation vor.."

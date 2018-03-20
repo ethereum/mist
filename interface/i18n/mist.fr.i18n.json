@@ -219,7 +219,7 @@
                 "accountTitle": "Chargez le !",
                 "accountTitleTestnet": "Minez-en quelques-uns !",
                 "etherDescription": "Le réseau ethereum est basé sur un token (jeton) appelé “Ether”. Vous aurez besoin d'un petit montant de cela pour faire ce que vous souhaitez sur le réseau Ethereum.",
-                "loadItDescription": "Si vous possédez déjà des Bitcoin, ou n'importe quel autre crypto-monnaie, vous pouvez facilement les convertir en ether en utilisant shapeshift. <br><br> Nous recommandons d'en charger de <strong>0.25 à 1 ether</strong>.",
+                "loadItDescription": "Si vous possédez déjà des Bitcoin, ou n'importe quel autre crypto-monnaie, vous pouvez facilement les convertir en ether en utilisant changelly. <br><br> Nous recommandons d'en charger de <strong>0.25 à 1 ether</strong>.",
                 "mineItDescription": "<strong>Sur le réseau Testnet vous pouvez miner de l'ether vous-même en allant sur le menu <em>Développement</em> et en choisissant <em>Commencer à miner</em>. </strong> <br> <strong> N'ESSAYEZ PAS D'ENVOYER DU VERITABLE ETHER A CETTE ADRESSE </strong>",
                 "you": "VOUS",
                 "etherbase": "Compte principal (etherbase)",
@@ -241,7 +241,8 @@
                     "wrongPassword": "Mauvais mot de passe.",
                     "importFailed": "Echec à l'importation du fichier avec l'erreur : __error__"
                 },
-                "viaShapeshift": "Instant conversion via <a href='https://shapeshift.io/' target='_blank'>Shapeshift</a>",
+                "buyEther": "Acheter Ether",
+                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
                 "syncMessage": "Block __displayBlock__ of __highestBlockString__",
                 "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
                 "startingSync": "Getting ready to sync.."

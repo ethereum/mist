@@ -12,8 +12,6 @@ const version = require("../package.json").version;
 const checksums = [];
 const type = options.type;
 
-gulp.task("upload-queue", gulp.series("checksums", "upload-binaries"));
-
 gulp.task("checksums", cb => {
   const releasePath = `./dist_${type}/release`;
   const files = fs.readdirSync(releasePath);

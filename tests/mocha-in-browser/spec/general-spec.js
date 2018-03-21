@@ -74,7 +74,11 @@ describe('General', function() {
     });
 
     it('add() should update menu entries', function() {
-      mist.menu.add('menu0', { name: 'Test1', selected: true, position: 1 });
+      mist.menu.add('menu0', {
+        name: 'Test1',
+        selected: true,
+        position: 1
+      });
 
       mist.menu.update('menu0', {
         name: 'Test1234',

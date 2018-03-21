@@ -326,7 +326,10 @@ class Windows {
   }
 
   create(type, opts, callback) {
-    store.dispatch({ type: '[MAIN]:WINDOW:CREATE_START', payload: { type } });
+    store.dispatch({
+      type: '[MAIN]:WINDOW:CREATE_START',
+      payload: { type }
+    });
 
     const options = _.deepExtend(
       this.getDefaultOptionsForType(type),
@@ -357,7 +360,10 @@ class Windows {
       wnd.callback = callback;
     }
 
-    store.dispatch({ type: '[MAIN]:WINDOW:CREATE_FINISH', payload: { type } });
+    store.dispatch({
+      type: '[MAIN]:WINDOW:CREATE_FINISH',
+      payload: { type }
+    });
 
     return wnd;
   }

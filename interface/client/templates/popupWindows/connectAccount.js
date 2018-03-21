@@ -33,7 +33,11 @@ var pinToSidebar = function() {
       });
 
       // remove last page form last pages
-      if ((sameLastPage = LastVisitedPages.findOne({ url: selectedTab.url }))) {
+      if (
+        (sameLastPage = LastVisitedPages.findOne({
+          url: selectedTab.url
+        }))
+      ) {
         LastVisitedPages.remove(sameLastPage._id);
       }
     }

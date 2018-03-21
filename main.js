@@ -23,7 +23,6 @@ import {
   toggleSwarm
 } from './modules/core/settings/actions';
 import { syncNodeDefaults } from './modules/core/nodes/actions';
-
 import { SwarmState } from './modules/core/settings/reducer';
 
 import swarmNode from './modules/swarmNode.js';

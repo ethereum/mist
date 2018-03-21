@@ -81,7 +81,6 @@ Template['elements_nodeInfo'].onCreated(function() {
   });
 
   // CHECK SYNCING
-
   this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
     if (error) {
       console.log(`Node isSyncing error: ${error}`);

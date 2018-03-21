@@ -118,7 +118,11 @@ describe('Permissions', function() {
     it("shouldn't allow RegExp (possible XSS)", function() {
       var add = '0x0000000000000000000000000000000000000000';
       expect(function() {
-        web3.eth.sendTransaction({ from: add, to: add, data: new RegExp('') });
+        web3.eth.sendTransaction({
+          from: add,
+          to: add,
+          data: new RegExp('')
+        });
       }).to.throw(
         "Payload, or some of its content properties are invalid. Please check if they are valid HEX with '0x' prefix."
       );

@@ -206,7 +206,9 @@ let menuTempl = function(webviews) {
   }
 
   fileMenu.push({
-    label: i18n.t('mist.applicationMenu.app.quit', { app: Settings.appName }),
+    label: i18n.t('mist.applicationMenu.app.quit', {
+      app: Settings.appName
+    }),
     accelerator: 'CommandOrControl+Q',
     click() {
       app.quit();
@@ -214,7 +216,9 @@ let menuTempl = function(webviews) {
   });
 
   menu.push({
-    label: i18n.t('mist.applicationMenu.app.label', { app: Settings.appName }),
+    label: i18n.t('mist.applicationMenu.app.label', {
+      app: Settings.appName
+    }),
     submenu: fileMenu
   });
 

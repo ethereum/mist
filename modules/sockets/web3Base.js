@@ -36,11 +36,11 @@ module.exports = class Web3Socket extends Socket {
         : this._finalizeSinglePayload(payload);
 
       /*
-            For batch requests we use the id of the first request as the
-            id to refer to the batch as one. We can do this because the
-            response will also come back as a batch, in the same order as the
-            the requests within the batch were sent.
-             */
+      * For batch requests we use the id of the first request as the
+      * id to refer to the batch as one. We can do this because the
+      * response will also come back as a batch, in the same order as the
+      * the requests within the batch were sent.
+      */
       const id = isBatch ? finalPayload[0].id : finalPayload.id;
 
       this._log.trace(isBatch ? 'Batch request' : 'Request', id, finalPayload);

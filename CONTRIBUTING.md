@@ -12,14 +12,14 @@ To help improve Mist (_Ethereum Wallet_), please include the following:
 
 If applicable:
 
-* Log file (Linux: `~/.config/Mist/*.log`, Windows: `%APPDATA%/Roaming/Mist/*.log`, MacOSX: `~/Library/Application Support/Mist/*.log`)
+* Log file (Linux: `~/.config/Mist/logs/all.log`, Windows: `%APPDATA%/Roaming/Mist/logs/all.log`, MacOSX: `~/Library/Application Support/Mist/logs/all.log`)
 * Screenshot (for GUI related issues)
 
 ## Pull Requests
 
 If you want to make a PR please make sure you add a understandable description of what it is you're adding/changing/fixing.
 
-For formatting we use 4 _spaces_ as indentation.
+For formatting we use 2 _spaces_ as indentation.
 
 If you add any modules or files, please give them a module description and or a class description:
 

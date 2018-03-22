@@ -455,7 +455,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     }
 
     // send transaction!
-    web3.eth.sendRawTransaction(signedTx, (error, hash) => {
+    web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
       if (error) {
         console.error(`Error from sendRawTransaction: ${error}`);
         if (error.message.includes('Unable to connect to socket: timeout')) {

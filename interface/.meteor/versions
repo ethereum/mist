@@ -30,12 +30,12 @@ diff-sequence@1.0.7
 ecmascript@0.6.1
 ecmascript-runtime@0.3.15
 ejson@1.0.13
-ethereum:accounts@0.3.12
-ethereum:blocks@0.3.2
+ethereum:accounts@1.0.0
+ethereum:blocks@1.0.0
 ethereum:dapp-styles@0.5.7
-ethereum:elements@0.7.18
-ethereum:tools@0.6.0
-ethereum:web3@0.15.3
+ethereum:elements@1.0.0
+ethereum:tools@1.0.0
+ethereum:web3@1.0.0-beta.31
 fastclick@1.0.13
 frozeman:animation-helper@0.2.6
 frozeman:global-notifications@0.2.1

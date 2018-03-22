@@ -415,9 +415,6 @@ Template['popupWindows_sendTransactionConfirmation'].events({
           template.find('input[type="password"]').value = '';
           template.$('input[type="password"]').focus();
         });
-        switch(error) {
-          case 
-        }
         if (error.message.includes('Unable to connect to socket: timeout')) {
           GlobalNotification.warning({
             content: TAPi18n.__(

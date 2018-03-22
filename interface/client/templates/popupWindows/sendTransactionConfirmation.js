@@ -408,6 +408,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     // sign transaction
     web3.eth.personal.signTransaction(tx, pw || '', function(error, result) {
+      pw = null;
       TemplateVar.set('unlocking', false);
       if (error) {
         Tracker.afterFlush(function() {

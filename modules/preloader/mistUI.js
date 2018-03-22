@@ -12,14 +12,8 @@ const { Menu, MenuItem } = remote;
 const dbSync = require('../dbSync.js');
 const i18n = require('../i18n.js');
 const mist = require('./include/mistAPI.js');
-const web3Admin = require('../web3Admin.js');
 
 require('./include/setBasePath')('interface');
-
-// add admin later
-setTimeout(() => {
-  web3Admin.extend(window.web3);
-}, 1000);
 
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');

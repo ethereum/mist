@@ -235,7 +235,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
   totalAmount: function() {
     var amount = EthTools.formatBalance(
-      this.value.toString(),
+      web3.utils.toBN(this.value),
       '0,0.00[0000000000000000]',
       'ether'
     );
@@ -258,14 +258,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   estimatedFee: function() {
     var gas = TemplateVar.get('estimatedGas');
     if (gas && this.gasPrice) {
-      const balance = new BigNumber(gas, 10).times(
-        new BigNumber(this.gasPrice, 10)
-      );
-      return EthTools.formatBalance(
-        balance.toString(),
-        '0,0.0[0000000] unit',
-        'ether'
-      );
+      const balance = web3.utils.toBN(gas).mul(web3.utils.toBN(this.gasPrice));
+      return EthTools.formatBalance(balance, '0,0.0[0000000] unit', 'ether');
     }
   },
   /**
@@ -276,14 +270,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   providedGas: function() {
     var gas = TemplateVar.get('providedGas');
     if (gas && this.gasPrice) {
-      const balance = new BigNumber(gas, 10).times(
-        new BigNumber(this.gasPrice, 10)
-      );
-      return EthTools.formatBalance(
-        balance.toString(),
-        '0,0.0[0000000]',
-        'ether'
-      );
+      const balance = web3.utils.toBN(gas).mul(web3.utils.toBN(this.gasPrice));
+      return EthTools.formatBalance(balance, '0,0.0[0000000]', 'ether');
     }
   },
   /**

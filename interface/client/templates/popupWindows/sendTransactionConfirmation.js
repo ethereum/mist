@@ -374,7 +374,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     var data = Session.get('data'),
       pw = template.find('input[type="password"]').value,
-      gas = web3.fromDecimal(TemplateVar.get('providedGas'));
+      gas = web3.utils.numberToHex(TemplateVar.get('providedGas'));
 
     // check if account is about to send to itself
     if (data.to && data.from === data.to.toLowerCase()) {
@@ -455,7 +455,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     }
 
     // send transaction!
-    web3.eth.sendRawTransaction(signedTx, (error, hash) => {
+    web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
       if (error) {
         console.error(`Error from sendRawTransaction: ${error}`);
         if (error.message.includes('Unable to connect to socket: timeout')) {

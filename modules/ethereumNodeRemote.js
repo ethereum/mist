@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 import logger from './utils/logger';
 const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
 const Sockets = require('./socketManager');
-const Web3 = require('web3-1.0');
+const Web3 = require('web3');
 const Settings = require('./settings');
 import { resetRemoteNode } from './core/nodes/actions';
 import { InfuraEndpoints } from './constants';

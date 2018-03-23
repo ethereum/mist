@@ -124,7 +124,7 @@ Template['popupWindows_importAccount'].events({
           TemplateVar.setTo(
             '.onboarding-account',
             'newAccount',
-            web3.toChecksumAddress(address)
+            web3.utils.toChecksumAddress(address)
           );
           TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
 

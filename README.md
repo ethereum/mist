@@ -69,7 +69,7 @@ Install the latter ones via:
 ```bash
 $ curl https://install.meteor.com/ | sh
 $ curl -o- -L https://yarnpkg.com/install.sh | bash
-$ yarn global add electron@1.7.11
+$ yarn global add electron@1.8.4
 $ yarn global add gulp
 ```
 

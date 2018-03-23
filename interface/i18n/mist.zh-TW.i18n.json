@@ -156,14 +156,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "輸入主密碼",
-                "enterPassword": "輸入主密碼",
-                "unlocking": "正在解鎖……",
-                "errors": {
-                    "wrongPassword": "密碼錯誤，請重試。"
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "發送交易",

@@ -196,14 +196,6 @@
                     "passwordTooShort": "Utilitza una contrasenya més llarga"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Introdueix una contrasenya mestra",
-                "enterPassword": "Introdueix contrasenya mestra",
-                "unlocking": "Desbloquejant...",
-                "errors": {
-                    "wrongPassword": "La contrasenya és incorrecta. Torna-ho a provar."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Enviar transacció",

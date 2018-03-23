@@ -190,7 +190,7 @@
                 "enterPassword": "Introdueix una contrasenya",
                 "repeatPassword": "Repeteix la contrasenya",
                 "creating": "Generant el compte...",
-                "backupHint": "Assegura't que fas una còpia de seguretat dels teus fitxer de claus I contrasenya!\n\nPots trobar el teu fitxer de claus mitjançant el menú principal -> Comptes -> Copia de seguretat -> Comptes. Desa una copia de la carpeta del \"fitxer de claus\" on no puguis perdre-la!",
+                "backupHint": "Assegura't que fas una còpia de seguretat dels teus fitxer de claus I contrasenya!\n\nPots trobar el teu fitxer de claus mitjançant el menú principal -> Fitxer -> Copia de seguretat -> Comptes. Desa una copia de la carpeta del \"fitxer de claus\" on no puguis perdre-la!",
                 "errors": {
                     "passwordMismatch": "Les teves contrasenyes no coincideixen.",
                     "passwordTooShort": "Utilitza una contrasenya més llarga"

@@ -13,7 +13,7 @@
                 "quit": "Dil nga __app__"
             },
             "file": {
-                "label": "Llogari",
+                "label": "Skedari",
                 "importPresale": "Merr llogari",
                 "newAccount": "Llogari e re",
                 "backup": "Ruaj kopje rezervë",
@@ -170,7 +170,7 @@
                 "enterPassword": "Fusni fjalëkalimin",
                 "repeatPassword": "Përsërisni fjalëkalimin",
                 "creating": "Duke krijuar llogari...",
-                "backupHint": "Sigurohuni të ruani edhe fjalëkalimin, edhe skedarët çelës!\n\nMund t'i gjeni këta skedarë duke përdorur menunë kryesore -> Llogaritë -> Ruaj kopje rezervë -> Llogaritë. Ruani një kopje të dosjes \"keystore\" në një vend të sigurt!",
+                "backupHint": "Sigurohuni të ruani edhe fjalëkalimin, edhe skedarët çelës!\n\nMund t'i gjeni këta skedarë duke përdorur menunë kryesore -> Skedari -> Ruaj kopje rezervë -> Llogaritë. Ruani një kopje të dosjes \"keystore\" në një vend të sigurt!",
                 "errors": {
                     "passwordMismatch": "Fjalëkalimet nuk përputhen.",
                     "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"

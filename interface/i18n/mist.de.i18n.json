@@ -27,7 +27,7 @@
                 "default": "Standard"
             },
             "file": {
-                "label": "Konten",
+                "label": "Datei",
                 "importPresale": "Konto importieren",
                 "newAccount": "Neues Konto",
                 "backup": "Sicherung",
@@ -151,6 +151,7 @@
                 "enterPassword": "Passwort eingeben",
                 "repeatPassword": "Passwort wiederholen",
                 "creating": "Konto wird angelegt...",
+                "backupHint": "Bitte stelle sicher dass du von allen Schlüsseldateien Sicherungen erstellst. Unabhängig davon solltest du dich AUCH vergewissern dass du deine Passwörter nicht vergisst bzw. dass du diese sicher in einem Passwort-Manager abgespeichert hast!\n\nDie verschlüsselten Wallet-Dateien findest du im Hauptmenü -> Datei -> Sicherung -> Konten. Bewahre Kopien des \"keystore\"  Ordners an einem sicheren Ort auf!",
                 "errors": {
                     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
                     "passwordTooShort": "Wähle ein längeres Passwort..."

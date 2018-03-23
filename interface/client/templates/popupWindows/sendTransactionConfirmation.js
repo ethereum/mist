@@ -131,8 +131,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       setWindowSize(template);
 
       // set provided gas to templateVar
-      TemplateVar.set('providedGas', data.gas || 0);
-      TemplateVar.set('initialProvidedGas', data.gas || 0);
+      const gas = web3.utils.toBN(data.gas);
+      TemplateVar.set('providedGas', gas.toNumber() || 0);
+      TemplateVar.set('initialProvidedGas', gas.toNumber() || 0);
 
       // add gasPrice if not set
       if (!data.gasPrice) {
@@ -206,11 +207,12 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
               return TemplateVar.set(template, 'estimatedGas', 'invalid');
             }
 
-            TemplateVar.set(template, 'estimatedGas', res);
+            const estimatedGas = web3.utils.toBN(res);
+            TemplateVar.set(template, 'estimatedGas', estimatedGas.toNumber());
 
             if (!gas && res) {
-              TemplateVar.set(template, 'providedGas', res + 100000);
-              TemplateVar.set(template, 'initialProvidedGas', res + 100000);
+              TemplateVar.set(template, 'providedGas', estimatedGas.add(100000).toNumber());
+              TemplateVar.set(template, 'initialProvidedGas', estimatedGas.add(100000).toNumber());
             }
           });
         }
@@ -342,7 +344,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event click .not-enough-gas
     */
   'click .not-enough-gas': function() {
-    var gas = Number(TemplateVar.get('estimatedGas')) + 100000;
+    const gas = web3.utils.toBN(TemplateVar.get('estimatedGas')).add(100000).toNumber();
     TemplateVar.set('initialProvidedGas', gas);
     TemplateVar.set('providedGas', gas);
   },

@@ -182,7 +182,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         }
 
         TemplateVar.set(template, 'lastSyncData', {
-          peers: web3.net.peerCount
+          peers: peerCount
         });
       }
 

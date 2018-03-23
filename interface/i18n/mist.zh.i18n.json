@@ -156,14 +156,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "输入主密码",
-                "enterPassword": "输入主密码",
-                "unlocking": "正在解锁……",
-                "errors": {
-                    "wrongPassword": "密码错误，请重试。"
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "发送交易",

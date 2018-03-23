@@ -158,14 +158,6 @@
                 "checking": "Checking for updates to __name__...",
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
-            "unlockMasterPassword": {
-                "title": "Ввод мастер-пароля",
-                "enterPassword": "Введите мастер-пароль",
-                "unlocking": "Разблокировка...",
-                "errors": {
-                    "wrongPassword": "Неверный пароль, попробуйте еще раз."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Отправить транзакцию",

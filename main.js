@@ -286,14 +286,12 @@ async function kickStart() {
 
   store.dispatch(syncNodeDefaults());
 
-  if (Settings.enableLocalNodeOnStart) {
-    await ethereumNode.init();
+  await ethereumNode.init();
 
-    if (!ethereumNode.isIpcConnected) {
-      throw new Error(
-        "Either the node didn't start or IPC socket failed to connect."
-      );
-    }
+  if (!ethereumNode.isIpcConnected) {
+    throw new Error(
+      "Either the node didn't start or IPC socket failed to connect."
+    );
   }
 
   await ethereumNodeRemote.start();

@@ -235,7 +235,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
   totalAmount: function() {
     var amount = EthTools.formatBalance(
-      this.value,
+      this.value.toString(),
       '0,0.00[0000000000000000]',
       'ether'
     );
@@ -258,8 +258,11 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   estimatedFee: function() {
     var gas = TemplateVar.get('estimatedGas');
     if (gas && this.gasPrice) {
+      const balance = new BigNumber(gas, 10).times(
+        new BigNumber(this.gasPrice, 10)
+      );
       return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
+        balance.toString(),
         '0,0.0[0000000] unit',
         'ether'
       );
@@ -273,8 +276,11 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   providedGas: function() {
     var gas = TemplateVar.get('providedGas');
     if (gas && this.gasPrice) {
+      const balance = new BigNumber(gas, 10).times(
+        new BigNumber(this.gasPrice, 10)
+      );
       return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
+        balance.toString(),
         '0,0.0[0000000]',
         'ether'
       );
@@ -369,7 +375,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event submit form
     */
-  'submit form': function(e, template) {
+  'submit form': async function(e, template) {
     e.preventDefault();
 
     var data = Session.get('data'),
@@ -399,7 +405,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     TemplateVar.set('unlocking', true);
 
     // get nonce
-    const nonce = web3.eth.getTransactionCount(data.from);
+    const nonce = await web3.eth.getTransactionCount(data.from);
     const tx = Object.assign({}, data, {
       nonce: `0x${nonce.toString(16)}`
     });
@@ -407,10 +413,14 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     var signedTx;
 
     // sign transaction
-    web3.eth.personal.signTransaction(tx, pw || '', function(error, result) {
+    await web3.eth.personal.signTransaction(tx, pw || '', function(
+      error,
+      result
+    ) {
       pw = null;
-      TemplateVar.set('unlocking', false);
       if (error) {
+        TemplateVar.set(template, 'unlocking', false);
+        console.log(error);
         Tracker.afterFlush(function() {
           template.find('input[type="password"]').value = '';
           template.$('input[type="password"]').focus();
@@ -419,23 +429,23 @@ Template['popupWindows_sendTransactionConfirmation'].events({
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'
-              ),
+            ),
             duration: 5
           });
         } else if (
           error.message.includes('could not decrypt key with given passphrase')
-          ) {
+        ) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.wrongPassword'
-              ),
+            ),
             duration: 3
           });
         } else if (error.message.includes('multiple keys match address')) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'
-              ),
+            ),
             duration: 10
           });
         } else {
@@ -446,32 +456,34 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         }
         return;
       }
-      signedTx = result;
+      signedTx = result.raw;
     });
 
     if (!signedTx) {
       console.log('Error: no signedTx');
+      TemplateVar.set(template, 'unlocking', false);
       return;
     }
 
     // send transaction!
     web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
+      TemplateVar.set(template, 'unlocking', false);
       if (error) {
-        console.error(`Error from sendRawTransaction: ${error}`);
+        console.error(`Error from sendSignedTransaction: ${error}`);
         if (error.message.includes('Unable to connect to socket: timeout')) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'
-              ),
+            ),
             duration: 5
           });
         } else if (
           error.message.includes('Insufficient funds for gas * price + value')
-          ) {
+        ) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.insufficientFundsForGas'
-              ),
+            ),
             duration: 5
           });
         } else {

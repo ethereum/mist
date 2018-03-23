@@ -279,6 +279,7 @@ class EthereumNode extends EventEmitter {
    * Start an ethereum node.
    * @param  {String} nodeType geth, eth, etc
    * @param  {String} network  network id
+   * @param  {String} syncMode full, fast, light, nosync
    * @return {Promise}
    */
   _start(nodeType, network, syncMode) {
@@ -419,26 +420,32 @@ class EthereumNode extends EventEmitter {
         case 'test':
           args = [
             '--testnet',
-            '--syncmode',
-            syncMode,
             '--cache',
             process.arch === 'x64' ? '1024' : '512',
             '--ipcpath',
             Settings.rpcIpcPath
           ];
+          if (syncMode === 'nosync') {
+            args.push('--nodiscover',  '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
           break;
 
         // Starts Rinkeby network
         case 'rinkeby':
           args = [
             '--rinkeby',
-            '--syncmode',
-            syncMode,
             '--cache',
             process.arch === 'x64' ? '1024' : '512',
             '--ipcpath',
             Settings.rpcIpcPath
           ];
+          if (syncMode === 'nosync') {
+            args.push('--nodiscover',  '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
           break;
 
         // Starts local network
@@ -457,12 +464,15 @@ class EthereumNode extends EventEmitter {
           args =
             nodeType === 'geth'
               ? [
-                  '--syncmode',
-                  syncMode,
                   '--cache',
                   process.arch === 'x64' ? '1024' : '512'
                 ]
               : ['--unsafe-transactions'];
+          if (nodeType === 'geth' && syncMode === 'nosync') {
+            args.push('--nodiscover',  '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
       }
 
       const nodeOptions = Settings.nodeOptions;

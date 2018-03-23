@@ -224,20 +224,6 @@ class Settings {
     this.saveConfig('swarm.enableOnStart', bool);
   }
 
-  get enableLocalNodeOnStart() {
-    if (argv.node === 'remote-only') {
-      return false;
-    }
-
-    const enableLocalNodeOnStart = this.loadConfig('localNode.enableOnStart');
-
-    return enableLocalNodeOnStart;
-  }
-
-  set enableLocalNodeOnStart(bool) {
-    this.saveConfig('localNode.enableOnStart', bool);
-  }
-
   get skiptimesynccheck() {
     return argv.skiptimesynccheck;
   }
@@ -246,9 +232,6 @@ class Settings {
     global.config.insert({
       ui: {
         i18n: i18n.getBestMatchedLangCode(app.getLocale())
-      },
-      localNode: {
-        enableOnStart: argv.node !== 'remote-only'
       },
       swarm: {
         enableOnStart: argv.swarm
@@ -364,7 +347,7 @@ const argv = require('yargs')
     node: {
       demand: false,
       default: null,
-      describe: 'Node to use: geth, eth, remote-only',
+      describe: 'Node to use: geth, eth',
       requiresArg: true,
       nargs: 1,
       type: 'string',
@@ -450,7 +433,7 @@ const argv = require('yargs')
     syncmode: {
       demand: false,
       requiresArg: true,
-      describe: 'Geth synchronization mode: [fast|light|full]',
+      describe: 'Geth synchronization mode: [fast|light|full|nosync]',
       nargs: 1,
       type: 'string',
       group: 'Mist options:'

@@ -72,11 +72,11 @@
                 "startMining": "⛏ Start mining",
                 "stopMining": "⛏ Stop mining",
                 "enableSwarm": "Enable Swarm",
-                "remoteOnly": "Remote only",
                 "syncMode": "Sync mode",
                 "syncModeFull": "Full",
                 "syncModeFast": "Fast",
-                "syncModeLight": "Light (beta - experimental)"
+                "syncModeLight": "Light (beta - experimental)",
+                "syncModeNoSync": "No sync"
             },
             "window": {
                 "label": "Window",

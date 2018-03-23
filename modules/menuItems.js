@@ -51,8 +51,6 @@ const restartNode = function(newType, newNetwork, syncMode, webviews) {
 
   store.dispatch(changeNetwork(newNetwork));
 
-  Settings.enableLocalNodeOnStart = true;
-
   return ethereumNode
     .restart(newType, newNetwork, syncMode)
     .then(() => {
@@ -88,12 +86,6 @@ const changeNodeSyncMode = function(syncMode, webviews) {
   }
 
   createMenu(webviews);
-};
-
-const stopEthereumNode = async function(webviews) {
-  await ethereumNode.stop();
-  createMenu(webviews);
-  Settings.enableLocalNodeOnStart = false;
 };
 
 const startMining = webviews => {
@@ -559,17 +551,6 @@ let menuTempl = function(webviews) {
       });
     }
 
-    nodeSubmenu.push({
-      label: i18n.t('mist.applicationMenu.develop.remoteOnly'),
-      checked: ethereumNode.stateAsText === 'stopped',
-      enabled: ethereumNode.isOwnNode,
-      // enabled: false,
-      type: 'checkbox',
-      click() {
-        stopEthereumNode(webviews);
-      }
-    });
-
     devToolsMenu.push({
       label: i18n.t('mist.applicationMenu.develop.ethereumNode'),
       submenu: nodeSubmenu
@@ -657,6 +638,19 @@ let menuTempl = function(webviews) {
         type: 'checkbox',
         click() {
           changeNodeSyncMode('light', webviews);
+        }
+      },
+      {
+        label: i18n.t('mist.applicationMenu.develop.syncModeNoSync'),
+        enabled:
+          ethereumNode.isOwnNode &&
+          ethereumNode.stateAsText !== 'stopped' &&
+          ethereumNode.isGeth &&
+          !ethereumNode.isDevNetwork,
+        checked: store.getState().nodes.local.syncMode === 'nosync',
+        type: 'checkbox',
+        click() {
+          changeNodeSyncMode('nosync', webviews);
         }
       }
     ]

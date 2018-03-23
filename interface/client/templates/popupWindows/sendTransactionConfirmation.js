@@ -235,7 +235,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
   totalAmount: function() {
     var amount = EthTools.formatBalance(
-      this.value,
+      this.value.toString(),
       '0,0.00[0000000000000000]',
       'ether'
     );
@@ -258,8 +258,11 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   estimatedFee: function() {
     var gas = TemplateVar.get('estimatedGas');
     if (gas && this.gasPrice) {
+      const balance = new BigNumber(gas, 10).times(
+        new BigNumber(this.gasPrice, 10)
+      );
       return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
+        balance.toString(),
         '0,0.0[0000000] unit',
         'ether'
       );
@@ -273,8 +276,11 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   providedGas: function() {
     var gas = TemplateVar.get('providedGas');
     if (gas && this.gasPrice) {
+      const balance = new BigNumber(gas, 10).times(
+        new BigNumber(this.gasPrice, 10)
+      );
       return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
+        balance.toString(),
         '0,0.0[0000000]',
         'ether'
       );
@@ -369,12 +375,12 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event submit form
     */
-  'submit form': function(e, template) {
+  'submit form': async function(e, template) {
     e.preventDefault();
 
     var data = Session.get('data'),
       pw = template.find('input[type="password"]').value,
-      gas = web3.fromDecimal(TemplateVar.get('providedGas'));
+      gas = web3.utils.numberToHex(TemplateVar.get('providedGas'));
 
     // check if account is about to send to itself
     if (data.to && data.from === data.to.toLowerCase()) {
@@ -398,19 +404,28 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     TemplateVar.set('unlocking', true);
 
-    // unlock and send transaction!
-    web3.personal.sendTransaction(data, pw || '', function(e, res) {
-      pw = null;
-      TemplateVar.set(template, 'unlocking', false);
+    // get nonce
+    const nonce = await web3.eth.getTransactionCount(data.from);
+    const tx = Object.assign({}, data, {
+      nonce: `0x${nonce.toString(16)}`
+    });
 
-      if (!e && res) {
-        ipc.send('backendAction_unlockedAccountAndSentTransaction', null, res);
-      } else {
+    var signedTx;
+
+    // sign transaction
+    await web3.eth.personal.signTransaction(tx, pw || '', function(
+      error,
+      result
+    ) {
+      pw = null;
+      if (error) {
+        TemplateVar.set(template, 'unlocking', false);
+        console.log(error);
         Tracker.afterFlush(function() {
           template.find('input[type="password"]').value = '';
           template.$('input[type="password"]').focus();
         });
-        if (e.message.indexOf('Unable to connect to socket: timeout') !== -1) {
+        if (error.message.includes('Unable to connect to socket: timeout')) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'
@@ -418,8 +433,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             duration: 5
           });
         } else if (
-          e.message.indexOf('could not decrypt key with given passphrase') !==
-          -1
+          error.message.includes('could not decrypt key with given passphrase')
         ) {
           GlobalNotification.warning({
             content: TAPi18n.__(
@@ -427,15 +441,44 @@ Template['popupWindows_sendTransactionConfirmation'].events({
             ),
             duration: 3
           });
-        } else if (e.message.indexOf('multiple keys match address') !== -1) {
+        } else if (error.message.includes('multiple keys match address')) {
           GlobalNotification.warning({
             content: TAPi18n.__(
               'mist.popupWindows.sendTransactionConfirmation.errors.multipleKeysMatchAddress'
             ),
             duration: 10
           });
+        } else {
+          GlobalNotification.warning({
+            content: error.message || error,
+            duration: 5
+          });
+        }
+        return;
+      }
+      signedTx = result.raw;
+    });
+
+    if (!signedTx) {
+      console.log('Error: no signedTx');
+      TemplateVar.set(template, 'unlocking', false);
+      return;
+    }
+
+    // send transaction!
+    web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
+      TemplateVar.set(template, 'unlocking', false);
+      if (error) {
+        console.error(`Error from sendSignedTransaction: ${error}`);
+        if (error.message.includes('Unable to connect to socket: timeout')) {
+          GlobalNotification.warning({
+            content: TAPi18n.__(
+              'mist.popupWindows.sendTransactionConfirmation.errors.connectionTimeout'
+            ),
+            duration: 5
+          });
         } else if (
-          e.message.indexOf('Insufficient funds for gas * price + value') !== -1
+          error.message.includes('Insufficient funds for gas * price + value')
         ) {
           GlobalNotification.warning({
             content: TAPi18n.__(
@@ -445,11 +488,13 @@ Template['popupWindows_sendTransactionConfirmation'].events({
           });
         } else {
           GlobalNotification.warning({
-            content: e.message,
+            content: error.message || error,
             duration: 5
           });
         }
+        return;
       }
+      ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
     });
   },
 

@@ -156,14 +156,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Introduzca la contraseña maestra",
-                "enterPassword": "Introduzca la contraseña maestra",
-                "unlocking": "Desbloquenado...",
-                "errors": {
-                    "wrongPassword": "La contraseña es incorrecta, inténtelo de nuevo."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Enviar transacción",

@@ -156,14 +156,6 @@
                     "passwordTooShort": "もっと長いパスワードにしてください"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "マスターパスワードを入力する",
-                "enterPassword": "マスターパスワードを入力する",
-                "unlocking": "ロックを解除しています...",
-                "errors": {
-                    "wrongPassword": "パスワードが間違っています。再度トライして下さい"
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "トランザクションを送信する",

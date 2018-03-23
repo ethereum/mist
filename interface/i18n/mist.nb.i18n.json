@@ -156,14 +156,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Oppgi hovedpassordet",
-                "enterPassword": "Oppgi hovedpassordet",
-                "unlocking": "Låser opp...",
-                "errors": {
-                    "wrongPassword": "Passordet er feil, prøv igjen."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Send transaksjon",

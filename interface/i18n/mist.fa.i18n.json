@@ -168,14 +168,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Enter master password",
-                "enterPassword": "Enter master password",
-                "unlocking": "Unlocking...",
-                "errors": {
-                    "wrongPassword": "Password is wrong, try again."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Send transaction",

@@ -176,14 +176,6 @@
                     "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Fusni fjalëkalimin kryesor",
-                "enterPassword": "Fusni fjalëkalimin kryesor",
-                "unlocking": "Duke hapur...",
-                "errors": {
-                    "wrongPassword": "Fjalëkalimi është i gabuar. Provoni përsëri."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Dërgoni transaksionin",

@@ -116,7 +116,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
     }
   });
 
-  ipc.on('uiAction_nodeSyncStatus', function(e, status, data) {
+  ipc.on('uiAction_nodeSyncStatus', async function(e, status, data) {
     console.trace('Node sync status', status, data);
 
     TemplateVar.set(template, 'smallClass', 'small');
@@ -129,6 +129,11 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         TAPi18n.__('mist.startScreen.launchApp')
       );
 
+      var peerCount = 0;
+      await web3.eth.net.getPeerCount().then(function(number) {
+        peerCount = number;
+      })
+
       if (data !== false) {
         // if state is "in progress" and we have data
         showNodeLog = false;
@@ -138,7 +143,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         lastSyncData = _.extend(lastSyncData, data || {});
 
         // Select the appropriate message
-        if (web3.net.peerCount > 0) {
+        if (peerCount > 0) {
           // Check which state we are
           if (
             0 < lastSyncData._displayKnownStates &&
@@ -170,7 +175,7 @@ Template['popupWindows_splashScreen'].onCreated(function() {
         TemplateVar.set(template, 'lastSyncData', lastSyncData);
       } else {
         // It's not connected anymore
-        if (web3.net.peerCount > 1) {
+        if (peerCount > 1) {
           translationString = 'mist.startScreen.nodeSyncFoundPeers';
         } else {
           translationString = 'mist.startScreen.nodeSyncConnecting';

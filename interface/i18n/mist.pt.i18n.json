@@ -157,14 +157,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Coloque a chave-mestra",
-                "enterPassword": "Coloque a chave-mestra",
-                "unlocking": "Abrindo...",
-                "errors": {
-                    "wrongPassword": "Senha incorreta, tente novamente."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Enviar transação",

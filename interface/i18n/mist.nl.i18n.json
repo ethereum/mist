@@ -186,14 +186,6 @@
                     "passwordTooShort": "Kies een langer wachtwoord"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Voer hoofdwachtwoord in",
-                "enterPassword": "Voer hoofdwachtwoord in",
-                "unlocking": "Ontgrendelen...",
-                "errors": {
-                    "wrongPassword": "Wachtwoord is niet correct, probeer het nog eens."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Verzend transactie",

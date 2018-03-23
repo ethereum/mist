@@ -156,14 +156,6 @@
                     "passwordTooShort": "암호가 너무 짧습니다."
                 }
             },
-            "unlockMasterPassword": {
-                "title": "마스터 암호 입력",
-                "enterPassword": "마스터 암호를 넣으세요",
-                "unlocking": "잠금을 풀고 있는 중...",
-                "errors": {
-                    "wrongPassword": "암호가 틀렸습니다. 다시 해보세요."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "트랜잭션 보내기",

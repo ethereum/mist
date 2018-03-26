@@ -22,7 +22,7 @@ import {
   setLanguageOnMain,
   toggleSwarm
 } from './modules/core/settings/actions';
-import { syncNodeDefaults } from './modules/core/nodes/actions';
+import { syncNodeDefaults, setActiveNode } from './modules/core/nodes/actions';
 import { SwarmState } from './modules/core/settings/reducer';
 
 import swarmNode from './modules/swarmNode.js';
@@ -35,6 +35,10 @@ Q.config({
 global.store = configureReduxStore();
 
 Settings.init();
+
+store.subscribe(() => {
+  setActiveNode(store.getState());
+});
 
 const db = (global.db = require('./modules/db'));
 

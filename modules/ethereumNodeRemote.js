@@ -4,7 +4,7 @@ const ethereumNodeRemoteLog = logger.create('EthereumNodeRemote');
 const Sockets = require('./socketManager');
 const Web3 = require('web3');
 const Settings = require('./settings');
-import { resetRemoteNode } from './core/nodes/actions';
+import { resetRemoteNode, remoteBlockReceived } from './core/nodes/actions';
 import { InfuraEndpoints } from './constants';
 
 let instance;
@@ -93,13 +93,7 @@ class EthereumNodeRemote extends EventEmitter {
       })
       .on('data', blockHeader => {
         if (blockHeader.number) {
-          store.dispatch({
-            type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
-            payload: {
-              blockNumber: blockHeader.number,
-              timestamp: blockHeader.timestamp
-            }
-          });
+          store.dispatch(remoteBlockReceived(blockHeader));
         }
       });
   }

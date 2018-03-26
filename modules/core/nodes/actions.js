@@ -1,5 +1,6 @@
 import Settings from '../../settings';
 import ethereumNodeRemote from '../../ethereumNodeRemote';
+import { InfuraEndpoints } from '../../constants';
 
 export function syncNodeDefaults() {
   return dispatch => {
@@ -34,10 +35,61 @@ export function syncLocalNode(payload) {
   };
 }
 
+export function remoteBlockReceived(blockHeader) {
+  const { number, timestamp } = blockHeader;
+  return {
+    type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
+    payload: {
+      blockNumber: number,
+      timestamp: timestamp
+    }
+  };
+}
+
 export function resetLocalNode() {
   return { type: '[MAIN]:LOCAL_NODE:RESET' };
 }
 
 export function resetRemoteNode() {
   return { type: '[MAIN]:REMOTE_NODE:RESET' };
+}
+
+export function setActiveNode(state) {
+  return dispatch => {
+    // If local node is 15 or more blocks behind remote, ensure remote is active.
+    // Otherwise, local should be active.
+    const { active, network, local, remote } = state.nodes;
+
+    const supportedRemoteNetworks = Object.keys(
+      InfuraEndpoints.ethereum.websockets
+    )
+      .map(network => network.toLowerCase())
+      .push('nosync');
+
+    if (!supportedRemoteNetworks.includes(network)) {
+      if (active === 'remote') {
+        dispatch({
+          type: '[MAIN]:NODES:CHANGE_ACTIVE',
+          payload: { active: 'local' }
+        });
+      }
+      return;
+    }
+
+    if (active === 'remote') {
+      if (remote.blockNumber - local.currentBlock < 15) {
+        dispatch({
+          type: '[MAIN]:NODES:CHANGE_ACTIVE',
+          payload: { active: 'local' }
+        });
+      }
+    } else {
+      if (remote.blockNumber - local.currentBlock >= 15) {
+        dispatch({
+          type: '[MAIN]:NODES:CHANGE_ACTIVE',
+          payload: { active: 'remote' }
+        });
+      }
+    }
+  }
 }

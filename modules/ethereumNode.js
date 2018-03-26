@@ -4,12 +4,12 @@ const Q = require('bluebird');
 const spawn = require('child_process').spawn;
 const { dialog } = require('electron');
 const Windows = require('./windows.js');
-const Settings = require('./settings');
 const logRotate = require('log-rotate');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
+import Settings from './settings';
 import { resetLocalNode } from './core/nodes/actions';
 
 import logger from './utils/logger';

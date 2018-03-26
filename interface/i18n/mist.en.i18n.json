@@ -75,7 +75,7 @@
                 "syncMode": "Sync mode",
                 "syncModeFull": "Full",
                 "syncModeFast": "Fast",
-                "syncModeLight": "Light (beta - experimental)",
+                "syncModeLight": "Light",
                 "syncModeNoSync": "No sync"
             },
             "window": {

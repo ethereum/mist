@@ -172,7 +172,7 @@ async function onReady() {
   enableSwarmProtocol();
 
   if (!Settings.inAutoTestMode) {
-    await UpdateChecker.run();
+    UpdateChecker.run();
   }
 
   ipcProviderBackend.init();
@@ -303,7 +303,9 @@ function kickStart() {
 
   // await handleOnboarding();
 
-  // if (!Settings.inAutoTestMode) { store.dispatch(handleNodeSync()); }
+  if (!Settings.inAutoTestMode) {
+    store.dispatch(handleNodeSync());
+  }
 
   startMainWindow();
 }

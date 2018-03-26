@@ -62,8 +62,8 @@ module.exports = class BaseProcessor {
     if (this._shouldSendToRemote(payload, conn)) {
       return await this._sendToRemote(payload);
     } else {
-      const result = conn.socket.send(payload, { fullResult: true });
-      return await result.result;
+      const result = await conn.socket.send(payload, { fullResult: true });
+      return result.result;
     }
   }
 
@@ -85,7 +85,7 @@ module.exports = class BaseProcessor {
     if (conn && conn.owner && conn.owner.history) {
       if (
         method === 'eth_syncing' &&
-        conn.owner.history[0] === 'http://localhost:3000/'
+        conn.owner.history[0].startsWith('http://localhost:3000')
       ) {
         return false;
       }
@@ -96,22 +96,19 @@ module.exports = class BaseProcessor {
 
   _sendToRemote(payload) {
     return new Promise((resolve, reject) => {
-      console.log(
-        'ethereumNodeRemote - send ',
-        payload.method,
-        payload.id
-      );
+      console.log('ethereumNodeRemote - send ', payload.method, payload.id);
       ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
         if (error) {
+          if (String(error).includes('connection not open')) {
+            // Try restarting connection and sending again
+            ethereumNodeRemote.start();
+            this._sendToRemote(payload);
+          }
           log.error(`Error: ${error}`);
           reject(error);
           return;
         }
-        console.log(
-          'ethereumNodeRemote - result ',
-          payload.method,
-          payload.id
-        );
+        console.log('ethereumNodeRemote - result ', payload.method, payload.id);
         resolve(result);
       });
     });

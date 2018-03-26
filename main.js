@@ -18,7 +18,6 @@ import configureReduxStore from './modules/core/store';
 
 import { quitApp } from './modules/core/ui/actions';
 import {
-  handleNodeSync,
   setLanguageOnMain,
   toggleSwarm
 } from './modules/core/settings/actions';
@@ -302,10 +301,6 @@ function kickStart() {
   appMenu();
 
   // await handleOnboarding();
-
-  if (!Settings.inAutoTestMode) {
-    store.dispatch(handleNodeSync());
-  }
 
   startMainWindow();
 }

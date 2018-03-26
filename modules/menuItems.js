@@ -587,17 +587,17 @@ let menuTempl = function(webviews) {
         click() {
           changeNodeNetwork('rinkeby', webviews);
         }
-      },
-      {
-        label: 'Solo network',
-        accelerator: 'CommandOrControl+Alt+4',
-        checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
-        enabled: ethereumNode.isOwnNode,
-        type: 'checkbox',
-        click() {
-          restartNode(ethereumNode.type, 'dev');
-        }
       }
+      // {
+      //   label: 'Solo network',
+      //   accelerator: 'CommandOrControl+Alt+4',
+      //   checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
+      //   enabled: ethereumNode.isOwnNode,
+      //   type: 'checkbox',
+      //   click() {
+      //     restartNode(ethereumNode.type, 'dev');
+      //   }
+      // }
     ]
   });
 

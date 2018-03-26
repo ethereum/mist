@@ -72,13 +72,18 @@ Template['elements_nodeInfo'].onCreated(function() {
   var template = this;
 
   // CHECK FOR NETWORK
-  web3.eth.getBlock(0, function(e, res) {
-    if (!e) {
-      const network = Helpers.detectNetwork(res.hash);
+  this.checkNetwork = function() {
+    web3.eth.getBlock(0).then(block => {
+      const network = Helpers.detectNetwork(block.hash);
+      console.log('DETECT', block.hash)
+      console.log(network);
       TemplateVar.set(template, 'network', network.type);
       TemplateVar.set(template, 'networkName', network.name);
-    }
-  });
+    }).catch(error => {
+      this.checkNetwork();
+    });
+  }
+  this.checkNetwork();
 
   // CHECK SYNCING
   this.checkSync = function() {

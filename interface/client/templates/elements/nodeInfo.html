@@ -1,5 +1,11 @@
 <template name="elements_nodeInfo">
     <div class="node-info">
+        {{#if TemplateVar.get "remote"}}
+            <div class="remote-indicator" title="{{i18n 'mist.nodeInfo.remote'}}">
+                <span class="simptip-position-top simptip-movable">Remote</span>
+            </div>
+        {{/if}}
+
         {{#if TemplateVar.get "mining"}}
             <span data-tooltip="Mining" class="mining-indicator simptip-position-top simptip-movable">⛏ {{TemplateVar.get "mining"}}&nbsp;KH/s</span>
         {{/if}}
@@ -16,31 +22,19 @@
             </div>
             <progress max="100" value="{{progress}}"></progress>
         {{else}}
-            {{#if TemplateVar.get "remote"}}
-                <div class='local-sync-status' title="Local node sync status">
-                    Starting local sync
-                </div>
-            {{else}}
-                <div class='block-number'  title="{{i18n 'mist.nodeInfo.blockNumber'}}">
-                    <i class="icon-layers"></i> {{formattedBlockNumber}}
-                </div>
-                <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
-                    <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
-                </div>
-                <div title="{{i18n 'mist.nodeInfo.timeSinceBlock'}}">
-                    <i class="icon-clock"></i> {{{timeSinceBlock}}}
-                </div>
-            {{/if}}
+            <div class='block-number' title="{{i18n 'mist.nodeInfo.blockNumber'}}">
+                <i class="icon-layers"></i> {{formattedBlockNumber}}
+            </div>
+            <div title="{{TemplateVar.get 'peerCount'}} {{i18n 'mist.nodeInfo.peers'}}">
+                <i class="icon-users"></i> {{TemplateVar.get "peerCount"}}
+            </div>
+            <div title="{{i18n 'mist.nodeInfo.timeSinceBlock'}}">
+                <i class="icon-clock"></i> {{{timeSinceBlock}}}
+            </div>
         {{/with}}
 
         {{#if $neq (TemplateVar.get "network") "mainnet"}}
-          <span class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{TemplateVar.get "networkName"}}</span>
-        {{/if}}
-
-        {{#if TemplateVar.get "remote"}}
-            <div title="{{i18n 'mist.nodeInfo.remote'}}">
-                <span class="remote-indicator simptip-position-top simptip-movable">Remote</span>
-            </div>
+          <div class="test-chain danger" title="{{i18n 'mist.nodeInfo.testnetExplain' name=(TemplateVar.get 'networkName')}}">{{TemplateVar.get "networkName"}}</div>
         {{/if}}
     </div>
 </template>

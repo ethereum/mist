@@ -281,24 +281,18 @@ function checkTimeSync() {
   }
 }
 
-async function kickStart() {
+function kickStart() {
   initializeKickStartListeners();
 
   checkForLegacyChain();
 
-  await ClientBinaryManager.init();
+  ClientBinaryManager.init();
 
   store.dispatch(syncNodeDefaults());
 
-  await ethereumNode.init();
+  ethereumNode.init();
 
-  if (!ethereumNode.isIpcConnected) {
-    throw new Error(
-      "Either the node didn't start or IPC socket failed to connect."
-    );
-  }
-
-  await ethereumNodeRemote.start();
+  ethereumNodeRemote.start();
 
   if (Settings.enableSwarmOnStart) {
     store.dispatch(toggleSwarm());
@@ -311,7 +305,7 @@ async function kickStart() {
 
   // if (!Settings.inAutoTestMode) { store.dispatch(handleNodeSync()); }
 
-  await startMainWindow();
+  startMainWindow();
 }
 
 function checkForLegacyChain() {

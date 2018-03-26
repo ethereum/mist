@@ -606,13 +606,16 @@ let menuTempl = function(webviews) {
     label: i18n.t('mist.applicationMenu.develop.syncMode'),
     submenu: [
       {
-        label: i18n.t('mist.applicationMenu.develop.syncModeFull'),
+        label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
         enabled:
-          ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped',
-        checked: store.getState().nodes.local.syncMode === 'full',
+        ethereumNode.isOwnNode &&
+        ethereumNode.stateAsText !== 'stopped' &&
+        ethereumNode.isGeth &&
+        !ethereumNode.isDevNetwork,
+        checked: store.getState().nodes.local.syncMode === 'light',
         type: 'checkbox',
         click() {
-          changeNodeSyncMode('full', webviews);
+          changeNodeSyncMode('light', webviews);
         }
       },
       {
@@ -628,16 +631,13 @@ let menuTempl = function(webviews) {
         }
       },
       {
-        label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
+        label: i18n.t('mist.applicationMenu.develop.syncModeFull'),
         enabled:
-          ethereumNode.isOwnNode &&
-          ethereumNode.stateAsText !== 'stopped' &&
-          ethereumNode.isGeth &&
-          !ethereumNode.isDevNetwork,
-        checked: store.getState().nodes.local.syncMode === 'light',
+          ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped',
+        checked: store.getState().nodes.local.syncMode === 'full',
         type: 'checkbox',
         click() {
-          changeNodeSyncMode('light', webviews);
+          changeNodeSyncMode('full', webviews);
         }
       },
       {

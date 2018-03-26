@@ -1,4 +1,3 @@
-import throttle from 'lodash/throttle';
 const _ = require('../../utils/underscore.js');
 const Q = require('bluebird');
 
@@ -19,18 +18,6 @@ module.exports = class BaseProcessor {
     this.ERRORS = this._ipcProviderBackend.ERRORS;
 
     this.remoteIgnoreMethods = ['net_peerCount', 'eth_mining', 'eth_accounts'];
-
-    this.throttleTimeout = {
-      eth_getFilterChanges: 5000,
-      eth_getStorageAt: 5000,
-      eth_syncing: 2000
-    };
-
-    this.lastThrottleBypass = {
-      eth_getStorageAt: 1,
-      eth_getFilterChanges: 1,
-      eth_syncing: 1
-    };
   }
 
   /**
@@ -56,7 +43,7 @@ module.exports = class BaseProcessor {
   }
 
   _handleObjectExec(payload, conn) {
-    return this._throttle(payload, conn);
+    return this._sendPayload(payload, conn);
   }
 
   _handleArrayExec(payload, conn) {
@@ -69,27 +56,6 @@ module.exports = class BaseProcessor {
     return new Promise(async resolve => {
       resolve(await Promise.all(result));
     });
-  }
-
-  _throttle(payload, conn) {
-    if (this.lastThrottleBypass[payload.method]) {
-      if (
-        Date.now() - this.lastThrottleBypass[payload.method] >
-        this.throttleTimeout[payload.method]
-      ) {
-        // Bypass
-        this.lastThrottleBypass[payload.method] = Date.now();
-      } else {
-        // Throttle
-        console.log('throttling', payload.method, payload.id);
-        return {
-          jsonrpc: '2.0',
-          id: payload.id
-        };
-      }
-    }
-
-    return this._sendPayload(payload, conn);
   }
 
   async _sendPayload(payload, conn) {
@@ -121,7 +87,6 @@ module.exports = class BaseProcessor {
         method === 'eth_syncing' &&
         conn.owner.history[0] === 'http://localhost:3000/'
       ) {
-        console.log('∆∆∆ local node sync call');
         return false;
       }
     }
@@ -131,6 +96,11 @@ module.exports = class BaseProcessor {
 
   _sendToRemote(payload) {
     return new Promise((resolve, reject) => {
+      console.log(
+        'ethereumNodeRemote - send ',
+        payload.method,
+        payload.id
+      );
       ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
         if (error) {
           log.error(`Error: ${error}`);
@@ -138,7 +108,7 @@ module.exports = class BaseProcessor {
           return;
         }
         console.log(
-          'result from ethereumNodeRemote',
+          'ethereumNodeRemote - result ',
           payload.method,
           payload.id
         );

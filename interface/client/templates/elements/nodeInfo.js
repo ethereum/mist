@@ -75,8 +75,6 @@ Template['elements_nodeInfo'].onCreated(function() {
   this.checkNetwork = function() {
     web3.eth.getBlock(0).then(block => {
       const network = Helpers.detectNetwork(block.hash);
-      console.log('DETECT', block.hash)
-      console.log(network);
       TemplateVar.set(template, 'network', network.type);
       TemplateVar.set(template, 'networkName', network.name);
     }).catch(error => {

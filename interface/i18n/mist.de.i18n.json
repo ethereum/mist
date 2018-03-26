@@ -156,14 +156,6 @@
                     "passwordTooShort": "Wähle ein längeres Passwort..."
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Master-Passwort eingeben",
-                "enterPassword": "Gib das Master-Passwort ein",
-                "unlocking": "Entschlüsseln...",
-                "errors": {
-                    "wrongPassword": "Passwort falsch, bitte nochmals versuchen."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Transaktion senden",

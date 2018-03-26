@@ -156,14 +156,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "Entrer le mot de passe principal",
-                "enterPassword": "Entrer le mot de passe principal",
-                "unlocking": "Déverouillage...",
-                "errors": {
-                    "wrongPassword": "Mauvais mot de passe, veuillez réessayer."
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "Envoyer la transaction",

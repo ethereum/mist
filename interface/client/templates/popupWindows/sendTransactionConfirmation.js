@@ -131,8 +131,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       setWindowSize(template);
 
       // set provided gas to templateVar
-      TemplateVar.set('providedGas', data.gas || 0);
-      TemplateVar.set('initialProvidedGas', data.gas || 0);
+      const gas = web3.utils.toBN(data.gas);
+      TemplateVar.set('providedGas', gas.toNumber() || 0);
+      TemplateVar.set('initialProvidedGas', gas.toNumber() || 0);
 
       // add gasPrice if not set
       if (!data.gasPrice) {
@@ -206,11 +207,12 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
               return TemplateVar.set(template, 'estimatedGas', 'invalid');
             }
 
-            TemplateVar.set(template, 'estimatedGas', res);
+            const estimatedGas = web3.utils.toBN(res);
+            TemplateVar.set(template, 'estimatedGas', estimatedGas.toNumber());
 
             if (!gas && res) {
-              TemplateVar.set(template, 'providedGas', res + 100000);
-              TemplateVar.set(template, 'initialProvidedGas', res + 100000);
+              TemplateVar.set(template, 'providedGas', estimatedGas.add(100000).toNumber());
+              TemplateVar.set(template, 'initialProvidedGas', estimatedGas.add(100000).toNumber());
             }
           });
         }
@@ -235,7 +237,7 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
     */
   totalAmount: function() {
     var amount = EthTools.formatBalance(
-      this.value,
+      web3.utils.toBN(this.value),
       '0,0.00[0000000000000000]',
       'ether'
     );
@@ -258,11 +260,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   estimatedFee: function() {
     var gas = TemplateVar.get('estimatedGas');
     if (gas && this.gasPrice) {
-      return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
-        '0,0.0[0000000] unit',
-        'ether'
-      );
+      const balance = web3.utils.toBN(gas).mul(web3.utils.toBN(this.gasPrice));
+      return EthTools.formatBalance(balance, '0,0.0[0000000] unit', 'ether');
     }
   },
   /**
@@ -273,11 +272,8 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   providedGas: function() {
     var gas = TemplateVar.get('providedGas');
     if (gas && this.gasPrice) {
-      return EthTools.formatBalance(
-        new BigNumber(gas, 10).times(new BigNumber(this.gasPrice, 10)),
-        '0,0.0[0000000]',
-        'ether'
-      );
+      const balance = web3.utils.toBN(gas).mul(web3.utils.toBN(this.gasPrice));
+      return EthTools.formatBalance(balance, '0,0.0[0000000]', 'ether');
     }
   },
   /**
@@ -348,7 +344,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event click .not-enough-gas
     */
   'click .not-enough-gas': function() {
-    var gas = Number(TemplateVar.get('estimatedGas')) + 100000;
+    const gas = web3.utils.toBN(TemplateVar.get('estimatedGas')).add(100000).toNumber();
     TemplateVar.set('initialProvidedGas', gas);
     TemplateVar.set('providedGas', gas);
   },
@@ -369,7 +365,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
 
     @event submit form
     */
-  'submit form': function(e, template) {
+  'submit form': async function(e, template) {
     e.preventDefault();
 
     var data = Session.get('data'),
@@ -399,7 +395,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     TemplateVar.set('unlocking', true);
 
     // get nonce
-    const nonce = web3.eth.getTransactionCount(data.from);
+    const nonce = await web3.eth.getTransactionCount(data.from);
     const tx = Object.assign({}, data, {
       nonce: `0x${nonce.toString(16)}`
     });
@@ -407,10 +403,14 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     var signedTx;
 
     // sign transaction
-    web3.eth.personal.signTransaction(tx, pw || '', function(error, result) {
+    await web3.eth.personal.signTransaction(tx, pw || '', function(
+      error,
+      result
+    ) {
       pw = null;
-      TemplateVar.set('unlocking', false);
       if (error) {
+        TemplateVar.set(template, 'unlocking', false);
+        console.log(error);
         Tracker.afterFlush(function() {
           template.find('input[type="password"]').value = '';
           template.$('input[type="password"]').focus();
@@ -446,18 +446,20 @@ Template['popupWindows_sendTransactionConfirmation'].events({
         }
         return;
       }
-      signedTx = result;
+      signedTx = result.raw;
     });
 
     if (!signedTx) {
       console.log('Error: no signedTx');
+      TemplateVar.set(template, 'unlocking', false);
       return;
     }
 
     // send transaction!
     web3.eth.sendSignedTransaction(signedTx, (error, hash) => {
+      TemplateVar.set(template, 'unlocking', false);
       if (error) {
-        console.error(`Error from sendRawTransaction: ${error}`);
+        console.error(`Error from sendSignedTransaction: ${error}`);
         if (error.message.includes('Unable to connect to socket: timeout')) {
           GlobalNotification.warning({
             content: TAPi18n.__(

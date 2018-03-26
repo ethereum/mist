@@ -60,7 +60,7 @@ Template['popupWindows_requestAccount'].events({
       });
     } else if (pw && pw.length >= 8) {
       TemplateVar.set('creating', true);
-      web3.personal.newAccount(pwRepeat, function(e, res) {
+      web3.eth.personal.newAccount(pwRepeat, function(e, res) {
         if (!e) {
           ipc.send('backendAction_windowMessageToOwner', null, res);
         } else {

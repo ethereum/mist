@@ -133,7 +133,7 @@
             "privatenetExplain": "You are on a private net. DO NOT SEND any real ether to these addresses",
             "unknownnetExplain": "Unable to determine which network you are on",
             "peers": "peers",
-            "remote": "Connected to remote node. Switches to local node when sync is fewer than 50 blocks behind."
+            "remote": "Connected to remote node. Switches to local node when sync is fewer than 15 blocks behind."
         },
         "sidebar": {
             "buttons": {

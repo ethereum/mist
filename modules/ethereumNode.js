@@ -160,6 +160,7 @@ class EthereumNode extends EventEmitter {
         this.state = STATES.CONNECTED;
         store.dispatch({ type: '[MAIN]:LOCAL_NODE:CONNECTED' });
         this.emit('runningNodeFound');
+        return null;
       })
       .catch(() => {
         this.isExternalNode = false;

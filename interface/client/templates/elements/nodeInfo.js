@@ -12,7 +12,7 @@ Update the peercount
 var getPeerCount = function(template) {
   web3.eth.net.getPeerCount(function(error, result) {
     if (!error) {
-      TemplateVar.set(template, 'peerCount', res);
+      TemplateVar.set(template, 'peerCount', result);
     }
   });
 };

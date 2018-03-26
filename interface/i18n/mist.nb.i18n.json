@@ -32,10 +32,10 @@
                 "newAccount": "Ny konto",
                 "backup": "Sikkerhetskopier",
                 "backupKeyStore": "Kontoer",
-                "backupMist": "Applikasjonsdata"
+                "backupMist": "Applikasjonsdata",
+                "swarmUpload": "Opplasting til Swarm"
             },
             "develop": {
-                "uploadToSwarm": "Opplasting til Swarm",
                 "label": "Utvikle",
                 "devTools": "Veksle Mellom Utviklerverktøy",
                 "devToolsMistUI": "Mist UI",
@@ -48,11 +48,7 @@
                 "mainNetwork": "Hovednettverk",
                 "startMining": "⛏ Start Mining",
                 "stopMining": "⛏ Stopp Mining",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "openRemix": "Open Remix IDE"
             },
             "window": {
                 "label": "Vindu",
@@ -91,17 +87,12 @@
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blokker igjen",
-            "blockReceived": "Ny Blokk Mottatt",
+            "blockReceivedShort": "Ny Blokk",
             "blockNumber": "Det siste blokknummeret",
             "timeSinceBlock": "Tid siden siste blokk",
             "checkingWhichNetwork": "Kontrollerer nettverk...",
-            "mainNetwork": "Hovednett",
-            "testNetwork": "Testnett",
             "privateNetwork": "Privatnett",
-            "mainnetExplain": "Du er på det globale Ethereum hovednettverket",
             "testnetExplain": "Du er på testnettet, IKKE SEND noen ekte ether til disse adressene",
-            "privatenetExplain": "Du er på et privatnett, IKKE SEND noen ekte ether til disse adressene",
-            "unknownnetExplain": "Kan ikke fastslå hvilket nettverk du er på",
             "peers": "peers"
         },
         "sidebar": {
@@ -117,9 +108,6 @@
         },
         "startScreen": {
             "runningNodeFound": "Fant kjørende Ethereum-node!",
-            "startingNode": "Starter Ethereum-node...",
-            "stoppingNode": "Stopper Ethereum-node...",
-            "startedNode": "Starter applikasjonen...",
             "nodeConnectionTimeout": "Kunne ikke starte Ethereum-node!<br><small>Hvis du <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>installerte Geth</a>, bruk denne kommandoen for å kjøre det: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Eller rapporter et problem </a></small>",
             "nodeBinaryNotFound": "Ingen Ethereum-node kilde funnet!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Vennligst start en manuelt først. </a> </small>",
             "nodeStarting": "Ethereum-node starter opp...",
@@ -132,7 +120,6 @@
             "nodeSyncing": "Ethereum-node trenger å synkroniseres, vennligst vent...",
             "nodeSyncInfo": "Laster ned blokk __currentBlock__ av __highestBlock__.",
             "nodeSyncConnecting": "Leter etter peers...",
-            "peerSearchTimeout": "Hopp over peer søk",
             "launchApp": "Start Applikasjonen",
             "nodeSyncInfoStates": "Downloading block __displayBlock__ of __highestBlock__, <br> Downloading chain structure __displayState__ of __displayKnownStates__",
             "nodeSyncFoundPeers": "Connecting to __peers__ peers...",
@@ -193,51 +180,19 @@
                 "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
-            "onboarding": {
-                "description": "Ethereum er en desentralisert plattform for å bygge applikasjoner på en blokkjede: sabotasjesikker programvare som kan overføre verdi og eiendom, og som lever evig",
-                "goToTestnet": "Bruk testnettet (Rinkeby)",
-                "goToTestnetDescription": "Test teknologien fritt i en sandboks (testnett), uten å bruke ekte ether.",
-                "gotoMainnet": "Bruk hovednettverket",
-                "gotoMainnetDescription": " Du trenger noen ether for å skape og utføre kontrakter. Ikke bekymre deg, vi vil hjelpe deg å skaffe noen...",
+            "importAccount": {
                 "doYouHaveAWalletFile": "Har du en lommebok-fil?",
                 "walletFileDescription": "<p>Hvis du har deltatt på forhåndssalget av Ethereum i 2014, har du en fil med navnet <code>ethereum_wallet_backup.json</code>. Den ble lastet ned etter salget, og også sendt til din e-post</p>",
                 "dropFilesHere": "Slipp filen fra forhåndssalget",
-                "creating": "Lager...",
                 "importing": "Importerer...",
-                "skip": "Hopp over dette steget",
-                "next": "Neste",
-                "protectTitle": "Beskytt kontoen din",
-                "protectDescription": "Velg et passord for den nye kontoen. Gjør det så sterkt som om det skulle beskyttet husnøklene dine!",
-                "accountTitle": "Fyll den opp!",
-                "accountTitleTestnet": "Mine noen!",
-                "etherDescription": "Ethereum-nettverket er basert på en enhet kalt \"ether\". Du trenger en liten mengde av den for å gjøre noe på Ethereum-nettverket.",
-                "loadItDescription": "Hvis du allerede eier bitcoin, eller hvilken som helst annen kryptovaluta, kan du enkelt konvertere den til ether via changelly. <br><br> Vi anbefaler å fylle opp med mellom <strong>0.25 til 1 ether</strong>.",
-                "mineItDescription": "<strong>På testnettet kan du mine ether selv ved å gå til <em>Utvikle</em> menyvalget og velge <em>Start Mining</em>. </strong> <br> <strong> IKKE PRØV Å SENDE EKTE ETHER TIL DENNE ADRESSEN </strong>",
-                "you": "DU",
-                "etherbase": "Hovedkonto (etherbase)",
-                "depositBitcoin": "Sett inn bitcoin",
-                "learnIt": "Lær mens du venter",
-                "downloadingBlocks": "Laster ned blokker",
-                "tutorial1Description": "<p> Nå er den eneste tingen igjen er å vente til nedlastingen er ferdig. Her er noen lesetips: </p> <h4>Lag dine egne penger </h4> <p> Lag en kryptovaluta med en fast pengemengde, enhet som representerer verdier i den virkelige verden, etc </p>",
-                "tutorial2Description": "<h4> Lag et crowdsale </h4> <p> Samle inn penger til et felles mål, på en sikker måte uten en tredjepart. Omgå hinder i det tradisjonelle finansieringssystemet, og gå direkte til kilden ved å finansiere en organisasjon via blokkjeden.</p>",
-                "tutorial3Description": "<h4> Organisasjon på Blokkjeden </h4> <p> Lag en autonom organisasjon med uknuselige regler om hvordan pengene kan bli brukt og hvem som kan ta beslutningene. La dine støttespillere ta en aktiv rolle i hvordan pengene blir brukt</p>",
                 "buttons": {
-                    "showPassword": "Vis passord",
-                    "importAccount": "Importer konto",
-                    "launchApp": "Start Applikasjonen!",
-                    "learnReceipt": "Lær denne oppskriften"
+                    "showPassword": "Vis passord"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Vent noen sekunder til noden er fullt i gang og prøv igjen",
                     "unknownFile": "Fil ikke gjenkjent.",
                     "wrongPassword": "Feil passord.",
                     "importFailed": "Kunne ikke importere filen, fikk: __error__"
-                },
-                "buyEther": "Buy Ether",
-                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
+                }
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",
@@ -247,7 +202,6 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Download new version",
                 "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
                 "checking": "Checking for updates to __name__...",
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },

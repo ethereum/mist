@@ -81,32 +81,35 @@ Template['elements_nodeInfo'].onCreated(function() {
   });
 
   // CHECK SYNCING
-  this.syncFilter = web3.eth.isSyncing(function(error, syncing) {
-    if (error) {
-      console.log(`Node isSyncing error: ${error}`);
-      return;
-    }
+  this.checkSync = function() {
+    web3.eth.isSyncing(function(error, syncing) {
+      console.log('isSyncing: ', syncing);
 
-    if (syncing === true) {
-      console.log('Node started syncing, stopping app operation');
-      web3.reset(true);
-    } else if (_.isObject(syncing)) {
-      syncing.progress = Math.floor(
-        (syncing.currentBlock - syncing.startingBlock) /
-          (syncing.highestBlock - syncing.startingBlock) *
-          100
-      );
-      syncing.blockDiff = numeral(
-        syncing.highestBlock - syncing.currentBlock
-      ).format('0,0');
+      if (error) {
+        console.log(`Node isSyncing error: ${error}`);
+        return;
+      }
 
-      TemplateVar.set(template, 'syncing', syncing);
-    } else {
-      console.log('Restart app operation again');
+      if (syncing === true) {
+        console.log('Node started syncing');
+      } else if (_.isObject(syncing)) {
+        syncing.progress = Math.floor(
+          (syncing.currentBlock - syncing.startingBlock) /
+            (syncing.highestBlock - syncing.startingBlock) *
+            100
+        );
 
-      TemplateVar.set(template, 'syncing', false);
-    }
-  });
+        syncing.blockDiff = numeral(
+          syncing.highestBlock - syncing.currentBlock
+        ).format('0,0');
+
+        TemplateVar.set(template, 'syncing', syncing);
+      } else {
+        TemplateVar.set(template, 'syncing', false);
+      }
+    });
+  };
+  this.checkSyncInterval = setInterval(() => { this.checkSync(); }, 3000);
 
   // CHECK PEER COUNT
   this.peerCountIntervalId = null;
@@ -137,9 +140,7 @@ Template['elements_nodeInfo'].onCreated(function() {
 Template['elements_nodeInfo'].onDestroyed(function() {
   Meteor.clearInterval(this.peerCountIntervalId);
 
-  if (this.syncFilter) {
-    this.syncFilter.stopWatching();
-  }
+  Meteor.clearInterval(this.checkSyncInterval);
 
   if (this.storeUnsubscribe) {
     this.storeUnsubscribe();

@@ -5,6 +5,7 @@ The i18n module, loads the language files and initializes i18next
 */
 const fs = require('fs');
 const i18n = require('i18next');
+const extend = require('lodash/extend');
 
 let i18nConf = fs.readFileSync(`${__dirname}/../interface/project-tap.i18n`);
 i18nConf = JSON.parse(i18nConf);
@@ -15,9 +16,9 @@ const resources = {
 
 // add supported languages
 i18nConf.supported_languages.forEach(lang => {
-  resources[lang] = {
-    translation: require(`../interface/i18n/mist.${lang}.i18n.json`)
-  };
+  const mistTranslations = require(`../interface/i18n/mist.${lang}.i18n.json`);
+  const uiTranslations = require(`../interface/i18n/app.${lang}.i18n.json`);
+  resources[lang] = { translation: extend(mistTranslations, uiTranslations) };
 });
 
 /**

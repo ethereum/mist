@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/ethereum/mist#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.42"
+    "@babel/runtime": "^7.0.0-beta.42",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   }
 }

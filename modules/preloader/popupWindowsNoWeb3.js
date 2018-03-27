@@ -21,5 +21,7 @@ window.dirname = remote.getGlobal('dirname');
 window.dbSync = dbSync;
 window.ipc = ipcRenderer;
 
+window.i18n = require('../i18n.js');
+
 // Initialise the Redux store
 window.store = require('./rendererStore');

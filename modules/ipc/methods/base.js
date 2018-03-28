@@ -17,7 +17,12 @@ module.exports = class BaseProcessor {
     this._ipcProviderBackend = ipcProviderBackend;
     this.ERRORS = this._ipcProviderBackend.ERRORS;
 
-    this.remoteIgnoreMethods = ['net_peerCount', 'eth_mining', 'eth_accounts'];
+    this.remoteIgnoreMethods = [
+      'net_peerCount',
+      'eth_mining',
+      'eth_accounts',
+      'eth_subscribe'
+    ];
   }
 
   /**
@@ -81,11 +86,17 @@ module.exports = class BaseProcessor {
       return false;
     }
 
-    // 3. the method is 'eth_syncing' originating from the mist interface
-    if (conn && conn.owner && conn.owner.history) {
+    // 3. the method is 'eth_syncing' or 'eth_subscribe'('syncing')
+    // originating from the mist interface
+    if (
+      conn &&
+      conn.owner &&
+      conn.owner.history &&
+      conn.owner.history[0].startsWith('http://localhost:3000')
+    ) {
       if (
-        method === 'eth_syncing' &&
-        conn.owner.history[0].startsWith('http://localhost:3000')
+        method === 'eth_syncing' ||
+        (method === 'eth_subscribe' && payload.params[0] === 'syncing')
       ) {
         return false;
       }

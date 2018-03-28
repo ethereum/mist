@@ -45,7 +45,7 @@ Set TemplateVar 'remote' whether remote node is active
 
 @method watchRemote
 */
-var watchRemote = function(template) {
+var watchRemote = template => {
   const isRemote = store.getState().nodes.active === 'remote';
   TemplateVar.set(template, 'remote', isRemote);
 
@@ -62,6 +62,60 @@ var watchRemote = function(template) {
 };
 
 /**
+Subscribe to syncing events and update template
+
+@method checkSyncing
+*/
+var checkSyncing = template => {
+  this.syncSubscription = web3.eth
+    .subscribe('syncing', (error, sync) => {
+      if (error) {
+        console.log(`Node sync subscription error: ${error}`);
+        // Try to restart subscription
+        setTimeout(() => {
+          checkSyncing(template);
+        }, 1000);
+        return;
+      }
+    })
+    .on('data', sync => {
+      if (_.isObject(sync)) {
+        sync.progress = Math.floor(
+          (sync.status.CurrentBlock - sync.status.StartingBlock) /
+            (sync.status.HighestBlock - sync.status.StartingBlock) *
+            100
+        );
+        sync.blockDiff = numeral(
+          sync.status.HighestBlock - sync.status.CurrentBlock
+        ).format('0,0');
+        TemplateVar.set(template, 'syncing', sync);
+      }
+    })
+    .on('changed', isSyncing => {
+      TemplateVar.set(template, 'syncing', isSyncing);
+      console.log('isSyncing', isSyncing);
+    });
+};
+
+/**
+Check network and set TemplateVars
+
+@method checkNetwork
+*/
+var checkNetwork = template => {
+  web3.eth
+    .getBlock(0)
+    .then(block => {
+      const network = Helpers.detectNetwork(block.hash);
+      TemplateVar.set(template, 'network', network.type);
+      TemplateVar.set(template, 'networkName', network.name);
+    })
+    .catch(error => {
+      checkNetwork(template);
+    });
+};
+
+/**
 The main template
 
 @class [template] elements_nodeInfo
@@ -72,51 +126,13 @@ Template['elements_nodeInfo'].onCreated(function() {
   var template = this;
 
   // CHECK FOR NETWORK
-  this.checkNetwork = function() {
-    web3.eth.getBlock(0).then(block => {
-      const network = Helpers.detectNetwork(block.hash);
-      TemplateVar.set(template, 'network', network.type);
-      TemplateVar.set(template, 'networkName', network.name);
-    }).catch(error => {
-      this.checkNetwork();
-    });
-  }
-  this.checkNetwork();
+  checkNetwork(template);
 
   // CHECK SYNCING
-  this.checkSync = function() {
-    web3.eth.isSyncing(function(error, syncing) {
-      console.log('isSyncing: ', syncing);
-
-      if (error) {
-        console.log(`Node isSyncing error: ${error}`);
-        return;
-      }
-
-      if (syncing === true) {
-        console.log('Node started syncing');
-      } else if (_.isObject(syncing)) {
-        syncing.progress = Math.floor(
-          (syncing.currentBlock - syncing.startingBlock) /
-            (syncing.highestBlock - syncing.startingBlock) *
-            100
-        );
-
-        syncing.blockDiff = numeral(
-          syncing.highestBlock - syncing.currentBlock
-        ).format('0,0');
-
-        TemplateVar.set(template, 'syncing', syncing);
-      } else {
-        TemplateVar.set(template, 'syncing', false);
-      }
-    });
-  };
-  this.checkSyncInterval = setInterval(() => { this.checkSync(); }, 3000);
+  checkSyncing(template);
 
   // CHECK PEER COUNT
   this.peerCountIntervalId = null;
-
   TemplateVar.set('peerCount', 0);
   getPeerCount(template);
 
@@ -143,7 +159,9 @@ Template['elements_nodeInfo'].onCreated(function() {
 Template['elements_nodeInfo'].onDestroyed(function() {
   Meteor.clearInterval(this.peerCountIntervalId);
 
-  Meteor.clearInterval(this.checkSyncInterval);
+  if (this.syncSubscription) {
+    this.syncSubscription.unsubscribe();
+  }
 
   if (this.storeUnsubscribe) {
     this.storeUnsubscribe();

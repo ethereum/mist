@@ -531,7 +531,7 @@ class IpcProviderBackend {
     1. Create a remote subscription when created on local (except syncing subscriptions)
     2. Send remote subscription result if on remote (with remote subscription id swapped for local id)
     3. Ignore local subscription result if on remote
-    4. Unsubscribe remote subscription when unsubscribign local subscription
+    4. Unsubscribe remote subscription when unsubscribing local subscription
 
     @param {Object} result
     @return {Object} result

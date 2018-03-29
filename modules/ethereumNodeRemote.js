@@ -82,7 +82,10 @@ class EthereumNodeRemote extends EventEmitter {
         if (error) {
           console.log('Subscription error:', error);
 
-          if (error.reason.includes('Connection dropped by remote peer.')) {
+          if (
+            error.reason &&
+            error.reason.includes('Connection dropped by remote peer.')
+          ) {
             // Try restarting connection
             this.start();
           } else {

@@ -26,11 +26,11 @@ export function syncLocalNode(payload) {
   return {
     type: '[MAIN]:LOCAL_NODE:SYNC_UPDATE',
     payload: {
-      currentBlock: parseInt(payload.currentBlock, 16),
-      highestBlock: parseInt(payload.highestBlock, 16),
-      knownStates: parseInt(payload.knownStates, 16),
-      pulledStates: parseInt(payload.pulledStates, 16),
-      startingBlock: parseInt(payload.startingBlock, 16)
+      currentBlock: parseInt(payload.status.CurrentBlock, 16),
+      highestBlock: parseInt(payload.status.HighestBlock, 16),
+      knownStates: parseInt(payload.status.KnownStates, 16),
+      pulledStates: parseInt(payload.status.PulledStates, 16),
+      startingBlock: parseInt(payload.status.StartingBlock, 16)
     }
   };
 }

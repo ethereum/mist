@@ -355,23 +355,6 @@ class IpcProviderBackend {
       })
       .then(result => {
         log.trace('Got result', result);
-
-        // Update Redux with (throttled) sync results
-        // i.e. only send action if currentBlock or knownStates updates
-        if (result[0] && result[0].result && result[0].result.currentBlock) {
-          const thisCurrentBlock = parseInt(result[0].result.currentBlock, 16);
-          const thisKnownStates = parseInt(result[0].result.knownStates, 16);
-          const localCurrentBlock = store.getState().nodes.local.currentBlock;
-          const localKnownStates = store.getState().nodes.local.knownStates;
-
-          if (
-            thisCurrentBlock > localCurrentBlock ||
-            thisKnownStates > localKnownStates
-          ) {
-            store.dispatch(syncLocalNode(result[0].result));
-          }
-        }
-
         return this._makeResponsePayload(payload, result);
       })
       .catch(err => {
@@ -492,10 +475,46 @@ class IpcProviderBackend {
 
       ret.jsonrpc = '2.0';
 
+      this._updateReduxWithSyncResults(ret);
+
       return ret;
     });
 
     return _.isArray(originalPayload) ? allResults : allResults[0];
+  }
+
+  /**
+    Update Redux with sync results
+    if currentBlock or knownStates updates
+
+    @param {Object} result
+    */
+  _updateReduxWithSyncResults(result) {
+    if (
+      result &&
+      result.params &&
+      result.params.result &&
+      result.params.result.status &&
+      result.params.result.status.CurrentBlock
+    ) {
+      const thisCurrentBlock = parseInt(
+        result.params.result.status.CurrentBlock,
+        16
+      );
+      const thisKnownStates = parseInt(
+        result.params.result.status.KnownStates,
+        16
+      );
+      const localCurrentBlock = store.getState().nodes.local.currentBlock;
+      const localKnownStates = store.getState().nodes.local.knownStates;
+
+      if (
+        thisCurrentBlock > localCurrentBlock ||
+        thisKnownStates > localKnownStates
+      ) {
+        store.dispatch(syncLocalNode(result.params.result));
+      }
+    }
   }
 }
 

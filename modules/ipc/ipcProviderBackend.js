@@ -14,6 +14,7 @@ const log = require('../utils/logger').create('ipcProviderBackend');
 const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
+const ethereumNodeRemote = require('../ethereumNodeRemote');
 
 import { syncLocalNode } from '../core/nodes/actions';
 
@@ -75,6 +76,11 @@ class IpcProviderBackend {
     log.trace('Loaded processors', _.keys(this._processors));
 
     store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
+
+    // Store remote subscriptions.
+    // key: local subscription id
+    // value: remote subscription object
+    this._remoteSubscriptions = [];
   }
 
   /**
@@ -468,14 +474,17 @@ class IpcProviderBackend {
         });
       }
 
-      if (item.id) {
-        delete ret.params;
-        delete ret.method;
-      }
-
-      ret.jsonrpc = '2.0';
-
       this._updateReduxWithSyncResults(ret);
+
+      ret = this._handleSubscriptions(ret);
+
+      if (ret) {
+        if (item.id) {
+          delete ret.params;
+          delete ret.method;
+        }
+        ret.jsonrpc = '2.0';
+      }
 
       return ret;
     });
@@ -515,6 +524,91 @@ class IpcProviderBackend {
         store.dispatch(syncLocalNode(result.params.result));
       }
     }
+  }
+
+  /**
+    Handles eth_subscribe|eth_subscription|eth_unsubscribe to:
+    1. Create a remote subscription when created on local (except syncing subscriptions)
+    2. Send remote subscription result if on remote (with remote subscription id swapped for local id)
+    3. Ignore local subscription result if on remote
+    4. Unsubscribe remote subscription when unsubscribign local subscription
+
+    @param {Object} result
+    @return {Object} result
+    */
+  _handleSubscriptions(result) {
+    if (result.method === 'eth_subscribe') {
+      // If subscription is created in local, also create the subscription in remote
+      const subscriptionType = result.params[0];
+      const subscriptionId = result.result;
+
+      if (
+        subscriptionId &&
+        ['newHeads', 'logs', 'pendingTransactions'].includes(subscriptionType)
+      ) {
+        // Create subscription in remote node
+        const remoteParams = result.params.slice(); // copy array
+        if (remoteParams[0] === 'newHeads') {
+          remoteParams[0] = 'newBlockHeaders';
+        }
+        this._remoteSubscriptions[subscriptionId] = this._subscribeRemote(
+          subscriptionId,
+          remoteParams
+        );
+      }
+    }
+
+    if (result.method === 'eth_subscription') {
+      // Skip if syncing result
+      if (result.params.result.syncing) {
+        return result;
+      }
+
+      // If remote node is active, cancel propogating response
+      // since we'll return the remote response instead
+      if (store.getState().nodes.active === 'remote') {
+        log.trace('Ignoring local subscription result (remote node is active)');
+        return null;
+      } else {
+        log.trace('Sending local subscription result (local node is active)');
+      }
+    }
+
+    if (result.method === 'eth_unsubscribe') {
+      const subscriptionId = result.params[0];
+      if (this._remoteSubscriptions[subscriptionId]) {
+        this._remoteSubscriptions[subscriptionId].unsubscribe();
+        this._remoteSubscriptions[subscriptionId] = null;
+      }
+    }
+
+    return result;
+  }
+
+  /**
+    Creates a subscription in remote node
+
+    @param {Object} params
+    */
+  _subscribeRemote(subscriptionId, params) {
+    return ethereumNodeRemote.web3.eth.subscribe(...params, (error, result) => {
+      if (error) {
+        log.error('Error subscribing in remote node: ', error);
+        // Try resubscribing
+        setTimeout(() => {
+          this._subscribeRemote(subscriptionId, params);
+        }, 1000);
+        return;
+      }
+      if (store.getState().nodes.active === 'remote') {
+        log.trace('Sending remote subscription result (remote node is active)');
+        // Swap remote subscription id for local subscription id
+        const ret = Object.assign({}, result, {
+          params: { subscription: subscriptionId }
+        });
+        this._makeResponsePayload(ret, ret);
+      }
+    });
   }
 }
 

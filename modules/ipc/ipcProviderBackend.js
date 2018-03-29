@@ -26,7 +26,7 @@ const ERRORS = {
   METHOD_DENIED: { code: -32601, message: 'Method __method__ not allowed.' },
   METHOD_TIMEOUT: {
     code: -32603,
-    message: 'Request timed out for method  __method__.'
+    message: 'Request timed out for method __method__.'
   },
   TX_DENIED: { code: -32603, message: 'Transaction denied' },
   BATCH_TX_DENIED: {

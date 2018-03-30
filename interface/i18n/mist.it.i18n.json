@@ -262,7 +262,7 @@
     },
     "elements": {
         "checksumAlert": "Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
-        "identiconHelper": "Questa è un icona di sicurezza, se c'è qulasiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente",
+        "identiconHelper": "Questa è un icona di sicurezza, se c'è qualsiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente",
         "type": {
             "address": "Address",
             "bool": "Boolean",

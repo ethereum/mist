@@ -621,7 +621,7 @@ class IpcProviderBackend {
         return;
       }
       if (store.getState().nodes.active === 'remote') {
-        // Swap remote subscription id for local subscription id
+        // Set up object to send
         const ret = {
           jsonrpc: '2.0',
           method: 'eth_subscription',

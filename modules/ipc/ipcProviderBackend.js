@@ -551,6 +551,9 @@ class IpcProviderBackend {
         if (remoteParams[0] === 'newHeads') {
           remoteParams[0] = 'newBlockHeaders';
         }
+        if (remoteParams[0] === 'newPendingTransactions') {
+          remoteParams[0] = 'pendingTransactions';
+        }
         this._remoteSubscriptions[subscriptionId] = this._subscribeRemote(
           subscriptionId,
           remoteParams
@@ -567,10 +570,18 @@ class IpcProviderBackend {
       // If remote node is active, cancel propogating response
       // since we'll return the remote response instead
       if (store.getState().nodes.active === 'remote') {
-        log.trace('Ignoring local subscription result (remote node is active)');
+        log.trace(
+          `Ignoring local subscription result (remote node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
         return null;
       } else {
-        log.trace('Sending local subscription result (local node is active)');
+        log.trace(
+          `Sending local subscription result (local node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
       }
     }
 
@@ -586,14 +597,23 @@ class IpcProviderBackend {
   }
 
   /**
-    Creates a subscription in remote node
+    Creates a subscription in remote node and
+    sends results down the pipe if remote node is active
 
-    @param {Object} params
+    @param {Object} params - Subscription params
     */
   _subscribeRemote(subscriptionId, params) {
+    log.trace(
+      `Creating remote subscription: ${params} (local subscription id: ${subscriptionId})`
+    );
     return ethereumNodeRemote.web3.eth.subscribe(...params, (error, result) => {
       if (error) {
         log.error('Error subscribing in remote node: ', error);
+        console.log(error);
+        if (error.toString().includes('connection not open')) {
+          // Try restarting connection
+          ethereumNodeRemote.start();
+        }
         // Try resubscribing
         setTimeout(() => {
           this._subscribeRemote(subscriptionId, params);
@@ -601,12 +621,25 @@ class IpcProviderBackend {
         return;
       }
       if (store.getState().nodes.active === 'remote') {
-        log.trace('Sending remote subscription result (remote node is active)');
         // Swap remote subscription id for local subscription id
-        const ret = Object.assign({}, result, {
-          params: { subscription: subscriptionId }
+        const ret = {
+          jsonrpc: '2.0',
+          method: 'eth_subscription',
+          params: {
+            result: result,
+            subscription: subscriptionId
+          }
+        };
+        log.trace(
+          `Sending remote subscription result (remote node is active)`,
+          ret
+        );
+        Object.keys(this._connections).forEach(key => {
+          const owner = this._connections[key].owner;
+          if (!owner.isDestroyed()) {
+            owner.send('ipcProvider-data', JSON.stringify(ret));
+          }
         });
-        this._makeResponsePayload(ret, ret);
       }
     });
   }

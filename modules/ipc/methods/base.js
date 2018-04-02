@@ -35,12 +35,6 @@ module.exports = class BaseProcessor {
   async exec(conn, payload) {
     this._log.trace('Execute request', payload);
 
-    const isRemote = store.getState().nodes.active === 'remote';
-    if (!isRemote) {
-      const ret = await conn.socket.send(payload, { fullResult: true });
-      return ret.result;
-    }
-
     if (Array.isArray(payload)) {
       return await this._handleArrayExec(payload, conn);
     } else {
@@ -52,7 +46,17 @@ module.exports = class BaseProcessor {
     return this._sendPayload(payload, conn);
   }
 
-  _handleArrayExec(payload, conn) {
+  async _handleArrayExec(payload, conn) {
+    // If on local node, send batch transaction.
+    // Otherwise, iterate through the batch to send over remote node since infura does not have batch support yet.
+    const isRemote = store.getState().nodes.active === 'remote';
+    if (!isRemote) {
+      this._log.trace(`Sending batch request to local node: ${payload.map(req => { return req.payload }).join(', ')}`);
+      const ret = await conn.socket.send(payload, { fullResult: true });
+      this._log.trace(`Result from batch request: ${payload.map(req => { return req.payload }).join(', ')}`);
+      return ret.result;
+    }
+
     const result = [];
 
     payload.forEach(value => {
@@ -66,9 +70,14 @@ module.exports = class BaseProcessor {
 
   async _sendPayload(payload, conn) {
     if (this._shouldSendToRemote(payload, conn)) {
-      return await this._sendToRemote(payload);
+      this._log.trace(`Sending request to remote node: ${payload.method}`);
+      const result = await this._sendToRemote(payload);
+      this._log.trace(`Result from remote node: ${payload.method} (id: ${payload.id})`);
+      return result;
     } else {
+      this._log.trace(`Sending request to local node: ${payload.method}`);
       const result = await conn.socket.send(payload, { fullResult: true });
+      this._log.trace(`Result from local node: ${payload.method} (id: ${payload.id})`);
       return result.result;
     }
   }
@@ -108,7 +117,6 @@ module.exports = class BaseProcessor {
 
   _sendToRemote(payload) {
     return new Promise((resolve, reject) => {
-      console.log('ethereumNodeRemote - send ', payload.method, payload.id);
       ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
         if (error) {
           if (String(error).includes('connection not open')) {
@@ -120,7 +128,6 @@ module.exports = class BaseProcessor {
           reject(error);
           return;
         }
-        console.log('ethereumNodeRemote - result ', payload.method, payload.id);
         resolve(result);
       });
     });

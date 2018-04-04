@@ -32,10 +32,10 @@
                 "newAccount": "Создать аккаунт",
                 "backup": "Резервное копирование",
                 "backupKeyStore": "Аккаунтов",
-                "backupMist": "Данных приложения"
+                "backupMist": "Данных приложения",
+                "swarmUpload": "Загрузить в Swarm"
             },
             "develop": {
-                "uploadToSwarm": "Загрузить в Swarm",
                 "label": "Дополнительно",
                 "devTools": "Выбрать инструмент разработчика",
                 "devToolsMistUI": "Mist UI",
@@ -48,11 +48,7 @@
                 "mainNetwork": "Основная сеть",
                 "startMining": "⛏ Запустить майнинг",
                 "stopMining": "⛏ Остановить майнинг",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "openRemix": "Open Remix IDE"
             },
             "window": {
                 "label": "Окно",
@@ -91,17 +87,12 @@
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ блоков не загружено",
-            "blockReceived": "Получен новый блок",
+            "blockReceivedShort": "Новый блок",
             "blockNumber": "Номер вашего последнего блока",
             "timeSinceBlock": "Прошедшее время ожидания нового блока",
             "checkingWhichNetwork": "Проверка сети...",
-            "mainNetwork": "Основная сеть",
-            "testNetwork": "Тестовая сеть",
             "privateNetwork": "Приватная сеть",
-            "mainnetExplain": "Вы подключены к основной Ethereum-сети",
             "testnetExplain": "Вы подключены к тестовой Ethereum-сети, НЕ ОТПРАВЛЯЙТЕ настоящий эфир на эти адреса",
-            "privatenetExplain": "Вы подключены к приватной Ethereum-сети, НЕ ОТПРАВЛЯЙТЕ настоящий эфир на эти адреса",
-            "unknownnetExplain": "Не удается определить текущую подключенную сеть",
             "peers": "peers"
         },
         "sidebar": {
@@ -117,9 +108,6 @@
         },
         "startScreen": {
             "runningNodeFound": "Обнаружена запущеная Ethereum-нода!",
-            "startingNode": "Запуск Ethereum-ноды...",
-            "stoppingNode": "Остановка Ethereum-ноды...",
-            "startedNode": "Запуск приложения...",
             "nodeConnectionTimeout": "Не удалось запустить Ethereum-ноду!<br><small>Если вы <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>установили Geth</a>, используйте следующую команду для запуска: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Либо сообщите от проблеме </a></small>",
             "nodeBinaryNotFound": "Не найдены программные файлы для Ethereum-ноды!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Пожалуйста, для начала изучите руководство. </a> </small>",
             "nodeStarting": "Ethereum-нода запускается...",
@@ -134,7 +122,6 @@
             "nodeSyncInfoStates": "Загружено блоков __displayBlock__ из __highestBlock__, <br> Загружено частей структуры блокчейна __displayState__ из __displayKnownStates__",
             "nodeSyncConnecting": "Поиск пиров...",
             "nodeSyncFoundPeers": "Количество подключеных пиров __peers__...",
-            "peerSearchTimeout": "Пропустить поиск пиров",
             "launchApp": "Запуск приложения",
             "clientBinaries": {
                 "scanning": "Checking for node update...",
@@ -154,7 +141,6 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Download new version",
                 "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
                 "checking": "Checking for updates to __name__...",
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },
@@ -195,50 +181,19 @@
                 "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
-            "onboarding": {
-                "description": "Etherium представляет собой децентрализованную платформу основанную на блокчейне для создания надежных и децентрализованных приложений",
-                "goToTestnet": "Использовать тестовую сеть (Rinkeby)",
-                "goToTestnetDescription": "Свободное тестирование технологии в тестовой сети (sandbox), без использования реального эфира.",
-                "gotoMainnet": "Использовать основную сеть",
-                "gotoMainnetDescription": "Вам потребуется некоторое количество эфира для того, чтобы создавать и выполнять контракты. Не волнуйтесь, мы вам поможем получить некоторое количество...",
+            "importAccount": {
                 "doYouHaveAWalletFile": "У вас есть файл кошелька?",
                 "walletFileDescription": "<p>Если вы участвовали в Ethereum Pre-sale 2014, у вас должен быть файл с именем <code>ethereum_wallet_backup.json</code>. Он был загружен после продажи, а также отправлен на электронную почту</p>",
                 "dropFilesHere": "Перетащите сюда ваш файл",
-                "creating": "Создание...",
                 "importing": "Импорт...",
-                "skip": "Пропустить этот шаг",
-                "next": "Далее",
-                "protectTitle": "Защитите ваш аккаунт",
-                "protectDescription": "Выберите пароль для новой учетной записи. Придумайте такой пароль, как будто он защитит ваши ключи от дома!",
-                "accountTitle": "Загрузите его!",
-                "etherDescription": "Сеть Ethereum основана на маркерах называемых “Ether” (Эфир). Он вам необходим в небольшом количетсве для того, что бы что-либо сделать в сети Etherium.",
-                "loadItDescription": "Если у вас уже есть Bitcoin, или любая другая криптовалюта, вы можете легко преобразовать её в эфир (Ether) с помощью changelly. <br><br> Мы рекомендуем загрузить где-то <strong>от 0.25 до 1 эфира</strong>.",
-                "mineItDescription": "<strong>В тестовой сети вы можете добыть (намайнить) эфир сами, перейдя в меню <em>Дополнительно</em> и выбрав <em>Запустить майнинг</em>. </strong> <br> <strong> НЕ ПЫТАЙТЕСЬ ОТПРАВИТЬ РЕАЛЬНЫЙ ЭФИР НА ЭТОТ АДРЕС</strong>",
-                "you": "ВЫ",
-                "etherbase": "Основной аккаунт (etherbase)",                
-                "buyEther": "Buy Ether",
-                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
-                "learnIt": "Изучайте, пока ожидаете",
-                "downloadingBlocks": "Загрузка блоков",
-                "syncMessage": "Блок __displayBlock__ из __highestBlockString__",
-                "syncMessageWithStates": "Блок __displayBlock__ из __highestBlockString__ (Структура блокчейна __statesPercent__%)",
-                "tutorial1Description": "<p> Теперь ожидайте окончания загрузки для завершения. Вот несколько советов: </p> <h4>Сделайте свои собственные деньги </h4> <p> Сделайте криптовалюту с запасом фиксированного рынка, маркеры представляющие реальные мировые активы и т.д. </p>",
-                "tutorial2Description": "<h4> Организуйте crowdsale </h4> <p> Привлечение средств для достижения общей цели полностью надёжно только без участия третьей стороны. Обойдите барьер традиционной системы финансирования и перейдите к финансированию организации непосредственно через блокчейн.</p>",
-                "tutorial3Description": "<h4> Создайте организацию </h4> <p> Создайте автономную организацию с правилами о расходовании денег и принятии решений для вас и ваших инвесторов.</p>",
                 "buttons": {
-                    "showPassword": "Показать пароль",
-                    "importAccount": "Импортировать аккаунт",
-                    "launchApp": "Запустить приложение!",
-                    "learnReceipt": "Узнать этот рецепт"
+                    "showPassword": "Показать пароль"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Подождите несколько секунд, пока ваша нода не будет полностью запущена и повторите попытку.",
                     "unknownFile": "Файл не распознается.",
                     "wrongPassword": "Неверный пароль.",
                     "importFailed": "Не удалось импортировать файл, дополнительно: __error__"
-                },
-                "accountTitleTestnet": "Mine some!",
-                "startingSync": "Getting ready to sync.."
+                }
             },
             "connectAccount": {
                 "chooseAccountTitle": "Choose account",

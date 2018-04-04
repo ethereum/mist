@@ -51,9 +51,21 @@ module.exports = class BaseProcessor {
     // Otherwise, iterate through the batch to send over remote node since infura does not have batch support yet.
     const isRemote = store.getState().nodes.active === 'remote';
     if (!isRemote) {
-      this._log.trace(`Sending batch request to local node: ${payload.map(req => { return req.payload }).join(', ')}`);
+      this._log.trace(
+        `Sending batch request to local node: ${payload
+          .map(req => {
+            return req.payload;
+          })
+          .join(', ')}`
+      );
       const ret = await conn.socket.send(payload, { fullResult: true });
-      this._log.trace(`Result from batch request: ${payload.map(req => { return req.payload }).join(', ')}`);
+      this._log.trace(
+        `Result from batch request: ${payload
+          .map(req => {
+            return req.payload;
+          })
+          .join(', ')}`
+      );
       return ret.result;
     }
 
@@ -72,12 +84,16 @@ module.exports = class BaseProcessor {
     if (this._shouldSendToRemote(payload, conn)) {
       this._log.trace(`Sending request to remote node: ${payload.method}`);
       const result = await this._sendToRemote(payload);
-      this._log.trace(`Result from remote node: ${payload.method} (id: ${payload.id})`);
+      this._log.trace(
+        `Result from remote node: ${payload.method} (id: ${payload.id})`
+      );
       return result;
     } else {
       this._log.trace(`Sending request to local node: ${payload.method}`);
       const result = await conn.socket.send(payload, { fullResult: true });
-      this._log.trace(`Result from local node: ${payload.method} (id: ${payload.id})`);
+      this._log.trace(
+        `Result from local node: ${payload.method} (id: ${payload.id})`
+      );
       return result.result;
     }
   }

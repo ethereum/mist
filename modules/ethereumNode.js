@@ -10,7 +10,7 @@ const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
 import Settings from './settings';
-import { resetLocalNode } from './core/nodes/actions';
+import { syncLocalNode, resetLocalNode } from './core/nodes/actions';
 
 import logger from './utils/logger';
 const ethereumNodeLog = logger.create('EthereumNode');
@@ -221,6 +221,8 @@ class EthereumNode extends EventEmitter {
           return resolve();
         }
 
+        clearInterval(this.syncInterval);
+
         this.state = STATES.STOPPING;
 
         ethereumNodeLog.info(
@@ -318,6 +320,7 @@ class EthereumNode extends EventEmitter {
           })
           .then(() => {
             this.state = STATES.CONNECTED;
+            this._checkSync();
           })
           .catch(err => {
             ethereumNodeLog.error('Failed to connect to node', err);
@@ -427,7 +430,7 @@ class EthereumNode extends EventEmitter {
             Settings.rpcIpcPath
           ];
           if (syncMode === 'nosync') {
-            args.push('--nodiscover',  '--maxpeers=0');
+            args.push('--nodiscover', '--maxpeers=0');
           } else {
             args.push('--syncmode', syncMode);
           }
@@ -443,7 +446,7 @@ class EthereumNode extends EventEmitter {
             Settings.rpcIpcPath
           ];
           if (syncMode === 'nosync') {
-            args.push('--nodiscover',  '--maxpeers=0');
+            args.push('--nodiscover', '--maxpeers=0');
           } else {
             args.push('--syncmode', syncMode);
           }
@@ -464,13 +467,10 @@ class EthereumNode extends EventEmitter {
         default:
           args =
             nodeType === 'geth'
-              ? [
-                  '--cache',
-                  process.arch === 'x64' ? '1024' : '512'
-                ]
+              ? ['--cache', process.arch === 'x64' ? '1024' : '512']
               : ['--unsafe-transactions'];
           if (nodeType === 'geth' && syncMode === 'nosync') {
-            args.push('--nodiscover',  '--maxpeers=0');
+            args.push('--nodiscover', '--maxpeers=0');
           } else {
             args.push('--syncmode', syncMode);
           }
@@ -607,6 +607,25 @@ class EthereumNode extends EventEmitter {
         this.defaultSyncMode
       }`
     );
+  }
+
+  _checkSync() {
+    this.syncInterval = setInterval(async () => {
+      const syncingResult = await this.send('eth_syncing');
+      const sync = syncingResult.result;
+      if (sync === false) {
+        const blockNumberResult = await this.send('eth_blockNumber');
+        if (
+          parseInt(blockNumberResult.result, 16) >=
+          store.getState().nodes.remote.blockNumber - 15
+        ) {
+          // Sync is caught up
+          clearInterval(this.syncInterval);
+        }
+      } else {
+        store.dispatch(syncLocalNode(sync));
+      }
+    }, 1500);
   }
 }
 

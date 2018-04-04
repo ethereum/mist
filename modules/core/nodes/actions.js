@@ -22,15 +22,27 @@ export function changeSyncMode(syncMode) {
   return { type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } };
 }
 
-export function syncLocalNode(payload) {
-  return {
-    type: '[MAIN]:LOCAL_NODE:SYNC_UPDATE',
-    payload: {
-      currentBlock: parseInt(payload.status.CurrentBlock, 16),
-      highestBlock: parseInt(payload.status.HighestBlock, 16),
-      knownStates: parseInt(payload.status.KnownStates, 16),
-      pulledStates: parseInt(payload.status.PulledStates, 16),
-      startingBlock: parseInt(payload.status.StartingBlock, 16)
+export function syncLocalNode(sync) {
+  return (dispatch, getState) => {
+    const thisCurrentBlock = parseInt(sync.currentBlock, 16);
+    const thisKnownStates = parseInt(sync.knownStates, 16);
+    const localCurrentBlock = getState().nodes.local.currentBlock;
+    const localKnownStates = getState().nodes.local.knownStates;
+
+    if (
+      thisCurrentBlock > localCurrentBlock ||
+      thisKnownStates > localKnownStates
+    ) {
+      dispatch({
+        type: '[MAIN]:LOCAL_NODE:SYNC_UPDATE',
+        payload: {
+          currentBlock: parseInt(sync.currentBlock, 16),
+          highestBlock: parseInt(sync.highestBlock, 16),
+          knownStates: parseInt(sync.knownStates, 16),
+          pulledStates: parseInt(sync.pulledStates, 16),
+          startingBlock: parseInt(sync.startingBlock, 16)
+        }
+      });
     }
   };
 }
@@ -91,5 +103,5 @@ export function setActiveNode(state) {
         });
       }
     }
-  }
+  };
 }

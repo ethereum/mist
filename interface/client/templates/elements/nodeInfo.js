@@ -62,39 +62,70 @@ var watchRemote = template => {
 };
 
 /**
-Subscribe to syncing events and update template
+Subscribe to syncing events and start/stop polling for status
 
-@method checkSyncing
+@method startSyncSubscription
 */
-var checkSyncing = template => {
+var startSyncSubscription = template => {
   this.syncSubscription = web3.eth
     .subscribe('syncing', (error, sync) => {
       if (error) {
         console.log(`Node sync subscription error: ${error}`);
         // Try to restart subscription
         setTimeout(() => {
-          checkSyncing(template);
+          startSyncSubscription(template);
         }, 1000);
+        // Clear sync checking interval
+        Meteor.clearInterval(this.syncIntervalId);
         return;
       }
     })
     .on('data', sync => {
-      if (_.isObject(sync)) {
-        sync.progress = Math.floor(
-          (sync.status.CurrentBlock - sync.status.StartingBlock) /
-            (sync.status.HighestBlock - sync.status.StartingBlock) *
-            100
-        );
-        sync.blockDiff = numeral(
-          sync.status.HighestBlock - sync.status.CurrentBlock
-        ).format('0,0');
-        TemplateVar.set(template, 'syncing', sync);
-      }
+      updateSync(sync, template);
     })
     .on('changed', isSyncing => {
       TemplateVar.set(template, 'syncing', isSyncing);
-      console.log('isSyncing', isSyncing);
+
+      Meteor.clearInterval(this.syncIntervalId);
+
+      if (isSyncing) {
+        this.syncIntervalId = setInterval(() => {
+          checkSync(template);
+        }, 1500);
+      }
     });
+};
+
+/**
+Get syncing status and update template
+
+@method updateSync
+*/
+var checkSync = template => {
+  web3.eth.isSyncing().then(sync => {
+    updateSync(sync, template);
+  });
+};
+
+/**
+Update template with syncing status
+
+@method updateSync
+*/
+var updateSync = (sync, template) => {
+  if (!_.isObject(sync)) {
+    return;
+  }
+
+  sync.progress = Math.floor(
+    (sync.currentBlock - sync.startingBlock) /
+      (sync.highestBlock - sync.startingBlock) *
+      100
+  );
+
+  sync.blockDiff = numeral(sync.highestBlock - sync.currentBlock).format('0,0');
+
+  TemplateVar.set(template, 'syncing', sync);
 };
 
 /**
@@ -129,7 +160,7 @@ Template['elements_nodeInfo'].onCreated(function() {
   checkNetwork(template);
 
   // CHECK SYNCING
-  checkSyncing(template);
+  startSyncSubscription(template);
 
   // CHECK PEER COUNT
   this.peerCountIntervalId = null;
@@ -162,6 +193,8 @@ Template['elements_nodeInfo'].onDestroyed(function() {
   if (this.syncSubscription) {
     this.syncSubscription.unsubscribe();
   }
+
+  Meteor.clearInterval(this.syncIntervalId);
 
   if (this.storeUnsubscribe) {
     this.storeUnsubscribe();

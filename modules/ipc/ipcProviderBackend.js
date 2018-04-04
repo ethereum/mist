@@ -16,8 +16,6 @@ const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const ethereumNodeRemote = require('../ethereumNodeRemote');
 
-import { syncLocalNode } from '../core/nodes/actions';
-
 const ERRORS = {
   INVALID_PAYLOAD: {
     code: -32600,
@@ -474,8 +472,6 @@ class IpcProviderBackend {
         });
       }
 
-      this._updateReduxWithSyncResults(ret);
-
       ret = this._handleSubscriptions(ret);
 
       if (ret) {
@@ -490,40 +486,6 @@ class IpcProviderBackend {
     });
 
     return _.isArray(originalPayload) ? allResults : allResults[0];
-  }
-
-  /**
-    Update Redux with sync results
-    if currentBlock or knownStates updates
-
-    @param {Object} result
-    */
-  _updateReduxWithSyncResults(result) {
-    if (
-      result &&
-      result.params &&
-      result.params.result &&
-      result.params.result.status &&
-      result.params.result.status.CurrentBlock
-    ) {
-      const thisCurrentBlock = parseInt(
-        result.params.result.status.CurrentBlock,
-        16
-      );
-      const thisKnownStates = parseInt(
-        result.params.result.status.KnownStates,
-        16
-      );
-      const localCurrentBlock = store.getState().nodes.local.currentBlock;
-      const localKnownStates = store.getState().nodes.local.knownStates;
-
-      if (
-        thisCurrentBlock > localCurrentBlock ||
-        thisKnownStates > localKnownStates
-      ) {
-        store.dispatch(syncLocalNode(result.params.result));
-      }
-    }
   }
 
   /**

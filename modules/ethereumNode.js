@@ -622,7 +622,7 @@ class EthereumNode extends EventEmitter {
           // Sync is caught up
           clearInterval(this.syncInterval);
         }
-      } else {
+      } else if (_.isObject(sync)) {
         store.dispatch(syncLocalNode(sync));
       }
     }, 1500);

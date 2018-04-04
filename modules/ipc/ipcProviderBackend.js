@@ -506,7 +506,9 @@ class IpcProviderBackend {
 
       if (
         subscriptionId &&
-        ['newHeads', 'logs', 'pendingTransactions'].includes(subscriptionType)
+        ['newHeads', 'logs', 'newPendingTransactions'].includes(
+          subscriptionType
+        )
       ) {
         // Create subscription in remote node
         const remoteParams = result.params.slice(); // copy array
@@ -571,7 +573,6 @@ class IpcProviderBackend {
     return ethereumNodeRemote.web3.eth.subscribe(...params, (error, result) => {
       if (error) {
         log.error('Error subscribing in remote node: ', error);
-        console.log(error);
         if (error.toString().includes('connection not open')) {
           // Try restarting connection
           ethereumNodeRemote.start();

@@ -29,6 +29,7 @@ aside.sidebar {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  -webkit-app-region: drag;
 
   z-index: 4;
   position: absolute;
@@ -67,6 +68,7 @@ aside.sidebar {
         overflow: hidden;
         margin-bottom: 14px;
         transition-delay: 200ms;
+        -webkit-app-region: no-drag;
 
         // draggable LI
         &.ui-sortable-helper {

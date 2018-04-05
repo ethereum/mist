@@ -22,8 +22,29 @@ export function changeSyncMode(syncMode) {
   return { type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } };
 }
 
+export function updateLocalBlockNumber(blockNumber) {
+  return (dispatch, getState) => {
+    if (blockNumber === 0) {
+      return;
+    }
+
+    if (getState().nodes.local.currentBlock === blockNumber) {
+      return;
+    }
+
+    dispatch({
+      type: '[MAIN]:LOCAL_NODE:UPDATE_BLOCK_NUMBER',
+      payload: { blockNumber }
+    });
+  };
+}
+
 export function syncLocalNode(sync) {
   return (dispatch, getState) => {
+    if (sync === true || sync === false) {
+      return;
+    }
+
     const thisCurrentBlock = parseInt(sync.currentBlock, 16);
     const thisKnownStates = parseInt(sync.knownStates, 16);
     const localCurrentBlock = getState().nodes.local.currentBlock;

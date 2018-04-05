@@ -10,7 +10,11 @@ const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
 import Settings from './settings';
-import { syncLocalNode, resetLocalNode } from './core/nodes/actions';
+import {
+  syncLocalNode,
+  resetLocalNode,
+  updateLocalBlockNumber
+} from './core/nodes/actions';
 
 import logger from './utils/logger';
 const ethereumNodeLog = logger.create('EthereumNode');
@@ -609,6 +613,19 @@ class EthereumNode extends EventEmitter {
     );
   }
 
+  _watchLocalBlockHeaders() {
+    if (this.watchLocalBlockHeaders) {
+      // Reset
+      clearInterval(this.watchLocalBlockHeaders);
+    }
+
+    this.watchLocalBlockHeaders = setInterval(async () => {
+      const blockNumberResult = await this.send('eth_blockNumber');
+      const blockNumber = parseInt(blockNumberResult.result, 16);
+      store.dispatch(updateLocalBlockNumber(blockNumber));
+    }, 1500);
+  }
+
   _checkSync() {
     this.syncInterval = setInterval(async () => {
       const syncingResult = await this.send('eth_syncing');
@@ -621,6 +638,7 @@ class EthereumNode extends EventEmitter {
         ) {
           // Sync is caught up
           clearInterval(this.syncInterval);
+          this._watchLocalBlockHeaders();
         }
       } else if (_.isObject(sync)) {
         store.dispatch(syncLocalNode(sync));

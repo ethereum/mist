@@ -29,6 +29,13 @@ const nodes = (state = initialState, action) => {
           startingBlock: action.payload.startingBlock
         })
       });
+    case '[MAIN]:LOCAL_NODE:UPDATE_BLOCK_NUMBER':
+      return Object.assign({}, state, {
+        local: Object.assign({}, state.local, {
+          currentBlock: action.payload.blockNumber,
+          highestBlock: action.payload.blockNumber
+        })
+      });
     case '[MAIN]:LOCAL_NODE:RESET':
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {

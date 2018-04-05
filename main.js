@@ -36,7 +36,7 @@ global.store = configureReduxStore();
 Settings.init();
 
 store.subscribe(() => {
-  setActiveNode(store.getState());
+  store.dispatch(setActiveNode());
 });
 
 const db = (global.db = require('./modules/db'));

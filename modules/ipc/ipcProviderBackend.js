@@ -230,14 +230,10 @@ class IpcProviderBackend {
    */
   _onNodeStateChanged(state) {
     // Unsubscribe remote subscriptions
-    if (Object.keys(this._remoteSubscriptions).length > 0) {
-      this._remoteSubscriptions = {};
-      try {
-        ethereumNodeRemote.web3.eth.clearSubscriptions();
-      } catch (error) {
-        log.error('Error clearing subscriptions: ', error);
-      }
-    }
+    _.each(this._remoteSubscriptions, subscription => {
+      subscription.unsubscribe();
+    });
+    this._remoteSubscriptions = {};
 
     switch (state) { // eslint-disable-line default-case
       // stop syncing when node about to be stopped

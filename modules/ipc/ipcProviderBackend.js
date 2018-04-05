@@ -78,7 +78,7 @@ class IpcProviderBackend {
     // Store remote subscriptions.
     // key: local subscription id
     // value: remote subscription object
-    this._remoteSubscriptions = [];
+    this._remoteSubscriptions = {};
   }
 
   /**
@@ -229,6 +229,16 @@ class IpcProviderBackend {
    * @param {String} state The new state.
    */
   _onNodeStateChanged(state) {
+    // Unsubscribe remote subscriptions
+    if (Object.keys(this._remoteSubscriptions).length > 0) {
+      this._remoteSubscriptions = {};
+      try {
+        ethereumNodeRemote.web3.eth.clearSubscriptions();
+      } catch (error) {
+        log.error('Error clearing subscriptions: ', error);
+      }
+    }
+
     switch (state) { // eslint-disable-line default-case
       // stop syncing when node about to be stopped
       case ethereumNode.STATES.STOPPING:

@@ -613,19 +613,6 @@ class EthereumNode extends EventEmitter {
     );
   }
 
-  _watchLocalBlockHeaders() {
-    if (this.watchLocalBlockHeaders) {
-      // Reset
-      clearInterval(this.watchLocalBlockHeaders);
-    }
-
-    this.watchLocalBlockHeaders = setInterval(async () => {
-      const blockNumberResult = await this.send('eth_blockNumber');
-      const blockNumber = parseInt(blockNumberResult.result, 16);
-      store.dispatch(updateLocalBlockNumber(blockNumber));
-    }, 1500);
-  }
-
   _checkSync() {
     this.syncInterval = setInterval(async () => {
       const syncingResult = await this.send('eth_syncing');
@@ -643,6 +630,19 @@ class EthereumNode extends EventEmitter {
       } else if (_.isObject(sync)) {
         store.dispatch(syncLocalNode(sync));
       }
+    }, 1500);
+  }
+
+  _watchLocalBlockHeaders() {
+    if (this.watchLocalBlockHeaders) {
+      // Reset
+      clearInterval(this.watchLocalBlockHeaders);
+    }
+
+    this.watchLocalBlockHeaders = setInterval(async () => {
+      const blockNumberResult = await this.send('eth_blockNumber');
+      const blockNumber = parseInt(blockNumberResult.result, 16);
+      store.dispatch(updateLocalBlockNumber(blockNumber));
     }, 1500);
   }
 }

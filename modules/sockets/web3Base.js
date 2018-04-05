@@ -140,7 +140,9 @@ module.exports = class Web3Socket extends Socket {
         this._log.error('Socket response error', err);
 
         _.each(this._sendRequests, req => {
-          req.reject(err);
+          if (req.reject) {
+            req.reject(err);
+          }
         });
 
         this._sendRequests = {};

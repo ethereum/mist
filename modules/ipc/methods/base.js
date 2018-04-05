@@ -135,12 +135,15 @@ module.exports = class BaseProcessor {
     return new Promise((resolve, reject) => {
       ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
         if (error) {
-          if (String(error).includes('connection not open')) {
-            // Try restarting connection and sending again
-            ethereumNodeRemote.start();
-            this._sendToRemote(payload);
-          }
           log.error(`Error: ${error}`);
+          // Try restarting connection
+          if (String(error).includes('connection not open')) {
+            ethereumNodeRemote.start();
+          }
+          // Try again
+          setTimeout(() => {
+            this._sendToRemote(payload);
+          }, 2000);
           reject(error);
           return;
         }

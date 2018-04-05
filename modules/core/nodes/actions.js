@@ -87,19 +87,19 @@ export function resetRemoteNode() {
   return { type: '[MAIN]:REMOTE_NODE:RESET' };
 }
 
-export function setActiveNode(state) {
-  return dispatch => {
+export function setActiveNode() {
+  return (dispatch, getState) => {
     // If local node is 15 or more blocks behind remote, ensure remote is active.
     // Otherwise, local should be active.
-    const { active, network, local, remote } = state.nodes;
+    const { active, network, local, remote } = getState().nodes;
 
     const supportedRemoteNetworks = Object.keys(
       InfuraEndpoints.ethereum.websockets
-    )
-      .map(network => network.toLowerCase())
-      .push('nosync');
+    ).map(network => network.toLowerCase());
+    supportedRemoteNetworks.push('nosync');
 
-    if (!supportedRemoteNetworks.includes(network)) {
+    if (supportedRemoteNetworks.indexOf(network) === -1) {
+      // If unsupported network, ensure active is 'local'
       if (active === 'remote') {
         dispatch({
           type: '[MAIN]:NODES:CHANGE_ACTIVE',

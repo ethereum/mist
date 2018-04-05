@@ -68,19 +68,19 @@ class EthereumNodeRemote extends EventEmitter {
   }
 
   stop() {
+    this.unsubscribe();
     this.web3 = null;
     store.dispatch(resetRemoteNode());
   }
 
-  send(method) {
-    // TODO:
-  }
-
   watchBlockHeaders() {
+    // Unsubscribe before starting
+    this.unsubscribe();
+
     this._syncSubscription = this.web3.eth
       .subscribe('newBlockHeaders', (error, sync) => {
         if (error) {
-          console.log('Subscription error:', error);
+          ethereumNodeRemoteLog.log('Subscription error:', error);
 
           if (
             error.reason &&
@@ -102,11 +102,21 @@ class EthereumNodeRemote extends EventEmitter {
   }
 
   unsubscribe() {
-    this._syncSubscription.unsubscribe((err, success) => {
-      if (success) {
-        console.log('∆∆∆ succesfully unsubscribed');
-      }
-    });
+    if (this._syncSubscription) {
+      this._syncSubscription.unsubscribe((error, success) => {
+        if (error) {
+          ethereumNodeRemoteLog.error(
+            'Error unsubscribing remote sync subscription: ',
+            error
+          );
+          return;
+        }
+        if (success) {
+          ethereumNodeRemoteLog.trace('Unsubscribed remote sync subscription');
+          this._syncSubscription = null;
+        }
+      });
+    }
   }
 
   get connected() {

@@ -630,10 +630,8 @@ class EthereumNode extends EventEmitter {
       const sync = syncingResult.result;
       if (sync === false) {
         const blockNumberResult = await this.send('eth_blockNumber');
-        if (
-          parseInt(blockNumberResult.result, 16) >=
-          store.getState().nodes.remote.blockNumber - 15
-        ) {
+        const blockNumber = parseInt(blockNumberResult.result, 16);
+        if (blockNumber >= store.getState().nodes.remote.blockNumber - 15) {
           // Sync is caught up
           clearInterval(this.syncInterval);
           this._watchLocalBlockHeaders();

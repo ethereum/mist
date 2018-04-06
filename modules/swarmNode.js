@@ -22,15 +22,6 @@ class SwarmNode extends EventEmitter {
   }
 
   getKeyPath() {
-    // TODO: replace by web3.utils.randomHex when we use it
-    function randomHex(bytes) {
-      let hex = '';
-      for (let i = 0; i < bytes * 2; i = i + 1) {
-        hex += ((Math.random() * 16) | 0).toString(16);
-      }
-      return hex;
-    }
-
     // Gets Swarm Key path
     const swarmKeyDir = path.join(Settings.userDataPath, 'swarmjs');
     const swarmKeyPath = path.join(swarmKeyDir, 'swarmKey');
@@ -40,7 +31,7 @@ class SwarmNode extends EventEmitter {
       fs.mkdirSync(swarmKeyDir);
     }
     if (!fs.existsSync(swarmKeyPath)) {
-      fs.writeFileSync(swarmKeyPath, randomHex(32));
+      fs.writeFileSync(swarmKeyPath, web3.utils.randomHex(32));
     }
 
     return swarmKeyPath;

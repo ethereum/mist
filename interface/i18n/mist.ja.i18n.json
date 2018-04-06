@@ -32,10 +32,10 @@
                 "newAccount": "新規アカウント",
                 "backup": "バックアップを取る",
                 "backupKeyStore": "アカウント",
-                "backupMist": "アプリケーションデータ"
+                "backupMist": "アプリケーションデータ",
+                "swarmUpload": "Swarm にアップロード"
             },
             "develop": {
-                "uploadToSwarm": "Swarm にアップロード",
                 "label": "開発",
                 "devTools": "開発者用ツール",
                 "devToolsMistUI": "Mist UI",
@@ -48,11 +48,7 @@
                 "mainNetwork": "メインネットワーク",
                 "startMining": "⛏ マイニングを始める",
                 "stopMining": "⛏ マイニングを中止する",
-                "externalNode": "外部のノードを使用する",
-                "openRemix": "Remix IDE を開く",
-                "nodeMode": "チェーンダウンロード",
-                "fullNode": "フルノードを保存する",
-                "lightNode": "ライトノードを使う (実験的なものです!)"
+                "openRemix": "Remix IDE を開く"
             },
             "window": {
                 "label": "ウィンドウ",
@@ -91,18 +87,13 @@
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ ブロックが残っています",
-            "blockReceived": "新しいブロックを受け取りました",
+            "blockReceivedShort": "新しいブロックを受け取りました",
             "timeSinceBlock": "最後のブロックから",
             "peers": "ピアー",
             "blockNumber": "ブロック番号",
             "checkingWhichNetwork": "ネットワークをチェックしています...",
-            "mainNetwork": "メインネット",
-            "testNetwork": "テストネット",
             "privateNetwork": "プライベートネット",
-            "mainnetExplain": "ここは Ethereum のメインネットです",
-            "testnetExplain": "ここはテストネットです。絶対に本物の ehter を送らないでください",
-            "privatenetExplain": "ここはプライベートっとです。絶対に本物の ether を送らないでください",
-            "unknownnetExplain": "どこのネットワークにいるか判定できませんでした"
+            "testnetExplain": "ここはテストネットです。絶対に本物の ehter を送らないでください"
         },
         "sidebar": {
             "buttons": {
@@ -117,15 +108,11 @@
         },
         "startScreen": {
             "runningNodeFound": "起動している Ethereum ノードを見つけました!",
-            "startingNode": "Ethereum ノードを開始しています。",
-            "startedNode": "Ethereum ノードは開始されました...",
             "nodeConnectionTimeout": "Ethereum ノードをスタート出来ませんでした!<br><small>もし<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a>をインストールしているならば,このコマンドを使ってみてください: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'>もしくは問題を報告して下さい。 </a></small>",
             "nodeBinaryNotFound": "Ethereum ノードバイナリーが見つかりませんでした。<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 手動でスタートして下さい。 </a> </small>",
             "nodeSyncing": "Ethereum ノードは同期中です...",
             "nodeSyncInfo": "ブロックをダウンロードしています。 __displayBlock__ / __highestBlock__.",
             "nodeSyncConnecting": "ピアーを探しています。...",
-            "peerSearchTimeout": "ピアーの検索を中止しています",
-            "stoppingNode": "ノードを終了しています...",
             "nodeStarting": "ノードを起動しています...",
             "nodeStarted": "ノードは起動されました",
             "nodeConnected": "ノードは接続されました",
@@ -193,52 +180,19 @@
                 "overBlockGasLimit": "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
                 "notEnoughGas": "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください."
             },
-            "onboarding": {
-                "description": "Ethereum は分散型のプラットフォームで、ブロックチェーン上でアプリケーションを作成することが出来ます。価値を転送することが出来、永続的に稼働するセキュリティの高いソフトウェアを作ることが出来ます。",
-                "goToTestnet": "テストネットワークを使用する (Rinkeby)",
-                "goToTestnetDescription": "本物の Ether を使わず、サンドボックスのテストネットで、テクノロジーを自由に使う。",
-                "gotoMainnet": "メインネットワークを使用する",
-                "gotoMainnetDescription": "コントラクトを作成して実行するためにいくらかの Ether が必要となるでしょう。心配することはありません、手に入れるためにこちらの方法があります。...",
+            "importAccount": {
                 "doYouHaveAWalletFile": "ウォレットファイルを持っていますか?",
                 "walletFileDescription": "<p>もし2014年のプリセールに参加していたら、 <code>ethereum_wallet_backup.json</code>という名前のファイルを持っているはずです。プリセールのあとにダウンロードしているか、もしくは Email にて受け取っているはずです。</p>",
                 "dropFilesHere": "プリセールファイルを削除する",
-                "creating": "作成しています...",
                 "importing": "インポート中です...",
-                "skip": "このステップをスキップする",
-                "next": "次へ",
-                "protectTitle": "アカウントを守る",
-                "protectDescription": "新しいアカウントのためにパスワードを作成する. 必ず強いパスワードにしてください!",
-                "accountTitle": "もっとダウンロードする!",
-                "accountTitleTestnet": "マイニングを行う!",
-                "etherDescription": "Ethereum ネットワークは“Ether と呼ばれるトークンに基づき成り立っています. Ethereumネットワークで何かを行うためには必ず必要となります。",
-                "loadItDescription": "既にもし Bitcoin を持っているか, もしくは他の暗号通貨を持っている場合には簡単に changelly で変換する事ができます。 <br><br> 私たちは <strong>0.25 から 1 ether の間で</strong>変換することをおすすめします.",
-                "mineItDescription": "<strong>テストネットでは自分自身でマイニングを行うか、 <em>Develop</em> メニューから <em>マイニングを始める</em>を選んでください. </strong> <br> <strong> 絶対にこのアドレスには Ether を送らないでください </strong>",
-                "you": "あなた",
-                "etherbase": "メインアカウント(etherbase)",
-                "depositBitcoin": "Bitcoin をデポジットする",
-                "learnIt": "待っている間に EthereumWallet のことを学ぶ",
-                "downloadingBlocks": "ブロックをダウンロードする",
-                "tutorial1Description": "<p> 全て終わり、後はダウンロードが終了するのは待つだけです。いくつか次の提案があります。: </p> <h4>あなたのお金を発行する </h4> <p> 暗号通貨を一定の供給と共に作成することが出来、トークンを現実世界のアセットと関連付ける事ができます。</p>",
-                "tutorial2Description": "<h4>クラウドセールを作成する </h4> <p>第三者の介入無く共通のゴールを目指して一緒に進みましょう. 従来のファンディングシステムではとは異なり、ブロックチェーンを用いてダイレクトに資金を集める事ができます。</p>",
-                "tutorial3Description": "<h4>ブロックチェーン組織 </h4> <p> どのようにして資金を使うのか、そして誰が決定するのかについて破ることが出来ないルールを持った自律的な組織を作成しましょう。そして、あなたの支援者に、どのように資金が使われるのかをアクティブに考え、行動してもらうことが出来ます。</p>",
                 "buttons": {
-                    "showPassword": "パスワードを見せる",
-                    "importAccount": "アカウントをインポートする",
-                    "launchApp": "アプリケーションをスタート!",
-                    "learnReceipt": "このレシピを学ぶ"
+                    "showPassword": "パスワードを見せる"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "ノードが起動するまでもう少し待ってください",
                     "unknownFile": "ファイルを認識できませんでした.",
                     "wrongPassword": "パスワードが間違っています",
                     "importFailed": "ファイルが読み込めませんでした: __error__のエラーです"
-                },
-
-                "buyEther": "Buy Ether",
-                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
-                "syncMessage": "ブロック __displayBlock__ / __highestBlockString__",
-                "syncMessageWithStates": "ブロック __displayBlock__ / __highestBlockString__ (チェーン構造 __statesPercent__%)",
-                "startingSync": "動機を開始しています..."
+                }
             },
             "updateAvailable": {
                 "newVersionAvailable": "新しバージョン __name__ が利用可能です",
@@ -248,7 +202,6 @@
                 "downloadAndRestart": "アップデートして再起動",
                 "download": "新しいバージョンをダウンロード",
                 "skipUpdate": "アップデートをスキップ",
-                "notNow": "今はしない",
                 "checking": "__name__ のバージョンにアップデートがないか確認しています...",
                 "noUpdateFound": "新しいバージョンは見つかりませんでした. あなたの __name__ は最新バージョンです."
             },

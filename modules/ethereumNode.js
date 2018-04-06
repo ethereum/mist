@@ -198,6 +198,11 @@ class EthereumNode extends EventEmitter {
 
       return this.stop()
         .then(() => Windows.loading.show())
+        .then(async () => {
+          await Sockets.destroyAll();
+          this._socket = Sockets.get('node-ipc', Settings.rpcMode);
+          return null;
+        })
         .then(() =>
           this._start(
             newType || this.type,

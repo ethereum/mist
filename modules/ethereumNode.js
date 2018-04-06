@@ -226,6 +226,7 @@ class EthereumNode extends EventEmitter {
         }
 
         clearInterval(this.syncInterval);
+        clearInterval(this.watchLocalBlockHeaders);
 
         this.state = STATES.STOPPING;
 
@@ -614,6 +615,11 @@ class EthereumNode extends EventEmitter {
   }
 
   _checkSync() {
+    // Reset
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+    }
+
     this.syncInterval = setInterval(async () => {
       const syncingResult = await this.send('eth_syncing');
       const sync = syncingResult.result;
@@ -634,8 +640,8 @@ class EthereumNode extends EventEmitter {
   }
 
   _watchLocalBlockHeaders() {
+    // Reset
     if (this.watchLocalBlockHeaders) {
-      // Reset
       clearInterval(this.watchLocalBlockHeaders);
     }
 

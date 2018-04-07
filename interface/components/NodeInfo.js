@@ -43,7 +43,7 @@ class NodeInfo extends Component {
     const remoteTimestamp = moment.unix(this.props.remote.timestamp);
     const diff = moment().diff(remoteTimestamp, 'seconds');
 
-    if (this.props.remote.blockNumber === 100) {
+    if (this.props.remote.blockNumber < 1000) {
       // Still loading initial remote results
       return (
         <div id="remote-stats" className="node-info__section">

@@ -39,37 +39,44 @@ class NodeInfo extends Component {
       return null;
     }
 
+    const formattedBlockNumber = numeral(this.props.remote.blockNumber).format('0,0');
     const remoteTimestamp = moment.unix(this.props.remote.timestamp);
     const diff = moment().diff(remoteTimestamp, 'seconds');
 
-    return (
-      <div id="remote-stats" className="node-info__section">
-        <div className="node-info__node-title orange">
-          REMOTE <span className="node-info__pill">active</span>
+    if (this.props.remote.blockNumber === 100) {
+      // Still loading initial remote results
+      return (
+        <div id="remote-stats" className="node-info__section">
+          <div>Loading...</div>
         </div>
-        <div>
-          <i className="icon-layers" /> {this.props.remote.blockNumber}
+      );
+    } else {
+      return (
+        <div id="remote-stats" className="node-info__section">
+          <div className="node-info__node-title orange">
+            REMOTE <span className="node-info__pill">active</span>
+          </div>
+          <div>
+            <i className="icon-layers" /> {formattedBlockNumber}
+          </div>
+          <div>
+            <i className="icon-clock" /> {diff} seconds
+          </div>
         </div>
-        <div>
-          <i className="icon-clock" /> {diff} seconds
-        </div>
-      </div>
-    );
+      );
+    }
   }
 
   renderLocalStats() {
-    const {
-      highestBlock,
-      currentBlock,
-      startingBlock,
-      syncMode
-    } = this.props.local;
+    const { blockNumber, timestamp, syncMode } = this.props.local;
+    const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
-    const blocksBehind = highestBlock - currentBlock;
+    const blocksBehind = numeral(highestBlock - currentBlock).format('0,0');
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
-    const timeSince = moment(this.props.remote.timestamp, 'X');
+    const formattedBlockNumber = numeral(blockNumber).format('0,0');
+    const timeSince = moment(this.props.local.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
     let localStats;
@@ -95,7 +102,7 @@ class NodeInfo extends Component {
       localStats = (
         <div>
           <div className="block-number">
-            <i className="icon-layers" /> {currentBlock}
+            <i className="icon-layers" /> {formattedBlockNumber}
           </div>
           <div>
             <i className="icon-users" /> {this.state.peerCount} peers

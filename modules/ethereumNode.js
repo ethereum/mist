@@ -13,7 +13,7 @@ import Settings from './settings';
 import {
   syncLocalNode,
   resetLocalNode,
-  updateLocalBlockNumber
+  updateLocalBlock
 } from './core/nodes/actions';
 
 import logger from './utils/logger';
@@ -231,7 +231,7 @@ class EthereumNode extends EventEmitter {
         }
 
         clearInterval(this.syncInterval);
-        clearInterval(this.watchLocalBlockHeaders);
+        clearInterval(this.watchlocalBlocksInterval);
 
         this.state = STATES.STOPPING;
 
@@ -634,7 +634,7 @@ class EthereumNode extends EventEmitter {
         if (blockNumber >= store.getState().nodes.remote.blockNumber - 15) {
           // Sync is caught up
           clearInterval(this.syncInterval);
-          this._watchLocalBlockHeaders();
+          this._watchLocalBlocks();
         }
       } else if (_.isObject(sync)) {
         store.dispatch(syncLocalNode(sync));
@@ -642,16 +642,22 @@ class EthereumNode extends EventEmitter {
     }, 1500);
   }
 
-  _watchLocalBlockHeaders() {
+  _watchLocalBlocks() {
     // Reset
-    if (this.watchLocalBlockHeaders) {
-      clearInterval(this.watchLocalBlockHeaders);
+    if (this.watchlocalBlocksInterval) {
+      clearInterval(this.watchlocalBlocksInterval);
     }
 
-    this.watchLocalBlockHeaders = setInterval(async () => {
-      const blockNumberResult = await this.send('eth_blockNumber');
-      const blockNumber = parseInt(blockNumberResult.result, 16);
-      store.dispatch(updateLocalBlockNumber(blockNumber));
+    this.watchlocalBlocksInterval = setInterval(async () => {
+      const blockResult = await this.send('eth_getBlockByNumber', [
+        'latest',
+        false
+      ]);
+      console.log(blockResult);
+      const block = blockResult.result;
+      if (block && block.number > store.getState().nodes.local.blockNumber) {
+        store.dispatch(updateLocalBlock(block.number, block.timestamp));
+      }
     }, 1500);
   }
 }

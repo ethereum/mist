@@ -8,12 +8,16 @@ export const initialState = {
   },
   local: {
     client: 'geth',
+    blockNumber: 0,
+    timestamp: 0,
     syncMode: 'fast',
-    currentBlock: 0,
-    highestBlock: 0,
-    knownStates: 0,
-    pulledStates: 0,
-    startingBlock: 0
+    sync: {
+      currentBlock: 0,
+      highestBlock: 0,
+      knownStates: 0,
+      pulledStates: 0,
+      startingBlock: 0
+    }
   }
 };
 
@@ -22,28 +26,34 @@ const nodes = (state = initialState, action) => {
     case '[MAIN]:LOCAL_NODE:SYNC_UPDATE':
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
-          currentBlock: action.payload.currentBlock,
-          highestBlock: action.payload.highestBlock,
-          knownStates: action.payload.knownStates,
-          pulledStates: action.payload.pulledStates,
-          startingBlock: action.payload.startingBlock
+          sync: Object.assign({}, state.local.sync, {
+            currentBlock: action.payload.currentBlock,
+            highestBlock: action.payload.highestBlock,
+            knownStates: action.payload.knownStates,
+            pulledStates: action.payload.pulledStates,
+            startingBlock: action.payload.startingBlock
+          })
         })
       });
-    case '[MAIN]:LOCAL_NODE:UPDATE_BLOCK_NUMBER':
+    case '[MAIN]:LOCAL_NODE:UPDATE_NEW_BLOCK':
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
-          currentBlock: action.payload.blockNumber,
-          highestBlock: action.payload.blockNumber
+          blockNumber: action.payload.blockNumber,
+          timestamp: action.payload.timestamp
         })
       });
     case '[MAIN]:LOCAL_NODE:RESET':
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
-          currentBlock: 0,
-          highestBlock: 0,
-          knownStates: 0,
-          pulledStates: 0,
-          startingBlock: 0
+          blockNumber: 0,
+          timestamp: 0,
+          sync: Object.assign({}, state.local.sync, {
+            currentBlock: 0,
+            highestBlock: 0,
+            knownStates: 0,
+            pulledStates: 0,
+            startingBlock: 0
+          })
         })
       });
     case '[MAIN]:REMOTE_NODE:RESET':
@@ -72,11 +82,15 @@ const nodes = (state = initialState, action) => {
           timestamp: 0
         }),
         local: Object.assign({}, state.local, {
-          currentBlock: 0,
-          highestBlock: 0,
-          knownStates: 0,
-          pulledStates: 0,
-          startingBlock: 0
+          blockNumber: 0,
+          timestamp: 0,
+          sync: Object.assign({}, state.local.sync, {
+            currentBlock: 0,
+            highestBlock: 0,
+            knownStates: 0,
+            pulledStates: 0,
+            startingBlock: 0
+          })
         })
       });
     case '[MAIN]:NODES:CHANGE_SYNC_MODE':

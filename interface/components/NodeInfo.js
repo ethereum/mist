@@ -39,7 +39,9 @@ class NodeInfo extends Component {
       return null;
     }
 
-    const formattedBlockNumber = numeral(this.props.remote.blockNumber).format('0,0');
+    const formattedBlockNumber = numeral(this.props.remote.blockNumber).format(
+      '0,0'
+    );
     const remoteTimestamp = moment.unix(this.props.remote.timestamp);
     const diff = moment().diff(remoteTimestamp, 'seconds');
 
@@ -47,6 +49,7 @@ class NodeInfo extends Component {
       // Still loading initial remote results
       return (
         <div id="remote-stats" className="node-info__section">
+          <div className="node-info__node-title orange">REMOTE</div>
           <div>Loading...</div>
         </div>
       );
@@ -71,7 +74,10 @@ class NodeInfo extends Component {
     const { blockNumber, timestamp, syncMode } = this.props.local;
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
-    const blocksBehind = numeral(highestBlock - currentBlock).format('0,0');
+    const blocksBehind =
+      highestBlock - currentBlock > 0
+        ? numeral(highestBlock - currentBlock).format('0,0')
+        : '-';
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
@@ -79,14 +85,24 @@ class NodeInfo extends Component {
     const timeSince = moment(this.props.local.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
+    const syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
+
     let localStats;
 
-    if (this.props.active === 'remote') {
+    if (syncMode === 'nosync') {
+      // No localStats if 'nosync'
+    } else if (currentBlock === 0) {
+      if (this.state.peerCount === 0) {
+        localStats = <div>Looking for peers...</div>;
+      } else {
+        localStats = <div>Sync starting...</div>;
+      }
+    } else if (this.props.active === 'remote') {
       // While syncing, localStats displays progress
       localStats = (
         <div>
           <div className="block-number">
-            <i className="icon-layers" /> {blocksBehind || '—'} blocks behind
+            <i className="icon-layers" /> {blocksBehind} blocks behind
           </div>
           <div>
             <i className="icon-users" /> {this.state.peerCount} peers
@@ -118,7 +134,7 @@ class NodeInfo extends Component {
       <div id="local-stats" className="node-info__section">
         <div className="node-info__node-title">
           LOCAL
-          <span className="node-info__pill">{syncMode} sync</span>
+          <span className="node-info__pill">{syncText}</span>
         </div>
 
         {localStats}

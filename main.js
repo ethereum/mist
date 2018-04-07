@@ -327,6 +327,10 @@ function checkForLegacyChain() {
 }
 
 function initializeKickStartListeners() {
+  ipcMain.on('retryConnection', () => {
+    kickStart();
+  });
+
   ClientBinaryManager.on('status', (status, data) => {
     Windows.broadcast('uiAction_clientBinaryStatus', status, data);
   });

@@ -20,7 +20,14 @@ class EthereumNodeRemote extends EventEmitter {
     return instance;
   }
 
-  start() {
+  async start() {
+    if (this.starting) {
+      ethereumNodeRemoteLog.trace('Already starting...');
+      return;
+    }
+
+    this.starting = true;
+
     this.network =
       Settings.network || Settings.loadUserData('network') || 'main';
 
@@ -32,7 +39,15 @@ class EthereumNodeRemote extends EventEmitter {
 
     this.web3 = new Web3(provider);
 
-    return this.watchBlockHeaders();
+    try {
+      await this.watchBlockHeaders();
+    } catch (error) {
+      ethereumNodeRemoteLog.error('Error starting: ', error);
+    } finally {
+      this.starting = false;
+    }
+
+    return true;
   }
 
   setNetwork(network) {
@@ -77,28 +92,27 @@ class EthereumNodeRemote extends EventEmitter {
     // Unsubscribe before starting
     this.unsubscribe();
 
-    this._syncSubscription = this.web3.eth
+    return (this._syncSubscription = this.web3.eth
       .subscribe('newBlockHeaders', (error, sync) => {
         if (error) {
           ethereumNodeRemoteLog.log('Subscription error:', error);
 
-          if (
-            error.reason &&
-            error.reason.includes('connection')
-          ) {
+          if (error.toString().toLowerCase().includes('connect')) {
             // Try restarting connection
             this.start();
-          } else {
-            // Try restarting subscription
-            this.watchBlockHeaders();
           }
+
+          // Try restarting subscription
+          setTimeout(() => {
+            this.watchBlockHeaders();
+          }, 2500);
         }
       })
       .on('data', blockHeader => {
         if (blockHeader.number) {
           store.dispatch(remoteBlockReceived(blockHeader));
         }
-      });
+      }));
   }
 
   unsubscribe() {

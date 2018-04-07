@@ -653,7 +653,6 @@ class EthereumNode extends EventEmitter {
         'latest',
         false
       ]);
-      console.log(blockResult);
       const block = blockResult.result;
       if (block && block.number > store.getState().nodes.local.blockNumber) {
         store.dispatch(updateLocalBlock(block.number, block.timestamp));

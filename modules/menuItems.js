@@ -68,9 +68,7 @@ const changeNodeNetwork = function(network, webviews) {
 
   Settings.saveUserData('network', network);
 
-  if (ethereumNode.stateAsText !== 'stopped') {
-    restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
-  }
+  restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
 
   createMenu(webviews);
 };
@@ -80,9 +78,7 @@ const changeNodeSyncMode = function(syncMode, webviews) {
 
   Settings.saveUserData('syncmode', syncMode);
 
-  if (ethereumNode.stateAsText !== 'stopped') {
-    restartNode(ethereumNode.type, ethereumNode.network, syncMode, webviews);
-  }
+  restartNode(ethereumNode.type, ethereumNode.network, syncMode, webviews);
 
   createMenu(webviews);
 };
@@ -522,10 +518,7 @@ let menuTempl = function(webviews) {
     if (gethClient) {
       nodeSubmenu.push({
         label: `Geth ${gethClient.version}`,
-        checked:
-          ethereumNode.isOwnNode &&
-          ethereumNode.isGeth &&
-          ethereumNode.stateAsText !== 'stopped',
+        checked: ethereumNode.isOwnNode && ethereumNode.isGeth,
         enabled: ethereumNode.isOwnNode,
         type: 'checkbox',
         click() {
@@ -537,10 +530,7 @@ let menuTempl = function(webviews) {
     if (ethClient) {
       nodeSubmenu.push({
         label: `Eth ${ethClient.version} (C++)`,
-        checked:
-          ethereumNode.isOwnNode &&
-          ethereumNode.isEth &&
-          ethereumNode.stateAsText !== 'stopped',
+        checked: ethereumNode.isOwnNode && ethereumNode.isEth,
         enabled: ethereumNode.isOwnNode,
         // enabled: false,
         type: 'checkbox',
@@ -607,10 +597,9 @@ let menuTempl = function(webviews) {
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
         enabled:
-        ethereumNode.isOwnNode &&
-        ethereumNode.stateAsText !== 'stopped' &&
-        ethereumNode.isGeth &&
-        !ethereumNode.isDevNetwork,
+          ethereumNode.isOwnNode &&
+          ethereumNode.isGeth &&
+          !ethereumNode.isDevNetwork,
         checked: store.getState().nodes.local.syncMode === 'light',
         type: 'checkbox',
         click() {
@@ -619,10 +608,7 @@ let menuTempl = function(webviews) {
       },
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeFast'),
-        enabled:
-          ethereumNode.isOwnNode &&
-          ethereumNode.stateAsText !== 'stopped' &&
-          !ethereumNode.isDevNetwork,
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
         checked: store.getState().nodes.local.syncMode === 'fast',
         type: 'checkbox',
         click() {
@@ -631,8 +617,7 @@ let menuTempl = function(webviews) {
       },
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeFull'),
-        enabled:
-          ethereumNode.isOwnNode && ethereumNode.stateAsText !== 'stopped',
+        enabled: ethereumNode.isOwnNode,
         checked: store.getState().nodes.local.syncMode === 'full',
         type: 'checkbox',
         click() {
@@ -643,7 +628,6 @@ let menuTempl = function(webviews) {
         label: i18n.t('mist.applicationMenu.develop.syncModeNoSync'),
         enabled:
           ethereumNode.isOwnNode &&
-          ethereumNode.stateAsText !== 'stopped' &&
           ethereumNode.isGeth &&
           !ethereumNode.isDevNetwork,
         checked: store.getState().nodes.local.syncMode === 'nosync',

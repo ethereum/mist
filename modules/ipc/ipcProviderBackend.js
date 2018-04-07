@@ -592,14 +592,14 @@ class IpcProviderBackend {
     return ethereumNodeRemote.web3.eth.subscribe(...params, (error, result) => {
       if (error) {
         log.error('Error subscribing in remote node: ', error);
-        if (error.toString().includes('connection not open')) {
+        if (error.toString().includes('connection')) {
           // Try restarting connection
           ethereumNodeRemote.start();
         }
         // Try resubscribing
         setTimeout(() => {
           this._subscribeRemote(subscriptionId, params);
-        }, 1000);
+        }, 2000);
         return;
       }
       if (store.getState().nodes.active === 'remote') {

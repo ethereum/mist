@@ -69,7 +69,7 @@ class NodeInfo extends Component {
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
-    const timeSince = moment(EthBlocks.latest.timestamp, 'X');
+    const timeSince = moment(this.props.remote.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
     let localStats;

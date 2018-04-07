@@ -32,10 +32,10 @@
                 "newAccount": "Nouveau compte",
                 "backup": "Sauvegarder",
                 "backupKeyStore": "Comptes",
-                "backupMist": "Données de l'application"
+                "backupMist": "Données de l'application",
+                "swarmUpload": "Télécharger à Swarm"
             },
             "develop": {
-                "uploadToSwarm": "Télécharger à Swarm",
                 "label": "Développement",
                 "devTools": "Outils de développement",
                 "devToolsMistUI": "Mist UI",
@@ -48,11 +48,7 @@
                 "mainNetwork": "Réseau principal",
                 "startMining": "⛏ Commencer à miner",
                 "stopMining": "⛏ Arrêter de miner",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "openRemix": "Open Remix IDE"
             },
             "window": {
                 "label": "Fenêtre",
@@ -91,18 +87,13 @@
         },
         "nodeInfo": {
             "nodeSyncing": "__blockDiff__ blocs restant",
-            "blockReceived": "Nouveau bloc reçu",
+            "blockReceivedShort": "Nouveau bloc",
             "timeSinceBlock": "depuis le dernier bloc",
             "peers": "pairs",
             "blockNumber": "Your latest block number",
             "checkingWhichNetwork": "Checking network...",
-            "mainNetwork": "Main-net",
-            "testNetwork": "Test-net",
             "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
-            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
-            "unknownnetExplain": "Unable to determine which network you are on"
+            "testnetExplain": "You are on the testnet, DO NOT SEND any real ether to these addresses"
         },
         "sidebar": {
             "buttons": {
@@ -117,15 +108,11 @@
         },
         "startScreen": {
             "runningNodeFound": "Nœud Ethereum actif trouvé !",
-            "startingNode": "Démarrage du nœud Ethereum en cours...",
-            "startedNode": "Démarrage de l'application...",
             "nodeConnectionTimeout": "Echec du démarrage du nœud Ethereum !<br><small>Si vous <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>avez installé Geth</a>, utilisez cette commande pour le lancer : <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ou signalez le problème </a></small>",
             "nodeBinaryNotFound": "Pas de binaire du nœud Ethereum trouvé !<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Veuillez en lancer d'abord un manuellement. </a> </small>",
             "nodeSyncing": "Le nœud Ethereum se synchronise, veuillez patienter...",
             "nodeSyncInfo": "Télechargement du bloc __displayBlock__ depuis le bloc __highestBlock__.",
             "nodeSyncConnecting": "À la recherche de pairs...",
-            "peerSearchTimeout": "Recherche de pairs ignorée",
-            "stoppingNode": "Stopping Ethereum node...",
             "nodeStarting": "Ethereum node starting up...",
             "nodeStarted": "Ethereum node started",
             "nodeConnected": "Ethereum node connected",
@@ -193,51 +180,19 @@
                 "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
-            "onboarding": {
-                "description": "Ethereum est une plateforme décentralisée pour la création d'applications sur une blockchain (chaîne de blocs) : logiciel inviolable qui peut transférer de la valeur et de la propriété et qui vit pour toujours",
-                "goToTestnet": "Utiliser le réseau Testnet (Rinkeby)",
-                "goToTestnetDescription": "Testez la technologie librement sur le réseau sandboxé (bac à sable), sans utiliser d'ether réel.",
-                "gotoMainnet": "Utiliser le réseau réel",
-                "gotoMainnetDescription": "Vous aurez besoin de quelques Ether afin de créer et exécuter des contrats. Ne vous en faites pas, nous allons vous aider à en obtenir...",
+            "importAccount": {
                 "doYouHaveAWalletFile": "Avez-vous un fichier wallet ?",
                 "walletFileDescription": "<p>Si vous avez participé à la prévente Ethereum 2014, vous devriez avoir un fichier nommé <code>ethereum_wallet_backup.json</code>. Il a été téléchargé après la vente et vous a aussi été envoyé par e-mail</p>",
                 "dropFilesHere": "Déposer un fichier de prévente ici",
-                "creating": "Création...",
                 "importing": "Importation...",
-                "skip": "Ignorer ces étapes",
-                "next": "Suivant",
-                "protectTitle": "Protéger votre compte",
-                "protectDescription": "Choisissez un mot de passe pour votre nouveau compte. Rendez-le aussi fort que s'il protégeait les clés de votre maison !",
-                "accountTitle": "Chargez le !",
-                "accountTitleTestnet": "Minez-en quelques-uns !",
-                "etherDescription": "Le réseau ethereum est basé sur un token (jeton) appelé “Ether”. Vous aurez besoin d'un petit montant de cela pour faire ce que vous souhaitez sur le réseau Ethereum.",
-                "loadItDescription": "Si vous possédez déjà des Bitcoin, ou n'importe quel autre crypto-monnaie, vous pouvez facilement les convertir en ether en utilisant changelly. <br><br> Nous recommandons d'en charger de <strong>0.25 à 1 ether</strong>.",
-                "mineItDescription": "<strong>Sur le réseau Testnet vous pouvez miner de l'ether vous-même en allant sur le menu <em>Développement</em> et en choisissant <em>Commencer à miner</em>. </strong> <br> <strong> N'ESSAYEZ PAS D'ENVOYER DU VERITABLE ETHER A CETTE ADRESSE </strong>",
-                "you": "VOUS",
-                "etherbase": "Compte principal (etherbase)",
-                "depositBitcoin": "Déposer des Bitcoin",
-                "learnIt": "Apprenez pendant que vous patientez",
-                "downloadingBlocks": "Téléchargement de blocs",
-                "tutorial1Description": "<p> Maintenant la seule chose qu'il reste à faire est d'attendre que le téléchargement se finisse. Voici quelques suggestions de lecture : </p> <h4>Faire son propre argent </h4> <p> Faire une crypto-monnaie avec une offre de marché fixe, les tokens représentant les actifs du monde réel, etc </p>",
-                "tutorial2Description": "<h4> Créer un crowdsale </h4> <p> Lever des fonds pour un but commun, entièrement fiable et sans tiers. Éviter l'obstacle du système de financement traditionnel et aller directement à la source en finançant une organisation via la blockchain.</p>",
-                "tutorial3Description": "<h4> Organisation de la blockchain </h4> <p> Créer une organisation autonome avec des règles inviolables sur la façon dont l'argent peut être dépensé et qui peut prendre des décisions. Laissez vos bailleurs de fonds prendre un rôle actif sur la façon dont l'argent est dépensé</p>",
                 "buttons": {
-                    "showPassword": "Afficher le mot de passe",
-                    "importAccount": "Importer un compte",
-                    "launchApp": "Lancer l'application !",
-                    "learnReceipt": "Apprendre cette recette"
+                    "showPassword": "Afficher le mot de passe"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "Attendez quelques secondes de plus avant que votre nœud soit initialisé et essayez de nouveau",
                     "unknownFile": "Fichier non reconnu.",
                     "wrongPassword": "Mauvais mot de passe.",
                     "importFailed": "Echec à l'importation du fichier avec l'erreur : __error__"
-                },
-                "buyEther": "Acheter Ether",
-                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
+                }
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",
@@ -247,7 +202,6 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Download new version",
                 "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
                 "checking": "Checking for updates to __name__...",
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },

@@ -2507,8 +2507,8 @@ ethereum-client-binaries@ethereum/ethereum-client-binaries:
     lodash.isempty "^4.4.0"
     lodash.values "^4.3.0"
     mkdirp "^0.5.1"
+    node-unzip-2 "github:glebdmitriew/node-unzip-2"
     tmp "0.0.29"
-    unzip "github:glebdmitriew/node-unzip-2"
 
 ethereum-common@^0.0.18:
   version "0.0.18"

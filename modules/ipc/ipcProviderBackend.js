@@ -76,9 +76,13 @@ class IpcProviderBackend {
     store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
 
     // Store remote subscriptions.
-    // key: local subscription id
-    // value: remote subscription object
+    // > key: local subscription id
+    // > value: remote subscription object
     this._remoteSubscriptions = {};
+    // Store subscription owners for sending remote results
+    // > key: local subscription id
+    // > value: connection ownerId
+    this._subscriptionOwners = {};
   }
 
   /**
@@ -179,7 +183,6 @@ class IpcProviderBackend {
               }
             })
               .then(() => {
-                // TODO allow for infura connection here?
                 return socket.connect(Settings.rpcConnectConfig, {
                   timeout: 5000
                 });
@@ -234,6 +237,7 @@ class IpcProviderBackend {
       subscription.unsubscribe();
     });
     this._remoteSubscriptions = {};
+    this._subscriptionOwners = {};
 
     switch (state) { // eslint-disable-line default-case
       // stop syncing when node about to be stopped
@@ -345,6 +349,14 @@ class IpcProviderBackend {
 
               // sanitize response payload
               processor.sanitizeResponsePayload(conn, p, isBatch);
+
+              // if subscription, save connection ownerId for sending responses later
+              if (p.method === 'eth_subscribe') {
+                const subscriptionId = p.result;
+                if (subscriptionId) {
+                  this._subscriptionOwners[subscriptionId] = ownerId;
+                }
+              }
 
               finalResult.push(p);
             }
@@ -559,7 +571,8 @@ class IpcProviderBackend {
       const subscriptionId = result.params[0];
       if (this._remoteSubscriptions[subscriptionId]) {
         this._remoteSubscriptions[subscriptionId].unsubscribe();
-        this._remoteSubscriptions[subscriptionId] = null;
+        delete this._remoteSubscriptions[subscriptionId];
+        delete this._subscriptionOwners[subscriptionId];
       }
     }
 
@@ -591,7 +604,7 @@ class IpcProviderBackend {
       }
       if (store.getState().nodes.active === 'remote') {
         // Set up object to send
-        const ret = {
+        const res = {
           jsonrpc: '2.0',
           method: 'eth_subscription',
           params: {
@@ -601,14 +614,19 @@ class IpcProviderBackend {
         };
         log.trace(
           `Sending remote subscription result (remote node is active)`,
-          ret
+          res
         );
-        Object.keys(this._connections).forEach(key => {
-          const owner = this._connections[key].owner;
-          if (!owner.isDestroyed()) {
-            owner.send('ipcProvider-data', JSON.stringify(ret));
-          }
-        });
+        const owner =
+          this._subscriptionOwners[subscriptionId] &&
+          this._connections[this._subscriptionOwners[subscriptionId]]
+            ? this._connections[this._subscriptionOwners[subscriptionId]].owner
+            : null;
+        if (owner && !owner.isDestroyed()) {
+          owner.send('ipcProvider-data', JSON.stringify(res));
+        } else {
+          // no owner to send result
+          log.error('No owner to send result', res);
+        }
       }
     });
   }

@@ -22,6 +22,8 @@ window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipcRenderer;
 
+window.i18n = require('../i18n.js');
+
 // remove require and module, because node-integration is on
 delete window.module;
 delete window.require;

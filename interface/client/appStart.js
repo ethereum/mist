@@ -1,4 +1,10 @@
-const { getLanguage } = require('./actions.js');
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import { getLanguage } from './actions.js';
+import About from '../components/About';
+import RequestAccount from '../components/RequestAccount';
+import NodeInfo from '../components/NodeInfo';
 
 /**
 The init function of Mist
@@ -67,13 +73,50 @@ mistInit = function() {
   });
 };
 
+function renderReactComponentPopup(locationHash) {
+  // NOTE: when adding new React components, remember to skip meteor template in templates/index.js
+  // Example hash: '#about'. Manipulate string to return 'About'.
+  const componentName =
+    locationHash.charAt(1).toUpperCase() + locationHash.slice(2);
+  console.log('∆∆∆ componentName', componentName);
+
+  // JSX can't evaluate an expression or string, so map imported components here
+  const components = {
+    About,
+    RequestAccount
+  };
+
+  // Only render a component if it exists
+  if (!!components[componentName]) {
+    const Component = components[componentName];
+
+    render(<Component />, document.getElementById('react-entry'));
+  }
+}
+
+function renderReactComponentMain() {
+  render(
+    <Provider store={store}>
+      <NodeInfo />
+    </Provider>,
+    document.getElementById('react__node-info')
+  );
+}
+
 Meteor.startup(function() {
   console.info('Meteor starting up...');
+
+  // TODO: update language when redux updates
+  // 18n.changeLanguage(lang);
 
   if (!location.hash) {
     // Main window
     EthAccounts.init();
     mistInit();
+    renderReactComponentMain();
+  } else {
+    // render React popup window
+    renderReactComponentPopup(location.hash);
   }
 
   store.dispatch(getLanguage());

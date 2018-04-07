@@ -39,6 +39,12 @@ Template.body.helpers({
     } else {
       var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
+      // TODO: handle React components
+      const reactComponents = ['about', 'requestAccount'];
+      if (reactComponents.includes(renderWindow[1])) {
+        return false;
+      }
+
       if (renderWindow.length > 0) {
         return 'popupWindows_' + renderWindow[1];
       } else {

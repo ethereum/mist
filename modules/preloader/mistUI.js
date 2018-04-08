@@ -1,7 +1,8 @@
-require('babel-register');
 /**
 @module preloader MistUI
 */
+
+require('babel-register');
 
 // Initialise the Redux store
 window.store = require('./rendererStore');

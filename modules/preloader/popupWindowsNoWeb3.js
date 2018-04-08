@@ -1,8 +1,8 @@
-require('babel-register');
 /**
 @module preloader PopupWindows
 */
 
+require('babel-register');
 require('./include/common')('popupWindow');
 const { ipcRenderer, remote, webFrame } = require('electron');
 const mist = require('./include/mistAPI.js');

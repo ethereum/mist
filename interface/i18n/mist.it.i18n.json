@@ -93,8 +93,7 @@
             "testnetExplain": "Sei connesso alla testnet, NON INVIARE alcun ether reale a questi indirizzi",
             "peers": "nodi",
             "checkingWhichNetwork": "Controllo rete...",
-            "privateNetwork": "Private-net",
-
+            "privateNetwork": "Private-net"
         },
         "sidebar": {
             "buttons": {

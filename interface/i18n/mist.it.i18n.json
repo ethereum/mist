@@ -48,7 +48,7 @@
                 "mainNetwork": "Rete principale",
                 "startMining": "⛏ Inizia mining",
                 "stopMining": "⛏ Ferma mining",
-                "openRemix": "Apri IDE Remix",
+                "openRemix": "Apri IDE Remix"
             },
             "window": {
                 "label": "Finestra",

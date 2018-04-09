@@ -15,9 +15,12 @@
 }
 
 #node-info__light {
-  height: 20px;
-  width: 20px;
+  height: 16px;
+  width: 16px;
   border-radius: 50%;
+  animation: breathing ease-in-out infinite alternate;
+  animation-duration: 5s;
+  transition: animation-duration;
 }
 
 .node-info__subtitle {
@@ -32,13 +35,14 @@
 }
 
 .node-info__network-title {
-  font-weight: bold;
-  color: #24C33A;
-  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 24px;
+  // color: #24C33A;
+  text-transform: capitalize;
 }
 
 .node-info__node-title {
-  font-weight: bold;
+  font-weight: 300;
   padding-bottom: 8px;
 }
 
@@ -86,7 +90,8 @@
   }
 
   section {
-    background-color: rgba(0, 0, 0, 0.78);
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(2px);
     width: 100%;
     border-radius: 5px;
     color: #fff;
@@ -98,6 +103,29 @@
   }
 }
 
+strong {
+  font-weight: 500;
+}
+
 .orange {
   color: orange;
+}
+
+.local-color {
+  color: #7ed321;
+}
+
+//// animation-name
+@keyframes breathing {
+  0% {
+    transform: scale(0.6);
+    filter: brightness(100%);
+    // opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(1);
+    filter: brightness(120%);
+    // opacity: 0.9;
+  }
 }

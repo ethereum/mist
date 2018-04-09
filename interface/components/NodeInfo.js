@@ -16,7 +16,9 @@ class NodeInfo extends Component {
   componentDidMount() {
     // NOTE: this goal of this component is to give status updates at
     // least once per second. The `tick` function ensures that.
-    this.interval = setInterval(() => { this.tick() }, 1000);
+    this.interval = setInterval(() => {
+      this.tick();
+    }, 1000);
   }
 
   componentWillUnmount() {
@@ -29,7 +31,7 @@ class NodeInfo extends Component {
     });
 
     this.setState({ timestamp: this.state.timestamp + 1 });
-  };
+  }
 
   renderRemoteStats() {
     // Hide remote stats if local node is synced
@@ -47,7 +49,9 @@ class NodeInfo extends Component {
       // Still loading initial remote results
       return (
         <div id="remote-stats" className="node-info__section">
-          <div className="node-info__node-title orange">REMOTE</div>
+          <div className="node-info__node-title orange">
+            <strong>Remote</strong> Node
+          </div>
           <div>Loading...</div>
         </div>
       );
@@ -55,7 +59,9 @@ class NodeInfo extends Component {
       return (
         <div id="remote-stats" className="node-info__section">
           <div className="node-info__node-title orange">
-            REMOTE <span className="node-info__pill">active</span>
+            <strong>Remote</strong> Node<span className="node-info__pill">
+              active
+            </span>
           </div>
           <div>
             <i className="icon-layers" /> {formattedBlockNumber}
@@ -130,8 +136,8 @@ class NodeInfo extends Component {
 
     return (
       <div id="local-stats" className="node-info__section">
-        <div className="node-info__node-title">
-          LOCAL
+        <div className="node-info__node-title local-color">
+          <strong>Local</strong> Node
           <span className="node-info__pill">{syncText}</span>
         </div>
 
@@ -141,13 +147,18 @@ class NodeInfo extends Component {
   }
 
   render() {
-    const { active, network } = this.props;
+    const { active, network, local } = this.props;
+
+    const timeSince = moment(parseInt(local.timestamp), 'X');
+    const breatheSpeed =
+      Math.floor(moment().diff(timeSince, 'seconds') / 5) + 's';
 
     return (
       <div id="node-info">
         <div
           id="node-info__light"
           style={{
+            animationDuration: breatheSpeed,
             backgroundColor: active === 'remote' ? 'orange' : '#24C33A'
           }}
           onMouseEnter={() =>
@@ -159,8 +170,8 @@ class NodeInfo extends Component {
           <section className="node-info__submenu-container">
             <section>
               <div className="node-info__section">
-                <div className="node-info__subtitle">Network</div>
                 <div className="node-info__network-title">{network}</div>
+                <div className="node-info__subtitle">Network</div>
               </div>
 
               {this.renderRemoteStats()}

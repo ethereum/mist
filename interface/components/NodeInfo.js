@@ -136,7 +136,7 @@ class NodeInfo extends Component {
 
     return (
       <div id="local-stats" className="node-info__section">
-        <div className="node-info__node-title local-color">
+        <div className="node-info__node-title local">
           <strong>Local</strong> Node
           <span className="node-info__pill">{syncText}</span>
         </div>
@@ -153,8 +153,10 @@ class NodeInfo extends Component {
     const breatheSpeed =
       Math.floor(moment().diff(timeSince, 'seconds') / 5) + 's';
 
+    const mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
+
     return (
-      <div id="node-info">
+      <div id="node-info" className={mainClass}>
         <div
           id="node-info__light"
           style={{

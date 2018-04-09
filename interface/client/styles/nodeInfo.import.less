@@ -111,8 +111,29 @@ strong {
   color: orange;
 }
 
-.local-color {
+.node-mainnet .node-info__node-title.local {
   color: #7ed321;
+}
+
+.node-testnet .node-info__node-title.local {
+  color: #00aafa;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5) inset;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.node-mainnet progress[value]::-webkit-progress-value {
+  background-image: linear-gradient(left, transparent, #7ed321);
+  background-size: cover;
+}
+
+.node-testnet progress[value]::-webkit-progress-value {
+  background-image: linear-gradient(left, transparent, #00aafa);
+  background-size: cover;
 }
 
 //// animation-name

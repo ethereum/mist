@@ -27,7 +27,7 @@
                 "default": "Default"
             },
             "file": {
-                "label": "Accounts",
+                "label": "File",
                 "importPresale": "Importa Accounts",
                 "newAccount": "Nuovo account",
                 "backup": "Backup",
@@ -73,7 +73,7 @@
             },
             "nodeChecksumMismatch": {
                 "title": "Checksum non corrispondente nel nodo scaricato!",
-                "description": "__algorithm__: __hash__\n\nPerfavore installa la __type__ node versione __version__ manualmente."
+                "description": "__algorithm__: __hash__\n\nPer favore installa la __type__ versione nodo __version__ manualmente."
             },
             "legacyChain": {
                 "title": "Rilevata chain obsoleta",
@@ -157,8 +157,8 @@
                 "estimatedFee": "Stima consumo (commissione)",
                 "estimatedGasError": "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
                 "gasPrice": "Prezzo carburante (Gas)",
-                "perMillionGas": "ether per millioni di gas",
-                "gasLimit": "Imposta commissione massima",
+                "perMillionGas": "ether per milioni di gas",
+                "gasLimit": "Imposta limite di gas",
                 "data": "Dati",
                 "buttons": {
                     "sendTransaction": "Invia transazione"
@@ -166,13 +166,13 @@
                 "errors": {
                     "connectionTimeout": "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
                     "wrongPassword": "Password errata",
-                    "multipleKeysMatchAddress": "Chiavi multiple per lo stesso indirizzo, perfavore eliminare i dublicati dal keystore (menu -> accounts -> backup -> accounts)",
+                    "multipleKeysMatchAddress": "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> accounts -> backup -> accounts)",
                     "insufficientFundsForGas": "Credito insufficiente nel account pricipale (etherbase) per pagare il gas",
                     "sameAccount": "Non può inviare a se stesso"
                 },
                 "transactionThrow": "Il contratto non consente l'esecuzione di questa transazione",
                 "noEstimate": "Impossibile stimare il gas necessario.",
-                "parameters": "Parametrei",
+                "parameters": "Parametri",
                 "showRawBytecode": "mostra dati grezzi",
                 "showDecodedParameters": "mostra parameteri decodificati",
                 "lookupData": "Provo a decodificare i dati",
@@ -216,7 +216,7 @@
     },
     "elements": {
         "checksumAlert": "Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
-        "identiconHelper": "Questa è un icona di sicurezza, se c'è qualsiasi cambiamento nell'indirizzo l'icona risultante sará completamente differente",
+        "identiconHelper": "Questa è un icona di sicurezza, se c'è qualsiasi cambiamento nell'indirizzo l'icona risultante sarà completamente differente",
         "type": {
             "address": "Address",
             "bool": "Boolean",

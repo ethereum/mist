@@ -431,6 +431,8 @@ class EthereumNode extends EventEmitter {
 
       switch (network) {
         // Starts Ropsten network
+        case 'ropsten':
+          // fall through
         case 'test':
           args = [
             '--testnet',

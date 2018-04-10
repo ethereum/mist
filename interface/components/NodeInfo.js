@@ -63,11 +63,11 @@ class NodeInfo extends Component {
               active
             </span>
           </div>
-          <div>
-            <i className="icon-layers" /> {formattedBlockNumber}
+          <div className="block-number row-icon">
+            <i className="icon icon-layers" /> {formattedBlockNumber}
           </div>
-          <div>
-            <i className="icon-clock" /> {diff} seconds
+          <div className="block-diff row-icon">
+            <i className="icon icon-clock" /> {diff} seconds
           </div>
         </div>
       );
@@ -105,14 +105,14 @@ class NodeInfo extends Component {
       // While syncing, localStats displays progress
       localStats = (
         <div>
-          <div className="block-number">
-            <i className="icon-layers" /> {blocksBehind} blocks behind
+          <div className="block-number row-icon">
+            <i className="icon icon-layers" /> {blocksBehind} blocks behind
           </div>
-          <div>
-            <i className="icon-users" /> {this.state.peerCount} peers
+          <div className="peer-count row-icon">
+            <i className="icon icon-users" /> {this.state.peerCount} peers
           </div>
-          <div>
-            <i className="icon-cloud-download" />
+          <div className="sync-progress row-icon">
+            <i className="icon icon-cloud-download" />
             <progress max="100" value={progress || 0} />
           </div>
         </div>
@@ -121,14 +121,14 @@ class NodeInfo extends Component {
       // When synced, localStats displays latest block data
       localStats = (
         <div>
-          <div className="block-number">
+          <div className="block-number row-icon">
             <i className="icon-layers" /> {formattedBlockNumber}
           </div>
-          <div>
-            <i className="icon-users" /> {this.state.peerCount} peers
+          <div className="peer-count row-icon">
+            <i className="icon icon-users" /> {this.state.peerCount} peers
           </div>
-          <div>
-            <i className="icon-clock" /> {diff} seconds
+          <div className="block-diff row-icon">
+            <i className="icon icon-clock" /> {diff} seconds
           </div>
         </div>
       );
@@ -156,16 +156,18 @@ class NodeInfo extends Component {
     const mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
 
     return (
-      <div id="node-info" className={mainClass}>
+      <div
+        id="node-info"
+        className={mainClass}
+        onMouseEnter={() => this.setState({ showSubmenu: true })}
+        onMouseLeave={() => this.setState({ showSubmenu: false })}
+      >
         <div
           id="node-info__light"
           style={{
             animationDuration: breatheSpeed,
             backgroundColor: active === 'remote' ? 'orange' : '#24C33A'
           }}
-          onMouseEnter={() =>
-            this.setState({ showSubmenu: !this.state.showSubmenu })
-          }
         />
 
         {this.state.showSubmenu && (

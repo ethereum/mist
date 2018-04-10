@@ -4,19 +4,18 @@
   display: flex;
   flex-flow: row wrap;
   flex-shrink: 0;
-  padding: 8px;
   font-size: 0.9em;
   color: #827a7a;
   justify-content: center;
 }
 
 #node-info {
-  padding-bottom: 14px;
+  padding: 22px;
 }
 
 #node-info__light {
-  height: 16px;
-  width: 16px;
+  height: 18px;
+  width: 18px;
   border-radius: 50%;
   animation: breathing ease-in-out infinite alternate;
   animation-duration: 5s;
@@ -43,17 +42,17 @@
 
 .node-info__node-title {
   font-weight: 300;
-  padding-bottom: 8px;
+  padding-bottom: 5px;
 }
 
 .node-info__pill {
   display: inline-block;
-  margin-left: 4px;
+  margin-left: 5px;
   font-weight: 300;
-  font-size: 12px;
+  font-size: 11px;
   background-color: black;
-  border-radius: 10px;
-  padding: 2px 8px;
+  border-radius: 8px;
+  padding: 2px 5px;
 }
 
 .node-info__submenu-container {
@@ -100,6 +99,18 @@
     span {
       font-weight: 400;
     }
+  }
+}
+
+.row-icon {
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  .icon {
+    margin-right: 4px;
+  }
+  &:last-of-type {
+    margin-bottom: 0;
   }
 }
 

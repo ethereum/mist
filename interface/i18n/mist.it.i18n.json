@@ -19,7 +19,7 @@
                 "backup": "Backup",
                 "backupKeyStore": "Accounts",
                 "backupMist": "Dati applicativi",
-                "swarmUpload": "Carica a Swarm"
+                "swarmUpload": "Carica su Swarm"
             },
             "edit": {
                 "label": "Modifica",
@@ -156,8 +156,8 @@
             "clientBinaries": {
                 "scanning": "Controlla aggiornamento nodo...",
                 "downloading": "Scaricamento nuovo nodo...",
-                "loadConfig": "Caricamento configurazione cliente...",
-                "filtering": "Filtro codice binario del cliente...",
+                "loadConfig": "Caricamento configurazione client...",
+                "filtering": "Filtro codice binario del client...",
                 "done": "Nodo Ethereum aggiornato...",
                 "error": "Errore durante lo scaricamento del codice binario."
             }
@@ -176,7 +176,7 @@
             },
             "requestAccount": {
                 "title": "Crea account",
-                "enterPassword": "Immetti password",
+                "enterPassword": "Inserisci password",
                 "repeatPassword": "Ripeti password",
                 "creating": "Generazione account...",
                 "backupHint": "Assicurati di fare i backup di tutti i file nella cartella \"keystore\". Indipendentemente da ciò, devi ANCHE assicurarti di non dimenticare le tue password o di averle salvate in modo sicuro in un password manager!\n\nI file wallet crittografati possono essere trovati nel menu -> File -> Backup -> Accounts. Conserva multiple copie della cartella \"keystore\" in diversi posti sicuri!",

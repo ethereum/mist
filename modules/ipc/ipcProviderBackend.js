@@ -285,18 +285,22 @@ class IpcProviderBackend {
       return this._getOrCreateConnection(event);
     })
       .then(conn => {
-        if (!conn.socket.isConnected) {
-          log.trace('Socket not connected.');
-
-          throw this.ERRORS.METHOD_TIMEOUT;
-        }
-
         // reparse original string (so that we don't modify input payload)
         const finalPayload = JSON.parse(originalPayloadStr);
 
         // is batch?
         const isBatch = _.isArray(finalPayload),
           finalPayloadList = isBatch ? finalPayload : [finalPayload];
+          
+        if (!conn.socket.isConnected) {
+          log.trace('Socket not connected.');
+          throw Object.assign({}, this.ERRORS.METHOD_TIMEOUT, {
+            message: this.ERRORS.METHOD_TIMEOUT.message.replace(
+              '__method__',
+              finalPayloadList.map(p => p.method).join(', ')
+            )
+          });
+        }
 
         // sanitize each and every request payload
         _.each(finalPayloadList, p => {

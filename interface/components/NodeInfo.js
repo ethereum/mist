@@ -52,7 +52,11 @@ class NodeInfo extends Component {
           <div className="node-info__node-title orange">
             <strong>Remote</strong> Node
           </div>
-          <div>Loading...</div>
+          <div>
+            <div className="remote-loading row-icon">
+              <i className="icon icon-energy" /> Connecting...
+            </div>
+          </div>
         </div>
       );
     } else {
@@ -97,9 +101,25 @@ class NodeInfo extends Component {
       // No localStats if 'nosync'
     } else if (currentBlock === 0) {
       if (this.state.peerCount === 0) {
-        localStats = <div>Looking for peers...</div>;
+        localStats = (
+          <div>
+            <div className="looking-for-peers row-icon">
+              <i className="icon icon-share" /> Looking for peers...
+            </div>
+          </div>
+
+          );
       } else {
-        localStats = <div>Sync starting...</div>;
+        localStats = (
+          <div>
+            <div className="peer-count row-icon">
+              <i className="icon icon-users" /> {this.state.peerCount} peers
+            </div>
+            <div className="sync-starting row-icon">
+              <i className="icon icon-energy" /> Sync starting...
+            </div>
+          </div>
+        );
       }
     } else if (this.props.active === 'remote') {
       // While syncing, localStats displays progress

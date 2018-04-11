@@ -70,7 +70,11 @@ class NodeInfo extends Component {
           <div className="block-number row-icon">
             <i className="icon icon-layers" /> {formattedBlockNumber}
           </div>
-          <div className="block-diff row-icon">
+          <div
+            className={
+              diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
+            }
+          >
             <i className="icon icon-clock" /> {diff} seconds
           </div>
         </div>
@@ -107,8 +111,7 @@ class NodeInfo extends Component {
               <i className="icon icon-share" /> Looking for peers...
             </div>
           </div>
-
-          );
+        );
       } else {
         localStats = (
           <div>
@@ -167,11 +170,10 @@ class NodeInfo extends Component {
   }
 
   render() {
-    const { active, network, local } = this.props;
+    const { active, network, remote } = this.props;
 
-    const timeSince = moment(parseInt(local.timestamp), 'X');
-    const breatheSpeed =
-      Math.floor(moment().diff(timeSince, 'seconds') / 5) + 's';
+    const timeSince = moment(remote.timestamp, 'X');
+    const diff = moment().diff(timeSince, 'seconds');
 
     const mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
 
@@ -184,9 +186,10 @@ class NodeInfo extends Component {
       >
         <div
           id="node-info__light"
+          title={diff}
           style={{
-            animationDuration: breatheSpeed,
-            backgroundColor: active === 'remote' ? 'orange' : '#24C33A'
+            backgroundColor:
+              diff > 60 ? 'red' : active === 'remote' ? 'orange' : '#24C33A'
           }}
         />
 

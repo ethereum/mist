@@ -14,12 +14,12 @@
 }
 
 #node-info__light {
-  height: 18px;
-  width: 18px;
+  height: 16px;
+  width: 16px;
   border-radius: 50%;
-  animation: breathing ease-in-out infinite alternate;
-  animation-duration: 5s;
-  transition: animation-duration;
+  // animation: breathing ease-in-out infinite alternate;
+  // animation-duration: 5s;
+  transition: background-color ease-in-out 5s;
 }
 
 .node-info__subtitle {
@@ -122,6 +122,10 @@ strong {
   color: orange;
 }
 
+.red {
+  color: red;
+}
+
 .node-mainnet .node-info__node-title.local {
   color: #7ed321;
 }
@@ -139,6 +143,7 @@ progress[value]::-webkit-progress-bar {
 
 .node-mainnet progress[value]::-webkit-progress-value {
   background-image: linear-gradient(left, transparent, #7ed321);
+  background: #7ed321;
   background-size: cover;
 }
 

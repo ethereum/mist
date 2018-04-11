@@ -63,9 +63,8 @@ class NodeInfo extends Component {
       return (
         <div id="remote-stats" className="node-info__section">
           <div className="node-info__node-title orange">
-            <strong>Remote</strong> Node<span className="node-info__pill">
-              active
-            </span>
+            <strong>Remote</strong> Node
+            <span className="node-info__pill">active</span>
           </div>
           <div className="block-number row-icon">
             <i className="icon icon-layers" /> {formattedBlockNumber}
@@ -107,8 +106,7 @@ class NodeInfo extends Component {
               <i className="icon icon-share" /> Looking for peers...
             </div>
           </div>
-
-          );
+        );
       } else {
         localStats = (
           <div>
@@ -194,7 +192,12 @@ class NodeInfo extends Component {
           <section className="node-info__submenu-container">
             <section>
               <div className="node-info__section">
-                <div className="node-info__network-title">{network}</div>
+                <div className="node-info__network-title">
+                  {network}
+                  {network != 'main' && (
+                    <span className="node-info__pill">test</span>
+                  )}
+                </div>
                 <div className="node-info__subtitle">Network</div>
               </div>
 

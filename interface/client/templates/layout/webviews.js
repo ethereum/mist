@@ -5,9 +5,7 @@ Template Controllers
 */
 Template['layout_webviews'].onCreated(function() {
   var template = this;
-  
   TemplateVar.set(template, 'loading', true);
-
   watchNodeStatus(template);
 });
 
@@ -26,7 +24,6 @@ The main section template
 Template['layout_webviews'].helpers({
   /**
     Return the tabs
-
     @method (tabs)
     */
   tabs: function() {
@@ -35,17 +32,28 @@ Template['layout_webviews'].helpers({
 });
 
 /**
-Set TemplateVar 'loading' whether node connection is active
+Set TemplateVar 'loading' if node has connected 
 @method watchNodeStatus
 */
 var watchNodeStatus = function(template) {
-    if (store.getState().nodes.remote.blockNumber > 1000 || store.getState().nodes.local.blockNumber > 1000) {
+  if (meteorEnv.NODE_ENV === 'test') {
+    TemplateVar.set(template, 'loading', false);
+    return;
+  }
+
+  if (
+    store.getState().nodes.remote.blockNumber > 1000 ||
+    store.getState().nodes.local.blockNumber > 1000
+  ) {
+    TemplateVar.set(template, 'loading', false);
+  }
+
+  this.storeUnsubscribe = store.subscribe(() => {
+    if (
+      store.getState().nodes.remote.blockNumber > 1000 ||
+      store.getState().nodes.local.blockNumber > 1000
+    ) {
       TemplateVar.set(template, 'loading', false);
     }
-
-    this.storeUnsubscribe = store.subscribe(() => {
-      if (store.getState().nodes.remote.blockNumber > 1000 || store.getState().nodes.local.blockNumber > 1000) {
-        TemplateVar.set(template, 'loading', false);
-      }
-    });
-}
+  });
+};

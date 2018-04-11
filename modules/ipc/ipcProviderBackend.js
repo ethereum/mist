@@ -306,7 +306,7 @@ class IpcProviderBackend {
           });
           // Try again if not already a retry
           if (!retry) {
-            error.message += ' Will retry...'
+            error.message += ' Will retry...';
             setTimeout(() => {
               this._sendRequest(isSync, event, originalPayloadStr, true);
             }, 2000);
@@ -636,20 +636,23 @@ class IpcProviderBackend {
             subscription: subscriptionId
           }
         };
-        log.trace(
-          `Sending remote subscription result (remote node is active)`,
-          res
-        );
+
         const owner =
           this._subscriptionOwners[subscriptionId] &&
           this._connections[this._subscriptionOwners[subscriptionId]]
             ? this._connections[this._subscriptionOwners[subscriptionId]].owner
             : null;
-        if (owner && !owner.isDestroyed()) {
-          owner.send('ipcProvider-data', JSON.stringify(res));
+
+        if (!owner) {
+          log.trace('No owner to send result', res);
+        } else if (owner.isDestroyed()) {
+          log.trace('Owner to send result already destroyed', res);
         } else {
-          // no owner to send result
-          log.error('No owner to send result', res);
+          log.trace(
+            `Sending remote subscription result (remote node is active)`,
+            res
+          );
+          owner.send('ipcProvider-data', JSON.stringify(res));
         }
       }
     });

@@ -161,7 +161,7 @@ store.dispatch({
   payload: { protocol: 'bzz' }
 });
 
-async function onReady() {
+function onReady() {
   global.config = db.getCollection('SYS_config');
 
   dbSync.initializeListeners();
@@ -185,7 +185,28 @@ async function onReady() {
 
   checkTimeSync();
 
-  kickStart();
+  initializeListeners();
+
+  checkForLegacyChain();
+
+  ClientBinaryManager.init();
+
+  store.dispatch(syncNodeDefaults());
+
+  ethereumNode.init();
+
+  ethereumNodeRemote.start();
+
+  if (Settings.enableSwarmOnStart) {
+    store.dispatch(toggleSwarm());
+  }
+
+  // Update menu (to show node switching possibilities)
+  appMenu();
+
+  // await handleOnboarding();
+
+  startMainWindow();
 }
 
 function enableSwarmProtocol() {
@@ -280,31 +301,6 @@ function checkTimeSync() {
   }
 }
 
-function kickStart() {
-  initializeKickStartListeners();
-
-  checkForLegacyChain();
-
-  ClientBinaryManager.init();
-
-  store.dispatch(syncNodeDefaults());
-
-  ethereumNode.init();
-
-  ethereumNodeRemote.start();
-
-  if (Settings.enableSwarmOnStart) {
-    store.dispatch(toggleSwarm());
-  }
-
-  // Update menu (to show node switching possibilities)
-  appMenu();
-
-  // await handleOnboarding();
-
-  startMainWindow();
-}
-
 function checkForLegacyChain() {
   if ((Settings.loadUserData('daoFork') || '').trim() === 'false') {
     dialog.showMessageBox(
@@ -324,7 +320,7 @@ function checkForLegacyChain() {
   }
 }
 
-function initializeKickStartListeners() {
+function initializeListeners() {
   ClientBinaryManager.on('status', (status, data) => {
     Windows.broadcast('uiAction_clientBinaryStatus', status, data);
   });

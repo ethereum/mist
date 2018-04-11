@@ -33,7 +33,7 @@
                 "backup": "Copia de seguridad",
                 "backupKeyStore": "Cuentas",
                 "backupMist": "Datos de la aplicación",
-                "swarmUpload": "Upload a Swarm"
+                "swarmUpload": "Subir a Swarm"
             },
             "develop": {
                 "label": "Desarrollo",

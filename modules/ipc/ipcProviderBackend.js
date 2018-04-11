@@ -37,6 +37,10 @@ const ERRORS = {
     code: -32603,
     message:
       'Compilation denied, compileSolidity is not allowed in batch requests.'
+  },
+  SOCKET_NOT_CONNECTED: {
+    code: -32604,
+    message: 'Socket not connected when trying to send method __method__.'
   }
 };
 
@@ -270,8 +274,9 @@ class IpcProviderBackend {
    * @param  {Boolean} isSync  whether request is sync.
    * @param  {Object}  event   IPC event.
    * @param  {String}  payload request payload.
+   * @param  {Boolean} retry   whether trying request again due to error
    */
-  _sendRequest(isSync, event, payload) {
+  _sendRequest(isSync, event, payload, retry = false) {
     const ownerId = event.sender.id;
 
     log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
@@ -289,17 +294,25 @@ class IpcProviderBackend {
         const finalPayload = JSON.parse(originalPayloadStr);
 
         // is batch?
-        const isBatch = _.isArray(finalPayload),
-          finalPayloadList = isBatch ? finalPayload : [finalPayload];
-          
+        const isBatch = _.isArray(finalPayload);
+        const finalPayloadList = isBatch ? finalPayload : [finalPayload];
+
         if (!conn.socket.isConnected) {
-          log.trace('Socket not connected.');
-          throw Object.assign({}, this.ERRORS.METHOD_TIMEOUT, {
-            message: this.ERRORS.METHOD_TIMEOUT.message.replace(
+          const error = Object.assign({}, this.ERRORS.SOCKET_NOT_CONNECTED, {
+            message: this.ERRORS.SOCKET_NOT_CONNECTED.message.replace(
               '__method__',
               finalPayloadList.map(p => p.method).join(', ')
             )
           });
+          // Try again if not already a retry
+          if (!retry) {
+            error.message += ' Will retry...'
+            setTimeout(() => {
+              this._sendRequest(isSync, event, originalPayloadStr, true);
+            }, 2000);
+          }
+          log.debug(error);
+          throw error;
         }
 
         // sanitize each and every request payload
@@ -587,9 +600,10 @@ class IpcProviderBackend {
     Creates a subscription in remote node and
     sends results down the pipe if remote node is active
 
-    @param {Object} params - Subscription params
+    @param {Object}  params - Subscription params
+    @param {Boolean} retry  - Is this request a retry
     */
-  _subscribeRemote(subscriptionId, params) {
+  _subscribeRemote(subscriptionId, params, retry = false) {
     log.trace(
       `Creating remote subscription: ${params} (local subscription id: ${subscriptionId})`
     );
@@ -603,12 +617,13 @@ class IpcProviderBackend {
             .includes('connect')
         ) {
           // Try restarting connection
-          ethereumNodeRemote.start();
+          ethereumNodeRemote.start().then(() => {
+            this._subscribeRemote(subscriptionId, params);
+          });
+        } else if (!retry) {
+          // Try resubscribing
+          this._subscribeRemote(subscriptionId, params, true);
         }
-        // Try resubscribing
-        setTimeout(() => {
-          this._subscribeRemote(subscriptionId, params);
-        }, 2500);
         return;
       }
       if (store.getState().nodes.active === 'remote') {

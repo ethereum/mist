@@ -132,19 +132,25 @@ module.exports = class BaseProcessor {
     return true;
   }
 
-  _sendToRemote(payload) {
+  _sendToRemote(payload, retry = false) {
     return new Promise((resolve, reject) => {
       ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
         if (error) {
           log.error(`Error: ${error}`);
           // Try restarting connection
-          if (String(error).includes('connection not open')) {
-            ethereumNodeRemote.start();
-          }
-          // Try again
-          setTimeout(() => {
+          if (
+            error
+              .toString()
+              .toLowerCase()
+              .includes('connect')
+          ) {
+            ethereumNodeRemote.start().then(() => {
+              this._sendToRemote(payload);
+            });
+          } else if (!retry) {
+            // Try again
             this._sendToRemote(payload);
-          }, 2000);
+          }
           reject(error);
           return;
         }

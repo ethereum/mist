@@ -176,6 +176,12 @@ function onReady() {
 
   ipcProviderBackend.init();
 
+  store.dispatch(syncNodeDefaults());
+
+  ethereumNode.init();
+
+  ethereumNodeRemote.start();
+
   // TODO: Settings.language relies on global.config object being set
   store.dispatch(setLanguageOnMain(Settings.language));
 
@@ -190,12 +196,6 @@ function onReady() {
   checkForLegacyChain();
 
   ClientBinaryManager.init();
-
-  store.dispatch(syncNodeDefaults());
-
-  ethereumNode.init();
-
-  ethereumNodeRemote.start();
 
   if (Settings.enableSwarmOnStart) {
     store.dispatch(toggleSwarm());

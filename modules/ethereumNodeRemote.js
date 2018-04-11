@@ -101,11 +101,6 @@ class EthereumNodeRemote extends EventEmitter {
             // Try restarting connection
             this.start();
           }
-
-          // Try restarting subscription
-          setTimeout(() => {
-            this.watchBlockHeaders();
-          }, 2500);
         }
       })
       .on('data', blockHeader => {

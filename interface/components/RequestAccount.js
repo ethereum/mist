@@ -59,8 +59,6 @@ class RequestAccount extends React.Component {
     } else if (pw && pw.length >= 8) {
       this.setState({ creating: true });
       web3.personal.newAccount(pwRepeat, (e, res) => {
-        console.log('∆∆∆ e', e);
-        console.log('∆∆∆ res', res);
         if (!e) {
           ipc.send('backendAction_windowMessageToOwner', null, res);
         } else {
@@ -78,7 +76,6 @@ class RequestAccount extends React.Component {
   }
 
   render() {
-    console.log('∆∆∆ render');
     return (
       <div className="popup-windows request-account">
         <form onSubmit={e => this.handleSubmit(e)}>
@@ -126,7 +123,7 @@ class RequestAccount extends React.Component {
               }
             />
             <label htmlFor="show-password-checkbox">
-              {i18n.t('mist.popupWindows.onboarding.buttons.showPassword')}
+              {i18n.t('mist.popupWindows.importAccount.buttons.showPassword')}
             </label>
           </div>
           <div className="dapp-modal-buttons">

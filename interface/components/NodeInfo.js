@@ -26,7 +26,7 @@ class NodeInfo extends Component {
   }
 
   tick() {
-    if (this.state.ping % 20 == 0) {
+    if (this.state.ticks % 20 == 0) {
       // only do it every second
       web3.eth.net.getPeerCount().then(peerCount => {
         this.setState({ peerCount });

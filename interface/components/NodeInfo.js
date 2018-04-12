@@ -74,7 +74,13 @@ class NodeInfo extends Component {
               diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
             }
           >
-            <i className="icon icon-clock" /> {diff} seconds
+            {
+              // TODO: make this i8n compatible
+            }
+            <i className="icon icon-clock" />{' '}
+            {diff < 120
+              ? diff + ' seconds'
+              : Math.floor(diff / 60) + ' minutes'}
           </div>
         </div>
       );

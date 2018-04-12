@@ -9,7 +9,7 @@ class NodeInfo extends Component {
     this.state = {
       showSubmenu: false,
       peerCount: 0,
-      timestamp: Date.now()
+      ticks: 0
     };
   }
 
@@ -18,7 +18,7 @@ class NodeInfo extends Component {
     // least once per second. The `tick` function ensures that.
     this.interval = setInterval(() => {
       this.tick();
-    }, 10);
+    }, 50);
   }
 
   componentWillUnmount() {
@@ -26,13 +26,14 @@ class NodeInfo extends Component {
   }
 
   tick() {
-    if (this.state.timestamp % 2 == 0) {
+    if (this.state.ping % 20 == 0) {
+      // only do it every second
       web3.eth.net.getPeerCount().then(peerCount => {
         this.setState({ peerCount });
       });
     }
 
-    this.setState({ timestamp: this.state.timestamp + 0.001 });
+    this.setState({ ticks: this.state.ticks + 1 });
   }
 
   renderRemoteStats() {
@@ -93,18 +94,15 @@ class NodeInfo extends Component {
     const { blockNumber, timestamp, syncMode } = this.props.local;
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
-    // const blocksBehind = highestBlock - currentBlock;
-    // let displayBlocksBehind = displayBlocksBehind ? (blocksBehind - displayBlocksBehind)/100 : 0;
-
-    let displayBlock = this.props.local.sync.displayBlock || 0;
-    displayBlock += (currentBlock - displayBlock) / 100;
+    let displayBlock =
+      this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
+    displayBlock += (currentBlock - displayBlock) / 20;
 
     const blocksBehind =
       highestBlock - currentBlock > 0
         ? numeral(highestBlock - displayBlock).format('0,0')
         : '-';
 
-    console.log('blocks', blocksBehind, displayBlock);
     this.props.local.sync.displayBlock = displayBlock;
 
     const progress =

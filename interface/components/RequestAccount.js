@@ -57,34 +57,29 @@ class RequestAccount extends React.Component {
       });
       this.resetForm();
     } else if (pw && pw.length >= 8) {
-      this.setState({ creating: true });
-      web3.personal.newAccount(pwRepeat, (e, res) => {
-        if (!e) {
-          ipc.send('backendAction_windowMessageToOwner', null, res);
-        } else {
-          ipc.send('backendAction_windowMessageToOwner', e);
-        }
-
-        this.setState({ creating: false });
-
-        // notifiy about backing up!
-        alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
-
-        ipc.send('backendAction_closePopupWindow');
-      });
+      this.setState({ creating: true }, () => this.createAccount(pwRepeat));
     }
   }
 
-  render() {
-    return (
-      <div className="popup-windows request-account">
-        <form onSubmit={e => this.handleSubmit(e)}>
-          <h1>{i18n.t('mist.popupWindows.requestAccount.title')}</h1>
+  createAccount(pw) {
+    web3.eth.personal.newAccount(pw).then(address => {
+      ipc.send('backendAction_windowMessageToOwner', null, address);
 
-          {this.state.creating && (
-            <h2>{i18n.t('mist.popupWindows.requestAccount.creating')}</h2>
-          )}
+      // notify about backing up!
+      alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
+      this.setState({ creating: false });
+
+      ipc.send('backendAction_closePopupWindow');
+    });
+  }
+
+  renderFormBody() {
+    if (this.state.creating) {
+      return <h2>{i18n.t('mist.popupWindows.requestAccount.creating')}</h2>;
+    } else {
+      return (
+        <div>
           <div
             className={`field-container ${
               this.state.showRepeat ? 'repeat-field' : ''
@@ -126,6 +121,7 @@ class RequestAccount extends React.Component {
               {i18n.t('mist.popupWindows.importAccount.buttons.showPassword')}
             </label>
           </div>
+
           <div className="dapp-modal-buttons">
             <button
               className="cancel"
@@ -138,6 +134,18 @@ class RequestAccount extends React.Component {
               {i18n.t('buttons.ok')}
             </button>
           </div>
+        </div>
+      );
+    }
+  }
+
+  render() {
+    return (
+      <div className="popup-windows request-account">
+        <form onSubmit={e => this.handleSubmit(e)}>
+          <h1>{i18n.t('mist.popupWindows.requestAccount.title')}</h1>
+
+          {this.renderFormBody()}
         </form>
       </div>
     );

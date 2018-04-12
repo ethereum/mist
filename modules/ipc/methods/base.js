@@ -21,6 +21,7 @@ module.exports = class BaseProcessor {
       'net_peerCount',
       'eth_mining',
       'eth_accounts',
+      'personal_newAccount',
       'personal_signTransaction',
       'eth_subscribe',
       'eth_unsubscribe'

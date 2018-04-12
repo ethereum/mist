@@ -18,7 +18,7 @@ class NodeInfo extends Component {
     // least once per second. The `tick` function ensures that.
     this.interval = setInterval(() => {
       this.tick();
-    }, 1000);
+    }, 10);
   }
 
   componentWillUnmount() {
@@ -26,11 +26,13 @@ class NodeInfo extends Component {
   }
 
   tick() {
-    web3.eth.net.getPeerCount().then(peerCount => {
-      this.setState({ peerCount });
-    });
+    if (this.state.timestamp % 2 == 0) {
+      web3.eth.net.getPeerCount().then(peerCount => {
+        this.setState({ peerCount });
+      });
+    }
 
-    this.setState({ timestamp: this.state.timestamp + 1 });
+    this.setState({ timestamp: this.state.timestamp + 0.001 });
   }
 
   renderRemoteStats() {
@@ -91,10 +93,20 @@ class NodeInfo extends Component {
     const { blockNumber, timestamp, syncMode } = this.props.local;
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
+    // const blocksBehind = highestBlock - currentBlock;
+    // let displayBlocksBehind = displayBlocksBehind ? (blocksBehind - displayBlocksBehind)/100 : 0;
+
+    let displayBlock = this.props.local.sync.displayBlock || 0;
+    displayBlock += (currentBlock - displayBlock) / 100;
+
     const blocksBehind =
       highestBlock - currentBlock > 0
-        ? numeral(highestBlock - currentBlock).format('0,0')
+        ? numeral(highestBlock - displayBlock).format('0,0')
         : '-';
+
+    console.log('blocks', blocksBehind, displayBlock);
+    this.props.local.sync.displayBlock = displayBlock;
+
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
@@ -180,14 +192,16 @@ class NodeInfo extends Component {
     const timeSince = moment(remote.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
-    const mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
+    let mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
+    if (this.state.sticky) mainClass += ' sticky';
 
     return (
       <div
         id="node-info"
         className={mainClass}
+        onMouseUp={() => this.setState({ sticky: !this.state.sticky })}
         onMouseEnter={() => this.setState({ showSubmenu: true })}
-        onMouseLeave={() => this.setState({ showSubmenu: false })}
+        onMouseLeave={() => this.setState({ showSubmenu: this.state.sticky })}
       >
         <div
           id="node-info__light"

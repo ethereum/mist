@@ -1,3 +1,5 @@
+@colorTestnet: #00aafa;
+
 #react__node-info {
   position: relative;
   cursor: default;
@@ -36,11 +38,8 @@
 .node-info__network-title {
   font-weight: 300;
   font-size: 24px;
+  // color: #24C33A;
   text-transform: capitalize;
-}
-
-.node-testnet .node-info__network-title {
-  color: red;
 }
 
 .node-info__node-title {
@@ -56,7 +55,6 @@
   background-color: black;
   border-radius: 8px;
   padding: 2px 5px;
-  text-transform: none;
 }
 
 .node-info__submenu-container {
@@ -135,7 +133,7 @@ strong {
 }
 
 .node-testnet .node-info__node-title.local {
-  color: #00aafa;
+  color: @colorTestnet;
 }
 
 progress[value]::-webkit-progress-bar {
@@ -152,7 +150,7 @@ progress[value]::-webkit-progress-bar {
 }
 
 .node-testnet progress[value]::-webkit-progress-value {
-  background-image: linear-gradient(left, transparent, #00aafa);
+  background-image: linear-gradient(left, transparent, @colorTestnet);
   background-size: cover;
 }
 

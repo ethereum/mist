@@ -90,86 +90,117 @@ class NodeInfo extends Component {
     }
   }
 
-  renderLocalStats() {
-    const { blockNumber, timestamp, syncMode } = this.props.local;
+  localStatsFindingPeers() {
+    return (
+      <div>
+        <div className="looking-for-peers row-icon">
+          <i className="icon icon-share" /> Looking for peers...
+        </div>
+      </div>
+    );
+  }
+
+  localStatsStartSync() {
+    return (
+      <div>
+        <div className="peer-count row-icon">
+          <i className="icon icon-users" /> {this.state.peerCount} peers
+        </div>
+        <div className="sync-starting row-icon">
+          <i className="icon icon-energy" /> Sync starting...
+        </div>
+      </div>
+    );
+  }
+
+  localStatsSyncProgress() {
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
 
     let displayBlock =
       this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
     displayBlock += (currentBlock - displayBlock) / 20;
 
+    this.props.local.sync.displayBlock = displayBlock;
+
     const blocksBehind =
       highestBlock - currentBlock > 0
         ? numeral(highestBlock - displayBlock).format('0,0')
         : '-';
 
-    this.props.local.sync.displayBlock = displayBlock;
-
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
+    return (
+      <div>
+        <div className="block-number row-icon">
+          <i className="icon icon-layers" /> {blocksBehind} blocks behind
+        </div>
+        <div className="peer-count row-icon">
+          <i className="icon icon-users" /> {this.state.peerCount} peers
+        </div>
+        <div className="sync-progress row-icon">
+          <i className="icon icon-cloud-download" />
+          <progress max="100" value={progress || 0} />
+        </div>
+      </div>
+    );
+  }
+
+  localStatsSynced() {
+    const { blockNumber, timestamp, syncMode } = this.props.local;
     const formattedBlockNumber = numeral(blockNumber).format('0,0');
-    const timeSince = moment(this.props.local.timestamp, 'X');
+
+    const timeSince = moment(timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
+
+    return (
+      <div>
+        <div className="block-number row-icon">
+          <i className="icon icon-layers" /> {formattedBlockNumber}
+        </div>
+        <div className="peer-count row-icon">
+          <i className="icon icon-users" /> {this.state.peerCount} peers
+        </div>
+        <div className="block-diff row-icon">
+          <i className="icon icon-clock" /> {diff} seconds
+        </div>
+      </div>
+    );
+  }
+
+  renderLocalStats() {
+    const { syncMode } = this.props.local;
+    const { currentBlock } = this.props.local.sync;
 
     const syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
 
     let localStats;
 
+    // TODO: potentially refactor local node status into Redux;
+    // possible states: findingPeers, starting, synced, synced, disabled/nosync
+
+    // Determine 'status' of local node, then show appropriate lens on sync data
     if (syncMode === 'nosync') {
-      // No localStats if 'nosync'
-    } else if (currentBlock === 0) {
-      if (this.state.peerCount === 0) {
-        localStats = (
-          <div>
-            <div className="looking-for-peers row-icon">
-              <i className="icon icon-share" /> Looking for peers...
-            </div>
-          </div>
-        );
-      } else {
-        localStats = (
-          <div>
-            <div className="peer-count row-icon">
-              <i className="icon icon-users" /> {this.state.peerCount} peers
-            </div>
-            <div className="sync-starting row-icon">
-              <i className="icon icon-energy" /> Sync starting...
-            </div>
-          </div>
-        );
-      }
+      // Case: no local node
+      return null;
+    } else if (this.props.active === 'local') {
+      // Case: already synced up
+      localStats = this.localStatsSynced();
     } else if (this.props.active === 'remote') {
-      // While syncing, localStats displays progress
-      localStats = (
-        <div>
-          <div className="block-number row-icon">
-            <i className="icon icon-layers" /> {blocksBehind} blocks behind
-          </div>
-          <div className="peer-count row-icon">
-            <i className="icon icon-users" /> {this.state.peerCount} peers
-          </div>
-          <div className="sync-progress row-icon">
-            <i className="icon icon-cloud-download" />
-            <progress max="100" value={progress || 0} />
-          </div>
-        </div>
-      );
-    } else {
-      // When synced, localStats displays latest block data
-      localStats = (
-        <div>
-          <div className="block-number row-icon">
-            <i className="icon-layers" /> {formattedBlockNumber}
-          </div>
-          <div className="peer-count row-icon">
-            <i className="icon icon-users" /> {this.state.peerCount} peers
-          </div>
-          <div className="block-diff row-icon">
-            <i className="icon icon-clock" /> {diff} seconds
-          </div>
-        </div>
-      );
+      // Case: not yet synced up
+      if (currentBlock === 0) {
+        // Case: no results from syncing
+        if (this.state.peerCount === 0) {
+          // Case: no peers yet
+          localStats = this.localStatsFindingPeers();
+        } else {
+          // Case: connected to peers, but no blocks yet
+          localStats = this.localStatsStartSync();
+        }
+      } else {
+        // Case: show progress
+        localStats = this.localStatsSyncProgress();
+      }
     }
 
     return (

@@ -110,14 +110,14 @@ export function setActiveNode() {
     }
 
     if (active === 'remote') {
-      if (remote.blockNumber - local.currentBlock < 15) {
+      if (remote.blockNumber - local.blockNumber < 15) {
         dispatch({
           type: '[MAIN]:NODES:CHANGE_ACTIVE',
           payload: { active: 'local' }
         });
       }
     } else {
-      if (remote.blockNumber - local.currentBlock >= 15) {
+      if (remote.blockNumber - local.blockNumber >= 15) {
         dispatch({
           type: '[MAIN]:NODES:CHANGE_ACTIVE',
           payload: { active: 'remote' }

@@ -432,7 +432,7 @@ class EthereumNode extends EventEmitter {
       switch (network) {
         // Starts Ropsten network
         case 'ropsten':
-          // fall through
+        // fall through
         case 'test':
           args = [
             '--testnet',
@@ -657,7 +657,12 @@ class EthereumNode extends EventEmitter {
       ]);
       const block = blockResult.result;
       if (block && block.number > store.getState().nodes.local.blockNumber) {
-        store.dispatch(updateLocalBlock(block.number, block.timestamp));
+        store.dispatch(
+          updateLocalBlock(
+            parseInt(block.number, 16),
+            parseInt(block.timestamp, 16)
+          )
+        );
       }
     }, 1500);
   }

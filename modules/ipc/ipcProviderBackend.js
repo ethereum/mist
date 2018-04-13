@@ -604,6 +604,10 @@ class IpcProviderBackend {
       }
 
       ethereumNodeRemote.ws.on('message', data => {
+        if (!data) {
+          return;
+        }
+        
         try {
           data = JSON.parse(data);
         } catch (error) {

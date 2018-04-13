@@ -138,6 +138,10 @@ module.exports = class BaseProcessor {
       const requestId = ethereumNodeRemote.send(payload.method, payload.params);
 
       ethereumNodeRemote.ws.on('message', data => {
+        if (!data) {
+          return;
+        }
+        
         try {
           data = JSON.parse(data);
         } catch (error) {

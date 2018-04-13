@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import WebSocket from 'ws';
-import _ from './utils/underscore.js';
 import logger from './utils/logger';
 import Sockets from './socketManager';
 import Settings from './settings';
@@ -46,13 +45,17 @@ class EthereumNodeRemote extends EventEmitter {
 
       this.ws = new WebSocket(provider);
 
-      this.ws.on('open', () => {
+      this.ws.once('open', () => {
         this.watchBlockHeaders();
         this.starting = false;
         resolve(true);
       });
 
       this.ws.on('message', data => {
+        if (!data) {
+          return;
+        }
+
         ethereumNodeRemoteLog.trace(
           'Message from remote WebSocket connection: ',
           data
@@ -62,6 +65,7 @@ class EthereumNodeRemote extends EventEmitter {
       this.ws.on('close', (code, reason) => {
         ethereumNodeRemoteLog.trace(
           'Remote WebSocket connection closed: ',
+          code,
           reason
         );
 
@@ -73,7 +77,7 @@ class EthereumNodeRemote extends EventEmitter {
     }));
   }
 
-  send(method, params, retry = false) {
+  send(method, params = [], retry = false) {
     if (
       !this.ws ||
       !this.ws.readyState ||
@@ -82,7 +86,7 @@ class EthereumNodeRemote extends EventEmitter {
       this.start().then(() => {
         this.send(method, params, retry);
       });
-      return;
+      return null;
     }
 
     if (this.ws.readyState !== WebSocket.OPEN) {
@@ -110,7 +114,7 @@ class EthereumNodeRemote extends EventEmitter {
 
     const request = {
       jsonrpc: '2.0',
-      id: _.uuid(),
+      id: Math.floor(Math.random() * 1000000000),
       method,
       params
     };
@@ -194,6 +198,10 @@ class EthereumNodeRemote extends EventEmitter {
     }
 
     this.ws.on('message', data => {
+      if (!data) {
+        return;
+      }
+
       try {
         data = JSON.parse(data);
       } catch (error) {

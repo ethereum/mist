@@ -21,6 +21,8 @@ class EthereumNodeRemote extends EventEmitter {
 
     if (!instance) {
       instance = this;
+      
+      this.lastRequestId = 0;
     }
 
     return instance;
@@ -112,9 +114,11 @@ class EthereumNodeRemote extends EventEmitter {
       return null;
     }
 
+    this.lastRequestId += 1;
+
     const request = {
       jsonrpc: '2.0',
-      id: Math.floor(Math.random() * 1000000000),
+      id: this.lastRequestId,
       method,
       params
     };

@@ -135,27 +135,18 @@ module.exports = class BaseProcessor {
 
   _sendToRemote(payload, retry = false) {
     return new Promise((resolve, reject) => {
-      ethereumNodeRemote.web3.currentProvider.send(payload, (error, result) => {
-        if (error) {
-          log.error(`Error: ${error}`);
-          // Try restarting connection
-          if (
-            error
-              .toString()
-              .toLowerCase()
-              .includes('connect')
-          ) {
-            ethereumNodeRemote.start().then(() => {
-              this._sendToRemote(payload);
-            });
-          } else if (!retry) {
-            // Try again
-            this._sendToRemote(payload);
-          }
-          reject(error);
-          return;
+      const requestId = ethereumNodeRemote.send(payload.method, payload.params);
+
+      ethereumNodeRemote.ws.on('message', data => {
+        try {
+          data = JSON.parse(data);
+        } catch (error) {
+          this._log.trace('Error parsing data: ', data);
         }
-        resolve(result);
+
+        if (data.id === requestId) {
+          resolve(data);
+        }
       });
     });
   }

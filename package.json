@@ -20,6 +20,9 @@
   },
   "main": "main.js",
   "dependencies": {
+    "babel-preset-es2016-node5": "^1.1.2",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
     "bignumber.js": "^4.0.1",
     "bluebird": "^3.5.0",
     "chai-as-promised": "^7.1.1",
@@ -55,10 +58,8 @@
     "underscore-deep-extend": "^1.1.5",
     "uuid": "^3.0.1",
     "web3": "^1.0.0-beta.33",
-    "yargs": "^8.0.2",
-    "babel-preset-es2016-node5": "^1.1.2",
-    "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0"
+    "ws": "^5.1.1",
+    "yargs": "^8.0.2"
   },
   "devDependencies": {
     "chai": "^4.1.1",

@@ -68,13 +68,13 @@ export function syncLocalNode(sync) {
   };
 }
 
-export function remoteBlockReceived(blockHeader) {
-  const { number, timestamp } = blockHeader;
+export function remoteBlockReceived(block) {
+  const { number, timestamp } = block;
   return {
     type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
     payload: {
-      blockNumber: number,
-      timestamp: timestamp
+      blockNumber: parseInt(number, 16),
+      timestamp: parseInt(timestamp, 16)
     }
   };
 }

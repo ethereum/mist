@@ -36,9 +36,9 @@
       font-size: 90%;
     }
 
-    .onboarding-start {
+    .importAccount-start {
       padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
-      background-image: url('/images/onboarding-logo-metal.png');
+      background-image: url('/images/importaccount-logo-metal.png');
       background-repeat: no-repeat;
       background-position-y: @gridHeight*4;
       background-size: 255px 257px;
@@ -172,7 +172,7 @@
 
   /* Screen transitions */
 
-  .onboarding-section {
+  .importAccount-section {
     padding: @gridHeight @gridWidth;
     opacity: 0;
     z-index: 0;
@@ -187,7 +187,7 @@
     }
   }
 
-  .onboarding-start {
+  .importAccount-start {
     transition: opacity 0.8s, background-position-x 1.2s ease-in-out;
     background-position-x: -200px;
     p {
@@ -196,7 +196,7 @@
     }
   }
 
-  &.active-start .onboarding-start {
+  &.active-start .importAccount-start {
     display: block;
     opacity: 1;
     background-position-x: @gridWidth;
@@ -208,7 +208,7 @@
     }
   }
 
-  .onboarding-import-account {
+  .importAccount-import-account {
     opacity: 0;
     z-index: 0;
     transition-duration: 0s;
@@ -224,11 +224,11 @@
     left: 50%;
   }
 
-  .onboarding-account .col-deposit {
+  .importAccount-account .col-deposit {
     text-align: center;
   }
 
-  .onboarding-password {
+  .importAccount-password {
     transition: none;
     .col-6 {
       transition: none;
@@ -240,8 +240,8 @@
     }
   }
 
-  .onboarding-testnet,
-  .onboarding-account {
+  .importAccount-testnet,
+  .importAccount-account {
     transition: opacity 0.4s ease-in-out;
 
     .col-6 {
@@ -276,10 +276,10 @@
     }
   }
 
-  &.active-import-account .onboarding-import-account,
-  &.active-password .onboarding-password,
-  &.active-testnet .onboarding-testnet,
-  &.active-account .onboarding-account {
+  &.active-import-account .importAccount-import-account,
+  &.active-password .importAccount-password,
+  &.active-testnet .importAccount-testnet,
+  &.active-account .importAccount-account {
     display: block;
     opacity: 1;
     z-index: 100;
@@ -294,8 +294,8 @@
     }
   }
 
-  .onboarding-testnet,
-  &.active-account .onboarding-account {
+  .importAccount-testnet,
+  &.active-account .importAccount-account {
     transition-delay: 0;
     transition-duration: 0;
     transition: none;

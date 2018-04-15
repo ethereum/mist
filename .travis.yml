@@ -12,6 +12,7 @@ branches:
   only:
     - develop
     - master
+    - /^greenkeeper/.*$/
 
 matrix:
   include:

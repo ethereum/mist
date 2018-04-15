@@ -28,11 +28,12 @@ const ipcProviderWrapper = {
   /**
     Connects the IPC on the backend to the geth node
 
-    Note: web3.isConnected will always return true, as otherwise race conditions can occour,
+    Note: web3.eth.net.isListening (previously: web3.isConnected) will always return true,
+    as otherwise race conditions can occur,
     letting it look like youre not connected via IPC.
 
     @method connect
-    */
+  */
   connect(path) {
     // console.debug('ipcProviderWrapper: connect');
 

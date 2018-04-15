@@ -130,10 +130,6 @@ describe('Permissions', function() {
   });
 
   describe('web3 attributes', function() {
-    it("shouldn't allow `admin`", function() {
-      expect(web3.admin).to.be.undefined;
-    });
-
     it("shouldn't allow IPC provider", function() {
       expect(window.ipc).to.be.undefined;
       expect(window.ipcRenderer).to.be.undefined;

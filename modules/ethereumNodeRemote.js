@@ -29,12 +29,12 @@ class EthereumNodeRemote extends EventEmitter {
   }
 
   async start() {
-    return (this.starting = new Promise((resolve, reject) => {
-      if (this.starting) {
-        ethereumNodeRemoteLog.trace('Already starting...');
-        resolve(this.starting);
-      }
+    if (this.starting) {
+      ethereumNodeRemoteLog.trace('Already starting...');
+      return this.starting;
+    }
 
+    return (this.starting = new Promise((resolve, reject) => {
       this.network =
         Settings.network || Settings.loadUserData('network') || 'main';
 
@@ -201,8 +201,8 @@ class EthereumNodeRemote extends EventEmitter {
       return;
     }
 
-    this.ws.on('message', data => {
-      if (!data) {
+    function dataHandler(data) {
+       if (!data) {
         return;
       }
 
@@ -215,6 +215,7 @@ class EthereumNodeRemote extends EventEmitter {
       if (data.id === requestId && data.result) {
         this._syncSubscriptionId = data.result;
       }
+
       if (
         data.params &&
         data.params.subscription &&
@@ -223,7 +224,9 @@ class EthereumNodeRemote extends EventEmitter {
       ) {
         store.dispatch(remoteBlockReceived(data.params.result));
       }
-    });
+    }
+
+    this.ws.on('message', dataHandler.bind(this));
   }
 
   unsubscribe() {

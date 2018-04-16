@@ -137,21 +137,25 @@ module.exports = class BaseProcessor {
     return new Promise((resolve, reject) => {
       const requestId = ethereumNodeRemote.send(payload.method, payload.params);
 
-      ethereumNodeRemote.ws.on('message', data => {
+      function dataHandler(data) {
         if (!data) {
           return;
         }
-        
+
         try {
           data = JSON.parse(data);
         } catch (error) {
-          this._log.trace('Error parsing data: ', data);
+          const errorMessage = `Error parsing data: ${data}`;
+          this._log.trace(errorMessage);
+          reject(errorMessage);
         }
 
         if (data.id === requestId) {
           resolve(data);
         }
-      });
+      }
+
+      ethereumNodeRemote.ws.on('message', dataHandler.bind(this));
     });
   }
 

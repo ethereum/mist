@@ -572,11 +572,9 @@ class IpcProviderBackend {
 
     if (result.method === 'eth_unsubscribe') {
       const subscriptionId = result.params[0];
-      if (this._remoteSubscriptions[subscriptionId]) {
-        ethereumNodeRemote.ws.send(
-          'eth_unsubscribe',
-          this._remoteSubscriptions[subscriptionId]
-        );
+      const localSubscriptionId = this._remoteSubscriptions[subscriptionId];
+      if (localSubscriptionId) {
+        ethereumNodeRemote.send('eth_unsubscribe', [localSubscriptionId]);
         delete this._remoteSubscriptions[subscriptionId];
         delete this._subscriptionOwners[subscriptionId];
       }

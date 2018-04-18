@@ -236,17 +236,17 @@ class IpcProviderBackend {
    * @param {String} state The new state.
    */
   _onNodeStateChanged(state) {
-    // Unsubscribe remote subscriptions
-    _.each(this._remoteSubscriptions, remoteSubscriptionId => {
-      ethereumNodeRemote.send('eth_unsubscribe', [remoteSubscriptionId]);
-    });
-    this._remoteSubscriptions = {};
-    this._subscriptionOwners = {};
-
     switch (state) { // eslint-disable-line default-case
       // stop syncing when node about to be stopped
       case ethereumNode.STATES.STOPPING:
         log.info('Ethereum node stopping, disconnecting sockets');
+
+        // Unsubscribe remote subscriptions
+        _.each(this._remoteSubscriptions, remoteSubscriptionId => {
+          ethereumNodeRemote.send('eth_unsubscribe', [remoteSubscriptionId]);
+        });
+        this._remoteSubscriptions = {};
+        this._subscriptionOwners = {};
 
         Q.all(
           _.map(this._connections, item => {

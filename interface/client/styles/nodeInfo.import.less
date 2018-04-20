@@ -17,11 +17,11 @@
 }
 
 #node-info__light {
-  height: 16px;
-  width: 16px;
+  position: relative;
+  z-index: 1;
+  height: 20px;
+  width: 20px;
   border-radius: 50%;
-  // animation: breathing ease-in-out infinite alternate;
-  // animation-duration: 5s;
   transition: background-color ease-in-out 5s;
 }
 
@@ -160,17 +160,42 @@ progress[value]::-webkit-progress-bar {
   background-size: cover;
 }
 
-//// animation-name
-@keyframes breathing {
-  0% {
-    transform: scale(0.6);
-    filter: brightness(100%);
-    // opacity: 0.5;
-  }
+.pulse-light__orange {
+  animation: beaconOrange ease-in-out;
+  animation-duration: 2s;
+}
 
+@keyframes beaconOrange {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4);
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.4);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
+    box-shadow: 0 0 0 10px rgba(255, 165, 0, 0);
+  }
   100% {
-    transform: scale(1);
-    filter: brightness(120%);
-    // opacity: 0.9;
+    -moz-box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0);
+  }
+}
+
+.pulse-light__green {
+  animation: beaconGreen ease-in-out;
+  animation-duration: 2s;
+}
+
+@keyframes beaconGreen {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(36, 195, 58, 0.4);
+    box-shadow: 0 0 0 0 rgba(36, 195, 58, 0.4);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(36, 195, 58, 0);
+    box-shadow: 0 0 0 10px rgba(36, 195, 58, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(36, 195, 58, 0);
+    box-shadow: 0 0 0 0 rgba(36, 195, 58, 0);
   }
 }

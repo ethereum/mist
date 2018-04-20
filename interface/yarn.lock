@@ -103,7 +103,7 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.6.0:
+prop-types@^15.5.7, prop-types@^15.6.0:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -119,6 +119,12 @@ react-dom@^16.2.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
+
+react-minimal-pie-chart@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-minimal-pie-chart/-/react-minimal-pie-chart-3.0.1.tgz#9ccaa94edf9e457bedb1613e6189e833fec0bbe8"
+  dependencies:
+    prop-types "^15.5.7"
 
 react-redux@^5.0.7:
   version "5.0.7"

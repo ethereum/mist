@@ -80,6 +80,10 @@ class EthereumNodeRemote extends EventEmitter {
   }
 
   send(method, params = [], retry = false) {
+    if (!Array.isArray(params)) {
+      params = [params];
+    }
+    
     if (
       !this.ws ||
       !this.ws.readyState ||

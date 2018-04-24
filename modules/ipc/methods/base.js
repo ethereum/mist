@@ -18,7 +18,6 @@ module.exports = class BaseProcessor {
     this.ERRORS = this._ipcProviderBackend.ERRORS;
 
     this.remoteIgnoreMethods = [
-      'net_peerCount',
       'eth_mining',
       'eth_accounts',
       'personal_newAccount',
@@ -114,7 +113,8 @@ module.exports = class BaseProcessor {
       return false;
     }
 
-    // 3. the method is 'eth_syncing' or 'eth_subscribe'('syncing')
+    // 3. the method is
+    // net_peerCount|eth_syncing|eth_subscribe[syncing]
     // originating from the mist interface
     if (
       conn &&
@@ -124,7 +124,8 @@ module.exports = class BaseProcessor {
     ) {
       if (
         method === 'eth_syncing' ||
-        (method === 'eth_subscribe' && payload.params[0] === 'syncing')
+        (method === 'eth_subscribe' && payload.params[0] === 'syncing') ||
+        method === 'net_peerCount'
       ) {
         return false;
       }

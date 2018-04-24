@@ -270,7 +270,6 @@ class NodeInfo extends Component {
       <div className="pie-container">
         <div
           id="node-info__light"
-          title={diff}
           className={this.state.lightClasses}
           style={{
             backgroundColor:

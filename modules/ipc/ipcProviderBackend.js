@@ -496,15 +496,11 @@ class IpcProviderBackend {
     const allResults = [].concat(originalPayload).map((item, idx) => {
       const finalResult = finalValue[idx];
 
-      let ret;
+      let ret = finalResult;
 
       // handle error result
       if (finalResult.error) {
         ret = this._makeErrorResponsePayload(item, finalResult.error);
-      } else {
-        ret = _.extend({}, item, {
-          result: finalResult.result
-        });
       }
 
       ret = this._handleSubscriptions(ret);
@@ -533,14 +529,14 @@ class IpcProviderBackend {
     @param {Object} result
     @return {Object} result
     */
-  async _handleSubscriptions(result) {
+  _handleSubscriptions(result) {
     if (result.method === 'eth_subscribe') {
       // If subscription is created in local, also create the subscription in remote
       const subscriptionType = result.params[0];
       const subscriptionId = result.result;
 
       // Create subscription in remote node
-      this._remoteSubscriptions[subscriptionId] = await this._subscribeRemote(
+      this._remoteSubscriptions[subscriptionId] = this._subscribeRemote(
         subscriptionId,
         result.params
       );
@@ -567,6 +563,7 @@ class IpcProviderBackend {
             result.params.subscription
           }`
         );
+        return result;
       }
     }
 

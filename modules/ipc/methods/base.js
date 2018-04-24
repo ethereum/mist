@@ -138,7 +138,16 @@ module.exports = class BaseProcessor {
     return new Promise((resolve, reject) => {
       const requestId = ethereumNodeRemote.send(payload.method, payload.params);
 
-      function dataHandler(data) {
+      if (!requestId) {
+        const errorMessage = `No request id for method ${payload.method} (${
+          payload.params
+        })`;
+        reject(errorMessage);
+        this._log.error(errorMessage);
+        return;
+      }
+
+      const callback = data => {
         if (!data) {
           return;
         }
@@ -153,10 +162,11 @@ module.exports = class BaseProcessor {
 
         if (data.id === requestId) {
           resolve(data);
+          ethereumNodeRemote.ws.removeListener('message', callback);
         }
-      }
+      };
 
-      ethereumNodeRemote.ws.on('message', dataHandler.bind(this));
+      ethereumNodeRemote.ws.on('message', callback);
     });
   }
 

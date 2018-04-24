@@ -93,10 +93,20 @@ export function setActiveNode() {
     // Otherwise, local should be active.
     const { active, network, local, remote } = getState().nodes;
 
+    // If nosync, ensure active is 'remote'
+    if (local.syncMode === 'nosync') {
+      if (active === 'local') {
+        dispatch({
+          type: '[MAIN]:NODES:CHANGE_ACTIVE',
+          payload: { active: 'remote' }
+        });
+      }
+      return;
+    }
+
     const supportedRemoteNetworks = Object.keys(
       InfuraEndpoints.ethereum.websockets
     ).map(network => network.toLowerCase());
-    supportedRemoteNetworks.push('nosync');
 
     if (supportedRemoteNetworks.indexOf(network) === -1) {
       // If unsupported network, ensure active is 'local'

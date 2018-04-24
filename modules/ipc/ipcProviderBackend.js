@@ -496,11 +496,15 @@ class IpcProviderBackend {
     const allResults = [].concat(originalPayload).map((item, idx) => {
       const finalResult = finalValue[idx];
 
-      let ret = finalResult;
+      let ret;
 
       // handle error result
       if (finalResult.error) {
         ret = this._makeErrorResponsePayload(item, finalResult.error);
+      } else {
+        ret = _.extend({}, item, {
+          result: finalResult.result
+        });
       }
 
       ret = this._handleSubscriptions(ret);

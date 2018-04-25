@@ -284,10 +284,10 @@ class NodeInfo extends Component {
               top: 22,
               left: 0,
               zIndex: 2,
-              height: 20
+              height: 16
             }}
             data={[
-              { value: progress || 1, key: 1, color: '#24C33A' },
+              { value: progress || 0, key: 1, color: '#24C33A' },
               { value: 100 - (progress || 1), key: 2, color: 'orange' }
             ]}
           />

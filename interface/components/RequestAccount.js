@@ -18,7 +18,8 @@ class RequestAccount extends React.Component {
     this.setState({
       pw: '',
       pwRepeat: '',
-      showRepeat: false
+      showRepeat: false,
+      creating: false
     });
   }
 
@@ -68,7 +69,7 @@ class RequestAccount extends React.Component {
       // notify about backing up!
       alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
-      this.setState({ creating: false });
+      this.resetForm();
 
       ipc.send('backendAction_closePopupWindow');
     });

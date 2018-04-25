@@ -20,6 +20,7 @@ module.exports = class BaseProcessor {
     this.remoteIgnoreMethods = [
       'eth_mining',
       'eth_accounts',
+      'eth_coinbase',
       'personal_newAccount',
       'personal_signTransaction',
       'eth_subscribe',

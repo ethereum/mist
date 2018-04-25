@@ -21,7 +21,7 @@ class EthereumNodeRemote extends EventEmitter {
 
     if (!instance) {
       instance = this;
-      
+
       this.lastRequestId = 0;
     }
 
@@ -83,12 +83,15 @@ class EthereumNodeRemote extends EventEmitter {
     if (!Array.isArray(params)) {
       params = [params];
     }
-    
+
     if (
       !this.ws ||
       !this.ws.readyState ||
       this.ws.readyState === WebSocket.CLOSED
     ) {
+      ethereumNodeRemoteLog.error(
+        `Remote websocket connection not open, attempting to reconnect and retry ${method}...`
+      );
       this.start().then(() => {
         this.send(method, params, retry);
       });
@@ -97,20 +100,20 @@ class EthereumNodeRemote extends EventEmitter {
 
     if (this.ws.readyState !== WebSocket.OPEN) {
       if (this.ws.readyState === WebSocket.CONNECTING) {
-        ethereumNodeRemoteLog.trace(
-          `Can't send method ${method} because WebSocket is connecting`
+        ethereumNodeRemoteLog.error(
+          `Can't send method ${method} because remote WebSocket is connecting`
         );
       } else if (this.ws.readyState === WebSocket.CLOSING) {
-        ethereumNodeRemoteLog.trace(
-          `Can't send method ${method} because WebSocket is closing`
+        ethereumNodeRemoteLog.error(
+          `Can't send method ${method} because remote WebSocket is closing`
         );
       } else if (this.ws.readyState === WebSocket.CLOSED) {
-        ethereumNodeRemoteLog.trace(
-          `Can't send method ${method} because WebSocket is closed`
+        ethereumNodeRemoteLog.error(
+          `Can't send method ${method} because remote WebSocket is closed`
         );
       }
       if (!retry) {
-        ethereumNodeRemoteLog.trace('Retrying...');
+        ethereumNodeRemoteLog.error(`Retrying ${method} in 1.5s...`);
         setTimeout(() => {
           this.send(method, params);
         }, 1500);
@@ -205,8 +208,8 @@ class EthereumNodeRemote extends EventEmitter {
       return;
     }
 
-    function dataHandler(data) {
-       if (!data) {
+    const callback = data => {
+      if (!data) {
         return;
       }
 
@@ -228,14 +231,14 @@ class EthereumNodeRemote extends EventEmitter {
       ) {
         store.dispatch(remoteBlockReceived(data.params.result));
       }
-    }
+    };
 
-    this.ws.on('message', dataHandler.bind(this));
+    this.ws.on('message', callback);
   }
 
   unsubscribe() {
     if (this._syncSubscriptionId) {
-      this.send('eth_unsubscribe', this._syncSubscriptionId);
+      this.send('eth_unsubscribe', [this._syncSubscriptionId]);
       this._syncSubscriptionId = null;
     }
   }

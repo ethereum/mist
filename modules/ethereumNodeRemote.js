@@ -79,7 +79,7 @@ class EthereumNodeRemote extends EventEmitter {
     }));
   }
 
-  send(method, params = [], retry = false) {
+  async send(method, params = [], retry = false) {
     if (!Array.isArray(params)) {
       params = [params];
     }
@@ -92,10 +92,11 @@ class EthereumNodeRemote extends EventEmitter {
       ethereumNodeRemoteLog.error(
         `Remote websocket connection not open, attempting to reconnect and retry ${method}...`
       );
-      this.start().then(() => {
-        this.send(method, params, retry);
+      return new Promise(resolve => {
+        this.start().then(() => {
+          resolve(this.send(method, params, retry));
+        });
       });
-      return null;
     }
 
     if (this.ws.readyState !== WebSocket.OPEN) {
@@ -114,11 +115,14 @@ class EthereumNodeRemote extends EventEmitter {
       }
       if (!retry) {
         ethereumNodeRemoteLog.error(`Retrying ${method} in 1.5s...`);
-        setTimeout(() => {
-          this.send(method, params);
-        }, 1500);
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(this.send(method, params));
+          }, 1500);
+        });
+      } else {
+        return null;
       }
-      return null;
     }
 
     this.lastRequestId += 1;
@@ -197,11 +201,11 @@ class EthereumNodeRemote extends EventEmitter {
     store.dispatch(resetRemoteNode());
   }
 
-  watchBlockHeaders() {
+  async watchBlockHeaders() {
     // Unsubscribe before starting
     this.unsubscribe();
 
-    const requestId = this.send('eth_subscribe', ['newHeads']);
+    const requestId = await this.send('eth_subscribe', ['newHeads']);
 
     if (!requestId) {
       ethereumNodeRemoteLog.error('No return request id for subscription');

@@ -592,20 +592,20 @@ class IpcProviderBackend {
     @param {Boolean} retry  - Is this request a retry
     */
   _subscribeRemote(localSubscriptionId, params, retry = false) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       log.trace(
         `Creating remote subscription: ${params} (local subscription id: ${localSubscriptionId})`
       );
 
       var remoteSubscriptionId;
-      const requestId = ethereumNodeRemote.send('eth_subscribe', params);
+      const requestId = await ethereumNodeRemote.send('eth_subscribe', params);
 
       if (!requestId) {
         log.error('No return id for request');
         return;
       }
 
-      function dataHandler(data) {
+      const callback = data => {
         if (!data) {
           return;
         }
@@ -630,9 +630,9 @@ class IpcProviderBackend {
         ) {
           this._sendRemoteResult(localSubscriptionId, data.params.result);
         }
-      }
+      };
 
-      ethereumNodeRemote.ws.on('message', dataHandler.bind(this));
+      ethereumNodeRemote.ws.on('message', callback);
     });
   }
 

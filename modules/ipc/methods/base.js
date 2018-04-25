@@ -136,8 +136,11 @@ module.exports = class BaseProcessor {
   }
 
   _sendToRemote(payload, retry = false) {
-    return new Promise((resolve, reject) => {
-      const requestId = ethereumNodeRemote.send(payload.method, payload.params);
+    return new Promise(async (resolve, reject) => {
+      const requestId = await ethereumNodeRemote.send(
+        payload.method,
+        payload.params
+      );
 
       if (!requestId) {
         const errorMessage = `No request id for method ${payload.method} (${

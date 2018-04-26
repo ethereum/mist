@@ -194,6 +194,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       }
 
       // estimate gas usage
+      TemplateVar.set('gasLoading', true);
       var estimateData = _.clone(data);
       estimateData.gas = defaultEstimateGas;
       web3.eth.estimateGas(estimateData, function(e, res) {
@@ -216,6 +217,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
             }
           });
         }
+        TemplateVar.set('gasLoading', false);
       });
     }
   });

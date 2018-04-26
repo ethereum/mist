@@ -243,6 +243,7 @@
         "gasPrice": "Gas price",
         "perMillionGas": "ether per million gas",
         "gasLimit": "Provide maximum fee",
+        "gasLoading": "Estimating gas...",
         "data": "Raw Data",
         "parameters": "Parameters",
         "buttons": {

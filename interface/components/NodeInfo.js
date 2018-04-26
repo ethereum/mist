@@ -276,22 +276,23 @@ class NodeInfo extends Component {
               diff > 60 ? 'red' : active === 'remote' ? 'orange' : '#24C33A'
           }}
         />
-        {active === 'remote' && (
-          <PieChart
-            startAngle={-90}
-            style={{
-              position: 'absolute',
-              top: 22,
-              left: 0,
-              zIndex: 2,
-              height: 16
-            }}
-            data={[
-              { value: progress || 0, key: 1, color: '#24C33A' },
-              { value: 100 - (progress || 1), key: 2, color: 'orange' }
-            ]}
-          />
-        )}
+        {active === 'remote' &&
+          currentBlock !== 0 && (
+            <PieChart
+              startAngle={-90}
+              style={{
+                position: 'absolute',
+                top: 22,
+                left: 0,
+                zIndex: 2,
+                height: 16
+              }}
+              data={[
+                { value: progress || 0, key: 1, color: '#24C33A' },
+                { value: 100 - (progress || 1), key: 2, color: 'orange' }
+              ]}
+            />
+          )}
       </div>
     );
   }

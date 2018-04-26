@@ -212,8 +212,16 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
             TemplateVar.set(template, 'estimatedGas', estimatedGas.toNumber());
 
             if (!gas && res) {
-              TemplateVar.set(template, 'providedGas', estimatedGas.add(100000).toNumber());
-              TemplateVar.set(template, 'initialProvidedGas', estimatedGas.add(100000).toNumber());
+              TemplateVar.set(
+                template,
+                'providedGas',
+                estimatedGas.add(100000).toNumber()
+              );
+              TemplateVar.set(
+                template,
+                'initialProvidedGas',
+                estimatedGas.add(100000).toNumber()
+              );
             }
           });
         }
@@ -262,7 +270,9 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   estimatedFee: function() {
     var gas = TemplateVar.get('estimatedGas');
     if (gas && this.gasPrice) {
-      const balance = web3.utils.toBN(gas || 0).mul(web3.utils.toBN(this.gasPrice || 0));
+      const balance = web3.utils
+        .toBN(gas || 0)
+        .mul(web3.utils.toBN(this.gasPrice || 0));
       return EthTools.formatBalance(balance, '0,0.0[0000000] unit', 'ether');
     }
   },
@@ -274,7 +284,9 @@ Template['popupWindows_sendTransactionConfirmation'].helpers({
   providedGas: function() {
     var gas = TemplateVar.get('providedGas');
     if (gas && this.gasPrice) {
-      const balance = web3.utils.toBN(gas || 0).mul(web3.utils.toBN(this.gasPrice || 0));
+      const balance = web3.utils
+        .toBN(gas || 0)
+        .mul(web3.utils.toBN(this.gasPrice || 0));
       return EthTools.formatBalance(balance, '0,0.0[0000000]', 'ether');
     }
   },
@@ -346,7 +358,10 @@ Template['popupWindows_sendTransactionConfirmation'].events({
     @event click .not-enough-gas
     */
   'click .not-enough-gas': function() {
-    const gas = web3.utils.toBN(TemplateVar.get('estimatedGas') || 0).add(100000).toNumber();
+    const gas = web3.utils
+      .toBN(TemplateVar.get('estimatedGas') || 0)
+      .add(100000)
+      .toNumber();
     TemplateVar.set('initialProvidedGas', gas);
     TemplateVar.set('providedGas', gas);
   },

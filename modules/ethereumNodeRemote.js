@@ -89,7 +89,7 @@ class EthereumNodeRemote extends EventEmitter {
           errorMessage += '. Reopening connection...'
         }
 
-        ethereumNodeRemoteLog.error(errorMessage);
+        ethereumNodeRemoteLog.warn(errorMessage);
       });
     }));
   }

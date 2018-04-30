@@ -166,7 +166,8 @@ module.exports = class BaseProcessor {
 
         if (data.id === requestId) {
           resolve(data);
-          ethereumNodeRemote.ws.removeListener('message', callback);
+          // TODO: remove listener
+          // ethereumNodeRemote.ws.removeListener('message', callback);
         }
       };
 

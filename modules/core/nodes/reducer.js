@@ -47,13 +47,13 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
-          sync: Object.assign({}, state.local.sync, {
+          sync: {
             currentBlock: 0,
             highestBlock: 0,
             knownStates: 0,
             pulledStates: 0,
             startingBlock: 0
-          })
+          }
         })
       });
     case '[MAIN]:REMOTE_NODE:RESET':
@@ -84,13 +84,13 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
-          sync: Object.assign({}, state.local.sync, {
+          sync: {
             currentBlock: 0,
             highestBlock: 0,
             knownStates: 0,
             pulledStates: 0,
             startingBlock: 0
-          })
+          }
         })
       });
     case '[MAIN]:NODES:CHANGE_SYNC_MODE':

@@ -1,13 +1,12 @@
-import Settings from '../../settings';
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 import { InfuraEndpoints } from '../../constants';
 
-export function syncNodeDefaults() {
+export function syncNodeDefaults(settings) {
   return dispatch => {
     const network =
-      Settings.network || Settings.loadUserData('network') || 'main';
+      settings.network || settings.loadUserData('network') || 'main';
     const syncMode =
-      Settings.syncmode || Settings.loadUserData('syncmode') || 'fast';
+      settings.syncmode || settings.loadUserData('syncmode') || 'fast';
     dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } });
     dispatch({ type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } });
   };

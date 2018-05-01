@@ -176,7 +176,7 @@ function onReady() {
 
   ipcProviderBackend.init();
 
-  store.dispatch(syncNodeDefaults());
+  store.dispatch(syncNodeDefaults(Settings));
 
   ethereumNode.init();
 

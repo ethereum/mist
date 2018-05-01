@@ -360,7 +360,7 @@ Template['popupWindows_sendTransactionConfirmation'].events({
   'click .not-enough-gas': function() {
     const gas = web3.utils
       .toBN(TemplateVar.get('estimatedGas') || 0)
-      .add(100000)
+      .add(web3.utils.toBN(100000))
       .toNumber();
     TemplateVar.set('initialProvidedGas', gas);
     TemplateVar.set('providedGas', gas);

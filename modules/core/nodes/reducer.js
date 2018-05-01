@@ -1,6 +1,7 @@
 export const initialState = {
   active: 'remote',
   network: 'main',
+  changingNetwork: false,
   remote: {
     client: 'infura',
     blockNumber: 100,
@@ -74,8 +75,13 @@ const nodes = (state = initialState, action) => {
       return Object.assign({}, state, {
         active: action.payload.active
       });
-    case '[MAIN]:NODES:CHANGE_NETWORK':
+    case '[MAIN]:NODES:CHANGE_NETWORK_START':
       return Object.assign({}, state, {
+        changingNetwork: true
+      });
+    case '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS':
+      return Object.assign({}, state, {
+        changingNetwork: false,
         network: action.payload.network,
         remote: Object.assign({}, state.remote, {
           blockNumber: 100,

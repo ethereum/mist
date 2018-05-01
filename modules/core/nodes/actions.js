@@ -14,8 +14,19 @@ export function syncNodeDefaults() {
 }
 
 export function changeNetwork(network) {
-  ethereumNodeRemote.setNetwork(network);
-  return { type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } };
+  return dispatch => {
+    dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_START' });
+
+    try {
+      ethereumNodeRemote.setNetwork(network);
+      dispatch({
+        type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+        payload: { network }
+      });
+    } catch (e) {
+      dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_FAILURE', error: e });
+    }
+  };
 }
 
 export function changeSyncMode(syncMode) {

@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import reducer, { initialState } from '../../../../modules/core/nodes/reducer';
 
-describe('the settings reducer', () => {
+describe('the nodes reducer', () => {
   const exampleState = {
     active: 'remote',
     network: 'kovan',

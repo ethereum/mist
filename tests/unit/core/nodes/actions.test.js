@@ -5,6 +5,7 @@ import { initialState } from '../../../../modules/core/nodes/reducer';
 import {
   changeNetwork,
   changeSyncMode,
+  remoteBlockReceived,
   resetLocalNode,
   resetRemoteNode,
   syncNodeDefaults
@@ -31,6 +32,16 @@ describe('nodes actions:', () => {
       const action = { type: '[MAIN]:REMOTE_NODE:RESET' };
 
       assert.deepEqual(resetRemoteNode(), action);
+    });
+
+    it('should handle #remoteBlockReceived', () => {
+      const block = { number: '0x21c723', timestamp: '0x5ae9d9b8' };
+      const action = {
+        type: '[MAIN]:REMOTE_NODE:BLOCK_HEADER_RECEIVED',
+        payload: { blockNumber: 2213667, timestamp: 1525275064 }
+      };
+
+      assert.deepEqual(remoteBlockReceived(block), action);
     });
   });
 

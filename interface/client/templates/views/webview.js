@@ -162,6 +162,14 @@ Template['views_webview'].helpers({
         return url;
       }
 
+      // allow local wallet
+      if (
+        url &&
+        url.indexOf(`file://${dirname}/wallet.asar/index.html`) === 0
+      ) {
+        return url;
+      }
+
       // CHECK URL and throw error if not allowed
       if (!Helpers.sanitizeUrl(url, true)) {
         // Prevent websites using the history back attacks

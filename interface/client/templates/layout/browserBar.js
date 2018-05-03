@@ -25,6 +25,9 @@ Template['layout_browserBar'].helpers({
     if (!this || !this.url) {
       return;
     }
+    if (this._id === 'wallet') {
+      return 'Ethereum Wallet';
+    }
     try {
       return Helpers.generateBreadcrumb(new URL(this.url));
     } catch (e) {

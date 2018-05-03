@@ -44,8 +44,8 @@ mistInit = function() {
       { _id: 'wallet' },
       {
         $set: {
-          url: 'https://wallet.ethereum.org',
-          redirect: 'https://wallet.ethereum.org',
+          url: `file://${dirname}/wallet.asar/index.html`,
+          redirect: `file://${dirname}/wallet.asar/index.html`,
           position: 1,
           permissions: {
             admin: true

@@ -215,12 +215,12 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
               TemplateVar.set(
                 template,
                 'providedGas',
-                estimatedGas.add(100000).toNumber()
+                estimatedGas.add(web3.utils.toBN(100000)).toNumber()
               );
               TemplateVar.set(
                 template,
                 'initialProvidedGas',
-                estimatedGas.add(100000).toNumber()
+                estimatedGas.add(web3.utils.toBN(100000)).toNumber()
               );
             }
           });

@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import reducer, { initialState } from '../../../../modules/core/nodes/reducer';
 
-describe('the settings reducer', () => {
+describe('the nodes reducer', () => {
   const exampleState = {
     active: 'remote',
     network: 'kovan',
@@ -121,9 +121,18 @@ describe('the settings reducer', () => {
     assert.deepEqual(reducer(initialState, action), expectedState);
   });
 
-  it('should handle the "[MAIN]:NODES:CHANGE_NETWORK" action', () => {
+  it('should handle the "[MAIN]:NODES:CHANGE_NETWORK_START" action', () => {
+    const action = { type: '[MAIN]:NODES:CHANGE_NETWORK_START' };
+    const expectedState = Object.assign({}, initialState, {
+      changingNetwork: true
+    });
+
+    assert.deepEqual(reducer(initialState, action), expectedState);
+  });
+
+  it('should handle the "[MAIN]:NODES:CHANGE_NETWORK_SUCCESS" action', () => {
     const action = {
-      type: '[MAIN]:NODES:CHANGE_NETWORK',
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
       payload: { network: 'rinkeby' }
     };
     const expectedState = Object.assign({}, initialState, {

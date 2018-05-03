@@ -69,7 +69,6 @@ function renderReactComponentPopup(locationHash) {
   // Example hash: '#about'. Manipulate string to return 'About'.
   const componentName =
     locationHash.charAt(1).toUpperCase() + locationHash.slice(2);
-  console.log('∆∆∆ componentName', componentName);
 
   // JSX can't evaluate an expression or string, so map imported components here
   const components = {
@@ -94,21 +93,35 @@ function renderReactComponentMain() {
   );
 }
 
-Meteor.startup(function() {
-  console.info('Meteor starting up...');
+function handleLanguage() {
+  let currentLang = store.getState().settings.i18n;
 
-  // TODO: update language when redux updates
-  // 18n.changeLanguage(lang);
+  store.subscribe(() => {
+    const newLang = store.getState().settings.i18n;
+    if (currentLang !== newLang) {
+      i18n.changeLanguage(newLang);
+      currentLang = newLang;
+    }
+  });
+}
 
+function renderReact() {
+  // handle main window:
   if (!location.hash) {
-    // Main window
+    handleLanguage();
     EthAccounts.init();
     mistInit();
     renderReactComponentMain();
   } else {
-    // render React popup window
+    // handle popup windows:
     renderReactComponentPopup(location.hash);
   }
+}
+
+Meteor.startup(function() {
+  console.info('Meteor starting up...');
+
+  renderReact();
 
   store.dispatch(getLanguage());
 

@@ -93,23 +93,22 @@ function renderReactComponentMain() {
   );
 }
 
+function handleLanguage() {
+  let currentLang = store.getState().settings.i18n;
+
+  store.subscribe(() => {
+    const newLang = store.getState().settings.i18n;
+    if (currentLang !== newLang) {
+      i18n.changeLanguage(newLang);
+      currentLang = newLang;
+    }
+  });
+}
+
 function renderReact() {
   // handle main window:
   if (!location.hash) {
-    // handle live language updates
-    let currentLang = store.getState().settings.i18n;
-
-    store.subscribe(() => {
-      const newLang = store.getState().settings.i18n;
-      if (currentLang !== newLang) {
-        // TODO: both necessary?
-        i18n.changeLanguage(newLang);
-        TAPi18n.setLanguage(lang);
-
-        currentLang = newLang;
-      }
-    });
-
+    handleLanguage();
     EthAccounts.init();
     mistInit();
     renderReactComponentMain();

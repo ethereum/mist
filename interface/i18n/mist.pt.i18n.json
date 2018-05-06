@@ -166,7 +166,7 @@
                 "errors": {
                     "connectionTimeout": "Não pode se conectar com Node, é possível que tenha sido interrompido pelo sistema",
                     "wrongPassword": "Senha errada",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "multipleKeysMatchAddress": "Multiple keys match address. Please remove duplicates from keystore (Arquivos -> Cópia de segurança -> Contas)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
                 },

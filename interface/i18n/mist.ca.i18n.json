@@ -208,7 +208,7 @@
                 "errors": {
                     "connectionTimeout": "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
                     "wrongPassword": "Contrasenya errònia",
-                    "multipleKeysMatchAddress": "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> comptes -> copia de seguretat -> comptes)",
+                    "multipleKeysMatchAddress": "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fitxer -> Copia de seguretat -> Comptes)",
                     "insufficientFundsForGas": "Saldo insuficient al compte principal (etherbase) per pagar el gas",
                     "sameAccount": "No es pot enviar a un mateix"
                 },

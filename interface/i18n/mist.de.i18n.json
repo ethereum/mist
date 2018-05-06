@@ -138,7 +138,7 @@
                 "enterPassword": "Passwort eingeben",
                 "repeatPassword": "Passwort wiederholen",
                 "creating": "Konto wird angelegt...",
-                "backupHint": "Bitte stelle sicher dass du von allen Schlüsseldateien Sicherungen erstellst. Unabhängig davon solltest du dich AUCH vergewissern dass du deine Passwörter nicht vergisst bzw. dass du diese sicher in einem Passwort-Manager abgespeichert hast!\n\nDie verschlüsselten Wallet-Dateien findest du im Hauptmenü -> Datei -> Sicherung -> Konten. Bewahre Kopien des \"keystore\"  Ordners an einem sicheren Ort auf!",
+                "backupHint": "Bitte stelle sicher dass du von allen Schlüsseldateien Sicherungen erstellst. Unabhängig davon solltest du dich AUCH vergewissern dass du deine Passwörter nicht vergisst bzw. dass du diese sicher in einem Passwort-Manager abgespeichert hast!\n\nDie verschlüsselten Wallet-Dateien findest du im Hauptmenü -> Datei -> Sicherung -> Konten. Bewahre Kopien des \"keystore\" Ordners an einem sicheren Ort auf!",
                 "errors": {
                     "passwordMismatch": "Die Passwörter stimmen nicht überein.",
                     "passwordTooShort": "Wähle ein längeres Passwort..."
@@ -166,7 +166,7 @@
                 "errors": {
                     "connectionTimeout": "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
                     "wrongPassword": "Falsches Passwort",
-                    "multipleKeysMatchAddress": "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Konten -> Sicherung -> Konten)",
+                    "multipleKeysMatchAddress": "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Datei -> Sicherung -> Konten)",
                     "insufficientFundsForGas": "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
                     "sameAccount": "Kann nicht zum gleichen Konto schicken."
                 },

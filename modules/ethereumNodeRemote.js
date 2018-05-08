@@ -104,7 +104,7 @@ class EthereumNodeRemote extends EventEmitter {
       !this.ws.readyState ||
       this.ws.readyState === WebSocket.CLOSED
     ) {
-      ethereumNodeRemoteLog.error(
+      ethereumNodeRemoteLog.warn(
         `Remote websocket connection not open, attempting to reconnect and retry ${method}...`
       );
       return new Promise(resolve => {

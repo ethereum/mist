@@ -193,8 +193,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
         });
       }
 
-      // estimate gas usage
+      // Estimate gas usage
       TemplateVar.set(template, 'gasLoading', true);
+
       var estimateData = _.clone(data);
       estimateData.gas = defaultEstimateGas;
       web3.eth.estimateGas(estimateData, function(e, res) {
@@ -227,6 +228,13 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
         }
         TemplateVar.set(template, 'gasLoading', false);
       });
+      // In case estimateGas fails returning
+      // (which seems to be happening in manual testing)
+      // We'll set gasLoading back to false after 10s
+      // so the user can see an error message
+      setTimeout(() => {
+        TemplateVar.set(template, 'gasLoading', false);
+      }, 10000);
     }
   });
 });

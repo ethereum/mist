@@ -58,7 +58,7 @@ describe('nodes actions:', () => {
       const actions = store.getActions();
 
       assert.equal(actions.length, 2);
-      assert.equal(actions[0].type, '[MAIN]:NODES:CHANGE_NETWORK');
+      assert.equal(actions[0].type, '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS');
       assert.equal(actions[0].payload.network, 'main');
       assert.equal(actions[1].type, '[MAIN]:NODES:CHANGE_SYNC_MODE');
       assert.equal(actions[1].payload.syncMode, 'fast');

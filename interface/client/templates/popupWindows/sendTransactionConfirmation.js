@@ -236,7 +236,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       // so the user can see an error message
       setTimeout(() => {
         TemplateVar.set(template, 'gasLoading', false);
-      }, 10000);
+      }, 25000);
     }
   });
 });

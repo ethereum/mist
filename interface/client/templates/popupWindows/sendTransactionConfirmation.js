@@ -513,6 +513,12 @@ Template['popupWindows_sendTransactionConfirmation'].events({
       }
       ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
     });
+    // In case sendSignedTransaction doesn't return,
+    // after 75s we'll reset the form so at least
+    // they can try again.
+    setTimeout(() => {
+      TemplateVar.set(template, 'unlocking', false);
+    }, 75000);
   },
 
   'click .data .toggle-panel': function() {
@@ -563,7 +569,9 @@ var setNetwork = function(template) {
   TemplateVar.set(template, 'network', store.getState().nodes.network);
 
   this.storeUnsubscribe = store.subscribe(() => {
-    if (store.getState().nodes.network !== TemplateVar.get(template, 'network')) {
+    if (
+      store.getState().nodes.network !== TemplateVar.get(template, 'network')
+    ) {
       TemplateVar.set(template, 'network', store.getState().nodes.network);
     }
   });

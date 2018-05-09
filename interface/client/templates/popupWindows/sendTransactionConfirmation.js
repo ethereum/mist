@@ -563,7 +563,7 @@ var setNetwork = function(template) {
   TemplateVar.set(template, 'network', store.getState().nodes.network);
 
   this.storeUnsubscribe = store.subscribe(() => {
-    if (store.getState().nodes.network !== TemplateVar.get('network')) {
+    if (store.getState().nodes.network !== TemplateVar.get(template, 'network')) {
       TemplateVar.set(template, 'network', store.getState().nodes.network);
     }
   });

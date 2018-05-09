@@ -175,14 +175,18 @@
                 {{#if TemplateVar.get "unlocking"}}
                     <h2>{{i18n "mist.popupWindows.sendTransactionConfirmation.unlocking"}}</h2>
                 {{else}}
-
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
+
+                    {{#if $neq (TemplateVar.get "network") "main"}}
+                        <div class="network">
+                            {{TemplateVar.get "network"}}
+                        </div>
+                    {{/if}}
 
                     <div class="dapp-modal-buttons">
                         <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
                         <button class="ok dapp-primary-button" type="submit">{{i18n "mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction"}}</button>
                     </div>
-
                 {{/if}}
                 </footer>
             {{/with}}

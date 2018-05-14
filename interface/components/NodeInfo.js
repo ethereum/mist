@@ -159,7 +159,7 @@ class NodeInfo extends Component {
         : '-';
 
     const progress =
-      (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      (displayBlock - startingBlock) / (highestBlock - startingBlock) * 100;
 
     return (
       <div>
@@ -262,6 +262,8 @@ class NodeInfo extends Component {
     const timeSince = moment(remote.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
+    let dotColor = network == 'main' ? '#7ed321' : '#00aafa';
+
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
@@ -273,7 +275,7 @@ class NodeInfo extends Component {
           className={this.state.lightClasses}
           style={{
             backgroundColor:
-              diff > 60 ? 'red' : active === 'remote' ? 'orange' : '#24C33A'
+              diff > 60 ? 'red' : active === 'remote' ? 'orange' : dotColor
           }}
         />
         {active === 'remote' &&
@@ -288,7 +290,7 @@ class NodeInfo extends Component {
                 height: 16
               }}
               data={[
-                { value: progress || 0, key: 1, color: '#24C33A' },
+                { value: progress || 0, key: 1, color: dotColor },
                 { value: 100 - (progress || 1), key: 2, color: 'orange' }
               ]}
             />

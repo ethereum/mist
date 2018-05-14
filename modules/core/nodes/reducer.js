@@ -5,7 +5,8 @@ export const initialState = {
   remote: {
     client: 'infura',
     blockNumber: 100,
-    timestamp: 0
+    timestamp: 0,
+    connecting: false
   },
   local: {
     client: 'geth',
@@ -103,6 +104,24 @@ const nodes = (state = initialState, action) => {
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
           syncMode: action.payload.syncMode
+        })
+      });
+    case '[MAIN]:NODES:REMOTE_CONNETING':
+      return Object.assign({}, state, {
+        remote: Object.assign({}, state.local, {
+          connecting: true
+        })
+      });
+    case '[MAIN]:NODES:REMOTE_CONNECTED':
+      return Object.assign({}, state, {
+        remote: Object.assign({}, state.local, {
+          connecting: false
+        })
+      });
+    case '[MAIN]:NODES:REMOTE_ERROR':
+      return Object.assign({}, state, {
+        remote: Object.assign({}, state.local, {
+          connecting: false
         })
       });
     default:

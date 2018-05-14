@@ -7,7 +7,10 @@ export function syncNodeDefaults(settings) {
       settings.network || settings.loadUserData('network') || 'main';
     const syncMode =
       settings.syncmode || settings.loadUserData('syncmode') || 'fast';
-    dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS', payload: { network } });
+    dispatch({
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+      payload: { network }
+    });
     dispatch({ type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } });
   };
 }
@@ -144,5 +147,17 @@ export function setActiveNode() {
         });
       }
     }
+  };
+}
+
+export function startRemoteNode() {
+  return dispatch => {
+    // Actions are dispatched inside ethereumNodeRemote.start()
+    ethereumNodeRemote.start().catch(error => {
+      dispatch({
+        type: '[MAIN]:NODES:REMOTE_ERROR',
+        payload: { error }
+      });
+    });
   };
 }

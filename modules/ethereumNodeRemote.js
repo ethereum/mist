@@ -36,10 +36,17 @@ class EthereumNodeRemote extends EventEmitter {
 
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       ethereumNodeRemoteLog.error('Starting connection but already open');
+      store.dispatch({
+        type: '[MAIN]:NODES:REMOTE_CONNECTED'
+      });
       return;
     }
 
     return (this.starting = new Promise((resolve, reject) => {
+      store.dispatch({
+        type: '[MAIN]:NODES:REMOTE_CONNECTING'
+      });
+
       this.network =
         Settings.network || Settings.loadUserData('network') || 'main';
 
@@ -61,7 +68,13 @@ class EthereumNodeRemote extends EventEmitter {
         ethereumNodeRemoteLog.trace(
           `Connected to remote node on ${this.network}`
         );
+
         this.watchBlockHeaders();
+
+        store.dispatch({
+          type: '[MAIN]:NODES:REMOTE_CONNECTED'
+        });
+
         resolve(true);
       });
 
@@ -80,16 +93,21 @@ class EthereumNodeRemote extends EventEmitter {
         let errorMessage = `Remote WebSocket connection closed (code: ${code})`;
 
         if (reason) {
-          errorMessage += ` (reason: ${reason})`
+          errorMessage += ` (reason: ${reason})`;
         }
 
         // Restart connection if didn't close on purpose
         if (code !== 1000) {
           this.start();
-          errorMessage += '. Reopening connection...'
+          errorMessage += '. Reopening connection...';
         }
 
         ethereumNodeRemoteLog.warn(errorMessage);
+
+        store.dispatch({
+          type: '[MAIN]:NODES:REMOTE_ERROR',
+          payload: { error: errorMessage }
+        });
       });
     }));
   }

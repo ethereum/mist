@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import PieChart from 'react-minimal-pie-chart';
+// import { startRemoteNode } from '../../modules/core/nodes/actions';
+let startRemoteNode = () => {};
 
 class NodeInfo extends Component {
   constructor(props) {
@@ -73,6 +75,24 @@ class NodeInfo extends Component {
     const remoteTimestamp = moment.unix(this.props.remote.timestamp);
     const diff = moment().diff(remoteTimestamp, 'seconds');
 
+    let restartRemoteNode;
+
+    if (diff > 60) {
+      const buttonText = this.props.remote.connecting
+        ? i18n.t('mist.nodeInfo.connecting')
+        : i18n.t('mist.nodeInfo.restartRemoteNode');
+      restartRemoteNode = (
+        <div
+          id="restart-remote-node"
+          onClick={() => this.props.store.dispatch(startRemoteNode())}
+        >
+          {buttonText}
+        </div>
+      );
+    } else {
+      restartRemoteNode = null;
+    }
+
     if (this.props.remote.blockNumber < 1000) {
       // Still loading initial remote results
       return (
@@ -113,6 +133,7 @@ class NodeInfo extends Component {
               ? diff + ' seconds'
               : Math.floor(diff / 60) + ' minutes'}
           </div>
+          {restartRemoteNode}
         </div>
       );
     }

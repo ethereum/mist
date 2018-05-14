@@ -139,6 +139,7 @@
         "You are on a private net. DO NOT SEND any real ether to these addresses",
       "remote":
         "Connected to remote node. Switches to local node when sync is fewer than 15 blocks behind.",
+      "restartRemoteNode": "Restart remote node",
       "syncStarting": "Sync starting...",
       "test": "test",
       "testnetExplain":

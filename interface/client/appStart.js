@@ -58,7 +58,7 @@ function initTabs() {
       );
     }
 
-    // On first use, show wallet to nudge user to create an account
+    // on first use of Mist, show the wallet to nudge the user to create an account
     if (
       !LocalStore.get('selectedTab') ||
       !Tabs.findOne(LocalStore.get('selectedTab'))

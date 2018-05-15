@@ -102,6 +102,8 @@ var signatureLookupCallback = function(textSignature) {
 Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
   var template = this;
 
+  setNetwork(template);
+
   ipc.on('uiAction_decodedFunctionSignatures', function(event, params) {
     console.log('params returned', params);
     TemplateVar.set(template, 'params', params);
@@ -234,7 +236,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       // so the user can see an error message
       setTimeout(() => {
         TemplateVar.set(template, 'gasLoading', false);
-      }, 10000);
+      }, 25000);
     }
   });
 });
@@ -511,6 +513,12 @@ Template['popupWindows_sendTransactionConfirmation'].events({
       }
       ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
     });
+    // In case sendSignedTransaction doesn't return,
+    // after 75s we'll reset the form so at least
+    // they can try again.
+    setTimeout(() => {
+      TemplateVar.set(template, 'unlocking', false);
+    }, 75000);
   },
 
   'click .data .toggle-panel': function() {
@@ -553,3 +561,18 @@ Template['popupWindows_sendTransactionConfirmation'].events({
       });
   }
 });
+/**
+Set TemplateVar 'network'
+@method setNetwork
+*/
+var setNetwork = function(template) {
+  TemplateVar.set(template, 'network', store.getState().nodes.network);
+
+  this.storeUnsubscribe = store.subscribe(() => {
+    if (
+      store.getState().nodes.network !== TemplateVar.get(template, 'network')
+    ) {
+      TemplateVar.set(template, 'network', store.getState().nodes.network);
+    }
+  });
+};

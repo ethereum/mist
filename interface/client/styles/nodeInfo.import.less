@@ -1,3 +1,4 @@
+@colorMainnet: #7ed321;
 @colorTestnet: #00aafa;
 
 #react__node-info {
@@ -147,7 +148,7 @@ strong {
 }
 
 .node-mainnet .node-info__node-title.local {
-  color: #7ed321;
+  color: @colorMainnet;
 }
 
 .node-testnet .node-info__node-title.local {
@@ -162,8 +163,8 @@ progress[value]::-webkit-progress-bar {
 }
 
 .node-mainnet progress[value]::-webkit-progress-value {
-  background-image: linear-gradient(left, transparent, #7ed321);
-  background: #7ed321;
+  background-image: linear-gradient(left, transparent, @colorMainnet);
+  background: @colorMainnet;
   background-size: cover;
 }
 

@@ -5,6 +5,7 @@ import { getLanguage } from './actions.js';
 import About from '../components/About';
 import RequestAccount from '../components/RequestAccount';
 import NodeInfo from '../components/NodeInfo';
+import SendTransactionConfirmation from '../components/SendTransactionConfirmation';
 
 /**
 The init function of Mist
@@ -76,14 +77,20 @@ function renderReactComponentPopup(locationHash) {
   // JSX can't evaluate an expression or string, so map imported components here
   const components = {
     About,
-    RequestAccount
+    RequestAccount,
+    SendTransactionConfirmation
   };
 
   // Only render a component if it exists
   if (!!components[componentName]) {
     const Component = components[componentName];
 
-    render(<Component />, document.getElementById('react-entry'));
+    render(
+      <Provider store={store}>
+        <Component />
+      </Provider>,
+      document.getElementById('react-entry')
+    );
   }
 }
 

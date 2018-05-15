@@ -49,6 +49,12 @@ module.exports = class extends BaseProcessor {
         return reject(err);
       }
 
+      console.log('∆∆∆ payload.params[0]', payload.params[0]);
+      store.dispatch({
+        type: '[CLIENT]:NEW_TRANSACTION:START',
+        payload: payload.params[0]
+      });
+
       const modalWindow = Windows.createPopup('sendTransactionConfirmation', {
         sendData: { uiAction_sendData: payload.params[0] }
       });

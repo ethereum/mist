@@ -13,18 +13,26 @@ The body template
 
 import React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import About from '../../components/About';
 import RequestAccount from '../../components/RequestAccount';
+import SendTransactionConfirmation from '../../components/SendTransactionConfirmation';
 
 const COMPONENTS = {
   About,
-  RequestAccount
+  RequestAccount,
+  SendTransactionConfirmation
 };
 
 function renderReactComponentPopup(component) {
   const Component = COMPONENTS[component];
   if (!!Component) {
-    render(<Component />, document.getElementById('react-entry'));
+    render(
+      <Provider store={store}>
+        <Component />
+      </Provider>,
+      document.getElementById('react-entry')
+    );
   }
 }
 

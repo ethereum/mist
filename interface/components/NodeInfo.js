@@ -150,13 +150,9 @@ class NodeInfo extends Component {
     let displayBlock =
       this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
     displayBlock += (currentBlock - displayBlock) / 20;
+    let formattedDisplayBlock = numeral(displayBlock).format('0,0');
 
     this.props.local.sync.displayBlock = displayBlock;
-
-    const blocksBehind =
-      highestBlock - currentBlock > 0
-        ? numeral(highestBlock - displayBlock).format('0,0')
-        : '-';
 
     const progress =
       (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
@@ -165,7 +161,7 @@ class NodeInfo extends Component {
       <div>
         <div className="block-number row-icon">
           <i className="icon icon-layers" />
-          {`${blocksBehind} ${i18n.t('mist.nodeInfo.blocksBehind')}`}
+          {formattedDisplayBlock}
         </div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
@@ -317,16 +313,10 @@ class NodeInfo extends Component {
           <section className="node-info__submenu-container">
             <section>
               <div className="node-info__section">
-                <div className="node-info__network-title">
-                  {network}
-                  {network !== 'main' && (
-                    <span className="node-info__pill">
-                      {i18n.t('mist.nodeInfo.test')}
-                    </span>
-                  )}
-                </div>
+                <div className="node-info__network-title">{network}</div>
                 <div className="node-info__subtitle">
-                  {i18n.t('mist.nodeInfo.network')}
+                  {network !== 'main' && i18n.t('mist.nodeInfo.testNetwork')}
+                  {network === 'main' && i18n.t('mist.nodeInfo.network')}
                 </div>
               </div>
 

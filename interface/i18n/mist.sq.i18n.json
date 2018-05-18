@@ -189,7 +189,7 @@
                 "errors": {
                     "connectionTimeout": "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
                     "wrongPassword": "Fjalëkalim i gabuar",
-                    "multipleKeysMatchAddress": "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (Menu -> Llogaritë -> Ruaj kopje tjetër -> Llogari)",
+                    "multipleKeysMatchAddress": "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
                     "insufficientFundsForGas": "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
                     "sameAccount": "Nuk mund t'i dërgohet vetes"
                 },

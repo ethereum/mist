@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Blockies from 'react-blockies';
+import Identicon from './Identicon';
 
 class SendTransactionConfirmation extends Component {
   constructor(props) {
@@ -48,7 +50,26 @@ class SendTransactionConfirmation extends Component {
     }
   }
 
+  totalAmount = () => {
+    var amount = EthTools.formatBalance(
+      web3.utils.toBN(this.value || 0),
+      '0,0.00[0000000000000000]',
+      'ether'
+    );
+    var dotPos = ~amount.indexOf('.')
+      ? amount.indexOf('.') + 3
+      : amount.indexOf(',') + 3;
+
+    return amount
+      ? amount.substr(0, dotPos) +
+          <small style={{ fontSize: '0.5em' }}>amount.substr(dotPos)</small>
+      : '0';
+  };
+
   render() {
+    const { from } = this.props.newTransaction;
+
+    // <Blockies identity={from} className="dapp-identicon dapp-large" />
     return (
       <div className="popup-windows tx-info">
         {this.renderTitle()}
@@ -60,6 +81,20 @@ class SendTransactionConfirmation extends Component {
             ) : (
               <i className="overlap-icon icon-key" />
             )}
+            <Identicon identity={from} className="dapp-identicon dapp-large" />
+            <br />
+            <span
+              className="simptip-position-bottom simptip-movable"
+              data-tooltip={from}
+            >
+              {from}
+            </span>
+          </div>
+
+          <div className="connection">
+            <div className="amount">
+              {this.totalAmount()} <span className="unit">ETHER</span>
+            </div>
           </div>
         </div>
 

@@ -1,15 +1,15 @@
 {
     "clients": {
         "Geth": {
-            "version": "1.8.7",
+            "version": "1.8.8",
             "platforms": {
                 "linux": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.7-66432f38.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.8-2688dab4.tar.gz",
                             "type": "tar",
-                            "md5": "bc876cd68cf059cf5273e58239fa00dd",
-                            "bin": "geth-linux-amd64-1.8.7-66432f38/geth"
+                            "md5": "ee6803a17031179a33fb5ca94fa8e94d",
+                            "bin": "geth-linux-amd64-1.8.8-2688dab4/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -19,17 +19,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.8.7"
+                                    "1.8.8"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.7-66432f38.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.8-2688dab4.tar.gz",
                             "type": "tar",
-                            "md5": "07cdaca6375464383926990f0fad13bc",
-                            "bin": "geth-linux-386-1.8.7-66432f38/geth"
+                            "md5": "ef6ebf9b6bdd66e96a34472746cdefc2",
+                            "bin": "geth-linux-386-1.8.8-2688dab4/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -39,7 +39,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.8.7"
+                                    "1.8.8"
                                 ]
                             }
                         }
@@ -48,10 +48,10 @@
                 "mac": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.7-66432f38.tar.gz",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.8-2688dab4.tar.gz",
                             "type": "tar",
-                            "md5": "4896c06f0161200b48d78a6dba1089c8",
-                            "bin": "geth-darwin-amd64-1.8.7-66432f38/geth"
+                            "md5": "324acb9dad58824a269ba2f25ea06000",
+                            "bin": "geth-darwin-amd64-1.8.8-2688dab4/geth"
                         },
                         "bin": "geth",
                         "commands": {
@@ -61,7 +61,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.8.7"
+                                    "1.8.8"
                                 ]
                             }
                         }
@@ -70,10 +70,10 @@
                 "win": {
                     "x64": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.7-66432f38.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.8-2688dab4.zip",
                             "type": "zip",
-                            "md5": "ab922ba916e5ed503c94dcd012f80880",
-                            "bin": "geth-windows-amd64-1.8.7-66432f38\\geth.exe"
+                            "md5": "0b17f552d5b99996d18cfe5e6f064cb1",
+                            "bin": "geth-windows-amd64-1.8.8-2688dab4\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -83,17 +83,17 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.8.7"
+                                    "1.8.8"
                                 ]
                             }
                         }
                     },
                     "ia32": {
                         "download": {
-                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.7-66432f38.zip",
+                            "url": "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.8-2688dab4.zip",
                             "type": "zip",
-                            "md5": "2bc83d029710010873e38c1124257ca2",
-                            "bin": "geth-windows-386-1.8.7-66432f38\\geth.exe"
+                            "md5": "fa186962bd909d8f18795af5a0e56f2c",
+                            "bin": "geth-windows-386-1.8.8-2688dab4\\geth.exe"
                         },
                         "bin": "geth.exe",
                         "commands": {
@@ -103,7 +103,7 @@
                                 ],
                                 "output": [
                                     "Geth",
-                                    "1.8.7"
+                                    "1.8.8"
                                 ]
                             }
                         }

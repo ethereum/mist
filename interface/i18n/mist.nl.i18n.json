@@ -45,7 +45,7 @@
         }
       },
       "file": {
-        "label": "Accounts",
+        "label": "Bestand",
         "importPresale": "Importeer Accounts",
         "newAccount": "Nieuw account",
         "backup": "Backup",
@@ -226,7 +226,7 @@
             "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
           "wrongPassword": "Onjuist wachtwoord",
           "multipleKeysMatchAddress":
-            "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> accounts -> backup -> accounts)",
+            "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
           "insufficientFundsForGas":
             "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
           "sameAccount": "Kan niet naar zichzelf versturen"

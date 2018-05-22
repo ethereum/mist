@@ -193,7 +193,7 @@
             "La connexion au nœud n'a pas pu s'établir, est-ce un plantage dans l'arrière-plan ?",
           "wrongPassword": "Mauvais mot de passe",
           "multipleKeysMatchAddress":
-            "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+            "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
           "insufficientFundsForGas":
             "Insufficient funds in main account (etherbase) to pay for gas",
           "sameAccount": "Can't send to itself"

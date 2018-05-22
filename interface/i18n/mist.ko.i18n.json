@@ -58,14 +58,14 @@
       },
       "help": {
         "label": "도움말",
-        "reportBug": "깃허브에 이슈 리포트"
+        "reportBug": "깃허브에 이슈 보고"
       }
     },
     "errors": {
       "nodeConnect":
-        "노드에 연결할 수 없었습니다? 자세한 것은 로그를 확인하세요:",
+        "노드에 연결할 수 없습니다? 자세한 것은 로그를 확인하세요:",
       "nodeStartup":
-        "노드를 시작할 수 없었던 같습니다, 이미 다른 노드를 실행하고 있나요? 현재 데이터베이스를 업그레이드 하고 있나요?",
+        "노드가 시작하지 못하고 있습니다. 이미 다른 노드를 실행하고 있거나 현재 데이터베이스를 업그레이드 하고 있나요?",
       "timeSync": {
         "title": "당신의 컴퓨터 시간이 동기화되어 있지 않습니다.",
         "description":
@@ -73,7 +73,7 @@
         "win32":
           "시스템 설정에 있는 인터넷 시간 설정에서 박스를 체크하세요. 자세한 것은 다음의 가이드를 참조하세요: http://www.guidingtech.com/3119/windows-clock-sync/",
         "linux":
-          "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 의 방법으로 설치하세요.",
+          "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 명령으로 설치하세요.",
         "darwin":
           "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
       },
@@ -91,7 +91,7 @@
     "rightClick": {
       "reload": "재로딩",
       "openDevTools": "개발도구 열기",
-      "inspectElements": "엘리먼트 검사"
+      "inspectElements": "요소 검사"
     },
     "nodeInfo": {
       "active": "active",
@@ -125,7 +125,7 @@
     "startScreen": {
       "runningNodeFound": "작동 중인 이더리움 노드를 발견!",
       "nodeConnectionTimeout":
-        "이더리움 노드를 시작할 수 없었습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
+        "이더리움 노드를 시작할 수 없습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
       "nodeBinaryNotFound":
         "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
       "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
@@ -135,7 +135,7 @@
       "nodeStarted": "이더리움 노드가 시작됨",
       "nodeConnected": "이더리움 노드가 연결됨",
       "nodeStopping": "이더리움 노드가 정지중...",
-      "nodeStopped": "이더이룸 노드가 정지됨",
+      "nodeStopped": "이더리움 노드가 정지됨",
       "nodeError": "이더리움 노드 연결 에러 :'(",
       "unableToBindPort":
         "이더리움 노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
@@ -148,7 +148,7 @@
         "downloading": "새로운 노드 다운로드중...",
         "loadConfig": "클라이언트 설정 로딩중...",
         "filtering": "클라이언트 바이너리 필터링중...",
-        "done": "Ethereum node up-to-date...",
+        "done": "이더리움 노드 최신버전...",
         "error": "다운로드 된 바이너리 실행 중 오류."
       }
     },
@@ -178,7 +178,7 @@
         "createContract": "계약 만들기",
         "estimatedFee": "예상 수수료 사용량",
         "estimatedGasError":
-          "데이더를 실행할 수 없었습니다. 따라서 제공했던 개스를 모두 소모할 것입니다.",
+          "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
         "gasPrice": "개스 가격",
         "perMillionGas": "백만 개스당 이더수",
         "gasLimit": "최고 수수료 제공",
@@ -193,16 +193,16 @@
           "multipleKeysMatchAddress":
             "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
           "insufficientFundsForGas":
-            "주 계좌(이더리움)에 가스를 지불할 금액이 충분하지 않습니다.",
-          "sameAccount": "현재 사용하고 있는 계좌로 전송할 수 없습니다"
+            "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
+          "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
         },
         "transactionThrow": "이 계약은 트랜젝션을 승인하지 않을 것 입니다.",
-        "noEstimate": "가스를 측정 할 수 없습니다.",
+        "noEstimate": "가스 소모량을 추정 할 수 없습니다.",
         "parameters": "파라미터",
-        "showRawBytecode": "원래 데이터 보기",
+        "showRawBytecode": "원 데이터 보기",
         "showDecodedParameters": "디코딩된 파라미터 보기",
         "lookupData": "데이터 디코딩하기",
-        "lookupDataExplainer": "해다 내용을 인터넷에서 확인하세요",
+        "lookupDataExplainer": "해당 내용을 인터넷에서 확인하세요",
         "overBlockGasLimit":
           "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
         "notEnoughGas":

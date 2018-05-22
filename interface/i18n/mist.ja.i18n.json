@@ -193,7 +193,7 @@
             "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
           "wrongPassword": "パスワードが間違っています",
           "multipleKeysMatchAddress":
-            "複数のキーが一致する場合は、キーストアから重複を削除してください (menu -> accounts -> backup -> accounts)",
+            "複数のキーが一致する場合は、キーストアから重複を削除してください (ファイル -> バックアップを取る -> アカウント)",
           "insufficientFundsForGas":
             "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
           "sameAccount": "同一アカウントには送信できません"

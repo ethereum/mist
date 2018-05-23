@@ -74,7 +74,7 @@ Template['popupWindows_importAccount'].events({
           default:
             GlobalNotification.warning({
               content: TAPi18n.__(
-                'mist.popupWindows.onboarding.errors.unknownFile'
+                'mist.popupWindows.importAccount.errors.unknownFile'
               ),
               duration: 4
             });
@@ -119,14 +119,14 @@ Template['popupWindows_importAccount'].events({
         ipc.removeAllListeners('uiAction_importedWalletFile');
         console.log('Imported account: ', address);
 
-        // move to add account screen, when in the onboarding window
-        if ($('.onboarding-start')[0]) {
+        // move to add account screen, when in the importAccount window
+        if ($('.importAccount-start')[0]) {
           TemplateVar.setTo(
-            '.onboarding-account',
+            '.importAccount-account',
             'newAccount',
-            web3.toChecksumAddress(address)
+            web3.utils.toChecksumAddress(address)
           );
-          TemplateVar.setTo('.onboarding-screen', 'currentActive', 'account');
+          TemplateVar.setTo('.importAccount-screen', 'currentActive', 'account');
 
           // otherwise simply close the window
         } else {
@@ -138,14 +138,14 @@ Template['popupWindows_importAccount'].events({
         if (error === 'Decryption Failed') {
           GlobalNotification.warning({
             content: TAPi18n.__(
-              'mist.popupWindows.onboarding.errors.wrongPassword'
+              'mist.popupWindows.importAccount.errors.wrongPassword'
             ),
             duration: 4
           });
         } else {
           GlobalNotification.warning({
             content: TAPi18n.__(
-              'mist.popupWindows.onboarding.errors.importFailed',
+              'mist.popupWindows.importAccount.errors.importFailed',
               {
                 error
               }

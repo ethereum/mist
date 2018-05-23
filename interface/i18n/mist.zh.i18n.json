@@ -32,10 +32,10 @@
                 "newAccount": "新建账户",
                 "backup": "备份",
                 "backupKeyStore": "账户",
-                "backupMist": "应用程序数据"
+                "backupMist": "应用程序数据",
+                "swarmUpload": "上传到Swarm"
             },
             "develop": {
-                "uploadToSwarm": "上传到Swarm",
                 "label": "开发",
                 "devTools": "切换开发者工具",
                 "devToolsMistUI": "Mist界面",
@@ -48,11 +48,7 @@
                 "mainNetwork": "主网络",
                 "startMining": "⛏ 开启挖矿（仅限Testnet网络）",
                 "stopMining": "⛏ 停止挖矿",
-                "externalNode": "using external node",
-                "openRemix": "Open Remix IDE",
-                "nodeMode": "Chain download",
-                "fullNode": "Store full blockchain",
-                "lightNode": "Use light Node (experimental!)"
+                "openRemix": "Open Remix IDE"
             },
             "window": {
                 "label": "窗口",
@@ -91,18 +87,13 @@
         },
         "nodeInfo": {
             "nodeSyncing": "剩余__blockDiff__块",
-            "blockReceived": "收到新块",
+            "blockReceivedShort": "收到新块",
             "blockNumber": "最新的块数量",
             "timeSinceBlock": "自上一块已经过去的时间",
             "testnetExplain": "你正处于Testnet测试网络中，请勿发送真正的以太币到这些地址中",
             "peers": "节点",
             "checkingWhichNetwork": "Checking network...",
-            "mainNetwork": "Main-net",
-            "testNetwork": "Test-net",
-            "privateNetwork": "Private-net",
-            "mainnetExplain": "You are on the main Ethereum global network",
-            "privatenetExplain": "You are on a private net, DO NOT SEND any real ether to these addresses",
-            "unknownnetExplain": "Unable to determine which network you are on"
+            "privateNetwork": "Private-net"
         },
         "sidebar": {
             "buttons": {
@@ -117,15 +108,11 @@
         },
         "startScreen": {
             "runningNodeFound": "发现正在运行的以太坊节点！",
-            "startingNode": "正在开启以太坊节点……",
-            "startedNode": "正在启动应用程序……",
             "nodeConnectionTimeout": "无法开启以太坊节点！<br><small>如果你已经<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>安装Geth</a>，使用此命令运行： <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 或者上报此问题 </a></small>",
             "nodeBinaryNotFound": "找不到以太坊节点安装文件！<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 请事先手动开启一个节点 </a> </small>",
             "nodeSyncing": "需要同步以太坊节点，请等待……",
             "nodeSyncInfo": "正在下载第__displayBlock__块，共__highestBlock__。",
             "nodeSyncConnecting": "正在查找节点……",
-            "peerSearchTimeout": "跳过节点搜索",
-            "stoppingNode": "Stopping Ethereum node...",
             "nodeStarting": "Ethereum node starting up...",
             "nodeStarted": "Ethereum node started",
             "nodeConnected": "Ethereum node connected",
@@ -156,14 +143,6 @@
                     "passwordTooShort": "Make a longer password"
                 }
             },
-            "unlockMasterPassword": {
-                "title": "输入主密码",
-                "enterPassword": "输入主密码",
-                "unlocking": "正在解锁……",
-                "errors": {
-                    "wrongPassword": "密码错误，请重试。"
-                }
-            },
             "sendTransactionConfirmation": {
                 "title": {
                     "sendTransaction": "发送交易",
@@ -187,7 +166,7 @@
                 "errors": {
                     "connectionTimeout": "无法连接该节点，后台节点是否可能崩溃了？",
                     "wrongPassword": "密码错误",
-                    "multipleKeysMatchAddress": "Multiple keys match address, please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+                    "multipleKeysMatchAddress": "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
                     "insufficientFundsForGas": "Insufficient funds in main account (etherbase) to pay for gas",
                     "sameAccount": "Can't send to itself"
                 },
@@ -201,51 +180,19 @@
                 "overBlockGasLimit": "The gas required for this execution could exceed the block gas limit.",
                 "notEnoughGas": "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
             },
-            "onboarding": {
-                "description": "以太坊是一个用于在区块链上创建应用的去中心化平台：一种用于转移价值和资产，永远存在并且无法被篡改的软件",
-                "goToTestnet": "使用测试网络 (Rinkeby)",
-                "goToTestnetDescription": "请放心在沙盒测试网络中测试该技术，无需使用真正的以太币。",
-                "gotoMainnet": "使用主网络",
-                "gotoMainnetDescription": "你需要一些以太币来创建和执行合约。别担心，我们将帮你获取一些……",
+            "importAccount": {
                 "doYouHaveAWalletFile": "你拥有一个钱包文件吗？",
                 "walletFileDescription": "<p>如果你参与了2014年的以太坊预售，你应该有一个文件名为<code>ethereum_wallet_backup.json</code>的钱包文件。在你购买后已被下载并且也发送到你邮箱。</p>",
                 "dropFilesHere": "预售文件拖入此处",
-                "creating": "正在创建……",
                 "importing": "正在导入……",
-                "skip": "跳过该步骤",
-                "next": "下一个",
-                "protectTitle": "保护你的账户",
-                "protectDescription": "为你的新账户选择一个密码。请像保持你家钥匙一样保证密码强度足够安全！",
-                "accountTitle": "正在装载！",
-                "accountTitleTestnet": "挖到一些以太币！",
-                "etherDescription": "以太坊网络是基于一种叫做“以太币”的代币。你需要一点以太币来尝试在以太坊网络上的任何操作。",
-                "loadItDescription": "如果你已经拥有比特币或者任何其他加密货币，你可以使用changelly来方便地转换为以太币。<br><br>我们推荐你存入<strong>0.25到1以太币</strong>.",
-                "mineItDescription": "<strong>如果你在testnet测试网络中，你可以自己挖掘一些以太币，点击<em>开发</em>菜单并选择<em>开启挖矿</em>。</strong> <br> <strong>请勿将真正的以太币发往该地址！</strong>",
-                "you": "你本人",
-                "etherbase": "主账户（etherbase）",
-                "depositBitcoin": "存入比特币",
-                "learnIt": "在等待期间学习一下",
-                "downloadingBlocks": "正在下载区块",
-                "tutorial1Description": "<p>现在你只需等待下载完成。这里是一些阅读推荐：</p> <h4>创造你自己的货币</h4> <p>创造一个固定发行量的加密货币，这些代币代表真正的世界资产，等等</p>",
-                "tutorial2Description": "<h4>创建一个众筹</h4> <p>为一个共同的目标筹集资金，完全可信而无需第三方担保。绕开传统融资系统的障碍，通过区块链直接和出资人共同筹资建立一个机构。</p>",
-                "tutorial3Description": "<h4>区块链机构</h4> <p>创建一个自治的机构，并且制定关于资金如何使用以太谁能做决定的不可违背的规则，让你的赞助人在如何使用资金上发挥积极作用。</p>",
                 "buttons": {
-                    "showPassword": "显示密码",
-                    "importAccount": "导入账户",
-                    "launchApp": "启动应用程序！",
-                    "learnReceipt": "学习本秘诀"
+                    "showPassword": "显示密码"
                 },
                 "errors": {
-                    "nodeNotStartedYet": "请等待片刻直到你的节点完全启动再重新尝试一次",
                     "unknownFile": "文件无法识别。",
                     "wrongPassword": "密码错误。",
                     "importFailed": "无法导入该文件，错误：__error__"
-                },
-                "buyEther": "Buy Ether",
-                "viaChangelly": "Accepts cryptocurrency and credit card via <a href='https://changelly.com/' target='_blank'>Changelly</a>",
-                "syncMessage": "Block __displayBlock__ of __highestBlockString__",
-                "syncMessageWithStates": "Block __displayBlock__ of __highestBlockString__ (Chain structure __statesPercent__%)",
-                "startingSync": "Getting ready to sync.."
+                }
             },
             "updateAvailable": {
                 "newVersionAvailable": "New __name__ version available",
@@ -255,7 +202,6 @@
                 "downloadAndRestart": "Update and Restart",
                 "download": "Download new version",
                 "skipUpdate": "Skip Update",
-                "notNow": "Ask me later",
                 "checking": "Checking for updates to __name__...",
                 "noUpdateFound": "No update found. You are running the latest version of __name__."
             },

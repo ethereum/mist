@@ -29,15 +29,14 @@ const check = (exports.check = () => {
   })
     .then(res => {
       const release = res.body;
-      log.debug(release);
+
       if (!release) {
         log.debug('No releases available to check against.');
 
         return;
       }
 
-      if (semver.gt(release.tag_name, 'v0.9.0')) {
-      //if (semver.gt(release.tag_name, Settings.appVersion)) {
+      if (semver.gt(release.tag_name, Settings.appVersion)) {
         log.info(
           `App (${Settings.appVersion}) is out of date. New ${
             release.tag_name

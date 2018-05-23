@@ -271,8 +271,8 @@ class Settings {
     return lodash.get(obj, key);
   }
 
-  loadUserData(path2) {
-    const fullPath = this.constructUserDataPath(path2);
+  loadUserData(thisPath) {
+    const fullPath = this.constructUserDataPath(thisPath);
 
     settingsLog.trace('Load user data', fullPath);
 
@@ -295,10 +295,13 @@ class Settings {
     return null;
   }
 
-  saveUserData(path2, data) {
-    if (!data) return; // return so we dont write null, or other invalid data
+  saveUserData(thisPath, data) {
+    if (!data) {
+      // return so we dont write null, or other invalid data
+      return;
+    }
 
-    const fullPath = this.constructUserDataPath(path2);
+    const fullPath = this.constructUserDataPath(thisPath);
 
     try {
       settingsLog.debug(`Saving "${data}" to ${fullPath}`);
@@ -433,7 +436,7 @@ const argv = require('yargs')
     syncmode: {
       demand: false,
       requiresArg: true,
-      describe: 'Geth synchronization mode: [fast|light|full]',
+      describe: 'Geth synchronization mode: [fast|light|full|nosync]',
       nargs: 1,
       type: 'string',
       group: 'Mist options:'

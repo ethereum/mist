@@ -1,9 +1,14 @@
 <template name="layout_webviews">
     <main>
-
+      {{#if TemplateVar.get "loading"}}
+        <div class="layout_webviews-loadingIndicator">
+          <span>{{i18n 'mist.nodeInfo.connecting'}}</span>
+          {{> spinner}}
+        </div>
+      {{else}}
         {{#each tabs}}
             {{> views_webview}}
         {{/each}}
-
+      {{/if}}
     </main>
 </template>

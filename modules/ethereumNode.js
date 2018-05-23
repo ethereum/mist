@@ -1,15 +1,20 @@
-const _ = global._;
+const _ = require('./utils/underscore.js');
 const fs = require('fs');
 const Q = require('bluebird');
 const spawn = require('child_process').spawn;
 const { dialog } = require('electron');
 const Windows = require('./windows.js');
-const Settings = require('./settings');
 const logRotate = require('log-rotate');
 const path = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Sockets = require('./socketManager');
 const ClientBinaryManager = require('./clientBinaryManager');
+import Settings from './settings';
+import {
+  syncLocalNode,
+  resetLocalNode,
+  updateLocalBlock
+} from './core/nodes/actions';
 
 import logger from './utils/logger';
 const ethereumNodeLog = logger.create('EthereumNode');
@@ -30,6 +35,8 @@ const STATES = {
   ERROR: -1 /* Unexpected error */
 };
 
+let instance;
+
 /**
  * Etheruem nodes manager.
  */
@@ -37,7 +44,15 @@ class EthereumNode extends EventEmitter {
   constructor() {
     super();
 
+    if (!instance) {
+      instance = this;
+    }
+
     this.STATES = STATES;
+
+    // Set default states
+    this.state = STATES.STOPPED;
+    this.isExternalNode = false;
 
     this._loadDefaults();
 
@@ -48,14 +63,12 @@ class EthereumNode extends EventEmitter {
     this._socket = Sockets.get('node-ipc', Settings.rpcMode);
 
     this.on('data', _.bind(this._logNodeData, this));
+
+    return instance;
   }
 
   get isOwnNode() {
-    return !!this._node;
-  }
-
-  get isExternalNode() {
-    return !this._node;
+    return !this.isExternalNode;
   }
 
   get isIpcConnected() {
@@ -87,7 +100,7 @@ class EthereumNode extends EventEmitter {
   }
 
   get isTestNetwork() {
-    return this.network === 'test';
+    return this.network === 'test' || this.network === 'ropsten';
   }
 
   get isRinkebyNetwork() {
@@ -147,20 +160,23 @@ class EthereumNode extends EventEmitter {
     return this._socket
       .connect(Settings.rpcConnectConfig)
       .then(() => {
+        this.isExternalNode = true;
         this.state = STATES.CONNECTED;
-
+        store.dispatch({ type: '[MAIN]:LOCAL_NODE:CONNECTED' });
         this.emit('runningNodeFound');
+        return null;
       })
       .catch(() => {
+        this.isExternalNode = false;
+
         ethereumNodeLog.warn(
-          "Failed to connect to node. Maybe it's not running so let's start our own..."
+          'Failed to connect to an existing local node. Starting our own...'
         );
 
         ethereumNodeLog.info(`Node type: ${this.defaultNodeType}`);
         ethereumNodeLog.info(`Network: ${this.defaultNetwork}`);
         ethereumNodeLog.info(`SyncMode: ${this.defaultSyncMode}`);
 
-        // if not, start node yourself
         return this._start(
           this.defaultNodeType,
           this.defaultNetwork,
@@ -182,6 +198,11 @@ class EthereumNode extends EventEmitter {
 
       return this.stop()
         .then(() => Windows.loading.show())
+        .then(async () => {
+          await Sockets.destroyAll();
+          this._socket = Sockets.get('node-ipc', Settings.rpcMode);
+          return null;
+        })
         .then(() =>
           this._start(
             newType || this.type,
@@ -208,6 +229,9 @@ class EthereumNode extends EventEmitter {
         if (!this._node) {
           return resolve();
         }
+
+        clearInterval(this.syncInterval);
+        clearInterval(this.watchlocalBlocksInterval);
 
         this.state = STATES.STOPPING;
 
@@ -237,10 +261,15 @@ class EthereumNode extends EventEmitter {
 
           resolve();
         });
-      }).then(() => {
-        this.state = STATES.STOPPED;
-        this._stopPromise = null;
-      });
+      })
+        .then(() => {
+          this.state = STATES.STOPPED;
+          this._stopPromise = null;
+        })
+        .then(() => {
+          // Reset block values in store
+          store.dispatch(resetLocalNode());
+        });
     }
     ethereumNodeLog.debug(
       'Disconnection already in progress, returning Promise.'
@@ -254,25 +283,22 @@ class EthereumNode extends EventEmitter {
    * @param  {Array} [params] Method arguments
    * @return {Promise} resolves to result or error.
    */
-  send(method, params) {
-    return this._socket.send({
-      method,
-      params
-    });
+  async send(method, params) {
+    const ret = await this._socket.send({ method, params });
+    return ret;
   }
 
   /**
    * Start an ethereum node.
    * @param  {String} nodeType geth, eth, etc
    * @param  {String} network  network id
+   * @param  {String} syncMode full, fast, light, nosync
    * @return {Promise}
    */
   _start(nodeType, network, syncMode) {
     ethereumNodeLog.info(`Start node: ${nodeType} ${network} ${syncMode}`);
 
-    const isTestNet = network === 'test';
-
-    if (isTestNet) {
+    if (network === 'test' || network === 'ropsten') {
       ethereumNodeLog.debug('Node will connect to the test network');
     }
 
@@ -304,6 +330,7 @@ class EthereumNode extends EventEmitter {
           })
           .then(() => {
             this.state = STATES.CONNECTED;
+            this._checkSync();
           })
           .catch(err => {
             ethereumNodeLog.error('Failed to connect to node', err);
@@ -404,29 +431,37 @@ class EthereumNode extends EventEmitter {
 
       switch (network) {
         // Starts Ropsten network
+        case 'ropsten':
+        // fall through
         case 'test':
           args = [
             '--testnet',
-            '--syncmode',
-            syncMode,
             '--cache',
             process.arch === 'x64' ? '1024' : '512',
             '--ipcpath',
             Settings.rpcIpcPath
           ];
+          if (syncMode === 'nosync') {
+            args.push('--nodiscover', '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
           break;
 
         // Starts Rinkeby network
         case 'rinkeby':
           args = [
             '--rinkeby',
-            '--syncmode',
-            syncMode,
             '--cache',
             process.arch === 'x64' ? '1024' : '512',
             '--ipcpath',
             Settings.rpcIpcPath
           ];
+          if (syncMode === 'nosync') {
+            args.push('--nodiscover', '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
           break;
 
         // Starts local network
@@ -444,13 +479,13 @@ class EthereumNode extends EventEmitter {
         default:
           args =
             nodeType === 'geth'
-              ? [
-                  '--syncmode',
-                  syncMode,
-                  '--cache',
-                  process.arch === 'x64' ? '1024' : '512'
-                ]
+              ? ['--cache', process.arch === 'x64' ? '1024' : '512']
               : ['--unsafe-transactions'];
+          if (nodeType === 'geth' && syncMode === 'nosync') {
+            args.push('--nodiscover', '--maxpeers=0');
+          } else {
+            args.push('--syncmode', syncMode);
+          }
       }
 
       const nodeOptions = Settings.nodeOptions;
@@ -584,6 +619,52 @@ class EthereumNode extends EventEmitter {
         this.defaultSyncMode
       }`
     );
+  }
+
+  _checkSync() {
+    // Reset
+    if (this.syncInterval) {
+      clearInterval(this.syncInterval);
+    }
+
+    this.syncInterval = setInterval(async () => {
+      const syncingResult = await this.send('eth_syncing');
+      const sync = syncingResult.result;
+      if (sync === false) {
+        const blockNumberResult = await this.send('eth_blockNumber');
+        const blockNumber = parseInt(blockNumberResult.result, 16);
+        if (blockNumber >= store.getState().nodes.remote.blockNumber - 15) {
+          // Sync is caught up
+          clearInterval(this.syncInterval);
+          this._watchLocalBlocks();
+        }
+      } else if (_.isObject(sync)) {
+        store.dispatch(syncLocalNode(sync));
+      }
+    }, 1500);
+  }
+
+  _watchLocalBlocks() {
+    // Reset
+    if (this.watchlocalBlocksInterval) {
+      clearInterval(this.watchlocalBlocksInterval);
+    }
+
+    this.watchlocalBlocksInterval = setInterval(async () => {
+      const blockResult = await this.send('eth_getBlockByNumber', [
+        'latest',
+        false
+      ]);
+      const block = blockResult.result;
+      if (block && block.number > store.getState().nodes.local.blockNumber) {
+        store.dispatch(
+          updateLocalBlock(
+            parseInt(block.number, 16),
+            parseInt(block.timestamp, 16)
+          )
+        );
+      }
+    }, 1500);
   }
 }
 

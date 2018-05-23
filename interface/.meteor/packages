@@ -19,7 +19,6 @@ sacha:spin
 chuangbo:cookie
 agnito:simptip
 mrt:jquery-ui-sortable
-ethereum:blocks@1.1.0
 ethereum:accounts@1.1.0
 ethereum:tools@1.1.0
 ethereum:elements@1.1.0

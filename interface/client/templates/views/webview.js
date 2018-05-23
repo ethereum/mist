@@ -164,7 +164,7 @@ Template['views_webview'].helpers({
 
       // CHECK URL and throw error if not allowed
       if (!Helpers.sanitizeUrl(url, true)) {
-        // Prevent websites usingt the history back attacks
+        // Prevent websites using the history back attacks
         if (template.view.isRendered) {
           // get the current webview
           var webview = template.find('webview');

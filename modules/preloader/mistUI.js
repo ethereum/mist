@@ -2,6 +2,8 @@
 @module preloader MistUI
 */
 
+require('babel-register');
+
 // Initialise the Redux store
 window.store = require('./rendererStore');
 
@@ -20,6 +22,8 @@ window.mistMode = remote.getGlobal('mode');
 window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipcRenderer;
+
+window.i18n = require('../i18n.js');
 
 // remove require and module, because node-integration is on
 delete window.module;

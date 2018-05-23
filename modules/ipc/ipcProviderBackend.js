@@ -4,7 +4,7 @@ The IPC provider backend filter and tunnel all incoming request to the ethereum 
 @module ipcProviderBackend
 */
 
-const _ = global._;
+const _ = require('../utils/underscore.js');
 const Q = require('bluebird');
 const { ipcMain: ipc } = require('electron');
 const fs = require('fs');
@@ -14,6 +14,7 @@ const log = require('../utils/logger').create('ipcProviderBackend');
 const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
+const ethereumNodeRemote = require('../ethereumNodeRemote');
 
 const ERRORS = {
   INVALID_PAYLOAD: {
@@ -24,7 +25,7 @@ const ERRORS = {
   METHOD_DENIED: { code: -32601, message: 'Method __method__ not allowed.' },
   METHOD_TIMEOUT: {
     code: -32603,
-    message: 'Request timed out for method  __method__.'
+    message: 'Request timed out for method __method__.'
   },
   TX_DENIED: { code: -32603, message: 'Transaction denied' },
   BATCH_TX_DENIED: {
@@ -36,6 +37,10 @@ const ERRORS = {
     code: -32603,
     message:
       'Compilation denied, compileSolidity is not allowed in batch requests.'
+  },
+  SOCKET_NOT_CONNECTED: {
+    code: -32604,
+    message: 'Socket not connected when trying to send method __method__.'
   }
 };
 
@@ -73,6 +78,15 @@ class IpcProviderBackend {
     log.trace('Loaded processors', _.keys(this._processors));
 
     store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
+
+    // Store remote subscriptions.
+    // > key: local subscription id
+    // > value: remote subscription id
+    this._remoteSubscriptions = {};
+    // Store subscription owners for sending remote results
+    // > key: local subscription id
+    // > value: connection ownerId
+    this._subscriptionOwners = {};
   }
 
   /**
@@ -227,6 +241,13 @@ class IpcProviderBackend {
       case ethereumNode.STATES.STOPPING:
         log.info('Ethereum node stopping, disconnecting sockets');
 
+        // Unsubscribe remote subscriptions
+        _.each(this._remoteSubscriptions, remoteSubscriptionId => {
+          ethereumNodeRemote.send('eth_unsubscribe', [remoteSubscriptionId]);
+        });
+        this._remoteSubscriptions = {};
+        this._subscriptionOwners = {};
+
         Q.all(
           _.map(this._connections, item => {
             if (item.socket.isConnected) {
@@ -253,8 +274,9 @@ class IpcProviderBackend {
    * @param  {Boolean} isSync  whether request is sync.
    * @param  {Object}  event   IPC event.
    * @param  {String}  payload request payload.
+   * @param  {Boolean} retry   whether trying request again due to error
    */
-  _sendRequest(isSync, event, payload) {
+  _sendRequest(isSync, event, payload, retry = false) {
     const ownerId = event.sender.id;
 
     log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
@@ -268,18 +290,30 @@ class IpcProviderBackend {
       return this._getOrCreateConnection(event);
     })
       .then(conn => {
-        if (!conn.socket.isConnected) {
-          log.trace('Socket not connected.');
-
-          throw this.ERRORS.METHOD_TIMEOUT;
-        }
-
         // reparse original string (so that we don't modify input payload)
         const finalPayload = JSON.parse(originalPayloadStr);
 
         // is batch?
-        const isBatch = _.isArray(finalPayload),
-          finalPayloadList = isBatch ? finalPayload : [finalPayload];
+        const isBatch = _.isArray(finalPayload);
+        const finalPayloadList = isBatch ? finalPayload : [finalPayload];
+
+        if (!conn.socket.isConnected) {
+          const error = Object.assign({}, this.ERRORS.SOCKET_NOT_CONNECTED, {
+            message: this.ERRORS.SOCKET_NOT_CONNECTED.message.replace(
+              '__method__',
+              finalPayloadList.map(p => p.method).join(', ')
+            )
+          });
+          // Try again if not already a retry
+          if (!retry) {
+            error.message += ' Will retry...';
+            setTimeout(() => {
+              this._sendRequest(isSync, event, originalPayloadStr, true);
+            }, 2000);
+          }
+          log.debug(error);
+          throw error;
+        }
 
         // sanitize each and every request payload
         _.each(finalPayloadList, p => {
@@ -333,6 +367,14 @@ class IpcProviderBackend {
               // sanitize response payload
               processor.sanitizeResponsePayload(conn, p, isBatch);
 
+              // if subscription, save connection ownerId for sending responses later
+              if (p.method === 'eth_subscribe') {
+                const subscriptionId = p.result;
+                if (subscriptionId) {
+                  this._subscriptionOwners[subscriptionId] = ownerId;
+                }
+              }
+
               finalResult.push(p);
             }
           });
@@ -352,7 +394,6 @@ class IpcProviderBackend {
       })
       .then(result => {
         log.trace('Got result', result);
-
         return this._makeResponsePayload(payload, result);
       })
       .catch(err => {
@@ -466,17 +507,166 @@ class IpcProviderBackend {
         });
       }
 
-      if (item.id) {
-        delete ret.params;
-        delete ret.method;
-      }
+      ret = this._handleSubscriptions(ret);
 
-      ret.jsonrpc = '2.0';
+      if (ret) {
+        if (item.id) {
+          delete ret.params;
+          delete ret.method;
+        }
+        ret.jsonrpc = '2.0';
+      }
 
       return ret;
     });
 
     return _.isArray(originalPayload) ? allResults : allResults[0];
+  }
+
+  /**
+    Handles eth_subscribe|eth_subscription|eth_unsubscribe to:
+    1. Create a remote subscription when created on local (except syncing subscriptions)
+    2. Send remote subscription result if on remote (with remote subscription id swapped for local id)
+    3. Ignore local subscription result if on remote
+    4. Unsubscribe remote subscription when unsubscribing local subscription
+
+    @param {Object} result
+    @return {Object} result
+    */
+  _handleSubscriptions(result) {
+    if (result.method === 'eth_subscribe') {
+      // If subscription is created in local, also create the subscription in remote
+      const subscriptionType = result.params[0];
+      const subscriptionId = result.result;
+
+      // Create subscription in remote node
+      this._remoteSubscriptions[subscriptionId] = this._subscribeRemote(
+        subscriptionId,
+        result.params
+      );
+    }
+
+    if (result.method === 'eth_subscription') {
+      // Skip if syncing result
+      if (result.params.result.syncing) {
+        return result;
+      }
+
+      // If remote node is active, cancel propogating response
+      // since we'll return the remote response instead
+      if (store.getState().nodes.active === 'remote') {
+        log.trace(
+          `Ignoring local subscription result (remote node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
+        return null;
+      } else {
+        log.trace(
+          `Sending local subscription result (local node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
+        return result;
+      }
+    }
+
+    if (result.method === 'eth_unsubscribe') {
+      const subscriptionId = result.params[0];
+      const localSubscriptionId = this._remoteSubscriptions[subscriptionId];
+      if (localSubscriptionId) {
+        ethereumNodeRemote.send('eth_unsubscribe', [localSubscriptionId]);
+        delete this._remoteSubscriptions[subscriptionId];
+        delete this._subscriptionOwners[subscriptionId];
+      }
+    }
+
+    return result;
+  }
+
+  /**
+    Creates a subscription in remote node and
+    sends results down the pipe if remote node is active
+
+    @param {Object}  params - Subscription params
+    @param {Boolean} retry  - Is this request a retry
+    */
+  _subscribeRemote(localSubscriptionId, params, retry = false) {
+    return new Promise(async (resolve, reject) => {
+      log.trace(
+        `Creating remote subscription: ${params} (local subscription id: ${localSubscriptionId})`
+      );
+
+      var remoteSubscriptionId;
+      const requestId = await ethereumNodeRemote.send('eth_subscribe', params);
+
+      if (!requestId) {
+        log.error('No return id for request');
+        return;
+      }
+
+      const callback = data => {
+        if (!data) {
+          return;
+        }
+
+        try {
+          data = JSON.parse(data);
+        } catch (error) {
+          log.trace('Error parsing data: ', data);
+        }
+
+        if (data.id === requestId && data.result) {
+          if (data.result) {
+            remoteSubscriptionId = data.result;
+            resolve(remoteSubscriptionId);
+          }
+        }
+
+        if (
+          data.params &&
+          data.params.subscription &&
+          data.params.subscription === remoteSubscriptionId
+        ) {
+          this._sendRemoteResult(localSubscriptionId, data.params.result);
+        }
+      };
+
+      ethereumNodeRemote.ws.on('message', callback);
+    });
+  }
+
+  _sendRemoteResult(localSubscriptionId, remoteResult) {
+    if (store.getState().nodes.active === 'remote') {
+      // Set up object to send
+      const res = {
+        jsonrpc: '2.0',
+        method: 'eth_subscription',
+        params: {
+          result: remoteResult,
+          subscription: localSubscriptionId
+        }
+      };
+
+      const owner =
+        this._subscriptionOwners[localSubscriptionId] &&
+        this._connections[this._subscriptionOwners[localSubscriptionId]]
+          ? this._connections[this._subscriptionOwners[localSubscriptionId]]
+              .owner
+          : null;
+
+      if (!owner) {
+        log.trace('No owner to send result', res);
+      } else if (owner.isDestroyed()) {
+        log.trace('Owner to send result already destroyed', res);
+      } else {
+        log.trace(
+          `Sending remote subscription result (remote node is active)`,
+          res
+        );
+        owner.send('ipcProvider-data', JSON.stringify(res));
+      }
+    }
   }
 }
 

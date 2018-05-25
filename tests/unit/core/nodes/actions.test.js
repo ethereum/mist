@@ -7,8 +7,7 @@ import {
   changeSyncMode,
   remoteBlockReceived,
   resetLocalNode,
-  resetRemoteNode,
-  syncNodeDefaults
+  resetRemoteNode
 } from '../../../../modules/core/nodes/actions';
 
 describe('nodes actions:', () => {
@@ -51,18 +50,6 @@ describe('nodes actions:', () => {
     const store = initMockStore({ settings: initialState });
 
     afterEach(() => store.clearActions());
-
-    it('should handle #syncNodeDefaults', async () => {
-      const settings = { loadUserData: () => {} };
-      await store.dispatch(syncNodeDefaults(settings));
-      const actions = store.getActions();
-
-      assert.equal(actions.length, 2);
-      assert.equal(actions[0].type, '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS');
-      assert.equal(actions[0].payload.network, 'main');
-      assert.equal(actions[1].type, '[MAIN]:NODES:CHANGE_SYNC_MODE');
-      assert.equal(actions[1].payload.syncMode, 'fast');
-    });
 
     it('should handle #changeNetwork', async () => {
       await store.dispatch(changeNetwork('rinkeby'));

@@ -36,7 +36,7 @@ global.store = configureReduxStore();
 Settings.init();
 
 store.subscribe(() => {
-  if (store.getState().nodes.local.private) {
+  if (!store.getState().nodes.local.private) {
     store.dispatch(setActiveNode());
   }
 });

@@ -690,9 +690,6 @@ class EthereumNode extends EventEmitter {
     const network = await this.getNetwork();
     this._network = network;
 
-    console.log('$$$');
-    console.log(network);
-
     store.dispatch({
       type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
       payload: { network }

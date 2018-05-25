@@ -50,7 +50,9 @@ class EthereumNodeRemote extends EventEmitter {
       const provider = this._getProvider(this.network);
 
       if (!provider) {
-        ethereumNodeRemoteLog.error('No provider');
+        const errorMessage = `No provider for network: ${this.network}`;
+        ethereumNodeRemoteLog.error(errorMessage);
+        reject(errorMessage);
         return;
       }
 

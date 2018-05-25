@@ -10,7 +10,7 @@ import {
   syncFlags,
   setSwarmEnableOnStart
 } from './core/settings/actions';
-import { disableRemoteNode } from './core/nodes/actions';
+import { usePrivateNode } from './core/nodes/actions';
 import logger from './utils/logger';
 
 const settingsLog = logger.create('Settings');
@@ -61,8 +61,7 @@ class Settings {
 
     // If using a private geth instance, disable remote node
     if (argv.rpc) {
-      console.log('∆∆∆ dispatching disable');
-      store.dispatch(disableRemoteNode());
+      store.dispatch(usePrivateNode());
     }
 
     store.dispatch(syncBuildConfig('appVersion', packageJson.version));

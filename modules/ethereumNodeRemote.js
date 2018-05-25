@@ -40,8 +40,7 @@ class EthereumNodeRemote extends EventEmitter {
     }
 
     return (this.starting = new Promise((resolve, reject) => {
-      this.network =
-        Settings.network || Settings.loadUserData('network') || 'main';
+      this.network = store.getState().nodes.network;
 
       ethereumNodeRemoteLog.trace(
         `Connecting to remote node on ${this.network}...`
@@ -82,13 +81,13 @@ class EthereumNodeRemote extends EventEmitter {
         let errorMessage = `Remote WebSocket connection closed (code: ${code})`;
 
         if (reason) {
-          errorMessage += ` (reason: ${reason})`
+          errorMessage += ` (reason: ${reason})`;
         }
 
         // Restart connection if didn't close on purpose
         if (code !== 1000) {
           this.start();
-          errorMessage += '. Reopening connection...'
+          errorMessage += '. Reopening connection...';
         }
 
         ethereumNodeRemoteLog.warn(errorMessage);

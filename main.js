@@ -21,7 +21,7 @@ import {
   setLanguageOnMain,
   toggleSwarm
 } from './modules/core/settings/actions';
-import { syncNodeDefaults, setActiveNode } from './modules/core/nodes/actions';
+import { setActiveNode } from './modules/core/nodes/actions';
 import { SwarmState } from './modules/core/settings/reducer';
 
 import swarmNode from './modules/swarmNode.js';
@@ -175,8 +175,6 @@ function onReady() {
   }
 
   ipcProviderBackend.init();
-
-  store.dispatch(syncNodeDefaults(Settings));
 
   ethereumNode.init();
 

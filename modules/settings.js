@@ -10,11 +10,12 @@ import {
   syncFlags,
   setSwarmEnableOnStart
 } from './core/settings/actions';
+import { disableRemoteNode } from './core/nodes/actions';
 import logger from './utils/logger';
 
 const settingsLog = logger.create('Settings');
 
-let instance = null;
+let instance;
 
 class Settings {
   constructor() {
@@ -56,6 +57,12 @@ class Settings {
       settingsLog.warn(
         'Connecting to a node via HTTP instead of ipcMain. This is less secure!!!!'.toUpperCase()
       );
+    }
+
+    // If using a private geth instance, disable remote node
+    if (argv.rpc) {
+      console.log('∆∆∆ dispatching disable');
+      store.dispatch(disableRemoteNode());
     }
 
     store.dispatch(syncBuildConfig('appVersion', packageJson.version));

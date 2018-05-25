@@ -7,7 +7,10 @@ export function syncNodeDefaults(settings) {
       settings.network || settings.loadUserData('network') || 'main';
     const syncMode =
       settings.syncmode || settings.loadUserData('syncmode') || 'fast';
-    dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS', payload: { network } });
+    dispatch({
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+      payload: { network }
+    });
     dispatch({ type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } });
   };
 }
@@ -103,6 +106,14 @@ export function setActiveNode() {
     // Otherwise, local should be active.
     const { active, network, local, remote } = getState().nodes;
 
+    // // If using as private network, keep local active
+    // if (local.private) {
+    // dispatch({
+    // type: '[MAIN]:NODES:CHANGE_ACTIVE',
+    // payload: { active: 'local' }
+    // });
+    // }
+
     // If nosync, ensure active is 'remote'
     if (local.syncMode === 'nosync') {
       if (active === 'local') {
@@ -145,4 +156,8 @@ export function setActiveNode() {
       }
     }
   };
+}
+
+export function usePrivateNode() {
+  return { type: '[MAIN]:LOCAL_NODE:ENABLE_PRIVATE' };
 }

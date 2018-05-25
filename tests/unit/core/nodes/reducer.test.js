@@ -15,6 +15,7 @@ describe('the nodes reducer', () => {
       blockNumber: 0,
       timestamp: 0,
       syncMode: 'fast',
+      private: false,
       sync: {
         currentBlock: 400,
         highestBlock: 400,
@@ -154,5 +155,17 @@ describe('the nodes reducer', () => {
     });
 
     assert.deepEqual(reducer(initialState, action), expectedState);
+  });
+
+  it('should handle the "[MAIN]:LOCAL_NODE:ENABLE_PRIVATE" action', () => {
+    const action = { type: '[MAIN]:LOCAL_NODE:ENABLE_PRIVATE' };
+    const expectedState = Object.assign({}, exampleState, {
+      active: 'local',
+      local: Object.assign({}, exampleState.remote, {
+        private: true
+      })
+    });
+
+    assert.deepEqual(reducer(exampleState, action), expectedState);
   });
 });

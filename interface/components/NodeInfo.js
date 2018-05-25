@@ -62,8 +62,8 @@ class NodeInfo extends Component {
   }
 
   renderRemoteStats() {
-    // Hide remote stats if local node is synced
-    if (this.props.active !== 'remote') {
+    // Hide remote stats if local node is synced or private network
+    if (this.props.local.private || this.props.active !== 'remote') {
       return null;
     }
 

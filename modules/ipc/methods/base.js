@@ -103,6 +103,11 @@ module.exports = class BaseProcessor {
 
   _shouldSendToRemote(payload, conn) {
     // Do NOT send to the remote node if: (all conditions must be satisfied)
+    // 0. using private geth instance
+    if (store.getState().nodes.local.private) {
+      return false;
+    }
+
     // 1. the local node is synced
     const isRemote = store.getState().nodes.active === 'remote';
     if (!isRemote) {

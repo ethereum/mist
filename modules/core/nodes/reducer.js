@@ -11,6 +11,7 @@ export const initialState = {
     client: 'geth',
     blockNumber: 0,
     timestamp: 0,
+    private: false,
     syncMode: 'fast',
     sync: {
       currentBlock: 0,
@@ -103,6 +104,13 @@ const nodes = (state = initialState, action) => {
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
           syncMode: action.payload.syncMode
+        })
+      });
+    case '[MAIN]:LOCAL_NODE:ENABLE_PRIVATE':
+      return Object.assign({}, state, {
+        active: 'local',
+        local: Object.assign({}, state.remote, {
+          private: true
         })
       });
     default:

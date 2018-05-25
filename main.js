@@ -36,7 +36,9 @@ global.store = configureReduxStore();
 Settings.init();
 
 store.subscribe(() => {
-  store.dispatch(setActiveNode());
+  if (store.getState().nodes.local.private) {
+    store.dispatch(setActiveNode());
+  }
 });
 
 const db = (global.db = require('./modules/db'));
@@ -180,7 +182,10 @@ function onReady() {
 
   ethereumNode.init();
 
-  ethereumNodeRemote.start();
+  // Don't start remote if running own geth instance
+  if (store.getState().nodes.local.private) {
+    ethereumNodeRemote.start();
+  }
 
   // TODO: Settings.language relies on global.config object being set
   store.dispatch(setLanguageOnMain(Settings.language));

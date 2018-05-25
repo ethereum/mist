@@ -8,7 +8,8 @@ import {
   remoteBlockReceived,
   resetLocalNode,
   resetRemoteNode,
-  syncNodeDefaults
+  syncNodeDefaults,
+  usePrivateNode
 } from '../../../../modules/core/nodes/actions';
 
 describe('nodes actions:', () => {
@@ -42,6 +43,12 @@ describe('nodes actions:', () => {
       };
 
       assert.deepEqual(remoteBlockReceived(block), action);
+    });
+
+    it('should handle #usePrivateNode', () => {
+      const action = { type: '[MAIN]:LOCAL_NODE:ENABLE_PRIVATE' };
+
+      assert.deepEqual(usePrivateNode(), action);
     });
   });
 

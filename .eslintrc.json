@@ -1,10 +1,10 @@
 {
+  "env": { "es6": true },
   "extends": [
     "plugin:prettier/recommended",
     "eslint:recommended",
     "plugin:react/recommended"
   ],
-  "parserOptions": { "ecmaVersion": 6 },
   "globals": {
     "i18n": true,
     "mist": true,

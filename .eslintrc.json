@@ -1,3 +1,25 @@
 {
-  "extends": ["plugin:prettier/recommended", "eslint:recommended"]
+  "extends": ["plugin:prettier/recommended", "eslint:recommended"],
+  "parserOptions": { "ecmaVersion": 6 },
+  "globals": {
+    "i18n": true,
+    "mist": true,
+    "beforeEach": true,
+    "LocalStore": true,
+    "web3": true,
+    "Tabs": true,
+    "Tracker": true,
+    "_": true,
+    "window": true,
+    "location": true,
+    "document": true,
+    "Promise": true,
+    "require": true,
+    "global": true,
+    "store": true,
+    "exports": true,
+    "module": true,
+    "console": true,
+    "process": true
+  }
 }

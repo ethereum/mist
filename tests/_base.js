@@ -163,6 +163,9 @@ exports.mocha = (_module, options) => {
           '--rpc',
           ipcProviderPath
         ],
+        webdriverOptions: {
+          deprecationWarnings: false
+        },
         webdriverLogPath: webdriverLogDir,
         chromeDriverLogPath: chromeLogFile
       });

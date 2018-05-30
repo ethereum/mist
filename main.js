@@ -21,7 +21,7 @@ import {
   setLanguageOnMain,
   toggleSwarm
 } from './modules/core/settings/actions';
-import { syncNodeDefaults, setActiveNode } from './modules/core/nodes/actions';
+import { setActiveNode } from './modules/core/nodes/actions';
 import { SwarmState } from './modules/core/settings/reducer';
 
 import swarmNode from './modules/swarmNode.js';
@@ -175,8 +175,6 @@ function onReady() {
   }
 
   ipcProviderBackend.init();
-
-  store.dispatch(syncNodeDefaults(Settings));
 
   ethereumNode.init();
 
@@ -363,8 +361,8 @@ function initializeMainWindowListeners() {
     );
     const unsubscribe = store.subscribe(() => {
       if (
-        store.getState().nodes.remote.blockNumber > 1000 ||
-        store.getState().nodes.local.blockNumber > 1000
+        store.getState().nodes.remote.blockNumber > 100 ||
+        store.getState().nodes.local.blockNumber > 0
       ) {
         // Connected to node!
         mainWindow.load(global.interfaceAppUrl);

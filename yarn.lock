@@ -4954,7 +4954,7 @@ node-pre-gyp@^0.6.39:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-node-unzip-2@^0.2.7, "node-unzip-2@github:glebdmitriew/node-unzip-2":
+node-unzip-2@^0.2.7, "unzip@github:glebdmitriew/node-unzip-2":
   version "0.2.7"
   resolved "https://codeload.github.com/glebdmitriew/node-unzip-2/tar.gz/3702bce9596496bf45442e156541c68eb965b9f9"
   dependencies:

@@ -554,6 +554,7 @@ let menuTempl = function(webviews) {
         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
         accelerator: 'CommandOrControl+Alt+1',
         checked: store.getState().nodes.network === 'main',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
           changeNodeNetwork('main', webviews);
@@ -563,6 +564,7 @@ let menuTempl = function(webviews) {
         label: 'Ropsten - Test network',
         accelerator: 'CommandOrControl+Alt+2',
         checked: store.getState().nodes.network === 'ropsten',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
           changeNodeNetwork('ropsten', webviews);
@@ -572,6 +574,7 @@ let menuTempl = function(webviews) {
         label: 'Rinkeby - Test network',
         accelerator: 'CommandOrControl+Alt+3',
         checked: store.getState().nodes.network === 'rinkeby',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
           changeNodeNetwork('rinkeby', webviews);

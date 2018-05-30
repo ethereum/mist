@@ -567,6 +567,7 @@ class Windows {
     const genericWindowBlacklist = [
       'remix',
       'updateAvailable',
+      'clientUpdateAvailable',
       'connectAccount'
     ];
     if (

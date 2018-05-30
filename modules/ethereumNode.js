@@ -80,7 +80,7 @@ class EthereumNode extends EventEmitter {
   }
 
   get network() {
-    return this.isOwnNode ? this._network : null;
+    return this._network;
   }
 
   get syncMode() {
@@ -164,6 +164,7 @@ class EthereumNode extends EventEmitter {
         this.state = STATES.CONNECTED;
         store.dispatch({ type: '[MAIN]:LOCAL_NODE:CONNECTED' });
         this.emit('runningNodeFound');
+        this.setNetwork();
         return null;
       })
       .catch(() => {
@@ -368,6 +369,16 @@ class EthereumNode extends EventEmitter {
     this._network = network;
     this._type = nodeType;
     this._syncMode = syncMode;
+
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+      payload: { network }
+    });
+
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_SYNC_MODE',
+      payload: { syncMode }
+    });
 
     const client = ClientBinaryManager.getClient(nodeType);
     let binPath;
@@ -619,6 +630,14 @@ class EthereumNode extends EventEmitter {
         this.defaultSyncMode
       }`
     );
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+      payload: { network: this.defaultNetwork }
+    });
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_SYNC_MODE',
+      payload: { syncMode: this.defaultSyncMode }
+    });
   }
 
   _checkSync() {
@@ -665,6 +684,38 @@ class EthereumNode extends EventEmitter {
         );
       }
     }, 1500);
+  }
+
+  async setNetwork() {
+    const network = await this.getNetwork();
+    this._network = network;
+
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
+      payload: { network }
+    });
+
+    store.dispatch({
+      type: '[MAIN]:NODES:CHANGE_SYNC_MODE',
+      payload: { syncMode: null }
+    });
+  }
+
+  async getNetwork() {
+    const blockResult = await this.send('eth_getBlockByNumber', ['0x0', false]);
+    const block = blockResult.result;
+    switch (block.hash) {
+      case '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3':
+        return 'main';
+      case '0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177':
+        return 'rinkeby';
+      case '0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d':
+        return 'ropsten';
+      case '0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9':
+        return 'kovan';
+      default:
+        return 'private';
+    }
   }
 }
 

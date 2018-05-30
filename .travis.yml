@@ -95,9 +95,9 @@ script:
 
   # prepare integration tests
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
+
   # currently, tests should run in linux and mac
-  # Disabling tests so we skip to the build process
-    # - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
+  - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi

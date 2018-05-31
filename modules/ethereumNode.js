@@ -326,9 +326,12 @@ class EthereumNode extends EventEmitter {
         Settings.saveUserData('syncmode', this._syncMode);
 
         return this._socket
-          .connect(Settings.rpcConnectConfig, {
-            timeout: 30000 /* 30s */
-          })
+          .connect(
+            Settings.rpcConnectConfig,
+            {
+              timeout: 30000 /* 30s */
+            }
+          )
           .then(() => {
             this.state = STATES.CONNECTED;
             this._checkSync();

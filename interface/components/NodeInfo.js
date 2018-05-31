@@ -155,7 +155,7 @@ class NodeInfo extends Component {
     this.props.local.sync.displayBlock = displayBlock;
 
     const progress =
-      (displayBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((displayBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div>
@@ -267,7 +267,7 @@ class NodeInfo extends Component {
 
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
     const progress =
-      (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div className="pie-container">

@@ -155,7 +155,7 @@ class NodeInfo extends Component {
     this.props.local.sync.displayBlock = displayBlock;
 
     const progress =
-      (displayBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((displayBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div>
@@ -190,10 +190,12 @@ class NodeInfo extends Component {
         >
           <i className="icon icon-layers" /> {formattedBlockNumber}
         </div>
-        <div className="peer-count row-icon">
-          <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
-        </div>
+        {this.props.network !== 'private' && (
+          <div className="peer-count row-icon">
+            <i className="icon icon-users" />
+            {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          </div>
+        )}
         <div
           className="block-diff row-icon"
           title={i18n.t('mist.nodeInfo.timeSinceBlock')}
@@ -208,7 +210,10 @@ class NodeInfo extends Component {
     const { syncMode } = this.props.local;
     const { currentBlock } = this.props.local.sync;
 
-    const syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
+    let syncText;
+    if (syncMode) {
+      syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
+    }
 
     let localStats;
 
@@ -244,7 +249,7 @@ class NodeInfo extends Component {
         <div className="node-info__node-title local">
           <strong>{i18n.t('mist.nodeInfo.local')}</strong>{' '}
           {i18n.t('mist.nodeInfo.node')}
-          <span className="node-info__pill">{syncText}</span>
+          {syncText && <span className="node-info__pill">{syncText}</span>}
         </div>
 
         {localStats}
@@ -262,7 +267,7 @@ class NodeInfo extends Component {
 
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
     const progress =
-      (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div className="pie-container">

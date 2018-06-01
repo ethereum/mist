@@ -132,6 +132,7 @@
       "local": "Local",
       "lookingForPeers": "Looking for peers...",
       "network": "Network",
+      "testNetwork": "Test network",
       "node": "Node",
       "peers": "peers",
       "privateNetwork": "Private-net",
@@ -140,7 +141,6 @@
       "remote":
         "Connected to remote node. Switches to local node when sync is fewer than 15 blocks behind.",
       "syncStarting": "Sync starting...",
-      "test": "test",
       "testnetExplain":
         "You are on the __name__. DO NOT SEND any real Ether to these addresses",
       "timeSinceBlock": "Elapsed time since last block",
@@ -254,7 +254,7 @@
             "Couldn't connect to the node, did it crash in the background?",
           "wrongPassword": "Wrong password",
           "multipleKeysMatchAddress":
-            "Multiple keys match address.  Please remove duplicates from keystore (menu -> accounts -> backup -> accounts)",
+            "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
           "insufficientFundsForGas":
             "Insufficient funds in main account (etherbase) to pay for gas",
           "sameAccount": "Can't send to itself"

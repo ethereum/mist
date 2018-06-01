@@ -1,17 +1,6 @@
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 import { InfuraEndpoints } from '../../constants';
 
-export function syncNodeDefaults(settings) {
-  return dispatch => {
-    const network =
-      settings.network || settings.loadUserData('network') || 'main';
-    const syncMode =
-      settings.syncmode || settings.loadUserData('syncmode') || 'fast';
-    dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK', payload: { network } });
-    dispatch({ type: '[MAIN]:NODES:CHANGE_SYNC_MODE', payload: { syncMode } });
-  };
-}
-
 export function changeNetwork(network) {
   return dispatch => {
     dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_START' });

@@ -24,7 +24,8 @@ module.exports = class BaseProcessor {
       'personal_newAccount',
       'personal_signTransaction',
       'eth_subscribe',
-      'eth_unsubscribe'
+      'eth_unsubscribe',
+      'eth_estimateGas'
     ];
   }
 

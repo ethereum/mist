@@ -42,16 +42,16 @@ var watchNodeStatus = function(template) {
   }
 
   if (
-    store.getState().nodes.remote.blockNumber > 1000 ||
-    store.getState().nodes.local.blockNumber > 1000
+    store.getState().nodes.remote.blockNumber > 100 ||
+    store.getState().nodes.local.blockNumber > 0
   ) {
     TemplateVar.set(template, 'loading', false);
   }
 
   this.storeUnsubscribe = store.subscribe(() => {
     if (
-      store.getState().nodes.remote.blockNumber > 1000 ||
-      store.getState().nodes.local.blockNumber > 1000
+      store.getState().nodes.remote.blockNumber > 100 ||
+      store.getState().nodes.local.blockNumber > 0
     ) {
       TemplateVar.set(template, 'loading', false);
     }

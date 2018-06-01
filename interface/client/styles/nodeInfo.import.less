@@ -1,3 +1,4 @@
+@colorMainnet: #7ed321;
 @colorTestnet: #00aafa;
 
 #react__node-info {
@@ -30,14 +31,18 @@
 }
 
 .node-info__subtitle {
-  text-transform: uppercase;
+  margin-left: 1px;
   font-size: 10px;
   color: #aaa;
+  text-transform: uppercase;
 }
 
 .node-info__section {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 11px;
+}
+.node-info__section:first-of-type {
+  border-top: none;
 }
 
 .node-info__network-title {
@@ -48,8 +53,12 @@
 }
 
 .node-info__node-title {
-  font-weight: 300;
-  padding-bottom: 5px;
+  font-size: 18px;
+  font-weight: 200;
+  margin-bottom: 6px;
+  strong {
+    font-weight: 400;
+  }
 }
 
 .node-info__pill {
@@ -57,13 +66,15 @@
   margin-left: 5px;
   font-weight: 300;
   font-size: 11px;
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 8px;
-  padding: 2px 5px;
+  padding: 1px 6px 2px;
+  vertical-align: middle;
+  text-transform: none;
 }
 
 .node-info__submenu-container {
-  width: 185px;
+  width: 220px;
   position: fixed;
   left: 90px;
   bottom: 0px;
@@ -102,17 +113,19 @@
     border-radius: 5px;
     color: #fff;
     position: relative;
+  }
 
-    span {
-      font-weight: 400;
-    }
+  progress {
+    width: 100%;
   }
 }
 
 .row-icon {
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  margin-left: 3px;
   display: flex;
   align-items: center;
+  font-size: 13px;
   .icon {
     display: inline-block;
     margin-right: 6px;
@@ -131,11 +144,11 @@ strong {
 }
 
 .red {
-  color: red;
+  color: #e81e1e;
 }
 
 .node-mainnet .node-info__node-title.local {
-  color: #7ed321;
+  color: @colorMainnet;
 }
 
 .node-testnet .node-info__node-title.local {
@@ -146,12 +159,12 @@ progress[value]::-webkit-progress-bar {
   background-color: #eee;
   border-radius: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5) inset;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .node-mainnet progress[value]::-webkit-progress-value {
-  background-image: linear-gradient(left, transparent, #7ed321);
-  background: #7ed321;
+  background-image: linear-gradient(left, transparent, @colorMainnet);
+  background: @colorMainnet;
   background-size: cover;
 }
 

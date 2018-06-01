@@ -150,22 +150,18 @@ class NodeInfo extends Component {
     let displayBlock =
       this.props.local.sync.displayBlock || this.props.local.sync.startingBlock;
     displayBlock += (currentBlock - displayBlock) / 20;
+    let formattedDisplayBlock = numeral(displayBlock).format('0,0');
 
     this.props.local.sync.displayBlock = displayBlock;
 
-    const blocksBehind =
-      highestBlock - currentBlock > 0
-        ? numeral(highestBlock - displayBlock).format('0,0')
-        : '-';
-
     const progress =
-      (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((displayBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div>
         <div className="block-number row-icon">
           <i className="icon icon-layers" />
-          {`${blocksBehind} ${i18n.t('mist.nodeInfo.blocksBehind')}`}
+          {formattedDisplayBlock}
         </div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
@@ -194,10 +190,12 @@ class NodeInfo extends Component {
         >
           <i className="icon icon-layers" /> {formattedBlockNumber}
         </div>
-        <div className="peer-count row-icon">
-          <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
-        </div>
+        {this.props.network !== 'private' && (
+          <div className="peer-count row-icon">
+            <i className="icon icon-users" />
+            {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          </div>
+        )}
         <div
           className="block-diff row-icon"
           title={i18n.t('mist.nodeInfo.timeSinceBlock')}
@@ -212,7 +210,10 @@ class NodeInfo extends Component {
     const { syncMode } = this.props.local;
     const { currentBlock } = this.props.local.sync;
 
-    const syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
+    let syncText;
+    if (syncMode) {
+      syncText = syncMode === 'nosync' ? `sync off` : `${syncMode} sync`;
+    }
 
     let localStats;
 
@@ -248,7 +249,7 @@ class NodeInfo extends Component {
         <div className="node-info__node-title local">
           <strong>{i18n.t('mist.nodeInfo.local')}</strong>{' '}
           {i18n.t('mist.nodeInfo.node')}
-          <span className="node-info__pill">{syncText}</span>
+          {syncText && <span className="node-info__pill">{syncText}</span>}
         </div>
 
         {localStats}
@@ -262,9 +263,11 @@ class NodeInfo extends Component {
     const timeSince = moment(remote.timestamp, 'X');
     const diff = moment().diff(timeSince, 'seconds');
 
+    let dotColor = network == 'main' ? '#7ed321' : '#00aafa';
+
     const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
     const progress =
-      (currentBlock - startingBlock) / (highestBlock - startingBlock) * 100;
+      ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
 
     return (
       <div className="pie-container">
@@ -273,7 +276,7 @@ class NodeInfo extends Component {
           className={this.state.lightClasses}
           style={{
             backgroundColor:
-              diff > 60 ? 'red' : active === 'remote' ? 'orange' : '#24C33A'
+              diff > 60 ? 'red' : active === 'remote' ? 'orange' : dotColor
           }}
         />
         {active === 'remote' &&
@@ -288,7 +291,7 @@ class NodeInfo extends Component {
                 height: 16
               }}
               data={[
-                { value: progress || 0, key: 1, color: '#24C33A' },
+                { value: progress || 0, key: 1, color: dotColor },
                 { value: 100 - (progress || 1), key: 2, color: 'orange' }
               ]}
             />
@@ -317,16 +320,10 @@ class NodeInfo extends Component {
           <section className="node-info__submenu-container">
             <section>
               <div className="node-info__section">
-                <div className="node-info__network-title">
-                  {network}
-                  {network !== 'main' && (
-                    <span className="node-info__pill">
-                      {i18n.t('mist.nodeInfo.test')}
-                    </span>
-                  )}
-                </div>
+                <div className="node-info__network-title">{network}</div>
                 <div className="node-info__subtitle">
-                  {i18n.t('mist.nodeInfo.network')}
+                  {network !== 'main' && i18n.t('mist.nodeInfo.testNetwork')}
+                  {network === 'main' && i18n.t('mist.nodeInfo.network')}
                 </div>
               </div>
 

@@ -75,15 +75,11 @@ gulp.task('switch-production', cb => {
 
 gulp.task('bundling-interface', cb => {
   const bundle = additionalCommands => {
+    const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+
     exec(
-      `cd interface \
-            && meteor-build-client ${path.join(
-              '..',
-              `dist_${type}`,
-              'app',
-              'interface'
-            )} -p "" \
-            ${additionalCommands}`,
+      `meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
+      { cwd: 'interface' },
       (err, stdout) => {
         console.log(stdout);
         cb(err);
@@ -231,7 +227,9 @@ gulp.task('release-dist', done => {
   };
 
   _.each(options.activePlatforms, platform => {
-    switch (platform) { // eslint-disable-line default-case
+    switch (
+      platform // eslint-disable-line default-case
+    ) {
       case 'win':
         cp(
           `${applicationName}-${version}-ia32-win.zip`,

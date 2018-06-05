@@ -239,6 +239,8 @@
           "The gas required for this execution could exceed the block gas limit.",
         "notEnoughGas":
           "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+        "defaultGas":
+          "Couldn't estimate gas, resorting to default parameters. Transaction is likely cheaper than the estimate",
         "noEstimate": "We couldn't estimate the gas.",
         "gasPrice": "Gas price",
         "perMillionGas": "ether per million gas",

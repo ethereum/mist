@@ -95,6 +95,7 @@ gulp.task('bundling-interface', cb => {
     if (options.walletSource === 'local') {
       console.log('Use local wallet at ../meteor-dapp-wallet/app');
       bundle(`&& cd ../../meteor-dapp-wallet/app \
+                && npm install \
                 && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
     } else {
       console.log(
@@ -105,6 +106,7 @@ gulp.task('bundling-interface', cb => {
       bundle(`&& cd ../dist_${type} \
                 && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
                 && cd meteor-dapp-wallet/app \
+                && npm install \
                 && meteor-build-client ../../app/interface/wallet -p "" \
                 && cd ../../ \
                 && rm -rf meteor-dapp-wallet`);

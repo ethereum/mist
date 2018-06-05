@@ -44,8 +44,8 @@ mistInit = function() {
       { _id: 'wallet' },
       {
         $set: {
-          url: `file://${dirname}/wallet.asar/index.html`,
-          redirect: `file://${dirname}/wallet.asar/index.html`,
+          url: `file://${dirname}/wallet/index.html`,
+          redirect: `file://${dirname}/wallet/index.html`,
           position: 1,
           permissions: {
             admin: true

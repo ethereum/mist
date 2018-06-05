@@ -158,15 +158,12 @@ Template['views_webview'].helpers({
       }
 
       // allow error pages
-      if (url && url.indexOf('file://' + dirname + '/errorPages/') === 0) {
+      if (url && url.indexOf(`file://${dirname}/errorPages/`) === 0) {
         return url;
       }
 
       // allow local wallet
-      if (
-        url &&
-        url.indexOf(`file://${dirname}/wallet.asar/index.html`) === 0
-      ) {
+      if (url && url.indexOf(`file://${dirname}/wallet/index.html`) === 0) {
         return url;
       }
 

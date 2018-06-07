@@ -1,9 +1,9 @@
 const _ = require('../../utils/underscore.js');
 const Q = require('bluebird');
-
 const log = require('../../utils/logger').create('method');
 const Windows = require('../../windows');
 const db = require('../../db');
+
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 
 /**
@@ -24,8 +24,7 @@ module.exports = class BaseProcessor {
       'personal_newAccount',
       'personal_signTransaction',
       'eth_subscribe',
-      'eth_unsubscribe',
-      'eth_estimateGas'
+      'eth_unsubscribe'
     ];
   }
 

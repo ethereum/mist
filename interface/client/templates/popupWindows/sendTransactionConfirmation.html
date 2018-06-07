@@ -56,11 +56,11 @@
 
                 {{#if transactionInvalid}}
                     {{#if (TemplateVar.get "gasLoading") }}
-                        <p class="info gas-loading"> 
+                        <p class="info gas-loading">
                             {{> spinner}}
                         </p>
                     {{ else }}
-                        <p class="info dapp-error"> 
+                        <p class="info dapp-error">
                             {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}
                         </p>
                     {{/if}}
@@ -71,18 +71,24 @@
                                 {{i18n "mist.popupWindows.sendTransactionConfirmation.overBlockGasLimit"}}
                             </div>
                         {{else}}
-                            {{#if $and data (TemplateVar.get "toIsContract")}}
-                                <p class="info">
-                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}
-                                </p>
-                            {{/if}}
 
-                            {{#unless to}}
-                                <p class="info">
-                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}
-                                </p>
-                            {{/unless}}
+                          {{#if $eq (TemplateVar.get "gasError") "defaultGas"}}
+                              <div class="info dapp-error">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.defaultGas"}}
+                              </div>
+                          {{else}}
+                              {{#if $and data (TemplateVar.get "toIsContract")}}
+                                  <p class="info">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}
+                                  </p>
+                              {{/if}}
 
+                              {{#unless to}}
+                                  <p class="info">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}
+                                  </p>
+                              {{/unless}}
+                          {{/if}}
                         {{/if}}
                     {{else}}
                         <div class="info dapp-error not-enough-gas" style="cursor: pointer;">

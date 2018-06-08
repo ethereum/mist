@@ -14,7 +14,7 @@ var setWindowSize = function(template) {
   });
 };
 
-var defaultEstimateGas = 50000000;
+var defaultEstimateGas = 1000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -117,6 +117,8 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       TemplateVar.set('gasError', 'notEnoughGas');
     } else if (TemplateVar.get('estimatedGas') > 4000000) {
       TemplateVar.set('gasError', 'overBlockGasLimit');
+    } else if (TemplateVar.get('estimatedGas') == defaultEstimateGas) {
+      TemplateVar.set('gasError', 'defaultGas');
     } else {
       TemplateVar.set('gasError', null);
     }
@@ -227,6 +229,9 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
               );
             }
           });
+        } else {
+          TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
+          TemplateVar.set(template, 'providedGas', defaultEstimateGas);
         }
         TemplateVar.set(template, 'gasLoading', false);
       });
@@ -236,6 +241,8 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       // so the user can see an error message
       setTimeout(() => {
         TemplateVar.set(template, 'gasLoading', false);
+        TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
+        TemplateVar.set(template, 'providedGas', defaultEstimateGas);
       }, 25000);
     }
   });

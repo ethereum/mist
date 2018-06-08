@@ -115,6 +115,7 @@ gulp.task('bundling-interface', cb => {
       bundle(`&& cd ../../meteor-dapp-wallet/app \
               && npm install \
               && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
+
     } else {
       console.log(
         `Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${

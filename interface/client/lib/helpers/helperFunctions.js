@@ -148,9 +148,9 @@ Helpers.generateBreadcrumb = function(url) {
   return new Spacebars.SafeString(
     filteredUrl.protocol +
       '//' +
-      _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(
-        ' ▸ '
-      )
+      _
+        .flatten(['<span>' + filteredUrl.host + ' </span>', pathname])
+        .join(' ▸ ')
   );
 };
 
@@ -163,7 +163,7 @@ Helpers.getLocalStorageSize = function() {
   var size = 0;
   if (localStorage) {
     _.each(Object.keys(localStorage), function(key) {
-      size += localStorage[key].length * 2 / 1024 / 1024;
+      size += (localStorage[key].length * 2) / 1024 / 1024;
     });
   }
 

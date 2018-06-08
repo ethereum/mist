@@ -9,7 +9,7 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "postinstall": "electron-builder install-app-deps; (cd interface && yarn); yarn dev:rebuild",
+    "postinstall": "electron-builder install-app-deps; (cd interface && yarn); yarn dev:rebuild; gulp pack-wallet",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",

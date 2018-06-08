@@ -76,17 +76,20 @@ gulp.task('switch-production', cb => {
 
 gulp.task('pack-wallet', cb => {
   if (options.type == 'mist') {
-    console.log('Cloning wallet repo...');
-    exec(
-      `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && \
-          cd meteor-dapp-wallet/app && \
-          npm install && \
-          meteor-build-client ../../wallet -p ""`,
-      (err, stdout, stderr) => {
-        console.log(stdout, stderr);
-        cb(err);
-      }
-    );
+    del(['./wallet', './meteor-dapp-wallet']).then(() => {
+      console.log('Building wallet...');
+      exec(
+        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && \
+            cd meteor-dapp-wallet/app && \
+            npm install && \
+            meteor-build-client ../../wallet -p ""`,
+        (err, stdout, stderr) => {
+          console.log(stdout, stderr);
+          del(['./meteor-dapp-wallet']);
+          cb(err);
+        }
+      );
+    });
   } else {
     cb();
   }

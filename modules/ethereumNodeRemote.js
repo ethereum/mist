@@ -92,6 +92,10 @@ class EthereumNodeRemote extends EventEmitter {
 
         ethereumNodeRemoteLog.warn(errorMessage);
       });
+
+      this.ws.on('error', error => {
+        ethereumNodeRemoteLog.warn('Error from ws: ', error);
+      });
     }));
   }
 

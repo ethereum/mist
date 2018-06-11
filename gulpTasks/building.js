@@ -82,7 +82,7 @@ gulp.task('pack-wallet', cb => {
         `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && \
             cd meteor-dapp-wallet/app && \
             npm install && \
-            meteor-build-client ../../wallet -p ""`,
+            ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
         (err, stdout, stderr) => {
           console.log(stdout, stderr);
           del(['./meteor-dapp-wallet']);
@@ -100,7 +100,7 @@ gulp.task('bundling-interface', cb => {
     const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
 
     exec(
-      `meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
+      `../node_modules/.bin/meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
       { cwd: 'interface' },
       (err, stdout) => {
         console.log(stdout);
@@ -114,8 +114,7 @@ gulp.task('bundling-interface', cb => {
       console.log('Use local wallet at ../meteor-dapp-wallet/app');
       bundle(`&& cd ../../meteor-dapp-wallet/app \
               && npm install \
-              && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
-
+              && ../../../node_modules/.bin/meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
     } else {
       console.log(
         `Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${
@@ -126,7 +125,7 @@ gulp.task('bundling-interface', cb => {
                 && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
                 && cd meteor-dapp-wallet/app \
                 && npm install \
-                && meteor-build-client ../../app/interface/wallet -p "" \
+                && ../../../node_modules/.bin/meteor-build-client ../../app/interface/wallet -p "" \
                 && cd ../../ \
                 && rm -rf meteor-dapp-wallet`);
     }

@@ -180,21 +180,21 @@ Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](htt
 
 #### Dependencies
 
-[meteor-build-client](https://github.com/frozeman/meteor-build-client) bundles the [meteor](https://www.meteor.com/)-based interface. Install it via:
+Cross-platform builds require additional [`electron-builder` dependencies](https://www.electron.build/multi-platform-build).
+
+##### macOS
 
 ```bash
-$ npm install -g meteor-build-client
+$ brew install rpm
 ```
 
-Furthermore cross-platform builds require additional [`electron-builder` dependencies](https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#linux). On macOS those are:
-
-Windows dependencies:
+##### Windows
 
 ```bash
 $ brew install wine --without-x11 mono makensis
 ```
 
-Linux dependencies:
+##### Linux
 
 ```bash
 $ brew install gnu-tar libicns graphicsmagick xz

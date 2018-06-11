@@ -134,6 +134,10 @@ menu.append(
     accelerator: 'Command+R',
     click() {
       const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (LocalStore.get('selectedTab') === 'wallet') {
+        return console.log('Cannot refresh the wallet');
+      }
+
       if (webview) {
         webview.reloadIgnoringCache();
       }
@@ -181,8 +185,12 @@ window.addEventListener(
 document.addEventListener(
   'keydown',
   e => {
-    // RELOAD current webview
-    if (e.metaKey && e.keyCode === 82) {
+    // RELOAD current webview, unless on wallet tab
+    if (
+      LocalStore.get('selectedTab') !== 'wallet' &&
+      e.metaKey &&
+      e.keyCode === 82
+    ) {
       const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
       if (webview) {
         webview.reloadIgnoringCache();

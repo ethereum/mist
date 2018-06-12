@@ -58,6 +58,13 @@ Helpers.getTabIdByUrl = function(url, returnEmpty) {
       return false;
     }
     var tabOrigin = new URL(tab.url).origin;
+
+    // Local urls always have the same origin as shown below,
+    // so we shouldn't consider it as a match
+    if (tabOrigin === 'file://') {
+      return false;
+    }
+
     return url && new URL(url).origin.indexOf(tabOrigin) === 0;
   });
 

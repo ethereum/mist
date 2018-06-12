@@ -242,38 +242,7 @@ test[
   const client = this.client;
   yield this.selectTab('wallet');
 
-  yield this.navigateTo(
-    `${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`
-  );
-  yield client.waitUntil(() => {
-    return client.execute(() => {
-      return LocalStore.get('selectedTab') === 'browser';
-    });
-  }, 2000);
-};
-
-test[
-  "Wallet tab shouldn't have the page replaced if URLs does not match - 2"
-] = function*() {
-  // ETH-01-007
-  const client = this.client;
-  yield this.selectTab('wallet');
-
-  // Now changing address via JS
-  yield client.setValue(
-    '#url-input',
-    `${this.fixtureBaseUrl}index.html?https://wallet.ethereum.org`
-  );
-  yield client.execute(() => {
-    // Code executed in context of browser
-    $('form.url').submit();
-  });
-
-  yield client.waitUntil(() => {
-    return client.execute(() => {
-      return LocalStore.get('selectedTab') === 'browser';
-    });
-  }, 2000);
+  should.not.exist(yield this.getUiElement('form.url input'));
 };
 
 //test['Links with target _blank should open inside Mist'] = function* () {

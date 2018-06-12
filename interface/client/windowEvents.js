@@ -33,7 +33,11 @@ $(window).on('keydown', function(e) {
   }
 
   // RELOAD current webview
-  if (e.metaKey && e.keyCode === 82) {
+  if (
+    LocalStore.get('selectedTab') !== 'wallet' &&
+    e.metaKey &&
+    e.keyCode === 82
+  ) {
     var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
     if (webview) {
       webview.reloadIgnoringCache();

@@ -29,6 +29,7 @@ gulp.task('copy-app-source-files', () => {
         './sounds/*',
         './errorPages/*',
         'customProtocols.js',
+        'wallet/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
         '!./tests/wallet/*',
@@ -73,17 +74,34 @@ gulp.task('switch-production', cb => {
   );
 });
 
+gulp.task('pack-wallet', cb => {
+  if (options.type == 'mist') {
+    del(['./wallet', './meteor-dapp-wallet']).then(() => {
+      console.log('Building wallet...');
+      exec(
+        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && \
+            cd meteor-dapp-wallet/app && \
+            npm install && \
+            ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
+        (err, stdout, stderr) => {
+          console.log(stdout, stderr);
+          del(['./meteor-dapp-wallet']);
+          cb(err);
+        }
+      );
+    });
+  } else {
+    cb();
+  }
+});
+
 gulp.task('bundling-interface', cb => {
   const bundle = additionalCommands => {
+    const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+
     exec(
-      `cd interface \
-            && meteor-build-client ${path.join(
-              '..',
-              `dist_${type}`,
-              'app',
-              'interface'
-            )} -p "" \
-            ${additionalCommands}`,
+      `../node_modules/.bin/meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
+      { cwd: 'interface' },
       (err, stdout) => {
         console.log(stdout);
         cb(err);
@@ -95,8 +113,8 @@ gulp.task('bundling-interface', cb => {
     if (options.walletSource === 'local') {
       console.log('Use local wallet at ../meteor-dapp-wallet/app');
       bundle(`&& cd ../../meteor-dapp-wallet/app \
-                && npm install \
-                && meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
+              && npm install \
+              && ../../../node_modules/.bin/meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
     } else {
       console.log(
         `Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${
@@ -107,7 +125,7 @@ gulp.task('bundling-interface', cb => {
                 && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
                 && cd meteor-dapp-wallet/app \
                 && npm install \
-                && meteor-build-client ../../app/interface/wallet -p "" \
+                && ../../../node_modules/.bin/meteor-build-client ../../app/interface/wallet -p "" \
                 && cd ../../ \
                 && rm -rf meteor-dapp-wallet`);
     }
@@ -233,7 +251,9 @@ gulp.task('release-dist', done => {
   };
 
   _.each(options.activePlatforms, platform => {
-    switch (platform) { // eslint-disable-line default-case
+    switch (
+      platform // eslint-disable-line default-case
+    ) {
       case 'win':
         cp(
           `${applicationName}-${version}-ia32-win.zip`,

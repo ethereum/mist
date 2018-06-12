@@ -9,7 +9,7 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "postinstall": "electron-builder install-app-deps; (cd interface && yarn); yarn dev:rebuild",
+    "postinstall": "electron-builder install-app-deps; (cd interface && yarn); yarn dev:rebuild; gulp pack-wallet",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
@@ -85,6 +85,7 @@
     "gulp-spawn-mocha": "^3.3.0",
     "husky": "^0.14.3",
     "json-structure-diff": "^0.0.2",
+    "meteor-build-client": "^0.4.1",
     "minimist": "^1.2.0",
     "mocha": "^3.2.0",
     "prettier": "1.13.2",

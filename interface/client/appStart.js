@@ -11,7 +11,7 @@ The init function of Mist
 @method initMist
 */
 initMist = function() {
-  console.info('Initialise Mist Interface');
+  console.info('Initialize Mist Interface');
   initTabs();
 };
 
@@ -41,10 +41,11 @@ function initTabs() {
     );
 
     if (!Tabs.findOne('browser')) {
+      const url = 'https://www.stateofthedapps.com';
       Tabs.insert({
         _id: 'browser',
-        url: 'https://ethereum.org',
-        redirect: 'https://ethereum.org',
+        url,
+        redirect: url,
         position: 1
       });
     } else {

@@ -235,14 +235,33 @@ test[
   selectedTab.should.eql('wallet');
 };
 
-test[
-  "Wallet tab shouldn't have the page replaced if URLs does not match"
-] = function*() {
-  // ETH-01-007
+test["Wallet tab shouldn't contain browser bar with input"] = function*() {
   const client = this.client;
   yield this.selectTab('wallet');
 
   should.not.exist(yield this.getUiElement('form.url input'));
+};
+
+test[
+  "Wallet tab shouldn't have the page replaced if URLs does not match -2"
+] = function*() {
+  // ETH-01-007
+  const client = this.client;
+
+  yield this.selectTab('wallet');
+  const walletTabUrl = yield this.getSelectedWebviewParam('src');
+
+  yield this.selectTab('browser');
+
+  const url = `${
+    this.fixtureBaseUrl
+  }index.html?file:///malicious/local/code.html`;
+  this.navigateTo(url);
+
+  yield this.selectTab('wallet');
+  const walletTabUrl2 = yield this.getSelectedWebviewParam('src');
+
+  walletTabUrl.should.eql(walletTabUrl2);
 };
 
 //test['Links with target _blank should open inside Mist'] = function* () {
@@ -288,9 +307,7 @@ test[
 // ETH-01-008
 test['Mist main webview should not redirect to local files'] = function*() {
   const client = this.client;
-  const url = `${
-    this.fixtureBaseUrl
-  }redirect?to=file:///Users/ev/Desktop/keystore.txt`;
+  const url = `${this.fixtureBaseUrl}redirect?to=file:///tmp/keystore.txt`;
 
   yield this.navigateTo(url);
   yield Q.delay(1000);

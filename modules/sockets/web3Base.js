@@ -1,4 +1,4 @@
-const _ = global._;
+const _ = require('../utils/underscore.js');
 const Q = require('bluebird');
 const oboe = require('oboe');
 const SocketBase = require('./base');
@@ -36,11 +36,11 @@ module.exports = class Web3Socket extends Socket {
         : this._finalizeSinglePayload(payload);
 
       /*
-            For batch requeests we use the id of the first request as the
-            id to refer to the batch as one. We can do this because the
-            response will also come back as a batch, in the same order as the
-            the requests within the batch were sent.
-             */
+      * For batch requests we use the id of the first request as the
+      * id to refer to the batch as one. We can do this because the
+      * response will also come back as a batch, in the same order as the
+      * the requests within the batch were sent.
+      */
       const id = isBatch ? finalPayload[0].id : finalPayload.id;
 
       this._log.trace(isBatch ? 'Batch request' : 'Request', id, finalPayload);
@@ -85,6 +85,7 @@ module.exports = class Web3Socket extends Socket {
 
   /**
    * Handle responses from Geth.
+   * Responses are false, a single object, or an array of objects
    */
   _handleSocketResponse() {
     oboe(this)
@@ -93,9 +94,7 @@ module.exports = class Web3Socket extends Socket {
 
         try {
           const isBatch = _.isArray(result);
-
           const firstItem = isBatch ? result[0] : result;
-
           const req = firstItem.id ? this._sendRequests[firstItem.id] : null;
 
           if (req) {
@@ -141,7 +140,9 @@ module.exports = class Web3Socket extends Socket {
         this._log.error('Socket response error', err);
 
         _.each(this._sendRequests, req => {
-          req.reject(err);
+          if (req.reject) {
+            req.reject(err);
+          }
         });
 
         this._sendRequests = {};

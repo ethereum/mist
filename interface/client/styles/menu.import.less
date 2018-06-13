@@ -29,6 +29,7 @@ aside.sidebar {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
+  -webkit-app-region: drag;
 
   z-index: 4;
   position: absolute;
@@ -67,6 +68,7 @@ aside.sidebar {
         overflow: hidden;
         margin-bottom: 14px;
         transition-delay: 200ms;
+        -webkit-app-region: no-drag;
 
         // draggable LI
         &.ui-sortable-helper {
@@ -233,7 +235,7 @@ aside.sidebar {
       .sub-menu {
         margin: 6px 0;
         padding: 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
         overflow-y: auto;
         overflow-x: hidden;
         padding-bottom: 0.1em;
@@ -322,6 +324,15 @@ aside.sidebar {
     .test-chain {
       flex: 1 100%;
       padding: 1px 5px 2px;
+      font-size: 90%;
+    }
+
+    .remote-indicator {
+      flex: 3;
+      font-size: 90%;
+      background: #e2e2e2;
+      border-radius: 3px;
+      padding: 5px;
     }
   }
 }

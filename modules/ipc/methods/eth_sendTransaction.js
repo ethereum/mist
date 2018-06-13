@@ -60,7 +60,7 @@ module.exports = class extends BaseProcessor {
 
         // user cancelled?
         if (!modalWindow.processed) {
-          reject(this.ERRORS.METHOD_DENIED);
+          reject(this.ERRORS.TX_DENIED);
         }
       });
 
@@ -73,11 +73,9 @@ module.exports = class extends BaseProcessor {
           ) {
             if (err || !result) {
               this._log.debug('Confirmation error', err);
-
-              reject(err || this.ERRORS.METHOD_DENIED);
+              reject(err || this.ERRORS.TX_DENIED);
             } else {
               this._log.info('Transaction sent', result);
-
               resolve(result);
             }
 

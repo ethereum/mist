@@ -4,17 +4,17 @@ engines:
     config:
       languages:
         javascript:
-          mass_threshold: 40  ## default threshold
+          mass_threshold: 40  # default threshold
   eslint:
     enabled: true
-    channel: "eslint-3"  ## required for airbnb-base config
+    channel: "eslint-4"
     checks:
       complexity:
         enabled: true
   csslint:
     enabled: true
 
-ratings:  ## enables GPA rating
+ratings:  # enables GPA rating
    paths:
    - "**.css"
    - "**.js"

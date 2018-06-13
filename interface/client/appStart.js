@@ -8,45 +8,31 @@ import NodeInfo from '../components/NodeInfo';
 
 /**
 The init function of Mist
-
-@method mistInit
+@method initMist
 */
-mistInit = function() {
-  console.info('Initialise Mist Interface');
+initMist = function() {
+  console.info('Initialize Mist Interface');
+  initTabs();
+};
+
+function initTabs() {
+  console.debug('Init tabs');
 
   Tabs.onceSynced.then(function() {
     if (location.search.indexOf('reset-tabs') >= 0) {
       console.info('Resetting UI tabs');
-
       Tabs.remove({});
     }
 
-    if (!Tabs.findOne('browser')) {
-      console.debug('Insert tabs');
-
-      Tabs.insert({
-        _id: 'browser',
-        url: 'https://ethereum.org',
-        redirect: 'https://ethereum.org',
-        position: 0
-      });
-    } else {
-      Tabs.upsert(
-        { _id: 'browser' },
-        {
-          $set: { position: 0 }
-        }
-      );
-    }
-
-    // overwrite wallet on start again, but use $set to preserve account titles
+    // Overwrite wallet on start again,
+    // but use $set to preserve account titles
     Tabs.upsert(
       { _id: 'wallet' },
       {
         $set: {
-          url: 'https://wallet.ethereum.org',
-          redirect: 'https://wallet.ethereum.org',
-          position: 1,
+          url: `file://${dirname}/wallet/index.html`,
+          redirect: `file://${dirname}/wallet/index.html`,
+          position: 0,
           permissions: {
             admin: true
           }
@@ -54,7 +40,24 @@ mistInit = function() {
       }
     );
 
-    // on first use of Mist, show the wallet to nudge the user to create an account
+    if (!Tabs.findOne('browser')) {
+      const url = 'https://www.stateofthedapps.com';
+      Tabs.insert({
+        _id: 'browser',
+        url,
+        redirect: url,
+        position: 1
+      });
+    } else {
+      Tabs.upsert(
+        { _id: 'browser' },
+        {
+          $set: { position: 1 }
+        }
+      );
+    }
+
+    // On first use, show wallet to nudge user to create an account
     if (
       !LocalStore.get('selectedTab') ||
       !Tabs.findOne(LocalStore.get('selectedTab'))
@@ -62,7 +65,7 @@ mistInit = function() {
       LocalStore.set('selectedTab', 'wallet');
     }
   });
-};
+}
 
 function renderReactComponentPopup(locationHash) {
   // NOTE: when adding new React components, remember to skip meteor template in templates/index.js
@@ -110,7 +113,7 @@ function renderReact() {
   if (!location.hash) {
     handleLanguage();
     EthAccounts.init();
-    mistInit();
+    initMist();
     renderReactComponentMain();
   } else {
     // handle popup windows:

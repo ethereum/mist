@@ -25,6 +25,11 @@ Template['layout_browserBar'].helpers({
     if (!this || !this.url) {
       return;
     }
+
+    if (this._id === 'wallet') {
+      return '';
+    }
+
     try {
       return Helpers.generateBreadcrumb(new URL(this.url));
     } catch (e) {
@@ -90,7 +95,6 @@ Template['layout_browserBar'].events({
     */
   'click button.reload': function() {
     var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-
     if (webview) {
       webview.reload();
     }

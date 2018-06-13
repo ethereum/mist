@@ -2,6 +2,8 @@
 @module preloader MistUI
 */
 
+require('babel-register');
+
 // Initialise the Redux store
 window.store = require('./rendererStore');
 
@@ -12,20 +14,16 @@ const { Menu, MenuItem } = remote;
 const dbSync = require('../dbSync.js');
 const i18n = require('../i18n.js');
 const mist = require('./include/mistAPI.js');
-const web3Admin = require('../web3Admin.js');
 
 require('./include/setBasePath')('interface');
-
-// add admin later
-setTimeout(() => {
-  web3Admin.extend(window.web3);
-}, 1000);
 
 window.mist = mist();
 window.mistMode = remote.getGlobal('mode');
 window.dbSync = dbSync;
 window.dirname = remote.getGlobal('dirname');
 window.ipc = ipcRenderer;
+
+window.i18n = require('../i18n.js');
 
 // remove require and module, because node-integration is on
 delete window.module;
@@ -136,6 +134,10 @@ menu.append(
     accelerator: 'Command+R',
     click() {
       const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (LocalStore.get('selectedTab') === 'wallet') {
+        return console.log('Cannot refresh the wallet');
+      }
+
       if (webview) {
         webview.reloadIgnoringCache();
       }
@@ -183,8 +185,12 @@ window.addEventListener(
 document.addEventListener(
   'keydown',
   e => {
-    // RELOAD current webview
-    if (e.metaKey && e.keyCode === 82) {
+    // RELOAD current webview, unless on wallet tab
+    if (
+      LocalStore.get('selectedTab') !== 'wallet' &&
+      e.metaKey &&
+      e.keyCode === 82
+    ) {
       const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
       if (webview) {
         webview.reloadIgnoringCache();

@@ -42,25 +42,17 @@ const settings = (state = initialState, action) => {
     case '[MAIN]:TEST_MODE:SET':
       return Object.assign({}, state, { autoTestMode: true });
     case '[MAIN]:CLI_FLAGS:SYNC':
-      return Object.assign({}, state, {
-        cliFlags: action.payload.cliFlags
-      });
+      return Object.assign({}, state, { cliFlags: action.payload.cliFlags });
     case '[MAIN]:SET_LANGUAGE_ON_MAIN:SUCCESS':
       return Object.assign({}, state, { i18n: action.payload.i18n });
     case '[MAIN]:SWARM:ENABLING':
-      return Object.assign({}, state, {
-        swarmState: SwarmState.Enabling
-      });
+      return Object.assign({}, state, { swarmState: SwarmState.Enabling });
     case '[MAIN]:SWARM:ENABLED':
       return Object.assign({}, state, { swarmState: SwarmState.Enabled });
     case '[MAIN]:SWARM:DISABLING':
-      return Object.assign({}, state, {
-        swarmState: SwarmState.Disabling
-      });
+      return Object.assign({}, state, { swarmState: SwarmState.Disabling });
     case '[MAIN]:SWARM:DISABLED':
-      return Object.assign({}, state, {
-        swarmState: SwarmState.Disabled
-      });
+      return Object.assign({}, state, { swarmState: SwarmState.Disabled });
     case '[MAIN]:SWARM:FAILURE':
       return Object.assign({}, state, { swarmState: SwarmState.Error });
     case '[MAIN]:SWARM:ENABLE_ON_START':

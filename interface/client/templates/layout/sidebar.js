@@ -18,28 +18,33 @@ Template['layout_sidebar'].onRendered(function() {
   $ul.sortable({
     containment: 'aside.sidebar',
     axis: 'y',
-    // tolerance: 'pointer',
     items: '> li:not(.browser)',
     handle: 'button.main',
-    cancel: '.browser',
+    cancel: '.browser,.wallet',
     cursor: 'move',
     delay: 150,
     revert: 200,
-    start: function(e) {
+    start: () => {
       $ul.sortable('refreshPositions');
     },
-    update: function(e) {
-      // iterate over the lis and reposition the items
-      $ul.find('> li').each(function(index, test) {
-        var id = $(this).data('tab-id');
+    stop: (event, ui) => {
+      // cancel if trying to drop above wallet or browser tabs
+      const index = $(ui.item).index();
+      if (index < 2) {
+        $ul.sortable('cancel');
+      }
+    },
+    update: () => {
+      // iterate over the `li`s and reposition the items
+      $ul.find('> li').each(index => {
+        const id = $(this).data('tab-id');
+        const position = index + 1;
         if (id) {
-          Tabs.update(id, { $set: { position: index + 1 } });
+          Tabs.update(id, { $set: { position } });
         }
       });
     }
   });
-
-  template.$('[data-tab-id]').on('mouseover', function() {});
 });
 
 Template['layout_sidebar'].helpers({

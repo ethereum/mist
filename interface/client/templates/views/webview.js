@@ -158,13 +158,18 @@ Template['views_webview'].helpers({
       }
 
       // allow error pages
-      if (url && url.indexOf('file://' + dirname + '/errorPages/') === 0) {
+      if (url && url.indexOf(`file://${dirname}/errorPages/`) === 0) {
+        return url;
+      }
+
+      // allow local wallet
+      if (url && url.indexOf(`file://${dirname}/wallet/index.html`) === 0) {
         return url;
       }
 
       // CHECK URL and throw error if not allowed
       if (!Helpers.sanitizeUrl(url, true)) {
-        // Prevent websites usingt the history back attacks
+        // Prevent websites using the history back attacks
         if (template.view.isRendered) {
           // get the current webview
           var webview = template.find('webview');

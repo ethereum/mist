@@ -1,0 +1,29 @@
+{
+  "env": { "es6": true },
+  "extends": [
+    "plugin:prettier/recommended",
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "globals": {
+    "i18n": true,
+    "mist": true,
+    "beforeEach": true,
+    "LocalStore": true,
+    "web3": true,
+    "Tabs": true,
+    "Tracker": true,
+    "_": true,
+    "window": true,
+    "location": true,
+    "document": true,
+    "Promise": true,
+    "require": true,
+    "global": true,
+    "store": true,
+    "exports": true,
+    "module": true,
+    "console": true,
+    "process": true
+  }
+}

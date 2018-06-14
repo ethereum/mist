@@ -66,18 +66,12 @@ exports.options = options;
 // import gulp tasks
 require('require-dir')('./gulpTasks');
 
-gulp.task('uploadQueue', cb => {
-  const tasks = [];
-
-  tasks.push('checksums');
-  tasks.push('upload-binaries');
-
-  runSeq.apply(null, _.flatten([tasks, cb]));
-});
+gulp.task('upload-queue', gulp.series('checksums', 'upload-binaries'));
 
 const skipTasks = options.skipTasks.replace(/\s/g, '').split(',');
 const tasks = [
   'clean-dist',
+  'pack-wallet',
   'copy-app-source-files',
   'transpile-main',
   'transpile-modules',

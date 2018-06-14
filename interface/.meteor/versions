@@ -34,7 +34,6 @@ ecmascript-runtime-server@0.5.0
 ejson@1.1.0
 es5-shim@4.7.3
 ethereum:accounts@1.1.0
-ethereum:blocks@1.1.0
 ethereum:dapp-styles@0.5.8
 ethereum:elements@1.1.0
 ethereum:tools@1.1.0

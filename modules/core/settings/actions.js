@@ -68,10 +68,7 @@ export function setAcceptLanguageHeader(lang, browserWindow) {
       session.setUserAgent(session.getUserAgent(), lang);
       dispatch({ type: '[MAIN]:SET_ACCEPT_LANGUAGE_HEADER:SUCCESS' });
     } catch (error) {
-      dispatch({
-        type: '[MAIN]:SET_ACCEPT_LANGUAGE_HEADER:FAILURE',
-        error
-      });
+      dispatch({ type: '[MAIN]:SET_ACCEPT_LANGUAGE_HEADER:FAILURE', error });
     }
   };
 }
@@ -100,10 +97,7 @@ export function getLanguage(event) {
     try {
       const i18n = getState().settings.i18n;
       event.returnValue = i18n;
-      dispatch({
-        type: '[MAIN]:GET_LANGUAGE:SUCCESS',
-        payload: { i18n }
-      });
+      dispatch({ type: '[MAIN]:GET_LANGUAGE:SUCCESS', payload: { i18n } });
     } catch (error) {
       dispatch({ type: '[MAIN]:GET_LANGUAGE:FAILURE', error });
     }

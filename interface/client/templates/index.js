@@ -11,13 +11,47 @@ The body template
 @constructor
 */
 
-// Generic windows reuse windows by switching the template
+import React from 'react';
+import { render } from 'react-dom';
+import About from '../../components/About';
+import RequestAccount from '../../components/RequestAccount';
+
+const COMPONENTS = {
+  About,
+  RequestAccount
+};
+
+function renderReactComponentPopup(component) {
+  const Component = COMPONENTS[component];
+  if (!!Component) {
+    render(<Component />, document.getElementById('react-entry'));
+  }
+}
+
+// NOTE: While in the process of converting the Meteor codebase to React,
+// generic windows reuse electron windows by replacing either the
+// component or the template
 ipc.on('uiAction_switchTemplate', (e, templateName) => {
-  TemplateVar.setTo(
-    '#generic-body',
-    'MainRenderTemplate',
-    `popupWindows_${templateName}`
-  );
+  const componentName =
+    templateName.charAt(0).toUpperCase() + templateName.slice(1);
+
+  // If a React component exists, render it
+  if (!!COMPONENTS[componentName]) {
+    TemplateVar.setTo(
+      '#generic-body',
+      'MainRenderTemplate',
+      `popupWindows_generic`
+    );
+    renderReactComponentPopup(componentName);
+  } else {
+    // Otherwise, use the meteor template
+    renderReactComponentPopup('');
+    TemplateVar.setTo(
+      '#generic-body',
+      'MainRenderTemplate',
+      `popupWindows_${templateName}`
+    );
+  }
 });
 
 Template.body.helpers({
@@ -37,7 +71,13 @@ Template.body.helpers({
       $('title').text('Mist');
       return 'layout_main';
     } else {
-      var renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
+      const renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
+
+      // TODO: handle React components
+      const REACT_COMPONENTS = ['about', 'requestAccount'];
+      if (REACT_COMPONENTS.includes(renderWindow[1])) {
+        return false;
+      }
 
       if (renderWindow.length > 0) {
         return 'popupWindows_' + renderWindow[1];

@@ -23,39 +23,30 @@ const check = (exports.check = () => {
       break;
   }
 
-  return got('https://api.github.com/repos/ethereum/mist/releases', {
-    timeout: 3000,
+  return got('https://api.github.com/repos/ethereum/mist/releases/latest', {
+    timeout: 30000,
     json: true
   })
     .then(res => {
-      const releases = _.filter(res.body, release => {
-        return (
-          !_.get(release, 'draft') &&
-          _.get(release, 'name', '')
-            .toLowerCase()
-            .indexOf(str) >= 0
-        );
-      });
+      const release = res.body;
 
-      if (!releases.length) {
+      if (!release) {
         log.debug('No releases available to check against.');
 
         return;
       }
 
-      const latest = releases[0];
-
-      if (semver.gt(latest.tag_name, Settings.appVersion)) {
+      if (semver.gt(release.tag_name, Settings.appVersion)) {
         log.info(
           `App (${Settings.appVersion}) is out of date. New ${
-            latest.tag_name
+            release.tag_name
           } found.`
         );
 
         return {
-          name: latest.name,
-          version: latest.tag_name,
-          url: latest.html_url
+          name: release.name,
+          version: release.tag_name,
+          url: release.html_url
         };
       }
 

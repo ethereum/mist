@@ -21,6 +21,7 @@ import {
   toggleSwarm,
   toggleSwarmOnStart
 } from './core/settings/actions';
+import { changeNetwork, changeSyncMode } from './core/nodes/actions';
 import { SwarmState } from './core/settings/reducer';
 import swarmNode from './swarmNode.js';
 
@@ -48,17 +49,38 @@ const restartNode = function(newType, newNetwork, syncMode, webviews) {
 
   log.info('Switch node', newType, newNetwork);
 
+  store.dispatch(changeNetwork(newNetwork));
+
   return ethereumNode
     .restart(newType, newNetwork, syncMode)
     .then(() => {
       Windows.getByType('main').load(global.interfaceAppUrl);
-
       createMenu(webviews);
       log.info('Node switch successful.');
     })
     .catch(err => {
       log.error('Error switching node', err);
     });
+};
+
+const changeNodeNetwork = function(network, webviews) {
+  store.dispatch(changeNetwork(network));
+
+  Settings.saveUserData('network', network);
+
+  restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
+
+  createMenu(webviews);
+};
+
+const changeNodeSyncMode = function(syncMode, webviews) {
+  store.dispatch(changeSyncMode(syncMode));
+
+  Settings.saveUserData('syncmode', syncMode);
+
+  restartNode(ethereumNode.type, ethereumNode.network, syncMode, webviews);
+
+  createMenu(webviews);
 };
 
 const startMining = webviews => {
@@ -531,82 +553,119 @@ let menuTempl = function(webviews) {
       {
         label: i18n.t('mist.applicationMenu.develop.mainNetwork'),
         accelerator: 'CommandOrControl+Alt+1',
-        checked: ethereumNode.isOwnNode && ethereumNode.isMainNetwork,
-        enabled: ethereumNode.isOwnNode,
+        checked: store.getState().nodes.network === 'main',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
-          restartNode(ethereumNode.type, 'main');
+          changeNodeNetwork('main', webviews);
         }
       },
       {
         label: 'Ropsten - Test network',
         accelerator: 'CommandOrControl+Alt+2',
-        checked: ethereumNode.isOwnNode && ethereumNode.network === 'test',
-        enabled: ethereumNode.isOwnNode,
+        checked: store.getState().nodes.network === 'ropsten',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
-          restartNode(ethereumNode.type, 'test');
+          changeNodeNetwork('ropsten', webviews);
         }
       },
       {
         label: 'Rinkeby - Test network',
         accelerator: 'CommandOrControl+Alt+3',
-        checked: ethereumNode.isOwnNode && ethereumNode.network === 'rinkeby',
-        enabled: ethereumNode.isOwnNode,
+        checked: store.getState().nodes.network === 'rinkeby',
+        enabled: store.getState().nodes.network !== 'private',
         type: 'checkbox',
         click() {
-          restartNode(ethereumNode.type, 'rinkeby');
+          changeNodeNetwork('rinkeby', webviews);
+        }
+      }
+      // {
+      //   label: 'Solo network',
+      //   accelerator: 'CommandOrControl+Alt+4',
+      //   checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
+      //   enabled: ethereumNode.isOwnNode,
+      //   type: 'checkbox',
+      //   click() {
+      //     restartNode(ethereumNode.type, 'dev');
+      //   }
+      // }
+    ]
+  });
+
+  // add sync mode switch
+  devToolsMenu.push({
+    label: i18n.t('mist.applicationMenu.develop.syncMode'),
+    submenu: [
+      {
+        label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
+        enabled:
+          ethereumNode.isOwnNode &&
+          ethereumNode.isGeth &&
+          !ethereumNode.isDevNetwork,
+        checked: store.getState().nodes.local.syncMode === 'light',
+        type: 'checkbox',
+        click() {
+          changeNodeSyncMode('light', webviews);
         }
       },
       {
-        label: 'Solo network',
-        accelerator: 'CommandOrControl+Alt+4',
-        checked: ethereumNode.isOwnNode && ethereumNode.isDevNetwork,
-        enabled: ethereumNode.isOwnNode,
+        label: i18n.t('mist.applicationMenu.develop.syncModeFast'),
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
+        checked: store.getState().nodes.local.syncMode === 'fast',
         type: 'checkbox',
         click() {
-          restartNode(ethereumNode.type, 'dev');
+          changeNodeSyncMode('fast', webviews);
+        }
+      },
+      {
+        label: i18n.t('mist.applicationMenu.develop.syncModeFull'),
+        enabled: ethereumNode.isOwnNode,
+        checked: store.getState().nodes.local.syncMode === 'full',
+        type: 'checkbox',
+        click() {
+          changeNodeSyncMode('full', webviews);
+        }
+      },
+      {
+        label: i18n.t('mist.applicationMenu.develop.syncModeNoSync'),
+        enabled:
+          ethereumNode.isOwnNode &&
+          ethereumNode.isGeth &&
+          !ethereumNode.isDevNetwork,
+        checked: store.getState().nodes.local.syncMode === 'nosync',
+        type: 'checkbox',
+        click() {
+          changeNodeSyncMode('nosync', webviews);
         }
       }
     ]
   });
-
-  // Light mode switch should appear when not in Solo Mode (dev network)
-  if (
-    ethereumNode.isOwnNode &&
-    ethereumNode.isGeth &&
-    !ethereumNode.isDevNetwork
-  ) {
-    devToolsMenu.push({
-      label: 'Sync with Light client (beta)',
-      enabled: true,
-      checked: ethereumNode.isLightMode,
-      type: 'checkbox',
-      click() {
-        restartNode('geth', null, ethereumNode.isLightMode ? 'fast' : 'light');
-      }
-    });
-  }
 
   // Enables mining menu: only in Solo mode and Ropsten network (testnet)
   if (
     ethereumNode.isOwnNode &&
     (ethereumNode.isTestNetwork || ethereumNode.isDevNetwork)
   ) {
-    devToolsMenu.push({
-      label: global.mining
-        ? i18n.t('mist.applicationMenu.develop.stopMining')
-        : i18n.t('mist.applicationMenu.develop.startMining'),
-      accelerator: 'CommandOrControl+Shift+M',
-      enabled: true,
-      click() {
-        if (global.mining) {
-          stopMining(webviews);
-        } else {
-          startMining(webviews);
+    devToolsMenu.push(
+      {
+        type: 'separator'
+      },
+      {
+        label: global.mining
+          ? i18n.t('mist.applicationMenu.develop.stopMining')
+          : i18n.t('mist.applicationMenu.develop.startMining'),
+        accelerator: 'CommandOrControl+Shift+M',
+        enabled: true,
+        click() {
+          if (global.mining) {
+            stopMining(webviews);
+          } else {
+            startMining(webviews);
+          }
         }
       }
-    });
+    );
   }
 
   if (global.mode !== 'wallet') {

@@ -11,4 +11,6 @@ nodes/geth/
 config.json
 mist.log
 npm-debug.log
-/yarn.lock
+yarn-debug.log
+yarn-error.log
+wallet

@@ -58,6 +58,13 @@ Helpers.getTabIdByUrl = function(url, returnEmpty) {
       return false;
     }
     var tabOrigin = new URL(tab.url).origin;
+
+    // Local urls always have the same origin as shown below,
+    // so we shouldn't consider it as a match
+    if (tabOrigin === 'file://') {
+      return false;
+    }
+
     return url && new URL(url).origin.indexOf(tabOrigin) === 0;
   });
 
@@ -148,9 +155,9 @@ Helpers.generateBreadcrumb = function(url) {
   return new Spacebars.SafeString(
     filteredUrl.protocol +
       '//' +
-      _.flatten(['<span>' + filteredUrl.host + ' </span>', pathname]).join(
-        ' ▸ '
-      )
+      _
+        .flatten(['<span>' + filteredUrl.host + ' </span>', pathname])
+        .join(' ▸ ')
   );
 };
 
@@ -163,7 +170,7 @@ Helpers.getLocalStorageSize = function() {
   var size = 0;
   if (localStorage) {
     _.each(Object.keys(localStorage), function(key) {
-      size += localStorage[key].length * 2 / 1024 / 1024;
+      size += (localStorage[key].length * 2) / 1024 / 1024;
     });
   }
 

@@ -259,7 +259,7 @@ ipc.on('mistAPI_requestAccount', e => {
   } else {
     // Mist
     // if coming from wallet, skip connect, go straight to create
-    if (e.sender.history[0] === 'https://wallet.ethereum.org/') {
+    if (e.sender.history[0].includes(`file://${dirname}/wallet/index.html`)) {
       createAccountPopup(e);
     } else {
       Windows.createPopup('connectAccount', { ownerId: e.sender.id });

@@ -134,7 +134,6 @@
 
       .url-breadcrumb {
         color: lighten(@colorLinkBlur, 40%);
-        background-color: #fff;
         opacity: 1;
         font-size: 80%;
         text-align: center;
@@ -241,6 +240,18 @@
     }
   }
 }
+
+&.url-bar-admin .app-bar {
+  background: transparent;
+  span {
+    font-size: 130%;
+  }
+  form > .url-breadcrumb {
+    opacity: 1 !important;
+    word-spacing: 0 !important;
+  }
+}
+
 .linux .browser-bar {
   top: 0;
   &.url-bar-transparent {

@@ -8,9 +8,10 @@ const {
 } = require('electron-redux');
 const thunk = require('redux-thunk').default;
 const initialState = getInitialStateRenderer();
+import rootReducer from '../core/rootReducer';
 
 const store = createStore(
-  () => {},
+  rootReducer,
   initialState,
   applyMiddleware(forwardToMain, thunk)
 );

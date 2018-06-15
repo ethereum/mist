@@ -2,6 +2,7 @@
 @module preloader PopupWindows
 */
 
+require('babel-register');
 require('./include/common')('popupWindow');
 const { ipcRenderer, remote, webFrame } = require('electron');
 const mist = require('./include/mistAPI.js');
@@ -19,6 +20,8 @@ window.mistMode = remote.getGlobal('mode');
 window.dirname = remote.getGlobal('dirname');
 window.dbSync = dbSync;
 window.ipc = ipcRenderer;
+
+window.i18n = require('../i18n.js');
 
 // Initialise the Redux store
 window.store = require('./rendererStore');

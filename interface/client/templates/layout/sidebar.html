@@ -4,9 +4,9 @@
             <ul class="sidebar-menu">
                 {{#each tabs}}
                     <li
-                        class="{{#if $eq _id 'browser'}}browser{{/if}} {{#if $eq _id 'wallet'}}wallet{{/if}} {{isSelected}}"
+                        class="{{#if $eq _id 'wallet'}}wallet{{/if}} {{#if $eq _id 'browser'}}browser{{/if}} {{isSelected}}"
                         data-tab-id="{{_id}}"
-                        draggable="{{#if $eq _id 'browser'}}false{{/if}}">
+                        draggable="{{#if $eq _id 'wallet'}}false{{/if}}{{#if $eq _id 'browser'}}false{{/if}}">
                         <header>
                             <button class="main {{#if badge}}has-badge{{/if}}">
                                 {{#if icon}}
@@ -66,6 +66,6 @@
                 {{/each}}
             </ul>
         </nav>
-        {{> elements_nodeInfo}}
+        <div id="react__node-info"></div>
     </aside>
 </template>

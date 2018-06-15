@@ -37,7 +37,7 @@
     "ethereumjs-wallet": "^0.6.0",
     "fs-promise": "^2.0.0",
     "got": "^7.1.0",
-    "i18next": "^8.4.3",
+    "i18next": "^11.3.2",
     "lodash": "^4.17.4",
     "log-rotate": "^0.2.7",
     "log4js": "^2.4.1",

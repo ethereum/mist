@@ -115,7 +115,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
       TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas'))
     ) {
       TemplateVar.set('gasError', 'notEnoughGas');
-    } else if (TemplateVar.get('estimatedGas') > 4000000) {
+    } else if (TemplateVar.get('estimatedGas') > 8000000) {
       TemplateVar.set('gasError', 'overBlockGasLimit');
     } else if (TemplateVar.get('estimatedGas') == defaultEstimateGas) {
       TemplateVar.set('gasError', 'defaultGas');

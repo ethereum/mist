@@ -494,9 +494,14 @@ let menuTempl = function(webviews) {
     label: i18n.t('mist.applicationMenu.develop.logFiles'),
     click() {
       try {
-        shell.showItemInFolder(
+        const shown = shell.showItemInFolder(
           path.join(Settings.userDataPath, 'logs', 'all.log')
         );
+        if (!shown) {
+          shell.showItemInFolder(
+            path.join(Settings.userDataPath, 'logs', 'all.log.0')
+          );
+        }
       } catch (error) {
         log.error(error);
       }

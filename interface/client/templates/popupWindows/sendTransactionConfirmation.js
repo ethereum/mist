@@ -14,7 +14,7 @@ var setWindowSize = function(template) {
   });
 };
 
-var defaultEstimateGas = 1000000;
+var defaultEstimateGas = 3000000;
 
 /**
 The sendTransaction confirmation popup window template
@@ -111,6 +111,14 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
 
   // check reactively if provided gas is enough
   this.autorun(function() {
+    var gasObject = {
+      estimated: Number(TemplateVar.get('estimatedGas')),
+      provided: Number(TemplateVar.get('providedGas')),
+      default: Number(TemplateVar.get(defaultEstimateGas))
+    };
+
+    console.log(gasObject);
+
     if (
       TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas'))
     ) {
@@ -131,6 +139,7 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
     var data = Session.get('data');
 
     if (data) {
+      console.log('DATA', data);
       // set window size
       setWindowSize(template);
 
@@ -202,48 +211,61 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
 
       var estimateData = _.clone(data);
       estimateData.gas = defaultEstimateGas;
-      web3.eth.estimateGas(estimateData, function(e, res) {
-        console.log('Estimated gas: ', res, e);
-        if (!e && res) {
-          // set the gas to the estimation, if not provided or lower
-          Tracker.nonreactive(function() {
-            var gas = Number(TemplateVar.get(template, 'providedGas'));
+      console.log('EstimateData', estimateData);
 
-            if (res === defaultEstimateGas) {
-              return TemplateVar.set(template, 'estimatedGas', 'invalid');
-            }
-
-            const estimatedGas = web3.utils.toBN(res || 0);
-            TemplateVar.set(template, 'estimatedGas', estimatedGas.toNumber());
-
-            if (!gas && res) {
-              TemplateVar.set(
-                template,
-                'providedGas',
-                estimatedGas.add(web3.utils.toBN(100000)).toNumber()
-              );
-              TemplateVar.set(
-                template,
-                'initialProvidedGas',
-                estimatedGas.add(web3.utils.toBN(100000)).toNumber()
-              );
-            }
-          });
-        } else {
-          TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
-          TemplateVar.set(template, 'providedGas', defaultEstimateGas);
-        }
-        TemplateVar.set(template, 'gasLoading', false);
-      });
       // In case estimateGas fails returning
       // (which seems to be happening in manual testing)
       // We'll set gasLoading back to false after 10s
       // so the user can see an error message
-      setTimeout(() => {
+      const gasEstimationFailed = e => {
+        console.log('Gas estimation failed', e);
         TemplateVar.set(template, 'gasLoading', false);
         TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
         TemplateVar.set(template, 'providedGas', defaultEstimateGas);
-      }, 25000);
+      };
+
+      web3.eth
+        .estimateGas(estimateData)
+        .then(function(value, error) {
+          console.log('Estimated gas: ', value, error);
+          if (!error && value) {
+            // set the gas to the estimation, if not provided or lower
+            Tracker.nonreactive(function() {
+              var gas = Number(TemplateVar.get(template, 'providedGas'));
+
+              if (value === defaultEstimateGas) {
+                return TemplateVar.set(template, 'estimatedGas', 'invalid');
+              }
+
+              const estimatedGas = web3.utils.toBN(value || 0);
+              TemplateVar.set(
+                template,
+                'estimatedGas',
+                estimatedGas.toNumber()
+              );
+
+              if (!gas && value) {
+                TemplateVar.set(
+                  template,
+                  'providedGas',
+                  estimatedGas.add(web3.utils.toBN(100000)).toNumber()
+                );
+                TemplateVar.set(
+                  template,
+                  'initialProvidedGas',
+                  estimatedGas.add(web3.utils.toBN(100000)).toNumber()
+                );
+              }
+            });
+          } else {
+            TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
+            TemplateVar.set(template, 'providedGas', defaultEstimateGas);
+          }
+          TemplateVar.set(template, 'gasLoading', false);
+        })
+        .catch(gasEstimationFailed);
+
+      setTimeout(gasEstimationFailed, 20000);
     }
   });
 });

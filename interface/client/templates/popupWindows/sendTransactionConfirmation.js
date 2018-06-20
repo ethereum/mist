@@ -111,14 +111,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
 
   // check reactively if provided gas is enough
   this.autorun(function() {
-    var gasObject = {
-      estimated: Number(TemplateVar.get('estimatedGas')),
-      provided: Number(TemplateVar.get('providedGas')),
-      default: Number(TemplateVar.get(defaultEstimateGas))
-    };
-
-    console.log(gasObject);
-
     if (
       TemplateVar.get('estimatedGas') > Number(TemplateVar.get('providedGas'))
     ) {
@@ -139,7 +131,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
     var data = Session.get('data');
 
     if (data) {
-      console.log('DATA', data);
       // set window size
       setWindowSize(template);
 
@@ -211,22 +202,32 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
 
       var estimateData = _.clone(data);
       estimateData.gas = defaultEstimateGas;
-      console.log('EstimateData', estimateData);
 
       // In case estimateGas fails returning
       // (which seems to be happening in manual testing)
       // We'll set gasLoading back to false after 10s
       // so the user can see an error message
       const gasEstimationFailed = e => {
-        console.log('Gas estimation failed', e);
+        console.log(
+          'Gas estimation failed. Falling back to max(provided, default) value',
+          e
+        );
         TemplateVar.set(template, 'gasLoading', false);
         TemplateVar.set(template, 'estimatedGas', defaultEstimateGas);
-        TemplateVar.set(template, 'providedGas', defaultEstimateGas);
+        TemplateVar.set(
+          template,
+          'providedGas',
+          Math.max(gas, defaultEstimateGas)
+        );
       };
+
+      var estimationFailEvent = setTimeout(gasEstimationFailed, 20000);
 
       web3.eth
         .estimateGas(estimateData)
         .then(function(value, error) {
+          clearTimeout(estimationFailEvent);
+
           console.log('Estimated gas: ', value, error);
           if (!error && value) {
             // set the gas to the estimation, if not provided or lower
@@ -264,8 +265,6 @@ Template['popupWindows_sendTransactionConfirmation'].onCreated(function() {
           TemplateVar.set(template, 'gasLoading', false);
         })
         .catch(gasEstimationFailed);
-
-      setTimeout(gasEstimationFailed, 20000);
     }
   });
 });

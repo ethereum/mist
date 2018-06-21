@@ -494,9 +494,14 @@ let menuTempl = function(webviews) {
     label: i18n.t('mist.applicationMenu.develop.logFiles'),
     click() {
       try {
-        shell.showItemInFolder(
+        const shown = shell.showItemInFolder(
           path.join(Settings.userDataPath, 'logs', 'all.log')
         );
+        if (!shown) {
+          shell.showItemInFolder(
+            path.join(Settings.userDataPath, 'logs', 'all.log.0')
+          );
+        }
       } catch (error) {
         log.error(error);
       }
@@ -599,10 +604,7 @@ let menuTempl = function(webviews) {
     submenu: [
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeLight'),
-        enabled:
-          ethereumNode.isOwnNode &&
-          ethereumNode.isGeth &&
-          !ethereumNode.isDevNetwork,
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
         checked: store.getState().nodes.local.syncMode === 'light',
         type: 'checkbox',
         click() {
@@ -629,10 +631,7 @@ let menuTempl = function(webviews) {
       },
       {
         label: i18n.t('mist.applicationMenu.develop.syncModeNoSync'),
-        enabled:
-          ethereumNode.isOwnNode &&
-          ethereumNode.isGeth &&
-          !ethereumNode.isDevNetwork,
+        enabled: ethereumNode.isOwnNode && !ethereumNode.isDevNetwork,
         checked: store.getState().nodes.local.syncMode === 'nosync',
         type: 'checkbox',
         click() {

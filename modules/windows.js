@@ -142,7 +142,7 @@ class Window extends EventEmitter {
       width: 1100,
       height: 720,
       icon: global.icon,
-      titleBarStyle: 'hidden-inset', // hidden-inset: more space
+      titleBarStyle: 'hiddenInset',
       backgroundColor: '#F6F6F6',
       acceptFirstMouse: true,
       darkTheme: true,
@@ -392,6 +392,7 @@ class Windows {
         return {
           primary: true,
           electronOptions: {
+            titleBarStyle: 'hiddenInset',
             width: Math.max(global.defaultWindow.width, 500),
             height: Math.max(global.defaultWindow.height, 440),
             x: global.defaultWindow.x,
@@ -412,7 +413,7 @@ class Windows {
             center: true,
             frame: false,
             useContentSize: true,
-            titleBarStyle: '', // hidden-inset: more space
+            titleBarStyle: '',
             skipTaskbar: true,
             webPreferences: {
               preload: path.join(
@@ -507,7 +508,7 @@ class Windows {
           title: Settings.appName,
           show: false,
           icon: global.icon,
-          titleBarStyle: 'hidden-inset', // hidden-inset: more space
+          titleBarStyle: 'hiddenInset', // hiddenInset: more space
           backgroundColor: '#F6F6F6',
           acceptFirstMouse: true,
           darkTheme: true,
@@ -536,7 +537,7 @@ class Windows {
         resizable: false,
         center: true,
         useContentSize: true,
-        titleBarStyle: 'hidden', // hidden-inset: more space
+        titleBarStyle: 'hidden', // hiddenInset: more space
         autoHideMenuBar: true, // TODO: test on windows
         webPreferences: {
           textAreasAreResizable: false

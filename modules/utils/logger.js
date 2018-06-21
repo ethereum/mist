@@ -1,4 +1,6 @@
 const _ = require('./underscore');
+const path = require('path');
+
 import log4js from 'log4js';
 
 /**
@@ -16,19 +18,19 @@ exports.setup = function(options) {
       out: { type: 'console' },
       all: {
         type: 'file',
-        filename: `${logFolder}/all.log`
+        filename: path.join(logFolder, 'all.log')
       },
       main: {
         type: 'file',
-        filename: `${logFolder}/category/main.log`
+        filename: path.join(logFolder, 'category', 'main.log')
       },
       EthereumNode: {
         type: 'file',
-        filename: `${logFolder}/category/ethereum_node.log`
+        filename: path.join(logFolder, 'category', 'ethereum_node.log')
       },
       swarm: {
         type: 'file',
-        filename: `${logFolder}/category/swarm.log`
+        filename: path.join(logFolder, 'category', 'swarm.log')
       }
     },
     categories: {

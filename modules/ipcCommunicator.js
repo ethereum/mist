@@ -6,13 +6,14 @@ Window communication
 
 const _ = global._;
 const fs = require('fs');
-const { app, ipcMain: ipc, shell, webContents } = require('electron');
+const path = require('path');
 const Windows = require('./windows');
 const logger = require('./utils/logger');
 const appMenu = require('./menuItems');
 const Settings = require('./settings');
 const ethereumNode = require('./ethereumNode.js');
 const keyfileRecognizer = require('ethereum-keyfile-recognizer');
+const { app, ipcMain: ipc, shell, webContents } = require('electron');
 
 import { getLanguage } from './core/settings/actions';
 
@@ -170,9 +171,13 @@ ipc.on('backendAction_checkWalletFile', (e, path) => {
           throw new Error('Invalid Address format.');
         }
 
-        fs.writeFile(`${keystorePath}/0x${keyfile.address}`, data, err => {
-          if (err) throw new Error("Can't write file to disk");
-        });
+        fs.writeFile(
+          path.join(keystorePath, `0x${keyfile.address}`),
+          data,
+          err => {
+            if (err) throw new Error("Can't write file to disk");
+          }
+        );
       } else {
         throw new Error('Account import: Cannot recognize keyfile (invalid)');
       }

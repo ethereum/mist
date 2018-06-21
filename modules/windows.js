@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
+const path = require('path');
+
 import {
   closeWindow,
   openWindow,
@@ -373,13 +375,13 @@ class Windows {
       mist: {
         nodeIntegration: true /* necessary for webviews;
                     require will be removed through preloader */,
-        preload: `${__dirname}/preloader/mistUI.js`,
+        preload: path.join(__dirname, 'preloader', 'mistUI.js'),
         'overlay-fullscreen-video': true,
         'overlay-scrollbars': true,
         experimentalFeatures: true
       },
       wallet: {
-        preload: `${__dirname}/preloader/walletMain.js`,
+        preload: path.join(__dirname, 'preloader', 'walletMain.js'),
         'overlay-fullscreen-video': true,
         'overlay-scrollbars': true
       }
@@ -413,7 +415,11 @@ class Windows {
             titleBarStyle: '', // hidden-inset: more space
             skipTaskbar: true,
             webPreferences: {
-              preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`
+              preload: path.join(
+                __dirname,
+                'preloader',
+                'popupWindowsNoWeb3.js'
+              )
             }
           }
         };
@@ -506,7 +512,7 @@ class Windows {
           acceptFirstMouse: true,
           darkTheme: true,
           webPreferences: {
-            preload: `${__dirname}/preloader/popupWindows.js`,
+            preload: path.join(__dirname, 'preloader', 'popupWindows.js'),
             nodeIntegration: false,
             webaudio: true,
             webgl: false,
@@ -557,9 +563,17 @@ class Windows {
     opts.isPopup = true;
 
     if (opts.useWeb3) {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`;
+      opts.electronOptions.webPreferences.preload = path.join(
+        __dirname,
+        'preloader',
+        'popupWindows.js'
+      );
     } else {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
+      opts.electronOptions.webPreferences.preload = path.join(
+        __dirname,
+        'preloader',
+        'popupWindowsNoWeb3.js'
+      );
     }
 
     // If generic window is available, recycle it (unless on blacklist)

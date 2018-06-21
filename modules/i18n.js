@@ -6,8 +6,11 @@ The i18n module, loads the language files and initializes i18next
 const fs = require('fs');
 const i18n = require('i18next');
 const extend = require('lodash/extend');
+const path = require('path');
 
-let i18nConf = fs.readFileSync(`${__dirname}/../interface/project-tap.i18n`);
+let i18nConf = fs.readFileSync(
+  path.join(__dirname, '..', 'interface', 'project-tap.i18n')
+);
 i18nConf = JSON.parse(i18nConf);
 
 const resources = {

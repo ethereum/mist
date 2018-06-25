@@ -44,7 +44,6 @@ matrix:
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
-
   - yarn
 
   # only code signs when on master

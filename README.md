@@ -15,6 +15,7 @@ This repository is the Electron host for the [Meteor-based wallet dapp](https://
 ## Release candidate 0.11.0 up for testing
 
 Feedback thread for 0.11.0-rc https://github.com/ethereum/mist/issues/3979
+
 Reddit post: https://www.reddit.com/r/ethereum/comments/8uelv6/mist_browser_beta_and_ethereum_wallet_0110_preview/
 
 File | Checksum (SHA256)

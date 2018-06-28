@@ -1,8 +1,4 @@
 /**
-@module MistUI
-*/
-
-/**
 The IPC provider wrapper to communicate to the backend
 
 @class ipcProviderWrapper

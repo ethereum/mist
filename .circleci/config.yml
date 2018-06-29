@@ -66,7 +66,9 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - persist_to_workspace:
-          root: /home/circleci/mist/
+          root: /home/circleci/
+          paths:
+            - mist
 
   build-mist:
     docker:
@@ -74,9 +76,70 @@ jobs:
     steps:
       - run: gulp --linux
 
+  build-wallet:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp --wallet --linux
+
+  spectron-test: 
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: xvfb-run gulp test
+
+  unit-test:
+    docker:
+       - image: circleci/node:8.9.4
+    steps:
+      - run: yarn test:unit:once
+
+  verify-artifacts-mist:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp verify-artifacts --mist --linux
+
+  verify-artifacts-wallet:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp verify-artifacts --wallet --linux
+
+  github-release: 
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: echo "Mocking githug release!"
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+      - build-mist:
+          requires:
+            - build
+      - build-wallet:
+          requires:
+            - build
+      - spectron-test:
+          requires:
+            - build-mist
+      - unit-test:
+          requires:
+            - build-mist
+      - verify-artifacts-mist:
+          requires:
+            - build-mist
+      - verify-artifacts-wallet:
+          requires:
+            - build-wallet
+      - github-release:
+          requires:
+            - spectron-test
+            - unit-test
+            - verify-artifacts-mist
+            - verify-artifacts-wallet
+
+

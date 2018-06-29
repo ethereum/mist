@@ -1,4 +1,7 @@
-module.exports = async (markdown, metaData) => `_Write a brief description of this release._
+module.exports = async (
+  markdown,
+  metaData
+) => `_Write a brief description of this release._
 
 ### Checksums
 

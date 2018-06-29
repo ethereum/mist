@@ -12,6 +12,7 @@ branches:
   only:
     - develop
     - master
+    - /^greenkeeper/.*$/
 
 matrix:
   include:
@@ -67,7 +68,7 @@ install:
   - echo $PATH
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
   - export PATH=$PATH:`yarn global bin`
-  - yarn global add gulp-cli meteor-build-client electron@1.8.2
+  - yarn global add gulp-cli meteor-build-client electron@1.8.4
   - yarn
 
 script:
@@ -82,20 +83,24 @@ script:
   # build mist
   - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
   - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
- 
- # build wallet if on master branch
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
 
-  # debug purposes - see what builds were successfully created
-  - ls -la ~/build/ethereum/mist/dist_mist/dist
+  # assert creation of Mist artifacts
+  - gulp verify-artifacts --mist --$GULP_PLATFORM
+ 
+  # build wallet if on master branch
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
+  
+  # assert creation of Wallet artifacts
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp verify-artifacts --wallet --$GULP_PLATFORM; fi
 
   # prepare integration tests
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
+
   # currently, tests should run in linux and mac
   - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp uploadQueue --$GULP_PLATFORM && gulp uploadQueue --wallet --$GULP_PLATFORM; fi
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
 
 
 notifications:

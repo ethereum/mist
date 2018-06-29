@@ -1,6 +1,6 @@
 <template name="layout_browserBar">
     {{#with dapp}}
-    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}}">
+    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}} {{#if permissions.admin}}url-bar-admin{{/if}}">
         <button title="go back" class="back icon icon-arrow-left"></button>
         <button title="refresh page" class="reload icon icon-refresh"></button>
 
@@ -13,7 +13,9 @@
                 </label>
 
                 <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
+                    {{#unless permissions.admin}}
                     <input class="url-input" id="url-input" type="text" value="{{url}}">
+                    {{/unless}}
                     <div class="url-breadcrumb" >{{breadcrumb}}</div>
                 </form>
 
@@ -33,5 +35,5 @@
                 {{/unless}}
             </div>
     </div>
-    {{/with}}    
+    {{/with}}
 </template>

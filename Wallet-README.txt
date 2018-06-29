@@ -15,8 +15,6 @@ Example:
 
     $ geth --datadir /my/chain/ --networkid 23 --ipcpath ~/Library/Ethereum/geth.ipc
 
-
-
 ### Original contract
 
 Once you start the app while running a testnet, the wallet need to deploy an original contract,
@@ -27,38 +25,34 @@ as not the full code has to be deployed for every wallet.
 
 You need to make sure that the account displayed for the original wallet creation is unlocked and has at least 1 ether.
 
-
 ## Paths
 
 The paths which store your wallets database and node are different:
 
 The wallet (Mist) stores its data at:
-- Mac: ~/Library/Application Support/Mist
-- Windows: %APPDATA%\Roaming\Mist
-- Linux: ~/.config/Mist
+
+* Mac: ~/Library/Application Support/Mist
+* Windows: %APPDATA%\Roaming\Mist
+* Linux: ~/.config/Mist
 
 The nodes data is stored at:
-- Mac: ~/Library/Ethereum
-- Windows: %APPDATA%\Roaming\Ethereum
-- Linux: ~/.ethereum
 
+* Mac: ~/Library/Ethereum
+* Windows: %APPDATA%\Roaming\Ethereum
+* Linux: ~/.ethereum
 
 ## Issues
 
 If you find issues or have suggestion, please report them at  
 https://github.com/ethereum/meteor-dapp-wallet/issues
 
-
-
 ## Repository
 
-The wallet code can be found at   
+The wallet code can be found at  
 https://github.com/ethereum/meteor-dapp-wallet
 
-And the binary application code, which wraps the wallet app can be found at   
+And the binary application code, which wraps the wallet app can be found at  
 https://github.com/ethereum/mist/tree/wallet
-
-
 
 ## Bundling the wallet
 

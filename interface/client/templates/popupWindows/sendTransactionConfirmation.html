@@ -55,9 +55,15 @@
                 </div>
 
                 {{#if transactionInvalid}}
-                    <p class="info dapp-error"> 
-                    {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}
-                    </p>
+                    {{#if (TemplateVar.get "gasLoading") }}
+                        <p class="info gas-loading">
+                            {{> spinner}}
+                        </p>
+                    {{ else }}
+                        <p class="info dapp-error">
+                            {{i18n "mist.popupWindows.sendTransactionConfirmation.estimatedGasError"}}
+                        </p>
+                    {{/if}}
                 {{else}}
                     {{#unless $eq (TemplateVar.get "gasError") "notEnoughGas"}}
                         {{#if $eq (TemplateVar.get "gasError") "overBlockGasLimit"}}
@@ -65,18 +71,24 @@
                                 {{i18n "mist.popupWindows.sendTransactionConfirmation.overBlockGasLimit"}}
                             </div>
                         {{else}}
-                            {{#if $and data (TemplateVar.get "toIsContract")}}
-                                <p class="info">
-                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}
-                                </p>
-                            {{/if}}
 
-                            {{#unless to}}
-                                <p class="info">
-                                {{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}
-                                </p>
-                            {{/unless}}
+                          {{#if $eq (TemplateVar.get "gasError") "defaultGas"}}
+                              <div class="info dapp-error">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.defaultGas"}}
+                              </div>
+                          {{else}}
+                              {{#if $and data (TemplateVar.get "toIsContract")}}
+                                  <p class="info">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo"}}
+                                  </p>
+                              {{/if}}
 
+                              {{#unless to}}
+                                  <p class="info">
+                                  {{i18n "mist.popupWindows.sendTransactionConfirmation.contractCreationInfo"}}
+                                  </p>
+                              {{/unless}}
+                          {{/if}}
                         {{/if}}
                     {{else}}
                         <div class="info dapp-error not-enough-gas" style="cursor: pointer;">
@@ -98,7 +110,12 @@
                                 {{else}}
 
                                     {{#if $eq (dapp_formatNumber (TemplateVar.get "estimatedGas") "0") "0"}}
-                                        <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.noEstimate"}}</span>
+                                        {{#if (TemplateVar.get "gasLoading") }}
+                                            {{i18n "mist.popupWindows.sendTransactionConfirmation.gasLoading"}}
+                                            {{> spinner}}
+                                        {{else}}
+                                            <span class="red"><i class="icon-shield"></i> {{i18n "mist.popupWindows.sendTransactionConfirmation.noEstimate"}}</span>
+                                        {{/if}}
                                     {{else}}
                                         {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
                                     {{/if}}
@@ -164,14 +181,18 @@
                 {{#if TemplateVar.get "unlocking"}}
                     <h2>{{i18n "mist.popupWindows.sendTransactionConfirmation.unlocking"}}</h2>
                 {{else}}
-
                     <input type="password" placeholder="{{i18n 'mist.popupWindows.sendTransactionConfirmation.enterPassword'}}">
+
+                    {{#if $neq (TemplateVar.get "network") "main"}}
+                        <div class="network">
+                            {{TemplateVar.get "network"}}
+                        </div>
+                    {{/if}}
 
                     <div class="dapp-modal-buttons">
                         <button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
                         <button class="ok dapp-primary-button" type="submit">{{i18n "mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction"}}</button>
                     </div>
-
                 {{/if}}
                 </footer>
             {{/with}}

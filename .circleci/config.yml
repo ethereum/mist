@@ -26,7 +26,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/mist
+    working_directory: /home/circleci/mist
 
     steps:
       - checkout
@@ -74,35 +74,6 @@ jobs:
     steps:
       - run: gulp --linux
 
-  build-wallet:
-    docker:
-      - image: circleci/node:8.9.4
-    steps:
-      - run: gulp --wallet --linux
-
-  spectron-test: 
-    docker:
-      - image: circleci/node:8.9.4
-    steps:
-      - run: xvfb-run gulp test
-
-  unit-test:
-    docker:
-       - image: circleci/node:8.9.4
-    steps:
-      - run: yarn test:unit:once
-
-  verify-artifacts-mist:
-    docker:
-      - image: circleci/node:8.9.4
-    steps:
-      - run: gulp verify-artifacts --mist --linux
-
-  verify-artifacts-wallet:
-    docker:
-      - image: circleci/node:8.9.4
-    steps:
-      - run: gulp verify-artifacts --wallet --linux
 
 workflows:
   version: 2
@@ -112,18 +83,3 @@ workflows:
       - build-mist:
         requires:
           - build
-      - build-wallet:
-        requires:
-          - build
-      - spectron-test:
-        requires:
-          - build-mist
-      - unit-test:
-        requires:
-          - build-mist
-      - verify-artifacts-mist:
-        requires:
-          - build-mist
-      - verify-artifacts-wallet:
-        requires:
-          - build-wallet

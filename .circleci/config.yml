@@ -1,4 +1,5 @@
 #
+# TODO: fix `xvfb gulp test` command
 # TODO: group into `dependencies`, `build` and `test` keys
 # TODO: name commands properly
 # TODO: store_artifacts
@@ -60,12 +61,23 @@ jobs:
 
       - run: yarn
 
+      - run: gulp --linux
+
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run tests!
+  test: 
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
       - run: yarn test:unit:once
-      - run: gulp --linux
       - run: xvfb-run gulp test
+
+
+workflow:
+  version: 2
+  build_and_test:
+    - build
+    - test
+

@@ -73,42 +73,56 @@ jobs:
   build-mist:
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: gulp --linux
 
   build-wallet:
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: gulp --wallet --linux
 
   spectron-test: 
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: xvfb-run gulp test
 
   unit-test:
     docker:
        - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: yarn test:unit:once
 
   verify-artifacts-mist:
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: gulp verify-artifacts --mist --linux
 
   verify-artifacts-wallet:
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: gulp verify-artifacts --wallet --linux
 
   github-release: 
     docker:
       - image: circleci/node:8.9.4
+    attach_workspace:
+      at: /home/circleci/
     steps:
       - run: echo "Mocking githug release!"
 

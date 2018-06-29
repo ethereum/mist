@@ -53,32 +53,77 @@ jobs:
       # Installing multilib (build for 32 and 64 architectures): https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
       - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
 
+      # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+      - run: which meteor || curl https://install.meteor.com | /bin/sh
+      
       # Adding global dependencies
       - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
 
-      # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
-      - run: which meteor || curl https://install.meteor.com | /bin/sh
-
       - run: yarn
-
-      - run: gulp --linux
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-  test: 
+      - persist_to_workspace:
+        root: /home/circleci/mist/
+
+  build-mist:
     docker:
       - image: circleci/node:8.9.4
     steps:
-      - run: yarn test:unit:once
+      - run: gulp --linux
+
+  build-wallet:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp --wallet --linux
+
+  spectron-test: 
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
       - run: xvfb-run gulp test
 
+  unit-test:
+    docker:
+       - image: circleci/node:8.9.4
+    steps:
+      - run: yarn test:unit:once
+
+  verify-artifacts-mist:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp verify-artifacts --mist --linux
+
+  verify-artifacts-wallet:
+    docker:
+      - image: circleci/node:8.9.4
+    steps:
+      - run: gulp verify-artifacts --wallet --linux
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test
-
+      - build-mist:
+        requires:
+          - build
+      - build-wallet:
+        requires:
+          - build
+      - spectron-test:
+        requires:
+          - build-mist
+      - unit-test:
+        requires:
+          - build-mist
+      - verify-artifacts-mist:
+        requires:
+          - build-mist
+      - verify-artifacts-wallet:
+        requires:
+          - build-wallet

@@ -14,13 +14,6 @@ branches:
     - master
     - /^greenkeeper/.*$/
 
-addons:
-  artifacts:
-    debug: true
-    paths:
-      - dist_mist/release/*
-      - dist_wallet/release/*
-
 matrix:
   include:
     # WINDOWS cross-built from linux
@@ -29,6 +22,11 @@ matrix:
       env:
           - GULP_PLATFORM=win
       addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
         apt:
           packages:
             - icnsutils
@@ -49,6 +47,11 @@ matrix:
       env:
           - GULP_PLATFORM=linux
       addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
         apt:
           packages:
             - icnsutils
@@ -62,6 +65,12 @@ matrix:
       osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
       env:
           - GULP_PLATFORM=mac
+      addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
       before_install:
           - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn yet
 

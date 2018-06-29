@@ -14,6 +14,13 @@ branches:
     - master
     - /^greenkeeper/.*$/
 
+addons:
+  artifacts:
+    debug: true
+    paths:
+      - dist_mist/release/*
+      - dist_wallet/release/*
+
 matrix:
   include:
     # WINDOWS cross-built from linux
@@ -103,11 +110,6 @@ after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
 
 
-artifacts:
-  debug: true
-  paths:
-    - dist_mist/release/*
-    - dist_wallet/release/*
 
 notifications:
   webhooks:

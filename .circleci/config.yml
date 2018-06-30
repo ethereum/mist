@@ -76,6 +76,10 @@ jobs:
     attach_workspace:
       at: /home/circleci/
     steps:
+      - run: pwd
+      - run: cd mist
+      - run: ls -R
+      - run: npm i -g gulp
       - run: gulp --linux
 
   build-wallet:
@@ -124,7 +128,7 @@ jobs:
     attach_workspace:
       at: /home/circleci/
     steps:
-      - run: echo "Mocking githug release!"
+      - run: echo "Mocking github release!"
 
 workflows:
   version: 2

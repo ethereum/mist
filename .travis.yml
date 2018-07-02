@@ -22,6 +22,11 @@ matrix:
       env:
           - GULP_PLATFORM=win
       addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
         apt:
           packages:
             - icnsutils
@@ -42,6 +47,11 @@ matrix:
       env:
           - GULP_PLATFORM=linux
       addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
         apt:
           packages:
             - icnsutils
@@ -55,6 +65,12 @@ matrix:
       osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
       env:
           - GULP_PLATFORM=mac
+      addons:
+        artifacts:
+          debug: true
+          paths:
+            - $(ls /home/travis/build/ethereum/mist/dist_mist/release/* | tr "\n" ":")
+            - $(ls /home/travis/build/ethereum/mist/dist_wallet/release/* | tr "\n" ":")
       before_install:
           - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn yet
 
@@ -68,7 +84,7 @@ install:
   - echo $PATH
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
   - export PATH=$PATH:`yarn global bin`
-  - yarn global add gulp-cli meteor-build-client electron@1.8.4
+  - yarn global add gulp-cli meteor-build-client electron@2.0.2
   - yarn
 
 script:
@@ -101,6 +117,7 @@ script:
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
+
 
 
 notifications:

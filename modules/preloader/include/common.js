@@ -5,9 +5,6 @@ module.exports = windowType => {
     window.electronRequire = require;
   }
 
-  // disable pinch zoom
-  webFrame.setZoomLevelLimits(1, 1);
-
   require('./consoleLogCapture')(windowType); // !!!
   require('./suppressWindowPrompt')();
 

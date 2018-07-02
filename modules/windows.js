@@ -2,6 +2,8 @@ const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
 const EventEmitter = require('events').EventEmitter;
+const path = require('path');
+
 import {
   closeWindow,
   openWindow,
@@ -140,7 +142,7 @@ class Window extends EventEmitter {
       width: 1100,
       height: 720,
       icon: global.icon,
-      titleBarStyle: 'hidden-inset', // hidden-inset: more space
+      titleBarStyle: 'hiddenInset',
       backgroundColor: '#F6F6F6',
       acceptFirstMouse: true,
       darkTheme: true,
@@ -373,13 +375,13 @@ class Windows {
       mist: {
         nodeIntegration: true /* necessary for webviews;
                     require will be removed through preloader */,
-        preload: `${__dirname}/preloader/mistUI.js`,
+        preload: path.join(__dirname, 'preloader', 'mistUI.js'),
         'overlay-fullscreen-video': true,
         'overlay-scrollbars': true,
         experimentalFeatures: true
       },
       wallet: {
-        preload: `${__dirname}/preloader/walletMain.js`,
+        preload: path.join(__dirname, 'preloader', 'walletMain.js'),
         'overlay-fullscreen-video': true,
         'overlay-scrollbars': true
       }
@@ -390,6 +392,7 @@ class Windows {
         return {
           primary: true,
           electronOptions: {
+            titleBarStyle: 'hiddenInset',
             width: Math.max(global.defaultWindow.width, 500),
             height: Math.max(global.defaultWindow.height, 440),
             x: global.defaultWindow.x,
@@ -410,10 +413,14 @@ class Windows {
             center: true,
             frame: false,
             useContentSize: true,
-            titleBarStyle: '', // hidden-inset: more space
+            titleBarStyle: '',
             skipTaskbar: true,
             webPreferences: {
-              preload: `${__dirname}/preloader/popupWindowsNoWeb3.js`
+              preload: path.join(
+                __dirname,
+                'preloader',
+                'popupWindowsNoWeb3.js'
+              )
             }
           }
         };
@@ -501,12 +508,12 @@ class Windows {
           title: Settings.appName,
           show: false,
           icon: global.icon,
-          titleBarStyle: 'hidden-inset', // hidden-inset: more space
+          titleBarStyle: 'hiddenInset', // hiddenInset: more space
           backgroundColor: '#F6F6F6',
           acceptFirstMouse: true,
           darkTheme: true,
           webPreferences: {
-            preload: `${__dirname}/preloader/popupWindows.js`,
+            preload: path.join(__dirname, 'preloader', 'popupWindows.js'),
             nodeIntegration: false,
             webaudio: true,
             webgl: false,
@@ -530,7 +537,7 @@ class Windows {
         resizable: false,
         center: true,
         useContentSize: true,
-        titleBarStyle: 'hidden', // hidden-inset: more space
+        titleBarStyle: 'hidden', // hiddenInset: more space
         autoHideMenuBar: true, // TODO: test on windows
         webPreferences: {
           textAreasAreResizable: false
@@ -557,9 +564,17 @@ class Windows {
     opts.isPopup = true;
 
     if (opts.useWeb3) {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindows.js`;
+      opts.electronOptions.webPreferences.preload = path.join(
+        __dirname,
+        'preloader',
+        'popupWindows.js'
+      );
     } else {
-      opts.electronOptions.webPreferences.preload = `${__dirname}/preloader/popupWindowsNoWeb3.js`;
+      opts.electronOptions.webPreferences.preload = path.join(
+        __dirname,
+        'preloader',
+        'popupWindowsNoWeb3.js'
+      );
     }
 
     // If generic window is available, recycle it (unless on blacklist)

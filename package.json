@@ -16,7 +16,15 @@
     "dev:rebuild": "./node_modules/.bin/electron-rebuild",
     "test:basic": "gulp test --test=basic",
     "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
-    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*"
+    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*",
+    "dist:mist": "gulp",
+    "dist:mist:win": "gulp --win",
+    "dist:mist:linux": "gulp --linux",
+    "dist:mist:mac": "gulp --mac",
+    "dist:wallet": "gulp --wallet",
+    "dist:wallet:win": "gulp --wallet --win",
+    "dist:wallet:linux": "gulp --wallet --linux",
+    "dist:wallet:mac": "gulp --wallet --mac"
   },
   "main": "main.js",
   "dependencies": {
@@ -68,8 +76,8 @@
     "colors": "^1.3.0",
     "del": "^3.0.0",
     "ecstatic": "^2.1.0",
-    "electron": "1.8.4",
-    "electron-builder": "^20.8.1",
+    "electron": "2.0.2",
+    "electron-builder": "20.18.0",
     "electron-rebuild": "^1.7.3",
     "eslint": "^4.19.1",
     "eslint-config-prettier": "^2.9.0",

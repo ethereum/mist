@@ -1,4 +1,5 @@
 #
+# TODO: persist and recover from workspace
 # TODO: fix `xvfb gulp test` command
 # TODO: group into `dependencies`, `build` and `test` keys
 # TODO: name commands properly
@@ -8,7 +9,6 @@
 # TODO: improve caching
 # TODO: mac job
 # TODO: windows job
-# TODO: build .deb or .AppImage
 #
 
 # Javascript Node CircleCI 2.0 configuration file
@@ -103,22 +103,6 @@ jobs:
     steps:
       - run: yarn test:unit:once
 
-  verify-artifacts-mist:
-    docker:
-      - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
-    steps:
-      - run: gulp verify-artifacts --mist --linux
-
-  verify-artifacts-wallet:
-    docker:
-      - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
-    steps:
-      - run: gulp verify-artifacts --wallet --linux
-
   github-release: 
     docker:
       - image: circleci/node:8.9.4
@@ -126,6 +110,8 @@ jobs:
       at: /home/circleci/
     steps:
       - run: echo "Mocking github release!"
+      - run: gulp verify-artifacts --wallet --linux
+      - run: gulp verify-artifacts --mist --linux
 
 workflows:
   version: 2
@@ -144,17 +130,9 @@ workflows:
       - unit-test:
           requires:
             - build-mist
-      - verify-artifacts-mist:
-          requires:
-            - build-mist
-      - verify-artifacts-wallet:
-          requires:
-            - build-wallet
       - github-release:
           requires:
             - spectron-test
             - unit-test
-            - verify-artifacts-mist
-            - verify-artifacts-wallet
 
 

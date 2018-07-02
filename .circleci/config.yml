@@ -31,9 +31,6 @@ jobs:
     steps:
       - checkout
 
-      # DEBUG: node-gyp uses python
-      - run: python --version
-
       # Download and cache dependencies
       - restore_cache:
           keys:

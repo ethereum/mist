@@ -71,8 +71,11 @@ jobs:
       - run: pwd
       - run: ls -R
       - run: which meteor || curl https://install.meteor.com | /bin/sh
+      - run: sudo yarn global add meteor-build-client
       - run: yarn run gulp --linux
       - run: yarn run gulp verify-artifacts --mist --linux
+      - store_artifacts:
+          path: dist_mist/release
       - persist_to_workspace:
           root: /home/circleci/
           paths:
@@ -84,8 +87,11 @@ jobs:
       - attach_workspace:
           at: /home/circleci/mist
       - run: which meteor || curl https://install.meteor.com | /bin/sh
+      - run: sudo yarn global add meteor-build-client electron@1.8.4
       - run: yarn run gulp --wallet --linux
       - run: yarn run gulp verify-artifacts --wallet --linux
+      - store_artifacts:
+          path: dist_mist/release
       - persist_to_workspace:
           root: /home/circleci/
           paths:

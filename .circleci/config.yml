@@ -71,6 +71,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
       - run: echo $CXX_host
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
       - run: pwd
       - run: ls -R
       - run: which meteor || curl https://install.meteor.com | /bin/sh
@@ -90,6 +91,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
       - run: echo $CXX_host
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
       - run: which meteor || curl https://install.meteor.com | /bin/sh
       - run: sudo yarn global add meteor-build-client electron@1.8.4
       - run: yarn run gulp --wallet --linux

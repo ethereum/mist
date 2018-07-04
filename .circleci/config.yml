@@ -75,10 +75,10 @@ jobs:
   build-mist:
     docker:
       - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
     working_directory: /home/circleci/mist
     steps:
+      - attach_workspace:
+          at: /home/circleci/
       - run: pwd
       - run: ls -R
       - run: npm i -g gulp
@@ -88,35 +88,35 @@ jobs:
   build-wallet:
     docker:
       - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/mist
     working_directory: /home/circleci/mist
     steps:
+      - attach_workspace:
+          at: /home/circleci/mist
       - run: gulp --wallet --linux
       - run: gulp verify-artifacts --wallet --linux
 
   spectron-test: 
     docker:
       - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
     steps:
+      - attach_workspace:
+          at: /home/circleci/
       - run: xvfb-run gulp test
 
   unit-test:
     docker:
        - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
     steps:
+      - attach_workspace:
+          at: /home/circleci/
       - run: yarn test:unit:once
 
   github-release: 
     docker:
       - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
     steps:
+      - attach_workspace:
+          at: /home/circleci/
       - run: gulp upload-queue --linux
       - run: gulp upload-queue --wallet --linux
 
@@ -137,9 +137,9 @@ jobs:
   workspace-attach:
     docker:
       - image: circleci/node:8.9.4
-    attach_workspace:
-      at: /home/circleci/
     steps:
+      - attach_workspace:
+        at: /home/circleci/
       - run: pwd
       - run: ls -R
 

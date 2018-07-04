@@ -123,8 +123,8 @@ jobs:
       - run: echo "debug info" >> my-repo/file.txt
       - run: pwd
       - persist_to_workspace:
-        root: /home/circleci
-        paths: my-repo
+          root: /home/circleci
+          paths: my-repo
 
   workspace-attach:
     docker:

@@ -79,10 +79,10 @@ gulp.task('pack-wallet', cb => {
     del(['./wallet', './meteor-dapp-wallet']).then(() => {
       console.log('Building wallet...');
       exec(
-        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git && \
-            cd meteor-dapp-wallet/app && \
-            yarn & \
-            ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
+        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
+            && cd meteor-dapp-wallet/app \
+            && yarn install \
+            && ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
         (err, stdout, stderr) => {
           console.log(stdout, stderr);
           del(['./meteor-dapp-wallet']);

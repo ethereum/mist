@@ -85,7 +85,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /home/circleci/mist
+          at: /home/circleci/
       - run: which meteor || curl https://install.meteor.com | /bin/sh
       - run: sudo yarn global add meteor-build-client electron@1.8.4
       - run: yarn run gulp --wallet --linux

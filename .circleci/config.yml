@@ -11,10 +11,10 @@
 # TODO: windows job
 #
 
-defaults:
+defaults: &defaults
+    working_directory: /home/circleci/mist
     docker:
       - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
 
 # Javascript Node CircleCI 2.0 configuration file
 #
@@ -23,16 +23,7 @@ defaults:
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/node:8.9.4
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
-
-    working_directory: /home/circleci/mist
-
+    <<: *defaults
     steps:
       - checkout
 
@@ -45,8 +36,8 @@ jobs:
 
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
+        # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
 
-      # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - run: export CXX_host="g++ -m32"
 
       # Video config for testing
@@ -73,27 +64,30 @@ jobs:
             - mist
 
   build-mist:
-    docker:
-      - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
+    <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/
       - run: pwd
       - run: ls -R
-      - run: npm i -g gulp
-      - run: gulp --linux
-      - run: gulp verify-artifacts --mist --linux
+      - run: yarn run gulp --linux
+      - run: yarn run gulp verify-artifacts --mist --linux
+      - persist_to_workspace:
+          root: /home/circleci/
+          paths:
+            - mist/dist_mist
 
   build-wallet:
-    docker:
-      - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
+    <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/mist
       - run: gulp --wallet --linux
       - run: gulp verify-artifacts --wallet --linux
+      - persist_to_workspace:
+          root: /home/circleci/
+          paths:
+            - mist/dist_wallet
 
   spectron-test: 
     docker:
@@ -101,19 +95,17 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/
-      - run: xvfb-run gulp test
+      - run: xvfb-run yarn run gulp test
 
   unit-test:
-    docker:
-       - image: circleci/node:8.9.4
+    <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/
       - run: yarn test:unit:once
 
   github-release: 
-    docker:
-      - image: circleci/node:8.9.4
+    <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -137,6 +129,7 @@ jobs:
   workspace-attach:
     docker:
       - image: circleci/node:8.9.4
+    working_directory: /home/circleci/mist
     steps:
       - attach_workspace:
           at: /home/circleci/

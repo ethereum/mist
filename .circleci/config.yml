@@ -70,6 +70,7 @@ jobs:
           at: /home/circleci/
       - run: pwd
       - run: ls -R
+      - run: which meteor || curl https://install.meteor.com | /bin/sh
       - run: yarn run gulp --linux
       - run: yarn run gulp verify-artifacts --mist --linux
       - persist_to_workspace:
@@ -82,8 +83,9 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/mist
-      - run: gulp --wallet --linux
-      - run: gulp verify-artifacts --wallet --linux
+      - run: which meteor || curl https://install.meteor.com | /bin/sh
+      - run: yarn run gulp --wallet --linux
+      - run: yarn run gulp verify-artifacts --wallet --linux
       - persist_to_workspace:
           root: /home/circleci/
           paths:

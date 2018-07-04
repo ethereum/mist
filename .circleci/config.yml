@@ -15,6 +15,8 @@ defaults: &defaults
     working_directory: /home/circleci/mist
     docker:
       - image: circleci/node:8.9.4
+      - environment:
+        - CXX_host: 'g++ -m32'
 
 # Javascript Node CircleCI 2.0 configuration file
 #
@@ -38,7 +40,7 @@ jobs:
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
         # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
 
-      - run: export CXX_host="g++ -m32"
+      - run: echo $CXX_host
 
       # Video config for testing
       # - run: export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
@@ -68,6 +70,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/
+      - run: echo $CXX_host
       - run: pwd
       - run: ls -R
       - run: which meteor || curl https://install.meteor.com | /bin/sh
@@ -86,6 +89,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/
+      - run: echo $CXX_host
       - run: which meteor || curl https://install.meteor.com | /bin/sh
       - run: sudo yarn global add meteor-build-client electron@1.8.4
       - run: yarn run gulp --wallet --linux

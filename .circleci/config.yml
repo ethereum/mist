@@ -139,7 +139,7 @@ jobs:
       - image: circleci/node:8.9.4
     steps:
       - attach_workspace:
-        at: /home/circleci/
+          at: /home/circleci/
       - run: pwd
       - run: ls -R
 

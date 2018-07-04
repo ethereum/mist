@@ -1,14 +1,14 @@
 #
-# TODO: persist and recover from workspace
-# TODO: fix `xvfb gulp test` command
-# TODO: group into `dependencies`, `build` and `test` keys
-# TODO: name commands properly
+# OK persist and recover from workspace
+# TODO: compilation
 # TODO: store_artifacts
+# TODO: name commands properly
+# TODO: mac job
+# TODO: improve caching
+# TODO: fix `xvfb gulp test` command
+# TODO: windows job
 # TODO: store_test_results
 # TODO: one docker image per arch
-# TODO: improve caching
-# TODO: mac job
-# TODO: windows job
 #
 
 defaults: &defaults
@@ -16,6 +16,8 @@ defaults: &defaults
     docker:
       - image: circleci/node:8.9.4
     environment:
+        # Setting variable to fix node-gyp build error:
+        # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - CXX_host: 'g++ -m32'
 
 # Javascript Node CircleCI 2.0 configuration file
@@ -38,21 +40,21 @@ jobs:
 
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
-        # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
 
       - run: echo $CXX_host
 
       # Video config for testing
       # - run: export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
 
-      # Installing multilib (build for 32 and 64 architectures): https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
+      # Installing multilib (build for 32 and 64 architectures):
+      # https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils graphicsmagick xz-utils
 
       # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
       - run: which meteor || curl https://install.meteor.com | /bin/sh
       
       # Adding global dependencies
-      - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
+      - run: yarn global add gulp-cli meteor-build-client electron@1.8.4
 
       - run: yarn
 
@@ -71,7 +73,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
       - run: echo $CXX_host
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils graphicsmagick xz-utils
       - run: pwd
       - run: ls -R
       - run: which meteor || curl https://install.meteor.com | /bin/sh
@@ -91,7 +93,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
       - run: echo $CXX_host
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils graphicsmagick xz-utils
       - run: which meteor || curl https://install.meteor.com | /bin/sh
       - run: sudo yarn global add meteor-build-client electron@1.8.4
       - run: yarn run gulp --wallet --linux

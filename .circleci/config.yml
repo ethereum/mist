@@ -137,7 +137,6 @@ jobs:
   workspace-attach:
     docker:
       - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
     attach_workspace:
       at: /home/circleci/
     steps:

@@ -15,8 +15,8 @@ defaults: &defaults
     working_directory: /home/circleci/mist
     docker:
       - image: circleci/node:8.9.4
-      - environment:
-        - CXX_host: 'g++ -m32'
+    environment:
+      - CXX_host: 'g++ -m32'
 
 # Javascript Node CircleCI 2.0 configuration file
 #

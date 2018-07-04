@@ -11,6 +11,11 @@
 # TODO: windows job
 #
 
+defaults:
+    docker:
+      - image: circleci/node:8.9.4
+    working_directory: /home/circleci/mist
+
 # Javascript Node CircleCI 2.0 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
@@ -118,6 +123,7 @@ jobs:
   workspace-save:
     docker:
       - image: circleci/node:8.9.4
+    working_directory: /home/circleci/mist
     steps:
       - run: mkdir my-repo
       - run: echo "debug info" >> my-repo/file.txt
@@ -129,6 +135,7 @@ jobs:
   workspace-attach:
     docker:
       - image: circleci/node:8.9.4
+    working_directory: /home/circleci/mist
     attach_workspace:
       at: /home/circleci/
     steps:

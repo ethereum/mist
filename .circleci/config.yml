@@ -72,6 +72,7 @@ jobs:
       - image: circleci/node:8.9.4
     attach_workspace:
       at: /home/circleci/
+    working_directory: /home/circleci/mist
     steps:
       - run: pwd
       - run: ls -R
@@ -84,6 +85,7 @@ jobs:
       - image: circleci/node:8.9.4
     attach_workspace:
       at: /home/circleci/mist
+    working_directory: /home/circleci/mist
     steps:
       - run: gulp --wallet --linux
       - run: gulp verify-artifacts --wallet --linux
@@ -120,9 +122,9 @@ jobs:
       - run: mkdir my-repo
       - run: echo "debug info" >> my-repo/file.txt
       - run: pwd
-    persist_to_workspace:
-      - root: /home/circleci
-      - paths: my-repo
+      - persist_to_workspace:
+        root: /home/circleci
+        paths: my-repo
 
   workspace-attach:
     docker:

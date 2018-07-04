@@ -125,12 +125,14 @@ jobs:
       - image: circleci/node:8.9.4
     working_directory: /home/circleci/mist
     steps:
-      - run: mkdir my-repo
-      - run: echo "debug info" >> my-repo/file.txt
+      - run: mkdir dist_files
+      - run: echo "debug info" >> dist_files/file.txt
+      - run: echo "src files" >> index.js
       - run: pwd
+      - run: ls -lR
       - persist_to_workspace:
-          root: /home/circleci
-          paths: my-repo
+          root: /home/circleci/
+          paths: mist
 
   workspace-attach:
     docker:
@@ -141,7 +143,6 @@ jobs:
     steps:
       - run: pwd
       - run: ls -R
-      - run: cat my-repo/file.txt
 
 
 workflows:

@@ -5,7 +5,7 @@ import { getLanguage } from './actions.js';
 import About from '../components/About';
 import RequestAccount from '../components/RequestAccount';
 import NodeInfo from '../components/NodeInfo';
-import SendTransactionConfirmation from '../components/SendTransactionConfirmation';
+import SendTransactionConfirmation from '../components/SendTransactionConfirmationPopup/';
 
 /**
 The init function of Mist

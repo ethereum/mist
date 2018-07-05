@@ -1,20 +1,31 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Blockies from 'react-blockies';
-import Identicon from './Identicon';
+import _ from 'lodash';
+import Data from './Data';
+import Fees from './Fees';
+import Footer from './Footer';
+import GasNotification from './GasNotification';
+import TransactionParties from './TransactionParties';
 
 class SendTransactionConfirmation extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      toIsContract: false
+      estimatedGas: 0,
+      executionFunction: '',
+      hasSignature: false,
+      providedGas: 0,
+      toIsContract: false,
+      unlocking: false
     };
   }
 
   componentDidMount() {
     // Determine if "to" is a contract
     web3.eth.getCode(this.props.newTransaction.to, (e, res) => {
+      console.log('∆∆∆ getCode e', e);
+      console.log('∆∆∆ getCode res', res);
       if (!e && res && res.length > 2) {
         this.setState({ toIsContract: true });
         // setWindowSize(template);
@@ -50,96 +61,85 @@ class SendTransactionConfirmation extends Component {
     }
   }
 
-  totalAmount = () => {
-    var amount = EthTools.formatBalance(
-      web3.utils.toBN(this.value || 0),
-      '0,0.00[0000000000000000]',
-      'ether'
-    );
-    var dotPos = ~amount.indexOf('.')
-      ? amount.indexOf('.') + 3
-      : amount.indexOf(',') + 3;
-
-    return amount
-      ? amount.substr(0, dotPos) +
-          <small style={{ fontSize: '0.5em' }}>amount.substr(dotPos)</small>
-      : '0';
-  };
-
   render() {
-    const { from } = this.props.newTransaction;
+    const { from, to, value } = this.props.newTransaction;
 
-    // <Blockies identity={from} className="dapp-identicon dapp-large" />
     return (
       <div className="popup-windows tx-info">
         {this.renderTitle()}
 
-        <div className="transaction-parties">
-          <div>
-            {this.state.fromIsContract ? (
-              <i className="overlap-icon icon-doc" />
-            ) : (
-              <i className="overlap-icon icon-key" />
-            )}
-            <Identicon identity={from} className="dapp-identicon dapp-large" />
-            <br />
-            <span
-              className="simptip-position-bottom simptip-movable"
-              data-tooltip={from}
-            >
-              {from}
-            </span>
-          </div>
+        <TransactionParties
+          fromIsContract={this.state.fromIsContract}
+          from={from}
+          to={to}
+          executionFunction={this.state.executionFunction}
+          hasSignature={this.state.hasSignature}
+          value={value}
+        />
 
-          <div className="connection">
-            <div className="amount">
-              {this.totalAmount()} <span className="unit">ETHER</span>
-            </div>
-          </div>
-        </div>
+        <GasNotification
+          gasLoading={this.state.gasLoading}
+          gasError={this.state.gasError}
+          toIsContract={this.state.toIsContract}
+          to={to}
+        />
+
+        <Fees
+          estimatedGas={this.state.estimatedGas}
+          gasLoading={this.state.gasLoading}
+          estimatedFee={this.state.estimatedFee}
+          providedGas={this.state.providedGas}
+        />
+
+        <Data
+          data={this.props.newTransaction.data}
+          showFormattedParams={this.state.showFormattedParams}
+        />
+
+        <Footer unlocking={this.state.unlocking} network={this.props.network} />
 
         {/* <form action="#">
 
               <div class="container">
               <div class="inner-container">
                   <div class="transaction-parties">
-                  <div>
-                      {{#if TemplateVar.get "fromIsContract"}}
-                          <i class="overlap-icon icon-doc"></i>
-                      {{else}}
-                          <i class="overlap-icon icon-key"></i>
-                      {{/if}}
-                      {{> dapp_identicon identity=from class="dapp-large"}}
-                      <br>
-                      <span class="simptip-position-bottom simptip-movable" data-tooltip="{{from}}">{{shortenAddress from}}</span>
-                  </div>
-                  <div class="connection">
-                      <div class="amount">
-                          {{{totalAmount}}} <span class="unit">ETHER</span>
-                      </div>
-                      {{#if TemplateVar.get "executionFunction" }}
-                          <div class='function-signature {{#if TemplateVar.get "hasSignature"}} has-signature {{/if}} '>
-                                  {{TemplateVar.get "executionFunction"}}
-                          </div>
-                      {{/if}}
-                  </div>
+                    <div>
+                        {{#if TemplateVar.get "fromIsContract"}}
+                            <i class="overlap-icon icon-doc"></i>
+                        {{else}}
+                            <i class="overlap-icon icon-key"></i>
+                        {{/if}}
+                        {{> dapp_identicon identity=from class="dapp-large"}}
+                        <br>
+                        <span class="simptip-position-bottom simptip-movable" data-tooltip="{{from}}">{{shortenAddress from}}</span>
+                    </div>
+                    <div class="connection">
+                        <div class="amount">
+                            {{{totalAmount}}} <span class="unit">ETHER</span>
+                        </div>
+                        {{#if TemplateVar.get "executionFunction" }}
+                            <div class='function-signature {{#if TemplateVar.get "hasSignature"}} has-signature {{/if}} '>
+                                    {{TemplateVar.get "executionFunction"}}
+                            </div>
+                        {{/if}}
+                    </div>
 
-                  <div>
-                      {{#if to}}
-                          {{#if TemplateVar.get "toIsContract"}}
-                              <i class="overlap-icon icon-doc"></i>
-                          {{else}}
-                              <i class="overlap-icon icon-key"></i>
-                          {{/if}}
-                          {{> dapp_identicon identity=to class="dapp-large"}}
-                          <br>
-                          <a href="http://etherscan.io/address/{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
-                      {{else}}
-                          <i class="circle-icon icon-doc"></i>
-                          <br>
-                          <span>{{i18n "mist.popupWindows.sendTransactionConfirmation.createContract"}}</span>
-                      {{/if}}
-                  </div>
+                    <div>
+                        {{#if to}}
+                            {{#if TemplateVar.get "toIsContract"}}
+                                <i class="overlap-icon icon-doc"></i>
+                            {{else}}
+                                <i class="overlap-icon icon-key"></i>
+                            {{/if}}
+                            {{> dapp_identicon identity=to class="dapp-large"}}
+                            <br>
+                            <a href="http://etherscan.io/address/{{to}}#code" class="simptip-position-bottom simptip-movable" data-tooltip="{{to}}" target="_blank">{{shortenAddress to}}</a>
+                        {{else}}
+                            <i class="circle-icon icon-doc"></i>
+                            <br>
+                            <span>{{i18n "mist.popupWindows.sendTransactionConfirmation.createContract"}}</span>
+                        {{/if}}
+                    </div>
               </div>
 
               {{#if transactionInvalid}}
@@ -177,7 +177,6 @@ class SendTransactionConfirmation extends Component {
                           {{{i18n "mist.popupWindows.sendTransactionConfirmation.notEnoughGas"}}}
                       </div>
                   {{/unless}}
-
               {{/if}}
 
               <div class="fees">

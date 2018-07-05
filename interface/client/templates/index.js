@@ -16,7 +16,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import About from '../../components/About';
 import RequestAccount from '../../components/RequestAccount';
-import SendTransactionConfirmation from '../../components/SendTransactionConfirmation';
+import SendTransactionConfirmation from '../../components/SendTransactionConfirmationPopup/';
 
 const COMPONENTS = {
   About,

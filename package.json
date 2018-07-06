@@ -67,7 +67,7 @@
     "co-mocha": "^1.2.0",
     "colors": "^1.3.0",
     "del": "^3.0.0",
-    "ecstatic": "^2.1.0",
+    "ecstatic": "^3.2.1",
     "electron": "1.8.4",
     "electron-builder": "^20.8.1",
     "electron-rebuild": "^1.7.3",

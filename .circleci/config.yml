@@ -28,6 +28,13 @@ linux_dependencies: &linux_dependencies
     sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils &&
     sudo apt-get install graphicsmagick
 
+windows_dependencies: &windows_dependencies
+  name: Windows package dependencies
+  command: |
+    sudo add-apt-repository ppa:ubuntu-wine/ppa -y &&
+    sudo apt-get update &&
+    sudo apt-get install -no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
+
 install_meteor: &install_meteor
   name: Installing Meteor
   # PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
@@ -103,6 +110,8 @@ jobs:
       - run:
           <<: *linux_dependencies
       - run:
+          <<: *windows_dependencies
+      - run:
           <<: *install_meteor 
       - run:
           <<: *install_node_modules
@@ -121,6 +130,8 @@ jobs:
 
       - run:
           <<: *linux_dependencies
+      - run:
+          <<: *windows_dependencies
       - run:
           <<: *install_meteor 
       - run:

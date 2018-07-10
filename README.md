@@ -1,7 +1,8 @@
 # Mist Browser<sup>beta</sup>
 
-[![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)]()
+[![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)](http://www.somsubhra.com/github-release-stats/?username=ethereum&repository=mist)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
+[![CircleCI](https://circleci.com/gh/ethereum/mist/tree/develop.svg?style=svg)](https://circleci.com/gh/ethereum/mist/tree/develop)
 [![Greenkeeper badge](https://badges.greenkeeper.io/ethereum/mist.svg)](https://greenkeeper.io/)
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist)
 [![Code Triagers Badge](https://www.codetriage.com/ethereum/mist/badges/users.svg)](https://www.codetriage.com/ethereum/mist)
@@ -10,7 +11,7 @@ The Mist browser is the tool of choice to browse and use Ðapps.
 
 For the Mist API see [MISTAPI.md](MISTAPI.md).
 
-This repository is the Electron host for the [Meteor-based wallet dapp](https://github.com/ethereum/meteor-dapp-wallet).
+This repository is also the Electron host for the [Meteor-based wallet dapp](https://github.com/ethereum/meteor-dapp-wallet).
 
 ## Help and troubleshooting
 
@@ -208,13 +209,13 @@ To generate the binaries for Mist run:
 $ gulp
 ```
 
-To generate the Ethereum Wallet (this will pack the one Ðapp from https://github.com/ethereum/meteor-dapp-wallet):
+To generate the Ethereum Wallet:
 
 ```bash
 $ gulp --wallet
 ```
 
-The generated binaries will be under `dist_mist/release` or `dist_wallet/release`.
+The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. From 0.11.0, both Ethereum Wallet and Mist bundle a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
 
 #### Options
 

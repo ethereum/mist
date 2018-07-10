@@ -12,7 +12,6 @@ For the Mist API see [MISTAPI.md](MISTAPI.md).
 
 This repository is the Electron host for the [Meteor-based wallet dapp](https://github.com/ethereum/meteor-dapp-wallet).
 
-
 ## Help and troubleshooting
 
 In order to get help regarding Mist or Ethereum Wallet:

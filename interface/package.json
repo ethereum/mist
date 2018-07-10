@@ -10,7 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/ethereum/mist.git"
   },
-  "keywords": ["ethereum", "mist", "web3"],
+  "keywords": [
+    "ethereum",
+    "mist",
+    "web3"
+  ],
   "author": "Fabian Vogelsteller <fabian@ethereum.org>",
   "license": "GPL-3.0",
   "bugs": {

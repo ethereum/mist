@@ -126,7 +126,11 @@ Template['popupWindows_importAccount'].events({
             'newAccount',
             web3.utils.toChecksumAddress(address)
           );
-          TemplateVar.setTo('.importAccount-screen', 'currentActive', 'account');
+          TemplateVar.setTo(
+            '.importAccount-screen',
+            'currentActive',
+            'account'
+          );
 
           // otherwise simply close the window
         } else {

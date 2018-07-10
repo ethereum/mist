@@ -113,6 +113,44 @@ jobs:
       - store_artifacts:
           path: dist_wallet/release
 
+  mist-windows:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+
+      - run: yarn run gulp --windows
+      - run: yarn run gulp verify-artifacts --mist --windows
+
+      - store_artifacts:
+          path: dist_mist/release
+
+  wallet-windows:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+          
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+
+      - run: yarn run gulp --wallet --windows
+      - run: yarn run gulp verify-artifacts --wallet --windows
+
+      - store_artifacts:
+          path: dist_wallet/release
+
   spectron-test: 
     docker:
       - image: circleci/node:8.9.4
@@ -138,6 +176,12 @@ workflows:
           requires:
             - build
       - wallet-linux:
+          requires:
+            - build
+      - mist-windows:
+          requires:
+            - build
+      - wallet-windows:
           requires:
             - build
       - unit-test:

@@ -1,5 +1,4 @@
 #
-# OK persist and recover from workspace
 # TODO: compilation
 # TODO: store_artifacts
 # TODO: name commands properly
@@ -19,6 +18,24 @@ defaults: &defaults
         # Setting variable to fix node-gyp build error:
         # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - CXX_host: 'g++ -m32'
+
+linux_dependencies: &linux_dependencies
+  name: Linux package dependencies
+  # Installing multilib (build for 32 and 64 architectures):
+  # https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
+  command: |
+    sudo apt-get update &&
+    sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils &&
+    sudo apt-get install graphicsmagick
+
+install_meteor: &install_meteor
+  name: Installing Meteor
+  # PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+  command: which meteor || curl https://install.meteor.com | /bin/sh
+
+install_node_modules: &install_node_modules
+  name: Installing node modules using yarn
+  command: yarn global add gulp-cli meteor-build-client && yarn
 
 # Javascript Node CircleCI 2.0 configuration file
 #
@@ -41,24 +58,9 @@ jobs:
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
 
-      - run: echo $CXX_host
-
-      # Video config for testing
-      # - run: export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
-
-      # Installing multilib (build for 32 and 64 architectures):
-      # https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
-      - run: sudo apt-get update
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils
-      - run: sudo apt-get install graphicsmagick
-
-      # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
-      - run: which meteor || curl https://install.meteor.com | /bin/sh
-      
-      # Adding global dependencies
-      - run: yarn global add gulp-cli meteor-build-client electron@1.8.4
-
-      - run: yarn
+      - run: <<: *linux_dependencies
+      - run: << *install_meteor 
+      - run: << *install_node_modules
 
       - save_cache:
           paths:
@@ -69,42 +71,43 @@ jobs:
           paths:
             - mist
 
-  build-mist:
+  build-mist-linux:
     <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/
-      - run: echo $CXX_host
-      - run: sudo apt-get update
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils
-      - run: sudo apt-get install graphicsmagick
-      - run: pwd
-      - run: ls -R
-      - run: which meteor || curl https://install.meteor.com | /bin/sh
-      - run: sudo yarn global add meteor-build-client
+
+      - run: <<: *linux_dependencies
+      - run: << *install_meteor 
+      - run: << *install_node_modules
+
       - run: yarn run gulp --linux
       - run: yarn run gulp verify-artifacts --mist --linux
+
       - store_artifacts:
           path: dist_mist/release
+
       - persist_to_workspace:
           root: /home/circleci/
           paths:
             - mist/dist_mist
 
-  build-wallet:
+  build-wallet-linux:
     <<: *defaults
     steps:
       - attach_workspace:
           at: /home/circleci/
-      - run: echo $CXX_host
-      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils
-      - run: sudo apt-get install graphicsmagick
-      - run: which meteor || curl https://install.meteor.com | /bin/sh
-      - run: sudo yarn global add meteor-build-client electron@1.8.4
+          
+      - run: <<: *linux_dependencies
+      - run: << *install_meteor 
+      - run: << *install_node_modules
+
       - run: yarn run gulp --wallet --linux
       - run: yarn run gulp verify-artifacts --wallet --linux
+
       - store_artifacts:
-          path: dist_mist/release
+          path: dist_wallet/release
+
       - persist_to_workspace:
           root: /home/circleci/
           paths:
@@ -123,64 +126,20 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/
+      - run: << *install_node_modules
       - run: yarn test:unit:once
-
-  github-release: 
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /home/circleci/
-      - run: gulp upload-queue --linux
-      - run: gulp upload-queue --wallet --linux
-
-  workspace-save:
-    docker:
-      - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
-    steps:
-      - run: mkdir dist_files
-      - run: echo "debug info" >> dist_files/file.txt
-      - run: echo "src files" >> index.js
-      - run: pwd
-      - run: ls -lR
-      - persist_to_workspace:
-          root: /home/circleci/
-          paths: mist
-
-  workspace-attach:
-    docker:
-      - image: circleci/node:8.9.4
-    working_directory: /home/circleci/mist
-    steps:
-      - attach_workspace:
-          at: /home/circleci/
-      - run: pwd
-      - run: ls -R
-
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - build-mist:
+      - build-mist-linux:
           requires:
             - build
-      - build-wallet:
+      - build-wallet-linux:
           requires:
             - build
-      - spectron-test:
-          requires:
-            - build-mist
       - unit-test:
           requires:
             - build
-      - github-release:
-          requires:
-            - spectron-test
-            - unit-test
-            - build-wallet
-      - workspace-save
-      - workspace-attach:
-          requires:
-            - workspace-save

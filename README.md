@@ -12,31 +12,6 @@ For the Mist API see [MISTAPI.md](MISTAPI.md).
 
 This repository is the Electron host for the [Meteor-based wallet dapp](https://github.com/ethereum/meteor-dapp-wallet).
 
-## Release candidate 0.11.0 up for testing
-
-Feedback thread for 0.11.0-rc https://github.com/ethereum/mist/issues/3979
-
-Reddit post: https://www.reddit.com/r/ethereum/comments/8uelv6/mist_browser_beta_and_ethereum_wallet_0110_preview/
-
-| File                                                                                                                                               | Checksum (SHA256)                                                             |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| <sub>[Ethereum-Wallet-installer-0-11-0-rc.exe](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-installer-0-11-0-rc.exe)</sub> | <sub>`f5431a32a419fdd51a379a02806a0d1cf9fa6a80213661aba2e4713731010615`</sub> |
-| <sub>[Ethereum-Wallet-linux32-0-11-0-rc.deb](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-linux32-0-11-0-rc.deb)</sub>     | <sub>`161f69d2546999363c64b1c85f938469a37afc51719ed48d4f4b02f33fd0206e`</sub> |
-| <sub>[Ethereum-Wallet-linux32-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-linux32-0-11-0-rc.zip)</sub>     | <sub>`9da6da638b3cb851df78fbe5bf65229147e5a43555463da65ef3a31f7cf93034`</sub> |
-| <sub>[Ethereum-Wallet-linux64-0-11-0-rc.deb](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-linux64-0-11-0-rc.deb)</sub>     | <sub>`dd32ee3c36e4dc2ef04a118b4a6a3402097d722947b09fac9f8914672df39642`</sub> |
-| <sub>[Ethereum-Wallet-linux64-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-linux64-0-11-0-rc.zip)</sub>     | <sub>`e515eb3ae7db6c9eee89892ed3fafa221bc8a0caad5c76305e08ffd950b31764`</sub> |
-| <sub>[Ethereum-Wallet-macosx-0-11-0-rc.dmg](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-macosx-0-11-0-rc.dmg)</sub>       | <sub>`408f50aca5049aeace30ca2d6357d8dd11868ab2ab9828d4ee7286b9eeff1081`</sub> |
-| <sub>[Ethereum-Wallet-win32-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-win32-0-11-0-rc.zip)</sub>         | <sub>`c605ed12070d185d387f6d649e35659d003a029ad2a7c0c5e9903b488ec1e676`</sub> |
-| <sub>[Ethereum-Wallet-win64-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Ethereum-Wallet-win64-0-11-0-rc.zip)</sub>         | <sub>`199af74e86c627fd0bc09027c01725869c0beb1eb4d85bfc7d9b9a3979a17b07`</sub> |
-| <sub>[Mist-installer-0-11-0-rc.exe](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-installer-0-11-0-rc.exe)</sub>                       | <sub>`e11569e77abbc7555cd570d427c007ce6ab35fcdf299d4094fab55de10a6f101`</sub> |
-| <sub>[Mist-linux32-0-11-0-rc.deb](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-linux32-0-11-0-rc.deb)</sub>                           | <sub>`29045433ac1020447e1977949deee05ae8eaef7c157ec6d7766d4eefccb48b9c`</sub> |
-| <sub>[Mist-linux32-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-linux32-0-11-0-rc.zip)</sub>                           | <sub>`9efccc68184eaa250a5dcce8515ffca59c6ce092913ac0ca7c8bb3a9c7db164c`</sub> |
-| <sub>[Mist-linux64-0-11-0-rc.deb](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-linux64-0-11-0-rc.deb)</sub>                           | <sub>`e29bc4de4c3090b07130b3d96b9b5aae7c216fb6d51900330440535ece7681b5`</sub> |
-| <sub>[Mist-linux64-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-linux64-0-11-0-rc.zip)</sub>                           | <sub>`9137183d774ba57d071d3d0b9dcd566d878ace10b745c5b689c3fa2a0997f457`</sub> |
-| <sub>[Mist-macosx-0-11-0-rc.dmg](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-macosx-0-11-0-rc.dmg)</sub>                             | <sub>`7f8ce72b9693f03a47674ea616ae9e22f67582d27c1265fbc4746d9584a7eab8`</sub> |
-| <sub>[Mist-win32-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-win32-0-11-0-rc.zip)</sub>                               | <sub>`f208bb6e00fc0f69ad36a028dc4278507fc5810def2415268b1a302e4e433a79`</sub> |
-| <sub>[Mist-win64-0-11-0-rc.zip](http://ethereum-mist.s3.amazonaws.com/mist/0.11.0-rc/Mist-win64-0-11-0-rc.zip)</sub>                               | <sub>`632a1aaa24cfd92507be05b443ed4c4a2b8f618d4deb6324824d6cf06cdd50d9`</sub> |
-
 ## Help and troubleshooting
 
 In order to get help regarding Mist or Ethereum Wallet:

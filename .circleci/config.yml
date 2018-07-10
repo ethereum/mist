@@ -31,8 +31,6 @@ linux_dependencies: &linux_dependencies
 windows_dependencies: &windows_dependencies
   name: Windows package dependencies
   command: |
-    sudo add-apt-repository ppa:ubuntu-wine/ppa -y &&
-    sudo apt-get update &&
     sudo apt-get install -no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
 
 install_meteor: &install_meteor
@@ -110,8 +108,6 @@ jobs:
       - run:
           <<: *linux_dependencies
       - run:
-          <<: *windows_dependencies
-      - run:
           <<: *install_meteor 
       - run:
           <<: *install_node_modules
@@ -151,6 +147,8 @@ jobs:
           
       - run:
           <<: *linux_dependencies
+      - run:
+          <<: *windows_dependencies
       - run:
           <<: *install_meteor 
       - run:

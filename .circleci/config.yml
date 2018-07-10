@@ -31,7 +31,7 @@ linux_dependencies: &linux_dependencies
 windows_dependencies: &windows_dependencies
   name: Windows package dependencies
   command: |
-    sudo apt-get install -no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
+    sudo apt-get install --no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
 
 install_meteor: &install_meteor
   name: Installing Meteor
@@ -133,8 +133,8 @@ jobs:
       - run:
           <<: *install_node_modules
 
-      - run: yarn run gulp --windows
-      - run: yarn run gulp verify-artifacts --mist --windows
+      - run: yarn run gulp --win
+      - run: yarn run gulp verify-artifacts --mist --win
 
       - store_artifacts:
           path: dist_mist/release
@@ -154,8 +154,8 @@ jobs:
       - run:
           <<: *install_node_modules
 
-      - run: yarn run gulp --wallet --windows
-      - run: yarn run gulp verify-artifacts --wallet --windows
+      - run: yarn run gulp --wallet --win
+      - run: yarn run gulp verify-artifacts --wallet --win
 
       - store_artifacts:
           path: dist_wallet/release

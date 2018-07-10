@@ -8,7 +8,7 @@
 # TODO: fix `xvfb gulp test` command
 # TODO: windows job
 # TODO: store_test_results
-# TODO: one docker image per arch
+# TODO: docker images
 #
 
 defaults: &defaults
@@ -48,6 +48,7 @@ jobs:
 
       # Installing multilib (build for 32 and 64 architectures):
       # https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
+      - run: sudo apt-get update
       - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils
       - run: sudo apt-get install graphicsmagick
 
@@ -74,6 +75,7 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
       - run: echo $CXX_host
+      - run: sudo apt-get update
       - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils
       - run: sudo apt-get install graphicsmagick
       - run: pwd

@@ -31,6 +31,9 @@ linux_dependencies: &linux_dependencies
 windows_dependencies: &windows_dependencies
   name: Windows package dependencies
   command: |
+    sudo apt-get install software-properties-common &&
+    sudo dpkg --add-architecture i386 &&
+    sudo add-apt-repository ppa:ubuntu-wine/ppa -y &&
     sudo apt-get install --no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
 
 install_meteor: &install_meteor
@@ -185,12 +188,6 @@ workflows:
           requires:
             - build
       - wallet-linux:
-          requires:
-            - build
-      - mist-windows:
-          requires:
-            - build
-      - wallet-windows:
           requires:
             - build
       - unit-test:

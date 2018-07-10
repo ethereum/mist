@@ -75,7 +75,7 @@ jobs:
           paths:
             - mist
 
-  build-mist-linux:
+  mist-linux:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -94,12 +94,7 @@ jobs:
       - store_artifacts:
           path: dist_mist/release
 
-      - persist_to_workspace:
-          root: /home/circleci/
-          paths:
-            - mist/dist_mist
-
-  build-wallet-linux:
+  wallet-linux:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -117,11 +112,6 @@ jobs:
 
       - store_artifacts:
           path: dist_wallet/release
-
-      - persist_to_workspace:
-          root: /home/circleci/
-          paths:
-            - mist/dist_wallet
 
   spectron-test: 
     docker:
@@ -144,10 +134,10 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - build-mist-linux:
+      - mist-linux:
           requires:
             - build
-      - build-wallet-linux:
+      - wallet-linux:
           requires:
             - build
       - unit-test:

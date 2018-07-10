@@ -58,9 +58,12 @@ jobs:
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
 
-      - run: <<: *linux_dependencies
-      - run: << *install_meteor 
-      - run: << *install_node_modules
+      - run: 
+        <<: *linux_dependencies
+      - run:
+        <<: *install_meteor 
+      - run:
+        <<: *install_node_modules
 
       - save_cache:
           paths:
@@ -77,9 +80,12 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
 
-      - run: <<: *linux_dependencies
-      - run: << *install_meteor 
-      - run: << *install_node_modules
+      - run:
+        <<: *linux_dependencies
+      - run:
+        <<: *install_meteor 
+      - run:
+        <<: *install_node_modules
 
       - run: yarn run gulp --linux
       - run: yarn run gulp verify-artifacts --mist --linux
@@ -98,9 +104,12 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
           
-      - run: <<: *linux_dependencies
-      - run: << *install_meteor 
-      - run: << *install_node_modules
+      - run:
+        <<: *linux_dependencies
+      - run:
+        <<: *install_meteor 
+      - run:
+        <<: *install_node_modules
 
       - run: yarn run gulp --wallet --linux
       - run: yarn run gulp verify-artifacts --wallet --linux

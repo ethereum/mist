@@ -100,7 +100,8 @@ script:
   - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
 
 after_success:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
+  #- if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
+  - gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM
 
 
 notifications:

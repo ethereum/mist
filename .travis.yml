@@ -11,7 +11,6 @@ matrix:
     - os: linux
       services: docker
       language: generic
-
 addons:
   artifacts: true
 
@@ -23,6 +22,9 @@ cache:
       #- $HOME/.cache/electron-builder
 
 script:
+  - curl https://install.meteor.com | /bin/sh
+  - yarn global add gulp-cli meteor-build-client electron@1.8.4
+
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
       docker run --rm \

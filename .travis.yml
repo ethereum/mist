@@ -22,10 +22,8 @@ cache:
       #- $HOME/.cache/electron-builder
 
 script:
-  - PATH=$PATH:$HOME/.meteor
-  - curl https://install.meteor.com | /bin/sh
 
-  - yarn global add gulp-cli meteor-build-client electron@1.8.4
+  - yarn global add gulp-cli meteor-build-client 
 
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -35,12 +33,10 @@ script:
         -v ~/.cache/electron:/root/.cache/electron \
         -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
+        /bin/bash -c "curl https://install.meteor.com | /bin/sh; PATH=$PATH:$HOME/.meteor; yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
     else
       yarn release
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
-
-
 

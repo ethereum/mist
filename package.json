@@ -16,7 +16,8 @@
     "dev:rebuild": "./node_modules/.bin/electron-rebuild",
     "test:basic": "gulp test --test=basic",
     "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
-    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*"
+    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*",
+    "release": "gulp"
   },
   "main": "main.js",
   "dependencies": {

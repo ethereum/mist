@@ -1,114 +1,42 @@
-language: node_js
-node_js: '8'
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode9.4
+      language: node_js
+      node_js: "10"
+      env:
+        - ELECTRON_CACHE=$HOME/.cache/electron
+        - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+    - os: linux
+      services: docker
+      language: generic
+
+addons:
+  artifacts: true
+
 cache:
-  yarn: true
   directories:
     - node_modules
     - 'interface/.meteor'
-
-sudo: required
-
-addons:
-  artifacts:
-    debug: true
-    paths:
-      - dist_mist/release/*
-      - dist_wallet/release/*
-
-matrix:
-  include:
-    # WINDOWS cross-built from linux
-    - os: linux
-      dist: trusty
-      env:
-          - GULP_PLATFORM=win
-      addons:
-        apt:
-          packages:
-            - icnsutils
-            - graphicsmagick
-            - xz-utils
-            - nsis
-            - g++-multilib
-          sources:
-            - mono
-      before_install:
-        - sudo dpkg --add-architecture i386 && sudo add-apt-repository ppa:ubuntu-wine/ppa -y
-        - sudo apt-get update -q
-        - sudo apt-get install --no-install-recommends -y mono-devel ca-certificates-mono wine1.8
-
-    # LINUX
-    - os: linux
-      dist: trusty
-      env:
-          - GULP_PLATFORM=linux
-      addons:
-        apt:
-          packages:
-            - icnsutils
-            - graphicsmagick
-            - xz-utils
-            - gcc-multilib
-            - g++-multilib
-
-    # MAC
-    - os: osx
-      osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
-      env:
-          - GULP_PLATFORM=mac
-      before_install:
-          - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn yet
-
-  allow_failures:
-  - os: osx
-
-  fast_finish: true
-
-
-install:
-  - echo $PATH
-  - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
-  - export PATH=$PATH:`yarn global bin`
-  - yarn global add gulp-cli meteor-build-client electron@1.8.4
-  - yarn
+      #    - $HOME/.cache/electron
+      #- $HOME/.cache/electron-builder
 
 script:
-  # disable macOS code-signing (production certificate) on develop branch
-  - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi
-  # windows code-signing on master branch
-  - if [[ $GULP_PLATFORM == "win" && $TRAVIS_BRANCH == "master" ]]; then export CSC_LINK=$CSC_WIN_LINK && CSC_KEY_PASSWORD=$CSC_WIN_KEY_PASSWORD; fi
-
-  # unit test
-  - if [[ $GULP_PLATFORM == "linux" ]]; then yarn test:unit:once; fi
-    
-  # build mist
-  - if [[ $GULP_PLATFORM == "mac" ]]; then travis_wait 60 gulp --$GULP_PLATFORM; fi  # increase timeout for slower mac builds
-  - if [[ $GULP_PLATFORM != "mac" ]]; then gulp --$GULP_PLATFORM; fi
-
-  # assert creation of Mist artifacts
-  - gulp verify-artifacts --mist --$GULP_PLATFORM
- 
-  # build wallet if on master branch
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then travis_wait 60 gulp --wallet --$GULP_PLATFORM; fi
-  
-  # assert creation of Wallet artifacts
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then gulp verify-artifacts --wallet --$GULP_PLATFORM; fi
-
-  # prepare integration tests
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
-
-  # currently, tests should run in linux and mac
-  - if [[ $GULP_PLATFORM != "win" ]]; then gulp test; fi
-
-after_success:
-  #- if [[ $TRAVIS_BRANCH == "master" ]]; then gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM; fi
-  - gulp upload-queue --$GULP_PLATFORM && gulp upload-queue --wallet --$GULP_PLATFORM
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      docker run --rm \
+        --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_') \
+        -v ${PWD}:/project \
+        -v ~/.cache/electron:/root/.cache/electron \
+        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+        electronuserland/builder:wine \
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
+    else
+      yarn release
+    fi
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
 
 
-notifications:
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/33972d9e627a142c57a6
-    on_success: change
-    on_failure: always
-    on_start: never
+

@@ -8,11 +8,9 @@ cache:
 
 sudo: required
 
-branches:
-  only:
-    - develop
-    - master
-    - /^greenkeeper/.*$/
+addons:
+  artifacts:
+    debug: true
 
 matrix:
   include:

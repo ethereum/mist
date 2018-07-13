@@ -23,6 +23,7 @@ cache:
 
 script:
   - curl https://install.meteor.com | /bin/sh
+  - PATH=$PATH:$HOME/.meteor
   - yarn global add gulp-cli meteor-build-client electron@1.8.4
 
   - |

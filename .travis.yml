@@ -16,6 +16,9 @@ matrix:
         - METEOR_NO_RELEASE_CHECK=true
 addons:
   artifacts: true
+    paths:
+      - $(ls dist_mist/release/* | tr "\n" ":")
+      - $(ls dist_wallet/release/* | tr "\n" ":")
 
 cache:
   directories:

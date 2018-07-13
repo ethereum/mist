@@ -12,7 +12,8 @@ matrix:
       services: docker
       language: generic
       env:
-        - METEOR_UNSAFE_PERM=1
+        - METEOR_UNSAFE_PERM=true
+        - METEOR_NO_RELEASE_CHECK=true
 addons:
   artifacts: true
 

@@ -11,6 +11,9 @@ sudo: required
 addons:
   artifacts:
     debug: true
+    paths:
+      - dist_mist/release/*
+      - dist_wallet/release/*
 
 matrix:
   include:

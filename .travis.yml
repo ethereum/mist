@@ -22,8 +22,9 @@ cache:
       #- $HOME/.cache/electron-builder
 
 script:
-  - curl https://install.meteor.com | /bin/sh
   - PATH=$PATH:$HOME/.meteor
+  - curl https://install.meteor.com | /bin/sh
+
   - yarn global add gulp-cli meteor-build-client electron@1.8.4
 
   - |

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "postinstall": "electron-builder install-app-deps; (cd interface && yarn); yarn dev:rebuild; git submodule update --recursive; gulp pack-wallet; which meteor || curl https://install.meteor.com | /bin/sh",
+    "postinstall": "electron-builder install-app-deps; yarn dev:rebuild; git submodule update --recursive; gulp pack-wallet; echo METEOR && which meteor || curl https://install.meteor.com | /bin/sh; (cd interface && yarn)",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
@@ -18,7 +18,7 @@
     "test:basic": "gulp test --test=basic",
     "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
     "test:unit:once": "mocha --compilers babel-register tests/unit/**/*",
-    "release": "gulp"
+    "gulp": "gulp"
   },
   "main": "main.js",
   "dependencies": {

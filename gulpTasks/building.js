@@ -15,7 +15,7 @@ const type = options.type;
 const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
 
 gulp.task('clean-dist', cb => {
-  return del([`./dist_${type}`, './meteor-dapp-wallet'], cb);
+  return del([`./dist_${type}`], cb);
 });
 
 gulp.task('copy-app-source-files', () => {

@@ -40,7 +40,7 @@
     "i18next": "^8.4.3",
     "lodash": "^4.17.4",
     "log-rotate": "^0.2.7",
-    "log4js": "^2.4.1",
+    "log4js": "^3.0.0",
     "lokijs": "^1.4.3",
     "minimongo-standalone": "^1.1.0-3",
     "node-fetch": "^1.7.3",

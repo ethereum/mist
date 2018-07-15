@@ -23,7 +23,7 @@
     "babel-preset-es2016-node5": "^1.1.2",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
-    "bignumber.js": "^4.0.1",
+    "bignumber.js": "^7.0.2",
     "bluebird": "^3.5.0",
     "chai-as-promised": "^7.1.1",
     "chai-string": "^1.3.0",

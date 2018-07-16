@@ -71,7 +71,7 @@ gulp.task('upload-queue', gulp.series('checksums', 'upload-binaries'));
 const skipTasks = options.skipTasks.replace(/\s/g, '').split(',');
 const tasks = [
   'clean-dist',
-  'pack-wallet',
+  //'pack-wallet',
   'copy-app-source-files',
   'transpile-main',
   'transpile-modules',
@@ -80,8 +80,9 @@ const tasks = [
   'bundling-interface',
   'copy-i18n',
   'build-dist',
-  'release-dist',
-  'build-nsis'
+  'release-dist'
+  //'build-nsis',
+  //'verify-artifacts'
 ].filter(task => !skipTasks.includes(task));
 
 gulp.task('default', gulp.series(tasks));

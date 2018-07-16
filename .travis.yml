@@ -24,7 +24,7 @@ cache:
   directories:
     - node_modules
     - 'interface/.meteor'
-      #    - $HOME/.cache/electron
+      #- $HOME/.cache/electron
       #- $HOME/.cache/electron-builder
 
 script:
@@ -36,13 +36,10 @@ script:
       docker run --rm \
         --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS|APPVEYOR_|CSC_|_TOKEN|_KEY|AWS_|STRIP|BUILD_|METEOR_') \
         -v ${PWD}:/project \
-        -v ~/.cache/electron:/root/.cache/electron \
-        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
         electronuserland/builder:wine \
-        /bin/bash -c "curl https://install.meteor.com | /bin/sh; PATH=$PATH:$HOME/.meteor; yarn --link-duplicates --pure-lockfile && yarn gulp --win && yarn gulp verify-artifacts --win"
+        /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn gulp --win"
     else
       yarn gulp --mac
-      yarn gulp verify-artifacts --mac
     fi
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine

@@ -32,9 +32,7 @@ gulp.task('copy-app-source-files', () => {
         'wallet/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
-        '!./tests/wallet/*',
-        '!./tests/mist/*',
-        '!./tests/unit/*'
+        '!./tests/**/*'
       ],
       {
         base: './'
@@ -130,10 +128,11 @@ gulp.task('build-dist', cb => {
     name: applicationName.replace(/\s/, ''),
     productName: applicationName,
     description: applicationName,
+    license: 'GPL-3.0',
     homepage: 'https://github.com/ethereum/mist',
     build: {
       appId: `org.ethereum.${type}`,
-      asar: true,
+      asar: false,
       directories: {
         buildResources: '../build',
         output: '../dist'

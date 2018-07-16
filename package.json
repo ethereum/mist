@@ -14,6 +14,7 @@
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
+    
     "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
     "test:unit:once": "mocha --compilers babel-register tests/unit/**/*",
     "gulp": "gulp"

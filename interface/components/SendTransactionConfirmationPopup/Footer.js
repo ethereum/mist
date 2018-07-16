@@ -1,8 +1,16 @@
 import React, { Component } from 'react';
 
 class Footer extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      pw: ''
+    };
+  }
+
   render() {
-    if (this.state.unlocking) {
+    if (this.props.unlocking) {
       return (
         <footer>
           <h2>
@@ -16,6 +24,8 @@ class Footer extends Component {
       <footer>
         <input
           type="password"
+          value={this.state.pw}
+          onChange={e => this.setState({ pw: e.target.value })}
           placeholder={i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.enterPassword'
           )}
@@ -27,11 +37,19 @@ class Footer extends Component {
           ''
         )}
 
-        <div className="dapp-modal-buttons">
-          <button className="cancel" type="button">
+        <div className="send-tx__btns">
+          <button
+            className="send-tx__btn--secondary"
+            onClick={() => this.props.closePopup()}
+            type="button"
+          >
             {i18n.t('buttons.cancel')}
           </button>
-          <button className="ok dapp-primary-button" type="submit">
+          <button
+            className="send-tx__btn--primary"
+            disabled={!this.state.pw}
+            type="submit"
+          >
             {i18n.t(
               'mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction'
             )}

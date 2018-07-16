@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 
 class Data extends Component {
   render() {
-    if (this.props.newTransaction.data) {
+    if (this.props.data) {
       return null;
     }
 
-    if (this.state.showFormattedParams) {
+    if (this.props.showFormattedParams) {
       return (
         <div className="parameters">
           <h3>

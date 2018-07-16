@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Fees extends Component {
   renderEstimatedFee() {
-    if (this.state.estimatedGas === 'invalid') {
+    if (this.props.estimatedGas === 'invalid') {
       return (
         <span className="red">
           <i className="icon-shield" />
@@ -13,8 +13,8 @@ class Fees extends Component {
       );
     }
 
-    if (this.state.estimatedGas === 0) {
-      if (this.state.gasLoading) {
+    if (this.props.estimatedGas === 0) {
+      if (this.props.gasLoading) {
         return (
           <span>
             {i18n.t('mist.popupWindows.sendTransactionConfirmation.gasLoading')}
@@ -33,7 +33,7 @@ class Fees extends Component {
 
     return (
       <span>
-        {this.state.estimatedFee} ({this.state.estimatedGas} gas)
+        {this.props.estimatedFee} ({this.props.estimatedGas} gas)
       </span>
     );
     // {{estimatedFee}} ({{dapp_formatNumber (TemplateVar.get "estimatedGas") "0,0"}} gas)
@@ -56,7 +56,7 @@ class Fees extends Component {
               {i18n.t('mist.popupWindows.sendTransactionConfirmation.gasLimit')}
             </div>
             <div className="type">
-              {this.state.providedGas} ether (
+              {this.props.providedGas} ether (
               <span className="provided-gas" contentEditable="true">
                 {/* {dapp_formatNumber (TemplateVar.get 'initialProvidedGas') '0'} */}
               </span>{' '}

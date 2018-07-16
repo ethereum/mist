@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import Data from './Data';
-import Fees from './Fees';
+import ExecutionContext from './ExecutionContext';
 import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TransactionParties from './TransactionParties';
@@ -33,33 +32,43 @@ class SendTransactionConfirmation extends Component {
     });
   }
 
+  // TODO: new designs: function name as title
   renderTitle() {
     if (this.state.toIsContract) {
       return (
-        <h1>
+        <h2>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.contractExecution'
           )}
-        </h1>
+        </h2>
       );
     } else if (this.props.newTransaction && this.props.newTransaction.to) {
       return (
-        <h1>
+        <h2>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.sendTransaction'
           )}
-        </h1>
+        </h2>
       );
     } else {
       return (
-        <h1>
+        <h2>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.createContract'
           )}
-        </h1>
+        </h2>
       );
     }
   }
+
+  closePopup = () => {
+    // TODO: abstract to Redux
+    ipc.send(
+      'backendAction_unlockedAccountAndSentTransaction',
+      'Transaction not confirmed'
+    );
+    ipc.send('backendAction_closePopupWindow');
+  };
 
   render() {
     const { from, to, value } = this.props.newTransaction;
@@ -67,6 +76,22 @@ class SendTransactionConfirmation extends Component {
     return (
       <div className="popup-windows tx-info">
         {this.renderTitle()}
+
+        <ExecutionContext
+          data={this.props.newTransaction.data}
+          showFormattedParams={this.state.showFormattedParams}
+          estimatedGas={this.state.estimatedGas}
+          gasLoading={this.state.gasLoading}
+          estimatedFee={this.state.estimatedFee}
+          providedGas={this.state.providedGas}
+        />
+
+        <GasNotification
+          gasLoading={this.state.gasLoading}
+          gasError={this.state.gasError}
+          toIsContract={this.state.toIsContract}
+          to={to}
+        />
 
         <TransactionParties
           fromIsContract={this.state.fromIsContract}
@@ -77,26 +102,11 @@ class SendTransactionConfirmation extends Component {
           value={value}
         />
 
-        <GasNotification
-          gasLoading={this.state.gasLoading}
-          gasError={this.state.gasError}
-          toIsContract={this.state.toIsContract}
-          to={to}
+        <Footer
+          unlocking={this.state.unlocking}
+          network={this.props.network}
+          closePopup={this.closePopup}
         />
-
-        <Fees
-          estimatedGas={this.state.estimatedGas}
-          gasLoading={this.state.gasLoading}
-          estimatedFee={this.state.estimatedFee}
-          providedGas={this.state.providedGas}
-        />
-
-        <Data
-          data={this.props.newTransaction.data}
-          showFormattedParams={this.state.showFormattedParams}
-        />
-
-        <Footer unlocking={this.state.unlocking} network={this.props.network} />
 
         {/* <form action="#">
 

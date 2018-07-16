@@ -15,7 +15,7 @@ class GasNotification extends Component {
 
   render() {
     if (this.transactionInvalid()) {
-      if (this.state.gasLoading) {
+      if (this.props.gasLoading) {
         return <p className="info gas-loading">(spinner)</p>;
       } else {
         return (
@@ -28,7 +28,7 @@ class GasNotification extends Component {
       }
     }
 
-    if (this.state.gasError === 'notEnoughGas') {
+    if (this.props.gasError === 'notEnoughGas') {
       return (
         <div
           className="info dapp-error not-enough-gas"
@@ -37,7 +37,7 @@ class GasNotification extends Component {
           {i18n.t('mist.popupWindows.sendTransactionConfirmation.notEnoughGas')}
         </div>
       );
-    } else if (this.state.gasError === 'overBlockGasLimit') {
+    } else if (this.props.gasError === 'overBlockGasLimit') {
       return (
         <div className="info dapp-error">
           {i18n.t(
@@ -48,7 +48,7 @@ class GasNotification extends Component {
     } else {
       return (
         <div>
-          {this.state.toIsContract ? (
+          {this.props.toIsContract ? (
             <p className="info">
               {i18n.t(
                 'mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo'
@@ -57,7 +57,7 @@ class GasNotification extends Component {
           ) : (
             ''
           )}
-          {this.props.newTransaction.to ? (
+          {this.props.to ? (
             ''
           ) : (
             <p className="info">

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import DappIdenticon from '../DappIdenticon';
 
+// TODO: "TO" when sending ETH, otherwise "CONTRACT"
+
 class TransactionParties extends Component {
   shortenAddress = address => {
     if (_.isString(address)) {

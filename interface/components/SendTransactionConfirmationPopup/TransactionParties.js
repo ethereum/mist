@@ -33,19 +33,47 @@ class TransactionParties extends Component {
     return '0';
   };
 
-  renderSendDestination() {
+  renderFrom() {
+    const { from, fromIsContract } = this.props;
+
+    return (
+      <div className="tx-parties__party">
+        {fromIsContract ? (
+          <i className="overlap-icon icon-doc" />
+        ) : (
+          <i className="overlap-icon icon-key" />
+        )}
+        <DappIdenticon identity={from.toLowerCase()} size="small" />
+
+        <div className="tx-parties__direction-name">FROM</div>
+
+        <div
+          className="simptip-position-bottom simptip-movable"
+          data-tooltip={from}
+        >
+          {this.shortenAddress(from)}
+        </div>
+      </div>
+    );
+  }
+
+  renderTo() {
     const { to, toIsContract } = this.props;
 
     if (to) {
       return (
-        <div>
+        <div className="tx-parties__party">
           {toIsContract ? (
             <i className="overlap-icon icon-doc" />
           ) : (
             <i className="overlap-icon icon-key" />
           )}
-          <DappIdenticon identity={to.toLowerCase()} size="large" />
-          <br />
+          <DappIdenticon identity={to.toLowerCase()} size="small" />
+
+          <div className="tx-parties__direction-name">
+            {toIsContract ? 'CONTRACT' : 'TO'}
+          </div>
+
           <a
             href={`http://etherscan.io/address/${to}#code`}
             className="simptip-position-bottom simptip-movable"
@@ -71,53 +99,34 @@ class TransactionParties extends Component {
     );
   }
 
-  render() {
-    const {
-      from,
-      fromIsContract,
-      executionFunction,
-      hasSignature
-    } = this.props;
+  renderConnection() {
+    const { executionFunction, hasSignature } = this.props;
 
     return (
-      <div className="transaction-parties">
-        <div>
-          {fromIsContract ? (
-            <i className="overlap-icon icon-doc" />
+      <div className="connection">
+        <div className="amount">
+          {this.totalAmount()} <span className="unit">ETHER</span>
+          {executionFunction ? (
+            <div
+              className={`function-signature ${
+                hasSignature ? 'has-signature' : ''
+              }`}
+            >
+              {executionFunction}
+            </div>
           ) : (
-            <i className="overlap-icon icon-key" />
+            ''
           )}
-          <DappIdenticon
-            identity={from.toLowerCase()}
-            className="dapp-identicon dapp-large"
-          />
-          <br />
-          <span
-            className="simptip-position-bottom simptip-movable"
-            data-tooltip={from}
-          >
-            {this.shortenAddress(from)}
-          </span>
         </div>
+      </div>
+    );
+  }
 
-        <div className="connection">
-          <div className="amount">
-            {this.totalAmount()} <span className="unit">ETHER</span>
-            {executionFunction ? (
-              <div
-                className={`function-signature ${
-                  hasSignature ? 'has-signature' : ''
-                }`}
-              >
-                {executionFunction}
-              </div>
-            ) : (
-              ''
-            )}
-          </div>
-        </div>
-
-        {this.renderSendDestination()}
+  render() {
+    return (
+      <div className="tx-parties">
+        {this.renderFrom()}
+        {this.renderTo()}
       </div>
     );
   }

@@ -36,27 +36,27 @@ class SendTransactionConfirmation extends Component {
   renderTitle() {
     if (this.state.toIsContract) {
       return (
-        <h2>
+        <h3>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.contractExecution'
           )}
-        </h2>
+        </h3>
       );
     } else if (this.props.newTransaction && this.props.newTransaction.to) {
       return (
-        <h2>
+        <h3>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.sendTransaction'
           )}
-        </h2>
+        </h3>
       );
     } else {
       return (
-        <h2>
+        <h3>
           {i18n.t(
             'mist.popupWindows.sendTransactionConfirmation.title.createContract'
           )}
-        </h2>
+        </h3>
       );
     }
   }
@@ -84,6 +84,9 @@ class SendTransactionConfirmation extends Component {
           gasLoading={this.state.gasLoading}
           estimatedFee={this.state.estimatedFee}
           providedGas={this.state.providedGas}
+          to={to}
+          toIsContract={this.state.toIsContract}
+          value={this.props.newTransaction.value}
         />
 
         <GasNotification

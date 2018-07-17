@@ -1,16 +1,25 @@
+.bold {
+  font-weight: bold;
+}
+
 .execution-context {
   background-color: white;
   padding: 50px 25px;
 }
 
+.execution-context__sentence {
+  font-size: 24px;
+}
+
 .send-tx__btns {
   display: flex;
   align-items: stretch;
+  font-weight: bold;
 }
 
 .send-tx__btn--secondary {
   width: 100%;
-  border: 2px solid #4e92df;
+  border: 1px solid #4e92df;
   padding: 8px 0;
   margin: 12px 6px 12px 12px;
   border-radius: 6px;
@@ -19,7 +28,7 @@
 
 .send-tx__btn--primary {
   width: 100%;
-  border: 2px solid #4e92df;
+  border: 1px solid #4e92df;
   background-color: #4e92df;
   color: white !important;
   padding: 8px 0;
@@ -30,4 +39,37 @@
   &:disabled {
     opacity: 0.5;
   }
+}
+
+.tx-parties {
+  text-align: left;
+  margin: 0 34px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tx-parties__party {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+
+  // TODO
+  .overlap-icon {
+    font-size: 14px !important;
+    width: 32px !important;
+    top: 17px !important;
+    z-index: 9 !important;
+  }
+}
+
+.tx-parties__direction-name {
+  display: inline-block;
+  margin: 0 8px 0 22px;
+}
+
+// TODO
+.popup-windows footer {
+  padding-top: 0px;
+  bottom: 28px;
 }

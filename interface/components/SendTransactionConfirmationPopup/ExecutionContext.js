@@ -7,11 +7,32 @@ class ExecutionContext extends Component {
     super(props);
   }
 
+  formattedBalance() {
+    return EthTools.formatBalance(
+      web3.utils.toBN(this.props.value || 0),
+      '0,0.00[0000000000000000]',
+      'ether'
+    );
+  }
+
+  renderExecutionSentence() {
+    if (this.props.toIsContract) {
+      return <div className="execution-context__sentence">Coming Soon!</div>;
+    }
+
+    return (
+      <div className="execution-context__sentence">
+        Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
+      </div>
+    );
+  }
+
   render() {
     return (
       <div className="execution-context">
-        <div>Coming Soon!</div>
+        {this.renderExecutionSentence()}
 
+        {/*
         <Data
           data={this.props.data}
           showFormattedParams={this.props.showFormattedParams}
@@ -23,6 +44,7 @@ class ExecutionContext extends Component {
           estimatedFee={this.props.estimatedFee}
           providedGas={this.props.providedGas}
         />
+        */}
       </div>
     );
   }

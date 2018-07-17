@@ -60,6 +60,7 @@ export default class DappIdenticon extends Component {
       return this.renderLink();
     }
 
+    // dapp class sizes: large, medium, small, tiny
     return (
       <span
         className={`dapp-identicon dapp-${this.props.size}`}

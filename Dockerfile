@@ -14,8 +14,9 @@ RUN chown -R mistuser /project
 USER mistuser
 
 ENV PATH="${PATH}:/home/mistuser/.meteor"
-RUN curl https://install.meteor.com/?version=1.6.1 | /bin/sh
+RUN curl https://install.meteor.com/ | /bin/sh
 RUN which meteor
 
-# electron-builder flag
+# electron-builder flags
 ENV USE_HARD_LINKS="true"
+ENV DEBUG=electron-builder

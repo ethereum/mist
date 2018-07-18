@@ -17,8 +17,7 @@ matrix:
 addons:
   artifacts: true
     paths:
-      - $(ls dist_mist/release/* | tr "\n" ":")
-      - $(ls dist_wallet/release/* | tr "\n" ":")
+      - $(git ls-files -o | grep -E "^dist_(mist|wallet)/release" | tr "\n" ":")
 
 cache:
   directories:

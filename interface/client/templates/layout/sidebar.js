@@ -198,24 +198,29 @@ Template['layout_sidebar'].events({
     LocalStore.set('selectedTab', this._id);
     var initialTabId = this._id;
 
-    mist.requestAccount(function(ev, addresses) {
-      dbSync.syncDataFromBackend(LastVisitedPages);
-      dbSync.syncDataFromBackend(Tabs).then(function() {
-        var tabCount = Tabs.find().fetch().length;
-        var tabId;
-        if (tabCount > initialTabCount) {
-          // browse tab was pinned
-          tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
-        } else {
-          tabId = initialTabId;
-        }
-        Tabs.update(tabId, {
-          $set: {
-            'permissions.accounts': addresses
+    mist
+      .requestAccounts()
+      .then(accounts => {
+        dbSync.syncDataFromBackend(LastVisitedPages);
+        dbSync.syncDataFromBackend(Tabs).then(function() {
+          var tabCount = Tabs.find().fetch().length;
+          var tabId;
+          if (tabCount > initialTabCount) {
+            // browse tab was pinned
+            tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
+          } else {
+            tabId = initialTabId;
           }
+          Tabs.update(tabId, {
+            $set: {
+              'permissions.accounts': accounts
+            }
+          });
         });
+      })
+      .catch(error => {
+        console.error(`Error from .accounts button: ${error}`); // eslint-disable-line no-console
       });
-    });
   },
 
   /**

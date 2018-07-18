@@ -54,20 +54,23 @@
      */
   const mist = {
     callbacks: {},
+    promises: { connectAccount: [], requestAccount: [] },
     version: '__version__',
     license: '__license__',
     platform: '__platform__',
-    requestAccount(callback) {
-      if (callback) {
-        if (!this.callbacks.connectAccount) {
-          this.callbacks.connectAccount = [];
-        }
-        this.callbacks.connectAccount.push(callback);
-      }
-
-      postMessage({
-        type: 'mistAPI_requestAccount'
+    requestAccounts() {
+      const promise = new Promise((resolve, reject) => {
+        this.promises.connectAccount.push({ resolve, reject });
       });
+      postMessage({ type: 'mistAPI_requestAccounts' });
+      return promise;
+    },
+    createAccount() {
+      const promise = new Promise((resolve, reject) => {
+        this.promises.requestAccount.push({ resolve, reject });
+      });
+      postMessage({ type: 'mistAPI_createAccount' });
+      return promise;
     },
     solidity: {
       version: '__solidityVersion__'
@@ -252,13 +255,25 @@
         mist.menu.entries[id].callback();
       }
     } else if (data.type === 'uiAction_windowMessage') {
-      var params = data.message;
+      const params = data.message;
+      const { type, error, value } = params;
 
-      if (mist.callbacks[params.type]) {
-        mist.callbacks[params.type].forEach(function(cb) {
-          cb(params.error, params.value);
+      if (mist.callbacks[type]) {
+        mist.callbacks[type].forEach((callback, index) => {
+          callback(error, value);
+          mist.callbacks[type].splice(index, 1); // remove callback
         });
-        delete mist.callbacks[params.type];
+      }
+
+      if (mist.promises[type]) {
+        mist.promises[type].forEach((promise, index) => {
+          if (error) {
+            promise.reject(error);
+          } else {
+            promise.resolve(value);
+          }
+          mist.promises[type].splice(index, 1); // remove promise
+        });
       }
     }
   });

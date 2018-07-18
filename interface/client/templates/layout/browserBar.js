@@ -119,18 +119,23 @@ Template['layout_browserBar'].events({
     */
   'click .app-bar > button.accounts': function(e, template) {
     LocalStore.set('chosenTab', LocalStore.get('selectedTab')); // needed by connectAccount
-    mist.requestAccount(function(e, addresses) {
-      var tabId = LocalStore.get('selectedTab');
+    mist
+      .requestAccounts()
+      .then(accounts => {
+        var tabId = LocalStore.get('selectedTab');
 
-      dbSync.syncDataFromBackend(LastVisitedPages);
-      dbSync.syncDataFromBackend(Tabs).then(function() {
-        Tabs.update(tabId, {
-          $set: {
-            'permissions.accounts': addresses
-          }
+        dbSync.syncDataFromBackend(LastVisitedPages);
+        dbSync.syncDataFromBackend(Tabs).then(function() {
+          Tabs.update(tabId, {
+            $set: {
+              'permissions.accounts': accounts
+            }
+          });
         });
+      })
+      .catch(error => {
+        console.error(`Error from .app-bar: ${error}`); // eslint-disable-line no-console
       });
-    });
   },
   /*
     Hide the app bar on input blur

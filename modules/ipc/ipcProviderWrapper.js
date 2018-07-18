@@ -106,16 +106,6 @@ const ipcProviderWrapper = {
     // console.debug('ipcProviderWrapper: write payload');
 
     ipcRenderer.send('ipcProvider-write', payload);
-  },
-  /**
-    Write synchronous to the IPC connection through the backend
-
-    @method writeSync
-    */
-  writeSync(payload) {
-    // console.debug('ipcProviderWrapper: write payload (sync)');
-
-    return ipcRenderer.sendSync('ipcProvider-writeSync', payload);
   }
 };
 

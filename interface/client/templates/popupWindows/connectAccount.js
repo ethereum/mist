@@ -165,7 +165,7 @@ Template['popupWindows_connectAccount'].events({
 
     accounts = _.unique(_.flatten(accounts));
 
-    // reload the webview
+    // Reload the webview
     ipc.send('backendAction_windowMessageToOwner', null, accounts);
     setTimeout(function() {
       ipc.send('backendAction_closePopupWindow');

@@ -82,9 +82,12 @@ window.addEventListener('message', function message(event) {
     // make sure we only send allowed properties
     ipcRenderer.send('ipcProvider-write', JSON.stringify(data.message));
 
-    // mistAPI
+    // Mist API
   } else if (/^mistAPI_[a-z]/i.test(data.type)) {
-    if (data.type === 'mistAPI_requestAccount') {
+    if (
+      data.type === 'mistAPI_requestAccounts' ||
+      data.type === 'mistAPI_createAccount'
+    ) {
       ipcRenderer.send(data.type, data.message);
     } else {
       ipcRenderer.sendToHost(data.type, data.message);

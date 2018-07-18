@@ -44,18 +44,23 @@ module.exports = () => {
     */
   const mist = {
     callbacks: {},
+    promises: { connectAccount: [], requestAccount: [] },
     version: packageJson.version,
     license: packageJson.license,
     platform: process.platform,
-    requestAccount(callback) {
-      if (callback) {
-        if (!this.callbacks.connectAccount) {
-          this.callbacks.connectAccount = [];
-        }
-        this.callbacks.connectAccount.push(callback);
-      }
-
-      ipcRenderer.send('mistAPI_requestAccount');
+    requestAccounts() {
+      ipcRenderer.send('mistAPI_requestAccounts');
+      const promise = new Promise((resolve, reject) => {
+        this.promises.connectAccount.push({ resolve, reject });
+      });
+      return promise;
+    },
+    createAccount() {
+      ipcRenderer.send('mistAPI_createAccount');
+      const promise = new Promise((resolve, reject) => {
+        this.promises.requestAccount.push({ resolve, reject });
+      });
+      return promise;
     },
     solidity: {
       version: String(packageJson.dependencies.solc).match(/\d+\.\d+\.\d+/)[0]
@@ -215,19 +220,31 @@ module.exports = () => {
     }
   };
 
-  ipcRenderer.on('mistAPI_callMenuFunction', (e, id) => {
+  ipcRenderer.on('mistAPI_callMenuFunction', (event, id) => {
     if (mist.menu.entries[id] && mist.menu.entries[id].callback) {
       mist.menu.entries[id].callback();
     }
   });
 
-  ipcRenderer.on('uiAction_windowMessage', (e, type, error, value) => {
-    console.log('uiAction_windowMessage', type, error, value);
+  ipcRenderer.on('uiAction_windowMessage', (event, type, error, value) => {
+    console.log('uiAction_windowMessage', type, error, value); // eslint-disable-line no-console
+
     if (mist.callbacks[type]) {
-      mist.callbacks[type].forEach(cb => {
-        cb(error, value);
+      mist.callbacks[type].forEach((callback, index) => {
+        callback(error, value);
+        mist.callbacks[type].splice(index, 1); // remove callback
       });
-      delete mist.callbacks[type];
+    }
+
+    if (mist.promises[type]) {
+      mist.promises[type].forEach((promise, index) => {
+        if (error) {
+          promise.reject(error);
+        } else {
+          promise.resolve(value);
+        }
+        mist.promises[type].splice(index, 1); // remove promise
+      });
     }
   });
 

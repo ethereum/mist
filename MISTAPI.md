@@ -1,8 +1,28 @@
 # Mist API
 
-Mist provides an API for dapp developers to use special features only available in Mist.
+## Requesting a provider
 
----
+You can learn how to request an [Ethereum Provider](https://github.com/ryanio/EIPs/blob/ethereum-provider/EIPS/eip-1193.md) for your dapp in [EIP 1102](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
+
+```js
+// Request Ethereum Provider (EIP 1102)
+window.addEventListener('message', event => {
+  if (event.data && event.data.type === 'ETHEREUM_PROVIDER_SUCCESS') {
+    start(window.ethereum);
+  }
+});
+window.postMessage({ type: 'ETHEREUM_PROVIDER_REQUEST' }, this.origin);
+
+function start(ethereum) {
+  // A) Primary use case - set provider in web3.js
+  web3.setProvider(ethereum);
+  // B) Secondary use case - use provider object directly
+  // See https://github.com/ryanio/EIPs/blob/ethereum-provider/EIPS/eip-1193.md#examples
+```
+
+## API
+
+Mist provides an API for dapp developers to use special features only available in Mist.
 
 You can check for the `mist` object in your dapp:
 
@@ -12,22 +32,9 @@ if (typeof mist !== 'undefined') {
 }
 ```
 
----
-
-We recommend initializing your web3 library with our provider:
-
-```js
-if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider);
-} else {
-  web3 = new Web3('ws://localhost:8546');
-}
-```
-
-## API
-
 - [mist.platform](#mistplatform)
-- [mist.requestAccount](#mistrequestaccountcallback)(callback)
+- [mist.requestAccounts](#mistrequestaccounts)
+- [mist.createAccount](#mistcreateaccount)
 - [mist.menu](#mistmenu)
 - [mist.menu.add](#mistmenuaddid-options-callback)([id,] options, callback)
 - [mist.menu.clear](#mistmenuclear)()
@@ -42,43 +49,71 @@ if (typeof web3 !== 'undefined') {
 
 ### mist.platform
 
-Returns the current platform, mist is running on:
+Returns the current platform Mist is running on:
 
-- `darwin` (Mac OSX)
-- `win32` (Windows)
-- `linux` (Linux)
+- mac OS: `darwin`
+- Windows: `win32`
+- Linux: `linux`
 
 ---
 
-### mist.requestAccount(callback)
+### mist.requestAccounts
 
-Asks the user to provide, or create a new account.
+```js
+mist.requestAccounts(): Promise<Array<String>|Error>
+```
 
-#### Parameters
+Request accounts from Mist.
 
-1.  `Function` The callback to be called with the new address as the second parameter.
+If the user has already authenticated the dapp, the promise will immediately return. Otherwise, it will open a `Connect` modal for the user to choose which accounts to authenticate.
+
+Returns a promise containing an array of the accounts' public keys, or an Error object.
 
 #### Example
 
 ```js
-mist.requestAccount(function(error, address) {
-  console.log('Added new account', address);
-});
+mist
+  .requestAccounts()
+  .then(accounts => {
+    console.log(`Accounts: ${accounts.join(', ')}`);
+  })
+  .catch(error => {
+    console.error(`Error requesting accounts: ${error}`);
+  });
 ```
 
----
+### mist.createAccount
+
+```js
+mist.createAccount(): Promise<String|Error>
+```
+
+Open the `Create Account` dialog in Mist.
+
+Returns a promise containing the new account's public key or an Error object.
+
+#### Example
+
+```js
+mist
+  .createAccount()
+  .then(account => {
+    console.log(`New account: ${account}`);
+  })
+  .catch(error => {
+    console.error(`Error creating new account: ${error}`);
+  });
+```
 
 ### mist.menu
 
 Provides functionality to control the sub menu of your dapp, when its added to the sidebar.
 
----
-
-### mist.menu.add([id,] options, callback)
+#### mist.menu.add([id,] options, callback)
 
 Adds/Updates a sub menu entry, which is placed below you dapp button in the sidebar.
 
-#### Parameters
+##### Parameters
 
 1.  `String` **optional** and id string to identify your sub menu entry when updating.
 2.  `Object` The menu options:
@@ -88,13 +123,13 @@ Adds/Updates a sub menu entry, which is placed below you dapp button in the side
     - `selected` (`Boolean`) **optional**: Whether or not this sub menu entry is currently selected.
 3.  `Function` **optional**: The callback to be called when the sub menu entry is clicked.
 
-#### Minimal example
+##### Minimal example
 
 ```js
 mist.menu.add({ name: 'My account' });
 ```
 
-#### Full example
+##### Full example
 
 ```js
 mist.menu.add(
@@ -116,9 +151,7 @@ mist.menu.add(
 );
 ```
 
----
-
-### mist.menu.clear()
+#### mist.menu.clear()
 
 Removes all sub menu entries. You can use this when you reload your app,
 to clear up incorrect menu entries, which might have been lost since the last session.
@@ -127,9 +160,7 @@ to clear up incorrect menu entries, which might have been lost since the last se
 
 None
 
----
-
-### mist.menu.remove(id)
+#### mist.menu.remove(id)
 
 Removes a sub menu entry.
 
@@ -137,33 +168,29 @@ Removes a sub menu entry.
 
 1.  `String` and id string to identify your sub menu.
 
----
-
-### mist.menu.select(id)
+#### mist.menu.select(id)
 
 Selects the respective sub menu entry.
 
-#### Parameters
+##### Parameters
 
 1.  `String` the sub menu entry identifier.
 
 ---
 
-### mist.menu.setBadge(text)
+#### mist.menu.setBadge(text)
 
 Sets the main badge of your dapp, right below your dapps menu button.
 
-#### Parameters
+##### Parameters
 
 1.  `String` the string used as the badge text.
 
----
-
-### mist.menu.update(id, [, options][, callback])
+#### mist.menu.update(id, [, options][, callback])
 
 Works like `mist.menu.add()`, but only the `id` parameter is required.
 
-#### Parameters
+##### Parameters
 
 1.  `String` and id string to identify your sub menu entry.
 2.  `Object` The menu options:
@@ -173,7 +200,7 @@ Works like `mist.menu.add()`, but only the `id` parameter is required.
     - `selected` (`Boolean`): (optional) Whether or not this sub menu entry is currently selected.
 3.  `Function` (optional) The callback to be called when the sub menu entry is clicked.
 
-#### Example
+##### Example
 
 ```js
 mist.menu.update('tkrzU', {
@@ -182,40 +209,30 @@ mist.menu.update('tkrzU', {
 });
 ```
 
----
-
-### mist.sounds
+#### mist.sounds
 
 Provides a list of sounds.
 
----
-
-### mist.sounds.bip()
+#### mist.sounds.bip()
 
 Makes a bip sound.
 
-#### Parameters
+##### Parameters
 
 None
 
----
-
-### mist.sounds.bloop()
+#### mist.sounds.bloop()
 
 Makes a bloop sound.
 
-#### Parameters
+##### Parameters
 
 None
 
----
-
-### mist.sounds.invite()
+#### mist.sounds.invite()
 
 Makes an invite sound.
 
-#### Parameters
+##### Parameters
 
 None
-
----

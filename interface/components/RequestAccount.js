@@ -66,7 +66,7 @@ class RequestAccount extends React.Component {
     web3.eth.personal.newAccount(pw).then(address => {
       ipc.send('backendAction_windowMessageToOwner', null, address);
 
-      // notify about backing up!
+      // Notify about backing up!
       alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
       this.resetForm();

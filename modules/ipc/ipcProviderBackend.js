@@ -15,6 +15,7 @@ const Sockets = require('../socketManager');
 const Settings = require('../settings');
 const ethereumNode = require('../ethereumNode');
 const ethereumNodeRemote = require('../ethereumNodeRemote');
+const Windows = require('../windows');
 
 const ERRORS = {
   INVALID_PAYLOAD: {
@@ -239,6 +240,8 @@ class IpcProviderBackend {
    * @param {String} state The new state.
    */
   _onNodeStateChanged(state) {
+    const mainWindow = Windows.getByType('main');
+
     switch (
       state // eslint-disable-line default-case
     ) {
@@ -270,6 +273,12 @@ class IpcProviderBackend {
           log.error('Error disconnecting sockets', err);
         });
 
+        break;
+      case ethereumNode.STATES.CONNECTED:
+        mainWindow.send('mistAPI_event_connect');
+        break;
+      case ethereumNode.STATES.STOPPED:
+        mainWindow.send('mistAPI_event_close');
         break;
     }
   }

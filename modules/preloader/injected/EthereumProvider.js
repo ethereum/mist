@@ -24,14 +24,32 @@ const origin = this.origin;
 
       // Init storage
       this.nextJsonrpcId = 0;
-      this.responsePromises = {};
-      this.activeSubscriptionIds = [];
+      this.promises = {};
+      this.activeSubscriptions = [];
 
       // Fire the connect
       this._connect();
 
       // Listen for jsonrpc responses
-      window.addEventListener('message', this._handleMessage.bind(this));
+      window.addEventListener('message', this._handleJsonrpcMessage.bind(this));
+
+      // Listen for Mist events
+      window.addEventListener(
+        'mistAPI_event_connect',
+        this._emitConnect.bind(this)
+      );
+      window.addEventListener(
+        'mistAPI_event_close',
+        this._emitClose.bind(this)
+      );
+      window.addEventListener(
+        'mistAPI_event_networkChanged',
+        this._emitNetworkChanged.bind(this)
+      );
+      window.addEventListener(
+        'mistAPI_event_accountsChanged',
+        this._emitAccountsChanged.bind(this)
+      );
     }
 
     /* Methods */
@@ -53,7 +71,7 @@ const origin = this.origin;
       };
 
       const promise = new Promise((resolve, reject) => {
-        this.responsePromises[payload.id] = { resolve, reject };
+        this.promises[payload.id] = { resolve, reject };
       });
 
       window.postMessage({ type: 'write', message: payload }, origin);
@@ -64,7 +82,7 @@ const origin = this.origin;
     subscribe(subscriptionType, params) {
       return this.send('eth_subscribe', [subscriptionType, ...params]).then(
         subscriptionId => {
-          this.activeSubscriptionIds.push(subscriptionId);
+          this.activeSubscriptions.push(subscriptionId);
         }
       );
     }
@@ -72,8 +90,8 @@ const origin = this.origin;
     unsubscribe(subscriptionId) {
       return this.send('eth_unsubscribe', [subscriptionId]).then(success => {
         if (success) {
-          // Remove subscriptionId from activeSubscriptionIds
-          this.activeSubscriptionIds = this.activeSubscriptionIds.filter(
+          // Remove subscription
+          this.activeSubscription = this.activeSubscription.filter(
             id => id !== subscriptionId
           );
           // Remove listeners on subscriptionId
@@ -84,7 +102,7 @@ const origin = this.origin;
 
     /* Internal methods */
 
-    _handleMessage(event) {
+    _handleJsonrpcMessage(event) {
       // Return if no data to parse
       if (!event || !event.data) {
         return;
@@ -107,7 +125,7 @@ const origin = this.origin;
       const { id, method, error, result } = message;
 
       if (typeof id !== 'undefined') {
-        const promise = this.responsePromises[id];
+        const promise = this.promises[id];
         if (promise) {
           // Handle pending promise
           if (data.type === 'error') {
@@ -117,7 +135,7 @@ const origin = this.origin;
           } else {
             promise.resolve(result);
           }
-          delete this.responsePromises[id];
+          delete this.promises[id];
         }
       } else {
         if (method && method.indexOf('_subscription') > -1) {
@@ -143,11 +161,12 @@ const origin = this.origin;
       this.emit('connect');
     }
 
-    _emitClose(code, reason) {
+    _emitClose(event) {
+      const { code, reason } = event.message;
       this.emit('close', code, reason);
 
       // Send Error objects to any open subscriptions
-      this.activeSubscriptionIds.forEach(id => {
+      this.activeSubscriptions.forEach(id => {
         const error = new Error(
           `Provider connection to network closed.
            Subscription lost, please subscribe again.`
@@ -155,25 +174,18 @@ const origin = this.origin;
         this.emit(id, error);
       });
       // Clear subscriptions
-      this.activeSubscriptionIds = [];
+      this.activeSubscriptions = [];
     }
 
-    _emitNetworkChanged(networkId) {
+    _emitNetworkChanged(event) {
+      console.log(event);
+      const { networkId } = event.message;
       this.emit('networkChanged', networkId);
     }
 
-    _emitAccountsChanged(accounts) {
+    _emitAccountsChanged(event) {
+      const { accounts } = event.message;
       this.emit('accountsChanged', accounts);
-    }
-
-    /* Deprecated methods */
-
-    sendSync() {
-      return new Error('Sync calls are not supported.');
-    }
-
-    sendBatch() {
-      return new Error('Batch calls are not supported.');
     }
 
     /* web3.js provider compatibility */
@@ -193,6 +205,16 @@ const origin = this.origin;
 
     isConnected() {
       return true;
+    }
+
+    /* Deprecated methods */
+
+    sendSync() {
+      return new Error('Sync calls are not supported.');
+    }
+
+    sendBatch() {
+      return new Error('Batch calls are not supported.');
     }
   }
 })();

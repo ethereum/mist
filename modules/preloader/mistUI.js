@@ -52,7 +52,7 @@ ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
   // forward to the webview (TODO: remove and manage in the ipcCommunicator?)
   const tab = Tabs.findOne({ webviewId: id });
   if (tab) {
-    webview = $(`webview[data-id=${tab._id}]`)[0];
+    const webview = $(`webview[data-id=${tab._id}]`)[0];
     if (webview) {
       webview.send('uiAction_windowMessage', type, error, value);
     }

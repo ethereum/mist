@@ -16,7 +16,7 @@ Template['views_webview'].onRendered(function() {
     tabId = template.data._id,
     webview = template.find('webview');
 
-  ipc.on('uiAction_reloadSelectedTab', function(e) {
+  ipc.on('uiAction_reloadSelectedTab', function() {
     console.log('uiAction_reloadSelectedTab', LocalStore.get('selectedTab'));
     if (LocalStore.get('selectedTab') === this._id) {
       var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
@@ -24,10 +24,11 @@ Template['views_webview'].onRendered(function() {
     }
   });
 
-  webview.addEventListener('did-start-loading', function(e) {
+  webview.addEventListener('did-start-loading', function() {
     TemplateVar.set(template, 'loading', true);
   });
-  webview.addEventListener('did-stop-loading', function(e) {
+
+  webview.addEventListener('did-stop-loading', function() {
     TemplateVar.set(template, 'loading', false);
   });
 

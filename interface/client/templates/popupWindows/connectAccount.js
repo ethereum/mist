@@ -145,38 +145,40 @@ Template['popupWindows_connectAccount'].events({
 
     @event click .cancel
     */
-  'click .cancel': function(e) {
+  'click .cancel': function() {
     ipc.send('backendAction_closePopupWindow');
   },
   /**
-    - Confirm or cancel the accounts available for this dapp and reload the dapp.
+    - Confirm or cancel the accounts available for this dapp and send the accountsChanged event.
 
     @event click button.confirm, click button.cancel
     */
-  'click .ok, click .stay-anonymous': function(e) {
-    e.preventDefault();
+  'click .ok, click .stay-anonymous': function(event) {
+    event.preventDefault();
 
     var accounts = TemplateVar.get('accounts');
 
-    // Pin to sidebar, if needed
     if ($('#pin-to-sidebar')[0].checked) {
       pinToSidebar();
     }
 
     accounts = _.unique(_.flatten(accounts));
 
-    // Reload the webview
     ipc.send('backendAction_windowMessageToOwner', null, accounts);
+
     setTimeout(function() {
       ipc.send('backendAction_closePopupWindow');
     }, 600);
+
+    // Send Mist accountsChanged event
+    ipc.send('mistAPI_event', 'accountsChanged', accounts);
   },
   /**
     Create account
 
     @event click button.create-account
     */
-  'click button.create-account': function(e, template) {
+  'click button.create-account': function() {
     ipc.send('mistAPI_createAccount');
   }
 });

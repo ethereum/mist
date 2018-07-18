@@ -117,8 +117,9 @@ Template['layout_browserBar'].events({
 
     @event click .app-bar > button.accounts'
     */
-  'click .app-bar > button.accounts': function(e, template) {
+  'click .app-bar > button.accounts': function() {
     LocalStore.set('chosenTab', LocalStore.get('selectedTab')); // needed by connectAccount
+
     mist
       .requestAccounts()
       .then(accounts => {

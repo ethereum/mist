@@ -95,6 +95,13 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
   }
 });
 
+ipc.on('mistAPI_event', (event, type, ...values) => {
+  const mainWindow = Windows.getByType('main');
+  if (mainWindow) {
+    mainWindow.send(`mistAPI_event_${type}`, ...values);
+  }
+});
+
 ipc.on('backendAction_getLanguage', e => {
   store.dispatch(getLanguage(e));
 });
@@ -249,9 +256,10 @@ ipc.on('mistAPI_requestAccounts', async event => {
 
   if (tab && tab.permissions) {
     if (tab.permissions.accounts) {
+      // Return permissioned accounts
       accounts = tab.permissions.accounts;
     } else if (tab.permissions.admin) {
-      // Return all accounts
+      // If admin tab, return all accounts
       try {
         const result = await ethereumNode.send('eth_accounts');
         accounts = result.result;

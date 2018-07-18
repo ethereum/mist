@@ -176,7 +176,7 @@ const origin = this.origin;
       return new Error('Batch calls are not supported.');
     }
 
-    /* Backwards compatibility for web3.currentProvider */
+    /* web3.js provider compatibility */
 
     sendAsync(payload, callback) {
       return this.send(payload.method, payload.params)

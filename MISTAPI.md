@@ -2,7 +2,7 @@
 
 ## Requesting a provider
 
-You can learn how to request an [Ethereum Provider](https://github.com/ryanio/EIPs/blob/ethereum-provider/EIPS/eip-1193.md) for your dapp in [EIP 1102](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
+You can learn how to request an [Ethereum Provider](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md) for your dapp in [EIP 1102](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
 
 ```js
 // Request Ethereum Provider (EIP 1102)
@@ -17,7 +17,8 @@ function start(ethereum) {
   // A) Primary use case - set provider in web3.js
   web3.setProvider(ethereum);
   // B) Secondary use case - use provider object directly
-  // See https://github.com/ryanio/EIPs/blob/ethereum-provider/EIPS/eip-1193.md#examples
+  // See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#examples
+}
 ```
 
 ## API

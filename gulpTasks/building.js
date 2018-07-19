@@ -76,10 +76,11 @@ gulp.task('pack-wallet', cb => {
   if (options.type == 'mist') {
     del(['./wallet']).then(() => {
       console.log('Building wallet...');
+      const buildPath = path.join('..', '..', 'wallet');
       exec(
         `cd meteor-dapp-wallet/app \
             && yarn install \
-            && ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
+            && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
         (err, stdout, stderr) => {
           console.log(stdout, stderr);
           cb(err);
@@ -94,9 +95,8 @@ gulp.task('pack-wallet', cb => {
 gulp.task('bundling-interface', cb => {
   const bundle = additionalCommands => {
     const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
-
     exec(
-      `../node_modules/.bin/meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
+      `"../node_modules/.bin/meteor-build-client" ${buildPath} -p "" ${additionalCommands}`,
       { cwd: 'interface' },
       (err, stdout) => {
         console.log(stdout);
@@ -106,9 +106,17 @@ gulp.task('bundling-interface', cb => {
   };
 
   if (type === 'wallet') {
-    bundle(`&& cd ../meteor-dapp-wallet/app \
+    const walletPath = path.join('..', 'meteor-dapp-wallet', 'app');
+    const walletBuildPath = path.join(
+      '..',
+      `dist_${type}`,
+      'app',
+      'interface',
+      'wallet'
+    );
+    bundle(`&& cd ${walletPath} \
             && yarn install \
-            && ../../node_modules/.bin/meteor-build-client ../dist_${type}/app/interface/wallet -p ""`);
+            && "../../node_modules/.bin/meteor-build-client" ${walletBuildPath} p ""`);
   } else {
     bundle();
   }

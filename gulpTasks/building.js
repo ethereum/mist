@@ -73,53 +73,43 @@ gulp.task('switch-production', cb => {
 });
 
 gulp.task('pack-wallet', cb => {
-  if (options.type == 'mist') {
-    del(['./wallet']).then(() => {
-      console.log('Building wallet...');
-      const buildPath = path.join('..', '..', 'wallet');
-      exec(
-        `cd meteor-dapp-wallet/app \
-            && yarn install \
-            && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
-        (err, stdout, stderr) => {
-          console.log(stdout, stderr);
-          cb(err);
-        }
-      );
-    });
-  } else {
-    cb();
-  }
-});
-
-gulp.task('bundling-interface', cb => {
-  const bundle = additionalCommands => {
-    const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+  del(['./wallet']).then(() => {
+    console.log('Building wallet...');
+    const buildPath = path.join('..', '..', 'wallet');
     exec(
-      `"../node_modules/.bin/meteor-build-client" ${buildPath} -p "" ${additionalCommands}`,
-      { cwd: 'interface' },
-      (err, stdout) => {
-        console.log(stdout);
+      `cd meteor-dapp-wallet/app \
+          && yarn install \
+          && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+      (err, stdout, stderr) => {
+        console.log(stdout, stderr);
         cb(err);
       }
     );
-  };
+  });
+});
 
+// Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.
+gulp.task('move-wallet', cb => {
   if (type === 'wallet') {
-    const walletPath = path.join('..', 'meteor-dapp-wallet', 'app');
-    const walletBuildPath = path.join(
-      '..',
-      `dist_${type}`,
-      'app',
-      'interface',
-      'wallet'
-    );
-    bundle(`&& cd ${walletPath} \
-            && yarn install \
-            && "../../node_modules/.bin/meteor-build-client" ${walletBuildPath} p ""`);
-  } else {
-    bundle();
+    console.debug('Moving ./wallet to ./interface/wallet');
+    const basePath = path.join('dist_wallet', 'app');
+    const fromPath = path.join(basePath, 'wallet');
+    const toPath = path.join(basePath, 'interface', 'wallet');
+    shell.mv(fromPath, toPath);
   }
+  cb();
+});
+
+gulp.task('bundling-interface', cb => {
+  const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+  exec(
+    `"../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+    { cwd: 'interface' },
+    (err, stdout) => {
+      console.log(stdout);
+      cb(err);
+    }
+  );
 });
 
 gulp.task('copy-i18n', () => {

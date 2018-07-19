@@ -8,10 +8,9 @@ cache:
 
 sudo: required
 
-addons:
-  artifacts:
+artifact_config: &artifact_config
     paths:
-      - $(git ls-files -o | grep -E "^dist_(mist|wallet)/release" | tr "\n" ":")
+      - $( ls dist_{mist,wallet}/release/* | tr "\n" ":" )
         
 matrix:
   include:
@@ -21,6 +20,8 @@ matrix:
       env:
           - GULP_PLATFORM=linux
       addons:
+        artifacts:
+          <<&artifacts_config
         apt:
           packages:
             - icnsutils
@@ -28,27 +29,27 @@ matrix:
             - xz-utils
             - gcc-multilib
             - g++-multilib
-
+      before_install:
+        # prepare integration tests
+        - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+        
     # MAC
     - os: osx
-      osx_image: xcode8.3  # currently xcode8.1+ doesn't support electron-builder macOS code-signing (https://github.com/electron-userland/electron-builder/issues/820#issuecomment-267777060)
+      osx_image: xcode8.3  
       env:
           - GULP_PLATFORM=mac
+      addons:
+        artifacts:
+          <<&artifacts_config
       before_install:
-          - npm install -g yarn  # macOS xcode8 image doesn't natively support yarn yet
-
-  fast_finish: true
-
+          - npm install -g yarn
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
 
   - yarn
 
-  # prepare integration tests
-  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3
-
-  # disable macOS code-signing (production certificate) on develop branch
+  # only code signs when on master
   - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi
 
 script:
@@ -61,8 +62,7 @@ script:
   - yarn gulp test
 
 after_success:
-  -|
-    if [[ $TRAVIS_BRANCH == "master" ]]; then
+  - if [[ $TRAVIS_BRANCH == "master" ]]; then
       gulp upload-queue --$GULP_PLATFORM;
       gulp upload-queue --wallet --$GULP_PLATFORM;
     fi

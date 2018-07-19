@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import ExecutionContext from './ExecutionContext';
+import FeeSelector from './FeeSelector';
 import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TransactionParties from './TransactionParties';
@@ -11,16 +12,34 @@ class SendTransactionConfirmation extends Component {
     super(props);
 
     this.state = {
-      estimatedGas: 0,
+      estimatedGas: 3000000,
       executionFunction: '',
       hasSignature: false,
       providedGas: 0,
       toIsContract: false,
-      unlocking: false
+      unlocking: false,
+      gasPrice: this.props.newTransaction.gasPrice || 0
     };
   }
 
   componentDidMount() {
+    this.getGasPrice();
+    this.determineIfContract();
+    this.lookupSignature();
+  }
+
+  getGasPrice() {
+    if (!this.props.newTransaction.gasPrice) {
+      web3.eth.getGasPrice((e, res) => {
+        if (!e) {
+          const gasPrice = '0x' + res.toString(16);
+          this.setState({ gasPrice });
+        }
+      });
+    }
+  }
+
+  determineIfContract() {
     // Determine if "to" is a contract
     web3.eth.getCode(this.props.newTransaction.to, (e, res) => {
       console.log('∆∆∆ getCode e', e);
@@ -30,6 +49,32 @@ class SendTransactionConfirmation extends Component {
         // setWindowSize(template);
       }
     });
+  }
+
+  lookupSignature() {
+    const { data } = this.props.newTransaction;
+
+    if (data && data.length > 8) {
+      const bytesSignature =
+        data.substr(0, 2) === '0x'
+          ? data.substr(0, 10)
+          : '0x' + data.substr(0, 8);
+
+      // try window.SIGNATURES first
+      if (_.first(window.SIGNATURES[bytesSignature])) {
+        console.log('∆∆∆ exFunc', _.first(window.SIGNATURES[bytesSignature]));
+
+        this.setState({
+          executionFunction: _.first(window.SIGNATURES[bytesSignature])
+        });
+      } else {
+        fetch(
+          `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
+        ).then(response => {
+          console.log('∆∆∆ 4byte response', response);
+        });
+      }
+    }
   }
 
   // TODO: new designs: function name as title
@@ -104,6 +149,8 @@ class SendTransactionConfirmation extends Component {
           hasSignature={this.state.hasSignature}
           value={value}
         />
+
+        <FeeSelector />
 
         <Footer
           unlocking={this.state.unlocking}

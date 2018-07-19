@@ -1,0 +1,71 @@
+#
+# TODO: group into `dependencies`, `build` and `test` keys
+# TODO: name commands properly
+# TODO: store_artifacts
+# TODO: store_test_results
+# TODO: one docker image per arch
+# TODO: improve caching
+# TODO: mac job
+# TODO: windows job
+# TODO: build .deb or .AppImage
+#
+
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/mist
+
+    steps:
+      - checkout
+
+      # DEBUG: node-gyp uses python
+      - run: python --version
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
+      - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
+
+      # Setting variable to fix node-gyp build error: https://github.com/nodejs/node/issues/7173#issuecomment-224772258
+      - run: export CXX_host="g++ -m32"
+
+      # Video config for testing
+      # - run: export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+
+      # Installing multilib (build for 32 and 64 architectures): https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
+      - run: sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib
+
+      # Adding global dependencies
+      - run: yarn global add gulp-cli meteor-build-client electron@1.8.3
+
+      # - run: PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+      - run: meteor || curl https://install.meteor.com | /bin/sh
+
+      - run: yarn
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: yarn test:unit:once
+      - run: gulp --linux
+      - run: xvfb-run gulp test

@@ -1,4 +1,3 @@
-# Test against the latest version of this Node.js version
 environment:
   nodejs_version: "8"
 
@@ -30,5 +29,4 @@ test_script:
   - yarn gulp --wallet --win
   - yarn gulp test
 
-# Don't actually build.
 build: off

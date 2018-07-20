@@ -8,10 +8,6 @@ cache:
 
 sudo: required
 
-artifact_config: &artifact_config
-    paths:
-      - $( ls dist_{mist,wallet}/release/* | tr "\n" ":" )
-        
 matrix:
   include:
     # LINUX
@@ -21,7 +17,8 @@ matrix:
           - GULP_PLATFORM=linux
       addons:
         artifacts:
-          <<&artifacts_config
+          paths:
+            - $( ls dist_{mist,wallet}/release/* | tr "\n" ":" )
         apt:
           packages:
             - icnsutils
@@ -40,7 +37,8 @@ matrix:
           - GULP_PLATFORM=mac
       addons:
         artifacts:
-          <<&artifacts_config
+          paths:
+            - $( ls dist_{mist,wallet}/release/* | tr "\n" ":" )
       before_install:
           - npm install -g yarn
 

@@ -23,14 +23,30 @@ class ExecutionContext extends Component {
     return (
       <div className="execution-context__sentence">
         Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
+        <div className="execution-context__transfer-price">
+          About {this.calculateTransferValue()} USD
+        </div>
       </div>
     );
+  }
+
+  calculateTransferValue() {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
+
+    // TODO: BigNumber math
+    const fee = this.props.priceUSD * (this.props.value / 1000000000000000000);
+    return formatter.format(fee);
   }
 
   render() {
     return (
       <div className="execution-context">
         {this.renderExecutionSentence()}
+
+        <div className="execution-context__details-link">More details</div>
 
         {/*
         <Data

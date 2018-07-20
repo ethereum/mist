@@ -14,17 +14,37 @@ class FeeSelector extends Component {
   };
 
   render() {
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
+
+    // TODO: BigNumber math
+    const standardFee =
+      this.props.priceUSD * (this.props.estimatedGas / 1000000000);
+    const formattedStandardFee = formatter.format(standardFee);
+
+    // TODO: priority calculation
+    const priorityFee = standardFee * 2;
+    const formattedPriorityFee = formatter.format(priorityFee);
+
     if (this.state.priority) {
       return (
-        <div onClick={this.handleClick} className="fee-selector">
-          <span className="fee-selector__btn">Priority Fee:</span> $0.36 USD
+        <div className="fee-selector">
+          <span onClick={this.handleClick} className="fee-selector__btn">
+            Priority Fee:
+          </span>{' '}
+          {formattedPriorityFee} USD
         </div>
       );
     }
 
     return (
-      <div onClick={this.handleClick} className="fee-selector">
-        <span className="fee-selector__btn">Standard Fee:</span> $0.18 USD
+      <div className="fee-selector">
+        <span onClick={this.handleClick} className="fee-selector__btn">
+          Standard Fee:
+        </span>{' '}
+        {formattedStandardFee} USD
       </div>
     );
   }

@@ -51,7 +51,7 @@ class TransactionParties extends Component {
           className="simptip-position-bottom simptip-movable"
           data-tooltip={from}
         >
-          {this.shortenAddress(from)}
+          <span className="bold">{this.shortenAddress(from)}</span>
         </div>
       </div>
     );
@@ -80,7 +80,7 @@ class TransactionParties extends Component {
             data-tooltip={to}
             target="_blank"
           >
-            {this.shortenAddress(to)}
+            <span className="bold">{this.shortenAddress(to)}</span>
           </a>
         </div>
       );

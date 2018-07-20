@@ -18,7 +18,9 @@ class SendTransactionConfirmation extends Component {
       providedGas: 0,
       toIsContract: false,
       unlocking: false,
-      gasPrice: this.props.newTransaction.gasPrice || 0
+      gasPrice: this.props.newTransaction.gasPrice || 0,
+      gasError: '',
+      priceUSD: ''
     };
   }
 
@@ -26,6 +28,8 @@ class SendTransactionConfirmation extends Component {
     this.getGasPrice();
     this.determineIfContract();
     this.lookupSignature();
+    this.estimateGasUsage();
+    this.getPriceConversion();
   }
 
   getGasPrice() {
@@ -77,6 +81,41 @@ class SendTransactionConfirmation extends Component {
     }
   }
 
+  estimateGasUsage() {
+    this.setState({ gasLoading: true });
+    const { gas } = this.props.newTransaction;
+
+    console.log('∆∆∆ est gas...');
+    web3.eth.estimateGas(this.props.newTransaction).then((value, err) => {
+      console.log('∆∆∆ est gas');
+      console.log('∆∆∆ value', value);
+      console.log('∆∆∆ err', err);
+
+      if (value) {
+        return this.setState({ estimatedGas: value, gasLoading: false });
+      }
+
+      this.setState({ gasLoading: false });
+    });
+  }
+
+  getPriceConversion() {
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
+      mist.version
+    }`;
+
+    fetch(url).then(async (response, err) => {
+      console.log('∆∆∆ conversion:');
+      console.log('∆∆∆ response', response);
+      console.log('∆∆∆ err', err);
+
+      const priceData = await response.json();
+      console.log('∆∆∆ priceData', priceData);
+
+      this.setState({ priceUSD: priceData.USD });
+    });
+  }
+
   // TODO: new designs: function name as title
   renderTitle() {
     if (this.state.toIsContract) {
@@ -124,21 +163,15 @@ class SendTransactionConfirmation extends Component {
 
         <ExecutionContext
           data={this.props.newTransaction.data}
-          showFormattedParams={this.state.showFormattedParams}
+          estimatedFee={this.state.estimatedFee}
           estimatedGas={this.state.estimatedGas}
           gasLoading={this.state.gasLoading}
-          estimatedFee={this.state.estimatedFee}
+          priceUSD={this.state.priceUSD}
           providedGas={this.state.providedGas}
+          showFormattedParams={this.state.showFormattedParams}
           to={to}
           toIsContract={this.state.toIsContract}
           value={this.props.newTransaction.value}
-        />
-
-        <GasNotification
-          gasLoading={this.state.gasLoading}
-          gasError={this.state.gasError}
-          toIsContract={this.state.toIsContract}
-          to={to}
         />
 
         <TransactionParties
@@ -150,7 +183,18 @@ class SendTransactionConfirmation extends Component {
           value={value}
         />
 
-        <FeeSelector />
+        <FeeSelector
+          estimatedGas={this.state.estimatedGas}
+          priceUSD={this.state.priceUSD}
+        />
+
+        <GasNotification
+          estimatedGas={this.state.estimatedGas}
+          gasLoading={this.state.gasLoading}
+          gasError={this.state.gasError}
+          toIsContract={this.state.toIsContract}
+          to={to}
+        />
 
         <Footer
           unlocking={this.state.unlocking}

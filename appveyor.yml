@@ -27,10 +27,10 @@ test_script:
   - node --version
   - npm --version
   # run tests
-  #- yarn test:unit:once
 
   - yarn gulp --mist --win
   - yarn gulp --wallet --win
   - yarn gulp test
+  - yarn test:unit:once
 
 build: off

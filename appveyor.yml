@@ -10,12 +10,16 @@ cache:
 environment:
   nodejs_version: "8"
 
-# Install scripts. (runs after repo cloning)
 install:
+  # enabling RDP for debugging purposes
+  - ps: $rdpblock = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))`
+  
+
+  # needed for meteor-dapp-wallet
+  - git submodule update --recursive 
+
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
-
-  - git submodule update --recursive 
 
   # installs meteor using Chocolatey
   - cinst meteor
@@ -27,11 +31,12 @@ install:
   - npm install --global yarn
 
   - python.exe --version
-  # node-gyp requirement
-  - npm install --global windows-build-tools
+  # node-gyp requirement - Appveyor already has python 2.7
+  #- npm install --global windows-build-tools
 
   - yarn
   - dir
+  - init:
 
 # Post-install test scripts.
 test_script:

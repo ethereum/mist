@@ -18,7 +18,7 @@
     "build:mist": "gulp --mist",
     "dist:mist": "gulp upload-queue --mist",
     "dist:wallet": "gulp upload-queue --wallet",
-    "test:unit": "mocha --compilers babel-register './tests/unit/' --watch --recursive",
+    "test:unit": "mocha --compilers babel-register './tests/unit/' --recursive --watch",
     "test:unit:once": "mocha --compilers babel-register './tests/unit/' --recursive",
     "test:e2e": "gulp test",
     "task": "gulp"

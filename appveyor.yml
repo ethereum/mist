@@ -6,6 +6,9 @@ install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
 
+  - git submodule update --recursive 
+  - dir
+
   # installs meteor using Chocolatey
   - cinst meteor
 

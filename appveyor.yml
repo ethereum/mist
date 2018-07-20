@@ -1,3 +1,12 @@
+image: Visual Studio 2017
+platform: x64
+
+cache:
+  - node_modules
+  - '%LOCALAPPDATA%\electron\Cache'
+  - '%LOCALAPPDATA%\electron-builder\cache'
+
+
 environment:
   nodejs_version: "8"
 
@@ -7,7 +16,6 @@ install:
   - ps: Install-Product node $env:nodejs_version
 
   - git submodule update --recursive 
-  - dir
 
   # installs meteor using Chocolatey
   - cinst meteor
@@ -23,14 +31,10 @@ install:
   - npm install --global windows-build-tools
 
   - yarn
+  - dir
 
 # Post-install test scripts.
 test_script:
-  # Output useful info for debugging.
-  - node --version
-  - npm --version
-  # run tests
-
   - yarn gulp --mist --win
   - yarn gulp --wallet --win
   - yarn gulp test

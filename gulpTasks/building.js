@@ -77,8 +77,7 @@ gulp.task('pack-wallet', cb => {
     console.log('Building wallet...');
     const buildPath = path.join('..', '..', 'wallet');
     exec(
-      `yarn install \
-        && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+      `yarn install && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
       { cwd: path.join('meteor-dapp-wallet', 'app') },
       (err, stdout, stderr) => {
         console.log(stdout, stderr);
@@ -103,7 +102,7 @@ gulp.task('move-wallet', cb => {
 gulp.task('bundling-interface', cb => {
   const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
   exec(
-    `"../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+    `yarn build:interface {buildPath} -p ""`,
     { cwd: 'interface' },
     (err, stdout) => {
       console.log(stdout);

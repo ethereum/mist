@@ -1,0 +1,34 @@
+# Test against the latest version of this Node.js version
+environment:
+  nodejs_version: "8"
+
+# Install scripts. (runs after repo cloning)
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+
+  # installs meteor using Chocolatey
+  - cinst meteor
+
+  # install modules
+  - npm install --global yarn
+
+  # node-gyp requirement
+  - npm install --global windows-build-tools
+
+  - yarn
+
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - yarn test:unit:once
+
+  - yarn gulp --mist --win
+  - yarn gulp --wallet --win
+  - yarn gulp test
+
+# Don't actually build.
+build: off

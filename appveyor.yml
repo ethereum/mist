@@ -12,8 +12,8 @@ environment:
 
 install:
   # enabling RDP for debugging purposes
-  - ps: $rdpblock = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))`
-  
+  - ps: $rdpblock = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
 
   # needed for meteor-dapp-wallet
   - git submodule update --recursive 

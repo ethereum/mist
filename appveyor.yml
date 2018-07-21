@@ -11,6 +11,8 @@ environment:
   nodejs_version: "8"
 
 install:
+  - dir C:\Windows\system32\cmd.exe
+  - dir C:\Windows\System32\cmd.exe
   # enabling RDP for debugging purposes
   - ps: $rdpblock = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 

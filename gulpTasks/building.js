@@ -76,8 +76,15 @@ gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
     console.log('Building wallet...');
     const buildPath = path.join('..', '..', 'wallet');
+    const binPath = path.join(
+      '..',
+      '..',
+      'node_modules',
+      '.bin',
+      'meteor-build-client'
+    );
     exec(
-      `yarn install && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+      `yarn install && ${binPath} ${buildPath} -p ""`,
       { cwd: path.join('meteor-dapp-wallet', 'app') },
       (err, stdout, stderr) => {
         console.log(stdout, stderr);

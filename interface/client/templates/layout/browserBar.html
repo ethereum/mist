@@ -1,39 +1,41 @@
 <template name="layout_browserBar">
-    {{#with dapp}}
-    <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}} {{#if permissions.admin}}url-bar-admin{{/if}}">
-        <button title="go back" class="back icon icon-arrow-left"></button>
-        <button title="refresh page" class="reload icon icon-refresh"></button>
+  {{#with dapp}}
+  <div class="browser-bar {{#if TemplateVar.getFrom currentWebView 'loading'}}loading{{/if}} {{#if appBar}}url-bar-{{appBar}}{{/if}} {{#if permissions.admin}}url-bar-admin{{/if}}">
+    <button title="go back" class="back icon icon-arrow-left"></button>
+    <button title="refresh page" class="reload icon icon-refresh"></button>
 
-            <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
-                <label for="url-input" class="dapp-info {{#if icon}}has-icon{{/if}}">
-                    {{#if icon}}
-                        <img src="{{icon}}" class="app-icon">
-                    {{/if}}
-                    <span title="{{nameFull}}">{{name}}</span>
-                </label>
+    <div class="app-bar {{TemplateVar.get "browserBarTab"}}">
+      <label for="url-input" class="dapp-info {{#if icon}}has-icon{{/if}}">
+        {{#if icon}}
+        <img src="{{icon}}" class="app-icon">
+        {{/if}}
+        <span title="{{nameFull}}">{{name}}</span>
+      </label>
 
-                <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
-                    {{#unless permissions.admin}}
-                    <input class="url-input" id="url-input" type="text" value="{{url}}">
-                    {{/unless}}
-                    <div class="url-breadcrumb" >{{breadcrumb}}</div>
-                </form>
+      <form class="url" action="about:blank" target="dapp-form-helper-iframe" autocomplete="on">
+        {{#unless permissions.admin}}
+        <input class="url-input" id="url-input" type="text" value="{{url}}">
+        {{/unless}}
+        <div class="url-breadcrumb" >{{breadcrumb}}</div>
+      </form>
 
-                {{#unless permissions.admin}}
-                <button class="accounts">
-                    {{#each dappAccounts}}
-                        <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
-                            {{> dapp_identicon identity=address class="dapp-tiny"}}
-                        </span>
-                    {{else}}
-                        <span class="connect-button">
-                            {{i18n 'mist.browserBar.buttons.connect'}}
-                        </span>
-                        <span class="simptip-position-left simptip-movable no-accounts" data-tooltip="{{i18n 'mist.browserBar.buttons.noAccounts'}}"></span>
-                    {{/each}}
-                </button>
-                {{/unless}}
-            </div>
+      {{#unless permissions.admin}}
+      {{#unless isUrlAboutBlank}}
+      <button class="accounts">
+        {{#each dappAccounts}}
+        <span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
+          {{> dapp_identicon identity=address class="dapp-tiny"}}
+        </span>
+        {{else}}
+        <span class="connect-button">
+          {{i18n 'mist.browserBar.buttons.connect'}}
+        </span>
+        <span class="simptip-position-left simptip-movable no-accounts" data-tooltip="{{i18n 'mist.browserBar.buttons.noAccounts'}}"></span>
+        {{/each}}
+      </button>
+      {{/unless}}
+      {{/unless}}
     </div>
-    {{/with}}
+  </div>
+  {{/with}}
 </template>

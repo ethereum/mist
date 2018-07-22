@@ -143,55 +143,58 @@ Template['views_webview'].helpers({
   checkedUrl: function() {
     var template = Template.instance();
     var tab = Tabs.findOne(this._id, { fields: { redirect: 1 } });
-    var url;
 
-    if (tab) {
-      // set url only once
-      if (tab.redirect) {
-        url = tab.redirect;
-
-        // remove redirect
-        Tabs.update(this._id, {
-          $unset: {
-            redirect: ''
-          }
-        });
-      }
-
-      // allow error pages
-      if (url && url.indexOf(`file://${dirname}/errorPages/`) === 0) {
-        return url;
-      }
-
-      // allow local wallet
-      if (url && url.indexOf(`file://${dirname}/wallet/index.html`) === 0) {
-        return url;
-      }
-
-      // CHECK URL and throw error if not allowed
-      if (!Helpers.sanitizeUrl(url, true)) {
-        // Prevent websites using the history back attacks
-        if (template.view.isRendered) {
-          // get the current webview
-          var webview = template.find('webview');
-          webview.clearHistory();
-        }
-
-        console.warn('Not allowed URL: ' + template.url);
-        return 'file://' + dirname + '/errorPages/400.html';
-      }
-
-      // add url
-      if (url) {
-        template.url = url;
-        Tabs.update(this._id, {
-          $set: {
-            url: url
-          }
-        });
-      }
-
-      return Helpers.formatUrl(url);
+    if (!tab) {
+      return;
     }
+
+    var url = tab.url;
+
+    // set url only once
+    if (tab.redirect) {
+      url = tab.redirect;
+
+      // remove redirect
+      Tabs.update(this._id, {
+        $unset: {
+          redirect: ''
+        }
+      });
+    }
+
+    // allow error pages
+    if (url && url.indexOf(`file://${dirname}/errorPages/`) === 0) {
+      return url;
+    }
+
+    // allow local wallet
+    if (url && url.indexOf(`file://${dirname}/wallet/index.html`) === 0) {
+      return url;
+    }
+
+    // CHECK URL and throw error if not allowed
+    if (!Helpers.sanitizeUrl(url, true)) {
+      // Prevent websites using the history back attacks
+      if (template.view.isRendered) {
+        // get the current webview
+        var webview = template.find('webview');
+        webview.clearHistory();
+      }
+
+      console.warn('Not allowed URL: ' + template.url);
+      return 'file://' + dirname + '/errorPages/400.html';
+    }
+
+    // add url
+    if (url && template.url !== url) {
+      template.url = url;
+      Tabs.update(this._id, {
+        $set: {
+          url: url
+        }
+      });
+    }
+
+    return Helpers.formatUrl(url);
   }
 });

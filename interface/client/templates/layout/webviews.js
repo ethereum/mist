@@ -32,7 +32,7 @@ Template['layout_webviews'].helpers({
 });
 
 /**
-Set TemplateVar 'loading' if node has connected 
+Set TemplateVar 'loading' if node has connected
 @method watchNodeStatus
 */
 var watchNodeStatus = function(template) {

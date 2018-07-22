@@ -151,7 +151,8 @@
         "browser": "Browse"
       },
       "submenu": {
-        "account": "Account",
+        "account": "__count__ Account",
+        "accounts": "__count__ Accounts",
         "connectAccounts": "Connect Accounts"
       }
     },

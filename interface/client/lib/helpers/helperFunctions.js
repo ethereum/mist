@@ -85,7 +85,9 @@ Format Urls, e.g add a default protocol if on is missing.
 @param {String} url
 **/
 Helpers.formatUrl = function(url) {
-  if (!url) return;
+  if (!url) {
+    return;
+  }
 
   // add http:// if no protocol is present
   if (url.length === 64 && !!url.match(/^[0-9a-f]+$/)) {
@@ -141,6 +143,10 @@ Helpers.generateBreadcrumb = function(url) {
     search: Blaze._escape(url.search),
     hash: Blaze._escape(url.hash)
   };
+
+  if (filteredUrl.protocol == 'about:' && filteredUrl.pathname == 'blank') {
+    return 'Dapp URL (http://..., https://..., bzz://...)';
+  }
 
   filteredUrl.pathname += filteredUrl.search.replace(/\?/g, '/');
   filteredUrl.pathname += filteredUrl.hash.replace(/#/g, '/');

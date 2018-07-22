@@ -103,7 +103,7 @@ const syncDataFromBackend = function(coll) {
     try {
       let done = 0;
 
-      coll.remove({});
+      // coll.remove({});
 
       if (!dataJson.length) {
         resolve();
@@ -114,15 +114,6 @@ const syncDataFromBackend = function(coll) {
       dataJson.forEach(record => {
         Tracker.afterFlush(() => {
           try {
-            // On Meteor startup if a record contains a redirect to about:blank
-            // page, the application process crashes.
-            if (
-              _.isString(record.redirect) &&
-              record.redirect.indexOf('//about:blank') > -1
-            ) {
-              record.redirect = null;
-            }
-
             if (record._id) {
               coll.upsert(record._id, record);
             } else {

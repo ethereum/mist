@@ -45,6 +45,13 @@ Template['layout_browserBar'].helpers({
   dapp: function() {
     return Tabs.findOne(LocalStore.get('selectedTab'));
   },
+  isUrlAboutBlank: function() {
+    if (this.url == 'about:blank') {
+      return true;
+    } else {
+      return false;
+    }
+  },
   /**
     Returns dapps current accounts
 
@@ -151,7 +158,11 @@ Template['layout_browserBar'].events({
 
     @event mouseenter .app-bar
     */
-  'mouseenter .app-bar': function(e, template) {
+  'mouseenter .app-bar': function(event, template) {
+    if (template.$('.url-input')[0].value == 'about:blank') {
+      template.$('.url-input')[0].value = 'https://';
+    }
+
     clearTimeout(TemplateVar.get('timeoutId'));
   },
   /*

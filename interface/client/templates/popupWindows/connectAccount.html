@@ -53,14 +53,16 @@
 				{{/each}}
 			</ul>
 
-			<div class="checkbox-container">
-				<input type="checkbox" id="pin-to-sidebar" checked>
-				<label for="pin-to-sidebar">{{i18n "mist.popupWindows.connectAccount.pinToSidebar"}}</label>
-			</div>
+			{{#if isBrowserTab }}
+				<div class="checkbox-container">
+					<input type="checkbox" id="pin-to-sidebar" checked>
+					<label for="pin-to-sidebar">{{i18n "mist.popupWindows.connectAccount.pinToSidebar"}}</label>
+				</div>
+			{{/if}}
 
 			<div class="dapp-modal-buttons">
 				<button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
-				{{# if accountNumber }}
+				{{#if accountNumber }}
 					<button class="ok dapp-primary-button" type="submit">{{i18n "buttons.authorize"}}</button>
 				{{else}}
 					<button class="stay-anonymous dapp-primary-button" type="button">{{i18n "buttons.stayAnonymous"}}</button>

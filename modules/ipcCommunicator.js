@@ -66,7 +66,7 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
     return;
   }
 
-  // If msg is from a generic window, use the "actingType" instead of type
+  // If msg is from a generic window, use `actingType` instead of type
   const senderWindowType = senderWindow.actingType || senderWindow.type;
 
   if (senderWindow.ownerId) {
@@ -84,13 +84,7 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
 
     // Send through the mainWindow to the webviews
     if (mainWindow) {
-      mainWindow.send(
-        'uiAction_windowMessage',
-        senderWindowType,
-        senderWindow.ownerId,
-        error,
-        value
-      );
+      mainWindow.send('uiAction_windowMessage', senderWindowType, error, value);
     }
   }
 });

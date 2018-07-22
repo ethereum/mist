@@ -37,7 +37,7 @@ delete window.require;
 // ipcRenderer.send('setLanguage', navigator.language.substr(0,2));
 
 // A message coming from other window, to be passed to a webview
-ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
+ipcRenderer.on('uiAction_windowMessage', (event, type, id, error, value) => {
   if (type === 'connectAccount') {
     if (error) {
       return;

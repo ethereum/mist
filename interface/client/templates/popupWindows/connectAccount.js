@@ -26,13 +26,13 @@ var pinToSidebar = function() {
         { limit: 2, sort: { timestamp: -1 } }
       ).fetch();
       var lastPage = lastPageItems.pop();
-      var lastPageURL = lastPage ? lastPage.url : 'http://about:blank';
+      var lastPageURL = lastPage ? lastPage.url : 'about:blank';
       Tabs.update('browser', {
         url: lastPageURL,
         redirect: lastPageURL
       });
 
-      // remove last page form last pages
+      // remove last page from last pages
       if (
         (sameLastPage = LastVisitedPages.findOne({
           url: selectedTab.url
@@ -74,6 +74,14 @@ Template['popupWindows_connectAccount'].helpers({
     */
   dapp: function() {
     return TemplateVar.get('tab');
+  },
+  isBrowserTab: function() {
+    const selectedTab = TemplateVar.get('tab');
+    if (selectedTab._id == 'browser') {
+      return true;
+    } else {
+      return false;
+    }
   },
   /**
     Returns a cleaner version of URL
@@ -158,7 +166,7 @@ Template['popupWindows_connectAccount'].events({
 
     var accounts = TemplateVar.get('accounts');
 
-    if ($('#pin-to-sidebar')[0].checked) {
+    if ($('#pin-to-sidebar')[0] && $('#pin-to-sidebar')[0].checked) {
       pinToSidebar();
     }
 

@@ -56,6 +56,13 @@ Template['layout_sidebar'].helpers({
   tabs: function() {
     return Tabs.find({}, { sort: { position: 1 } }).fetch();
   },
+  isUrlAboutBlank: function() {
+    if (this.url == 'about:blank') {
+      return true;
+    } else {
+      return false;
+    }
+  },
   /**
     Return the correct name
 
@@ -201,21 +208,11 @@ Template['layout_sidebar'].events({
     mist
       .requestAccounts()
       .then(accounts => {
-        dbSync.syncDataFromBackend(LastVisitedPages);
-        dbSync.syncDataFromBackend(Tabs).then(function() {
-          var tabCount = Tabs.find().fetch().length;
-          var tabId;
-          if (tabCount > initialTabCount) {
-            // browse tab was pinned
-            tabId = Tabs.findOne({}, { sort: { position: -1 }, limit: 1 });
-          } else {
-            tabId = initialTabId;
+        var tabId = LocalStore.get('selectedTab');
+        Tabs.update(tabId, {
+          $set: {
+            'permissions.accounts': accounts
           }
-          Tabs.update(tabId, {
-            $set: {
-              'permissions.accounts': accounts
-            }
-          });
         });
       })
       .catch(error => {

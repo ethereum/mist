@@ -28,22 +28,14 @@ linux_dependencies: &linux_dependencies
     sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils &&
     sudo apt-get install graphicsmagick
 
-windows_dependencies: &windows_dependencies
-  name: Windows package dependencies
-  command: |
-    sudo apt-get install software-properties-common &&
-    sudo dpkg --add-architecture i386 &&
-    sudo add-apt-repository ppa:ubuntu-wine/ppa -y &&
-    sudo apt-get install --no-install-recommends -y mono-devel nsis ca-certificates-mono wine1.8
-
 install_meteor: &install_meteor
   name: Installing Meteor
   # PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
   command: which meteor || curl https://install.meteor.com | /bin/sh
 
 install_node_modules: &install_node_modules
-  name: Installing node modules using yarn
-  command: yarn global add gulp-cli meteor-build-client && yarn
+  name: Installing node dependencies using yarn
+  command: yarn 
 
 
 # Javascript Node CircleCI 2.0 configuration file
@@ -96,8 +88,7 @@ jobs:
       - run:
           <<: *install_node_modules
 
-      - run: yarn run gulp --linux
-      - run: yarn run gulp verify-artifacts --mist --linux
+      - run: yarn build:mist --linux
 
       - store_artifacts:
           path: dist_mist/release
@@ -115,50 +106,7 @@ jobs:
       - run:
           <<: *install_node_modules
 
-      - run: yarn run gulp --wallet --linux
-      - run: yarn run gulp verify-artifacts --wallet --linux
-
-      - store_artifacts:
-          path: dist_wallet/release
-
-  mist-windows:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /home/circleci/
-
-      - run:
-          <<: *linux_dependencies
-      - run:
-          <<: *windows_dependencies
-      - run:
-          <<: *install_meteor 
-      - run:
-          <<: *install_node_modules
-
-      - run: yarn run gulp --win
-      - run: yarn run gulp verify-artifacts --mist --win
-
-      - store_artifacts:
-          path: dist_mist/release
-
-  wallet-windows:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: /home/circleci/
-          
-      - run:
-          <<: *linux_dependencies
-      - run:
-          <<: *windows_dependencies
-      - run:
-          <<: *install_meteor 
-      - run:
-          <<: *install_node_modules
-
-      - run: yarn run gulp --wallet --win
-      - run: yarn run gulp verify-artifacts --wallet --win
+      - run: yarn build:wallet --linux
 
       - store_artifacts:
           path: dist_wallet/release
@@ -169,7 +117,7 @@ jobs:
     steps:
       - attach_workspace:
           at: /home/circleci/
-      - run: xvfb-run yarn run gulp test
+      - run: xvfb-run yarn test:e2e
 
   unit-test:
     <<: *defaults

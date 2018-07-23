@@ -187,9 +187,12 @@ class IpcProviderBackend {
               }
             })
               .then(() => {
-                return socket.connect(Settings.rpcConnectConfig, {
-                  timeout: 5000
-                });
+                return socket.connect(
+                  Settings.rpcConnectConfig,
+                  {
+                    timeout: 5000
+                  }
+                );
               })
               .then(() => {
                 log.debug(`Socket connected, id=${ownerId}`);
@@ -236,7 +239,9 @@ class IpcProviderBackend {
    * @param {String} state The new state.
    */
   _onNodeStateChanged(state) {
-    switch (state) { // eslint-disable-line default-case
+    switch (
+      state // eslint-disable-line default-case
+    ) {
       // stop syncing when node about to be stopped
       case ethereumNode.STATES.STOPPING:
         log.info('Ethereum node stopping, disconnecting sockets');

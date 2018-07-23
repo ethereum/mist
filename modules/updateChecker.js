@@ -14,7 +14,9 @@ const check = (exports.check = () => {
 
   let str = null;
 
-  switch (Settings.uiMode) { // eslint-disable-line default-case
+  switch (
+    Settings.uiMode // eslint-disable-line default-case
+  ) {
     case 'mist':
       str = 'mist';
       break;

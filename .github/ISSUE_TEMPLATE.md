@@ -1,4 +1,4 @@
-* [ ] I've asked for help in the [Mist Gitter](http://gitter.im/ethereum/mist) before filing this issue.
+- [ ] I've asked for help in the [Mist Gitter](http://gitter.im/ethereum/mist) before filing this issue.
 
 <!-- Please fill in these information below: -->
 

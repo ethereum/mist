@@ -127,7 +127,9 @@ class Window extends EventEmitter {
   constructor(mgr, type, opts) {
     super();
 
-    opts = opts || {};
+    opts = opts || {
+      electronOptions: {}
+    };
 
     this._mgr = mgr;
     this._log = log.create(type);
@@ -525,8 +527,11 @@ class Windows {
   }
 
   createPopup(type, options, callback) {
+    let enableReactPopups = true;
     const defaultPopupOpts = {
-      url: `${global.interfacePopupsUrl}#${type}`,
+      url:
+        `${global.interfacePopupsUrl}#${type}` +
+        (enableReactPopups ? `?app=popup&name=${type}` : ''),
       show: true,
       ownerId: null,
       useWeb3: true,
@@ -605,6 +610,8 @@ class Windows {
     log.info(`Create popup window: ${type}`);
 
     const wnd = this.create(type, opts, callback);
+
+    // wnd.webContents.openDevTools({mode: 'detach'})
 
     wnd.once('ready', () => {
       this.loading.hide();

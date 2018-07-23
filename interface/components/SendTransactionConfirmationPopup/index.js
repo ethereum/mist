@@ -166,6 +166,7 @@ class SendTransactionConfirmation extends Component {
           estimatedFee={this.state.estimatedFee}
           estimatedGas={this.state.estimatedGas}
           gasLoading={this.state.gasLoading}
+          network={this.props.nodes.network}
           priceUSD={this.state.priceUSD}
           providedGas={this.state.providedGas}
           showFormattedParams={this.state.showFormattedParams}
@@ -186,6 +187,7 @@ class SendTransactionConfirmation extends Component {
         <FeeSelector
           estimatedGas={this.state.estimatedGas}
           priceUSD={this.state.priceUSD}
+          network={this.props.nodes.network}
         />
 
         <GasNotification
@@ -198,7 +200,7 @@ class SendTransactionConfirmation extends Component {
 
         <Footer
           unlocking={this.state.unlocking}
-          network={this.props.network}
+          network={this.props.nodes.network}
           closePopup={this.closePopup}
         />
 

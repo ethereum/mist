@@ -20,8 +20,8 @@ class FeeSelector extends Component {
     });
 
     // TODO: BigNumber math
-    const standardFee =
-      this.props.priceUSD * (this.props.estimatedGas / 1000000000);
+    const gasEtherAmount = this.props.estimatedGas / 1000000000;
+    const standardFee = this.props.priceUSD * gasEtherAmount;
     const formattedStandardFee = formatter.format(standardFee);
 
     // TODO: priority calculation
@@ -34,7 +34,9 @@ class FeeSelector extends Component {
           <span onClick={this.handleClick} className="fee-selector__btn">
             Priority Fee:
           </span>{' '}
-          {formattedPriorityFee} USD
+          {this.props.network === 'main'
+            ? `${formattedPriorityFee} USD`
+            : `${gasEtherAmount * 2} ETH`}
         </div>
       );
     }
@@ -44,7 +46,9 @@ class FeeSelector extends Component {
         <span onClick={this.handleClick} className="fee-selector__btn">
           Standard Fee:
         </span>{' '}
-        {formattedStandardFee} USD
+        {this.props.network === 'main'
+          ? `${formattedStandardFee} USD`
+          : `${gasEtherAmount} ETH`}
       </div>
     );
   }

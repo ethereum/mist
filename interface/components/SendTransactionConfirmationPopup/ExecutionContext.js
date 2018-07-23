@@ -20,12 +20,21 @@ class ExecutionContext extends Component {
       return <div className="execution-context__sentence">Coming Soon!</div>;
     }
 
+    let conversion;
+    if (this.props.network === 'main') {
+      conversion = <span>About {this.calculateTransferValue()} USD</span>;
+    } else {
+      conversion = (
+        <span>
+          $0 USD (<span className="capitalize">{this.props.network}</span>)
+        </span>
+      );
+    }
+
     return (
       <div className="execution-context__sentence">
         Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
-        <div className="execution-context__transfer-price">
-          About {this.calculateTransferValue()} USD
-        </div>
+        <div className="execution-context__transfer-price">{conversion}</div>
       </div>
     );
   }
@@ -46,7 +55,9 @@ class ExecutionContext extends Component {
       <div className="execution-context">
         {this.renderExecutionSentence()}
 
-        <div className="execution-context__details-link">More details</div>
+        {this.props.toIsContract ? (
+          <div className="execution-context__details-link">More details</div>
+        ) : null}
 
         {/*
         <Data

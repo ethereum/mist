@@ -4,12 +4,6 @@ import DappIdenticon from '../DappIdenticon';
 // TODO: "TO" when sending ETH, otherwise "CONTRACT"
 
 class TransactionParties extends Component {
-  shortenAddress = address => {
-    if (_.isString(address)) {
-      return address.substr(0, 6) + '...' + address.substr(-4);
-    }
-  };
-
   totalAmount = () => {
     var amount = EthTools.formatBalance(
       web3.utils.toBN(this.props.value || 0),
@@ -47,11 +41,8 @@ class TransactionParties extends Component {
 
         <div className="tx-parties__direction-name">FROM</div>
 
-        <div
-          className="simptip-position-bottom simptip-movable"
-          data-tooltip={from}
-        >
-          <span className="bold">{this.shortenAddress(from)}</span>
+        <div>
+          <span className="bold">{from}</span>
         </div>
       </div>
     );
@@ -74,13 +65,8 @@ class TransactionParties extends Component {
             {toIsContract ? 'CONTRACT' : 'TO'}
           </div>
 
-          <a
-            href={`http://etherscan.io/address/${to}#code`}
-            className="simptip-position-bottom simptip-movable"
-            data-tooltip={to}
-            target="_blank"
-          >
-            <span className="bold">{this.shortenAddress(to)}</span>
+          <a href={`http://etherscan.io/address/${to}#code`} target="_blank">
+            <span className="bold">{to}</span>
           </a>
         </div>
       );

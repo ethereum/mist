@@ -54,15 +54,15 @@ install:
 script:
   - yarn test:unit:once
     
-  - yarn gulp --mist --$GULP_PLATFORM
+  - yarn build:mist --$GULP_PLATFORM
 
-  - yarn gulp --wallet --$GULP_PLATFORM
+  - yarn build:wallet --$GULP_PLATFORM
   
-  - yarn gulp test
+  - yarn test:e2e
 
 after_success:
   - if [[ $TRAVIS_BRANCH == "master" ]]; then
-      gulp upload-queue --$GULP_PLATFORM;
-      gulp upload-queue --wallet --$GULP_PLATFORM;
+      yarn dist:mist --$GULP_PLATFORM;
+      yarn dist:wallet --$GULP_PLATFORM;
     fi
 

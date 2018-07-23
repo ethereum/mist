@@ -198,13 +198,13 @@ $ brew install gnu-tar libicns graphicsmagick xz
 To generate the binaries for Mist run:
 
 ```bash
-$ yarn gulp
+$ yarn build:mist
 ```
 
 To generate the Ethereum Wallet:
 
 ```bash
-$ yarn gulp --wallet
+$ yarn build:wallet
 ```
 
 The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. From 0.11.0, both Ethereum Wallet and Mist bundle a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
@@ -216,9 +216,9 @@ The generated binaries will be under `dist_mist/release` or `dist_wallet/release
 To build binaries for specific platforms (default: all available) use the following flags:
 
 ```bash
-$ yarn gulp --mac      # mac
-$ yarn gulp --linux    # linux
-$ yarn gulp --win      # windows
+$ yarn build:mist --mac      # mac
+$ yarn build:mist --linux    # linux
+$ yarn build:mist --win      # windows
 ```
 
 ##### skipTasks
@@ -226,7 +226,7 @@ $ yarn gulp --win      # windows
 When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
 ```bash
-$ yarn gulp --mac --skipTasks=bundling-interface,release-dist
+$ yarn build:mist --mac --skipTasks=bundling-interface,release-dist
 ```
 
 ##### Checksums
@@ -236,7 +236,15 @@ Prints the SHA-256 checksums of the distributables.
 It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
 ```bash
-$ yarn gulp checksums [--wallet]
+$ yarn task checksums [--wallet]
+```
+
+#### Tasks found in gulpfile.js and gulpTasks/
+
+Any other gulp task can be run using `yarn task`.
+
+```bash
+$ yarn task clean-dist
 ```
 
 #### Cutting a release
@@ -262,13 +270,14 @@ Tests run using [Spectron](https://github.com/electron/spectron/), a webdriver.i
 First make sure to build Mist with:
 
 ```bash
-$ yarn gulp
+$ yarn build:mist
 ```
 
 Then run the tests:
 
 ```bash
-$ yarn gulp test
+$ yarn test:unit:once
+$ yarn test:e2e
 ```
 
 _Note: Integration tests are not yet supported on Windows._

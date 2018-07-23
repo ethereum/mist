@@ -16,7 +16,12 @@
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
     "test:unit:once": "mocha --compilers babel-register './tests/unit/' --recursive",
     "test:unit": "yarn run test:unit:once --watch",
-    "gulp": "gulp"
+    "test:e2e": "gulp test",
+    "build:wallet": "gulp --wallet",
+    "build:mist": "gulp --mist",
+    "dist:mist": "gulp upload-queue --mist",
+    "dist:wallet": "gulp upload-queue --wallet",
+    "task": "gulp"
   },
   "main": "main.js",
   "dependencies": {

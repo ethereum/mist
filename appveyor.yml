@@ -15,6 +15,11 @@ init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
+  # prints CMD version
+  - cmd
+  # does node have ComSpec env variable?
+  # https://nodejs.org/api/child_process.html#child_process_default_windows_shell
+  - node -e "console.log(process.env.ComSpec)"
 
   # needed for meteor-dapp-wallet
   - git submodule update --init --recursive 

@@ -16,8 +16,20 @@ class ExecutionContext extends Component {
   }
 
   renderExecutionSentence() {
-    if (this.props.toIsContract) {
-      return <div className="execution-context__sentence">Coming Soon!</div>;
+    if (this.props.isNewContract) {
+      // TODO: accurate?
+      const bytesCount = encodeURI(this.props.data).split(/%..|./).length - 1;
+
+      return (
+        <div className="execution-context__sentence">
+          <div>
+            Upload <span className="bold">New Contract</span>
+          </div>
+          <div className="execution-context__subtext">
+            About {bytesCount} bytes
+          </div>
+        </div>
+      );
     }
 
     let conversion;
@@ -33,8 +45,10 @@ class ExecutionContext extends Component {
 
     return (
       <div className="execution-context__sentence">
-        Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
-        <div className="execution-context__transfer-price">{conversion}</div>
+        <div>
+          Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
+        </div>
+        <div className="execution-context__subtext">{conversion}</div>
       </div>
     );
   }
@@ -55,7 +69,7 @@ class ExecutionContext extends Component {
       <div className="execution-context">
         {this.renderExecutionSentence()}
 
-        {this.props.toIsContract ? (
+        {this.props.toIsContract || this.props.isNewContract ? (
           <div className="execution-context__details-link">More details</div>
         ) : null}
 

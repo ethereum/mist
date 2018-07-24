@@ -6,6 +6,7 @@ import FeeSelector from './FeeSelector';
 import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TransactionParties from './TransactionParties';
+import { determineIfContract } from '../../actions.js';
 
 class SendTransactionConfirmation extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class SendTransactionConfirmation extends Component {
     };
   }
 
+  // TODO: handle updates
   componentDidMount() {
     this.getGasPrice();
     this.determineIfContract();
@@ -44,15 +46,7 @@ class SendTransactionConfirmation extends Component {
   }
 
   determineIfContract() {
-    // Determine if "to" is a contract
-    web3.eth.getCode(this.props.newTransaction.to, (e, res) => {
-      console.log('∆∆∆ getCode e', e);
-      console.log('∆∆∆ getCode res', res);
-      if (!e && res && res.length > 2) {
-        this.setState({ toIsContract: true });
-        // setWindowSize(template);
-      }
-    });
+    store.dispatch(determineIfContract(this.props.newTransaction.to));
   }
 
   lookupSignature() {
@@ -66,7 +60,7 @@ class SendTransactionConfirmation extends Component {
 
       // try window.SIGNATURES first
       if (_.first(window.SIGNATURES[bytesSignature])) {
-        console.log('∆∆∆ exFunc', _.first(window.SIGNATURES[bytesSignature]));
+        console.log('∆∆∆ exFunc!', _.first(window.SIGNATURES[bytesSignature]));
 
         this.setState({
           executionFunction: _.first(window.SIGNATURES[bytesSignature])
@@ -74,8 +68,9 @@ class SendTransactionConfirmation extends Component {
       } else {
         fetch(
           `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
-        ).then(response => {
-          console.log('∆∆∆ 4byte response', response);
+        ).then(async response => {
+          const fourByte = await response.json();
+          console.log('∆∆∆ fourByte', fourByte);
         });
       }
     }
@@ -126,7 +121,7 @@ class SendTransactionConfirmation extends Component {
           )}
         </h3>
       );
-    } else if (this.props.newTransaction && this.props.newTransaction.to) {
+    } else if (this.props.newTransaction.to) {
       return (
         <h3>
           {i18n.t(
@@ -159,13 +154,14 @@ class SendTransactionConfirmation extends Component {
 
     return (
       <div className="popup-windows tx-info">
-        {this.renderTitle()}
+        {/*this.renderTitle()*/}
 
         <ExecutionContext
           data={this.props.newTransaction.data}
           estimatedFee={this.state.estimatedFee}
           estimatedGas={this.state.estimatedGas}
           gasLoading={this.state.gasLoading}
+          isNewContract={this.props.newTransaction.isNewContract}
           network={this.props.nodes.network}
           priceUSD={this.state.priceUSD}
           providedGas={this.state.providedGas}
@@ -178,7 +174,9 @@ class SendTransactionConfirmation extends Component {
         <TransactionParties
           fromIsContract={this.state.fromIsContract}
           from={from}
+          isNewContract={this.props.newTransaction.isNewContract}
           to={to}
+          toIsContract={this.state.toIsContract}
           executionFunction={this.state.executionFunction}
           hasSignature={this.state.hasSignature}
           value={value}

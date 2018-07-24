@@ -49,7 +49,11 @@ class TransactionParties extends Component {
   }
 
   renderTo() {
-    const { to, toIsContract } = this.props;
+    const { to, toIsContract, isNewContract } = this.props;
+
+    if (isNewContract) {
+      return null;
+    }
 
     if (to) {
       return (

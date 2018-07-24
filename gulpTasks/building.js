@@ -87,7 +87,7 @@ gulp.task('pack-wallet', cb => {
     const cwd = path.resolve('meteor-dapp-wallet', 'app');
 
     exec(
-      `cd ${cwd} && ${binPath} ${buildPath} -p ""`,
+      `cd ${cwd} && cd && echo "starting mbc" && ${binPath} ${buildPath} -p ""`,
       (err, stdout, stderr) => {
         console.log(stdout, stderr);
         cb(err);

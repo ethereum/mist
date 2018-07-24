@@ -75,24 +75,18 @@ gulp.task('switch-production', cb => {
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
     console.log('Building wallet...');
-    const buildPath = path.join('..', '..', 'wallet');
-    const binPath = path.join(
-      '..',
-      '..',
-      'node_modules',
-      '.bin',
-      'meteor-build-client'
-    );
+    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
+    if (!fs.existsSync(fromPath)) {
+      throw new Error(
+        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
+      );
+    }
 
-    const cwd = path.resolve('meteor-dapp-wallet', 'app');
+    const toPath = path.resolve('wallet');
 
-    exec(
-      `cd ${cwd} && cd && echo "starting mbc" && ${binPath} ${buildPath} -p ""`,
-      (err, stdout, stderr) => {
-        console.log(stdout, stderr);
-        cb(err);
-      }
-    );
+    shell.cp('-R', fromPath, toPath);
+    console.log(fromPath, toPath);
+    cb();
   });
 });
 // Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.

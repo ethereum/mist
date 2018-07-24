@@ -74,18 +74,16 @@ gulp.task('switch-production', cb => {
 
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
-    console.log('Building wallet...');
     const fromPath = path.resolve('meteor-dapp-wallet', 'build');
+    const toPath = path.resolve('wallet');
+
     if (!fs.existsSync(fromPath)) {
       throw new Error(
         `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
       );
     }
 
-    const toPath = path.resolve('wallet');
-
     shell.cp('-R', fromPath, toPath);
-    console.log(fromPath, toPath);
     cb();
   });
 });
@@ -218,12 +216,6 @@ gulp.task('release-dist', done => {
   const versionDashed = version.replace(/\./g, '-');
 
   const cp = (inputPath, outputPath) => {
-    console.info(
-      `Copying from ${path.join(distPath, inputPath)} to ${path.join(
-        releasePath,
-        outputPath
-      )}`
-    );
     shell.cp(
       path.join(distPath, inputPath),
       path.join(releasePath, outputPath)
@@ -273,9 +265,6 @@ gulp.task('release-dist', done => {
         break;
     }
   });
-
-  console.info('∆∆∆ Listing release files ***');
-  console.info(shell.ls('-l', releasePath).map(e => e.name));
 
   done();
 });

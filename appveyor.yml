@@ -1,8 +1,6 @@
 image: Visual Studio 2017
 platform: x64
 
-shallow_clone: true
-
 cache:
   - node_modules
   - '%LOCALAPPDATA%\electron\Cache'

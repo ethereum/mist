@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const builder = require('electron-builder');
 const del = require('del');
-const exec = require('child_process').exec;
+const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -86,13 +86,13 @@ gulp.task('pack-wallet', cb => {
     );
     //{ cwd: path.join('meteor-dapp-wallet', 'app') },
     const cwd = path.join('meteor-dapp-wallet', 'app');
-    exec(
-      `cd ${cwd} && ${binPath} ${buildPath} -p ""`,
-      (err, stdout, stderr) => {
-        console.log(stdout, stderr);
-        cb(err);
-      }
-    );
+    execSync(`cd ${cwd}`);
+    console.log('current directory');
+    execSync('cd');
+    exec(`${binPath} ${buildPath} -p ""`, (err, stdout, stderr) => {
+      console.log(stdout, stderr);
+      cb(err);
+    });
   });
 });
 // Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.

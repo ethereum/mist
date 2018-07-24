@@ -15,12 +15,6 @@ init:
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
-  # prints CMD version
-  - cmd
-  # does node have ComSpec env variable?
-  # https://nodejs.org/api/child_process.html#child_process_default_windows_shell
-  - node -e "console.log(process.env.ComSpec)"
-
   # needed for meteor-dapp-wallet
   - git submodule update --init --recursive 
   - dir meteor-dapp-wallet
@@ -37,14 +31,8 @@ install:
   # install modules
   - npm install --global yarn
 
-  - python.exe --version
-  # node-gyp requirement - Appveyor already has python 2.7
-  #- npm install --global windows-build-tools
-
   - yarn
-  - dir
 
-# Post-install test scripts.
 test_script:
   - yarn gulp --mist --win
   - yarn gulp --wallet --win

@@ -104,7 +104,7 @@ gulp.task('move-wallet', cb => {
 gulp.task('bundling-interface', cb => {
   const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
   exec(
-    `yarn build:interface {buildPath} -p ""`,
+    `meteor-build-client ${buildPath} -p ""`,
     { cwd: 'interface' },
     (err, stdout) => {
       console.log(stdout);

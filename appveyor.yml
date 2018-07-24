@@ -11,16 +11,14 @@ environment:
   nodejs_version: "8"
 
 init:
+  # enabling RDP for debugging purposes
   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 install:
-  - dir C:\Windows\system32\cmd.exe
-  - dir C:\Windows\System32\cmd.exe
-  # enabling RDP for debugging purposes
-
 
   # needed for meteor-dapp-wallet
   - git submodule update --recursive 
+  - dir meteor-dapp-wallet
 
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version

@@ -34,8 +34,8 @@ install:
   - yarn
 
 test_script:
-  - yarn gulp --mist --win
-  - yarn gulp --wallet --win
+  - yarn build:mist --win --skipTasks=bundle-interface,build-nsis
+    # - yarn gulp --wallet --win --skipTasks=build-nsis
   - yarn gulp test
   - yarn test:unit:once
 

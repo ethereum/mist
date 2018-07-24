@@ -16,6 +16,7 @@
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
     "build:wallet": "gulp --wallet",
     "build:mist": "gulp --mist",
+    "build:interface": "meteor-build-client",
     "dist:mist": "gulp upload-queue --mist",
     "dist:wallet": "gulp upload-queue --wallet",
     "test:unit:once": "mocha --compilers babel-register './tests/unit/' --recursive",

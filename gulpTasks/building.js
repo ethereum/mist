@@ -85,8 +85,6 @@ gulp.task('pack-wallet', cb => {
     );
 
     const cwd = path.resolve('meteor-dapp-wallet', 'app');
-    console.log('current directory...');
-    execSync(`dir ${path.resolve('meteor-dapp-wallet')}`);
 
     exec(
       `cd ${cwd} && ${binPath} ${buildPath} -p ""`,

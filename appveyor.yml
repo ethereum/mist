@@ -17,7 +17,7 @@ init:
 install:
 
   # needed for meteor-dapp-wallet
-  - git submodule update --recursive 
+  - git submodule update --init --recursive 
   - dir meteor-dapp-wallet
 
   # Get the latest stable version of Node.js or io.js

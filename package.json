@@ -19,6 +19,7 @@
     "test:e2e": "gulp test",
     "build:wallet": "gulp --wallet",
     "build:mist": "gulp --mist",
+    "build:interface": "meteor-build-client",
     "dist:mist": "gulp upload-queue --mist",
     "dist:wallet": "gulp upload-queue --wallet",
     "task": "gulp"

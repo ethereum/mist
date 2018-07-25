@@ -62,7 +62,7 @@ window.addEventListener('message', function message(event) {
   } else if (data.type === 'mistAPI_ethereum_provider_write') {
     let messageIsArray = _.isArray(data.message);
 
-    // Only accept valid JSON rpc requests
+    // Only accept valid JSON-RPC requests
     if (messageIsArray) {
       for (let i = 0; i < data.message.length; i++) {
         if (isValidJsonRpc(data.message[i])) {
@@ -119,8 +119,6 @@ ipcRenderer.on('uiAction_windowMessage', (event, ...result) => {
   });
 
   if (result.type === 'connectAccount') {
-    console.log('BOOM');
-    console.log(window.ethereum);
     if (window.ethereum) {
       window.ethereum._emitAccountsChanged(result.value);
     }

@@ -88,14 +88,6 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
   }
 });
 
-ipc.on('mistAPI_event', (event, type, ...values) => {
-  const mainWindow = Windows.getByType('main');
-  if (mainWindow) {
-    console.log('sending', type, ...values);
-    mainWindow.send(`mistAPI_event_${type}`, ...values);
-  }
-});
-
 ipc.on('backendAction_getLanguage', e => {
   store.dispatch(getLanguage(e));
 });

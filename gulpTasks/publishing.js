@@ -43,14 +43,10 @@ gulp.task('checksums', cb => {
 });
 
 gulp.task('upload-binaries', cb => {
-  // if CI detected only upload if on master branch
-  if (process.env.CI && process.env.TRAVIS_BRANCH !== 'master') return;
-
   // personal access token (public_repo) must be set using travis' ENVs
   const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
   console.info('Checking Github releases...');
-
   // query github releases
   got(
     `https://api.github.com/repos/ethereum/mist/releases?access_token=${GITHUB_TOKEN}`,

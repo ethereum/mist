@@ -1,80 +1,48 @@
 const origin = this.origin;
 
 (function() {
-  // Request accounts from Mist on provider request
-  window.addEventListener('message', event => {
-    if (event.data && event.data.type === 'ETHEREUM_PROVIDER_REQUEST') {
-      window.mist
-        .requestAccounts()
-        .then(() => {
-          window.ethereum = new EthereumProvider();
-          window.postMessage({ type: 'ETHEREUM_PROVIDER_SUCCESS' }, origin);
-        })
-        .catch(error => {
-          console.error(`Error from Mist requestAccounts: ${error}`); // eslint-disable-line no-console
-          return;
-        });
-    }
-  });
-
   class EthereumProvider extends window.EventEmitter {
     constructor() {
       // Call super for `this` to be defined
       super();
 
       // Init storage
-      this.nextJsonrpcId = 0;
-      this.promises = {};
-      this.activeSubscriptions = [];
+      this._isConnected = false;
+      this._nextJsonrpcId = 0;
+      this._promises = {};
+      this._activeSubscriptions = [];
 
       // Fire the connect
       this._connect();
 
       // Listen for jsonrpc responses
       window.addEventListener('message', this._handleJsonrpcMessage.bind(this));
-
-      // Listen for Mist events
-      window.addEventListener(
-        'mistAPI_event_connect',
-        this._emitConnect.bind(this)
-      );
-      window.addEventListener(
-        'mistAPI_event_close',
-        this._emitClose.bind(this)
-      );
-      window.addEventListener(
-        'mistAPI_event_networkChanged',
-        this._emitNetworkChanged.bind(this)
-      );
-      window.addEventListener(
-        'mistAPI_event_accountsChanged',
-        this._emitAccountsChanged.bind(this)
-      );
     }
 
     /* Methods */
 
     send(method, params = []) {
       if (!method || typeof method !== 'string') {
-        return new Error('Given method is not a valid string.');
+        return new Error('Method is not a valid string.');
       }
 
       if (!(params instanceof Array)) {
-        return new Error('Given params is not a valid array.');
+        return new Error('Params is not a valid array.');
       }
 
-      const payload = {
-        id: this.nextJsonrpcId++,
-        jsonrpc: '2.0',
-        method,
-        params
-      };
+      const id = this._nextJsonrpcId++;
+      const jsonrpc = '2.0';
+      const payload = { jsonrpc, id, method, params };
 
       const promise = new Promise((resolve, reject) => {
-        this.promises[payload.id] = { resolve, reject };
+        this._promises[payload.id] = { resolve, reject };
       });
 
-      window.postMessage({ type: 'write', message: payload }, origin);
+      // Send jsonrpc request to node
+      window.postMessage(
+        { type: 'mistAPI_ethereum_provider_write', message: payload },
+        origin
+      );
 
       return promise;
     }
@@ -82,7 +50,7 @@ const origin = this.origin;
     subscribe(subscriptionType, params) {
       return this.send('eth_subscribe', [subscriptionType, ...params]).then(
         subscriptionId => {
-          this.activeSubscriptions.push(subscriptionId);
+          this._activeSubscriptions.push(subscriptionId);
         }
       );
     }
@@ -91,7 +59,7 @@ const origin = this.origin;
       return this.send('eth_unsubscribe', [subscriptionId]).then(success => {
         if (success) {
           // Remove subscription
-          this.activeSubscription = this.activeSubscription.filter(
+          this._activeSubscription = this._activeSubscription.filter(
             id => id !== subscriptionId
           );
           // Remove listeners on subscriptionId
@@ -125,7 +93,7 @@ const origin = this.origin;
       const { id, method, error, result } = message;
 
       if (typeof id !== 'undefined') {
-        const promise = this.promises[id];
+        const promise = this._promises[id];
         if (promise) {
           // Handle pending promise
           if (data.type === 'error') {
@@ -135,7 +103,7 @@ const origin = this.origin;
           } else {
             promise.resolve(result);
           }
-          delete this.promises[id];
+          delete this._promises[id];
         }
       } else {
         if (method && method.indexOf('_subscription') > -1) {
@@ -149,24 +117,26 @@ const origin = this.origin;
     /* Connection handling */
 
     _connect() {
-      window.postMessage({ type: 'create' }, origin);
+      // Send to node
+      window.postMessage({ type: 'mistAPI_ethereum_provider_connect' }, origin);
 
       // Reconnect on close
-      // this.on('close', this._connect);
+      this.once('close', this._connect.bind(this));
     }
 
     /* Events */
 
     _emitConnect() {
+      this._isConnected = true;
       this.emit('connect');
     }
 
-    _emitClose(event) {
-      const { code, reason } = event.message;
+    _emitClose(code, reason) {
+      this._isConnected = false;
       this.emit('close', code, reason);
 
       // Send Error objects to any open subscriptions
-      this.activeSubscriptions.forEach(id => {
+      this._activeSubscriptions.forEach(id => {
         const error = new Error(
           `Provider connection to network closed.
            Subscription lost, please subscribe again.`
@@ -174,17 +144,14 @@ const origin = this.origin;
         this.emit(id, error);
       });
       // Clear subscriptions
-      this.activeSubscriptions = [];
+      this._activeSubscriptions = [];
     }
 
-    _emitNetworkChanged(event) {
-      console.log(event);
-      const { networkId } = event.message;
+    _emitNetworkChanged(networkId) {
       this.emit('networkChanged', networkId);
     }
 
-    _emitAccountsChanged(event) {
-      const { accounts } = event.message;
+    _emitAccountsChanged(accounts) {
       this.emit('accountsChanged', accounts);
     }
 
@@ -199,12 +166,15 @@ const origin = this.origin;
         })
         .catch(error => {
           callback(error, null);
-          console.error(`Error from sendAsync ${payload}: ${error}`); // eslint-disable-line no-console
+          // eslint-disable-next-line no-console
+          console.error(
+            `Error from EthereumProvider sendAsync ${payload}: ${error}`
+          );
         });
     }
 
     isConnected() {
-      return true;
+      return this._isConnected;
     }
 
     /* Deprecated methods */
@@ -217,4 +187,29 @@ const origin = this.origin;
       return new Error('Batch calls are not supported.');
     }
   }
+
+  const ethereum = new EthereumProvider();
+
+  // Set window.ethereum if accounts are available
+  ethereum.send('eth_accounts').then(accounts => {
+    if (accounts.length > 0) {
+      window.ethereum = ethereum;
+    }
+  });
+
+  // Listen for provider request and set window.ethereum on success
+  window.addEventListener('message', event => {
+    if (event.data && event.data.type === 'ETHEREUM_PROVIDER_REQUEST') {
+      window.mist
+        .requestAccounts()
+        .then(() => {
+          window.ethereum = ethereum;
+          window.postMessage({ type: 'ETHEREUM_PROVIDER_SUCCESS' }, origin);
+        })
+        .catch(error => {
+          console.error(`Error from Mist requestAccounts: ${error}`); // eslint-disable-line no-console
+          return;
+        });
+    }
+  });
 })();

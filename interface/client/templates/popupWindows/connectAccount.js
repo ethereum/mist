@@ -77,7 +77,7 @@ Template['popupWindows_connectAccount'].helpers({
   },
   isBrowserTab: function() {
     const selectedTab = TemplateVar.get('tab');
-    if (selectedTab._id == 'browser') {
+    if (selectedTab && selectedTab._id == 'browser') {
       return true;
     } else {
       return false;
@@ -177,9 +177,6 @@ Template['popupWindows_connectAccount'].events({
     setTimeout(function() {
       ipc.send('backendAction_closePopupWindow');
     }, 600);
-
-    // Send Mist accountsChanged event
-    ipc.send('mistAPI_event', 'accountsChanged', accounts);
   },
   /**
     Create account

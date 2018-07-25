@@ -71,8 +71,6 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
 
   if (senderWindow.ownerId) {
     const ownerWindow = Windows.getById(senderWindow.ownerId);
-    const mainWindow = Windows.getByType('main');
-
     if (ownerWindow) {
       ownerWindow.send(
         'uiAction_windowMessage',
@@ -81,17 +79,19 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
         value
       );
     }
+  }
 
-    // Send through the mainWindow to the webviews
-    if (mainWindow) {
-      mainWindow.send('uiAction_windowMessage', senderWindowType, error, value);
-    }
+  // Send through the mainWindow to the webviews
+  const mainWindow = Windows.getByType('main');
+  if (mainWindow) {
+    mainWindow.send('uiAction_windowMessage', senderWindowType, error, value);
   }
 });
 
 ipc.on('mistAPI_event', (event, type, ...values) => {
   const mainWindow = Windows.getByType('main');
   if (mainWindow) {
+    console.log('sending', type, ...values);
     mainWindow.send(`mistAPI_event_${type}`, ...values);
   }
 });

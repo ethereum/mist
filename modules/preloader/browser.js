@@ -55,14 +55,14 @@ window.addEventListener('message', function message(event) {
   }
 
   // EthereumProvider: connect
-  if (data.type === 'create') {
+  if (data.type === 'mistAPI_ethereum_provider_connect') {
     ipcRenderer.send('ipcProvider-create');
 
     // EthereumProvider: write
-  } else if (data.type === 'write') {
+  } else if (data.type === 'mistAPI_ethereum_provider_write') {
     let messageIsArray = _.isArray(data.message);
 
-    // only accept valid JSON rpc requests
+    // Only accept valid JSON rpc requests
     if (messageIsArray) {
       for (let i = 0; i < data.message.length; i++) {
         if (isValidJsonRpc(data.message[i])) {
@@ -79,11 +79,10 @@ window.addEventListener('message', function message(event) {
       }
     }
 
-    // make sure we only send allowed properties
+    // Make sure we only send allowed properties
     ipcRenderer.send('ipcProvider-write', JSON.stringify(data.message));
-
-    // Mist API
   } else if (/^mistAPI_[a-z]/i.test(data.type)) {
+    // Mist API
     if (
       data.type === 'mistAPI_requestAccounts' ||
       data.type === 'mistAPI_createAccount'
@@ -107,21 +106,31 @@ const postMessage = function(payload) {
 };
 
 // custom Events
-['uiAction_windowMessage', 'mistAPI_callMenuFunction'].forEach(function(type) {
-  ipcRenderer.on(type, function onIpcRenderer(e, result) {
-    // this type needs special packaging
-    if (type === 'uiAction_windowMessage') {
-      result = {
-        type: arguments[1],
-        error: arguments[2],
-        value: arguments[3]
-      };
-    }
+ipcRenderer.on('uiAction_windowMessage', (event, ...result) => {
+  result = {
+    type: result[0],
+    error: result[1],
+    value: result[2]
+  };
 
-    postMessage({
-      type: type,
-      message: result
-    });
+  postMessage({
+    type: 'uiAction_windowMessage',
+    message: result
+  });
+
+  if (result.type === 'connectAccount') {
+    console.log('BOOM');
+    console.log(window.ethereum);
+    if (window.ethereum) {
+      window.ethereum._emitAccountsChanged(result.value);
+    }
+  }
+});
+
+ipcRenderer.on('mistAPI_callMenuFunction', (event, result) => {
+  postMessage({
+    type: 'mistAPI_callMenuFunction',
+    message: result
   });
 });
 

@@ -78,10 +78,12 @@ const tasks = [
   'copy-build-folder-files',
   'switch-production',
   'bundling-interface',
+  'move-wallet',
   'copy-i18n',
   'build-dist',
   'release-dist',
-  'build-nsis'
+  'build-nsis',
+  'verify-artifacts'
 ].filter(task => !skipTasks.includes(task));
 
 gulp.task('default', gulp.series(tasks));

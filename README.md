@@ -81,14 +81,6 @@ $ cd mist
 $ yarn
 ```
 
-To update Mist in the future, run:
-
-```bash
-$ cd mist
-$ git pull
-$ yarn
-```
-
 ### Run Mist
 
 For development we start the interface with a Meteor server for auto-reload etc.
@@ -206,13 +198,13 @@ $ brew install gnu-tar libicns graphicsmagick xz
 To generate the binaries for Mist run:
 
 ```bash
-$ gulp
+$ yarn build:mist
 ```
 
 To generate the Ethereum Wallet:
 
 ```bash
-$ gulp --wallet
+$ yarn build:wallet
 ```
 
 The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. From 0.11.0, both Ethereum Wallet and Mist bundle a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
@@ -224,41 +216,35 @@ The generated binaries will be under `dist_mist/release` or `dist_wallet/release
 To build binaries for specific platforms (default: all available) use the following flags:
 
 ```bash
-$ gulp --mac      # mac
-$ gulp --linux    # linux
-$ gulp --win      # windows
+$ yarn build:mist --mac      # mac
+$ yarn build:mist --linux    # linux
+$ yarn build:mist --win      # windows
 ```
-
-##### walletSource
-
-With the `walletSource` you can specify the Wallet branch to use, default is `master`:
-
-    $ gulp --wallet --walletSource local
-
-Options are:
-
-- `master`
-- [any meteor-dapp-wallet branch](https://github.com/ethereum/meteor-dapp-wallet/branches)
-- `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
-
-_Note: applicable only when combined with `--wallet`_
 
 ##### skipTasks
 
 When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
 ```bash
-$ gulp --mac --skipTasks=bundling-interface,release-dist
+$ yarn build:mist --mac --skipTasks=bundling-interface,release-dist
 ```
 
 ##### Checksums
 
-Spits out the MD5 checksums of the distributables.
+Prints the SHA-256 checksums of the distributables.
 
 It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
 ```bash
-$ gulp checksums [--wallet]
+$ yarn task checksums [--wallet]
+```
+
+#### Tasks found in gulpfile.js and gulpTasks/
+
+Any other gulp task can be run using `yarn task`.
+
+```bash
+$ yarn task clean-dist
 ```
 
 #### Cutting a release
@@ -284,13 +270,14 @@ Tests run using [Spectron](https://github.com/electron/spectron/), a webdriver.i
 First make sure to build Mist with:
 
 ```bash
-$ gulp
+$ yarn build:mist
 ```
 
 Then run the tests:
 
 ```bash
-$ gulp test
+$ yarn test:unit:once
+$ yarn test:e2e
 ```
 
 _Note: Integration tests are not yet supported on Windows._

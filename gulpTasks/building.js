@@ -15,7 +15,7 @@ const type = options.type;
 const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
 
 gulp.task('clean-dist', cb => {
-  return del([`./dist_${type}`, './meteor-dapp-wallet'], cb);
+  return del([`./dist_${type}`], cb);
 });
 
 gulp.task('copy-app-source-files', () => {
@@ -32,9 +32,7 @@ gulp.task('copy-app-source-files', () => {
         'wallet/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
-        '!./tests/wallet/*',
-        '!./tests/mist/*',
-        '!./tests/unit/*'
+        '!./tests/**/*'
       ],
       {
         base: './'
@@ -75,63 +73,43 @@ gulp.task('switch-production', cb => {
 });
 
 gulp.task('pack-wallet', cb => {
-  if (options.type == 'mist') {
-    del(['./wallet', './meteor-dapp-wallet']).then(() => {
-      console.log('Building wallet...');
-      exec(
-        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
-            && cd meteor-dapp-wallet/app \
-            && yarn install \
-            && ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
-        (err, stdout, stderr) => {
-          console.log(stdout, stderr);
-          del(['./meteor-dapp-wallet']);
-          cb(err);
-        }
-      );
-    });
-  } else {
-    cb();
-  }
-});
-
-gulp.task('bundling-interface', cb => {
-  const bundle = additionalCommands => {
-    const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
-
+  del(['./wallet']).then(() => {
+    console.log('Building wallet...');
+    const buildPath = path.join('..', '..', 'wallet');
     exec(
-      `../node_modules/.bin/meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
-      { cwd: 'interface' },
-      (err, stdout) => {
-        console.log(stdout);
+      `cd meteor-dapp-wallet/app \
+          && yarn install \
+          && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+      (err, stdout, stderr) => {
+        console.log(stdout, stderr);
         cb(err);
       }
     );
-  };
+  });
+});
 
+// Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.
+gulp.task('move-wallet', cb => {
   if (type === 'wallet') {
-    if (options.walletSource === 'local') {
-      console.log('Use local wallet at ../meteor-dapp-wallet/app');
-      bundle(`&& cd ../../meteor-dapp-wallet/app \
-              && yarn \
-              && ../../../node_modules/.bin/meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
-    } else {
-      console.log(
-        `Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${
-          options.walletSource
-        } "${options.walletSource}" branch...`
-      );
-      bundle(`&& cd ../dist_${type} \
-                && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
-                && cd meteor-dapp-wallet/app \
-                && yarn \
-                && ../../../node_modules/.bin/meteor-build-client ../../app/interface/wallet -p "" \
-                && cd ../../ \
-                && rm -rf meteor-dapp-wallet`);
-    }
-  } else {
-    bundle();
+    console.debug('Moving ./wallet to ./interface/wallet');
+    const basePath = path.join('dist_wallet', 'app');
+    const fromPath = path.join(basePath, 'wallet');
+    const toPath = path.join(basePath, 'interface', 'wallet');
+    shell.mv(fromPath, toPath);
   }
+  cb();
+});
+
+gulp.task('bundling-interface', cb => {
+  const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+  exec(
+    `"../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+    { cwd: 'interface' },
+    (err, stdout) => {
+      console.log(stdout);
+      cb(err);
+    }
+  );
 });
 
 gulp.task('copy-i18n', () => {
@@ -148,6 +126,7 @@ gulp.task('build-dist', cb => {
     name: applicationName.replace(/\s/, ''),
     productName: applicationName,
     description: applicationName,
+    license: 'GPL-3.0',
     homepage: 'https://github.com/ethereum/mist',
     build: {
       appId: `org.ethereum.${type}`,

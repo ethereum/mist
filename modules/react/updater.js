@@ -276,6 +276,9 @@ class Updater extends EventEmitter {
   canStartFromCache() {
     return this.latestCached !== null;
   }
+  async getLatestCached() {
+    return cache.getLatest();
+  }
   async checkUpdate() {
     let latestCached = await cache.getLatest();
     if (latestCached) {

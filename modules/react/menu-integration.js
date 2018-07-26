@@ -24,15 +24,28 @@ function createReactSubMenu(version) {
   reactSubMenu.append(
     new MenuItem({
       label: 'Open UI',
-      enabled: false
+      click: async () => {
+        try {
+          let cached = await updater.getLatestCached();
+          if (cached === null) {
+            throw new Error('No package in cache found: press "check update"');
+          }
+          let asarPath = cached.filePath;
+          start(asarPath, cached.version);
+        } catch (error) {
+          dialog.showMessageBox({
+            title: 'Error',
+            message: 'Loading UI from cache failed: ' + error.message
+          });
+        }
+      }
     })
   );
   reactSubMenu.append(
     new MenuItem({
       label: 'Open Cache',
       click: async () => {
-        console.log('open ', updater.releaseDataPath);
-        shell.showItemInFolder(updater.releaseDataPath + '\\');
+        shell.showItemInFolder(updater.releaseDataPath);
       }
     })
   );

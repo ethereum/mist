@@ -54,7 +54,6 @@ const restartNode = function(newType, newNetwork, syncMode, webviews) {
   return ethereumNode
     .restart(newType, newNetwork, syncMode)
     .then(() => {
-      Windows.getByType('main').load(global.interfaceAppUrl);
       createMenu(webviews);
       log.info('Node switch successful.');
     })
@@ -71,27 +70,6 @@ const changeNodeNetwork = function(network, webviews) {
   restartNode(ethereumNode.type, network, ethereumNode.syncMode, webviews);
 
   createMenu(webviews);
-
-  // Send Mist networkChanged event
-  const mainWindow = Windows.getByType('main');
-  if (mainWindow) {
-    const networkId = getNetworkId(network);
-    mainWindow.send('mistAPI_event_networkChanged', networkId);
-  }
-};
-
-const getNetworkId = network => {
-  let networkId = 'unknown';
-  if (network === 'main') {
-    networkId = '1';
-  } else if (network === 'ropsten') {
-    networkId = '3';
-  } else if (network === 'rinkeby') {
-    networkId = '4';
-  } else if (network === 'kovan') {
-    networkId = '42';
-  }
-  return networkId;
 };
 
 const changeNodeSyncMode = function(syncMode, webviews) {

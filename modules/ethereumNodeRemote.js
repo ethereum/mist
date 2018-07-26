@@ -55,7 +55,11 @@ class EthereumNodeRemote extends EventEmitter {
         return;
       }
 
-      this.ws = new WebSocket(provider);
+      try {
+        this.ws = new WebSocket(provider);
+      } catch (error) {
+        console.error(`Error from WebSocket: ${error}`);
+      }
 
       this.ws.once('open', () => {
         this.starting = false;
@@ -181,7 +185,11 @@ class EthereumNodeRemote extends EventEmitter {
       return;
     }
 
-    this.ws = new WebSocket(provider);
+    try {
+      this.ws = new WebSocket(provider);
+    } catch (error) {
+      console.error(`Error from WebSocket: ${error}`);
+    }
 
     this.watchBlockHeaders();
   }

@@ -227,8 +227,6 @@ module.exports = () => {
   });
 
   ipcRenderer.on('uiAction_windowMessage', (event, type, error, value) => {
-    console.log('uiAction_windowMessage', type, error, value); // eslint-disable-line no-console
-
     if (mist.callbacks[type]) {
       mist.callbacks[type].forEach((callback, index) => {
         callback(error, value);

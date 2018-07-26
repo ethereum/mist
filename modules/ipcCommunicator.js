@@ -79,12 +79,18 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
         value
       );
     }
-  }
 
-  // Send through the mainWindow to the webviews
-  const mainWindow = Windows.getByType('main');
-  if (mainWindow) {
-    mainWindow.send('uiAction_windowMessage', senderWindowType, error, value);
+    // Send through the mainWindow to the webviews
+    const mainWindow = Windows.getByType('main');
+    if (mainWindow) {
+      mainWindow.send(
+        'uiAction_windowMessage',
+        senderWindowType,
+        senderWindow.ownerId,
+        error,
+        value
+      );
+    }
   }
 });
 
@@ -266,6 +272,19 @@ ipc.on('mistAPI_requestAccounts', async event => {
     );
   } else {
     Windows.createPopup('connectAccount', { ownerId: event.sender.id });
+  }
+});
+
+ipc.on('mistAPI_emit_accountsChanged', (event, webviewId, accounts) => {
+  const mainWindow = Windows.getByType('main');
+  if (mainWindow) {
+    mainWindow.send(
+      'uiAction_windowMessage',
+      'connectAccount',
+      webviewId,
+      null,
+      accounts
+    );
   }
 });
 

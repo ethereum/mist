@@ -38,11 +38,7 @@ delete window.require;
 
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (event, type, id, error, value) => {
-  if (type === 'connectAccount') {
-    if (error) {
-      return;
-    }
-
+  if (type === 'requestAccount' || (type === 'connectAccount' && !error)) {
     Tabs.update(
       { webviewId: id },
       { $addToSet: { 'permissions.accounts': value } }

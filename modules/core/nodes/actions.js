@@ -1,5 +1,7 @@
 import ethereumNodeRemote from '../../ethereumNodeRemote';
 import { InfuraEndpoints } from '../../constants';
+import Windows from '../../windows';
+import db from '../../db';
 
 export function changeNetwork(network) {
   return dispatch => {
@@ -11,10 +13,52 @@ export function changeNetwork(network) {
         type: '[MAIN]:NODES:CHANGE_NETWORK_SUCCESS',
         payload: { network }
       });
+      emitNetworkChanged(network);
     } catch (e) {
       dispatch({ type: '[MAIN]:NODES:CHANGE_NETWORK_FAILURE', error: e });
     }
   };
+}
+
+function emitNetworkChanged(network) {
+  const tabs = db.getCollection('UI_tabs');
+  const webviewIds = [];
+  tabs.data.forEach(tab => {
+    if (tab.webviewId) {
+      webviewIds.push(tab.webviewId);
+    }
+  });
+  if (webviewIds.length === 0) {
+    return;
+  }
+  const mainWindow = Windows.getByType('main');
+  if (!mainWindow) {
+    return;
+  }
+  const networkId = getNetworkId(network);
+  webviewIds.forEach(id => {
+    mainWindow.send(
+      'uiAction_windowMessage',
+      'networkChanged',
+      id,
+      null,
+      networkId
+    );
+  });
+}
+
+function getNetworkId(network) {
+  let networkId = 'unknown';
+  if (network === 'main') {
+    networkId = '1';
+  } else if (network === 'ropsten') {
+    networkId = '3';
+  } else if (network === 'rinkeby') {
+    networkId = '4';
+  } else if (network === 'kovan') {
+    networkId = '42';
+  }
+  return networkId;
 }
 
 export function changeSyncMode(syncMode) {

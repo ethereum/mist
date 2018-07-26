@@ -255,8 +255,8 @@
         mist.menu.entries[id].callback();
       }
     } else if (data.type === 'uiAction_windowMessage') {
-      const params = data.message;
-      const { type, error, value } = params;
+      const message = data.message;
+      const { type, error, value } = message;
 
       if (mist.callbacks[type]) {
         mist.callbacks[type].forEach((callback, index) => {
@@ -274,6 +274,18 @@
           }
           mist.promises[type].splice(index, 1); // remove promise
         });
+      }
+
+      if (window.ethereum) {
+        if (type === 'connectAccount') {
+          window.ethereum._emitAccountsChanged(value);
+        } else if (type === 'networkChanged') {
+          window.ethereum._emitNetworkChanged(value);
+        } else if (type === 'mistAPI_event_connect') {
+          window.ethereum._emitConnect();
+        } else if (type === 'mistAPI_event_close') {
+          window.ethereum._emitClose(value[0], value[1]);
+        }
       }
     }
   });

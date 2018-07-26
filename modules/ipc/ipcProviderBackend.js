@@ -275,10 +275,13 @@ class IpcProviderBackend {
 
         break;
       case ethereumNode.STATES.CONNECTED:
-        mainWindow.send('mistAPI_event_connect');
+        this._emitEthereumProviderEvent('mistAPI_event_connect');
         break;
       case ethereumNode.STATES.STOPPED:
-        mainWindow.send('mistAPI_event_close');
+        this._emitEthereumProviderEvent('mistAPI_event_close', [
+          1000,
+          'Node stopped'
+        ]);
         break;
     }
   }
@@ -681,6 +684,26 @@ class IpcProviderBackend {
         owner.send('ipcProvider-data', JSON.stringify(res));
       }
     }
+  }
+
+  _emitEthereumProviderEvent(event, data) {
+    const tabs = db.getCollection('UI_tabs');
+    const webviewIds = [];
+    tabs.data.forEach(tab => {
+      if (tab.webviewId) {
+        webviewIds.push(tab.webviewId);
+      }
+    });
+    if (webviewIds.length === 0) {
+      return;
+    }
+    const mainWindow = Windows.getByType('main');
+    if (!mainWindow) {
+      return;
+    }
+    webviewIds.forEach(id => {
+      mainWindow.send('uiAction_windowMessage', event, id, null, data);
+    });
   }
 }
 

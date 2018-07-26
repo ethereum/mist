@@ -177,6 +177,9 @@ Template['popupWindows_connectAccount'].events({
     setTimeout(function() {
       ipc.send('backendAction_closePopupWindow');
     }, 600);
+
+    const selectedTab = TemplateVar.get('tab');
+    ipc.send('mistAPI_emit_accountsChanged', selectedTab.webviewId, accounts);
   },
   /**
     Create account

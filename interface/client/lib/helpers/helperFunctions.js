@@ -145,7 +145,7 @@ Helpers.generateBreadcrumb = function(url) {
   };
 
   if (filteredUrl.protocol == 'about:' && filteredUrl.pathname == 'blank') {
-    return 'Dapp URL (http://..., https://..., bzz://...)';
+    return 'Dapp URL';
   }
 
   filteredUrl.pathname += filteredUrl.search.replace(/\?/g, '/');

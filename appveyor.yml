@@ -35,7 +35,8 @@ test_script:
   - yarn build:mist --win --skipTasks=bundling-interface
   - yarn gulp --wallet --win --skipTasks=bundling-interface
   - yarn test:unit:once
-  - yarn task upload-queue
+  - yarn task upload-queue --mist
+  - yarn task upload-queue --wallet
 
 build: off
 

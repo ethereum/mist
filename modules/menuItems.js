@@ -24,6 +24,7 @@ import {
 import { changeNetwork, changeSyncMode } from './core/nodes/actions';
 import { SwarmState } from './core/settings/reducer';
 import swarmNode from './swarmNode.js';
+import reactIntegrationMenu from '../modules/react/menu-integration';
 
 // Make easier to return values for specific systems
 const switchForSystem = function(options) {
@@ -41,6 +42,7 @@ const createMenu = function(webviews) {
   webviews = webviews || [];
 
   const menu = Menu.buildFromTemplate(menuTempl(webviews));
+  menu.append(reactIntegrationMenu());
   Menu.setApplicationMenu(menu);
 };
 

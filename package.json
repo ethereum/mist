@@ -28,6 +28,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "@octokit/rest": "^15.9.4",
     "babel-preset-es2016-node5": "^1.1.2",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",

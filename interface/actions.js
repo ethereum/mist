@@ -9,7 +9,7 @@ exports.determineIfContract = function determineIfContract(toAddress) {
       });
     }
 
-    web3.eth.getCode(this.props.newTransaction.to, async (e, res) => {
+    web3.eth.getCode(toAddress, async (e, res) => {
       console.log('∆∆∆ getCode e', e);
       console.log('∆∆∆ getCode res', res);
       if (!e && res && res.length > 2) {

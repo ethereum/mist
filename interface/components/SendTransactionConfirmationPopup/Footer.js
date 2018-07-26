@@ -9,6 +9,11 @@ class Footer extends Component {
     };
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    console.log('∆∆∆ submitting!', this.state);
+  };
+
   render() {
     if (this.props.unlocking) {
       return (
@@ -22,39 +27,25 @@ class Footer extends Component {
 
     return (
       <footer>
-        <input
-          type="password"
-          value={this.state.pw}
-          onChange={e => this.setState({ pw: e.target.value })}
-          placeholder={i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.enterPassword'
-          )}
-        />
+        <form onSubmit={this.handleSubmit} className="footer__form">
+          <input
+            className="footer__input"
+            type="password"
+            value={this.state.pw}
+            onChange={e => this.setState({ pw: e.target.value })}
+            placeholder={i18n.t(
+              'mist.popupWindows.sendTransactionConfirmation.enterPassword'
+            )}
+          />
 
-        {this.props.network !== 'main' ? (
-          <div className="network">{this.props.network}</div>
-        ) : (
-          ''
-        )}
-
-        <div className="send-tx__btns">
           <button
-            className="send-tx__btn--secondary"
-            onClick={() => this.props.closePopup()}
-            type="button"
-          >
-            {i18n.t('buttons.cancel')}
-          </button>
-          <button
-            className="send-tx__btn--primary"
+            className="footer__btn"
             disabled={!this.state.pw}
             type="submit"
           >
-            {i18n.t(
-              'mist.popupWindows.sendTransactionConfirmation.buttons.sendTransaction'
-            )}
+            Execute
           </button>
-        </div>
+        </form>
       </footer>
     );
   }

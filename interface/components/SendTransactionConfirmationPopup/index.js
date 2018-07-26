@@ -196,11 +196,7 @@ class SendTransactionConfirmation extends Component {
           to={to}
         />
 
-        <Footer
-          unlocking={this.state.unlocking}
-          network={this.props.nodes.network}
-          closePopup={this.closePopup}
-        />
+        <Footer unlocking={this.state.unlocking} />
 
         {/* <form action="#">
 

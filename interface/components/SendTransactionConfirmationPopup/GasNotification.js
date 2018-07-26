@@ -57,15 +57,6 @@ class GasNotification extends Component {
           ) : (
             ''
           )}
-          {this.props.to ? (
-            ''
-          ) : (
-            <p className="info">
-              {i18n.t(
-                'mist.popupWindows.sendTransactionConfirmation.contractCreationInfo'
-              )}
-            </p>
-          )}
         </div>
       );
     }

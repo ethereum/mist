@@ -1,6 +1,9 @@
-import { app, dialog, BrowserWindow, Menu, MenuItem } from 'electron';
-
+import { app, dialog, BrowserWindow, Menu, MenuItem, shell } from 'electron';
 import updater from './updater';
+import WindowManager from './window-manager';
+
+let win;
+const windowManager = new WindowManager();
 
 function createReactSubMenu(version) {
   let popupMenu = (name, label) => {
@@ -22,6 +25,15 @@ function createReactSubMenu(version) {
     new MenuItem({
       label: 'Open UI',
       enabled: false
+    })
+  );
+  reactSubMenu.append(
+    new MenuItem({
+      label: 'Open Cache',
+      click: async () => {
+        console.log('open ', updater.releaseDataPath);
+        shell.showItemInFolder(updater.releaseDataPath + '\\');
+      }
     })
   );
   reactSubMenu.append(
@@ -93,6 +105,39 @@ function createReactSubMenu(version) {
 function createReactMenu() {
   let reactSubMenu = createReactSubMenu('0.0.0');
   return new MenuItem({ label: 'React UI', submenu: reactSubMenu });
+}
+
+function updateMenuVersion(version) {
+  let menu = Menu.getApplicationMenu();
+  if (menu) {
+    let reactSubMenu = createReactMenu(version);
+    let menuNew = new Menu();
+    menu.items.forEach(m => {
+      if (m.label === 'React UI') {
+        return;
+      }
+      menuNew.append(m);
+    });
+    menuNew.append(new MenuItem({ label: 'React UI', submenu: reactSubMenu }));
+    Menu.setApplicationMenu(menuNew);
+  }
+}
+
+function start(asarPath, version) {
+  // update menu to display current version
+
+  // updateMenuVersion(version)
+
+  /*
+  if (win) {
+    // TODO let window manager handle
+    win.loadFile(path.join(asarPath, 'index.html'))
+  } else {
+    windowManager.createWindow(asarPath)
+  }
+  */
+
+  win = windowManager.createWindow(asarPath);
 }
 
 export default createReactMenu;

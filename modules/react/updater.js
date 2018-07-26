@@ -128,11 +128,30 @@ class GithubRepo extends Repo {
     let latest = releases[0];
     let meta = await this.getMetadata(latest);
     if (!meta) {
+      return Object.assign(
+        {
+          error: 'no meta data'
+        },
+        latest
+      );
+      /*
       return {
         ...latest,
         error: 'no meta data'
-      };
+      }
+      */
     }
+    return Object.assign(
+      {
+        checksums: {
+          sha1: meta.sha1,
+          sha256: meta.sha256,
+          sha512: meta.sha512
+        }
+      },
+      latest
+    );
+    /*
     return {
       ...latest,
       checksums: {
@@ -140,7 +159,8 @@ class GithubRepo extends Repo {
         sha256: meta.sha256,
         sha512: meta.sha512
       }
-    };
+    }
+    */
   }
   async getMetadata(release) {
     let downloadUrl = `https://github.com/${this.baseOpts.owner}/${
@@ -253,10 +273,14 @@ class Updater extends EventEmitter {
   get releaseDataPath() {
     return path.join(this.userDataPath, 'releases');
   }
+  canStartFromCache() {
+    return this.latestCached !== null;
+  }
   async checkUpdate() {
     let latestCached = await cache.getLatest();
     if (latestCached) {
       console.log('cache latest: ', latestCached.version);
+      this.latestCached = latestCached;
       // notify that ui can be started
       this.emit('app-ready', latestCached.filePath, latestCached.version);
     } else {
@@ -333,10 +357,9 @@ class Updater extends EventEmitter {
     };
     try {
       let filePath = await backend.download(update, dest, onProgress);
-      let release = {
-        ...update,
+      let release = Object.assign({}, update, {
         filePath
-      };
+      });
       // TODO verify integratiy and authenticity
       let isValid = await this.checkIntegrity(release);
       if (!isValid) {
@@ -348,10 +371,12 @@ class Updater extends EventEmitter {
       return release;
     } catch (error) {
       console.log('error during download:', error.message);
-      return {
-        ...update,
-        error: error.message
-      };
+      return Object.assign(
+        {
+          error: error.message
+        },
+        update
+      );
     }
   }
   startPollRoutine() {

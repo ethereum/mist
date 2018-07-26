@@ -5,7 +5,8 @@ export const initialState = {
   data: '',
   to: '',
   toIsContract: false,
-  isNewContract: false
+  isNewContract: false,
+  unlocking: false
   // destinationType: 'address', 'contract', 'new' ?
 };
 
@@ -18,6 +19,12 @@ const newTransaction = (state = initialState, action) => {
         toIsContract: action.payload.toIsContract,
         isNewContract: action.payload.isNewContract
       });
+    case '[CLIENT]:CONFIRM_TRANSACTION:START':
+      return Object.assign({}, state, { unlocking: true });
+    case '[CLIENT]:CONFIRM_TRANSACTION:SUCCESS':
+      return Object.assign({}, state, { unlocking: false });
+    case '[CLIENT]:CONFIRM_TRANSACTION:FAILURE':
+      return Object.assign({}, state, { unlocking: false });
     default:
       return state;
   }

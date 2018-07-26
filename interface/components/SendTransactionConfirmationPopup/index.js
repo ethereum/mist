@@ -6,7 +6,7 @@ import FeeSelector from './FeeSelector';
 import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TransactionParties from './TransactionParties';
-import { determineIfContract } from '../../actions.js';
+import { determineIfContract, confirmTransaction } from '../../actions.js';
 
 class SendTransactionConfirmation extends Component {
   constructor(props) {
@@ -17,15 +17,13 @@ class SendTransactionConfirmation extends Component {
       executionFunction: '',
       hasSignature: false,
       providedGas: 0,
-      toIsContract: false,
-      unlocking: false,
       gasPrice: this.props.newTransaction.gasPrice || 0,
       gasError: '',
       priceUSD: ''
     };
   }
 
-  // TODO: handle updates
+  // TODO: handle React updates
   componentDidMount() {
     this.getGasPrice();
     this.determineIfContract();
@@ -46,7 +44,7 @@ class SendTransactionConfirmation extends Component {
   }
 
   determineIfContract() {
-    store.dispatch(determineIfContract(this.props.newTransaction.to));
+    this.props.dispatch(determineIfContract(this.props.newTransaction.to));
   }
 
   lookupSignature() {
@@ -80,7 +78,6 @@ class SendTransactionConfirmation extends Component {
     this.setState({ gasLoading: true });
     const { gas } = this.props.newTransaction;
 
-    console.log('∆∆∆ est gas...');
     web3.eth.estimateGas(this.props.newTransaction).then((value, err) => {
       console.log('∆∆∆ est gas');
       console.log('∆∆∆ value', value);
@@ -100,10 +97,6 @@ class SendTransactionConfirmation extends Component {
     }`;
 
     fetch(url).then(async (response, err) => {
-      console.log('∆∆∆ conversion:');
-      console.log('∆∆∆ response', response);
-      console.log('∆∆∆ err', err);
-
       const priceData = await response.json();
       console.log('∆∆∆ priceData', priceData);
 
@@ -111,42 +104,26 @@ class SendTransactionConfirmation extends Component {
     });
   }
 
-  // TODO: new designs: function name as title
-  renderTitle() {
-    if (this.state.toIsContract) {
-      return (
-        <h3>
-          {i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.title.contractExecution'
-          )}
-        </h3>
-      );
-    } else if (this.props.newTransaction.to) {
-      return (
-        <h3>
-          {i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.title.sendTransaction'
-          )}
-        </h3>
-      );
-    } else {
-      return (
-        <h3>
-          {i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.title.createContract'
-          )}
-        </h3>
-      );
-    }
-  }
+  handleSubmit = d => {
+    console.log('∆∆∆ handleSubmit!', data);
+    console.log('∆∆∆ this.props', this.props);
+    const { data, to, from, gas, gasPrice, value } = this.props.newTransaction;
 
-  closePopup = () => {
-    // TODO: abstract to Redux
-    ipc.send(
-      'backendAction_unlockedAccountAndSentTransaction',
-      'Transaction not confirmed'
-    );
-    ipc.send('backendAction_closePopupWindow');
+    let txData = {
+      data,
+      from,
+      gas,
+      gasPrice,
+      chosenGas: gas, // TODO
+      pw: d.pw,
+      value
+    };
+
+    if (to) {
+      txData.to = to;
+    }
+
+    this.props.dispatch(confirmTransaction(txData));
   };
 
   render() {
@@ -167,7 +144,7 @@ class SendTransactionConfirmation extends Component {
           providedGas={this.state.providedGas}
           showFormattedParams={this.state.showFormattedParams}
           to={to}
-          toIsContract={this.state.toIsContract}
+          toIsContract={this.props.toIsContract}
           value={this.props.newTransaction.value}
         />
 
@@ -176,7 +153,7 @@ class SendTransactionConfirmation extends Component {
           from={from}
           isNewContract={this.props.newTransaction.isNewContract}
           to={to}
-          toIsContract={this.state.toIsContract}
+          toIsContract={this.props.toIsContract}
           executionFunction={this.state.executionFunction}
           hasSignature={this.state.hasSignature}
           value={value}
@@ -192,11 +169,14 @@ class SendTransactionConfirmation extends Component {
           estimatedGas={this.state.estimatedGas}
           gasLoading={this.state.gasLoading}
           gasError={this.state.gasError}
-          toIsContract={this.state.toIsContract}
+          toIsContract={this.props.toIsContract}
           to={to}
         />
 
-        <Footer unlocking={this.state.unlocking} />
+        <Footer
+          unlocking={this.props.newTransaction.unlocking}
+          handleSubmit={this.handleSubmit}
+        />
 
         {/* <form action="#">
 

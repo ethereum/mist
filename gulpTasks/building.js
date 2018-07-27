@@ -87,6 +87,7 @@ gulp.task('pack-wallet', cb => {
     cb();
   });
 });
+
 // Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.
 gulp.task('move-wallet', cb => {
   if (type === 'wallet') {
@@ -99,16 +100,22 @@ gulp.task('move-wallet', cb => {
   cb();
 });
 
-gulp.task('bundling-interface', cb => {
-  const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+gulp.task('build-interface', cb => {
+  const interfaceBuildPath = path.resolve('.interface');
   exec(
-    `meteor-build-client ${buildPath} -p ""`,
+    `meteor-build-client ${interfaceBuildPath} -p ""`,
     { cwd: 'interface' },
     (err, stdout) => {
       console.log(stdout);
       cb(err);
     }
   );
+});
+
+gulp.task('copy-interface', () => {
+  const interfaceBuildPath = path.resolve('.interface');
+  const interfaceDistPath = path.resolve(`dist_${type}`, 'app', 'interface');
+  return gulp.src([interfaceBuildPath]).pipe(gulp.dest(interfaceDistPath));
 });
 
 gulp.task('copy-i18n', () => {

@@ -35,7 +35,12 @@ install:
 test_script:
   # Building interface outside gulp scope due to path errors
   # this is a tentative workaround for appveyor
+  # - yarn build:interface
+
+  - cd interface
+  - meteor --version
   - yarn build:interface
+  - cd ..
 
   - yarn build:mist --win --skipTasks=build-interface
   - yarn gulp --wallet --win --skipTasks=build-interface

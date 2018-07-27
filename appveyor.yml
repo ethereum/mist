@@ -22,6 +22,13 @@ install:
 
   # installs global dependencies
   - choco install meteor
+  - meteor --version
+  
+    # Upgrades meteor to get rid of winx64 css build error. TODO: update to a stable version once it's released
+    # https://forums.meteor.com/t/meteor-1-7-0-3-deploy-failure/44252
+  - meteor update --release 1.7.1-beta.22
+  - meteor --version
+
   - choco install nsis
   - choco install yarn
 

@@ -26,12 +26,6 @@ install:
   # accounts for PATH variable change after meteor installation
   - refreshenv
   
-  # Upgrades meteor to get rid of winx64 css build error. TODO: update to a stable version once it's released
-  # https://forums.meteor.com/t/meteor-1-7-0-3-deploy-failure/44252
-  - meteor --version # checking current version
-  - meteor update --release 1.7.1-beta.22
-  - meteor --version # checking new version
-
   - choco install nsis
   - choco install yarn
 

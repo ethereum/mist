@@ -32,7 +32,9 @@ install:
   - yarn install
 
 test_script:
-  - cd interface && meteor-build-client ../build/interface -p ""
+  # Building interface outside gulp scope due to path errors
+  # this is a tentative workaround for appveyor
+  - yarn build:interface
 
   - yarn build:mist --win --skipTasks=build-interface
   - yarn gulp --wallet --win --skipTasks=build-interface

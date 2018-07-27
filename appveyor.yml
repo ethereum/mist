@@ -32,11 +32,13 @@ install:
   - yarn install
 
 test_script:
-  - yarn build:mist --win --skipTasks=bundling-interface
-  - yarn gulp --wallet --win --skipTasks=bundling-interface
+  - cd interface && meteor-build-client ../build/interface -p ""
+
+  - yarn build:mist --win --skipTasks=build-interface
+  - yarn gulp --wallet --win --skipTasks=build-interface
   - yarn test:unit:once
-  - yarn task upload-queue --mist
-  - yarn task upload-queue --wallet
+  - yarn dist:mist
+  - yarn dist:wallet
 
 build: off
 

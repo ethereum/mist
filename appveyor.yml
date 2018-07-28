@@ -43,9 +43,9 @@ build_script:
   # building interface outside gulp scope due to path errors
   # this is a tentative workaround for appveyor
   # - yarn build:interface
-
+  - yarn global add meteor-build-client
   - cd interface
-  - yarn build:interface
+  - meteor-build-client ..\.build-interface -p ""
   - cd ..
 
   - yarn build:mist --win --skiptasks=build-interface

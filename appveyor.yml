@@ -31,9 +31,10 @@ install:
 
   # installs JS dependencies
   - yarn install
+  - cd interface && yarn install
 
-test_script:
-  # Building interface outside gulp scope due to path errors
+build_script:
+  # building interface outside gulp scope due to path errors
   # this is a tentative workaround for appveyor
   # - yarn build:interface
 
@@ -42,12 +43,10 @@ test_script:
   - yarn build:interface
   - cd ..
 
-  - yarn build:mist --win --skipTasks=build-interface
-  - yarn gulp --wallet --win --skipTasks=build-interface
-  - yarn test:unit:once
+  - yarn build:mist --win --skiptasks=build-interface
+  - yarn build:wallet skiptasks=build-interface
   - yarn dist:mist
   - yarn dist:wallet
 
-build: off
-
-
+test_script:
+  - yarn test:unit:once

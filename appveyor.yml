@@ -39,12 +39,11 @@ build_script:
   # - yarn build:interface
 
   - cd interface
-  - meteor --version
   - yarn build:interface
   - cd ..
 
   - yarn build:mist --win --skiptasks=build-interface
-  - yarn build:wallet skiptasks=build-interface
+  - yarn build:wallet --win --skiptasks=build-interface
   - yarn dist:mist
   - yarn dist:wallet
 

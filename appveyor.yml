@@ -22,12 +22,7 @@ install:
   - git submodule update --init --recursive 
 
   # installs global dependencies
-  - ps: >-
-      if ($env:test -eq "integration") {
-        if ((Get-Command "meteor" -ErrorAction SilentlyContinue) -eq $null) {
-          choco install meteor --params "'/RELEASE:1.7.1-beta.22'"
-        }
-      }
+  - choco install meteor --params "'/RELEASE:1.7.1-beta.22'"
   - refreshenv
   - ps: refreshenv
 

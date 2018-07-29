@@ -22,10 +22,14 @@ install:
   - git submodule update --init --recursive 
 
   # installs global dependencies
-  - choco install meteor
-  
-  # accounts for PATH variable change after meteor installation
+  - ps: >-
+      if ($env:test -eq "integration") {
+        if ((Get-Command "meteor" -ErrorAction SilentlyContinue) -eq $null) {
+          choco install meteor --params "'/RELEASE:1.7.1-beta.22'"
+        }
+      }
   - refreshenv
+  - ps: refreshenv
 
   - ps: Install-Product node 8
   
@@ -42,8 +46,7 @@ install:
 build_script:
   # building interface outside gulp scope due to path errors
   # this is a tentative workaround for appveyor
-  # - yarn build:interface
-  - yarn global add meteor-build-client
+  - yarn build:interface
   - cd interface
   - meteor-build-client ..\.build-interface -p ""
   - cd ..

@@ -101,7 +101,7 @@ gulp.task('move-wallet', cb => {
 });
 
 gulp.task('build-interface', cb => {
-  const interfaceBuildPath = path.resolve('.build-interface');
+  const interfaceBuildPath = path.resolve('build-interface');
   exec(
     `meteor-build-client ${interfaceBuildPath} -p ""`,
     { cwd: 'interface' },
@@ -113,7 +113,7 @@ gulp.task('build-interface', cb => {
 });
 
 gulp.task('copy-interface', () => {
-  const interfaceBuildPath = path.resolve('.build-interface');
+  const interfaceBuildPath = path.resolve('build-interface');
   const interfaceDistPath = path.resolve(`dist_${type}`, 'app', 'interface');
   return gulp.src([interfaceBuildPath]).pipe(gulp.dest(interfaceDistPath));
 });

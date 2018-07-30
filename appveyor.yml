@@ -45,7 +45,8 @@ build_script:
   # this is a tentative workaround for appveyor
   # - yarn build:interface
   - cd interface
-  - yarn run meteor-build-client ..\build-interface -p ""
+  - meteor build ..\build-interface --production --debug --directory
+    # - yarn run meteor-build-client ..\build-interface -p ""
   - cd ..
 
   - yarn build:mist --win --skiptasks=build-interface

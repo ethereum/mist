@@ -29,7 +29,8 @@
     "react-dom": "^16.2.0",
     "react-minimal-pie-chart": "^3.0.1",
     "react-redux": "^5.0.7",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "rimraf": "^2.6.2"
   },
   "devDependencies": {
     "meteor-build-client": "git+https://github.com/evertonfraga/meteor-build-client.git"

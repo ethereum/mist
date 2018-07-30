@@ -32,6 +32,6 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "meteor-build-client": "^0.4.1"
+    "meteor-build-client": "git+https://github.com/evertonfraga/meteor-build-client.git"
   }
 }

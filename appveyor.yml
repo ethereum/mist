@@ -4,6 +4,10 @@ platform: x64
 environment:
   nodejs_version: "8"
 
+  # meteor memory allocation
+  # https://github.com/meteor/meteor/issues/9568
+  TOOL_NODE_FLAGS: "--max-old-space-size=3072"
+
 cache:
   - node_modules
   - '%LOCALAPPDATA%\electron\Cache'

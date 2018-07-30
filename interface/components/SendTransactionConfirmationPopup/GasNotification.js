@@ -45,21 +45,9 @@ class GasNotification extends Component {
           )}
         </div>
       );
-    } else {
-      return (
-        <div>
-          {this.props.toIsContract ? (
-            <p className="info">
-              {i18n.t(
-                'mist.popupWindows.sendTransactionConfirmation.contractExecutionInfo'
-              )}
-            </p>
-          ) : (
-            ''
-          )}
-        </div>
-      );
     }
+
+    return null;
   }
 }
 

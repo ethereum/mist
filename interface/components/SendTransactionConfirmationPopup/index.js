@@ -6,7 +6,11 @@ import FeeSelector from './FeeSelector';
 import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TransactionParties from './TransactionParties';
-import { determineIfContract, confirmTransaction } from '../../actions.js';
+import {
+  determineIfContract,
+  confirmTransaction,
+  lookupSignature
+} from '../../actions.js';
 
 class SendTransactionConfirmation extends Component {
   constructor(props) {
@@ -14,7 +18,6 @@ class SendTransactionConfirmation extends Component {
 
     this.state = {
       estimatedGas: 3000000,
-      executionFunction: '',
       hasSignature: false,
       providedGas: 0,
       gasPrice: this.props.newTransaction.gasPrice || 0,
@@ -23,7 +26,6 @@ class SendTransactionConfirmation extends Component {
     };
   }
 
-  // TODO: handle React updates
   componentDidMount() {
     this.getGasPrice();
     this.determineIfContract();
@@ -49,29 +51,7 @@ class SendTransactionConfirmation extends Component {
 
   lookupSignature() {
     const { data } = this.props.newTransaction;
-
-    if (data && data.length > 8) {
-      const bytesSignature =
-        data.substr(0, 2) === '0x'
-          ? data.substr(0, 10)
-          : '0x' + data.substr(0, 8);
-
-      // try window.SIGNATURES first
-      if (_.first(window.SIGNATURES[bytesSignature])) {
-        console.log('∆∆∆ exFunc!', _.first(window.SIGNATURES[bytesSignature]));
-
-        this.setState({
-          executionFunction: _.first(window.SIGNATURES[bytesSignature])
-        });
-      } else {
-        fetch(
-          `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
-        ).then(async response => {
-          const fourByte = await response.json();
-          console.log('∆∆∆ fourByte', fourByte);
-        });
-      }
-    }
+    this.props.dispatch(lookupSignature(data));
   }
 
   estimateGasUsage() {
@@ -104,9 +84,7 @@ class SendTransactionConfirmation extends Component {
     });
   }
 
-  handleSubmit = d => {
-    console.log('∆∆∆ handleSubmit!', data);
-    console.log('∆∆∆ this.props', this.props);
+  handleSubmit = formData => {
     const { data, to, from, gas, gasPrice, value } = this.props.newTransaction;
 
     let txData = {
@@ -115,7 +93,7 @@ class SendTransactionConfirmation extends Component {
       gas,
       gasPrice,
       chosenGas: gas, // TODO
-      pw: d.pw,
+      pw: formData.pw,
       value
     };
 
@@ -131,20 +109,20 @@ class SendTransactionConfirmation extends Component {
 
     return (
       <div className="popup-windows tx-info">
-        {/*this.renderTitle()*/}
-
         <ExecutionContext
           data={this.props.newTransaction.data}
           estimatedFee={this.state.estimatedFee}
           estimatedGas={this.state.estimatedGas}
+          executionFunction={this.props.newTransaction.executionFunction}
           gasLoading={this.state.gasLoading}
           isNewContract={this.props.newTransaction.isNewContract}
           network={this.props.nodes.network}
+          params={this.props.newTransaction.params}
           priceUSD={this.state.priceUSD}
           providedGas={this.state.providedGas}
           showFormattedParams={this.state.showFormattedParams}
           to={to}
-          toIsContract={this.props.toIsContract}
+          toIsContract={this.props.newTransaction.toIsContract}
           value={this.props.newTransaction.value}
         />
 
@@ -153,8 +131,8 @@ class SendTransactionConfirmation extends Component {
           from={from}
           isNewContract={this.props.newTransaction.isNewContract}
           to={to}
-          toIsContract={this.props.toIsContract}
-          executionFunction={this.state.executionFunction}
+          toIsContract={this.props.newTransaction.toIsContract}
+          executionFunction={this.props.newTransaction.executionFunction}
           hasSignature={this.state.hasSignature}
           value={value}
         />
@@ -169,7 +147,7 @@ class SendTransactionConfirmation extends Component {
           estimatedGas={this.state.estimatedGas}
           gasLoading={this.state.gasLoading}
           gasError={this.state.gasError}
-          toIsContract={this.props.toIsContract}
+          toIsContract={this.props.newTransaction.toIsContract}
           to={to}
         />
 

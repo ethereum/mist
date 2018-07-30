@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DappIdenticon from '../DappIdenticon';
 import Data from './Data';
 import Fees from './Fees';
 
@@ -15,6 +16,12 @@ class ExecutionContext extends Component {
     );
   }
 
+  shortenAddress(address) {
+    if (_.isString(address)) {
+      return address.substr(0, 6) + '...' + address.substr(-4);
+    }
+  }
+
   renderExecutionSentence() {
     if (this.props.isNewContract) {
       // TODO: accurate?
@@ -28,6 +35,43 @@ class ExecutionContext extends Component {
           <div className="execution-context__subtext">
             About {bytesCount} bytes
           </div>
+        </div>
+      );
+    }
+
+    if (this.props.toIsContract) {
+      // TODO: radspec
+
+      // Token transfers:
+      if (this.props.executionFunction === 'transfer(address,uint256)') {
+        const tokenCount = this.props.params[1].value.slice(0, -18);
+        const address = this.props.params[0].value;
+
+        return (
+          <div className="execution-context__sentence">
+            Transfer <span className="bold">{tokenCount} tokens</span> to{' '}
+            <DappIdenticon
+              identity={address}
+              size="small"
+              className="execution-context__identicon"
+            />{' '}
+            <span
+              className="simptip-position-bottom simptip-movable bold"
+              data-tooltip={address}
+            >
+              {this.shortenAddress(address)}
+            </span>
+          </div>
+        );
+      }
+
+      const params = this.props.executionFunction.match(/\((.+)\)/i);
+      console.log('∆∆∆ params (in component)', params);
+
+      // Unknown/generic function execution:
+      return (
+        <div className="execution-context__sentence">
+          Executing a contract function
         </div>
       );
     }

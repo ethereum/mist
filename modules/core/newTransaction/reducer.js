@@ -3,6 +3,8 @@ export const initialState = {
   gasPrice: '',
   gas: '',
   data: '',
+  executionFunction: '',
+  params: [],
   to: '',
   toIsContract: false,
   isNewContract: false,
@@ -25,6 +27,14 @@ const newTransaction = (state = initialState, action) => {
       return Object.assign({}, state, { unlocking: false });
     case '[CLIENT]:CONFIRM_TRANSACTION:FAILURE':
       return Object.assign({}, state, { unlocking: false });
+    case '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS':
+      return Object.assign({}, state, {
+        executionFunction: action.payload.executionFunction
+      });
+    case '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS':
+      return Object.assign({}, state, {
+        params: action.payload.params
+      });
     default:
       return state;
   }

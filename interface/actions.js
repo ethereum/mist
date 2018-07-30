@@ -123,3 +123,48 @@ function displayNotification(errorType, duration) {
     duration
   });
 }
+
+exports.lookupSignature = function lookupSignature(data) {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' });
+
+    if (data && data.length > 8) {
+      const bytesSignature =
+        data.substr(0, 2) === '0x'
+          ? data.substr(0, 10)
+          : '0x' + data.substr(0, 8);
+
+      if (_.first(window.SIGNATURES[bytesSignature])) {
+        const executionFunction = _.first(window.SIGNATURES[bytesSignature]);
+
+        dispatch({
+          type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
+          payload: { executionFunction }
+        });
+
+        dispatch(decodeFunctionSignature(executionFunction, data));
+      } else {
+        fetch(
+          `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
+        ).then(async response => {
+          const fourByte = await response.json();
+          console.log('∆∆∆ fourByte', fourByte);
+        });
+      }
+    }
+  };
+};
+
+function decodeFunctionSignature(signature, data) {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:START' });
+    ipc.send('backendAction_decodeFunctionSignature', signature, data);
+    ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
+      console.log('∆∆∆ params (in action)', params);
+      dispatch({
+        type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS',
+        payload: { params }
+      });
+    });
+  };
+}

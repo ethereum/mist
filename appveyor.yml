@@ -2,7 +2,7 @@ image: Visual Studio 2017
 platform: x64
 
 environment:
-  node_version: "8"
+  nodejs_version: "8"
 
 cache:
   - node_modules
@@ -15,7 +15,7 @@ init:
 
 install:
   # Get the latest stable version of Node.js or io.js
-  - ps: Install-Product node 8
+  - ps: Install-Product node $env:nodejs_version
   - node --version
 
   # needed for meteor-dapp-wallet
@@ -26,11 +26,9 @@ install:
   - refreshenv
   - ps: refreshenv
 
-  - ps: Install-Product node 8
-  
   - choco install nsis
 
-  # yarn package on choco registry has node 10.7 as dependency. we can prevent this using --ignore-dependencies
+  # yarn package on choco registry has node 10.7 as dependency. we can prevent it from install using `--ignore-dependencies`
   - choco install yarn --ignore-dependencies
   - node --version
 

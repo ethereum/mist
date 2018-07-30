@@ -173,25 +173,7 @@ Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](htt
 
 #### Dependencies
 
-Cross-platform builds require additional [`electron-builder` dependencies](https://www.electron.build/multi-platform-build).
-
-##### macOS
-
-```bash
-$ brew install rpm
-```
-
-##### Windows
-
-```bash
-$ brew install wine --without-x11 mono makensis
-```
-
-##### Linux
-
-```bash
-$ brew install gnu-tar libicns graphicsmagick xz
-```
+Cross-platform builds require [additional dependencies](https://www.electron.build/multi-platform-build) needed by Electron Builder. Please follow their instructions for up to date dependency information.
 
 #### Generate packages
 
@@ -207,7 +189,7 @@ To generate the Ethereum Wallet:
 $ yarn build:wallet
 ```
 
-The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. From 0.11.0, both Ethereum Wallet and Mist bundle a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
+The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. Starting from 0.11.0, both Ethereum Wallet and Mist ships with a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
 
 #### Options
 
@@ -226,7 +208,7 @@ $ yarn build:mist --win      # windows
 When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
 ```bash
-$ yarn build:mist --mac --skipTasks=bundling-interface,release-dist
+$ yarn build:mist --mac --skipTasks=build-interface,release-dist
 ```
 
 ##### Checksums
@@ -246,22 +228,6 @@ Any other gulp task can be run using `yarn task`.
 ```bash
 $ yarn task clean-dist
 ```
-
-#### Cutting a release
-
-1.  Install [release](https://github.com/zeit/release) globally:
-
-    ```bash
-    $ yarn global add release
-    ```
-
-2.  Create a git tag and a GitHub release:
-
-    ```bash
-    $ release <major|minor|patch>
-    ```
-
-3.  A generated release draft will open in the default browser. Edit the information and add assets as necessary.
 
 ## Testing
 

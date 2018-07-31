@@ -8,9 +8,18 @@ environment:
   # https://github.com/meteor/meteor/issues/9568
   TOOL_NODE_FLAGS: "--max-old-space-size=4096"
 
+  APPVEYOR_RDP_PASSWORD:
+    secure: ErXQkfrN/bX6LtqcjtnLGw==
+  
   matrix:
     - product: mist
     - product: wallet
+
+artifacts:
+  - path: C:\projects\mist\dist_mist\release\*
+    name: Mist
+  - path: C:\projects\mist\dist_wallet\release\*
+    name: Wallet
 
 cache:
   - node_modules
@@ -48,4 +57,6 @@ build_script:
   - ps: yarn dist:$env:product
 
 test_script:
-  - yarn test:unit:once
+- cmd: yarn test:unit:once
+
+

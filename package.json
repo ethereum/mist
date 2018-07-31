@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.12.0",
+  "version": "0.11.1",
   "license": "GPL-3.0",
   "author": "Ethereum Mist Team <mist@ethereum.org>",
   "description": "Ethereum Mist",
@@ -19,7 +19,7 @@
     "test:e2e": "gulp test",
     "build:wallet": "gulp --wallet",
     "build:mist": "gulp --mist",
-    "build:interface": "cd interface && meteor-build-client ../.interface -p ''",
+    "build:interface": "cd interface && meteor-build-client ../build-interface -p ''",
     "dist:mist": "gulp upload-queue --mist",
     "dist:wallet": "gulp upload-queue --wallet",
     "task": "gulp"

@@ -23,11 +23,11 @@ install:
   - node --version
 
   # needed for meteor-dapp-wallet
-  - git submodule update --init --recursive 
+  ###- git submodule update --init --recursive 
 
   # installs global dependencies
   - choco install meteor 
-  - choco install nsis
+    ###- choco install nsis
   # prevents node 10 to be installed, as it's a dependency of yarn
   - choco install yarn --ignore-dependencies
 
@@ -45,12 +45,12 @@ build_script:
   # this is a tentative workaround for appveyor
   # - yarn build:interface
   - cd interface
-  - meteor build ..\build-interface --debug --directory
-    # - yarn run meteor-build-client ..\build-interface -p ""
+    # - meteor build ..\build-interface --debug --directory
+  - yarn run meteor-build-client ..\build-interface -p ""
   - cd ..
 
-  - yarn build:mist --win --skiptasks=build-interface
-  - yarn build:wallet --win --skiptasks=build-interface
+  - yarn build:mist --win --skipTasks=build-interface
+  - yarn build:wallet --win 
   - yarn dist:mist
   - yarn dist:wallet
 

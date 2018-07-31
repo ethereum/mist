@@ -114,9 +114,9 @@ lru-cache@^4.0.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
-"meteor-build-client@git+https://github.com/evertonfraga/meteor-build-client.git":
+meteor-build-client@^0.4.1:
   version "0.4.1"
-  resolved "git+https://github.com/evertonfraga/meteor-build-client.git#65629374e6372618cf7541938b0626d286b6a093"
+  resolved "https://registry.yarnpkg.com/meteor-build-client/-/meteor-build-client-0.4.1.tgz#f31126f5e7974830c69d44ce96dddcdc362b7793"
   dependencies:
     bluebird "^3.4.6"
     buffered-spawn "^3.3.2"

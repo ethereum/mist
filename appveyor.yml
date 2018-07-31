@@ -6,7 +6,7 @@ environment:
 
   # increasing `meteor build` memory allocation
   # https://github.com/meteor/meteor/issues/9568
-  TOOL_NODE_FLAGS: "--max-old-space-size=3072"
+  TOOL_NODE_FLAGS: "--max-old-space-size=4096"
 
   matrix:
     - product: mist

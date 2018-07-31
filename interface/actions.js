@@ -1,5 +1,14 @@
-exports.determineIfContract = function determineIfContract(toAddress) {
-  return function(dispatch) {
+export function setWindowSize(height) {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
+
+    // footer + padding = 104px
+    ipc.send('backendAction_setWindowSize', 580, height + 104);
+  };
+}
+
+export function determineIfContract(toAddress) {
+  return dispatch => {
     dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:START' });
 
     if (!toAddress) {
@@ -13,18 +22,17 @@ exports.determineIfContract = function determineIfContract(toAddress) {
       console.log('∆∆∆ getCode e', e);
       console.log('∆∆∆ getCode res', res);
       if (!e && res && res.length > 2) {
-        return dispatch({
+        dispatch({
           type: '[CLIENT]:DETERMINE_IF_CONTRACT:SUCCESS',
           payload: { toIsContract: true, isNewContract: false }
         });
-        // setWindowSize(template);
       }
     });
   };
-};
+}
 
-exports.confirmTransaction = function confirmTransaction(data) {
-  return async function(dispatch) {
+export function confirmTransaction(data) {
+  return async dispatch => {
     dispatch({ type: '[CLIENT]:CONFIRM_TRANSACTION:START' });
 
     // reject if sending to itself
@@ -113,7 +121,7 @@ exports.confirmTransaction = function confirmTransaction(data) {
       dispatch({ type: '[CLIENT]:CONFIRM_TRANSACTION:SUCCESS' });
     });
   };
-};
+}
 
 function displayNotification(errorType, duration) {
   GlobalNotification.warning({
@@ -124,7 +132,7 @@ function displayNotification(errorType, duration) {
   });
 }
 
-exports.lookupSignature = function lookupSignature(data) {
+export function lookupSignature(data) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' });
 
@@ -153,7 +161,7 @@ exports.lookupSignature = function lookupSignature(data) {
       }
     }
   };
-};
+}
 
 function decodeFunctionSignature(signature, data) {
   return dispatch => {

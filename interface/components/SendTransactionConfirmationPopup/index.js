@@ -9,7 +9,8 @@ import TransactionParties from './TransactionParties';
 import {
   determineIfContract,
   confirmTransaction,
-  lookupSignature
+  lookupSignature,
+  setWindowSize
 } from '../../actions.js';
 
 class SendTransactionConfirmation extends Component {
@@ -32,6 +33,9 @@ class SendTransactionConfirmation extends Component {
     this.lookupSignature();
     this.estimateGasUsage();
     this.getPriceConversion();
+
+    const height = this.divElement.clientHeight;
+    this.props.dispatch(setWindowSize(height));
   }
 
   getGasPrice() {
@@ -109,54 +113,55 @@ class SendTransactionConfirmation extends Component {
 
     return (
       <div className="popup-windows tx-info">
-        <ExecutionContext
-          data={this.props.newTransaction.data}
-          estimatedFee={this.state.estimatedFee}
-          estimatedGas={this.state.estimatedGas}
-          executionFunction={this.props.newTransaction.executionFunction}
-          gasLoading={this.state.gasLoading}
-          isNewContract={this.props.newTransaction.isNewContract}
-          network={this.props.nodes.network}
-          params={this.props.newTransaction.params}
-          priceUSD={this.state.priceUSD}
-          providedGas={this.state.providedGas}
-          showFormattedParams={this.state.showFormattedParams}
-          to={to}
-          toIsContract={this.props.newTransaction.toIsContract}
-          value={this.props.newTransaction.value}
-        />
+        <div ref={divElement => (this.divElement = divElement)}>
+          <ExecutionContext
+            data={this.props.newTransaction.data}
+            estimatedFee={this.state.estimatedFee}
+            estimatedGas={this.state.estimatedGas}
+            executionFunction={this.props.newTransaction.executionFunction}
+            gasLoading={this.state.gasLoading}
+            isNewContract={this.props.newTransaction.isNewContract}
+            network={this.props.nodes.network}
+            params={this.props.newTransaction.params}
+            priceUSD={this.state.priceUSD}
+            providedGas={this.state.providedGas}
+            showFormattedParams={this.state.showFormattedParams}
+            to={to}
+            toIsContract={this.props.newTransaction.toIsContract}
+            value={this.props.newTransaction.value}
+          />
 
-        <TransactionParties
-          fromIsContract={this.state.fromIsContract}
-          from={from}
-          isNewContract={this.props.newTransaction.isNewContract}
-          to={to}
-          toIsContract={this.props.newTransaction.toIsContract}
-          executionFunction={this.props.newTransaction.executionFunction}
-          hasSignature={this.state.hasSignature}
-          value={value}
-        />
+          <TransactionParties
+            fromIsContract={this.state.fromIsContract}
+            from={from}
+            isNewContract={this.props.newTransaction.isNewContract}
+            to={to}
+            toIsContract={this.props.newTransaction.toIsContract}
+            executionFunction={this.props.newTransaction.executionFunction}
+            hasSignature={this.state.hasSignature}
+            value={value}
+          />
 
-        <FeeSelector
-          estimatedGas={this.state.estimatedGas}
-          priceUSD={this.state.priceUSD}
-          network={this.props.nodes.network}
-        />
+          <FeeSelector
+            estimatedGas={this.state.estimatedGas}
+            priceUSD={this.state.priceUSD}
+            network={this.props.nodes.network}
+          />
 
-        <GasNotification
-          estimatedGas={this.state.estimatedGas}
-          gasLoading={this.state.gasLoading}
-          gasError={this.state.gasError}
-          toIsContract={this.props.newTransaction.toIsContract}
-          to={to}
-        />
+          <GasNotification
+            estimatedGas={this.state.estimatedGas}
+            gasLoading={this.state.gasLoading}
+            gasError={this.state.gasError}
+            toIsContract={this.props.newTransaction.toIsContract}
+            to={to}
+          />
 
-        <Footer
-          unlocking={this.props.newTransaction.unlocking}
-          handleSubmit={this.handleSubmit}
-        />
+          <Footer
+            unlocking={this.props.newTransaction.unlocking}
+            handleSubmit={this.handleSubmit}
+          />
 
-        {/* <form action="#">
+          {/* <form action="#">
 
               <div class="container">
               <div class="inner-container">
@@ -337,6 +342,7 @@ class SendTransactionConfirmation extends Component {
 
         </form>
  */}
+        </div>
       </div>
     );
   }

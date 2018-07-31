@@ -8,6 +8,10 @@ environment:
   # https://github.com/meteor/meteor/issues/9568
   TOOL_NODE_FLAGS: "--max-old-space-size=3072"
 
+  matrix:
+    - product: mist
+    - product: wallet
+
 cache:
   - node_modules
   - '%LOCALAPPDATA%\electron\Cache'
@@ -40,8 +44,8 @@ install:
   - cd interface && yarn install
 
 build_script:
-  - yarn build:mist --win 
-  - yarn dist:mist
+  - ps: yarn build:$env:product --win 
+  - ps: yarn dist:$env:product
 
 test_script:
   - yarn test:unit:once

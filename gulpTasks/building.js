@@ -114,7 +114,7 @@ gulp.task('build-interface', cb => {
 
 gulp.task('copy-interface', () => {
   return gulp
-    .src(['build-interface/*'])
+    .src(['build-interface/**/*'])
     .pipe(gulp.dest(`dist_${type}/app/interface`));
 });
 

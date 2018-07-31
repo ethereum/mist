@@ -4,7 +4,7 @@ platform: x64
 environment:
   nodejs_version: "8"
 
-  # meteor memory allocation
+  # increasing `meteor build` memory allocation
   # https://github.com/meteor/meteor/issues/9568
   TOOL_NODE_FLAGS: "--max-old-space-size=3072"
 
@@ -20,14 +20,13 @@ init:
 install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
-  - node --version
 
   # needed for meteor-dapp-wallet
-  ###- git submodule update --init --recursive 
+  - git submodule update --init --recursive 
 
   # installs global dependencies
   - choco install meteor 
-    ###- choco install nsis
+  - choco install nsis
   # prevents node 10 to be installed, as it's a dependency of yarn
   - choco install yarn --ignore-dependencies
 
@@ -41,18 +40,8 @@ install:
   - cd interface && yarn install
 
 build_script:
-  # building interface outside gulp scope due to path errors
-  # this is a tentative workaround for appveyor
-  # - yarn build:interface
-  - cd interface
-    # - meteor build ..\build-interface --debug --directory
-  - yarn run meteor-build-client ..\build-interface -p ""
-  - cd ..
-
-  - yarn build:mist --win --skipTasks=build-interface
-  - yarn build:wallet --win 
+  - yarn build:mist --win 
   - yarn dist:mist
-  - yarn dist:wallet
 
 test_script:
   - yarn test:unit:once

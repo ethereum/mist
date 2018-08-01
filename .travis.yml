@@ -1,10 +1,10 @@
 language: node_js
 node_js: '8'
-cache:
-  yarn: true
-  directories:
-    - node_modules
-    - 'interface/.meteor'
+#cache:
+#  yarn: true
+#  directories:
+#    - node_modules
+#      - 'interface/.meteor'
 
 
 sudo: required
@@ -56,7 +56,9 @@ script:
   - yarn build:mist --$GULP_PLATFORM
 
   - yarn build:wallet --$GULP_PLATFORM
-  
+ 
+
+  - cat dist_mist/app/interface/index.html 
   - yarn test:e2e
 
 after_success:

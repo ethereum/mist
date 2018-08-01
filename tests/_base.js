@@ -223,6 +223,9 @@ exports.mocha = (_module, options) => {
 
       yield Q.delay(1000);
       yield this.client.execute(() => {
+        // Debugging app start page
+        throw new Error(document.querySelector('html').innerHTML);
+
         // Code executed in context of browser
         Tabs.remove({});
         LastVisitedPages.remove({});

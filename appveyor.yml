@@ -16,9 +16,9 @@ environment:
     - product: wallet
 
 artifacts:
-  - path: C:\projects\mist\dist_mist\release\*
+  - path: mist_mist\release\*
     name: Mist
-  - path: C:\projects\mist\dist_wallet\release\*
+  - path: dist_wallet\release\*
     name: Wallet
 
 cache:

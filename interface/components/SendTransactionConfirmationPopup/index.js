@@ -9,6 +9,9 @@ import TransactionParties from './TransactionParties';
 import {
   determineIfContract,
   confirmTransaction,
+  estimateGasUsage,
+  getGasPrice,
+  getPriceConversion,
   lookupSignature,
   setWindowSize
 } from '../../actions.js';
@@ -18,10 +21,8 @@ class SendTransactionConfirmation extends Component {
     super(props);
 
     this.state = {
-      estimatedGas: 3000000,
       hasSignature: false,
       providedGas: 0,
-      gasPrice: this.props.newTransaction.gasPrice || 0,
       gasError: '',
       priceUSD: ''
     };
@@ -33,19 +34,12 @@ class SendTransactionConfirmation extends Component {
     this.lookupSignature();
     this.estimateGasUsage();
     this.getPriceConversion();
-
-    const height = this.divElement.clientHeight;
-    this.props.dispatch(setWindowSize(height));
+    this.adjustWindowHeight();
   }
 
   getGasPrice() {
     if (!this.props.newTransaction.gasPrice) {
-      web3.eth.getGasPrice((e, res) => {
-        if (!e) {
-          const gasPrice = '0x' + res.toString(16);
-          this.setState({ gasPrice });
-        }
-      });
+      this.props.dispatch(getGasPrice());
     }
   }
 
@@ -59,33 +53,16 @@ class SendTransactionConfirmation extends Component {
   }
 
   estimateGasUsage() {
-    this.setState({ gasLoading: true });
-    const { gas } = this.props.newTransaction;
-
-    web3.eth.estimateGas(this.props.newTransaction).then((value, err) => {
-      console.log('∆∆∆ est gas');
-      console.log('∆∆∆ value', value);
-      console.log('∆∆∆ err', err);
-
-      if (value) {
-        return this.setState({ estimatedGas: value, gasLoading: false });
-      }
-
-      this.setState({ gasLoading: false });
-    });
+    this.props.dispatch(estimateGasUsage());
   }
 
   getPriceConversion() {
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
-      mist.version
-    }`;
+    this.props.dispatch(getPriceConversion());
+  }
 
-    fetch(url).then(async (response, err) => {
-      const priceData = await response.json();
-      console.log('∆∆∆ priceData', priceData);
-
-      this.setState({ priceUSD: priceData.USD });
-    });
+  adjustWindowHeight() {
+    const height = this.divElement.clientHeight;
+    this.props.dispatch(setWindowSize(height));
   }
 
   handleSubmit = formData => {
@@ -96,7 +73,7 @@ class SendTransactionConfirmation extends Component {
       from,
       gas,
       gasPrice,
-      chosenGas: gas, // TODO
+      chosenGas: gas, // TODO: priority?
       pw: formData.pw,
       value
     };
@@ -117,9 +94,9 @@ class SendTransactionConfirmation extends Component {
           <ExecutionContext
             data={this.props.newTransaction.data}
             estimatedFee={this.state.estimatedFee}
-            estimatedGas={this.state.estimatedGas}
+            estimatedGas={this.props.newTransaction.estimatedGas}
             executionFunction={this.props.newTransaction.executionFunction}
-            gasLoading={this.state.gasLoading}
+            gasLoading={this.props.newTransaction.gasLoading}
             isNewContract={this.props.newTransaction.isNewContract}
             network={this.props.nodes.network}
             params={this.props.newTransaction.params}
@@ -143,14 +120,14 @@ class SendTransactionConfirmation extends Component {
           />
 
           <FeeSelector
-            estimatedGas={this.state.estimatedGas}
+            estimatedGas={this.props.newTransaction.estimatedGas}
             priceUSD={this.state.priceUSD}
             network={this.props.nodes.network}
           />
 
           <GasNotification
-            estimatedGas={this.state.estimatedGas}
-            gasLoading={this.state.gasLoading}
+            estimatedGas={this.props.newTransaction.estimatedGas}
+            gasLoading={this.props.newTransaction.gasLoading}
             gasError={this.state.gasError}
             toIsContract={this.props.newTransaction.toIsContract}
             to={to}

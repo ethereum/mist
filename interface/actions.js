@@ -7,6 +7,66 @@ export function setWindowSize(height) {
   };
 }
 
+export function getGasPrice() {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:GET_GAS_PRICE:START' });
+
+    web3.eth.getGasPrice((error, res) => {
+      if (error) {
+        return dispatch({ type: '[CLIENT]:GET_GAS_PRICE:FAILURE', error });
+      }
+
+      const gasPrice = '0x' + res.toString(16);
+      return dispatch({
+        type: '[CLIENT]:GET_GAS_PRICE:SUCCESS',
+        payload: { gasPrice }
+      });
+    });
+  };
+}
+
+export function estimateGasUsage() {
+  return (dispatch, getState) => {
+    dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' });
+
+    web3.eth.estimateGas(getState().newTransaction).then((value, error) => {
+      if (error) {
+        return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
+      }
+
+      return dispatch({
+        type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
+        payload: { estimatedGas: value }
+      });
+    });
+  };
+}
+
+export function getPriceConversion() {
+  return dispatch => {
+    dispatch({ type: '[CLIENT]:GET_PRICE_CONVERSION:START' });
+
+    const url = `https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,GBP,BRL&extraParams=Mist-${
+      mist.version
+    }`;
+
+    fetch(url).then(async (response, error) => {
+      if (error) {
+        return dispatch({
+          type: '[CLIENT]:GET_PRICE_CONVERSION:FAILURE',
+          error
+        });
+      }
+
+      const priceData = await response.json();
+      return dispatch({
+        type: '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS',
+        payload: { priceUSD: priceData.USD }
+      });
+    });
+  };
+}
+
 export function determineIfContract(toAddress) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:START' });
@@ -18,10 +78,13 @@ export function determineIfContract(toAddress) {
       });
     }
 
-    web3.eth.getCode(toAddress, async (e, res) => {
-      console.log('∆∆∆ getCode e', e);
-      console.log('∆∆∆ getCode res', res);
-      if (!e && res && res.length > 2) {
+    web3.eth.getCode(toAddress, (error, res) => {
+      if (error) {
+        // TODO: handle error state
+        dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:FAILURE' });
+      }
+
+      if (res && res.length > 2) {
         dispatch({
           type: '[CLIENT]:DETERMINE_IF_CONTRACT:SUCCESS',
           payload: { toIsContract: true, isNewContract: false }

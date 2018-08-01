@@ -90,7 +90,7 @@
     "json-structure-diff": "^0.0.2",
     "meteor-build-client": "^0.4.1",
     "minimist": "^1.2.0",
-    "mocha": "^3.2.0",
+    "mocha": "^5.1.0",
     "prettier": "1.13.2",
     "pretty-quick": "^1.4.1",
     "redux-mock-store": "^1.3.0",

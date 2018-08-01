@@ -16,7 +16,7 @@ environment:
     - product: wallet
 
 artifacts:
-  - path: mist_mist\release\*
+  - path: dist_mist\release\*
     name: Mist
   - path: dist_wallet\release\*
     name: Wallet

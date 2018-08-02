@@ -136,7 +136,7 @@ gulp.task('build-dist', cb => {
     homepage: 'https://github.com/ethereum/mist',
     build: {
       appId: `org.ethereum.${type}`,
-      asar: false,
+      asar: true,
       directories: {
         buildResources: '../build',
         output: '../dist'

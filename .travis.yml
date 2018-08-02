@@ -1,10 +1,12 @@
 language: node_js
 node_js: '8'
-#cache:
+cache:
 #  yarn: true
-#  directories:
-#    - node_modules
-#      - 'interface/.meteor'
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+  
 
 
 sudo: required
@@ -16,6 +18,8 @@ matrix:
       dist: trusty
       env:
           - GULP_PLATFORM=linux
+          - ELECTRON_CACHE=$HOME/.cache/electron
+          - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       addons:
         artifacts:
           paths:
@@ -36,6 +40,8 @@ matrix:
       osx_image: xcode8.3  
       env:
           - GULP_PLATFORM=mac
+          - ELECTRON_CACHE=$HOME/.cache/electron
+          - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
       addons:
         artifacts:
           paths:
@@ -56,9 +62,7 @@ script:
   - yarn build:mist --$GULP_PLATFORM
 
   - yarn build:wallet --$GULP_PLATFORM
- 
 
-  - cat dist_mist/app/interface/index.html 
   - yarn test:e2e
 
 after_success:

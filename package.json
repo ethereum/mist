@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "license": "GPL-3.0",
   "author": "Ethereum Mist Team <mist@ethereum.org>",
   "description": "Ethereum Mist",
@@ -10,15 +10,16 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "postinstall": "git submodule update --recursive && (cd interface && yarn) && which meteor || curl https://install.meteor.com/?release=1.6.1 | /bin/sh",
+    "postinstall": "git submodule update --recursive && yarn task pack-wallet && (cd interface && yarn)",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:tools": "remotedev & (sleep 3 && open http://localhost:8000)",
-    "test:unit": "mocha --compilers babel-register tests/unit/**/* --watch",
-    "test:unit:once": "mocha --compilers babel-register tests/unit/**/*",
+    "test:unit:once": "mocha --compilers babel-register ./tests/unit/ --recursive",
+    "test:unit": "yarn run test:unit:once --watch",
     "test:e2e": "gulp test",
     "build:wallet": "gulp --wallet",
     "build:mist": "gulp --mist",
+    "build:interface": "cd interface && meteor-build-client ../build-interface -p ''",
     "dist:mist": "gulp upload-queue --mist",
     "dist:wallet": "gulp upload-queue --wallet",
     "task": "gulp"

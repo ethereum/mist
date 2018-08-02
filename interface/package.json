@@ -4,7 +4,8 @@
   "description": "Mist interface application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:interface": "meteor-build-client ../.build-interface -p ''"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,8 @@
     "react-minimal-pie-chart": "^3.0.1",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "meteor-build-client": "^0.4.1"
   }
 }

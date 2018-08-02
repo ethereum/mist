@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const builder = require('electron-builder');
 const del = require('del');
-const exec = require('child_process').exec;
+const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -74,17 +74,17 @@ gulp.task('switch-production', cb => {
 
 gulp.task('pack-wallet', cb => {
   del(['./wallet']).then(() => {
-    console.log('Building wallet...');
-    const buildPath = path.join('..', '..', 'wallet');
-    exec(
-      `cd meteor-dapp-wallet/app \
-          && yarn install \
-          && "../../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
-      (err, stdout, stderr) => {
-        console.log(stdout, stderr);
-        cb(err);
-      }
-    );
+    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
+    const toPath = path.resolve('wallet');
+
+    if (!fs.existsSync(fromPath)) {
+      throw new Error(
+        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
+      );
+    }
+
+    shell.cp('-R', fromPath, toPath);
+    cb();
   });
 });
 
@@ -100,16 +100,22 @@ gulp.task('move-wallet', cb => {
   cb();
 });
 
-gulp.task('bundling-interface', cb => {
-  const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
+gulp.task('build-interface', cb => {
+  const interfaceBuildPath = path.resolve('build-interface');
   exec(
-    `"../node_modules/.bin/meteor-build-client" ${buildPath} -p ""`,
+    `yarn run meteor-build-client ${interfaceBuildPath} -p ""`,
     { cwd: 'interface' },
     (err, stdout) => {
       console.log(stdout);
       cb(err);
     }
   );
+});
+
+gulp.task('copy-interface', () => {
+  return gulp
+    .src(['build-interface/**/*'])
+    .pipe(gulp.dest(`dist_${type}/app/interface`));
 });
 
 gulp.task('copy-i18n', () => {
@@ -217,12 +223,6 @@ gulp.task('release-dist', done => {
   const versionDashed = version.replace(/\./g, '-');
 
   const cp = (inputPath, outputPath) => {
-    console.info(
-      `Copying from ${path.join(distPath, inputPath)} to ${path.join(
-        releasePath,
-        outputPath
-      )}`
-    );
     shell.cp(
       path.join(distPath, inputPath),
       path.join(releasePath, outputPath)
@@ -272,9 +272,6 @@ gulp.task('release-dist', done => {
         break;
     }
   });
-
-  console.info('∆∆∆ Listing release files ***');
-  console.info(shell.ls('-l', releasePath).map(e => e.name));
 
   done();
 });

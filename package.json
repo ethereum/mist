@@ -21,7 +21,6 @@
     "dist:wallet": "gulp upload-queue --wallet",
     "test:unit:once": "mocha --compilers babel-register ./tests/unit/ --recursive",
     "test:unit": "yarn run test:unit:once --watch",
-    "test:unit": "yarn run test:unit:once --watch",
     "test:e2e": "gulp test",
     "task": "gulp"
   },

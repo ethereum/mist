@@ -1,13 +1,5 @@
 language: node_js
 node_js: '8'
-cache:
-#  yarn: true
-  directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
-  
-
 
 sudo: required
 
@@ -51,6 +43,7 @@ matrix:
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+
   - yarn
 
   # only code signs when on master
@@ -62,6 +55,8 @@ script:
   - yarn build:mist --$GULP_PLATFORM
 
   - yarn build:wallet --$GULP_PLATFORM
+
+  - cat dist_mist/app/interface/index.html 
 
   - yarn test:e2e
 

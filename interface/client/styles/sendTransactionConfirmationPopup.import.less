@@ -1,3 +1,5 @@
+// Shared
+
 .bold {
   font-weight: bold;
 }
@@ -5,6 +7,12 @@
 .capitalize {
   text-transform: capitalize;
 }
+
+.popup-windows a {
+  color: #00aafa;
+}
+
+// ExecutionContext.js
 
 .execution-context {
   background-color: white;
@@ -26,12 +34,63 @@
   margin: 12px 0;
 }
 
+.execution-context__details {
+  text-align: left;
+}
+
+.execution-context__details-row {
+  margin-bottom: 12px;
+}
+
+.execution-context__execution-function {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 .execution-context__details-link {
   font-size: 18px;
   color: #00aafa;
   cursor: pointer;
   text-align: left;
 }
+
+.execution-context__params-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.execution-context__param {
+  display: flex;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.execution-context__param-unicode {
+  font-size: 24px;
+  margin-right: 12px;
+  position: relative;
+  bottom: 2px;
+}
+
+.execution-context__param-identicon {
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.execution-context__param-value {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.execution-context__param-type {
+  display: flex;
+  align-items: center;
+}
+
+// TransactionParties.js
 
 .tx-parties {
   text-align: left;
@@ -59,6 +118,8 @@
   margin: 0 8px 0 22px;
 }
 
+// FeeSelector.js
+
 .fee-selector {
   text-align: left;
   margin: 12px 34px;
@@ -71,7 +132,8 @@
   cursor: pointer;
 }
 
-// TODO
+// Footer.js
+
 .popup-windows footer {
   padding-top: 0px;
   bottom: 18px;
@@ -105,9 +167,4 @@
   &:disabled {
     opacity: 0.5;
   }
-}
-
-// OVERRIDES
-.popup-windows a {
-  color: #00aafa;
 }

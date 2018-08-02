@@ -60,10 +60,10 @@ class SendTransactionConfirmation extends Component {
     this.props.dispatch(getPriceConversion());
   }
 
-  adjustWindowHeight() {
+  adjustWindowHeight = () => {
     const height = this.divElement.clientHeight;
     this.props.dispatch(setWindowSize(height));
-  }
+  };
 
   handleSubmit = formData => {
     const { data, to, from, gas, gasPrice, value } = this.props.newTransaction;
@@ -92,6 +92,7 @@ class SendTransactionConfirmation extends Component {
       <div className="popup-windows tx-info">
         <div ref={divElement => (this.divElement = divElement)}>
           <ExecutionContext
+            adjustWindowHeight={this.adjustWindowHeight}
             data={this.props.newTransaction.data}
             estimatedFee={this.state.estimatedFee}
             estimatedGas={this.props.newTransaction.estimatedGas}

@@ -63,16 +63,22 @@ class RequestAccount extends React.Component {
   }
 
   createAccount(pw) {
-    web3.eth.personal.newAccount(pw).then(address => {
-      ipc.send('backendAction_windowMessageToOwner', null, address);
+    web3.eth.personal
+      .newAccount(pw)
+      .then(address => {
+        ipc.send('backendAction_windowMessageToOwner', null, address);
 
-      // Notify about backing up!
-      alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
+        // Notify about backing up!
+        alert(TAPi18n.__('mist.popupWindows.requestAccount.backupHint'));
 
-      this.resetForm();
+        this.resetForm();
 
-      ipc.send('backendAction_closePopupWindow');
-    });
+        ipc.send('backendAction_closePopupWindow');
+      })
+      .catch(error => {
+        alert(error);
+        console.error(`Error from web3 newAccount: ${error}`);
+      });
   }
 
   renderFormBody() {

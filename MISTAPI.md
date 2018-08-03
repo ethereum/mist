@@ -2,7 +2,7 @@
 
 ## Requesting a provider
 
-You can learn how to request an [Ethereum Provider](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md) for your dapp in [EIP 1102](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
+To integrate Ethereum into your dapp, you can learn how to request an [EthereumProvider](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md) in [EIP-1102: Opt-in Provider Access](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
 
 ```js
 // Request Ethereum Provider (EIP 1102)
@@ -16,14 +16,17 @@ window.postMessage({ type: 'ETHEREUM_PROVIDER_REQUEST' }, this.origin);
 function start(ethereum) {
   // A) Primary use case - set provider in web3.js
   web3.setProvider(ethereum);
+
   // B) Secondary use case - use provider object directly
   // See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md#examples
 }
 ```
 
+If the user has previously authenticated your dapp, `window.ethereum` will be available on load.
+
 ## API
 
-Mist provides an API for dapp developers to use special features only available in Mist.
+Mist provides an API for dapp developers to use special features available only in Mist.
 
 You can check for the `mist` object in your dapp:
 

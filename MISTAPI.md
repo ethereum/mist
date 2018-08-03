@@ -1,8 +1,8 @@
 # Mist API
 
-## Requesting a provider
+## Requesting a Provider
 
-To integrate Ethereum into your dapp, you can learn how to request an [EthereumProvider](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md) in [EIP-1102: Opt-in Provider Access](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
+You can integrate Ethereum into your dapp by requesting an [Ethereum Provider](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1193.md) as outlined in [EIP 1102](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1102.md):
 
 ```js
 // Request Ethereum Provider (EIP 1102)

@@ -32,15 +32,8 @@ class TransactionParties extends Component {
 
     return (
       <div className="tx-parties__party">
-        {fromIsContract ? (
-          <i className="overlap-icon icon-doc" />
-        ) : (
-          <i className="overlap-icon icon-key" />
-        )}
         <DappIdenticon identity={from.toLowerCase()} size="small" />
-
         <div className="tx-parties__direction-name">FROM</div>
-
         <div>
           <span className="bold">{from}</span>
         </div>
@@ -58,17 +51,10 @@ class TransactionParties extends Component {
     if (to) {
       return (
         <div className="tx-parties__party">
-          {toIsContract ? (
-            <i className="overlap-icon icon-doc" />
-          ) : (
-            <i className="overlap-icon icon-key" />
-          )}
           <DappIdenticon identity={to.toLowerCase()} size="small" />
-
           <div className="tx-parties__direction-name">
             {toIsContract ? 'CONTRACT' : 'TO'}
           </div>
-
           <a href={`http://etherscan.io/address/${to}#code`} target="_blank">
             <span className="bold">{to}</span>
           </a>

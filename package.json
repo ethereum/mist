@@ -57,7 +57,7 @@
     "redux-thunk": "^2.2.0",
     "remote-redux-devtools": "^0.5.12",
     "semver": "^5.1.0",
-    "solc": "^0.4.18",
+    "solc": "0.4.18",
     "swarm-js": "^0.1.21",
     "typescript": "^2.2.2",
     "underscore": "^1.8.3",

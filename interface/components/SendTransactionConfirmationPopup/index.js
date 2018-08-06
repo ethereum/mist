@@ -38,9 +38,7 @@ class SendTransactionConfirmation extends Component {
   }
 
   getGasPrice() {
-    if (!this.props.newTransaction.gasPrice) {
-      this.props.dispatch(getGasPrice());
-    }
+    this.props.dispatch(getGasPrice());
   }
 
   determineIfContract() {

@@ -568,7 +568,8 @@ class Windows {
       'remix',
       'updateAvailable',
       'clientUpdateAvailable',
-      'connectAccount'
+      'connectAccount',
+      'sendTransactionConfirmation'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&

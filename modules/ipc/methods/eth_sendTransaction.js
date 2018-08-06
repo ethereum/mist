@@ -70,6 +70,15 @@ module.exports = class extends BaseProcessor {
         }
       });
 
+      modalWindow.on('close', () => {
+        BlurOverlay.disable();
+
+        // user cancelled?
+        if (!modalWindow.processed) {
+          reject(this.ERRORS.TX_DENIED);
+        }
+      });
+
       ipc.once(
         'backendAction_unlockedAccountAndSentTransaction',
         (ev, err, result) => {

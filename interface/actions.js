@@ -67,6 +67,56 @@ export function getPriceConversion() {
   };
 }
 
+export function getTokenDetails() {
+  return (dispatch, getState) => {
+    dispatch({ type: '[CLIENT]:GET_TOKEN_DETAILS:START' });
+
+    const tokenListURL =
+      'https://raw.githubusercontent.com/MyEtherWallet/ethereum-lists/master/tokens/tokens-eth.json';
+
+    fetch(tokenListURL).then(async (response, error) => {
+      if (error) {
+        return dispatch({
+          type: '[CLIENT]:GET_TOKEN_DETAILS:FAILURE',
+          error
+        });
+      }
+
+      let tokens;
+
+      try {
+        tokens = await response.json();
+      } catch (error) {
+        return dispatch({
+          type: '[CLIENT]:GET_TOKEN_DETAILS:JSON_PARSE_FAILURE',
+          error
+        });
+      }
+
+      if (tokens) {
+        const contractAddress = getState().newTransaction.to;
+        const theToken = _.find(tokens, token => {
+          return token.address.toLowerCase() === contractAddress.toLowerCase();
+        });
+
+        if (theToken) {
+          const token = {
+            name: theToken.name,
+            symbol: theToken.symbol,
+            address: theToken.address,
+            decimals: theToken.decimals
+          };
+
+          return dispatch({
+            type: '[CLIENT]:GET_TOKEN_DETAILS:SUCCESS',
+            payload: { token }
+          });
+        }
+      }
+    });
+  };
+}
+
 export function determineIfContract(toAddress) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:DETERMINE_IF_CONTRACT:START' });
@@ -212,6 +262,10 @@ export function lookupSignature(data) {
           type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
           payload: { executionFunction }
         });
+
+        if (executionFunction === 'transfer(address,uint256)') {
+          dispatch(getTokenDetails());
+        }
 
         dispatch(decodeFunctionSignature(executionFunction, data));
       } else {

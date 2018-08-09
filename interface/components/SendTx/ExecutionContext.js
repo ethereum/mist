@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import DappIdenticon from '../DappIdenticon';
-import Data from './Data';
-import Fees from './Fees';
 
 class ExecutionContext extends Component {
   constructor(props) {
@@ -44,27 +42,20 @@ class ExecutionContext extends Component {
     }
 
     if (this.props.toIsContract) {
-      // TODO: radspec
-
       // Token transfers
-      // TODO: assumes 18 decimals
       if (this.props.executionFunction === 'transfer(address,uint256)') {
-        const tokenCount = this.props.params[1].value.slice(0, -18);
-        const address = this.props.params[0].value;
+        const decimals = this.props.token.decimals;
+        const tokenCount = this.props.params[1].value.slice(
+          0,
+          -Math.abs(decimals)
+        );
+        const tokenSymbol = this.props.token.symbol || 'tokens';
 
         return (
           <div className="execution-context__sentence">
-            Transfer <span className="bold">{tokenCount} tokens</span> to{' '}
-            <DappIdenticon
-              identity={address}
-              size="small"
-              className="execution-context__identicon"
-            />{' '}
-            <span
-              className="simptip-position-bottom simptip-movable bold"
-              data-tooltip={address}
-            >
-              {this.shortenAddress(address)}
+            Transfer{' '}
+            <span className="bold">
+              {tokenCount} {tokenSymbol}
             </span>
           </div>
         );
@@ -125,11 +116,24 @@ class ExecutionContext extends Component {
       toIsContract,
       isNewContract,
       value,
-      estimatedGas
+      estimatedGas,
+      token
     } = this.props;
 
     if (!toIsContract && !isNewContract) {
       return null;
+    }
+
+    const isTokenTransfer =
+      this.props.executionFunction === 'transfer(address,uint256)';
+    const showTxExecutingFunction = !isNewContract && !isTokenTransfer;
+    let tokenDisplayName;
+    if (isTokenTransfer) {
+      if (token.name !== token.symbol) {
+        tokenDisplayName = `${token.name} (${token.symbol})`;
+      } else {
+        tokenDisplayName = token.name;
+      }
     }
 
     if (!this.state.showDetails) {
@@ -162,12 +166,14 @@ class ExecutionContext extends Component {
 
     return (
       <div className="execution-context__details">
-        <div className="execution-context__details-row">
-          Transaction Executing Function:{' '}
-          <span className="execution-context__execution-function">
-            {executionFunction.slice(0, executionFunction.indexOf('('))}
-          </span>
-        </div>
+        {showTxExecutingFunction && (
+          <div className="execution-context__details-row">
+            Transaction Executing Function:{' '}
+            <span className="execution-context__execution-function">
+              {executionFunction.slice(0, executionFunction.indexOf('('))}
+            </span>
+          </div>
+        )}
 
         <div className="execution-context__details-row">
           Ether Amount:{' '}
@@ -178,32 +184,34 @@ class ExecutionContext extends Component {
           Gas Estimate: <span className="bold">{estimatedGas}</span>
         </div>
 
-        <div className="execution-context__params-title">Parameters</div>
-        <div className="execution-context__params-table">{params}</div>
+        {isTokenTransfer && (
+          <div>
+            <div className="execution-context__details-row">
+              Token Name: <span className="bold">{tokenDisplayName}</span>
+            </div>
+            <div className="execution-context__details-row">
+              Token Contract Address:{' '}
+              <DappIdenticon identity={token.address} size="small" />
+              <span className="bold">{token.address}</span>
+            </div>
+          </div>
+        )}
+
+        {this.props.params.length > 0 && (
+          <div>
+            <div className="execution-context__params-title">Parameters</div>
+            <div className="execution-context__params-table">{params}</div>
+          </div>
+        )}
+
         <div
           className="execution-context__details-link"
           onClick={this.handleDetailsClick}
         >
-          Less detail
+          Less details
         </div>
       </div>
     );
-
-    {
-      /*
-    <Data
-      data={this.props.data}
-      showFormattedParams={this.props.showFormattedParams}
-    />
-
-    <Fees
-      estimatedGas={this.props.estimatedGas}
-      gasLoading={this.props.gasLoading}
-      estimatedFee={this.props.estimatedFee}
-      providedGas={this.props.providedGas}
-    />
-    */
-    }
   }
 
   render() {

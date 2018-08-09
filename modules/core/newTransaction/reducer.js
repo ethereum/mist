@@ -10,7 +10,13 @@ export const initialState = {
   toIsContract: false,
   isNewContract: false,
   unlocking: false,
-  estimatedGas: 3000000
+  estimatedGas: 3000000,
+  token: {
+    name: '',
+    symbol: '',
+    address: '',
+    decimals: 18
+  }
   // destinationType: 'address', 'contract', 'new' ?
 };
 
@@ -70,6 +76,10 @@ const newTransaction = (state = initialState, action) => {
     case '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS':
       return Object.assign({}, state, {
         params: action.payload.params
+      });
+    case '[CLIENT]:GET_TOKEN_DETAILS:SUCCESS':
+      return Object.assign({}, state, {
+        token: action.payload.token
       });
     default:
       return state;

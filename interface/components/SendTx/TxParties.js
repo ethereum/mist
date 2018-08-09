@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import DappIdenticon from '../DappIdenticon';
 
-// TODO: "TO" when sending ETH, otherwise "CONTRACT"
-
-class TransactionParties extends Component {
+class TxParties extends Component {
   totalAmount = () => {
     var amount = EthTools.formatBalance(
       web3.utils.toBN(this.props.value || 0),
@@ -28,12 +26,21 @@ class TransactionParties extends Component {
   };
 
   renderFrom() {
-    const { from, fromIsContract } = this.props;
+    const { from, toIsContract, executionFunction } = this.props;
 
     return (
       <div className="tx-parties__party">
         <DappIdenticon identity={from.toLowerCase()} size="small" />
-        <div className="tx-parties__direction-name">FROM</div>
+        <div
+          className={
+            'tx-parties__direction-name ' +
+            (toIsContract && executionFunction !== 'transfer(address,uint256)'
+              ? 'isContract'
+              : '')
+          }
+        >
+          FROM
+        </div>
         <div>
           <span className="bold">{from}</span>
         </div>
@@ -42,37 +49,49 @@ class TransactionParties extends Component {
   }
 
   renderTo() {
-    const { to, toIsContract, isNewContract } = this.props;
+    const {
+      to,
+      toIsContract,
+      isNewContract,
+      executionFunction,
+      params
+    } = this.props;
 
     if (isNewContract) {
       return null;
+    }
+
+    // If token transfer, render `to` as the address the tokens are being transferred to
+    if (executionFunction === 'transfer(address,uint256)') {
+      if (params[0] && params[0].value) {
+        const address = params[0].value;
+        return (
+          <div className="tx-parties__party">
+            <DappIdenticon identity={address.toLowerCase()} size="small" />
+            <div className="tx-parties__direction-name">TO</div>
+            <span className="bold">{address}</span>
+          </div>
+        );
+      }
     }
 
     if (to) {
       return (
         <div className="tx-parties__party">
           <DappIdenticon identity={to.toLowerCase()} size="small" />
-          <div className="tx-parties__direction-name">
+          <div
+            className={
+              'tx-parties__direction-name ' + (toIsContract ? 'isContract' : '')
+            }
+          >
             {toIsContract ? 'CONTRACT' : 'TO'}
           </div>
-          <a href={`http://etherscan.io/address/${to}#code`} target="_blank">
-            <span className="bold">{to}</span>
-          </a>
+          <span className="bold">{to}</span>
         </div>
       );
     }
 
-    return (
-      <div>
-        <i className="circle-icon icon-doc" />
-        <br />
-        <span>
-          {i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.createContract'
-          )}
-        </span>
-      </div>
-    );
+    return null;
   }
 
   renderConnection() {
@@ -82,7 +101,7 @@ class TransactionParties extends Component {
       <div className="connection">
         <div className="amount">
           {this.totalAmount()} <span className="unit">ETHER</span>
-          {executionFunction ? (
+          {executionFunction && (
             <div
               className={`function-signature ${
                 hasSignature ? 'has-signature' : ''
@@ -90,8 +109,6 @@ class TransactionParties extends Component {
             >
               {executionFunction}
             </div>
-          ) : (
-            ''
           )}
         </div>
       </div>
@@ -108,4 +125,4 @@ class TransactionParties extends Component {
   }
 }
 
-export default TransactionParties;
+export default TxParties;

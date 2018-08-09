@@ -55,7 +55,7 @@ module.exports = class extends BaseProcessor {
         payload: payload.params[0]
       });
 
-      const modalWindow = Windows.createPopup('sendTransactionConfirmation', {
+      const modalWindow = Windows.createPopup('sendTx', {
         sendData: { uiAction_sendData: payload.params[0] }
       });
 

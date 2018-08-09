@@ -31,24 +31,36 @@ class FeeSelector extends Component {
     if (this.state.priority) {
       return (
         <div className="fee-selector">
-          <span onClick={this.handleClick} className="fee-selector__btn">
+          <span
+            onClick={this.handleClick}
+            className="fee-selector__btn"
+            data-tooltip="Click For Standard Fee"
+          >
             Priority Fee:
           </span>{' '}
-          {this.props.network === 'main'
-            ? `${formattedPriorityFee} USD`
-            : `${gasEtherAmount * 2} ETH`}
+          <span className="fee-amount">
+            {this.props.network === 'main'
+              ? `${formattedPriorityFee} USD`
+              : `${gasEtherAmount * 2} ETH`}
+          </span>
         </div>
       );
     }
 
     return (
       <div className="fee-selector">
-        <span onClick={this.handleClick} className="fee-selector__btn">
+        <span
+          onClick={this.handleClick}
+          className="fee-selector__btn"
+          data-tooltip="Click For Priority Fee"
+        >
           Standard Fee:
         </span>{' '}
-        {this.props.network === 'main'
-          ? `${formattedStandardFee} USD`
-          : `${gasEtherAmount} ETH`}
+        <span className="fee-amount">
+          {this.props.network === 'main'
+            ? `${formattedStandardFee} USD`
+            : `${gasEtherAmount} ETH`}
+        </span>
       </div>
     );
   }

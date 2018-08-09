@@ -90,7 +90,12 @@
   align-items: center;
 }
 
-// TransactionParties.js
+.execution-context__details-row .dapp-identicon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+// TxParties.js
 
 .tx-parties {
   text-align: left;
@@ -115,7 +120,12 @@
 
 .tx-parties__direction-name {
   display: inline-block;
-  margin: 0 8px 0 22px;
+  margin: 0 5px 0 15px;
+  width: 50px;
+}
+
+.tx-parties__direction-name.isContract {
+  width: 75px;
 }
 
 // FeeSelector.js
@@ -123,13 +133,29 @@
 .fee-selector {
   text-align: left;
   margin: 12px 34px;
-  font-weight: bold;
   text-transform: uppercase;
+  font-weight: normal;
 }
 
 .fee-selector__btn {
   color: #00aafa;
   cursor: pointer;
+}
+
+.fee-amount {
+  font-weight: bold;
+}
+
+.fee-selector [data-tooltip]:hover:before,
+.fee-selector [data-tooltip]:hover:after,
+.fee-selector [data-tooltip]:focus:before,
+.fee-selector [data-tooltip]:focus:after {
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  color: #eee;
+  top: 22px;
+  text-transform: capitalize;
 }
 
 // Footer.js

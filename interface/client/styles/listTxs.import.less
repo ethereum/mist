@@ -5,6 +5,7 @@
 
 .list-txs .header {
   margin-left: 10px;
+  margin-top: -25px;
 }
 
 .list-txs h1 {
@@ -12,19 +13,25 @@
   color: #333;
   font-weight: normal;
   margin: 0;
+  display: inline-block;
 }
 
 .list-txs h2 {
-  margin: 10px 0 20px 0;
+  margin: 10px;
   background-color: #999;
   padding: 5px;
   text-transform: lowercase;
   font-size: 70%;
+  border-radius: 2px;
+  display: inline-block;
 }
 
 .tx-list {
   background: white;
   padding: 10px;
+  height: 400px;
+  overflow-y: scroll;
+  border-top: 1px solid #aaa;
 }
 
 .tx-list .tx {
@@ -35,7 +42,12 @@
     vertical-align: middle;
     margin: 0 5px;
   }
-  > div {
+  div {
     margin-bottom: 10px;
+  }
+  .tx-moreDetails {
+    color: blue;
+    cursor: pointer;
+    padding: 5px 0;
   }
 }

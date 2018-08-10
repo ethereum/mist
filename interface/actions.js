@@ -167,6 +167,7 @@ export function confirmTransaction(data) {
     }
 
     const nonce = await web3.eth.getTransactionCount(data.from);
+    const networkId = await web3.eth.net.getId();
     const tx = Object.assign({}, data, {
       nonce: `0x${nonce.toString(16)}`
     });
@@ -237,6 +238,7 @@ export function confirmTransaction(data) {
       // Format tx for dispatch
       delete tx.chosenGas;
       tx.hash = hash;
+      tx.networkId = networkId;
       store.dispatch({
         type: '[CLIENT]:NEW_TX:SENT',
         payload: tx

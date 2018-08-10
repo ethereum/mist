@@ -478,7 +478,7 @@ class Windows {
         return {
           electronOptions: {
             width: 580,
-            height: 550,
+            height: 465,
             alwaysOnTop: true,
             enableLargerThanScreen: false,
             resizable: true

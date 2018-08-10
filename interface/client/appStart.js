@@ -6,6 +6,7 @@ import About from '../components/About';
 import RequestAccount from '../components/RequestAccount';
 import NodeInfo from '../components/NodeInfo';
 import SendTx from '../components/SendTx/';
+import ListTxs from '../components/ListTxs/';
 
 /**
 The init function of Mist
@@ -78,7 +79,8 @@ function renderReactComponentPopup(locationHash) {
   const components = {
     About,
     RequestAccount,
-    SendTx
+    SendTx,
+    ListTxs
   };
 
   // Only render a component if it exists

@@ -19,14 +19,33 @@ class FeeSelector extends Component {
       currency: 'USD'
     });
 
-    // TODO: BigNumber math
-    const gasEtherAmount = this.props.estimatedGas / 1000000000;
-    const standardFee = this.props.priceUSD * gasEtherAmount;
-    const formattedStandardFee = formatter.format(standardFee);
+    const gasEtherAmount = new web3.utils.BN(this.props.estimatedGas).div(
+      new web3.utils.BN(1000000000)
+    );
 
-    // TODO: priority calculation
-    const priorityFee = standardFee * 2;
-    const formattedPriorityFee = formatter.format(priorityFee);
+    let fee;
+    if (this.state.priority) {
+      if (this.props.network === 'main') {
+        const gasEtherAmountPriority = gasEtherAmount.mul(new web3.utils.BN(2));
+        const priorityFee = gasEtherAmount.mul(
+          new web3.utils.BN(this.props.priceUSD)
+        );
+        const formattedFee = formatter.format(priorityFee);
+        fee = `${formattedFee} USD`;
+      } else {
+        fee = `${gasEtherAmountPriority} ETH`;
+      }
+    } else {
+      if (this.props.network === 'main') {
+        const standardFee = gasEtherAmount.mul(
+          new web3.utils.BN(this.props.priceUSD)
+        );
+        const formattedFee = formatter.format(standardFee);
+        fee = `${formattedFee} USD`;
+      } else {
+        fee = `${gasEtherAmount} ETH`;
+      }
+    }
 
     if (this.state.priority) {
       return (
@@ -38,11 +57,7 @@ class FeeSelector extends Component {
           >
             Priority Fee:
           </span>{' '}
-          <span className="fee-amount">
-            {this.props.network === 'main'
-              ? `${formattedPriorityFee} USD`
-              : `${gasEtherAmount * 2} ETH`}
-          </span>
+          <span className="fee-amount">{fee}</span>
         </div>
       );
     }
@@ -56,11 +71,7 @@ class FeeSelector extends Component {
         >
           Standard Fee:
         </span>{' '}
-        <span className="fee-amount">
-          {this.props.network === 'main'
-            ? `${formattedStandardFee} USD`
-            : `${gasEtherAmount} ETH`}
-        </span>
+        <span className="fee-amount">{fee}</span>
       </div>
     );
   }

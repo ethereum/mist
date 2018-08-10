@@ -99,8 +99,11 @@ class ExecutionContext extends Component {
       currency: 'USD'
     });
 
-    // TODO: BigNumber math
-    const fee = this.props.priceUSD * (this.props.value / 1000000000000000000);
+    const fee = new web3.utils.BN(this.props.priceUSD).mul(
+      new web3.utils.BN(this.props.value).div(
+        new web3.utils.BN(1000000000000000000)
+      )
+    );
     return formatter.format(fee);
   }
 

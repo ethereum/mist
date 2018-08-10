@@ -20,9 +20,9 @@ export const initialState = {
   // destinationType: 'address', 'contract', 'new' ?
 };
 
-const newTransaction = (state = initialState, action) => {
+const newTx = (state = initialState, action) => {
   switch (action.type) {
-    case '[CLIENT]:NEW_TRANSACTION:START':
+    case '[CLIENT]:NEW_TX:START':
       return Object.assign({}, initialState, action.payload);
     case '[CLIENT]:DETERMINE_IF_CONTRACT:SUCCESS':
       return Object.assign({}, state, {
@@ -86,4 +86,4 @@ const newTransaction = (state = initialState, action) => {
   }
 };
 
-export default newTransaction;
+export default newTx;

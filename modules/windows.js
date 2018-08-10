@@ -474,6 +474,16 @@ class Windows {
             resizable: true
           }
         };
+      case 'listTxs':
+        return {
+          electronOptions: {
+            width: 580,
+            height: 550,
+            alwaysOnTop: true,
+            enableLargerThanScreen: false,
+            resizable: true
+          }
+        };
       case 'updateAvailable':
         return {
           useWeb3: false,
@@ -569,7 +579,8 @@ class Windows {
       'updateAvailable',
       'clientUpdateAvailable',
       'connectAccount',
-      'sendTransactionConfirmation'
+      'sendTx',
+      'listTxs'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&

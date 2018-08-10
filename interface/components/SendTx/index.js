@@ -42,11 +42,11 @@ class SendTx extends Component {
   }
 
   determineIfContract() {
-    this.props.dispatch(determineIfContract(this.props.newTransaction.to));
+    this.props.dispatch(determineIfContract(this.props.newTx.to));
   }
 
   lookupSignature() {
-    const { data } = this.props.newTransaction;
+    const { data } = this.props.newTx;
     this.props.dispatch(lookupSignature(data));
   }
 
@@ -64,7 +64,7 @@ class SendTx extends Component {
   };
 
   handleSubmit = formData => {
-    const { data, to, from, gas, gasPrice, value } = this.props.newTransaction;
+    const { data, to, from, gas, gasPrice, value } = this.props.newTx;
 
     let txData = {
       data,
@@ -84,58 +84,58 @@ class SendTx extends Component {
   };
 
   render() {
-    const { from, to, value } = this.props.newTransaction;
+    const { from, to, value } = this.props.newTx;
 
     return (
       <div className="popup-windows tx-info">
         <div ref={divElement => (this.divElement = divElement)}>
           <ExecutionContext
             adjustWindowHeight={this.adjustWindowHeight}
-            data={this.props.newTransaction.data}
+            data={this.props.newTx.data}
             estimatedFee={this.state.estimatedFee}
-            estimatedGas={this.props.newTransaction.estimatedGas}
-            executionFunction={this.props.newTransaction.executionFunction}
-            gasLoading={this.props.newTransaction.gasLoading}
-            isNewContract={this.props.newTransaction.isNewContract}
+            estimatedGas={this.props.newTx.estimatedGas}
+            executionFunction={this.props.newTx.executionFunction}
+            gasLoading={this.props.newTx.gasLoading}
+            isNewContract={this.props.newTx.isNewContract}
             network={this.props.nodes.network}
-            params={this.props.newTransaction.params}
+            params={this.props.newTx.params}
             priceUSD={this.state.priceUSD}
             providedGas={this.state.providedGas}
             showFormattedParams={this.state.showFormattedParams}
             to={to}
-            toIsContract={this.props.newTransaction.toIsContract}
-            value={this.props.newTransaction.value}
-            token={this.props.newTransaction.token}
+            toIsContract={this.props.newTx.toIsContract}
+            value={this.props.newTx.value}
+            token={this.props.newTx.token}
           />
 
           <TxParties
             fromIsContract={this.state.fromIsContract}
             from={from}
-            isNewContract={this.props.newTransaction.isNewContract}
+            isNewContract={this.props.newTx.isNewContract}
             to={to}
-            toIsContract={this.props.newTransaction.toIsContract}
-            executionFunction={this.props.newTransaction.executionFunction}
-            params={this.props.newTransaction.params}
+            toIsContract={this.props.newTx.toIsContract}
+            executionFunction={this.props.newTx.executionFunction}
+            params={this.props.newTx.params}
             hasSignature={this.state.hasSignature}
             value={value}
           />
 
           <FeeSelector
-            estimatedGas={this.props.newTransaction.estimatedGas}
+            estimatedGas={this.props.newTx.estimatedGas}
             priceUSD={this.state.priceUSD}
             network={this.props.nodes.network}
           />
 
           <GasNotification
-            estimatedGas={this.props.newTransaction.estimatedGas}
-            gasLoading={this.props.newTransaction.gasLoading}
+            estimatedGas={this.props.newTx.estimatedGas}
+            gasLoading={this.props.newTx.gasLoading}
             gasError={this.state.gasError}
-            toIsContract={this.props.newTransaction.toIsContract}
+            toIsContract={this.props.newTx.toIsContract}
             to={to}
           />
 
           <Footer
-            unlocking={this.props.newTransaction.unlocking}
+            unlocking={this.props.newTx.unlocking}
             handleSubmit={this.handleSubmit}
           />
         </div>

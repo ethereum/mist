@@ -51,7 +51,7 @@ module.exports = class extends BaseProcessor {
 
       console.log('∆∆∆ payload.params[0]', payload.params[0]);
       store.dispatch({
-        type: '[CLIENT]:NEW_TRANSACTION:START',
+        type: '[CLIENT]:NEW_TX:START',
         payload: payload.params[0]
       });
 

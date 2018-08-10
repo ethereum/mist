@@ -35,6 +35,7 @@
         "fullscreen": "Toggle full screen",
         "languages": "Language",
         "default": "Default",
+        "txHistory": "Transaction History",
         "langCodes": {
           "ca": "Català",
           "de": "Deutsch",

@@ -29,7 +29,7 @@ export function estimateGasUsage() {
   return (dispatch, getState) => {
     dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' });
 
-    web3.eth.estimateGas(getState().newTransaction).then((value, error) => {
+    web3.eth.estimateGas(getState().newTx).then((value, error) => {
       if (error) {
         return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
       }
@@ -94,7 +94,7 @@ export function getTokenDetails() {
       }
 
       if (tokens) {
-        const contractAddress = getState().newTransaction.to;
+        const contractAddress = getState().newTx.to;
         const theToken = _.find(tokens, token => {
           return token.address.toLowerCase() === contractAddress.toLowerCase();
         });
@@ -200,6 +200,7 @@ export function confirmTransaction(data) {
       }
       signedTx = result.raw;
     });
+    delete tx.pw;
 
     if (!signedTx) {
       dispatch({
@@ -232,6 +233,14 @@ export function confirmTransaction(data) {
 
       ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
       dispatch({ type: '[CLIENT]:CONFIRM_TRANSACTION:SUCCESS' });
+
+      // Format tx for dispatch
+      delete tx.chosenGas;
+      tx.hash = hash;
+      store.dispatch({
+        type: '[CLIENT]:NEW_TX:SENT',
+        payload: tx
+      });
     });
   };
 }

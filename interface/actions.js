@@ -144,16 +144,16 @@ export function determineIfContract(toAddress) {
   };
 }
 
-export function confirmTransaction(data) {
-  return async dispatch => {
-    dispatch({ type: '[CLIENT]:CONFIRM_TRANSACTION:START' });
+export function confirmTx(data) {
+  return async (dispatch, getState) => {
+    dispatch({ type: '[CLIENT]:CONFIRM_TX:START' });
 
     // reject if sending to itself
     if (data.to && data.from === data.to.toLowerCase()) {
       displayNotification('sameAccount', 5);
 
       return dispatch({
-        type: '[CLIENT]:CONFIRM_TRANSACTION:FAILURE',
+        type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'sameAccount'
       });
     }
@@ -161,7 +161,7 @@ export function confirmTransaction(data) {
     // reject if no gas
     if (!data.chosenGas || !_.isFinite(data.chosenGas)) {
       return dispatch({
-        type: '[CLIENT]:CONFIRM_TRANSACTION:FAILURE',
+        type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'noGas'
       });
     }
@@ -179,7 +179,7 @@ export function confirmTransaction(data) {
     ) {
       if (error) {
         dispatch({
-          type: '[CLIENT]:CONFIRM_TRANSACTION:FAILURE',
+          type: '[CLIENT]:CONFIRM_TX:FAILURE',
           error
         });
 
@@ -205,7 +205,7 @@ export function confirmTransaction(data) {
 
     if (!signedTx) {
       dispatch({
-        type: '[CLIENT]:CONFIRM_TRANSACTION:FAILURE',
+        type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'no signedTx'
       });
     }
@@ -227,21 +227,31 @@ export function confirmTransaction(data) {
         }
 
         return dispatch({
-          type: '[CLIENT]:CONFIRM_TRANSACTION:FAILURE',
+          type: '[CLIENT]:CONFIRM_TX:FAILURE',
           error
         });
       }
 
       ipc.send('backendAction_unlockedAccountAndSentTransaction', null, hash);
-      dispatch({ type: '[CLIENT]:CONFIRM_TRANSACTION:SUCCESS' });
+      dispatch({ type: '[CLIENT]:CONFIRM_TX:SUCCESS' });
 
-      // Format tx for dispatch
-      delete tx.chosenGas;
-      tx.hash = hash;
-      tx.networkId = networkId;
+      // Format tx for storage
+      let newTx = getState().newTx;
+      // Remove unneeded props
+      delete newTx.unlocking;
+      // Add helpful props
+      newTx.hash = hash;
+      newTx.networkId = networkId;
+      newTx.nonce = nonce;
+      newTx.blockNumber = null;
+      newTx.failed = false;
+      if (newTx.isNewContract) {
+        newTx.contractAddress = null;
+      }
+      newTx.createdAt = new Date();
       store.dispatch({
         type: '[CLIENT]:NEW_TX:SENT',
-        payload: tx
+        payload: newTx
       });
     });
   };

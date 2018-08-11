@@ -1,7 +1,7 @@
 export const initialState = [];
 
-// tx object shape:
-// { from, to, gas, gasPrice, nonce, data, value, networkId }
+// newTx object is prepared at end of
+// confirmTx() in interface/actions.js
 
 const txs = (state = initialState, action) => {
   switch (action.type) {

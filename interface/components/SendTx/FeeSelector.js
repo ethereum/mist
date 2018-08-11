@@ -25,8 +25,8 @@ class FeeSelector extends Component {
 
     let fee;
     if (this.state.priority) {
+      const gasEtherAmountPriority = gasEtherAmount.mul(new web3.utils.BN(2));
       if (this.props.network === 'main') {
-        const gasEtherAmountPriority = gasEtherAmount.mul(new web3.utils.BN(2));
         const priorityFee = gasEtherAmount.mul(
           new web3.utils.BN(this.props.priceUSD)
         );

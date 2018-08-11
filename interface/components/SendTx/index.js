@@ -8,7 +8,7 @@ import GasNotification from './GasNotification';
 import TxParties from './TxParties';
 import {
   determineIfContract,
-  confirmTransaction,
+  confirmTx,
   estimateGasUsage,
   getGasPrice,
   getPriceConversion,
@@ -80,7 +80,7 @@ class SendTx extends Component {
       txData.to = to;
     }
 
-    this.props.dispatch(confirmTransaction(txData));
+    this.props.dispatch(confirmTx(txData));
   };
 
   render() {

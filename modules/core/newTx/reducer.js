@@ -17,7 +17,6 @@ export const initialState = {
     address: '',
     decimals: 18
   }
-  // destinationType: 'address', 'contract', 'new' ?
 };
 
 const newTx = (state = initialState, action) => {
@@ -34,11 +33,11 @@ const newTx = (state = initialState, action) => {
         toIsContract: false,
         isNewContract: false
       });
-    case '[CLIENT]:CONFIRM_TRANSACTION:START':
+    case '[CLIENT]:CONFIRM_TX:START':
       return Object.assign({}, state, { unlocking: true });
-    case '[CLIENT]:CONFIRM_TRANSACTION:SUCCESS':
+    case '[CLIENT]:CONFIRM_TX:SUCCESS':
       return Object.assign({}, state, { unlocking: false });
-    case '[CLIENT]:CONFIRM_TRANSACTION:FAILURE':
+    case '[CLIENT]:CONFIRM_TX:FAILURE':
       return Object.assign({}, state, { unlocking: false });
     case '[CLIENT]:GET_PRICE_CONVERSION:START':
       return Object.assign({}, state, {

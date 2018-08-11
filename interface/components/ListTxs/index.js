@@ -10,7 +10,16 @@ class ListTxs extends Component {
     this.state = { showDetails: [] };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.updatePendingTxs();
+  }
+
+  updatePendingTxs() {
+    // TODO:
+    // If tx.blockNumber is null, on every new block check if it has a blockNumber.
+    // Also set tx.failed with receipt status===0(fail)|1(success)
+    // Also set tx.contractAddress if tx.isNewContract
+  }
 
   networkString(networkId) {
     switch (networkId) {
@@ -87,26 +96,35 @@ class ListTxs extends Component {
     const txs = this.props.txs;
 
     const txList = txs.map((tx, index) => {
-      let subdomain = '';
-      if (tx.networkId === 3) {
-        subdomain = 'ropsten.';
-      } else if (tx.networkId === 4) {
-        subdomain = 'rinkeby.';
-      } else if (tx.networkId === 42) {
-        subdomain = 'kovan.';
+      let txHashLink = 'Unavailable';
+      if (tx.hash) {
+        let subdomain = '';
+        if (tx.networkId === 3) {
+          subdomain = 'ropsten.';
+        } else if (tx.networkId === 4) {
+          subdomain = 'rinkeby.';
+        } else if (tx.networkId === 42) {
+          subdomain = 'kovan.';
+        }
+        txHashLink = (
+          <a
+            href={`https://${subdomain}etherscan.io/tx/${tx.hash}`}
+            target="_blank"
+          >
+            {tx.hash}
+          </a>
+        );
       }
-
-      const etherscanLink = (
-        <a
-          href={`https://${subdomain}etherscan.io/tx/${tx.hash}`}
-          target="_blank"
-        >
-          {tx.hash}
-        </a>
-      );
 
       const etherAmount =
         web3.utils.toBN(tx.value).toNumber() / 1000000000000000000;
+
+      let status = <span style={{ color: 'grey' }}>Pending</span>;
+      if (tx.failed) {
+        status = <span style={{ color: 'red' }}>Failed</span>;
+      } else if (tx.blockNumber) {
+        status = <span style={{ color: 'green' }}>Confirmed</span>;
+      }
 
       return (
         <div key={tx.hash || tx.nonce} className="tx">
@@ -115,10 +133,10 @@ class ListTxs extends Component {
             <span className="bold">{this.networkString(tx.networkId)}</span>
           </div>
           <div>
-            Transaction Hash:{' '}
-            <span className="bold">
-              {tx.hash ? etherscanLink : 'Unavailable'}
-            </span>
+            Status: <span className="bold">{status}</span>
+          </div>
+          <div>
+            Transaction Hash: <span className="bold">{txHashLink}</span>
           </div>
           <div>
             From:
@@ -135,6 +153,9 @@ class ListTxs extends Component {
           <div>
             Ether Amount: <span className="bold">{etherAmount}</span>
           </div>
+          <div>
+            Created At: <span className="bold">{tx.createdAt}</span>
+          </div>
           {this.renderMoreDetails(index)}
         </div>
       );
@@ -144,9 +165,14 @@ class ListTxs extends Component {
       <div className="popup-windows list-txs">
         <div className="header">
           <h1>Transaction History</h1>
-          <h2>{txs.length} total</h2>
+          {txs.length > 0 && <h2>{txs.length} total</h2>}
         </div>
-        <div className="tx-list">{txList}</div>
+        <div className="tx-list">
+          {txList}
+          {txs.length === 0 && (
+            <div className="no-txs">No transactions yet.</div>
+          )}
+        </div>}
       </div>
     );
   }

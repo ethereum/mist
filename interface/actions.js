@@ -270,33 +270,43 @@ export function lookupSignature(data) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' });
 
-    if (data && data.length > 8) {
-      const bytesSignature =
-        data.substr(0, 2) === '0x'
-          ? data.substr(0, 10)
-          : '0x' + data.substr(0, 8);
+    if (!data || data.length <= 8) {
+      return;
+    }
 
-      if (_.first(window.SIGNATURES[bytesSignature])) {
-        const executionFunction = _.first(window.SIGNATURES[bytesSignature]);
+    const bytesSignature =
+      data.substr(0, 2) === '0x'
+        ? data.substr(0, 10)
+        : '0x' + data.substr(0, 8);
 
-        dispatch({
-          type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
-          payload: { executionFunction }
-        });
+    const submitExecutionFunction = executionFunction => {
+      dispatch({
+        type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
+        payload: { executionFunction }
+      });
 
-        if (executionFunction === 'transfer(address,uint256)') {
-          dispatch(getTokenDetails());
-        }
-
-        dispatch(decodeFunctionSignature(executionFunction, data));
-      } else {
-        fetch(
-          `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
-        ).then(async response => {
-          const fourByte = await response.json();
-          console.log('∆∆∆ fourByte', fourByte);
-        });
+      if (executionFunction === 'transfer(address,uint256)') {
+        dispatch(getTokenDetails());
       }
+
+      dispatch(decodeFunctionSignature(executionFunction, data));
+    };
+
+    let executionFunction = _.first(window.SIGNATURES[bytesSignature]);
+
+    if (executionFunction) {
+      submitExecutionFunction(executionFunction);
+    } else {
+      fetch(
+        `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
+      ).then(async response => {
+        const fourByte = await response.json();
+        if (fourByte && fourByte.results) {
+          // Get the earliest submitted signature (last result in array)
+          executionFunction = fourByte.results.slice(-1)[0].text_signature;
+          submitExecutionFunction(executionFunction);
+        }
+      });
     }
   };
 }

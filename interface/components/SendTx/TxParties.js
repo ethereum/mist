@@ -26,7 +26,7 @@ class TxParties extends Component {
   };
 
   renderFrom() {
-    const { from, toIsContract, executionFunction } = this.props;
+    const { from, toIsContract, isNewContract, executionFunction } = this.props;
 
     return (
       <div className="tx-parties__party">
@@ -34,7 +34,9 @@ class TxParties extends Component {
         <div
           className={
             'tx-parties__direction-name ' +
-            (toIsContract && executionFunction !== 'transfer(address,uint256)'
+            (toIsContract &&
+            !isNewContract &&
+            executionFunction !== 'transfer(address,uint256)'
               ? 'isContract'
               : '')
           }

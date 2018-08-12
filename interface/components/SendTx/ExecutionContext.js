@@ -45,6 +45,9 @@ class ExecutionContext extends Component {
       // Token transfers
       if (this.props.executionFunction === 'transfer(address,uint256)') {
         const decimals = this.props.token.decimals;
+        if (this.props.params.length === 0) {
+          return;
+        }
         const tokenCount = this.props.params[1].value.slice(
           0,
           -Math.abs(decimals)
@@ -67,7 +70,7 @@ class ExecutionContext extends Component {
       // Unknown/generic function execution:
       return (
         <div className="execution-context__sentence">
-          Executing a contract function
+          Executing <span className="bold">Contract Function</span>
         </div>
       );
     }
@@ -129,7 +132,10 @@ class ExecutionContext extends Component {
 
     const isTokenTransfer =
       this.props.executionFunction === 'transfer(address,uint256)';
-    const showTxExecutingFunction = !isNewContract && !isTokenTransfer;
+
+    const showTxExecutingFunction =
+      executionFunction && !isNewContract && !isTokenTransfer;
+
     let tokenDisplayName;
     if (isTokenTransfer) {
       if (token.name !== token.symbol) {
@@ -189,14 +195,18 @@ class ExecutionContext extends Component {
 
         {isTokenTransfer && (
           <div>
-            <div className="execution-context__details-row">
-              Token Name: <span className="bold">{tokenDisplayName}</span>
-            </div>
-            <div className="execution-context__details-row">
-              Token Contract Address:{' '}
-              <DappIdenticon identity={token.address} size="small" />
-              <span className="bold">{token.address}</span>
-            </div>
+            {tokenDisplayName && (
+              <div className="execution-context__details-row">
+                Token Name: <span className="bold">{tokenDisplayName}</span>
+              </div>
+            )}
+            {token.address && (
+              <div className="execution-context__details-row">
+                Token Contract Address:{' '}
+                <DappIdenticon identity={token.address} size="small" />
+                <span className="bold">{token.address}</span>
+              </div>
+            )}
           </div>
         )}
 

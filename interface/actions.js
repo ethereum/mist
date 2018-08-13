@@ -320,6 +320,9 @@ export function lookupSignature(data) {
           // Get the earliest submitted signature (last result in array)
           executionFunction = fourByte.results.slice(-1)[0].text_signature;
           submitExecutionFunction(executionFunction);
+        } else {
+          const error = 'No signature found';
+          dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED', error });
         }
       });
     }

@@ -474,7 +474,7 @@ class Windows {
             resizable: true
           }
         };
-      case 'listTxs':
+      case 'txHistory':
         return {
           electronOptions: {
             width: 580,
@@ -580,7 +580,7 @@ class Windows {
       'clientUpdateAvailable',
       'connectAccount',
       'sendTx',
-      'listTxs'
+      'txHistory'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&

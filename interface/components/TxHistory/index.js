@@ -4,7 +4,7 @@ import {} from '../../actions.js';
 import DappIdenticon from '../DappIdenticon';
 import { updateTx } from '../../actions.js';
 
-class ListTxs extends Component {
+class TxHistory extends Component {
   constructor(props) {
     super(props);
 
@@ -53,7 +53,9 @@ class ListTxs extends Component {
         }
 
         web3.eth.getTransactionReceipt(tx.hash).then(txReceipt => {
-          this.props.dispatch(updateTx(txReceipt));
+          if (txReceipt.blockNumber) {
+            this.props.dispatch(updateTx(txReceipt));
+          }
         });
       });
     };
@@ -110,7 +112,7 @@ class ListTxs extends Component {
           <span className="bold">{web3.utils.hexToNumberString(tx.nonce)}</span>
         </div>
         <div>
-          Gas:{' '}
+          Gas Limit:{' '}
           <span className="bold">{web3.utils.hexToNumberString(tx.gas)}</span>
         </div>
         <div>
@@ -180,10 +182,10 @@ class ListTxs extends Component {
         const numberConfirmations = blockNumber - tx.blockNumber;
         status = (
           <span>
-            <span style={{ color: 'green' }}>Confirmed</span> ({
-              numberConfirmations
-            }{' '}
-            confirmations)
+            <span style={{ color: 'green' }}>Confirmed</span>{' '}
+            <span style={{ fontWeight: 'normal' }}>
+              ({numberConfirmations} confirmations)
+            </span>
           </span>
         );
       }
@@ -251,4 +253,4 @@ function mapStateToProps(state) {
   return state;
 }
 
-export default connect(mapStateToProps)(ListTxs);
+export default connect(mapStateToProps)(TxHistory);

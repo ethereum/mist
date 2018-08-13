@@ -398,7 +398,7 @@ let menuTempl = function(webviews) {
         label: i18n.t('mist.applicationMenu.view.txHistory'),
         accelerator: 'CommandOrControl+Shift+H',
         click() {
-          Windows.createPopup('listTxs');
+          Windows.createPopup('txHistory');
         }
       },
       {

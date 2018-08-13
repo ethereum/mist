@@ -23,8 +23,7 @@ class SendTx extends Component {
     this.state = {
       hasSignature: false,
       providedGas: 0,
-      gasError: '',
-      priceUSD: ''
+      gasError: ''
     };
   }
 
@@ -99,7 +98,7 @@ class SendTx extends Component {
             isNewContract={this.props.newTx.isNewContract}
             network={this.props.nodes.network}
             params={this.props.newTx.params}
-            priceUSD={this.state.priceUSD}
+            priceUSD={this.props.newTx.priceUSD}
             providedGas={this.state.providedGas}
             showFormattedParams={this.state.showFormattedParams}
             to={to}
@@ -122,7 +121,7 @@ class SendTx extends Component {
 
           <FeeSelector
             estimatedGas={this.props.newTx.estimatedGas}
-            priceUSD={this.state.priceUSD}
+            priceUSD={this.props.newTx.priceUSD}
             network={this.props.nodes.network}
           />
 

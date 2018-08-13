@@ -8,6 +8,11 @@ class ExecutionContext extends Component {
     this.state = {
       showDetails: false
     };
+
+    this.formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
   }
 
   formattedBalance() {
@@ -77,11 +82,14 @@ class ExecutionContext extends Component {
 
     let conversion;
     if (this.props.network === 'main') {
-      conversion = <span>About {this.calculateTransferValue()} USD</span>;
+      const value = this.calculateTransferValue();
+      if (value) {
+        conversion = <span>About {value} USD</span>;
+      }
     } else {
       conversion = (
         <span>
-          $0 USD (<span className="capitalize">{this.props.network}</span>)
+          $0 (<span className="capitalize">{this.props.network}</span>)
         </span>
       );
     }
@@ -97,18 +105,19 @@ class ExecutionContext extends Component {
   }
 
   calculateTransferValue() {
-    const formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    });
+    const { priceUSD, value } = this.props;
 
-    const value = web3.utils.isHex(this.props.value)
-      ? new BigNumber(web3.utils.hexToNumberString(this.props.value))
-      : new BigNumber(this.props.value);
-    const fee = value
-      .times(this.props.priceUSD)
+    if (!value || !priceUSD) {
+      return;
+    }
+
+    const bigValue = web3.utils.isHex(value)
+      ? new BigNumber(web3.utils.hexToNumberString(value))
+      : new BigNumber(value);
+    const fee = bigValue
+      .times(priceUSD)
       .dividedBy(new BigNumber('1000000000000000000'));
-    return formatter.format(fee);
+    return this.formatter.format(fee);
   }
 
   handleDetailsClick = () => {

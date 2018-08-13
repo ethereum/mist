@@ -2,23 +2,65 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {} from '../../actions.js';
 import DappIdenticon from '../DappIdenticon';
+import { updateTx } from '../../actions.js';
 
 class ListTxs extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { showDetails: [] };
+    this.state = { showDetails: [], newBlockSub: null };
+    this.newBlockSub = null;
   }
 
   componentDidMount() {
     this.updatePendingTxs();
   }
 
+  compenntDidUnmount() {
+    this.unsub();
+  }
+
+  unsub() {
+    if (!this.newBlockSub) {
+      return;
+    }
+
+    this.newBlockSub.unsubscribe(() => {
+      this.newBlockSub = null;
+    });
+  }
+
   updatePendingTxs() {
-    // TODO:
-    // If tx.blockNumber is null, on every new block check if it has a blockNumber.
-    // Also set tx.failed with receipt status===0(fail)|1(success)
-    // Also set tx.contractAddress if tx.isNewContract
+    this.unsub();
+    const updateTxs = () => {
+      const txs = this.props.txs;
+      _.each(txs, (tx, index) => {
+        // Return if we don't have a tx hash to check for receipt
+        if (!tx.hash) {
+          return;
+        }
+
+        // Return if tx is on different network
+        const currentNetwork = this.props.nodes.network.toLowerCase();
+        const txNetwork = this.networkString(tx.networkId).toLowerCase();
+        if (txNetwork !== currentNetwork) {
+          return;
+        }
+
+        // Return if tx has already been successful
+        if (tx.blockNumber) {
+          return;
+        }
+
+        web3.eth.getTransactionReceipt(tx.hash).then(txReceipt => {
+          this.props.dispatch(updateTx(txReceipt));
+        });
+      });
+    };
+    updateTxs();
+    this.newBlockSub = web3.eth.subscribe('newBlockHeaders', () => {
+      updateTxs();
+    });
   }
 
   networkString(networkId) {
@@ -64,6 +106,10 @@ class ListTxs extends Component {
     return (
       <div>
         <div>
+          Nonce:{' '}
+          <span className="bold">{web3.utils.hexToNumberString(tx.nonce)}</span>
+        </div>
+        <div>
           Gas:{' '}
           <span className="bold">{web3.utils.hexToNumberString(tx.gas)}</span>
         </div>
@@ -73,10 +119,14 @@ class ListTxs extends Component {
             {web3.utils.hexToNumberString(tx.gasPrice)}
           </span>
         </div>
-        <div>
-          Nonce:{' '}
-          <span className="bold">{web3.utils.hexToNumberString(tx.nonce)}</span>
-        </div>
+        {tx.gasUsed && (
+          <div>
+            Gas Used:{' '}
+            <span className="bold">
+              {web3.utils.hexToNumberString(tx.gasUsed)}
+            </span>
+          </div>
+        )}
         {tx.data && (
           <div>
             Data: <span className="bold">{tx.data}</span>
@@ -120,10 +170,22 @@ class ListTxs extends Component {
         web3.utils.toBN(tx.value).toNumber() / 1000000000000000000;
 
       let status = <span style={{ color: 'grey' }}>Pending</span>;
-      if (tx.failed) {
+      if (tx.status === 0) {
         status = <span style={{ color: 'red' }}>Failed</span>;
-      } else if (tx.blockNumber) {
-        status = <span style={{ color: 'green' }}>Confirmed</span>;
+      } else if (tx.status === 1 && tx.blockNumber) {
+        const blockNumber = _.max([
+          this.props.nodes.local.blockNumber,
+          this.props.nodes.remote.blockNumber
+        ]);
+        const numberConfirmations = blockNumber - tx.blockNumber;
+        status = (
+          <span>
+            <span style={{ color: 'green' }}>Confirmed</span> ({
+              numberConfirmations
+            }{' '}
+            confirmations)
+          </span>
+        );
       }
 
       return (
@@ -145,9 +207,16 @@ class ListTxs extends Component {
           </div>
           {tx.to && (
             <div>
-              To:
+              To {tx.toIsContract && 'Contract'}:
               <DappIdenticon identity={tx.to} size="small" />
               <span className="bold">{tx.to}</span>
+            </div>
+          )}
+          {tx.contractAddress && (
+            <div>
+              Created Contract:
+              <DappIdenticon identity={tx.contractAddress} size="small" />
+              <span className="bold">{tx.contractAddress}</span>
             </div>
           )}
           <div>

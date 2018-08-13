@@ -244,15 +244,30 @@ export function confirmTx(data) {
       newTx.networkId = networkId;
       newTx.nonce = nonce;
       newTx.blockNumber = null;
-      newTx.failed = false;
       if (newTx.isNewContract) {
         newTx.contractAddress = null;
       }
       newTx.createdAt = new Date();
       store.dispatch({
         type: '[CLIENT]:NEW_TX:SENT',
-        payload: newTx
+        payload: { newTx }
       });
+    });
+  };
+}
+
+export function updateTx(tx) {
+  return (dispatch, getState) => {
+    // We use `hash` over `transactionHash` for brevity
+    tx.hash = tx.transactionHash;
+    delete tx.transactionHash;
+    // Convert status to 0 (failed) or 1 (successful)
+    if (web3.utils.isHex(tx.status)) {
+      tx.status = web3.utils.hexToNumber(tx.status);
+    }
+    dispatch({
+      type: '[CLIENT]:TX:UPDATE',
+      payload: { tx }
     });
   };
 }

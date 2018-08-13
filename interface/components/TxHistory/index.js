@@ -168,8 +168,12 @@ class TxHistory extends Component {
         );
       }
 
-      const etherAmount =
-        web3.utils.toBN(tx.value).toNumber() / 1000000000000000000;
+      const value = web3.utils.isHex(tx.value)
+        ? new BigNumber(web3.utils.hexToNumberString(tx.value))
+        : new BigNumber(tx.value);
+      const etherAmount = value
+        .dividedBy(new BigNumber('1000000000000000000'))
+        .toFixed();
 
       let status = <span style={{ color: 'grey' }}>Pending</span>;
       if (tx.status === 0) {

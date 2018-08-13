@@ -102,11 +102,12 @@ class ExecutionContext extends Component {
       currency: 'USD'
     });
 
-    const fee = new web3.utils.BN(this.props.priceUSD).mul(
-      new web3.utils.BN(this.props.value).div(
-        new web3.utils.BN(1000000000000000000)
-      )
-    );
+    const value = web3.utils.isHex(this.props.value)
+      ? new BigNumber(web3.utils.hexToNumberString(this.props.value))
+      : new BigNumber(this.props.value);
+    const fee = value
+      .times(this.props.priceUSD)
+      .dividedBy(new BigNumber('1000000000000000000'));
     return formatter.format(fee);
   }
 

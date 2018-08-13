@@ -14,22 +14,25 @@ class FeeSelector extends Component {
   };
 
   render() {
+    if (!this.props.estimatedGas) {
+      return <div>Loading...</div>;
+    }
+
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     });
 
-    const gasEtherAmount = new web3.utils.BN(this.props.estimatedGas).div(
-      new web3.utils.BN(1000000000)
-    );
+    const gas = web3.utils.isHex(this.props.estimatedGas)
+      ? new BigNumber(web3.utils.hexToNumberString(this.props.estimatedGas))
+      : new BigNumber(this.props.estimatedGas);
+    const gasEtherAmount = gas.dividedBy(1000000000);
 
     let fee;
     if (this.state.priority) {
-      const gasEtherAmountPriority = gasEtherAmount.mul(new web3.utils.BN(2));
+      const gasEtherAmountPriority = gasEtherAmount.times(2);
       if (this.props.network === 'main') {
-        const priorityFee = gasEtherAmount.mul(
-          new web3.utils.BN(this.props.priceUSD)
-        );
+        const priorityFee = gasEtherAmount.times(this.props.priceUSD);
         const formattedFee = formatter.format(priorityFee);
         fee = `${formattedFee} USD`;
       } else {
@@ -37,9 +40,7 @@ class FeeSelector extends Component {
       }
     } else {
       if (this.props.network === 'main') {
-        const standardFee = gasEtherAmount.mul(
-          new web3.utils.BN(this.props.priceUSD)
-        );
+        const standardFee = gasEtherAmount.times(this.props.priceUSD);
         const formattedFee = formatter.format(standardFee);
         fee = `${formattedFee} USD`;
       } else {

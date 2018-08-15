@@ -129,7 +129,7 @@
       "nodeBinaryNotFound":
         "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
       "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
-      "nodeSyncInfo": "현재 __highestBlock__ 중 __currentBlcok__ 을 다운로드중",
+      "nodeSyncInfo": "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
       "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
       "nodeStarting": "이더리움 노드를 시작중...",
       "nodeStarted": "이더리움 노드가 시작됨",

@@ -38,6 +38,37 @@ test[
   should.not.exist(yield this.getUiElement('form.url script'));
 };
 
+test['Browser bar should not render arbitrary code as HTML'] = function*() {
+  // ETH-01-001
+  const client = this.client;
+
+  yield client.waitUntil(
+    () => {
+      return client.getText('.url-breadcrumb', e => {
+        return e === '%3Ciframe onload="alert%28%29%"%3E';
+      });
+    },
+    5000,
+    'expected breadcrumb to render as HTML encoded'
+  );
+};
+
+test['Browser bar should not execute JS'] = function*() {
+  // ETH-01-001
+  const client = this.client;
+
+  yield this.navigateTo('<script>window.pwned = true</script>');
+  const mist = yield client.execute(() => {
+    return window.mist;
+  }); // checking if `execute` works
+  const pwned = yield client.execute(() => {
+    return window.pwned;
+  });
+
+  should.exist(mist.value);
+  should.not.exist(pwned.value);
+};
+
 test[
   'Browser bar should not render script tags in disguise on breadcrumb view'
 ] = function*() {
@@ -72,37 +103,6 @@ test[
 
   const webviewErrorURL = yield this.getSelectedWebviewParam('src');
   webviewErrorURL.should.match(/errorPages\/404\.html$/);
-};
-
-test['Browser bar should not render arbitrary code as HTML'] = function*() {
-  // ETH-01-001
-  const client = this.client;
-
-  yield client.waitUntil(
-    () => {
-      return client.getText('.url-breadcrumb', e => {
-        return e === '%3Ciframe onload="alert%28%29%"%3E';
-      });
-    },
-    5000,
-    'expected breadcrumb to render as HTML encoded'
-  );
-};
-
-test['Browser bar should not execute JS'] = function*() {
-  // ETH-01-001
-  const client = this.client;
-
-  yield this.navigateTo('<script>window.pwned = true</script>');
-  const mist = yield client.execute(() => {
-    return window.mist;
-  }); // checking if `execute` works
-  const pwned = yield client.execute(() => {
-    return window.pwned;
-  });
-
-  should.exist(mist.value);
-  should.not.exist(pwned.value);
 };
 
 test['Should select Wallet and Browse tabs properly'] = function*() {
@@ -291,18 +291,20 @@ test[
 // };
 
 // ETH-01-005
-// test['Mist main webview should not redirect to arbitrary addresses'] = function* () {
-//     const client = this.client;
-//     const initialURL = yield client.getUrl();
-//
-//     yield client.execute(() => { // code executed in context of browser
-//         window.location.href = 'http://google.com';
-//     });
-//
-//     yield Q.delay(1000);
-//     (yield client.getUrl()).should.eql(initialURL);
-// };
-//
+test[
+  'Mist main webview should not redirect to arbitrary addresses'
+] = function*() {
+  const client = this.client;
+  const initialURL = yield client.getUrl();
+
+  yield client.execute(() => {
+    // code executed in context of browser
+    window.location.href = 'http://google.com';
+  });
+
+  yield Q.delay(1000);
+  (yield client.getUrl()).should.eql(initialURL);
+};
 
 // ETH-01-008
 test['Mist main webview should not redirect to local files'] = function*() {

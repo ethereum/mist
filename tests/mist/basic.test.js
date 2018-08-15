@@ -38,42 +38,6 @@ test[
   should.not.exist(yield this.getUiElement('form.url script'));
 };
 
-test[
-  'Browser bar should not render script tags in disguise on breadcrumb view'
-] = function*() {
-  // ETH-01-001
-  const client = this.client;
-
-  yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
-  const isUrlBlocked = (yield client.execute(() => {
-    // Code executed in context of browser
-    try {
-      $('form.url').submit();
-    } catch (e) {
-      return /Invalid URL/.test(e);
-    }
-    return false;
-  })).value;
-
-  isUrlBlocked.should.be.true;
-  should.not.exist(yield this.getUiElement('form.url script'));
-};
-
-test[
-  'Browser bar should not render script tags in disguise (2) on breadcrumb view'
-] = function*() {
-  // ETH-01-001
-  yield this.navigateTo('<svg><script>alert()</script></svg>');
-  yield Q.delay(1500);
-
-  should.exist(yield this.getUiElement('form.url'));
-  should.not.exist(yield this.getUiElement('form.url svg'));
-  should.not.exist(yield this.getUiElement('form.url script'));
-
-  const webviewErrorURL = yield this.getSelectedWebviewParam('src');
-  webviewErrorURL.should.match(/errorPages\/404\.html$/);
-};
-
 test['Browser bar should not render arbitrary code as HTML'] = function*() {
   // ETH-01-001
   const client = this.client;
@@ -264,45 +228,57 @@ test[
   walletTabUrl.should.eql(walletTabUrl2);
 };
 
-//test['Links with target _blank should open inside Mist'] = function* () {
-//    const client = this.client;
-//    yield this.navigateTo(`${this.fixtureBaseUrl}/fixture-popup.html`);
-//    yield this.getWindowByUrl(e => /fixture-popup.html$/.test(e));
-//
-//    yield client.click('a[target=_blank]');
-//    yield client.waitUntil(() => {
-//        return client.getUrl((url) => {
-//            return /index.html$/.test(url);
-//        });
-//    });
-//};
+test[
+  'Browser bar should not render script tags in disguise on breadcrumb view'
+] = function*() {
+  // ETH-01-001
+  const client = this.client;
 
-// test['Links with target _popup should open inside Mist'] = function* () {
-//     const client = this.client;
-//     yield this.navigateTo(`${this.fixtureBaseUrl}/fixture-popup.html`);
-//     yield this.getWindowByUrl(e => /fixture-popup.html$/.test(e));
-//
-//     yield client.click('a[target=_popup]');
-//     yield client.waitUntil(() => {
-//         return client.getUrl((url) => {
-//             return /index.html$/.test(url);
-//         });
-//     });
-// };
+  yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
+  const isUrlBlocked = (yield client.execute(() => {
+    // Code executed in context of browser
+    try {
+      $('form.url').submit();
+    } catch (e) {
+      return /Invalid URL/.test(e);
+    }
+    return false;
+  })).value;
+
+  isUrlBlocked.should.be.true;
+  should.not.exist(yield this.getUiElement('form.url script'));
+};
+
+test[
+  'Browser bar should not render script tags in disguise (2) on breadcrumb view'
+] = function*() {
+  // ETH-01-001
+  yield this.navigateTo('<svg><script>alert()</script></svg>');
+  yield Q.delay(1500);
+
+  should.exist(yield this.getUiElement('form.url'));
+  should.not.exist(yield this.getUiElement('form.url svg'));
+  should.not.exist(yield this.getUiElement('form.url script'));
+
+  const webviewErrorURL = yield this.getSelectedWebviewParam('src');
+  webviewErrorURL.should.match(/errorPages\/404\.html$/);
+};
 
 // ETH-01-005
-// test['Mist main webview should not redirect to arbitrary addresses'] = function* () {
-//     const client = this.client;
-//     const initialURL = yield client.getUrl();
-//
-//     yield client.execute(() => { // code executed in context of browser
-//         window.location.href = 'http://google.com';
-//     });
-//
-//     yield Q.delay(1000);
-//     (yield client.getUrl()).should.eql(initialURL);
-// };
-//
+test[
+  'Mist main webview should not redirect to arbitrary addresses'
+] = function*() {
+  const client = this.client;
+  const initialURL = yield client.getUrl();
+
+  yield client.execute(() => {
+    // code executed in context of browser
+    window.location.href = 'http://google.com';
+  });
+
+  yield Q.delay(1000);
+  (yield client.getUrl()).should.eql(initialURL);
+};
 
 // ETH-01-008
 test['Mist main webview should not redirect to local files'] = function*() {

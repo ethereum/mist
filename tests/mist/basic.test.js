@@ -69,6 +69,42 @@ test['Browser bar should not execute JS'] = function*() {
   should.not.exist(pwned.value);
 };
 
+test[
+  'Browser bar should not render script tags in disguise on breadcrumb view'
+] = function*() {
+  // ETH-01-001
+  const client = this.client;
+
+  yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
+  const isUrlBlocked = (yield client.execute(() => {
+    // Code executed in context of browser
+    try {
+      $('form.url').submit();
+    } catch (e) {
+      return /Invalid URL/.test(e);
+    }
+    return false;
+  })).value;
+
+  isUrlBlocked.should.be.true;
+  should.not.exist(yield this.getUiElement('form.url script'));
+};
+
+test[
+  'Browser bar should not render script tags in disguise (2) on breadcrumb view'
+] = function*() {
+  // ETH-01-001
+  yield this.navigateTo('<svg><script>alert()</script></svg>');
+  yield Q.delay(1500);
+
+  should.exist(yield this.getUiElement('form.url'));
+  should.not.exist(yield this.getUiElement('form.url svg'));
+  should.not.exist(yield this.getUiElement('form.url script'));
+
+  const webviewErrorURL = yield this.getSelectedWebviewParam('src');
+  webviewErrorURL.should.match(/errorPages\/404\.html$/);
+};
+
 test['Should select Wallet and Browse tabs properly'] = function*() {
   yield this.selectTab('wallet');
 };
@@ -226,42 +262,6 @@ test[
   const walletTabUrl2 = yield this.getSelectedWebviewParam('src');
 
   walletTabUrl.should.eql(walletTabUrl2);
-};
-
-test[
-  'Browser bar should not render script tags in disguise on breadcrumb view'
-] = function*() {
-  // ETH-01-001
-  const client = this.client;
-
-  yield client.setValue('#url-input', '&lt;script&gt;alert()&lt;/script&gt;');
-  const isUrlBlocked = (yield client.execute(() => {
-    // Code executed in context of browser
-    try {
-      $('form.url').submit();
-    } catch (e) {
-      return /Invalid URL/.test(e);
-    }
-    return false;
-  })).value;
-
-  isUrlBlocked.should.be.true;
-  should.not.exist(yield this.getUiElement('form.url script'));
-};
-
-test[
-  'Browser bar should not render script tags in disguise (2) on breadcrumb view'
-] = function*() {
-  // ETH-01-001
-  yield this.navigateTo('<svg><script>alert()</script></svg>');
-  yield Q.delay(1500);
-
-  should.exist(yield this.getUiElement('form.url'));
-  should.not.exist(yield this.getUiElement('form.url svg'));
-  should.not.exist(yield this.getUiElement('form.url script'));
-
-  const webviewErrorURL = yield this.getSelectedWebviewParam('src');
-  webviewErrorURL.should.match(/errorPages\/404\.html$/);
 };
 
 // ETH-01-005

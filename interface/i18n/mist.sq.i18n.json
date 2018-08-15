@@ -146,7 +146,7 @@
       "nodeSyncing":
         "Nyja Ethereum ka nevojë të sinkronizohet, ju lutemi prisni...",
       "nodeSyncInfo":
-        "Duke marrë bllokun __currentBlock__ nga __highestBlock__.",
+        "Duke marrë bllokun __displayBlock__ nga __highestBlock__.",
       "nodeSyncInfoStates":
         "Duke shkarkuar bllokun __displayBlock__ nga __highestBlock__, <br> Duke shkarkuar strukturën e zinxhirit __displayState__ nga __displayKnownStates__",
       "nodeSyncConnecting": "Duke kërkuar miq...",

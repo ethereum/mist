@@ -228,7 +228,7 @@ exports.mocha = (_module, options) => {
         yield Q.delay(2000);
         yield waitForVisibleWebview(--retries);
       };
-      yield waitForVisibleWebview(10);
+      yield waitForVisibleWebview(30);
     },
 
     *beforeEach() {

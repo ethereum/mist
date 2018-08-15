@@ -19,6 +19,10 @@ defaults: &defaults
         # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
       - CXX_host: 'g++ -m32'
 
+repository_setup: &repository_setup
+  name: Git submodules
+  command: git submodule update --init --recursive
+
 linux_dependencies: &linux_dependencies
   name: Linux package dependencies
   # Installing multilib (build for 32 and 64 architectures):
@@ -59,6 +63,8 @@ jobs:
       # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
       - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
 
+      - run :
+          <<: *repository_setup
       - run:
           <<: *linux_dependencies
       - run:
@@ -81,6 +87,8 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
 
+      - run :
+          <<: *repository_setup
       - run:
           <<: *linux_dependencies
       - run:
@@ -99,6 +107,8 @@ jobs:
       - attach_workspace:
           at: /home/circleci/
           
+      - run :
+          <<: *repository_setup
       - run:
           <<: *linux_dependencies
       - run:

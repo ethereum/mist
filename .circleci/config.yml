@@ -42,8 +42,11 @@ install_node_modules: &install_node_modules
     name: Installing JS dependencies
     command: yarn 
 
-
-
+xvfb_setup: &xvfb_setup
+  run:
+    name: Visual buffer setup
+    command: export DISPLAY=:99 && Xvfb -ac :99 -screen 0 1280x1024x16 +extension RANDR > /dev/null 2>&1
+    background: true
 
 version: 2
 jobs:
@@ -86,6 +89,7 @@ jobs:
       - *linux_dependencies
       - *install_meteor 
       - *install_node_modules
+      - *xvfb_setup
 
       - run:
           name: Building Mist for Linux
@@ -93,7 +97,7 @@ jobs:
 
       - run:
           name: Spectron acceptance tests
-          command: xvfb-run yarn test:e2e
+          command: yarn test:e2e
 
       - store_artifacts:
           path: dist_mist/release

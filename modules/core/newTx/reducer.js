@@ -9,6 +9,7 @@ export const initialState = {
   to: '',
   toIsContract: false,
   isNewContract: false,
+  priceUSD: 0,
   unlocking: false,
   estimatedGas: 3000000,
   token: {

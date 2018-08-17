@@ -226,7 +226,7 @@ exports.mocha = (_module, options) => {
         if (webview.value.length > 0) return;
         if (retries === 0)
           throw new Error('Failed to get visible webview at startup');
-        yield Q.delay(2000);
+        yield Q.delay(5000);
         yield waitForVisibleWebview(--retries);
       };
       yield waitForVisibleWebview(60);

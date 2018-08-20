@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import PieChart from 'react-minimal-pie-chart';
+import { setLocalPeerCount } from '../actions.js';
 
 class NodeInfo extends Component {
   constructor(props) {
@@ -9,7 +10,6 @@ class NodeInfo extends Component {
 
     this.state = {
       showSubmenu: false,
-      peerCount: 0,
       ticks: 0,
       lightClasses: ''
     };
@@ -54,7 +54,7 @@ class NodeInfo extends Component {
     if (this.state.ticks % 20 == 0) {
       // only do it every second
       web3.eth.net.getPeerCount().then(peerCount => {
-        this.setState({ peerCount });
+        this.props.dispatch(setLocalPeerCount(peerCount));
       });
     }
 
@@ -134,7 +134,7 @@ class NodeInfo extends Component {
       <div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
         </div>
         <div className="sync-starting row-icon">
           <i className="icon icon-energy" />
@@ -165,7 +165,7 @@ class NodeInfo extends Component {
         </div>
         <div className="peer-count row-icon">
           <i className="icon icon-users" />
-          {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+          {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
         </div>
         <div className="sync-progress row-icon">
           <i className="icon icon-cloud-download" />
@@ -193,7 +193,7 @@ class NodeInfo extends Component {
         {this.props.network !== 'private' && (
           <div className="peer-count row-icon">
             <i className="icon icon-users" />
-            {` ${this.state.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
+            {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
           </div>
         )}
         <div
@@ -231,7 +231,7 @@ class NodeInfo extends Component {
       // Case: not yet synced up
       if (currentBlock === 0) {
         // Case: no results from syncing
-        if (this.state.peerCount === 0) {
+        if (this.props.local.peerCount === 0) {
           // Case: no peers yet
           localStats = this.localStatsFindingPeers();
         } else {

@@ -346,3 +346,14 @@ function decodeFunctionSignature(signature, data) {
 export function togglePriority() {
   return { type: '[CLIENT]:PRIORITY:TOGGLE' };
 }
+
+export function setLocalPeerCount(peerCount) {
+  return (dispatch, getState) => {
+    if (peerCount != getState().nodes.local.peerCount) {
+      dispatch({
+        type: '[CLIENT]:NODES:UPDATE_LOCAL_PEER_COUNT',
+        payload: { peerCount }
+      });
+    }
+  };
+}

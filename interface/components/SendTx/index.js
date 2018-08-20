@@ -7,13 +7,14 @@ import Footer from './Footer';
 import GasNotification from './GasNotification';
 import TxParties from './TxParties';
 import {
-  determineIfContract,
   confirmTx,
+  determineIfContract,
   estimateGasUsage,
   getGasPrice,
   getPriceConversion,
   lookupSignature,
-  setWindowSize
+  setWindowSize,
+  togglePriority
 } from '../../actions.js';
 
 class SendTx extends Component {
@@ -62,15 +63,21 @@ class SendTx extends Component {
     this.props.dispatch(setWindowSize(height));
   };
 
+  togglePriority = () => {
+    this.props.dispatch(togglePriority());
+  };
+
   handleSubmit = formData => {
-    const { data, to, from, gas, gasPrice, value } = this.props.newTx;
+    const { data, to, from, gas, gasPrice, priority, value } = this.props.newTx;
+
+    // If priority tx, double the value and format it
+    chosenPrice = priority ? '0x' + (gasPrice * 2).toString(16) : gasPrice;
 
     let txData = {
       data,
       from,
       gas,
-      gasPrice,
-      chosenGas: gas, // TODO: priority?
+      gasPrice: chosenPrice,
       pw: formData.pw,
       value
     };
@@ -123,6 +130,8 @@ class SendTx extends Component {
             estimatedGas={this.props.newTx.estimatedGas}
             priceUSD={this.props.newTx.priceUSD}
             network={this.props.nodes.network}
+            priority={this.props.newTx.priority}
+            togglePriority={this.togglePriority}
           />
 
           <GasNotification

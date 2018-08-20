@@ -4,10 +4,6 @@ class FeeSelector extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      priority: false
-    };
-
     this.formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
@@ -15,7 +11,7 @@ class FeeSelector extends Component {
   }
 
   handleClick = () => {
-    this.setState({ priority: !this.state.priority });
+    this.props.togglePriority();
   };
 
   render() {
@@ -32,7 +28,7 @@ class FeeSelector extends Component {
     const gasEtherAmountPriority = gasEtherAmount.times(2);
 
     let fee;
-    if (!this.state.priority) {
+    if (!this.props.priority) {
       if (network.toLowerCase() === 'main' && priceUSD) {
         const standardFee = gasEtherAmount.times(priceUSD);
         const formattedFee = this.formatter.format(standardFee);
@@ -50,7 +46,7 @@ class FeeSelector extends Component {
       }
     }
 
-    if (this.state.priority) {
+    if (this.props.priority) {
       return (
         <div className="fee-selector">
           <span

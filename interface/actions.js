@@ -146,7 +146,7 @@ export function determineIfContract(toAddress) {
 
 export function confirmTx(data) {
   return async (dispatch, getState) => {
-    dispatch({ type: '[CLIENT]:CONFIRM_TX:START' });
+    dispatch({ type: '[CLIENT]:CONFIRM_TX:START', payload: { data } });
 
     // reject if sending to itself
     if (data.to && data.from === data.to.toLowerCase()) {
@@ -159,7 +159,7 @@ export function confirmTx(data) {
     }
 
     // reject if no gas
-    if (!data.chosenGas || !_.isFinite(data.chosenGas)) {
+    if (!data.gas || !_.isFinite(data.gas)) {
       return dispatch({
         type: '[CLIENT]:CONFIRM_TX:FAILURE',
         error: 'noGas'
@@ -341,4 +341,8 @@ function decodeFunctionSignature(signature, data) {
       });
     });
   };
+}
+
+export function togglePriority() {
+  return { type: '[CLIENT]:PRIORITY:TOGGLE' };
 }

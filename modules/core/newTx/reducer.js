@@ -12,6 +12,7 @@ export const initialState = {
   priceUSD: 0,
   unlocking: false,
   estimatedGas: 3000000,
+  priority: false,
   token: {
     name: '',
     symbol: '',
@@ -40,6 +41,8 @@ const newTx = (state = initialState, action) => {
       return Object.assign({}, state, { unlocking: false });
     case '[CLIENT]:CONFIRM_TX:FAILURE':
       return Object.assign({}, state, { unlocking: false });
+    case '[CLIENT]:PRIORITY:TOGGLE':
+      return Object.assign({}, state, { priority: !state.priority });
     case '[CLIENT]:GET_PRICE_CONVERSION:START':
       return Object.assign({}, state, {
         priceUSD: 0

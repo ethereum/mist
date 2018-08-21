@@ -136,7 +136,7 @@
       "unableToBindPort":
         "Ethereum-node kan ikke kjøre. Kjører det en allerede?",
       "nodeSyncing": "Ethereum-node trenger å synkroniseres, vennligst vent...",
-      "nodeSyncInfo": "Laster ned blokk __currentBlock__ av __highestBlock__.",
+      "nodeSyncInfo": "Laster ned blokk __displayBlock__ av __highestBlock__.",
       "nodeSyncConnecting": "Leter etter peers...",
       "launchApp": "Start Applikasjonen",
       "nodeSyncInfoStates":

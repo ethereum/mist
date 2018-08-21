@@ -1,7 +1,7 @@
 const _ = require('underscore');
 const builder = require('electron-builder');
 const del = require('del');
-const exec = require('child_process').exec;
+const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const gulp = require('gulp');
 const babel = require('gulp-babel');
@@ -15,7 +15,7 @@ const type = options.type;
 const applicationName = options.wallet ? 'Ethereum Wallet' : 'Mist';
 
 gulp.task('clean-dist', cb => {
-  return del([`./dist_${type}`, './meteor-dapp-wallet'], cb);
+  return del([`./dist_${type}`], cb);
 });
 
 gulp.task('copy-app-source-files', () => {
@@ -32,9 +32,7 @@ gulp.task('copy-app-source-files', () => {
         'wallet/**/*',
         '!node_modules/electron/',
         '!node_modules/electron/**/*',
-        '!./tests/wallet/*',
-        '!./tests/mist/*',
-        '!./tests/unit/*'
+        '!./tests/**/*'
       ],
       {
         base: './'
@@ -75,63 +73,49 @@ gulp.task('switch-production', cb => {
 });
 
 gulp.task('pack-wallet', cb => {
-  if (options.type == 'mist') {
-    del(['./wallet', './meteor-dapp-wallet']).then(() => {
-      console.log('Building wallet...');
-      exec(
-        `git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
-            && cd meteor-dapp-wallet/app \
-            && yarn install \
-            && ../../node_modules/.bin/meteor-build-client ../../wallet -p ""`,
-        (err, stdout, stderr) => {
-          console.log(stdout, stderr);
-          del(['./meteor-dapp-wallet']);
-          cb(err);
-        }
+  del(['./wallet']).then(() => {
+    const fromPath = path.resolve('meteor-dapp-wallet', 'build');
+    const toPath = path.resolve('wallet');
+
+    if (!fs.existsSync(fromPath)) {
+      throw new Error(
+        `${fromPath} could not be found. Did you run "git submodule update --recursive?"`
       );
-    });
-  } else {
+    }
+
+    shell.cp('-R', fromPath, toPath);
     cb();
-  }
+  });
 });
 
-gulp.task('bundling-interface', cb => {
-  const bundle = additionalCommands => {
-    const buildPath = path.join('..', `dist_${type}`, 'app', 'interface');
-
-    exec(
-      `../node_modules/.bin/meteor-build-client ${buildPath} -p "" ${additionalCommands}`,
-      { cwd: 'interface' },
-      (err, stdout) => {
-        console.log(stdout);
-        cb(err);
-      }
-    );
-  };
-
+// Currently, Mist and Ethereum Wallet expects ./wallet/ to be in different paths. This task aims to fulfill this requirement.
+gulp.task('move-wallet', cb => {
   if (type === 'wallet') {
-    if (options.walletSource === 'local') {
-      console.log('Use local wallet at ../meteor-dapp-wallet/app');
-      bundle(`&& cd ../../meteor-dapp-wallet/app \
-              && yarn \
-              && ../../../node_modules/.bin/meteor-build-client ../../mist/dist_${type}/app/interface/wallet -p ""`);
-    } else {
-      console.log(
-        `Pulling https://github.com/ethereum/meteor-dapp-wallet/tree/${
-          options.walletSource
-        } "${options.walletSource}" branch...`
-      );
-      bundle(`&& cd ../dist_${type} \
-                && git clone --depth 1 https://github.com/ethereum/meteor-dapp-wallet.git \
-                && cd meteor-dapp-wallet/app \
-                && yarn \
-                && ../../../node_modules/.bin/meteor-build-client ../../app/interface/wallet -p "" \
-                && cd ../../ \
-                && rm -rf meteor-dapp-wallet`);
-    }
-  } else {
-    bundle();
+    console.debug('Moving ./wallet to ./interface/wallet');
+    const basePath = path.join('dist_wallet', 'app');
+    const fromPath = path.join(basePath, 'wallet');
+    const toPath = path.join(basePath, 'interface', 'wallet');
+    shell.mv(fromPath, toPath);
   }
+  cb();
+});
+
+gulp.task('build-interface', cb => {
+  const interfaceBuildPath = path.resolve('build-interface');
+  exec(
+    `yarn run meteor-build-client ${interfaceBuildPath} -p ""`,
+    { cwd: 'interface' },
+    (err, stdout) => {
+      console.log(stdout);
+      cb(err);
+    }
+  );
+});
+
+gulp.task('copy-interface', () => {
+  return gulp
+    .src(['build-interface/**/*'])
+    .pipe(gulp.dest(`dist_${type}/app/interface`));
 });
 
 gulp.task('copy-i18n', () => {
@@ -148,6 +132,7 @@ gulp.task('build-dist', cb => {
     name: applicationName.replace(/\s/, ''),
     productName: applicationName,
     description: applicationName,
+    license: 'GPL-3.0',
     homepage: 'https://github.com/ethereum/mist',
     build: {
       appId: `org.ethereum.${type}`,
@@ -238,12 +223,6 @@ gulp.task('release-dist', done => {
   const versionDashed = version.replace(/\./g, '-');
 
   const cp = (inputPath, outputPath) => {
-    console.info(
-      `Copying from ${path.join(distPath, inputPath)} to ${path.join(
-        releasePath,
-        outputPath
-      )}`
-    );
     shell.cp(
       path.join(distPath, inputPath),
       path.join(releasePath, outputPath)
@@ -293,9 +272,6 @@ gulp.task('release-dist', done => {
         break;
     }
   });
-
-  console.info('∆∆∆ Listing release files ***');
-  console.info(shell.ls('-l', releasePath).map(e => e.name));
 
   done();
 });

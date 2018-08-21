@@ -2,8 +2,7 @@
 
 [![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)](http://www.somsubhra.com/github-release-stats/?username=ethereum&repository=mist)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
-[![CircleCI](https://circleci.com/gh/ethereum/mist/tree/develop.svg?style=svg)](https://circleci.com/gh/ethereum/mist/tree/develop)
-[![Greenkeeper badge](https://badges.greenkeeper.io/ethereum/mist.svg)](https://greenkeeper.io/)
+[![Build status](https://ci.appveyor.com/api/projects/status/bcfm3v0y2ovq9xob?svg=true)](https://ci.appveyor.com/project/ethereum/mist)
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist)
 [![Code Triagers Badge](https://www.codetriage.com/ethereum/mist/badges/users.svg)](https://www.codetriage.com/ethereum/mist)
 
@@ -78,14 +77,6 @@ Now you're ready to initialize Mist for development:
 ```bash
 $ git clone https://github.com/ethereum/mist.git
 $ cd mist
-$ yarn
-```
-
-To update Mist in the future, run:
-
-```bash
-$ cd mist
-$ git pull
 $ yarn
 ```
 
@@ -181,41 +172,23 @@ Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](htt
 
 #### Dependencies
 
-Cross-platform builds require additional [`electron-builder` dependencies](https://www.electron.build/multi-platform-build).
-
-##### macOS
-
-```bash
-$ brew install rpm
-```
-
-##### Windows
-
-```bash
-$ brew install wine --without-x11 mono makensis
-```
-
-##### Linux
-
-```bash
-$ brew install gnu-tar libicns graphicsmagick xz
-```
+Cross-platform builds require [additional dependencies](https://www.electron.build/multi-platform-build) needed by Electron Builder. Please follow their instructions for up to date dependency information.
 
 #### Generate packages
 
 To generate the binaries for Mist run:
 
 ```bash
-$ gulp
+$ yarn build:mist
 ```
 
 To generate the Ethereum Wallet:
 
 ```bash
-$ gulp --wallet
+$ yarn build:wallet
 ```
 
-The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. From 0.11.0, both Ethereum Wallet and Mist bundle a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
+The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. Starting from 0.11.0, both Ethereum Wallet and Mist ships with a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
 
 #### Options
 
@@ -224,58 +197,36 @@ The generated binaries will be under `dist_mist/release` or `dist_wallet/release
 To build binaries for specific platforms (default: all available) use the following flags:
 
 ```bash
-$ gulp --mac      # mac
-$ gulp --linux    # linux
-$ gulp --win      # windows
+$ yarn build:mist --mac      # mac
+$ yarn build:mist --linux    # linux
+$ yarn build:mist --win      # windows
 ```
-
-##### walletSource
-
-With the `walletSource` you can specify the Wallet branch to use, default is `master`:
-
-    $ gulp --wallet --walletSource local
-
-Options are:
-
-- `master`
-- [any meteor-dapp-wallet branch](https://github.com/ethereum/meteor-dapp-wallet/branches)
-- `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
-
-_Note: applicable only when combined with `--wallet`_
 
 ##### skipTasks
 
 When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
 ```bash
-$ gulp --mac --skipTasks=bundling-interface,release-dist
+$ yarn build:mist --mac --skipTasks=build-interface,release-dist
 ```
 
 ##### Checksums
 
-Spits out the MD5 checksums of the distributables.
+Prints the SHA-256 checksums of the distributables.
 
 It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
 ```bash
-$ gulp checksums [--wallet]
+$ yarn task checksums [--wallet]
 ```
 
-#### Cutting a release
+#### Tasks found in gulpfile.js and gulpTasks/
 
-1.  Install [release](https://github.com/zeit/release) globally:
+Any other gulp task can be run using `yarn task`.
 
-    ```bash
-    $ yarn global add release
-    ```
-
-2.  Create a git tag and a GitHub release:
-
-    ```bash
-    $ release <major|minor|patch>
-    ```
-
-3.  A generated release draft will open in the default browser. Edit the information and add assets as necessary.
+```bash
+$ yarn task clean-dist
+```
 
 ## Testing
 
@@ -284,13 +235,14 @@ Tests run using [Spectron](https://github.com/electron/spectron/), a webdriver.i
 First make sure to build Mist with:
 
 ```bash
-$ gulp
+$ yarn build:mist
 ```
 
 Then run the tests:
 
 ```bash
-$ gulp test
+$ yarn test:unit:once
+$ yarn test:e2e
 ```
 
 _Note: Integration tests are not yet supported on Windows._

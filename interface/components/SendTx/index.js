@@ -71,7 +71,9 @@ class SendTx extends Component {
     const { data, to, from, gas, gasPrice, priority, value } = this.props.newTx;
 
     // If priority tx, double the value and format it
-    chosenPrice = priority ? '0x' + (gasPrice * 2).toString(16) : gasPrice;
+    const chosenPrice = priority
+      ? '0x' + (gasPrice * 2).toString(16)
+      : gasPrice;
 
     let txData = {
       data,

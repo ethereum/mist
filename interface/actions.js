@@ -237,8 +237,11 @@ export function confirmTx(data) {
 
       // Format tx for storage
       let newTx = getState().newTx;
+      // Set gas price in case increased for priority
+      newTx.gasPrice = data.gasPrice;
       // Remove unneeded props
       delete newTx.unlocking;
+      delete newTx.gasLoading;
       // Add helpful props
       newTx.hash = hash;
       newTx.networkId = networkId;
@@ -248,7 +251,7 @@ export function confirmTx(data) {
         newTx.contractAddress = null;
       }
       newTx.createdAt = new Date();
-      store.dispatch({
+      dispatch({
         type: '[CLIENT]:NEW_TX:SENT',
         payload: { newTx }
       });

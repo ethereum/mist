@@ -218,17 +218,18 @@ exports.mocha = (_module, options) => {
       this.mainWindowHandle = (yield this.client.windowHandle()).value;
 
       // Waits for "Connecting..." phase to end and webviews become available
-      const waitForVisibleWebview = function*(retries = 10) {
+      const waitForVisibleWebview = function*(retries) {
+        console.log(`waitForVisibleWebview retries remaining: ${retries}`);
         const webview = yield app.client.elements(
           'div.webview:not(.hidden) webview[data-id]'
         );
         if (webview.value.length > 0) return;
         if (retries === 0)
           throw new Error('Failed to get visible webview at startup');
-        yield Q.delay(2000);
+        yield Q.delay(5000);
         yield waitForVisibleWebview(--retries);
       };
-      yield waitForVisibleWebview(10);
+      yield waitForVisibleWebview(60);
     },
 
     *beforeEach() {

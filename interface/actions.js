@@ -337,7 +337,6 @@ function decodeFunctionSignature(signature, data) {
     dispatch({ type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:START' });
     ipc.send('backendAction_decodeFunctionSignature', signature, data);
     ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
-      console.log('∆∆∆ params (in action)', params);
       dispatch({
         type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS',
         payload: { params }

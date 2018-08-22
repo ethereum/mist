@@ -49,7 +49,6 @@ module.exports = class extends BaseProcessor {
         return reject(err);
       }
 
-      console.log('∆∆∆ payload.params[0]', payload.params[0]);
       store.dispatch({
         type: '[CLIENT]:NEW_TX:START',
         payload: payload.params[0]

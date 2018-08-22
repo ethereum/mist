@@ -33,7 +33,7 @@ export default function configureReduxStore() {
     persistedReducer,
     debugWrapper(applyMiddleware(thunk, forwardToRenderer))
   );
-  const persistor = persistStore(store);
+  persistStore(store);
   replayActionMain(store);
   return store;
 }

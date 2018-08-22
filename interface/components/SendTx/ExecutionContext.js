@@ -70,7 +70,6 @@ class ExecutionContext extends Component {
       }
 
       const params = this.props.executionFunction.match(/\((.+)\)/i);
-      console.log('∆∆∆ params (in component)', params);
 
       // Unknown/generic function execution:
       return (

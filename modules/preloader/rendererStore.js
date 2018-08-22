@@ -8,10 +8,20 @@ const {
 } = require('electron-redux');
 const thunk = require('redux-thunk').default;
 const initialState = getInitialStateRenderer();
+import { persistStore, persistReducer } from 'redux-persist';
 import rootReducer from '../core/rootReducer';
 
+// No persistence required for auxiliary stores.
+// This config is to stub out the functionality.
+const persistConfig = {
+  key: 'root',
+  storage: {},
+  whitelist: []
+};
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 const store = createStore(
-  rootReducer,
+  persistedReducer,
   initialState,
   applyMiddleware(forwardToMain, thunk)
 );

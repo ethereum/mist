@@ -41,7 +41,7 @@ class TxParties extends Component {
               : '')
           }
         >
-          FROM
+          {i18n.t('mist.sendTx.from')}
         </div>
         <div>
           <span className="bold">{from}</span>
@@ -86,7 +86,9 @@ class TxParties extends Component {
               'tx-parties__direction-name ' + (toIsContract ? 'isContract' : '')
             }
           >
-            {toIsContract ? 'CONTRACT' : 'TO'}
+            {toIsContract
+              ? i18n.t('mist.sendTx.contract')
+              : i18n.t('mist.sendTx.to')}
           </div>
           <span className="bold">{to}</span>
         </div>

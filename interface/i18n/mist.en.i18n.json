@@ -124,6 +124,25 @@
       "openDevTools": "Open developer tools",
       "inspectElements": "Inspect element"
     },
+    "sendTx": {
+      "tokens": "tokens",
+      "transfer": "Transfer",
+      "showDetails": "Show details",
+      "hideDetails": "Hide details",
+      "tokenName": "Token name:",
+      "tokenContractName": "Token Contract Address:",
+      "parameters": "Parameters",
+      "etherAmount": "Ether Amount:",
+      "gasEstimate": "Gas Estimate:",
+      "transactionExecutingFunction": "Transaction Executing Function:",
+      "from": "FROM",
+      "to": "TO",
+      "contract": "CONTRACT",
+      "loading": "Loading...",
+      "priorityFee": "Priority Fee:",
+      "standardFee": "Standard Fee:",
+      "execute": "Execute"
+    },
     "nodeInfo": {
       "active": "active",
       "blockNumber": "Your latest block number",

@@ -44,7 +44,7 @@ class Footer extends Component {
             disabled={!this.state.pw}
             type="submit"
           >
-            Execute
+            {i18n.t('mist.sendTx.execute')}
           </button>
         </form>
       </footer>

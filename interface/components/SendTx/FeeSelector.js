@@ -18,7 +18,7 @@ class FeeSelector extends Component {
     const { estimatedGas, network, etherPriceUSD } = this.props;
 
     if (!this.props.estimatedGas) {
-      return <div>Loading...</div>;
+      return <div>{i18n.t('mist.sendTx.loading')}</div>;
     }
 
     const gas = web3.utils.isHex(estimatedGas)
@@ -54,7 +54,7 @@ class FeeSelector extends Component {
             className="fee-selector__btn"
             data-tooltip="Click For Standard Fee"
           >
-            Priority Fee:
+            {i18n.t('mist.sendTx.priorityFee')}
           </span>{' '}
           <span className="fee-amount">{fee}</span>
         </div>
@@ -68,7 +68,7 @@ class FeeSelector extends Component {
           className="fee-selector__btn"
           data-tooltip="Click For Priority Fee"
         >
-          Standard Fee:
+          {i18n.t('mist.sendTx.standardFee')}
         </span>{' '}
         <span className="fee-amount">{fee}</span>
       </div>

@@ -31,7 +31,6 @@ class ExecutionContext extends Component {
 
   renderExecutionSentence() {
     if (this.props.isNewContract) {
-      // TODO: accurate?
       const bytesCount = encodeURI(this.props.data).split(/%..|./).length - 1;
 
       return (
@@ -57,11 +56,12 @@ class ExecutionContext extends Component {
           0,
           -Math.abs(decimals)
         );
-        const tokenSymbol = this.props.token.symbol || 'tokens';
+        const tokenSymbol =
+          this.props.token.symbol || i18n.t('mist.sendTx.tokens');
 
         return (
           <div className="execution-context__sentence">
-            Transfer{' '}
+            {i18n.t('mist.sendTx.transfer')}{' '}
             <span className="bold">
               {tokenCount} {tokenSymbol}
             </span>
@@ -160,7 +160,7 @@ class ExecutionContext extends Component {
           className="execution-context__details-link"
           onClick={this.handleDetailsClick}
         >
-          More details
+          {i18n.t('mist.sendTx.showDetails')}
         </div>
       );
     }
@@ -186,7 +186,7 @@ class ExecutionContext extends Component {
       <div className="execution-context__details">
         {showTxExecutingFunction && (
           <div className="execution-context__details-row">
-            Transaction Executing Function:{' '}
+            {i18n.t('mist.sendTx.transactionExecutingFunction')}{' '}
             <span className="execution-context__execution-function">
               {executionFunction.slice(0, executionFunction.indexOf('('))}
             </span>
@@ -194,24 +194,26 @@ class ExecutionContext extends Component {
         )}
 
         <div className="execution-context__details-row">
-          Ether Amount:{' '}
+          {i18n.t('mist.sendTx.etherAmount')}{' '}
           <span className="bold">{this.formattedBalance(value)}</span>
         </div>
 
         <div className="execution-context__details-row">
-          Gas Estimate: <span className="bold">{estimatedGas}</span>
+          {i18n.t('mist.sendTx.gasEstimate')}{' '}
+          <span className="bold">{estimatedGas}</span>
         </div>
 
         {isTokenTransfer && (
           <div>
             {tokenDisplayName && (
               <div className="execution-context__details-row">
-                Token Name: <span className="bold">{tokenDisplayName}</span>
+                {i18n.t('mist.sendTx.tokenName')}{' '}
+                <span className="bold">{tokenDisplayName}</span>
               </div>
             )}
             {token.address && (
               <div className="execution-context__details-row">
-                Token Contract Address:{' '}
+                {i18n.t('mist.sendTx.tokenName')}{' '}
                 <DappIdenticon identity={token.address} size="small" />
                 <span className="bold">{token.address}</span>
               </div>
@@ -221,7 +223,9 @@ class ExecutionContext extends Component {
 
         {this.props.params.length > 0 && (
           <div>
-            <div className="execution-context__params-title">Parameters</div>
+            <div className="execution-context__params-title">
+              {i18n.t('mist.sendTx.parameters')}
+            </div>
             <div className="execution-context__params-table">{params}</div>
           </div>
         )}
@@ -230,7 +234,7 @@ class ExecutionContext extends Component {
           className="execution-context__details-link"
           onClick={this.handleDetailsClick}
         >
-          Less details
+          {i18n.t('mist.sendTx.hideDetails')}
         </div>
       </div>
     );

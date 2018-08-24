@@ -61,7 +61,7 @@ export function getPriceConversion() {
       const priceData = await response.json();
       return dispatch({
         type: '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS',
-        payload: { priceUSD: priceData.USD }
+        payload: { etherPriceUSD: priceData.USD }
       });
     });
   };

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import DappIdenticon from '../DappIdenticon';
-import { updateTx } from '../../actions';
+import { updateTx, getPriceConversion } from '../../actions';
 import TxRow from './TxRow';
 
 class TxHistory extends Component {
@@ -14,6 +14,7 @@ class TxHistory extends Component {
 
   componentDidMount() {
     this.updatePendingTxs();
+    this.props.dispatch(getPriceConversion());
   }
 
   compenntDidUnmount() {
@@ -84,7 +85,14 @@ class TxHistory extends Component {
     const txs = this.props.txs;
 
     const txList = txs.map(tx => {
-      return <TxRow tx={tx} key={tx.hash} networkString={this.networkString} />;
+      return (
+        <TxRow
+          tx={tx}
+          key={tx.hash}
+          networkString={this.networkString}
+          etherPriceUSD={this.props.settings.etherPriceUSD}
+        />
+      );
     });
 
     return (

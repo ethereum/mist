@@ -86,42 +86,6 @@ describe('the newTx reducer', () => {
     assert.deepEqual(reducer(oldState, action), expectedState);
   });
 
-  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:START]" action', () => {
-    const action = { type: '[CLIENT]:GET_PRICE_CONVERSION:START' };
-    const oldState = Object.assign({}, initialState, {
-      priceUSD: 500
-    });
-    const expectedState = Object.assign({}, initialState, {
-      priceUSD: 0
-    });
-    assert.deepEqual(reducer(oldState, action), expectedState);
-  });
-
-  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:SUCCESS]" action', () => {
-    const action = {
-      type: '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS',
-      payload: { priceUSD: 500 }
-    };
-    const oldState = Object.assign({}, initialState, {
-      priceUSD: 0
-    });
-    const expectedState = Object.assign({}, initialState, {
-      priceUSD: 500
-    });
-    assert.deepEqual(reducer(oldState, action), expectedState);
-  });
-
-  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:FAILURE]" action', () => {
-    const action = { type: '[CLIENT]:GET_PRICE_CONVERSION:FAILURE' };
-    const oldState = Object.assign({}, initialState, {
-      priceUSD: 500
-    });
-    const expectedState = Object.assign({}, initialState, {
-      priceUSD: 0
-    });
-    assert.deepEqual(reducer(oldState, action), expectedState);
-  });
-
   it('should handle the "[CLIENT:ESTIMATE_GAS_USAGE:START]" action', () => {
     const action = { type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' };
     const expectedState = Object.assign({}, initialState, {

@@ -19,12 +19,18 @@ class TxRow extends Component {
     return etherAmount;
   };
 
+  toBigNumber = value => {
+    return web3.utils.isHex(value)
+      ? new BigNumber(web3.utils.hexToNumberString(value))
+      : new BigNumber(value);
+  };
+
   toggleDetails() {
     this.setState({ showDetails: !this.state.showDetails });
   }
 
   renderDetails() {
-    const tx = this.props.tx;
+    const { tx, etherPriceUSD } = this.props;
 
     if (!this.state.showDetails) {
       return (
@@ -55,6 +61,29 @@ class TxRow extends Component {
     }
 
     const etherAmount = this.valueToEtherAmount(tx.value);
+    let etherAmountUSD;
+    if (tx.networkId === 1) {
+      etherAmountUSD = this.toBigNumber(etherAmount)
+        .times(new BigNumber(etherPriceUSD))
+        .toFixed(2);
+    }
+    const gasPriceEther = this.valueToEtherAmount(tx.gasPrice);
+    const gasPriceGwei = new BigNumber(gasPriceEther)
+      .times(new BigNumber('1000000000'))
+      .toFixed();
+    let txCostEther;
+    let txCostUSD;
+    if (tx.blockNumber) {
+      const txCost = this.toBigNumber(tx.gasUsed)
+        .times(this.toBigNumber(tx.gasPrice))
+        .toFixed();
+      txCostEther = this.valueToEtherAmount(txCost);
+      if (tx.networkId === 1 && etherPriceUSD > 0) {
+        txCostUSD = this.toBigNumber(txCostEther)
+          .times(new BigNumber(etherPriceUSD))
+          .toFixed(2);
+      }
+    }
 
     let status = <span style={{ color: 'grey' }}>Pending</span>;
     if (tx.status === 0) {
@@ -84,7 +113,8 @@ class TxRow extends Component {
           Transaction Hash: <span className="bold">{txHashLink}</span>
         </div>
         <div>
-          Ether Amount: <span className="bold">{etherAmount}</span>
+          Ether Amount: <span className="bold">{etherAmount} ether</span>{' '}
+          {etherAmountUSD && <span> (${etherAmountUSD} USD)</span>}
         </div>
         <div>
           Nonce:{' '}
@@ -94,18 +124,25 @@ class TxRow extends Component {
           Gas Limit:{' '}
           <span className="bold">{web3.utils.hexToNumberString(tx.gas)}</span>
         </div>
-        <div>
-          Gas Price:{' '}
-          <span className="bold">
-            {web3.utils.hexToNumberString(tx.gasPrice)}
-          </span>
-        </div>
         {tx.gasUsed && (
           <div>
             Gas Used:{' '}
             <span className="bold">
               {web3.utils.hexToNumberString(tx.gasUsed)}
             </span>
+          </div>
+        )}
+        <div>
+          Gas Price: <span className="bold">{gasPriceEther} ether</span> ({
+            gasPriceGwei
+          }{' '}
+          Gwei)
+        </div>
+        {txCostEther && (
+          <div>
+            Actual transaction cost:{' '}
+            <span className="bold">{txCostEther} ether</span>
+            {txCostUSD && <span> (${txCostUSD} USD)</span>}
           </div>
         )}
         {tx.data && (

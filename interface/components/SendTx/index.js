@@ -107,7 +107,7 @@ class SendTx extends Component {
             isNewContract={this.props.newTx.isNewContract}
             network={this.props.nodes.network}
             params={this.props.newTx.params}
-            priceUSD={this.props.newTx.priceUSD}
+            etherPriceUSD={this.props.settings.etherPriceUSD}
             providedGas={this.state.providedGas}
             showFormattedParams={this.state.showFormattedParams}
             to={to}
@@ -130,7 +130,7 @@ class SendTx extends Component {
 
           <FeeSelector
             estimatedGas={this.props.newTx.estimatedGas}
-            priceUSD={this.props.newTx.priceUSD}
+            etherPriceUSD={this.props.settings.etherPriceUSD}
             network={this.props.nodes.network}
             priority={this.props.newTx.priority}
             togglePriority={this.togglePriority}

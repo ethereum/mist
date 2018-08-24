@@ -49,6 +49,7 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
+          peerCount: 0,
           sync: {
             currentBlock: 0,
             highestBlock: 0,
@@ -91,6 +92,7 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
+          peerCount: 0,
           sync: {
             currentBlock: 0,
             highestBlock: 0,

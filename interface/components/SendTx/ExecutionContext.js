@@ -104,9 +104,9 @@ class ExecutionContext extends Component {
   }
 
   calculateTransferValue() {
-    const { priceUSD, value } = this.props;
+    const { value, etherPriceUSD } = this.props;
 
-    if (!value || !priceUSD) {
+    if (!value || !etherPriceUSD) {
       return;
     }
 
@@ -114,7 +114,7 @@ class ExecutionContext extends Component {
       ? new BigNumber(web3.utils.hexToNumberString(value))
       : new BigNumber(value);
     const fee = bigValue
-      .times(priceUSD)
+      .times(etherPriceUSD)
       .dividedBy(new BigNumber('1000000000000000000'));
     return this.formatter.format(fee);
   }

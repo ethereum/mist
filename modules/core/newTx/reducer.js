@@ -9,7 +9,6 @@ export const initialState = {
   to: '',
   toIsContract: false,
   isNewContract: false,
-  priceUSD: 0,
   unlocking: false,
   estimatedGas: 3000000,
   priority: false,
@@ -43,18 +42,6 @@ const newTx = (state = initialState, action) => {
       return Object.assign({}, state, { unlocking: false });
     case '[CLIENT]:PRIORITY:TOGGLE':
       return Object.assign({}, state, { priority: !state.priority });
-    case '[CLIENT]:GET_PRICE_CONVERSION:START':
-      return Object.assign({}, state, {
-        priceUSD: 0
-      });
-    case '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS':
-      return Object.assign({}, state, {
-        priceUSD: action.payload.priceUSD
-      });
-    case '[CLIENT]:GET_PRICE_CONVERSION:FAILURE':
-      return Object.assign({}, state, {
-        priceUSD: 0
-      });
     case '[CLIENT]:GET_GAS_PRICE:SUCCESS':
       return Object.assign({}, state, {
         gasPrice: action.payload.gasPrice

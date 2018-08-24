@@ -15,7 +15,7 @@ class FeeSelector extends Component {
   };
 
   render() {
-    const { estimatedGas, network, priceUSD } = this.props;
+    const { estimatedGas, network, etherPriceUSD } = this.props;
 
     if (!this.props.estimatedGas) {
       return <div>Loading...</div>;
@@ -29,16 +29,16 @@ class FeeSelector extends Component {
 
     let fee;
     if (!this.props.priority) {
-      if (network.toLowerCase() === 'main' && priceUSD) {
-        const standardFee = gasEtherAmount.times(priceUSD);
+      if (network.toLowerCase() === 'main' && etherPriceUSD) {
+        const standardFee = gasEtherAmount.times(etherPriceUSD);
         const formattedFee = this.formatter.format(standardFee);
         fee = `${formattedFee} USD`;
       } else {
         fee = `${gasEtherAmount} ETH`;
       }
     } else {
-      if (network.toLowerCase() === 'main' && priceUSD) {
-        const priorityFee = gasEtherAmountPriority.times(priceUSD);
+      if (network.toLowerCase() === 'main' && etherPriceUSD) {
+        const priorityFee = gasEtherAmountPriority.times(etherPriceUSD);
         const formattedFee = this.formatter.format(priorityFee);
         fee = `${formattedFee} USD`;
       } else {

@@ -85,9 +85,17 @@ class TxRow extends Component {
       }
     }
 
-    let status = <span style={{ color: 'grey' }}>Pending</span>;
+    let status = (
+      <span className="bold" style={{ color: 'grey' }}>
+        Pending
+      </span>
+    );
     if (tx.status === 0) {
-      status = <span style={{ color: 'red' }}>Failed</span>;
+      status = (
+        <span className="bold" style={{ color: 'red' }}>
+          Failed
+        </span>
+      );
     } else if (tx.status === 1 && tx.blockNumber) {
       const blockNumber = _.max([
         this.props.nodes.local.blockNumber,
@@ -96,19 +104,17 @@ class TxRow extends Component {
       const numberConfirmations = blockNumber - tx.blockNumber;
       status = (
         <span>
-          <span style={{ color: 'green' }}>Confirmed</span>{' '}
-          <span style={{ fontWeight: 'normal' }}>
-            ({numberConfirmations} confirmations)
-          </span>
+          <span className="bold" style={{ color: 'green' }}>
+            Confirmed
+          </span>{' '}
+          <span>({numberConfirmations} confirmations)</span>
         </span>
       );
     }
 
     return (
       <div>
-        <div>
-          Status: <span className="bold">{status}</span>
-        </div>
+        <div>Status: {status}</div>
         <div>
           Transaction Hash: <span className="bold">{txHashLink}</span>
         </div>

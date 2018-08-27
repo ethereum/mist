@@ -68,7 +68,20 @@ class SendTx extends Component {
   };
 
   handleSubmit = formData => {
-    const { data, to, from, gas, gasPrice, priority, value } = this.props.newTx;
+    const {
+      data,
+      to,
+      from,
+      gas,
+      gasPrice,
+      estimatedGas,
+      priority,
+      value
+    } = this.props.newTx;
+
+    // If no gas value was provided, use estimatedGas
+    const gasValue =
+      parseInt(gas, 16) !== 0 ? gas : `0x${estimatedGas.toString(16)}`;
 
     // If priority tx, double the value and format it
     const chosenPrice = priority
@@ -78,7 +91,7 @@ class SendTx extends Component {
     let txData = {
       data,
       from,
-      gas,
+      gas: gasValue,
       gasPrice: chosenPrice,
       pw: formData.pw,
       value

@@ -239,6 +239,8 @@ export function confirmTx(data) {
       let newTx = getState().newTx;
       // Set gas price in case increased for priority
       newTx.gasPrice = data.gasPrice;
+      // Use estimatedGas if gas wasn't provided
+      newTx.gas = data.gas;
       // Remove unneeded props
       delete newTx.unlocking;
       delete newTx.gasLoading;

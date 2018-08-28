@@ -118,7 +118,7 @@ export function setActiveNode() {
     }
 
     if (active === 'remote') {
-      if (remote.blockNumber - local.blockNumber < 15 && local.peers > 0) {
+      if (remote.blockNumber - local.blockNumber < 15 && local.peerCount > 0) {
         dispatch({
           type: '[MAIN]:NODES:CHANGE_ACTIVE',
           payload: { active: 'local' }

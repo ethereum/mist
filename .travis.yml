@@ -29,6 +29,8 @@ matrix:
       before_install:
         # prepare integration tests
         - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+      after_failure: 
+        - cat ~/Library/Application\ Support/Mist/logs/all.*
         
     # MAC
     - os: osx
@@ -40,7 +42,9 @@ matrix:
           paths:
             - $( ls dist_{mist,wallet}/release/* | tr "\n" ":" )
       before_install:
-          - npm install -g yarn
+        - npm install -g yarn
+      after_failure:
+        - cat ~/.config/Mist/logs/all.*
 
 install:
   - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh

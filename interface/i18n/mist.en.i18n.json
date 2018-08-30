@@ -143,6 +143,28 @@
       "standardFee": "Standard Fee:",
       "execute": "Execute"
     },
+    "txHistory": {
+      "windowTitle": "Transaction History",
+      "total": "__count__ total",
+      "status": "Status",
+      "statusPending": "Pending",
+      "statusFailed": "Failed",
+      "statusConfirmed": "Confirmed",
+      "confirmations": "__count__ confirmations",
+      "txHash": "Transaction Hash",
+      "etherAmount": "Ether Amount",
+      "nonce": "Nonce",
+      "gasLimit": "Gas Limit",
+      "gasUsed": "Gas Used",
+      "gasPrice": "Gas Price",
+      "txCost": "Actual Transaction Cost",
+      "gasPrice": "Gas Limit",
+      "data": "Data",
+      "newContract": "New Contract",
+      "from": "From",
+      "to": "To",
+      "contract": "Contract"
+    },
     "nodeInfo": {
       "active": "active",
       "blockNumber": "Your latest block number",

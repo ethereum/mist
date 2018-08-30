@@ -99,10 +99,13 @@ class TxHistory extends Component {
       <div className="list-txs">
         <div className="header">
           <h1>
-            Transaction History{txs.length > 0 && (
-              <span className="total">
+            {i18n.t('mist.txHistory.windowTitle')}
+            {txs.length > 0 && (
+              <span>
                 {' '}
-                (<span className="number">{txs.length}</span> total)
+                (<span className="txs-total">
+                  {i18n.t('mist.txHistory.total', { count: txs.length })}
+                </span>)
               </span>
             )}
           </h1>

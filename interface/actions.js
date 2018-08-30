@@ -321,7 +321,7 @@ export function lookupSignature(data) {
         `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
       ).then(async response => {
         const fourByte = await response.json();
-        if (fourByte && fourByte.results) {
+        if (fourByte && fourByte.results && fourByte.results.length) {
           // Get the earliest submitted signature (last result in array)
           executionFunction = fourByte.results.slice(-1)[0].text_signature;
           submitExecutionFunction(executionFunction);

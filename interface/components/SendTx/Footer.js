@@ -18,11 +18,11 @@ class Footer extends Component {
   render() {
     if (this.props.unlocking) {
       return (
-        <footer>
+        <div className="footer--unlocking">
           <h2>
             {i18n.t('mist.popupWindows.sendTransactionConfirmation.unlocking')}
           </h2>
-        </footer>
+        </div>
       );
     }
 

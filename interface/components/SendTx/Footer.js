@@ -27,7 +27,7 @@ class Footer extends Component {
     }
 
     return (
-      <footer>
+      <div className="footer">
         <form onSubmit={this.handleSubmit} className="footer__form">
           <input
             className="footer__input"
@@ -47,7 +47,7 @@ class Footer extends Component {
             {i18n.t('mist.sendTx.execute')}
           </button>
         </form>
-      </footer>
+      </div>
     );
   }
 }

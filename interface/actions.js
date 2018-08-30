@@ -1,9 +1,7 @@
 export function setWindowSize(height) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
-
-    // footer + padding = 104px
-    ipc.send('backendAction_setWindowSize', 580, height + 104);
+    ipc.send('backendAction_setWindowSize', 580, height + 18);
   };
 }
 

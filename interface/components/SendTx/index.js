@@ -34,7 +34,7 @@ class SendTx extends Component {
     this.lookupSignature();
     this.estimateGasUsage();
     this.getPriceConversion();
-    this.adjustWindowHeight();
+    setTimeout(this.adjustWindowHeight, 500);
   }
 
   getGasPrice() {

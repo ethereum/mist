@@ -19,9 +19,7 @@ class Footer extends Component {
     if (this.props.unlocking) {
       return (
         <div className="footer--unlocking">
-          <h2>
-            {i18n.t('mist.popupWindows.sendTransactionConfirmation.unlocking')}
-          </h2>
+          <h2>{i18n.t('mist.sendTx.unlocking')}</h2>
         </div>
       );
     }
@@ -34,9 +32,7 @@ class Footer extends Component {
             type="password"
             value={this.state.pw}
             onChange={e => this.setState({ pw: e.target.value })}
-            placeholder={i18n.t(
-              'mist.popupWindows.sendTransactionConfirmation.enterPassword'
-            )}
+            placeholder={i18n.t('mist.sendTx.enterPassword')}
           />
 
           <button

@@ -20,9 +20,7 @@ class GasNotification extends Component {
       } else {
         return (
           <p className="info dapp-error">
-            {i18n.t(
-              'mist.popupWindows.sendTransactionConfirmation.estimatedGasError'
-            )}
+            {i18n.t('mist.sendTx.estimatedGasError')}
           </p>
         );
       }
@@ -34,15 +32,13 @@ class GasNotification extends Component {
           className="info dapp-error not-enough-gas"
           style={{ cursor: 'pointer' }}
         >
-          {i18n.t('mist.popupWindows.sendTransactionConfirmation.notEnoughGas')}
+          {i18n.t('mist.sendTx.notEnoughGas')}
         </div>
       );
     } else if (this.props.gasError === 'overBlockGasLimit') {
       return (
         <div className="info dapp-error">
-          {i18n.t(
-            'mist.popupWindows.sendTransactionConfirmation.overBlockGasLimit'
-          )}
+          {i18n.t('mist.sendTx.overBlockGasLimit')}
         </div>
       );
     }

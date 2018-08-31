@@ -141,7 +141,25 @@
       "loading": "Loading...",
       "priorityFee": "Priority Fee:",
       "standardFee": "Standard Fee:",
-      "execute": "Execute"
+      "execute": "Execute",
+      "enterPassword": "Enter password to confirm the transaction",
+      "unlocking": "Confirming...",
+      "estimatedGasError":
+        "It seems this transaction will fail. If you submit it, it may consume all the gas you provide.",
+      "overBlockGasLimit":
+        "The gas required for this execution could exceed the block gas limit.",
+      "notEnoughGas":
+        "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+      "errors": {
+        "connectionTimeout":
+          "Couldn't connect to the node, did it crash in the background?",
+        "wrongPassword": "Wrong password",
+        "multipleKeysMatchAddress":
+          "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+        "insufficientFundsForGas":
+          "Insufficient funds in main account (etherbase) to pay for gas",
+        "sameAccount": "Can't send to itself"
+      }
     },
     "txHistory": {
       "windowTitle": "Transaction History",
@@ -258,55 +276,6 @@
           "passwordMismatch": "Your passwords don't match.",
           "passwordTooShort": "Make a longer password"
         }
-      },
-      "sendTransactionConfirmation": {
-        "title": {
-          "sendTransaction": "Send transaction",
-          "contractExecution": "Execute contract",
-          "createContract": "Create contract"
-        },
-        "contractExecutionInfo":
-          "You are about to execute a function on a contract. This might involve transfer of value.",
-        "contractCreationInfo":
-          "You are about to create a contract from the provided data.",
-        "enterPassword": "Enter password to confirm the transaction",
-        "unlocking": "Confirming...",
-        "createContract": "Create contract",
-        "estimatedFee": "Estimated fee consumption",
-        "estimatedGasError":
-          "It seems this transaction will fail. If you submit it, it may consume all the gas you provide.",
-        "transactionThrow":
-          "The contract won't allow this transaction to be executed",
-        "overBlockGasLimit":
-          "The gas required for this execution could exceed the block gas limit.",
-        "notEnoughGas":
-          "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
-        "defaultGas":
-          "Couldn't estimate gas, resorting to default parameters. Transaction is likely cheaper than the estimate",
-        "noEstimate": "We couldn't estimate the gas.",
-        "gasPrice": "Gas price",
-        "perMillionGas": "ether per million gas",
-        "gasLimit": "Provide maximum fee",
-        "gasLoading": "Estimating gas...",
-        "data": "Raw Data",
-        "parameters": "Parameters",
-        "buttons": {
-          "sendTransaction": "Send transaction"
-        },
-        "errors": {
-          "connectionTimeout":
-            "Couldn't connect to the node, did it crash in the background?",
-          "wrongPassword": "Wrong password",
-          "multipleKeysMatchAddress":
-            "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-          "insufficientFundsForGas":
-            "Insufficient funds in main account (etherbase) to pay for gas",
-          "sameAccount": "Can't send to itself"
-        },
-        "showRawBytecode": "show raw data",
-        "showDecodedParameters": "show decoded parameters",
-        "lookupData": "Try to decode data",
-        "lookupDataExplainer": "Look this up on the internet"
       },
       "importAccount": {
         "doYouHaveAWalletFile": "Do you have a wallet file?",

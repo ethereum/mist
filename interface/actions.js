@@ -1,7 +1,7 @@
 export function setWindowSize(height) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:SET_WINDOW_SIZE:START', payload: { height } });
-    ipc.send('backendAction_setWindowSize', 580, height + 18);
+    ipc.send('backendAction_setWindowSize', 580, height + 20);
   };
 }
 
@@ -277,9 +277,7 @@ export function updateTx(tx) {
 
 function displayNotification(errorType, duration) {
   GlobalNotification.warning({
-    content: TAPi18n.__(
-      `mist.popupWindows.sendTransactionConfirmation.errors.${errorType}`
-    ),
+    content: TAPi18n.__(`mist.sendTx.errors.${errorType}`),
     duration
   });
 }

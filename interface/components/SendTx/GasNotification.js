@@ -16,7 +16,9 @@ class GasNotification extends Component {
   render() {
     if (this.transactionInvalid()) {
       if (this.props.gasLoading) {
-        return <p className="info gas-loading">(spinner)</p>;
+        return (
+          <p className="info gas-loading">{i18n.t('mist.sendTx.loading')}</p>
+        );
       } else {
         return (
           <p className="info dapp-error">

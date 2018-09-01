@@ -8,6 +8,27 @@ class FeeSelector extends Component {
       style: 'currency',
       currency: 'USD'
     });
+
+    // Gas price timeout: now + 15 seconds
+    // Retry interval: 15 seconds
+    this.gasPriceTimeout = new Date().getTime() + 15000;
+    this.secondsLeftUntilRetry = 15;
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      if (new Date().getTime() > this.gasPriceTimeout) {
+        const timeElapsed = (
+          (new Date().getTime() - this.gasPriceTimeout) /
+          1000
+        ).toFixed(0);
+        this.secondsLeftUntilRetry = 15 - timeElapsed;
+      }
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   handleClick = () => {
@@ -15,16 +36,41 @@ class FeeSelector extends Component {
   };
 
   render() {
-    const { estimatedGas, network, etherPriceUSD } = this.props;
+    const { estimatedGas, gasPrice, network, etherPriceUSD } = this.props;
 
-    if (!this.props.estimatedGas) {
+    if (!estimatedGas) {
       return <div>{i18n.t('mist.sendTx.loading')}</div>;
+    }
+
+    if (!gasPrice || gasPrice === 0 || gasPrice === '0x0') {
+      if (this.gasPriceTimeout > new Date().getTime()) {
+        return <div>{i18n.t('mist.sendTx.loading')}</div>;
+      } else {
+        if (this.secondsLeftUntilRetry <= 0) {
+          this.props.getGasPrice();
+          this.gasPriceTimeout = new Date().getTime() + 15000;
+          return <div>{i18n.t('mist.sendTx.loading')}</div>;
+        } else {
+          return (
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+              {i18n.t('mist.sendTx.gasPriceError', {
+                seconds: this.secondsLeftUntilRetry
+              })}
+            </div>
+          );
+        }
+      }
     }
 
     const gas = web3.utils.isHex(estimatedGas)
       ? new BigNumber(web3.utils.hexToNumberString(estimatedGas))
       : new BigNumber(estimatedGas);
-    const gasEtherAmount = gas.dividedBy(1000000000);
+    const bigGasPrice = web3.utils.isHex(gasPrice)
+      ? new BigNumber(web3.utils.hexToNumberString(gasPrice))
+      : new BigNumber(gasPrice);
+    const gasEtherAmount = gas
+      .times(bigGasPrice)
+      .dividedBy(new BigNumber('1000000000000000000'));
     const gasEtherAmountPriority = gasEtherAmount.times(2);
 
     let fee;

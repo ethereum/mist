@@ -150,6 +150,7 @@
         "The gas required for this execution could exceed the block gas limit.",
       "notEnoughGas":
         "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+      "gasPriceError": "Error getting gas price. Retrying __seconds__ seconds.",
       "errors": {
         "connectionTimeout":
           "Couldn't connect to the node, did it crash in the background?",

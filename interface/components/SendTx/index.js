@@ -143,6 +143,8 @@ class SendTx extends Component {
 
           <FeeSelector
             estimatedGas={this.props.newTx.estimatedGas}
+            gasPrice={this.props.newTx.gasPrice}
+            getGasPrice={this.getGasPrice}
             etherPriceUSD={this.props.settings.etherPriceUSD}
             network={this.props.nodes.network}
             priority={this.props.newTx.priority}
@@ -159,6 +161,8 @@ class SendTx extends Component {
 
           <Footer
             unlocking={this.props.newTx.unlocking}
+            estimatedGas={this.props.newTx.estimatedGas}
+            gasPrice={this.props.newTx.gasPrice}
             handleSubmit={this.handleSubmit}
           />
         </div>

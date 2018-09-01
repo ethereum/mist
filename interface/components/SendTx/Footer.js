@@ -16,7 +16,13 @@ class Footer extends Component {
   };
 
   render() {
-    if (this.props.unlocking) {
+    const { gasPrice, estimatedGas, unlocking } = this.props;
+
+    if (!estimatedGas || !gasPrice || gasPrice === 0 || gasPrice === '0x0') {
+      return null;
+    }
+
+    if (unlocking) {
       return (
         <div className="footer--unlocking">
           <h2>{i18n.t('mist.sendTx.unlocking')}</h2>

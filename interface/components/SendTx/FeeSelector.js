@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MDSpinner from 'react-md-spinner';
 
 class FeeSelector extends Component {
   constructor(props) {
@@ -117,6 +118,13 @@ class FeeSelector extends Component {
           {i18n.t('mist.sendTx.standardFee')}
         </span>{' '}
         <span className="fee-amount">{fee}</span>
+        {this.props.gasLoading && (
+          <MDSpinner
+            singleColor="#00aafa"
+            size={16}
+            className="react-spinner"
+          />
+        )}
       </div>
     );
   }

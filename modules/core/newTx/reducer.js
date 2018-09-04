@@ -42,9 +42,17 @@ const newTx = (state = initialState, action) => {
       return Object.assign({}, state, { unlocking: false });
     case '[CLIENT]:PRIORITY:TOGGLE':
       return Object.assign({}, state, { priority: !state.priority });
+    case '[CLIENT]:GET_GAS_PRICE:START':
+      return Object.assign({}, state, {
+        gasLoading: true
+      });
     case '[CLIENT]:GET_GAS_PRICE:SUCCESS':
       return Object.assign({}, state, {
         gasPrice: action.payload.gasPrice
+      });
+    case '[CLIENT]:GET_GAS_PRICE:FAILURE':
+      return Object.assign({}, state, {
+        gasLoading: false
       });
     case '[CLIENT]:ESTIMATE_GAS_USAGE:START':
       return Object.assign({}, state, {
@@ -56,6 +64,10 @@ const newTx = (state = initialState, action) => {
         gasLoading: false
       });
     case '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE':
+      return Object.assign({}, state, {
+        gasLoading: false
+      });
+    case '[CLIENT]:CALCULATE_GAS:SUCCESS':
       return Object.assign({}, state, {
         gasLoading: false
       });

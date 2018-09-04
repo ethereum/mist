@@ -15,10 +15,12 @@ export function getGasPrice() {
       }
 
       const gasPrice = '0x' + res.toString(16);
-      return dispatch({
+      dispatch({
         type: '[CLIENT]:GET_GAS_PRICE:SUCCESS',
         payload: { gasPrice }
       });
+
+      dispatch(checkGasLoaded());
     });
   };
 }
@@ -32,11 +34,26 @@ export function estimateGasUsage() {
         return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
       }
 
-      return dispatch({
+      dispatch({
         type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
         payload: { estimatedGas: value }
       });
+
+      dispatch(checkGasLoaded());
     });
+  };
+}
+
+function checkGasLoaded() {
+  return (dispatch, getState) => {
+    const { estimatedGas, gasPrice } = getState.newTx;
+
+    // Show a loading spinner until both estimatedGas and gasPrice fetched
+    if (estimatedGas !== 3000000 && !!gasPrice) {
+      dispatch({
+        type: '[CLIENT]:CALCULATE_GAS:SUCCESS'
+      });
+    }
   };
 }
 

@@ -29,6 +29,7 @@
     "react": "^16.4.1",
     "react-blockies": "^1.3.0",
     "react-dom": "^16.2.0",
+    "react-md-spinner": "^0.3.0",
     "react-minimal-pie-chart": "^3.0.2",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2"

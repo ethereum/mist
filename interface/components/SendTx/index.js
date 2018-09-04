@@ -143,6 +143,7 @@ class SendTx extends Component {
 
           <FeeSelector
             estimatedGas={this.props.newTx.estimatedGas}
+            gasLoading={this.props.newTx.gasLoading}
             gasPrice={this.props.newTx.gasPrice}
             getGasPrice={this.getGasPrice}
             etherPriceUSD={this.props.settings.etherPriceUSD}

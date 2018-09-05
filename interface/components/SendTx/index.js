@@ -34,29 +34,33 @@ class SendTx extends Component {
     this.lookupSignature();
     this.estimateGasUsage();
     this.getPriceConversion();
-    setTimeout(this.adjustWindowHeight, 500);
+    this.interval = setInterval(this.adjustWindowHeight, 2000);
   }
 
-  getGasPrice() {
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  getGasPrice = () => {
     this.props.dispatch(getGasPrice());
-  }
+  };
 
-  determineIfContract() {
+  determineIfContract = () => {
     this.props.dispatch(determineIfContract(this.props.newTx.to));
-  }
+  };
 
-  lookupSignature() {
+  lookupSignature = () => {
     const { data } = this.props.newTx;
     this.props.dispatch(lookupSignature(data));
-  }
+  };
 
-  estimateGasUsage() {
+  estimateGasUsage = () => {
     this.props.dispatch(estimateGasUsage());
-  }
+  };
 
-  getPriceConversion() {
+  getPriceConversion = () => {
     this.props.dispatch(getPriceConversion());
-  }
+  };
 
   adjustWindowHeight = () => {
     const height = this.divElement.clientHeight;
@@ -146,6 +150,7 @@ class SendTx extends Component {
             gasLoading={this.props.newTx.gasLoading}
             gasPrice={this.props.newTx.gasPrice}
             getGasPrice={this.getGasPrice}
+            getGasUsage={this.estimateGasUsage}
             etherPriceUSD={this.props.settings.etherPriceUSD}
             network={this.props.nodes.network}
             priority={this.props.newTx.priority}

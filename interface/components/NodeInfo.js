@@ -16,11 +16,10 @@ class NodeInfo extends Component {
   }
 
   componentDidMount() {
-    // NOTE: this goal of this component is to give status updates at
-    // least once per second. The `tick` function ensures that.
+    // NOTE: this component should give status updates at least once per second
     this.interval = setInterval(() => {
       this.tick();
-    }, 50);
+    }, 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -51,12 +50,9 @@ class NodeInfo extends Component {
   }
 
   tick() {
-    if (this.state.ticks % 20 == 0) {
-      // only do it every second
-      web3.eth.net.getPeerCount().then(peerCount => {
-        this.props.dispatch(setLocalPeerCount(peerCount));
-      });
-    }
+    web3.eth.net.getPeerCount().then(peerCount => {
+      this.props.dispatch(setLocalPeerCount(peerCount));
+    });
 
     this.setState({ ticks: this.state.ticks + 1 });
   }

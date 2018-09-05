@@ -5,28 +5,33 @@ class FeeSelector extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      ticks: 1
+    };
+
     this.formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     });
-
-    // Gas price timeout: now + 15 seconds
-    // Retry interval: 15 seconds
-    this.gasPriceTimeout = new Date().getTime() + 15000;
-    this.secondsLeftUntilRetry = 15;
   }
 
   componentDidMount() {
-    this.interval = setInterval(() => {
-      if (new Date().getTime() > this.gasPriceTimeout) {
-        const timeElapsed = (
-          (new Date().getTime() - this.gasPriceTimeout) /
-          1000
-        ).toFixed(0);
-        this.secondsLeftUntilRetry = 15 - timeElapsed;
-      }
-    }, 1000);
+    this.interval = setInterval(this.tick, 1000);
   }
+
+  tick = () => {
+    const { gasPrice, gasLoading } = this.props;
+
+    // every 10 seconds fetch gas details again if still loading
+
+    // TODO: also check for estimate values
+    if (this.state.ticks % 10 === 0 && (gasLoading || gasPrice === 0)) {
+      this.props.getGasPrice();
+      this.props.getGasUsage();
+    }
+
+    this.setState({ ticks: this.state.ticks + 1 });
+  };
 
   componentWillUnmount() {
     clearInterval(this.interval);
@@ -36,32 +41,8 @@ class FeeSelector extends Component {
     this.props.togglePriority();
   };
 
-  render() {
+  parseFee() {
     const { estimatedGas, gasPrice, network, etherPriceUSD } = this.props;
-
-    if (!estimatedGas) {
-      return <div>{i18n.t('mist.sendTx.loading')}</div>;
-    }
-
-    if (!gasPrice || gasPrice === 0 || gasPrice === '0x0') {
-      if (this.gasPriceTimeout > new Date().getTime()) {
-        return <div>{i18n.t('mist.sendTx.loading')}</div>;
-      } else {
-        if (this.secondsLeftUntilRetry <= 0) {
-          this.props.getGasPrice();
-          this.gasPriceTimeout = new Date().getTime() + 15000;
-          return <div>{i18n.t('mist.sendTx.loading')}</div>;
-        } else {
-          return (
-            <div style={{ color: 'red', fontWeight: 'bold' }}>
-              {i18n.t('mist.sendTx.gasPriceError', {
-                seconds: this.secondsLeftUntilRetry
-              })}
-            </div>
-          );
-        }
-      }
-    }
 
     const gas = web3.utils.isHex(estimatedGas)
       ? new BigNumber(web3.utils.hexToNumberString(estimatedGas))
@@ -93,31 +74,30 @@ class FeeSelector extends Component {
       }
     }
 
-    if (this.props.priority) {
-      return (
-        <div className="fee-selector">
+    return fee;
+  }
+
+  render() {
+    return (
+      <div className="fee-selector">
+        {this.props.priority ? (
           <span
             onClick={this.handleClick}
             className="fee-selector__btn"
             data-tooltip="Click For Standard Fee"
           >
             {i18n.t('mist.sendTx.priorityFee')}
-          </span>{' '}
-          <span className="fee-amount">{fee}</span>
-        </div>
-      );
-    }
-
-    return (
-      <div className="fee-selector">
-        <span
-          onClick={this.handleClick}
-          className="fee-selector__btn"
-          data-tooltip="Click For Priority Fee"
-        >
-          {i18n.t('mist.sendTx.standardFee')}
-        </span>{' '}
-        <span className="fee-amount">{fee}</span>
+          </span>
+        ) : (
+          <span
+            onClick={this.handleClick}
+            className="fee-selector__btn"
+            data-tooltip="Click For Priority Fee"
+          >
+            {i18n.t('mist.sendTx.standardFee')}
+          </span>
+        )}{' '}
+        <span className="fee-amount">{this.parseFee()}</span>
         {this.props.gasLoading && (
           <MDSpinner
             singleColor="#00aafa"
@@ -125,6 +105,14 @@ class FeeSelector extends Component {
             className="react-spinner"
           />
         )}
+        {this.props.gasLoading &&
+          this.state.ticks >= 10 && (
+            <div className="fee-selector__error">
+              This is taking a while! You may choose to use this default fee if
+              you don't want to wait. Your actual fee will likely not be this
+              high.
+            </div>
+          )}
       </div>
     );
   }

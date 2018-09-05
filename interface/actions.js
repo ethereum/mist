@@ -46,7 +46,7 @@ export function estimateGasUsage() {
 
 function checkGasLoaded() {
   return (dispatch, getState) => {
-    const { estimatedGas, gasPrice } = getState.newTx;
+    const { estimatedGas, gasPrice } = getState().newTx;
 
     // Show a loading spinner until both estimatedGas and gasPrice fetched
     if (estimatedGas !== 3000000 && !!gasPrice) {

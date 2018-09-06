@@ -6,7 +6,8 @@ class FeeSelector extends Component {
     super(props);
 
     this.state = {
-      ticks: 1
+      ticks: 1,
+      gasRetries: 0
     };
 
     this.formatter = new Intl.NumberFormat('en-US', {
@@ -16,21 +17,21 @@ class FeeSelector extends Component {
   }
 
   componentDidMount() {
-    this.interval = setInterval(this.tick, 1000);
+    this.interval = setInterval(this.monitorGas, 1000);
   }
 
-  tick = () => {
+  monitorGas = () => {
     const { gasPrice, gasLoading } = this.props;
+    const { ticks, gasRetries } = this.state;
 
-    // every 10 seconds fetch gas details again if still loading
-
-    // TODO: also check for estimate values
-    if (this.state.ticks % 10 === 0 && (gasLoading || gasPrice === 0)) {
+    // Retry every 10 sec if appropriate
+    if (ticks % 10 === 0 && (gasLoading || gasPrice === 0) && gasRetries < 5) {
       this.props.getGasPrice();
       this.props.getGasUsage();
+      this.setState({ gasRetries: gasRetries + 1 });
     }
 
-    this.setState({ ticks: this.state.ticks + 1 });
+    this.setState({ ticks: ticks + 1 });
   };
 
   componentWillUnmount() {
@@ -77,6 +78,41 @@ class FeeSelector extends Component {
     return fee;
   }
 
+  renderStatus() {
+    const { gasLoading } = this.props;
+    const { gasRetries, ticks } = this.state;
+
+    const spinner =
+      gasLoading && gasRetries !== 5 ? (
+        <MDSpinner singleColor="#00aafa" size={16} className="react-spinner" />
+      ) : null;
+
+    let error;
+
+    if (this.props.gasLoading && ticks >= 10) {
+      error = (
+        <div className="fee-selector__error">
+          This is taking a while! You may choose to use this default fee. Your
+          actual fee will likely be less.
+        </div>
+      );
+    } else if (this.props.gasLoading && gasRetries === 5) {
+      error = (
+        <div className="fee-selector__error">
+          Failed to estimate gas. You may choose to use this default fee. Your
+          actual fee will likely be less.
+        </div>
+      );
+    }
+
+    return (
+      <React.Fragment>
+        {spinner}
+        {error}
+      </React.Fragment>
+    );
+  }
+
   render() {
     return (
       <div className="fee-selector">
@@ -98,21 +134,7 @@ class FeeSelector extends Component {
           </span>
         )}{' '}
         <span className="fee-amount">{this.parseFee()}</span>
-        {this.props.gasLoading && (
-          <MDSpinner
-            singleColor="#00aafa"
-            size={16}
-            className="react-spinner"
-          />
-        )}
-        {this.props.gasLoading &&
-          this.state.ticks >= 10 && (
-            <div className="fee-selector__error">
-              This is taking a while! You may choose to use this default fee if
-              you don't want to wait. Your actual fee will likely not be this
-              high.
-            </div>
-          )}
+        {this.renderStatus()}
       </div>
     );
   }

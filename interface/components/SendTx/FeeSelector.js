@@ -92,15 +92,13 @@ class FeeSelector extends Component {
     if (this.props.gasLoading && ticks >= 10) {
       error = (
         <div className="fee-selector__error">
-          This is taking a while! You may choose to use this default fee. Your
-          actual fee will likely be less.
+          {i18n.t('mist.sendTx.gasLoadingWarning')}
         </div>
       );
     } else if (this.props.gasLoading && gasRetries === 5) {
       error = (
         <div className="fee-selector__error">
-          Failed to estimate gas. You may choose to use this default fee. Your
-          actual fee will likely be less.
+          {i18n.t('mist.sendTx.gasLoadingError')}
         </div>
       );
     }

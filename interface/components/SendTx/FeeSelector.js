@@ -61,7 +61,7 @@ class FeeSelector extends Component {
       if (network.toLowerCase() === 'main' && etherPriceUSD) {
         const standardFee = gasEtherAmount.times(etherPriceUSD);
         const formattedFee = this.formatter.format(standardFee);
-        fee = `${formattedFee} USD`;
+        fee = `${formattedFee} USD (${gasEtherAmount} ETH)`;
       } else {
         fee = `${gasEtherAmount} ETH`;
       }
@@ -69,7 +69,7 @@ class FeeSelector extends Component {
       if (network.toLowerCase() === 'main' && etherPriceUSD) {
         const priorityFee = gasEtherAmountPriority.times(etherPriceUSD);
         const formattedFee = this.formatter.format(priorityFee);
-        fee = `${formattedFee} USD`;
+        fee = `${formattedFee} USD (${gasEtherAmount} ETH)`;
       } else {
         fee = `${gasEtherAmountPriority} ETH`;
       }
@@ -89,7 +89,7 @@ class FeeSelector extends Component {
 
     let error;
 
-    if (this.props.gasLoading && ticks >= 10) {
+    if (this.props.gasLoading && ticks >= 10 && gasRetries < 5) {
       error = (
         <div className="fee-selector__error">
           {i18n.t('mist.sendTx.gasLoadingWarning')}

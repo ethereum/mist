@@ -156,7 +156,7 @@
       "nodeSyncing":
         "Ethereum node moet synchroniseren, even geduld alstublieft...",
       "nodeSyncInfo":
-        "Blok __currentBlock__ van __highestBlock__ aan het downloaden.",
+        "Blok __displayBlock__ van __highestBlock__ aan het downloaden.",
       "nodeSyncInfoStates":
         "Blok __displayBlock__ van __highestBlock__ aan het downloaden, <br> Chain structuur __displayState__ van __displayKnownStates__ aan het downloaden",
       "nodeSyncConnecting": "Zoeken naar peers...",

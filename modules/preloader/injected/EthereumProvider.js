@@ -21,6 +21,15 @@ const origin = this.origin;
 
     /* Methods */
 
+    enable() {
+      return new Promise((resolve, reject) => {
+        window.mist
+          .requestAccounts()
+          .then(resolve)
+          .catch(reject);
+      });
+    }
+
     send(method, params = []) {
       if (!method || typeof method !== 'string') {
         return new Error('Method is not a valid string.');
@@ -188,28 +197,5 @@ const origin = this.origin;
     }
   }
 
-  const ethereum = new EthereumProvider();
-
-  // Set window.ethereum if accounts are available
-  ethereum.send('eth_accounts').then(accounts => {
-    if (accounts.length > 0) {
-      window.ethereum = ethereum;
-    }
-  });
-
-  // Listen for provider request and set window.ethereum on success
-  window.addEventListener('message', event => {
-    if (event.data && event.data.type === 'ETHEREUM_PROVIDER_REQUEST') {
-      window.mist
-        .requestAccounts()
-        .then(() => {
-          window.ethereum = ethereum;
-          window.postMessage({ type: 'ETHEREUM_PROVIDER_SUCCESS' }, origin);
-        })
-        .catch(error => {
-          console.error(`Error from Mist requestAccounts: ${error}`); // eslint-disable-line no-console
-          return;
-        });
-    }
-  });
+  window.ethereum = new EthereumProvider();
 })();

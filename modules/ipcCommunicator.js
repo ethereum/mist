@@ -288,6 +288,36 @@ ipc.on('mistAPI_emit_accountsChanged', (event, webviewId, accounts) => {
   }
 });
 
+ipc.on('mistAPI_emit_userDeniedFullProvider', (event, webviewId) => {
+  console.log('BOOM');
+  //   const mainWindow = Windows.getByType('main');
+  //   if (mainWindow) {
+  //     const error = new Error('User Denied Full Provider');
+  //     error.code = 4001;
+  //     console.log(error);
+  //     mainWindow.send(
+  //       'uiAction_windowMessage',
+  //       'connectAccount',
+  //       webviewId,
+  //       error
+  //     );
+  //   }
+});
+
+ipc.on('mistAPI_emit_userDeniedCreateAccount', (event, webviewId) => {
+  const mainWindow = Windows.getByType('main');
+  if (mainWindow) {
+    const error = new Error('User Denied Create Account');
+    error.code = 4401;
+    mainWindow.send(
+      'uiAction_windowMessage',
+      'requestAccount',
+      webviewId,
+      error
+    );
+  }
+});
+
 // Reload tab
 ipc.on('backendAction_reloadSelectedTab', event => {
   event.sender.send('uiAction_reloadSelectedTab');

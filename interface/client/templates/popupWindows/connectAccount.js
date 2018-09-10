@@ -64,6 +64,14 @@ Template['popupWindows_connectAccount'].onCreated(function() {
         : [];
     TemplateVar.set('accounts', accounts);
   });
+
+  window.onbeforeunload = () => {
+    var accounts = TemplateVar.get('accounts');
+    if (accounts.length === 0) {
+      const selectedTab = TemplateVar.get('tab');
+      ipc.send('mistAPI_emit_userDeniedFullProvider', selectedTab.webviewId);
+    }
+  };
 });
 
 Template['popupWindows_connectAccount'].helpers({

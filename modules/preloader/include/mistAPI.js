@@ -227,6 +227,7 @@ module.exports = () => {
   });
 
   ipcRenderer.on('uiAction_windowMessage', (event, type, error, value) => {
+    console.log('uiAction_windowMessage', event, type, error, value);
     if (mist.callbacks[type]) {
       mist.callbacks[type].forEach((callback, index) => {
         callback(error, value);

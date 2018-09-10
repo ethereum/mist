@@ -12,6 +12,12 @@ class RequestAccount extends React.Component {
       showPassword: false,
       showRepeat: false
     };
+
+    window.onbeforeunload = () => {
+      if (!this.state.creating) {
+        ipc.send('mistAPI_emit_userDeniedCreateAccount');
+      }
+    };
   }
 
   resetForm() {

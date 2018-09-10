@@ -276,7 +276,7 @@
         });
       }
 
-      if (window.ethereum) {
+      if (window.ethereum && !error) {
         if (type === 'connectAccount') {
           window.ethereum._emitAccountsChanged(value);
         } else if (type === 'networkChanged') {

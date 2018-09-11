@@ -131,6 +131,7 @@ class ExecutionContext extends Component {
       toIsContract,
       isNewContract,
       value,
+      gasPrice,
       estimatedGas,
       token
     } = this.props;
@@ -182,6 +183,11 @@ class ExecutionContext extends Component {
       );
     });
 
+    const gweiPrice = web3.utils.fromWei(
+      web3.utils.hexToNumberString(gasPrice),
+      'gwei'
+    );
+
     return (
       <div className="execution-context__details">
         {showTxExecutingFunction && (
@@ -199,8 +205,13 @@ class ExecutionContext extends Component {
         </div>
 
         <div className="execution-context__details-row">
+          {i18n.t('mist.sendTx.gasPrice')}{' '}
+          <span className="bold">{`${gweiPrice} GWEI`}</span>
+        </div>
+
+        <div className="execution-context__details-row">
           {i18n.t('mist.sendTx.gasEstimate')}{' '}
-          <span className="bold">{estimatedGas}</span>
+          <span className="bold">{`${estimatedGas} WEI`}</span>
         </div>
 
         {isTokenTransfer && (

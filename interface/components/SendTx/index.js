@@ -117,10 +117,10 @@ class SendTx extends Component {
           <ExecutionContext
             adjustWindowHeight={this.adjustWindowHeight}
             data={this.props.newTx.data}
-            estimatedFee={this.state.estimatedFee}
             estimatedGas={this.props.newTx.estimatedGas}
             executionFunction={this.props.newTx.executionFunction}
             gasLoading={this.props.newTx.gasLoading}
+            gasPrice={this.props.newTx.gasPrice}
             isNewContract={this.props.newTx.isNewContract}
             network={this.props.nodes.network}
             params={this.props.newTx.params}

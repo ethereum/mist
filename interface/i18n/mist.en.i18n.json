@@ -133,6 +133,7 @@
       "tokenContractName": "Token Contract Address:",
       "parameters": "Parameters",
       "etherAmount": "Ether Amount:",
+      "gasPrice": "Gas Price:",
       "gasEstimate": "Gas Estimate:",
       "transactionExecutingFunction": "Transaction Executing Function:",
       "from": "FROM",

@@ -29,7 +29,20 @@ export function estimateGasUsage() {
   return (dispatch, getState) => {
     dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:START' });
 
-    web3.eth.estimateGas(getState().newTx).then((value, error) => {
+    const newTx = getState().newTx;
+    const txData = {
+      data: newTx.data,
+      from: newTx.from,
+      gas: newTx.gas,
+      gasPrice: newTx.gasPrice,
+      value: newTx.value
+    };
+
+    if (newTx.to) {
+      txData.to = newTx.to;
+    }
+
+    web3.eth.estimateGas(txData).then((value, error) => {
       if (error) {
         return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
       }

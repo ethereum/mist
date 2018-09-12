@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { getLanguage } from './actions.js';
 import About from '../components/About';
-import RequestAccount from '../components/RequestAccount';
+import CreateAccount from '../components/CreateAccount';
 import NodeInfo from '../components/NodeInfo';
 
 /**
@@ -76,7 +76,7 @@ function renderReactComponentPopup(locationHash) {
   // JSX can't evaluate an expression or string, so map imported components here
   const components = {
     About,
-    RequestAccount
+    CreateAccount
   };
 
   // Only render a component if it exists

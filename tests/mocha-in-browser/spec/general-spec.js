@@ -23,7 +23,7 @@ describe('General', function() {
         'version',
         'license',
         'platform',
-        'requestAccount',
+        'createAccount',
         'sounds',
         'menu',
         'solidity'

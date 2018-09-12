@@ -462,7 +462,7 @@ const Utils = {
 
   *pinCurrentTab() {
     const client = this.client;
-    yield this.openAndFocusNewWindow('connectAccount', () => {
+    yield this.openAndFocusNewWindow('connectAccounts', () => {
       return client.click('span.connect-button');
     });
     yield client.click('.dapp-primary-button');

@@ -54,20 +54,20 @@
      */
   const mist = {
     callbacks: {},
-    promises: { connectAccount: [], requestAccount: [] },
+    promises: { requestAccounts: [], createAccount: [] },
     version: '__version__',
     license: '__license__',
     platform: '__platform__',
     requestAccounts() {
       const promise = new Promise((resolve, reject) => {
-        this.promises.connectAccount.push({ resolve, reject });
+        this.promises.requestAccounts.push({ resolve, reject });
       });
       postMessage({ type: 'mistAPI_requestAccounts' });
       return promise;
     },
     createAccount() {
       const promise = new Promise((resolve, reject) => {
-        this.promises.requestAccount.push({ resolve, reject });
+        this.promises.createAccount.push({ resolve, reject });
       });
       postMessage({ type: 'mistAPI_createAccount' });
       return promise;
@@ -277,7 +277,7 @@
       }
 
       if (window.ethereum && !error) {
-        if (type === 'connectAccount') {
+        if (type === 'requestAccounts') {
           window.ethereum._emitAccountsChanged(value);
         } else if (type === 'networkChanged') {
           window.ethereum._emitNetworkChanged(value);

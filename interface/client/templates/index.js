@@ -14,11 +14,11 @@ The body template
 import React from 'react';
 import { render } from 'react-dom';
 import About from '../../components/About';
-import RequestAccount from '../../components/RequestAccount';
+import CreateAccount from '../../components/CreateAccount';
 
 const COMPONENTS = {
   About,
-  RequestAccount
+  CreateAccount
 };
 
 function renderReactComponentPopup(component) {
@@ -74,7 +74,7 @@ Template.body.helpers({
       const renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
       // TODO: handle React components
-      const REACT_COMPONENTS = ['about', 'requestAccount'];
+      const REACT_COMPONENTS = ['about', 'createAccount'];
       if (REACT_COMPONENTS.includes(renderWindow[1])) {
         return false;
       }

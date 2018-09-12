@@ -44,7 +44,7 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
   const senderWindow = Windows.getById(windowId);
 
   if (senderWindow) {
-    senderWindow.window.setSize(width, height | 0);
+    senderWindow.window.setSize(width, height);
     senderWindow.window.center(); // ?
   }
 });
@@ -236,7 +236,7 @@ ipc.on('backendAction_importWalletFile', (e, path, pw) => {
 
 // Mist API
 ipc.on('mistAPI_createAccount', event => {
-  Windows.createPopup('requestAccount', { ownerId: event.sender.id });
+  Windows.createPopup('createAccount', { ownerId: event.sender.id });
 });
 
 ipc.on('mistAPI_requestAccounts', async event => {
@@ -266,12 +266,12 @@ ipc.on('mistAPI_requestAccounts', async event => {
   if (accounts) {
     event.sender.send(
       'uiAction_windowMessage',
-      'connectAccount',
+      'requestAccounts',
       null,
       accounts
     );
   } else {
-    Windows.createPopup('connectAccount', { ownerId: event.sender.id });
+    Windows.createPopup('connectAccounts', { ownerId: event.sender.id });
   }
 });
 
@@ -280,7 +280,7 @@ ipc.on('mistAPI_emit_accountsChanged', (event, webviewId, accounts) => {
   if (mainWindow) {
     mainWindow.send(
       'uiAction_windowMessage',
-      'connectAccount',
+      'requestAccounts',
       webviewId,
       null,
       accounts
@@ -290,18 +290,18 @@ ipc.on('mistAPI_emit_accountsChanged', (event, webviewId, accounts) => {
 
 ipc.on('mistAPI_emit_userDeniedFullProvider', (event, webviewId) => {
   console.log('BOOM');
-  //   const mainWindow = Windows.getByType('main');
-  //   if (mainWindow) {
-  //     const error = new Error('User Denied Full Provider');
-  //     error.code = 4001;
-  //     console.log(error);
-  //     mainWindow.send(
-  //       'uiAction_windowMessage',
-  //       'connectAccount',
-  //       webviewId,
-  //       error
-  //     );
-  //   }
+  const mainWindow = Windows.getByType('main');
+  if (mainWindow) {
+    const error = new Error('User Denied Full Provider');
+    error.code = 4001;
+    console.log(error);
+    mainWindow.send(
+      'uiAction_windowMessage',
+      'requestAccounts',
+      webviewId,
+      error
+    );
+  }
 });
 
 ipc.on('mistAPI_emit_userDeniedCreateAccount', (event, webviewId) => {
@@ -311,7 +311,7 @@ ipc.on('mistAPI_emit_userDeniedCreateAccount', (event, webviewId) => {
     error.code = 4401;
     mainWindow.send(
       'uiAction_windowMessage',
-      'requestAccount',
+      'createAccount',
       webviewId,
       error
     );

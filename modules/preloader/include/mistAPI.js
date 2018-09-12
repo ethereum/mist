@@ -44,21 +44,21 @@ module.exports = () => {
     */
   const mist = {
     callbacks: {},
-    promises: { connectAccount: [], requestAccount: [] },
+    promises: { requestAccounts: [], createAccount: [] },
     version: packageJson.version,
     license: packageJson.license,
     platform: process.platform,
     requestAccounts() {
       ipcRenderer.send('mistAPI_requestAccounts');
       const promise = new Promise((resolve, reject) => {
-        this.promises.connectAccount.push({ resolve, reject });
+        this.promises.requestAccounts.push({ resolve, reject });
       });
       return promise;
     },
     createAccount() {
       ipcRenderer.send('mistAPI_createAccount');
       const promise = new Promise((resolve, reject) => {
-        this.promises.requestAccount.push({ resolve, reject });
+        this.promises.createAccount.push({ resolve, reject });
       });
       return promise;
     },

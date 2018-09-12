@@ -446,7 +446,7 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'requestAccount':
+      case 'createAccount':
         return {
           electronOptions: {
             width: 420,
@@ -454,7 +454,7 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'connectAccount':
+      case 'connectAccounts':
         return {
           electronOptions: {
             width: 460,
@@ -568,7 +568,7 @@ class Windows {
       'remix',
       'updateAvailable',
       'clientUpdateAvailable',
-      'connectAccount'
+      'connectAccounts'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&
@@ -637,10 +637,20 @@ class Windows {
   _onWindowClosed(wnd) {
     log.debug(`Removing window from list: ${wnd.type}`);
 
+    if (wnd.type === 'connectAccounts') {
+      console.log('!!!');
+      console.log(wnd);
+      const tab = db.getCollection('UI_tabs').findOne({ webviewId: 0 });
+      if (tab.permissions.accounts.length === 0 && !tab.permissions.admin) {
+        ipc.send('mistAPI_emit_userDeniedFullProvider', 0);
+      }
+    }
+    if (wnd.type === 'createAccount') {
+    }
+
     for (const t in this._windows) {
       if (this._windows[t] === wnd) {
         delete this._windows[t];
-
         break;
       }
     }

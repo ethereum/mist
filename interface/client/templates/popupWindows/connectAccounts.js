@@ -53,7 +53,7 @@ var updateSelectedTabAccounts = function(accounts) {
   });
 };
 
-Template['popupWindows_connectAccount'].onCreated(function() {
+Template['popupWindows_connectAccounts'].onCreated(function() {
   this.autorun(function() {
     TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
 
@@ -65,16 +65,17 @@ Template['popupWindows_connectAccount'].onCreated(function() {
     TemplateVar.set('accounts', accounts);
   });
 
-  window.onbeforeunload = () => {
+  window.onbeforeunload = e => {
     var accounts = TemplateVar.get('accounts');
     if (accounts.length === 0) {
       const selectedTab = TemplateVar.get('tab');
       ipc.send('mistAPI_emit_userDeniedFullProvider', selectedTab.webviewId);
     }
+    e.returnValue = false;
   };
 });
 
-Template['popupWindows_connectAccount'].helpers({
+Template['popupWindows_connectAccounts'].helpers({
   /**
     Returns the current dapp
 
@@ -138,7 +139,7 @@ Template['popupWindows_connectAccount'].helpers({
   }
 });
 
-Template['popupWindows_connectAccount'].events({
+Template['popupWindows_connectAccounts'].events({
   /**
     Toggles dapp account list selection.
 

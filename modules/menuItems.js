@@ -257,7 +257,7 @@ let menuTempl = function(webviews) {
         label: i18n.t('mist.applicationMenu.file.newAccount'),
         accelerator: 'CommandOrControl+N',
         click() {
-          Windows.createPopup('requestAccount');
+          Windows.createPopup('createAccount');
         }
       },
       {

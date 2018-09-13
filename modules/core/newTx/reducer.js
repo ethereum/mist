@@ -11,6 +11,7 @@ export const initialState = {
   isNewContract: false,
   unlocking: false,
   estimatedGas: 3000000,
+  gasError: '',
   priority: false,
   token: {
     name: '',
@@ -65,6 +66,7 @@ const newTx = (state = initialState, action) => {
       });
     case '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE':
       return Object.assign({}, state, {
+        gasError: action.error,
         gasLoading: false
       });
     case '[CLIENT]:CALCULATE_GAS:SUCCESS':

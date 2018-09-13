@@ -42,18 +42,25 @@ export function estimateGasUsage() {
       txData.to = newTx.to;
     }
 
-    web3.eth.estimateGas(txData).then((value, error) => {
-      if (error) {
-        return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
-      }
+    web3.eth
+      .estimateGas(txData)
+      .then(value => {
+        dispatch({
+          type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
+          payload: { estimatedGas: value }
+        });
 
-      dispatch({
-        type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
-        payload: { estimatedGas: value }
+        dispatch(checkGasLoaded());
+      })
+      .catch(error => {
+        const e = JSON.stringify(error, Object.getOwnPropertyNames(error));
+        const errorObject = JSON.parse(e);
+
+        dispatch({
+          type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE',
+          error: errorObject.message
+        });
       });
-
-      dispatch(checkGasLoaded());
-    });
   };
 }
 

@@ -135,6 +135,7 @@
       "etherAmount": "Ether Amount:",
       "gasPrice": "Gas Price:",
       "gasEstimate": "Gas Estimate:",
+      "errorMessage": "Error Message:",
       "transactionExecutingFunction": "Transaction Executing Function:",
       "from": "FROM",
       "to": "TO",

@@ -16,7 +16,7 @@ class Footer extends Component {
   };
 
   render() {
-    const { gasPrice, estimatedGas, unlocking } = this.props;
+    const { gasPrice, gasError, estimatedGas, unlocking } = this.props;
 
     if (!estimatedGas || !gasPrice || gasPrice === 0 || gasPrice === '0x0') {
       return null;
@@ -32,7 +32,10 @@ class Footer extends Component {
 
     return (
       <div className="footer">
-        <form onSubmit={this.handleSubmit} className="footer__form">
+        <form
+          onSubmit={this.handleSubmit}
+          className={gasError ? 'footer__form error' : 'footer__form'}
+        >
           <input
             className="footer__input"
             type="password"
@@ -42,7 +45,7 @@ class Footer extends Component {
           />
 
           <button
-            className="footer__btn"
+            className={gasError ? 'footer__btn error' : 'footer__btn'}
             disabled={!this.state.pw}
             type="submit"
           >

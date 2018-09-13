@@ -37,7 +37,7 @@ class TxParties extends Component {
             (toIsContract &&
             !isNewContract &&
             executionFunction !== 'transfer(address,uint256)'
-              ? 'isContract'
+              ? 'is-contract'
               : '')
           }
         >
@@ -83,7 +83,8 @@ class TxParties extends Component {
           <DappIdenticon identity={to.toLowerCase()} size="small" />
           <div
             className={
-              'tx-parties__direction-name ' + (toIsContract ? 'isContract' : '')
+              'tx-parties__direction-name ' +
+              (toIsContract ? 'is-contract' : '')
             }
           >
             {toIsContract

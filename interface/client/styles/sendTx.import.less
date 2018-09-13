@@ -24,27 +24,21 @@
   padding: 50px 34px 12px;
 }
 
-.execution-context__sentence {
-  margin: 18px 0 24px;
-  font-size: 24px;
-  text-align: left;
-
-  .dapp-identicon {
-    top: 8px;
-  }
-}
-
-.execution-context__subtext {
-  font-size: 16px;
-  margin: 12px 0;
-}
-
 .execution-context__details {
   text-align: left;
 }
 
 .execution-context__details-row {
+  display: flex;
   margin-bottom: 12px;
+}
+
+.execution-context__details-title {
+  min-width: 104px;
+}
+
+.execution-context__details-value {
+  font-weight: bold;
 }
 
 .execution-context__execution-function {
@@ -100,6 +94,31 @@
   margin-right: 5px;
 }
 
+// ContextDescription.js
+
+.context-description__sentence {
+  margin: 18px 0 24px;
+  font-size: 24px;
+  text-align: left;
+
+  .dapp-identicon {
+    top: 8px;
+  }
+}
+
+.context-description__subtext {
+  font-size: 16px;
+  margin: 12px 0;
+}
+
+.context-description__error {
+  color: #f66d6f;
+  margin: -12px 0 12px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+}
+
 // TxParties.js
 
 .tx-parties {
@@ -129,7 +148,7 @@
   width: 50px;
 }
 
-.tx-parties__direction-name.isContract {
+.tx-parties__direction-name.is-contract {
   width: 75px;
 }
 
@@ -213,5 +232,18 @@
 
   &:disabled {
     opacity: 0.5;
+  }
+}
+
+form.footer__form.error {
+  border: 1px solid #f66d6f !important;
+
+  input.footer__input {
+    color: #f66d6f !important;
+  }
+
+  button.footer__btn {
+    border: 1px solid #f66d6f;
+    background-color: #f66d6f;
   }
 }

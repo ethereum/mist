@@ -23,8 +23,7 @@ class SendTx extends Component {
 
     this.state = {
       hasSignature: false,
-      providedGas: 0,
-      gasError: ''
+      providedGas: 0
     };
   }
 
@@ -121,6 +120,7 @@ class SendTx extends Component {
             executionFunction={this.props.newTx.executionFunction}
             gasLoading={this.props.newTx.gasLoading}
             gasPrice={this.props.newTx.gasPrice}
+            gasError={this.props.newTx.gasError}
             isNewContract={this.props.newTx.isNewContract}
             network={this.props.nodes.network}
             params={this.props.newTx.params}
@@ -160,7 +160,6 @@ class SendTx extends Component {
           <GasNotification
             estimatedGas={this.props.newTx.estimatedGas}
             gasLoading={this.props.newTx.gasLoading}
-            gasError={this.state.gasError}
             toIsContract={this.props.newTx.toIsContract}
             to={to}
           />
@@ -169,6 +168,7 @@ class SendTx extends Component {
             unlocking={this.props.newTx.unlocking}
             estimatedGas={this.props.newTx.estimatedGas}
             gasPrice={this.props.newTx.gasPrice}
+            gasError={this.props.newTx.gasError}
             handleSubmit={this.handleSubmit}
           />
         </div>

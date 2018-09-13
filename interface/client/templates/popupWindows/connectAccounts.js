@@ -44,15 +44,6 @@ var pinToSidebar = function() {
   }
 };
 
-var updateSelectedTabAccounts = function(accounts) {
-  var tabId = TemplateVar.get('selectedTab')._id;
-  Tabs.update(tabId, {
-    $set: {
-      'permissions.accounts': accounts
-    }
-  });
-};
-
 Template['popupWindows_connectAccounts'].onCreated(function() {
   this.autorun(function() {
     TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
@@ -64,15 +55,6 @@ Template['popupWindows_connectAccounts'].onCreated(function() {
         : [];
     TemplateVar.set('accounts', accounts);
   });
-
-  window.onbeforeunload = e => {
-    var accounts = TemplateVar.get('accounts');
-    if (accounts.length === 0) {
-      const selectedTab = TemplateVar.get('tab');
-      ipc.send('mistAPI_emit_userDeniedFullProvider', selectedTab.webviewId);
-    }
-    e.returnValue = false;
-  };
 });
 
 Template['popupWindows_connectAccounts'].helpers({

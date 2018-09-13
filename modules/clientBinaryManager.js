@@ -34,8 +34,6 @@ class Manager extends EventEmitter {
   }
 
   getClient(clientId) {
-    console.log('!!!');
-    console.log(this._availableClients);
     return this._availableClients[clientId.toLowerCase()];
   }
 

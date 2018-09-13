@@ -637,15 +637,35 @@ class Windows {
   _onWindowClosed(wnd) {
     log.debug(`Removing window from list: ${wnd.type}`);
 
-    if (wnd.type === 'connectAccounts') {
-      console.log('!!!');
-      console.log(wnd);
-      const tab = db.getCollection('UI_tabs').findOne({ webviewId: 0 });
-      if (tab.permissions.accounts.length === 0 && !tab.permissions.admin) {
-        ipc.send('mistAPI_emit_userDeniedFullProvider', 0);
+    // If connectAccounts or createAccount, return error if user denied
+    if (wnd.ownerID) {
+      dbSync.syncDataFromBackend(Tabs);
+      const tab = db
+        .getCollection('UI_tabs')
+        .findOne({ webviewId: wnd.ownerId });
+      if (wnd.type === 'connectAccounts') {
+        if (
+          !tab ||
+          !tab.permissions ||
+          !tab.permissions.accounts ||
+          tab.permissions.accounts.length === 0
+        ) {
+          this.mistAPIEmitUserDeniedFullProvider(wnd.ownerId);
+        }
       }
-    }
-    if (wnd.type === 'createAccount') {
+      if (wnd.type === 'createAccount') {
+        const tab = db
+          .getCollection('UI_tabs')
+          .findOne({ webviewId: wnd.ownerId });
+        if (
+          !tab ||
+          !tab.permissions ||
+          !tab.permissions.accounts ||
+          tab.permissions.accounts.length === 0
+        ) {
+          this.mistAPIEmitUserDeniedCreateAccount(wnd.ownerId);
+        }
+      }
     }
 
     for (const t in this._windows) {
@@ -663,6 +683,33 @@ class Windows {
       log.info('All primary windows closed/invisible, so quitting app...');
 
       app.quit();
+    }
+  }
+
+  mistAPIEmitUserDeniedFullProvider(webviewId) {
+    const mainWindow = this.getByType('main');
+    if (mainWindow) {
+      var error = new Error('User Denied Full Provider');
+      error.code = 4001;
+      mainWindow.send(
+        'uiAction_windowMessage',
+        'requestAccounts',
+        webviewId,
+        error
+      );
+    }
+  }
+  mistAPIEmitUserDeniedCreateAccount(webviewId) {
+    const mainWindow = this.getByType('main');
+    if (mainWindow) {
+      var error = new Error('User Denied Create Account');
+      error.code = 4011;
+      mainWindow.send(
+        'uiAction_windowMessage',
+        'createAccount',
+        webviewId,
+        error
+      );
     }
   }
 }

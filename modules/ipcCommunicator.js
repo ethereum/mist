@@ -67,7 +67,12 @@ ipc.on('backendAction_windowMessageToOwner', (event, error, value) => {
   }
 
   // If msg is from a generic window, use `actingType` instead of type
-  const senderWindowType = senderWindow.actingType || senderWindow.type;
+  var senderWindowType = senderWindow.actingType || senderWindow.type;
+
+  // Rename window type for mistAPI
+  if (senderWindowType === 'connectAccounts') {
+    senderWindowType = 'requestAccounts';
+  }
 
   if (senderWindow.ownerId) {
     const ownerWindow = Windows.getById(senderWindow.ownerId);
@@ -263,7 +268,7 @@ ipc.on('mistAPI_requestAccounts', async event => {
     }
   }
 
-  if (accounts) {
+  if (accounts && accounts.length > 0) {
     event.sender.send(
       'uiAction_windowMessage',
       'requestAccounts',
@@ -271,6 +276,7 @@ ipc.on('mistAPI_requestAccounts', async event => {
       accounts
     );
   } else {
+    console.log('BOOM', event.sender.id);
     Windows.createPopup('connectAccounts', { ownerId: event.sender.id });
   }
 });
@@ -284,22 +290,6 @@ ipc.on('mistAPI_emit_accountsChanged', (event, webviewId, accounts) => {
       webviewId,
       null,
       accounts
-    );
-  }
-});
-
-ipc.on('mistAPI_emit_userDeniedFullProvider', (event, webviewId) => {
-  console.log('BOOM');
-  const mainWindow = Windows.getByType('main');
-  if (mainWindow) {
-    const error = new Error('User Denied Full Provider');
-    error.code = 4001;
-    console.log(error);
-    mainWindow.send(
-      'uiAction_windowMessage',
-      'requestAccounts',
-      webviewId,
-      error
     );
   }
 });

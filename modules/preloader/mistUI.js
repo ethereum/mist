@@ -29,20 +29,19 @@ window.i18n = require('../i18n.js');
 delete window.module;
 delete window.require;
 
-// prevent overwriting the Dapps Web3
-// delete global.Web3;
-// delete window.Web3;
-
 // set the langauge for the electron interface
 // ipcRenderer.send('setLanguage', navigator.language.substr(0,2));
 
 // A message coming from other window, to be passed to a webview
 ipcRenderer.on('uiAction_windowMessage', (event, type, id, error, value) => {
-  if (type === 'createAccount' || (type === 'requestAccounts' && !error)) {
+  if (type === 'createAccount' && !error) {
     Tabs.update(
       { webviewId: id },
       { $addToSet: { 'permissions.accounts': value } }
     );
+  }
+  if (type === 'requestAccounts' && !error) {
+    Tabs.update({ webviewId: id }, { $set: { 'permissions.accounts': value } });
   }
 
   // forward to the webview (TODO: remove and manage in the ipcCommunicator?)

@@ -49,10 +49,10 @@ module.exports = () => {
     license: packageJson.license,
     platform: process.platform,
     requestAccounts() {
-      ipcRenderer.send('mistAPI_requestAccounts');
       const promise = new Promise((resolve, reject) => {
         this.promises.requestAccounts.push({ resolve, reject });
       });
+      ipcRenderer.send('mistAPI_requestAccounts');
       return promise;
     },
     createAccount() {

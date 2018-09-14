@@ -55,28 +55,28 @@ Install the latter ones via:
 
 ### Initialisation
 
-Now you're ready to initialise Mist for development:
+Now you're ready to initialise wanwallet for development:
 
-    $ git clone https://github.com/ethereum/mist.git
-    $ cd mist
+    $ git clone https://github.com/wanchain/wanwallet.git
+    $ cd wanwallet
     $ yarn
 
 To update Mist in the future, run:
 
-    $ cd mist
+    $ cd wanwallet
     $ git pull
     $ yarn
 
-### Run Mist
+### Run wanwallet
 
 For development we start the interface with a Meteor server for autoreload etc.
 *Start the interface in a separate terminal window:*
 
-    $ cd mist/interface && meteor --no-release-check
+    $ cd wanwallet/interface && meteor --no-release-check
 
 In the original window you can then start Mist with:
 
-    $ cd mist
+    $ cd wanwallet
     $ yarn dev:electron
 
 *NOTE: client-binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)*
@@ -87,7 +87,7 @@ In the original window you can then start Mist with:
 
 Start the wallet app for development, *in a separate terminal window:*
 
-    $ cd mist/interface && meteor --no-release-check
+    $ cd wanwallet/interface && meteor --no-release-check
 
     // and in another terminal
 
@@ -95,7 +95,7 @@ Start the wallet app for development, *in a separate terminal window:*
 
 In the original window you can then start Mist using wallet mode:
 
-    $ cd mist
+    $ cd wanwallet
     $ yarn dev:electron --mode wallet
 
 

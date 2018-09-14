@@ -50,7 +50,7 @@ export function estimateGasUsage() {
             type: '[CLIENT]:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT',
             error: {
               estimatedGas: value,
-              message: 'Gas estimate is larger than the block limit'
+              message: i18n.t('mist.sendTx.overBlockGasLimit')
             }
           });
 

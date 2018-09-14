@@ -4,7 +4,6 @@ import _ from 'lodash';
 import ExecutionContext from './ExecutionContext';
 import FeeSelector from './FeeSelector';
 import Footer from './Footer';
-import GasNotification from './GasNotification';
 import TxParties from './TxParties';
 import {
   confirmTx,
@@ -149,17 +148,10 @@ class SendTx extends Component {
             gasPrice={this.props.newTx.gasPrice}
             getGasPrice={this.getGasPrice}
             getGasUsage={this.estimateGasUsage}
-            etherPriceUSD={this.props.settings.etherPriceUSD}
-            network={this.props.nodes.network}
+            etherPriceUSD={this.props.etherPriceUSD}
+            network={this.props.network}
             priority={this.props.newTx.priority}
             togglePriority={this.togglePriority}
-          />
-
-          <GasNotification
-            estimatedGas={this.props.newTx.estimatedGas}
-            gasLoading={this.props.newTx.gasLoading}
-            toIsContract={this.props.newTx.toIsContract}
-            to={to}
           />
 
           <Footer
@@ -176,7 +168,11 @@ class SendTx extends Component {
 }
 
 function mapStateToProps(state) {
-  return state;
+  return {
+    etherPriceUSD: state.settings.etherPriceUSD,
+    network: state.nodes.network,
+    newTx: state.newTx
+  };
 }
 
 export default connect(mapStateToProps)(SendTx);

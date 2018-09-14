@@ -46,8 +46,7 @@ class ExecutionContext extends Component {
       return null;
     }
 
-    const isTokenTransfer =
-      this.props.executionFunction === 'transfer(address,uint256)';
+    const isTokenTransfer = executionFunction === 'transfer(address,uint256)';
 
     const showTxExecutingFunction =
       executionFunction && !isNewContract && !isTokenTransfer;
@@ -183,19 +182,7 @@ class ExecutionContext extends Component {
   render() {
     return (
       <div className="execution-context">
-        <ContextDescription
-          isNewContract={this.props.isNewContract}
-          data={this.props.data}
-          toIsContract={this.props.toIsContract}
-          token={this.props.token}
-          params={this.props.params}
-          executionFunction={this.props.executionFunction}
-          network={this.props.network}
-          gasError={this.props.gasError}
-          value={this.props.value}
-          etherPriceUSD={this.props.etherPriceUSD}
-          adjustWindowHeight={this.props.adjustWindowHeight}
-        />
+        <ContextDescription />
         {this.renderMoreDetails()}
       </div>
     );

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class ContextDescription extends Component {
   formattedBalance() {
@@ -136,4 +137,19 @@ class ContextDescription extends Component {
   }
 }
 
-export default ContextDescription;
+function mapStateToProps(state) {
+  return {
+    data: state.newTx.data,
+    executionFunction: state.newTx.executionFunction,
+    gasError: state.newTx.gasError,
+    isNewContract: state.newTx.isNewContract,
+    network: state.nodes.network,
+    params: state.newTx.params,
+    etherPriceUSD: state.settings.etherPriceUSD,
+    toIsContract: state.newTx.toIsContract,
+    value: state.newTx.value,
+    token: state.newTx.token
+  };
+}
+
+export default connect(mapStateToProps)(ContextDescription);

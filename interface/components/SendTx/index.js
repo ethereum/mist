@@ -22,8 +22,7 @@ class SendTx extends Component {
     super(props);
 
     this.state = {
-      hasSignature: false,
-      providedGas: 0
+      hasSignature: false
     };
   }
 
@@ -34,6 +33,12 @@ class SendTx extends Component {
     this.estimateGasUsage();
     this.getPriceConversion();
     setTimeout(this.adjustWindowHeight, 500);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.newTx.gasError !== this.props.newTx.gasError) {
+      this.adjustWindowHeight();
+    }
   }
 
   componentWillUnmount() {
@@ -115,19 +120,12 @@ class SendTx extends Component {
         <div ref={divElement => (this.divElement = divElement)}>
           <ExecutionContext
             adjustWindowHeight={this.adjustWindowHeight}
-            data={this.props.newTx.data}
             estimatedGas={this.props.newTx.estimatedGas}
             executionFunction={this.props.newTx.executionFunction}
-            gasLoading={this.props.newTx.gasLoading}
             gasPrice={this.props.newTx.gasPrice}
             gasError={this.props.newTx.gasError}
             isNewContract={this.props.newTx.isNewContract}
-            network={this.props.nodes.network}
             params={this.props.newTx.params}
-            etherPriceUSD={this.props.settings.etherPriceUSD}
-            providedGas={this.state.providedGas}
-            showFormattedParams={this.state.showFormattedParams}
-            to={to}
             toIsContract={this.props.newTx.toIsContract}
             value={this.props.newTx.value}
             token={this.props.newTx.token}

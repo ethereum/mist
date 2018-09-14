@@ -42,6 +42,7 @@ class Footer extends Component {
             value={this.state.pw}
             onChange={e => this.setState({ pw: e.target.value })}
             placeholder={i18n.t('mist.sendTx.enterPassword')}
+            autoFocus
           />
 
           <button

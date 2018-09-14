@@ -45,6 +45,18 @@ export function estimateGasUsage() {
     web3.eth
       .estimateGas(txData)
       .then(value => {
+        if (value > 8000000) {
+          dispatch({
+            type: '[CLIENT]:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT',
+            error: {
+              estimatedGas: value,
+              message: 'Gas estimate is larger than the block limit'
+            }
+          });
+
+          return dispatch(checkGasLoaded());
+        }
+
         dispatch({
           type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
           payload: { estimatedGas: value }

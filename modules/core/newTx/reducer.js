@@ -69,6 +69,12 @@ const newTx = (state = initialState, action) => {
         gasError: action.error,
         gasLoading: false
       });
+    case '[CLIENT]:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT':
+      return Object.assign({}, state, {
+        estimatedGas: action.error.estimatedGas,
+        gasError: action.error.message,
+        gasLoading: false
+      });
     case '[CLIENT]:CALCULATE_GAS:SUCCESS':
       return Object.assign({}, state, {
         gasLoading: false

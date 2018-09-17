@@ -42,18 +42,37 @@ export function estimateGasUsage() {
       txData.to = newTx.to;
     }
 
-    web3.eth.estimateGas(txData).then((value, error) => {
-      if (error) {
-        return dispatch({ type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE', error });
-      }
+    web3.eth
+      .estimateGas(txData)
+      .then(value => {
+        if (value > 8000000) {
+          dispatch({
+            type: '[CLIENT]:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT',
+            error: {
+              estimatedGas: value,
+              message: i18n.t('mist.sendTx.overBlockGasLimit')
+            }
+          });
 
-      dispatch({
-        type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
-        payload: { estimatedGas: value }
+          return dispatch(checkGasLoaded());
+        }
+
+        dispatch({
+          type: '[CLIENT]:ESTIMATE_GAS_USAGE:SUCCESS',
+          payload: { estimatedGas: value }
+        });
+
+        dispatch(checkGasLoaded());
+      })
+      .catch(error => {
+        const e = JSON.stringify(error, Object.getOwnPropertyNames(error));
+        const errorObject = JSON.parse(e);
+
+        dispatch({
+          type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE',
+          error: errorObject.message
+        });
       });
-
-      dispatch(checkGasLoaded());
-    });
   };
 }
 

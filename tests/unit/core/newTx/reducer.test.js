@@ -113,11 +113,34 @@ describe('the newTx reducer', () => {
   });
 
   it('should handle the "[CLIENT:ESTIMATE_GAS_USAGE:FAILURE]" action', () => {
-    const action = { type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE' };
+    const action = {
+      type: '[CLIENT]:ESTIMATE_GAS_USAGE:FAILURE',
+      error: 'boom!'
+    };
     const oldState = Object.assign({}, initialState, {
       gasLoading: true
     });
     const expectedState = Object.assign({}, initialState, {
+      gasError: 'boom!',
+      gasLoading: false
+    });
+    assert.deepEqual(reducer(oldState, action), expectedState);
+  });
+
+  it('should handle the "[CLIENT:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT]" action', () => {
+    const action = {
+      type: '[CLIENT]:ESTIMATE_GAS_USAGE:OVER_BLOCK_LIMIT',
+      error: {
+        estimatedGas: 8100000,
+        message: 'boom!'
+      }
+    };
+    const oldState = Object.assign({}, initialState, {
+      gasLoading: true
+    });
+    const expectedState = Object.assign({}, initialState, {
+      estimatedGas: 8100000,
+      gasError: 'boom!',
       gasLoading: false
     });
     assert.deepEqual(reducer(oldState, action), expectedState);

@@ -4,7 +4,6 @@ import _ from 'lodash';
 import ExecutionContext from './ExecutionContext';
 import FeeSelector from './FeeSelector';
 import Footer from './Footer';
-import GasNotification from './GasNotification';
 import TxParties from './TxParties';
 import {
   confirmTx,
@@ -22,9 +21,7 @@ class SendTx extends Component {
     super(props);
 
     this.state = {
-      hasSignature: false,
-      providedGas: 0,
-      gasError: ''
+      hasSignature: false
     };
   }
 
@@ -35,6 +32,12 @@ class SendTx extends Component {
     this.estimateGasUsage();
     this.getPriceConversion();
     setTimeout(this.adjustWindowHeight, 500);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.newTx.gasError !== this.props.newTx.gasError) {
+      this.adjustWindowHeight();
+    }
   }
 
   componentWillUnmount() {
@@ -116,18 +119,12 @@ class SendTx extends Component {
         <div ref={divElement => (this.divElement = divElement)}>
           <ExecutionContext
             adjustWindowHeight={this.adjustWindowHeight}
-            data={this.props.newTx.data}
             estimatedGas={this.props.newTx.estimatedGas}
             executionFunction={this.props.newTx.executionFunction}
-            gasLoading={this.props.newTx.gasLoading}
             gasPrice={this.props.newTx.gasPrice}
+            gasError={this.props.newTx.gasError}
             isNewContract={this.props.newTx.isNewContract}
-            network={this.props.nodes.network}
             params={this.props.newTx.params}
-            etherPriceUSD={this.props.settings.etherPriceUSD}
-            providedGas={this.state.providedGas}
-            showFormattedParams={this.state.showFormattedParams}
-            to={to}
             toIsContract={this.props.newTx.toIsContract}
             value={this.props.newTx.value}
             token={this.props.newTx.token}
@@ -151,24 +148,17 @@ class SendTx extends Component {
             gasPrice={this.props.newTx.gasPrice}
             getGasPrice={this.getGasPrice}
             getGasUsage={this.estimateGasUsage}
-            etherPriceUSD={this.props.settings.etherPriceUSD}
-            network={this.props.nodes.network}
+            etherPriceUSD={this.props.etherPriceUSD}
+            network={this.props.network}
             priority={this.props.newTx.priority}
             togglePriority={this.togglePriority}
-          />
-
-          <GasNotification
-            estimatedGas={this.props.newTx.estimatedGas}
-            gasLoading={this.props.newTx.gasLoading}
-            gasError={this.state.gasError}
-            toIsContract={this.props.newTx.toIsContract}
-            to={to}
           />
 
           <Footer
             unlocking={this.props.newTx.unlocking}
             estimatedGas={this.props.newTx.estimatedGas}
             gasPrice={this.props.newTx.gasPrice}
+            gasError={this.props.newTx.gasError}
             handleSubmit={this.handleSubmit}
           />
         </div>
@@ -178,7 +168,11 @@ class SendTx extends Component {
 }
 
 function mapStateToProps(state) {
-  return state;
+  return {
+    etherPriceUSD: state.settings.etherPriceUSD,
+    network: state.nodes.network,
+    newTx: state.newTx
+  };
 }
 
 export default connect(mapStateToProps)(SendTx);

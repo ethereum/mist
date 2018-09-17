@@ -24,8 +24,8 @@ class FeeSelector extends Component {
     const { gasPrice, gasLoading } = this.props;
     const { ticks, gasRetries } = this.state;
 
-    // Retry every 10 sec if appropriate
-    if (ticks % 10 === 0 && (gasLoading || gasPrice === 0) && gasRetries < 5) {
+    // Retry every 20 sec if appropriate
+    if (ticks % 20 === 0 && (gasLoading || gasPrice === 0) && gasRetries < 3) {
       this.props.getGasPrice();
       this.props.getGasUsage();
       this.setState({ gasRetries: gasRetries + 1 });

@@ -88,7 +88,7 @@ gulp.task('update-nodes', cb => {
                           geth.platforms[platform][arch].download.url.split('/')
                         )
                       ) {
-                        const sum = new Buffer(
+                        const sum = Buffer.from(
                           blob.Properties[0]['Content-MD5'][0],
                           'base64'
                         );

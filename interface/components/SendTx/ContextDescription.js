@@ -2,6 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class ContextDescription extends Component {
+  constructor(props) {
+    super(props);
+
+    this.formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    });
+  }
+
   formattedBalance() {
     return EthTools.formatBalance(
       web3.utils.toBN(this.props.value || 0),

@@ -24,7 +24,7 @@ ipc.on('backendAction_decodeFunctionSignature', (event, _signature, _data) => {
   const paramTypes = signature[1].split(',');
 
   try {
-    const paramsResponse = abi.rawDecode(paramTypes, new Buffer(data, 'hex'));
+    const paramsResponse = abi.rawDecode(paramTypes, Buffer.from(data, 'hex'));
     const paramsDictArr = [];
 
     // Turns addresses into proper hex string

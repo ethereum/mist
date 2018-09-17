@@ -130,7 +130,9 @@ class ExecutionContext extends Component {
           <span className="execution-context__details-title">
             {i18n.t('mist.sendTx.gasEstimate')}
           </span>
-          <span className="execution-context__details-value">{`${estimatedGas} WEI`}</span>
+          <span className="execution-context__details-value">
+            {estimatedGas}
+          </span>
         </div>
 
         {isTokenTransfer && (

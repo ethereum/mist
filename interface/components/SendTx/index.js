@@ -34,10 +34,8 @@ class SendTx extends Component {
     setTimeout(this.adjustWindowHeight, 500);
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.newTx.gasError !== this.props.newTx.gasError) {
-      this.adjustWindowHeight();
-    }
+  componentDidUpdate() {
+    this.adjustWindowHeight();
   }
 
   componentWillUnmount() {

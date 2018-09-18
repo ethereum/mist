@@ -5,22 +5,32 @@ export function setWindowSize(height) {
   };
 }
 
+function parseGasStationPrice(price) {
+  const beforeDecimal = price.toString().slice(0, -1);
+  const afterDecimal = price.toString().slice(-1);
+  return parseFloat(beforeDecimal + '.' + afterDecimal);
+}
+
 export function getGasPrice() {
   return dispatch => {
     dispatch({ type: '[CLIENT]:GET_GAS_PRICE:START' });
 
-    web3.eth.getGasPrice((error, res) => {
+    const url = 'https://ethgasstation.info/json/ethgasAPI.json';
+    fetch(url).then(async (response, error) => {
       if (error) {
         return dispatch({ type: '[CLIENT]:GET_GAS_PRICE:FAILURE', error });
       }
 
-      const gasPrice = '0x' + res.toString(16);
+      const gasData = await response.json();
+      const gasPriceGweiStandard = parseGasStationPrice(gasData.average);
+      const gasPriceGweiPriority = parseGasStationPrice(gasData.fast);
+
       dispatch({
         type: '[CLIENT]:GET_GAS_PRICE:SUCCESS',
-        payload: { gasPrice }
+        payload: { gasPriceGweiStandard, gasPriceGweiPriority }
       });
 
-      dispatch(checkGasLoaded());
+      return dispatch(checkGasLoaded());
     });
   };
 }

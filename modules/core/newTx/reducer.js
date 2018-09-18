@@ -1,6 +1,7 @@
 export const initialState = {
   from: '',
-  gasPrice: 0,
+  gasPriceGweiStandard: 0,
+  gasPriceGweiPriority: 0,
   gas: '',
   gasLoading: false,
   data: '',
@@ -49,7 +50,8 @@ const newTx = (state = initialState, action) => {
       });
     case '[CLIENT]:GET_GAS_PRICE:SUCCESS':
       return Object.assign({}, state, {
-        gasPrice: action.payload.gasPrice
+        gasPriceGweiStandard: action.payload.gasPriceGweiStandard,
+        gasPriceGweiPriority: action.payload.gasPriceGweiPriority
       });
     case '[CLIENT]:GET_GAS_PRICE:FAILURE':
       return Object.assign({}, state, {

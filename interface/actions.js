@@ -22,7 +22,7 @@ export function getGasPrice() {
       }
 
       const gasData = await response.json();
-      const gasPriceGweiStandard = parseGasStationPrice(gasData.average);
+      const gasPriceGweiStandard = parseGasStationPrice(gasData.safeLow);
       const gasPriceGweiPriority = parseGasStationPrice(gasData.fast);
 
       dispatch({

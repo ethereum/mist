@@ -78,26 +78,23 @@ class SendTx extends Component {
       to,
       from,
       gas,
-      gasPrice,
+      gasPriceGweiStandard,
+      gasPriceGweiPriority,
       estimatedGas,
       priority,
       value
     } = this.props.newTx;
 
-    // If no gas value was provided, use estimatedGas
-    const gasValue =
-      parseInt(gas, 16) !== 0 ? gas : `0x${estimatedGas.toString(16)}`;
-
-    // If priority tx, double the value and format it
-    const chosenPrice = priority
-      ? '0x' + (gasPrice * 2).toString(16)
-      : gasPrice;
+    const chosenPriceGwei = priority
+      ? gasPriceGweiPriority
+      : gasPriceGweiStandard;
+    const chosenPriceWei = web3.utils.toWei(chosenPriceGwei.toString(), 'gwei');
 
     let txData = {
       data,
       from,
-      gas: gasValue,
-      gasPrice: chosenPrice,
+      gas: gas || estimatedGas,
+      gasPrice: chosenPriceWei,
       pw: formData.pw,
       value
     };
@@ -119,7 +116,8 @@ class SendTx extends Component {
             adjustWindowHeight={this.adjustWindowHeight}
             estimatedGas={this.props.newTx.estimatedGas}
             executionFunction={this.props.newTx.executionFunction}
-            gasPrice={this.props.newTx.gasPrice}
+            gasPriceGweiStandard={this.props.newTx.gasPriceGweiStandard}
+            gasPriceGweiPriority={this.props.newTx.gasPriceGweiPriority}
             gasError={this.props.newTx.gasError}
             isNewContract={this.props.newTx.isNewContract}
             params={this.props.newTx.params}
@@ -143,7 +141,8 @@ class SendTx extends Component {
           <FeeSelector
             estimatedGas={this.props.newTx.estimatedGas}
             gasLoading={this.props.newTx.gasLoading}
-            gasPrice={this.props.newTx.gasPrice}
+            gasPriceGweiStandard={this.props.newTx.gasPriceGweiStandard}
+            gasPriceGweiPriority={this.props.newTx.gasPriceGweiPriority}
             getGasPrice={this.getGasPrice}
             getGasUsage={this.estimateGasUsage}
             etherPriceUSD={this.props.etherPriceUSD}
@@ -155,7 +154,7 @@ class SendTx extends Component {
           <Footer
             unlocking={this.props.newTx.unlocking}
             estimatedGas={this.props.newTx.estimatedGas}
-            gasPrice={this.props.newTx.gasPrice}
+            gasPrice={this.props.newTx.gasPriceGweiStandard}
             gasError={this.props.newTx.gasError}
             handleSubmit={this.handleSubmit}
           />

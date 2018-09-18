@@ -30,7 +30,8 @@ class ExecutionContext extends Component {
       estimatedGas,
       executionFunction,
       gasError,
-      gasPrice,
+      gasPriceGweiStandard,
+      gasPriceGweiPriority,
       isNewContract,
       toIsContract,
       token,
@@ -83,11 +84,6 @@ class ExecutionContext extends Component {
       );
     });
 
-    const gweiPrice = web3.utils.fromWei(
-      web3.utils.hexToNumberString(gasPrice),
-      'gwei'
-    );
-
     return (
       <div className="execution-context__details">
         {gasError && (
@@ -121,9 +117,16 @@ class ExecutionContext extends Component {
 
         <div className="execution-context__details-row">
           <span className="execution-context__details-title">
-            {i18n.t('mist.sendTx.gasPrice')}
+            {i18n.t('mist.sendTx.gasPriceStandard')}
           </span>
-          <span className="execution-context__details-value">{`${gweiPrice} GWEI`}</span>
+          <span className="execution-context__details-value">{`${gasPriceGweiStandard} GWEI`}</span>
+        </div>
+
+        <div className="execution-context__details-row">
+          <span className="execution-context__details-title">
+            {i18n.t('mist.sendTx.gasPricePriority')}
+          </span>
+          <span className="execution-context__details-value">{`${gasPriceGweiPriority} GWEI`}</span>
         </div>
 
         <div className="execution-context__details-row">

@@ -21,11 +21,15 @@ class FeeSelector extends Component {
   }
 
   monitorGas = () => {
-    const { gasPrice, gasLoading } = this.props;
+    const { gasPriceGweiStandard, gasLoading } = this.props;
     const { ticks, gasRetries } = this.state;
 
     // Retry every 20 sec if appropriate
-    if (ticks % 20 === 0 && (gasLoading || gasPrice === 0) && gasRetries < 3) {
+    if (
+      ticks % 20 === 0 &&
+      (gasLoading || gasPriceGweiStandard === 0) &&
+      gasRetries < 3
+    ) {
       this.props.getGasPrice();
       this.props.getGasUsage();
       this.setState({ gasRetries: gasRetries + 1 });
@@ -43,39 +47,43 @@ class FeeSelector extends Component {
   };
 
   parseFee() {
-    const { estimatedGas, gasPrice, network, etherPriceUSD } = this.props;
+    const {
+      estimatedGas,
+      gasPriceGweiStandard,
+      gasPriceGweiPriority,
+      network,
+      etherPriceUSD
+    } = this.props;
 
-    const gas = web3.utils.isHex(estimatedGas)
-      ? new BigNumber(web3.utils.hexToNumberString(estimatedGas))
-      : new BigNumber(estimatedGas);
-    const bigGasPrice = web3.utils.isHex(gasPrice)
-      ? new BigNumber(web3.utils.hexToNumberString(gasPrice))
-      : new BigNumber(gasPrice);
-    const gasEtherAmount = gas
-      .times(bigGasPrice)
-      .dividedBy(new BigNumber('1000000000000000000'));
-    const gasEtherAmountPriority = gasEtherAmount.times(2);
-
-    let fee;
     if (!this.props.priority) {
+      const priceInWei = new BigNumber(gasPriceGweiStandard).times(1000000000);
+      const etherFee = priceInWei
+        .times(estimatedGas)
+        .dividedBy(new BigNumber('1000000000000000000'));
+
       if (network.toLowerCase() === 'main' && etherPriceUSD) {
-        const standardFee = gasEtherAmount.times(etherPriceUSD);
+        const standardFee = etherFee.times(etherPriceUSD);
         const formattedFee = this.formatter.format(standardFee);
-        fee = `${formattedFee} USD (${gasEtherAmount} ETH)`;
+        return `${formattedFee} USD (${etherFee} ETH)`;
       } else {
-        fee = `${gasEtherAmount} ETH`;
-      }
-    } else {
-      if (network.toLowerCase() === 'main' && etherPriceUSD) {
-        const priorityFee = gasEtherAmountPriority.times(etherPriceUSD);
-        const formattedFee = this.formatter.format(priorityFee);
-        fee = `${formattedFee} USD (${gasEtherAmount} ETH)`;
-      } else {
-        fee = `${gasEtherAmountPriority} ETH`;
+        return `${etherFee} ETH`;
       }
     }
 
-    return fee;
+    const priceInWeiPriority = new BigNumber(gasPriceGweiPriority).times(
+      1000000000
+    );
+    const etherFee = priceInWeiPriority
+      .times(estimatedGas)
+      .dividedBy(new BigNumber('1000000000000000000'));
+
+    if (network.toLowerCase() === 'main' && etherPriceUSD) {
+      const standardFee = etherFee.times(etherPriceUSD);
+      const formattedFee = this.formatter.format(standardFee);
+      return `${formattedFee} USD (${etherFee} ETH)`;
+    } else {
+      return `${etherFee} ETH`;
+    }
   }
 
   renderStatus() {

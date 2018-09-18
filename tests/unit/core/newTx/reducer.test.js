@@ -149,10 +149,14 @@ describe('the newTx reducer', () => {
   it('should handle the "[CLIENT:GET_GAS_PRICE:SUCCESS]" action', () => {
     const action = {
       type: '[CLIENT]:GET_GAS_PRICE:SUCCESS',
-      payload: { gasPrice: 20000 }
+      payload: {
+        gasPriceGweiStandard: 5.5,
+        gasPriceGweiPriority: 9
+      }
     };
     const expectedState = Object.assign({}, initialState, {
-      gasPrice: 20000
+      gasPriceGweiStandard: 5.5,
+      gasPriceGweiPriority: 9
     });
     assert.deepEqual(reducer(initialState, action), expectedState);
   });

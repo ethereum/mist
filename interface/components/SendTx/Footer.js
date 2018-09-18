@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MDSpinner from 'react-md-spinner';
 
 class Footer extends Component {
   constructor(props) {
@@ -19,7 +20,9 @@ class Footer extends Component {
     const { gasPrice, gasError, estimatedGas, unlocking } = this.props;
 
     if (!estimatedGas || !gasPrice || gasPrice === 0 || gasPrice === '0x0') {
-      return null;
+      return (
+        <MDSpinner singleColor="#00aafa" size={16} className="react-spinner" />
+      );
     }
 
     if (unlocking) {

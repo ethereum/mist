@@ -10,7 +10,7 @@
   },
   "scripts": {
     "precommit": "pretty-quick --staged",
-    "postinstall": "git submodule update --recursive && (cd interface && yarn) && which meteor || curl https://install.meteor.com/?release=1.6.1 | /bin/sh; yarn dev:rebuild",
+    "postinstall": "git submodule update --init --recursive && yarn task pack-wallet && (cd interface && yarn) && yarn dev:rebuild",
     "dev:electron": "electron -r babel-register main.js",
     "dev:meteor": "cd interface && meteor --no-release-check",
     "dev:rebuild": "./node_modules/.bin/electron-rebuild",

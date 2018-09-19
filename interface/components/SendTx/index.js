@@ -107,8 +107,6 @@ class SendTx extends Component {
   };
 
   render() {
-    const { from, to, value } = this.props.newTx;
-
     return (
       <div className="popup-windows tx-info">
         <div ref={divElement => (this.divElement = divElement)}>
@@ -128,14 +126,14 @@ class SendTx extends Component {
 
           <TxParties
             fromIsContract={this.state.fromIsContract}
-            from={from}
+            from={this.props.newTx.from}
             isNewContract={this.props.newTx.isNewContract}
-            to={to}
+            to={this.props.newTx.to}
             toIsContract={this.props.newTx.toIsContract}
             executionFunction={this.props.newTx.executionFunction}
             params={this.props.newTx.params}
             hasSignature={this.state.hasSignature}
-            value={value}
+            value={this.props.newTx.value}
           />
 
           <FeeSelector

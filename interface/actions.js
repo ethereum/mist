@@ -341,12 +341,30 @@ function displayNotification(errorType, duration) {
   });
 }
 
+function submitExecutionFunction(executionFunction, data) {
+  return dispatch => {
+    dispatch({
+      type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
+      payload: { executionFunction }
+    });
+
+    if (executionFunction === 'transfer(address,uint256)') {
+      dispatch(getTokenDetails());
+    }
+
+    dispatch(decodeFunctionSignature(executionFunction, data));
+  };
+}
+
 export function lookupSignature(data) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:START' });
 
     if (!data || data.length <= 8) {
-      return;
+      return dispatch({
+        type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED',
+        error: 'No data'
+      });
     }
 
     const bytesSignature =
@@ -354,23 +372,10 @@ export function lookupSignature(data) {
         ? data.substr(0, 10)
         : '0x' + data.substr(0, 8);
 
-    const submitExecutionFunction = executionFunction => {
-      dispatch({
-        type: '[CLIENT]:LOOKUP_SIGNATURE:SUCCESS',
-        payload: { executionFunction }
-      });
-
-      if (executionFunction === 'transfer(address,uint256)') {
-        dispatch(getTokenDetails());
-      }
-
-      dispatch(decodeFunctionSignature(executionFunction, data));
-    };
-
     let executionFunction = _.first(window.SIGNATURES[bytesSignature]);
 
     if (executionFunction) {
-      submitExecutionFunction(executionFunction);
+      dispatch(submitExecutionFunction(executionFunction, data));
     } else {
       fetch(
         `https://www.4byte.directory/api/v1/signatures/?hex_signature=${bytesSignature}`
@@ -379,7 +384,7 @@ export function lookupSignature(data) {
         if (fourByte && fourByte.results && fourByte.results.length) {
           // Get the earliest submitted signature (last result in array)
           executionFunction = fourByte.results.slice(-1)[0].text_signature;
-          submitExecutionFunction(executionFunction);
+          dispatch(submitExecutionFunction(executionFunction, data));
         } else {
           const error = 'No signature found';
           dispatch({ type: '[CLIENT]:LOOKUP_SIGNATURE:FAILED', error });
@@ -392,13 +397,13 @@ export function lookupSignature(data) {
 function decodeFunctionSignature(signature, data) {
   return dispatch => {
     dispatch({ type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:START' });
-    ipc.send('backendAction_decodeFunctionSignature', signature, data);
     ipc.on('uiAction_decodedFunctionSignatures', (event, params) => {
       dispatch({
         type: '[CLIENT]:DECODE_FUNCTION_SIGNATURE:SUCCESS',
         payload: { params }
       });
     });
+    ipc.send('backendAction_decodeFunctionSignature', signature, data);
   };
 }
 

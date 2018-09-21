@@ -83,9 +83,19 @@ class ContextDescription extends Component {
   }
 
   renderGenericFunctionDescription() {
+    const executionFunction = this.props.executionFunction;
+
+    let executionFunctionClean =
+      executionFunction.charAt(0).toUpperCase() +
+      executionFunction
+        .slice(1, executionFunction.indexOf('('))
+        .replace(/([A-Z]+|[0-9]+)/g, ' $1');
+
     return (
       <div className="context-description__sentence">
-        Executing <span className="bold">Contract Function</span>
+        Execute{' '}
+        <span className="bold">&#8220;{executionFunctionClean}&#8221;</span>{' '}
+        function
       </div>
     );
   }

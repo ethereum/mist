@@ -191,7 +191,13 @@ class TxRow extends Component {
     } else if (tx.isNewContract) {
       description = 'Created New Contract';
     } else if (tx.executionFunction) {
-      description = 'Executed Contract Function';
+      let executionFunctionSentence =
+        tx.executionFunction.charAt(0).toUpperCase() +
+        tx.executionFunction
+          .slice(1, tx.executionFunction.indexOf('('))
+          .replace(/([A-Z]+|[0-9]+)/g, ' $1');
+
+      description = 'Executed  “' + executionFunctionSentence + '” function';
     } else {
       const etherAmount = this.valueToEtherAmount(tx.value);
       description = `Sent ${etherAmount} ether`;

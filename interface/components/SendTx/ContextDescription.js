@@ -83,7 +83,7 @@ class ContextDescription extends Component {
   }
 
   renderGenericFunctionDescription() {
-    const executionFunction = this.props.executionFunction;
+    const { executionFunction } = this.props;
 
     let executionFunctionClean =
       executionFunction.charAt(0).toUpperCase() +
@@ -94,8 +94,14 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         Execute{' '}
-        <span className="bold">&#8220;{executionFunctionClean}&#8221;</span>{' '}
-        function
+        {executionFunctionClean ? (
+          <React.Fragment>
+            <span className="bold">&#8220;{executionFunctionClean}&#8221;</span>{' '}
+            function
+          </React.Fragment>
+        ) : (
+          <span className="bold">contract function</span>
+        )}
       </div>
     );
   }

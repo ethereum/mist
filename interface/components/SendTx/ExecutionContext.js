@@ -101,7 +101,7 @@ class ExecutionContext extends Component {
               {i18n.t('mist.sendTx.transactionExecutingFunction')}
             </span>
             <span className="execution-context__execution-function">
-              {executionFunction.slice(0, executionFunction.indexOf('('))}
+              {executionFunction}
             </span>
           </div>
         )}

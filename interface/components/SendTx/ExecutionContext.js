@@ -181,7 +181,12 @@ class ExecutionContext extends Component {
 
   render() {
     return (
-      <div className="execution-context">
+      <div
+        className="execution-context"
+        style={{
+          backgroundColor: !!this.props.gasError ? '#fff4cb' : '#fdfdfd'
+        }}
+      >
         <ContextDescription />
         {this.renderMoreDetails()}
       </div>

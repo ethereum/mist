@@ -40,8 +40,6 @@ install:
   # installs global dependencies
   - choco install meteor 
   - choco install nsis
-  # prevents node 10 to be installed, as it's a dependency of yarn
-  - choco install yarn --ignore-dependencies
 
   - refreshenv
   - ps: refreshenv

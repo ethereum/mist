@@ -1,0 +1,75 @@
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 960px;
+}
+
+.bg-image {
+  background-image: url(images/bg-wide.png);
+  background-position: center 45%;
+  background-size: cover;
+}
+
+.hero .row {
+  color: white;
+  min-height: 500px;
+  height: 100vh;
+}
+
+.hero a {
+}
+.hero h1 {
+  margin-top: 3em;
+  margin-bottom: 0.5em;
+}
+
+.hero p {
+  font-weight: 300;
+  font-size: 120%;
+  color: white;
+  line-height: 1.3em;
+  margin-bottom: 1.5em;
+}
+
+.hero .btn {
+  font-weight: 600;
+  background-color: #499bd0;
+  border-color: #499bd0;
+}
+
+.hero .download-btn-container {
+  margin-bottom: 2em;
+}
+
+.text-link {
+  color: white;
+  display: block;
+  font-size: 75%;
+  margin-left: 0.8em;
+}
+.text-link:hover {
+  color: white;
+}
+
+.main-content {
+  background-color: #fff;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 1px 2px 10px rgba(0, 0, 0, 0.36);
+
+  margin-top: -2.5em;
+}
+
+.downloads-row table a {
+  font-size: 90%;
+}
+.downloads-row table pre {
+  margin-bottom: 0;
+  color: #555;
+  font-size: 65%;
+  background-color: #eee;
+  padding: 1px 4px 0;
+  border-radius: 3px;
+}

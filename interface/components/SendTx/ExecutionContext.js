@@ -151,7 +151,7 @@ class ExecutionContext extends Component {
             {token.address && (
               <div className="execution-context__details-row">
                 <span className="execution-context__details-title">
-                  {i18n.t('mist.sendTx.tokenName')}
+                  {i18n.t('mist.sendTx.tokenContractName')}
                 </span>
                 <DappIdenticon identity={token.address} size="small" />
                 <span className="bold">{token.address}</span>

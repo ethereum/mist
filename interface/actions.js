@@ -128,48 +128,37 @@ export function getTokenDetails() {
   return (dispatch, getState) => {
     dispatch({ type: '[CLIENT]:GET_TOKEN_DETAILS:START' });
 
-    const tokenListURL =
-      'https://raw.githubusercontent.com/MyEtherWallet/ethereum-lists/master/tokens/tokens-eth.json';
+    const contractAddress = getState().newTx.to;
+    const tokenMetadata = address =>
+      `https://raw.githubusercontent.com/MyEtherWallet/ethereum-lists/master/src/tokens/eth/${address}.json`;
 
-    fetch(tokenListURL).then(async (response, error) => {
-      if (error) {
-        return dispatch({
-          type: '[CLIENT]:GET_TOKEN_DETAILS:FAILURE',
-          error
-        });
-      }
-
-      let tokens;
+    fetch(tokenMetadata(contractAddress)).then(async (response, error) => {
+      let tokenJson;
 
       try {
-        tokens = await response.json();
+        tokenJson = await response.json();
       } catch (error) {
         return dispatch({
-          type: '[CLIENT]:GET_TOKEN_DETAILS:JSON_PARSE_FAILURE',
-          error
+          type: '[CLIENT]:GET_TOKEN_DETAILS:FAILURE',
+          payload: {
+            response,
+            error,
+            token: tokenMetadata(contractAddress)
+          }
         });
       }
 
-      if (tokens) {
-        const contractAddress = getState().newTx.to;
-        const theToken = _.find(tokens, token => {
-          return token.address.toLowerCase() === contractAddress.toLowerCase();
-        });
+      const token = {
+        name: tokenJson.name,
+        symbol: tokenJson.symbol,
+        address: tokenJson.address,
+        decimals: tokenJson.decimals
+      };
 
-        if (theToken) {
-          const token = {
-            name: theToken.name,
-            symbol: theToken.symbol,
-            address: theToken.address,
-            decimals: theToken.decimals
-          };
-
-          return dispatch({
-            type: '[CLIENT]:GET_TOKEN_DETAILS:SUCCESS',
-            payload: { token }
-          });
-        }
-      }
+      return dispatch({
+        type: '[CLIENT]:GET_TOKEN_DETAILS:SUCCESS',
+        payload: { token }
+      });
     });
   };
 }

@@ -130,7 +130,7 @@
       "showDetails": "Show details",
       "hideDetails": "Hide details",
       "tokenName": "Token name:",
-      "tokenContractName": "Token Contract Address:",
+      "tokenContractName": "Token Contract:",
       "parameters": "Parameters",
       "etherAmount": "Ether Amount:",
       "gasPriceStandard": "Gas Price (Standard):",

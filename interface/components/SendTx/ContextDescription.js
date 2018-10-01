@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { formatTokenCount } from '../../utils/formatters';
 
 class ContextDescription extends Component {
   constructor(props) {
@@ -63,14 +64,12 @@ class ContextDescription extends Component {
   }
 
   renderTokenTransferDescription() {
-    if (this.props.params.length === 0) return;
+    const { params, token } = this.props;
+    if (params.length === 0) return;
 
-    const tokenCount = this.props.params[1].value.slice(
-      0,
-      -Math.abs(this.props.token.decimals)
-    );
+    const tokenCount = formatTokenCount(params[1].value, token.decimals);
 
-    const tokenSymbol = this.props.token.symbol || i18n.t('mist.sendTx.tokens');
+    const tokenSymbol = token.symbol || i18n.t('mist.sendTx.tokens');
 
     return (
       <div className="context-description__sentence">

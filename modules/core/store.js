@@ -23,7 +23,11 @@ const persistConfig = {
 // Note: run and view these DevTools with `yarn dev:tools`
 let debugWrapper = data => data;
 if (process.env.NODE_ENV === 'development') {
-  debugWrapper = composeWithDevTools({ realtime: true, port: 8000 });
+  debugWrapper = composeWithDevTools({
+    realtime: true,
+    port: 8000,
+    maxAge: 100
+  });
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

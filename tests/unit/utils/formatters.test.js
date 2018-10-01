@@ -7,7 +7,7 @@ describe('the formatter util', () => {
       assert.equal(formatTokenCount(1000000000000000000, 18), '1');
     });
 
-    it('handles fractions tokens', () => {
+    it('handles fractions of tokens', () => {
       assert.equal(formatTokenCount(1000000000000000, 18), '0.001');
     });
 

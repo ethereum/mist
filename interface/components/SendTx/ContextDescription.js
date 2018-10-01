@@ -36,6 +36,17 @@ class ContextDescription extends Component {
     return this.formatter.format(fee);
   }
 
+  alertIfSendingEther() {
+    if (!this.props.value) return null;
+
+    return (
+      <div className="context-description__send-eth-alert">
+        Ether Amount:{' '}
+        <span className="bold">{this.formattedBalance()} ETH</span>
+      </div>
+    );
+  }
+
   determineTxType() {
     if (this.props.isNewContract) return 'newContract';
     if (this.props.toIsContract) {
@@ -59,6 +70,8 @@ class ContextDescription extends Component {
         <div className="context-description__subtext">
           About {bytesCount} bytes
         </div>
+
+        {this.alertIfSendingEther()}
       </div>
     );
   }
@@ -77,6 +90,7 @@ class ContextDescription extends Component {
         <span className="bold">
           {tokenCount} {tokenSymbol}
         </span>
+        {this.alertIfSendingEther()}
       </div>
     );
   }
@@ -101,6 +115,7 @@ class ContextDescription extends Component {
         ) : (
           <span className="bold">contract function</span>
         )}
+        {this.alertIfSendingEther()}
       </div>
     );
   }

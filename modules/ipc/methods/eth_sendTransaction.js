@@ -1,6 +1,5 @@
 const BaseProcessor = require('./base');
 const Windows = require('../../windows');
-const Q = require('bluebird');
 const { ipcMain: ipc } = require('electron');
 const BlurOverlay = require('../../blurOverlay');
 
@@ -23,7 +22,7 @@ module.exports = class extends BaseProcessor {
    * @override
    */
   exec(conn, payload) {
-    return new Q((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this._log.info('Ask user for password');
 
       this._log.info(payload.params[0]);

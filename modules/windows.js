@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain: ipc } = require('electron');
 const Settings = require('./settings');
 const log = require('./utils/logger').create('Windows');
+const db = require('./db');
 const EventEmitter = require('events').EventEmitter;
 import {
   closeWindow,
@@ -568,7 +569,8 @@ class Windows {
       'remix',
       'updateAvailable',
       'clientUpdateAvailable',
-      'connectAccounts'
+      'connectAccounts',
+      'createAccount'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&
@@ -638,31 +640,22 @@ class Windows {
     log.debug(`Removing window from list: ${wnd.type}`);
 
     // If connectAccounts or createAccount, return error if user denied
-    if (wnd.ownerID) {
-      dbSync.syncDataFromBackend(Tabs);
+    if (wnd.type === 'connectAccounts' || wnd.type === 'createAccount') {
       const tab = db
         .getCollection('UI_tabs')
         .findOne({ webviewId: wnd.ownerId });
-      if (wnd.type === 'connectAccounts') {
-        if (
-          !tab ||
-          !tab.permissions ||
-          !tab.permissions.accounts ||
-          tab.permissions.accounts.length === 0
-        ) {
+      console.log(tab);
+      console.log(tab.permissions);
+      console.log(tab.permissions.accounts);
+      if (
+        !tab ||
+        !tab.permissions ||
+        !tab.permissions.accounts ||
+        tab.permissions.accounts.length === 0
+      ) {
+        if (wnd.type === 'connectAccounts') {
           this.mistAPIEmitUserDeniedFullProvider(wnd.ownerId);
-        }
-      }
-      if (wnd.type === 'createAccount') {
-        const tab = db
-          .getCollection('UI_tabs')
-          .findOne({ webviewId: wnd.ownerId });
-        if (
-          !tab ||
-          !tab.permissions ||
-          !tab.permissions.accounts ||
-          tab.permissions.accounts.length === 0
-        ) {
+        } else if (wnd.type === 'createAccount') {
           this.mistAPIEmitUserDeniedCreateAccount(wnd.ownerId);
         }
       }

@@ -25,7 +25,15 @@ const origin = this.origin;
       return new Promise((resolve, reject) => {
         window.mist
           .requestAccounts()
-          .then(resolve)
+          .then(accounts => {
+            if (accounts.length > 0) {
+              resolve(true);
+            } else {
+              const error = new Error('User Denied Full Provider');
+              error.code = 4001;
+              reject(error);
+            }
+          })
           .catch(reject);
       });
     }
@@ -56,16 +64,16 @@ const origin = this.origin;
       return promise;
     }
 
-    subscribe(subscriptionType, params) {
-      return this.send('eth_subscribe', [subscriptionType, ...params]).then(
+    subscribe(subscriptionType, subscriptionMethod, params) {
+      return this.send(subscriptionType, [subscriptionMethod, ...params]).then(
         subscriptionId => {
           this._activeSubscriptions.push(subscriptionId);
         }
       );
     }
 
-    unsubscribe(subscriptionId) {
-      return this.send('eth_unsubscribe', [subscriptionId]).then(success => {
+    unsubscribe(subscriptionType, subscriptionId) {
+      return this.send(subscriptionType, [subscriptionId]).then(success => {
         if (success) {
           // Remove subscription
           this._activeSubscription = this._activeSubscription.filter(
@@ -164,7 +172,7 @@ const origin = this.origin;
       this.emit('accountsChanged', accounts);
     }
 
-    /* web3.js provider compatibility */
+    /* web3.js Provider Backwards Compatibility */
 
     sendAsync(payload, callback) {
       return this.send(payload.method, payload.params)

@@ -276,7 +276,6 @@ ipc.on('mistAPI_requestAccounts', async event => {
       accounts
     );
   } else {
-    console.log('BOOM', event.sender.id);
     Windows.createPopup('connectAccounts', { ownerId: event.sender.id });
   }
 });

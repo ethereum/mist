@@ -86,10 +86,8 @@ class ContextDescription extends Component {
 
     return (
       <div className="context-description__sentence">
-        {i18n.t('mist.sendTx.transfer')}{' '}
-        <span className="bold">
-          {tokenCount} {tokenSymbol}
-        </span>
+        <span className="bold">{i18n.t('mist.sendTx.transfer')}</span>{' '}
+        {tokenCount} {tokenSymbol}
         {this.alertIfSendingEther()}
       </div>
     );

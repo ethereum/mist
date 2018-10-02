@@ -49,13 +49,27 @@ module.exports = class extends BaseProcessor {
         return reject(err);
       }
 
-      const modalWindow = Windows.createPopup('sendTransactionConfirmation', {
+      store.dispatch({
+        type: '[CLIENT]:NEW_TX:START',
+        payload: payload.params[0]
+      });
+
+      const modalWindow = Windows.createPopup('sendTx', {
         sendData: { uiAction_sendData: payload.params[0] }
       });
 
       BlurOverlay.enable();
 
       modalWindow.on('hidden', () => {
+        BlurOverlay.disable();
+
+        // user cancelled?
+        if (!modalWindow.processed) {
+          reject(this.ERRORS.TX_DENIED);
+        }
+      });
+
+      modalWindow.on('close', () => {
         BlurOverlay.disable();
 
         // user cancelled?

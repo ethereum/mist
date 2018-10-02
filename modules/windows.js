@@ -463,11 +463,21 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'sendTransactionConfirmation':
+      case 'sendTx':
         return {
           electronOptions: {
             width: 580,
             height: 550,
+            alwaysOnTop: true,
+            enableLargerThanScreen: false,
+            resizable: true
+          }
+        };
+      case 'txHistory':
+        return {
+          electronOptions: {
+            width: 580,
+            height: 465,
             alwaysOnTop: true,
             enableLargerThanScreen: false,
             resizable: true
@@ -567,7 +577,9 @@ class Windows {
       'remix',
       'updateAvailable',
       'clientUpdateAvailable',
-      'connectAccount'
+      'connectAccount',
+      'sendTx',
+      'txHistory'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&

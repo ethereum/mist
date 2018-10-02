@@ -5,6 +5,8 @@ import { getLanguage } from './actions.js';
 import About from '../components/About';
 import RequestAccount from '../components/RequestAccount';
 import NodeInfo from '../components/NodeInfo';
+import SendTx from '../components/SendTx/';
+import TxHistory from '../components/TxHistory/';
 
 /**
 The init function of Mist
@@ -57,7 +59,7 @@ function initTabs() {
       );
     }
 
-    // On first use, show wallet to nudge user to create an account
+    // on first use of Mist, show the wallet to nudge the user to create an account
     if (
       !LocalStore.get('selectedTab') ||
       !Tabs.findOne(LocalStore.get('selectedTab'))
@@ -76,14 +78,21 @@ function renderReactComponentPopup(locationHash) {
   // JSX can't evaluate an expression or string, so map imported components here
   const components = {
     About,
-    RequestAccount
+    RequestAccount,
+    SendTx,
+    TxHistory
   };
 
   // Only render a component if it exists
   if (!!components[componentName]) {
     const Component = components[componentName];
 
-    render(<Component />, document.getElementById('react-entry'));
+    render(
+      <Provider store={store}>
+        <Component />
+      </Provider>,
+      document.getElementById('react-entry')
+    );
   }
 }
 

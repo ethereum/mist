@@ -395,6 +395,13 @@ let menuTempl = function(webviews) {
     label: i18n.t('mist.applicationMenu.view.label'),
     submenu: [
       {
+        label: i18n.t('mist.applicationMenu.view.txHistory'),
+        accelerator: 'CommandOrControl+Shift+H',
+        click() {
+          Windows.createPopup('txHistory');
+        }
+      },
+      {
         label: i18n.t('mist.applicationMenu.view.fullscreen'),
         accelerator: switchForSystem({
           darwin: 'Command+Control+F',

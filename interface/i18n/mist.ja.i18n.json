@@ -92,6 +92,27 @@
       "openDevTools": "開発者用ツールを開く",
       "inspectElements": "要素を検証する"
     },
+    "sendTx": {
+      "enterPassword":
+        "トランザクションを実行するためにパスワードを入力して下さい。",
+      "unlocking": "承認しています...",
+      "estimatedGasError":
+        "データが実行できませんでした、そのため全ての GAS が消費されます。",
+      "overBlockGasLimit":
+        "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
+      "notEnoughGas":
+        "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください.",
+      "errors": {
+        "connectionTimeout":
+          "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
+        "wrongPassword": "パスワードが間違っています",
+        "multipleKeysMatchAddress":
+          "複数のキーが一致する場合は、キーストアから重複を削除してください (ファイル -> バックアップを取る -> アカウント)",
+        "insufficientFundsForGas":
+          "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
+        "sameAccount": "同一アカウントには送信できません"
+      }
+    },
     "nodeInfo": {
       "active": "active",
       "blockNumber": "ブロック番号",
@@ -163,52 +184,6 @@
           "passwordMismatch": "パスワードが正しくありません",
           "passwordTooShort": "もっと長いパスワードにしてください"
         }
-      },
-      "sendTransactionConfirmation": {
-        "title": {
-          "sendTransaction": "トランザクションを送信する",
-          "contractExecution": "コントラクトを実行する",
-          "createContract": "コントラクトを作成する"
-        },
-        "contractExecutionInfo":
-          "コントラクトの関数を実行しようとしています。これはバリューの移転を含むことがあります。",
-        "contractCreationInfo":
-          "与えられたデータからコントラクトを作成しようとしています。",
-        "enterPassword":
-          "トランザクションを実行するためにパスワードを入力して下さい。",
-        "unlocking": "承認しています...",
-        "createContract": "コントラクトを作成する",
-        "estimatedFee": "推定されるトランザクションフィーの消費",
-        "estimatedGasError":
-          "データが実行できませんでした、そのため全ての GAS が消費されます。",
-        "gasPrice": "GAS 価格",
-        "perMillionGas": "100 万 GAS ごとの Ether",
-        "gasLimit": "GAS リミット",
-        "data": "データ",
-        "buttons": {
-          "sendTransaction": "トランザクションを送信"
-        },
-        "errors": {
-          "connectionTimeout":
-            "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
-          "wrongPassword": "パスワードが間違っています",
-          "multipleKeysMatchAddress":
-            "複数のキーが一致する場合は、キーストアから重複を削除してください (ファイル -> バックアップを取る -> アカウント)",
-          "insufficientFundsForGas":
-            "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
-          "sameAccount": "同一アカウントには送信できません"
-        },
-        "transactionThrow": "契約により、この取引は実行されません",
-        "noEstimate": "GAS を見積もることができませんでした",
-        "parameters": "パラメータ",
-        "showRawBytecode": "生データを見る",
-        "showDecodedParameters": "デコードされたパラメータを見る",
-        "lookupData": "データをデコードする",
-        "lookupDataExplainer": "インターネットでこれを確認してください",
-        "overBlockGasLimit":
-          "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
-        "notEnoughGas":
-          "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください."
       },
       "importAccount": {
         "doYouHaveAWalletFile": "ウォレットファイルを持っていますか?",

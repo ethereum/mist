@@ -62,4 +62,40 @@ describe('the settings reducer', () => {
 
     assert.deepEqual(reducer(initialState, action), expectedState);
   });
+
+  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:START]" action', () => {
+    const action = { type: '[CLIENT]:GET_PRICE_CONVERSION:START' };
+    const oldState = Object.assign({}, initialState, {
+      etherPriceUSD: 500
+    });
+    const expectedState = Object.assign({}, initialState, {
+      etherPriceUSD: 0
+    });
+    assert.deepEqual(reducer(oldState, action), expectedState);
+  });
+
+  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:SUCCESS]" action', () => {
+    const action = {
+      type: '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS',
+      payload: { etherPriceUSD: 500 }
+    };
+    const oldState = Object.assign({}, initialState, {
+      etherPriceUSD: 0
+    });
+    const expectedState = Object.assign({}, initialState, {
+      etherPriceUSD: 500
+    });
+    assert.deepEqual(reducer(oldState, action), expectedState);
+  });
+
+  it('should handle the "[CLIENT:GET_PRICE_CONVERSION:FAILURE]" action', () => {
+    const action = { type: '[CLIENT]:GET_PRICE_CONVERSION:FAILURE' };
+    const oldState = Object.assign({}, initialState, {
+      etherPriceUSD: 500
+    });
+    const expectedState = Object.assign({}, initialState, {
+      etherPriceUSD: 0
+    });
+    assert.deepEqual(reducer(oldState, action), expectedState);
+  });
 });

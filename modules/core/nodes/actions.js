@@ -88,8 +88,7 @@ export function resetRemoteNode() {
 
 export function setActiveNode() {
   return (dispatch, getState) => {
-    // If local node is 15 or more blocks behind remote, ensure remote is active.
-    // Otherwise, local should be active.
+    // Ensure remote is active if local node is 15 or more blocks behind remote or local node has no peers.
     const { active, network, local, remote } = getState().nodes;
 
     // If nosync, ensure active is 'remote'
@@ -119,7 +118,7 @@ export function setActiveNode() {
     }
 
     if (active === 'remote') {
-      if (remote.blockNumber - local.blockNumber < 15) {
+      if (remote.blockNumber - local.blockNumber < 15 && local.peerCount > 0) {
         dispatch({
           type: '[MAIN]:NODES:CHANGE_ACTIVE',
           payload: { active: 'local' }

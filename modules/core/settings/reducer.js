@@ -21,7 +21,8 @@ export const initialState = {
   swarmEnableOnStart: false,
   uiMode: '',
   updateCheckerRan: false,
-  cliFlags: {}
+  cliFlags: {},
+  etherPriceUSD: 0
 };
 
 const settings = (state = initialState, action) => {
@@ -63,6 +64,18 @@ const settings = (state = initialState, action) => {
       return Object.assign({}, state, { updateCheckerRan: true });
     case '[MAIN]:IPC_PROVIDER_BACKEND:FINISH':
       return Object.assign({}, state, { ipcProviderBackendInit: true });
+    case '[CLIENT]:GET_PRICE_CONVERSION:START':
+      return Object.assign({}, state, {
+        etherPriceUSD: 0
+      });
+    case '[CLIENT]:GET_PRICE_CONVERSION:SUCCESS':
+      return Object.assign({}, state, {
+        etherPriceUSD: action.payload.etherPriceUSD
+      });
+    case '[CLIENT]:GET_PRICE_CONVERSION:FAILURE':
+      return Object.assign({}, state, {
+        etherPriceUSD: 0
+      });
     default:
       return state;
   }

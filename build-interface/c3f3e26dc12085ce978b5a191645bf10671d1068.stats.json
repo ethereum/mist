@@ -3,8 +3,8 @@
     "name": "standard-minifier-js",
     "version": "2.3.4"
   },
-  "totalMinifiedBytes": 2448232,
-  "totalMinifiedGzipBytes": 671579,
+  "totalMinifiedBytes": 2779016,
+  "totalMinifiedGzipBytes": 739549,
   "minifiedBytesByPackage": {
     "packages/meteor.js": 9433,
     "packages/less.js": 24,
@@ -14,7 +14,7 @@
     "packages/meteorspark_util.js": 495,
     "packages/modules-runtime.js": 4087,
     "packages/modules.js": [
-      394468,
+      585575,
       {
         "node_modules": {
           "meteor": {
@@ -42,8 +42,8 @@
             "package.json": 66,
             "index.js": 71,
             "cjs": {
-              "react.production.min.js": 5048,
-              "react.development.js": 12445
+              "react.production.min.js": 5399,
+              "react.development.js": 14365
             }
           },
           "object-assign": {
@@ -52,18 +52,16 @@
           },
           "fbjs": {
             "lib": {
+              "invariant.js": 498,
               "emptyObject.js": 67,
               "emptyFunction.js": 281,
-              "invariant.js": 498,
               "warning.js": 598,
               "ExecutionEnvironment.js": 305,
-              "EventListener.js": 652,
               "getActiveElement.js": 192,
               "shallowEqual.js": 403,
               "containsNode.js": 233,
               "isTextNode.js": 102,
               "isNode.js": 254,
-              "focusNode.js": 80,
               "hyphenateStyleName.js": 117,
               "hyphenate.js": 112,
               "camelizeStyleName.js": 116,
@@ -71,21 +69,21 @@
             }
           },
           "prop-types": {
-            "checkPropTypes.js": 881,
+            "checkPropTypes.js": 1015,
             "lib": {
               "ReactPropTypesSecret.js": 94
             },
             "package.json": 71,
             "index.js": 214,
-            "factoryWithTypeCheckers.js": 5863,
-            "factoryWithThrowingShims.js": 598
+            "factoryWithTypeCheckers.js": 5912,
+            "factoryWithThrowingShims.js": 608
           },
           "react-dom": {
             "package.json": 118,
             "index.js": 225,
             "cjs": {
-              "react-dom.production.min.js": 90336,
-              "react-dom.development.js": 164581
+              "react-dom.production.min.js": 92735,
+              "react-dom.development.js": 186222
             }
           },
           "react-redux": {
@@ -115,8 +113,10 @@
             }
           },
           "hoist-non-react-statics": {
-            "package.json": 83,
-            "index.js": 806
+            "package.json": 110,
+            "dist": {
+              "hoist-non-react-statics.cjs.js": 661
+            }
           },
           "invariant": {
             "package.json": 96,
@@ -146,7 +146,9 @@
             "_objectToString.js": 93,
             "_getPrototype.js": 82,
             "_overArg.js": 79,
-            "isObjectLike.js": 77
+            "isObjectLike.js": 77,
+            "package.json": 69,
+            "lodash.js": 71979
           },
           "symbol-observable": {
             "package.json": 81,
@@ -155,14 +157,98 @@
               "ponyfill.js": 228
             }
           },
+          "ethereum-blockies": {
+            "package.json": 80,
+            "blockies.js": 1364
+          },
+          "react-md-spinner": {
+            "package.json": 80,
+            "lib": {
+              "index.js": 402,
+              "ssr-behavior.js": 812,
+              "styles.js": 4097,
+              "MDSpinner.js": 3212
+            }
+          },
+          "css-keyframer": {
+            "package.json": 81,
+            "css-keyframer.js": 42391
+          },
+          "inline-style-prefixer": {
+            "package.json": 89,
+            "dynamic": {
+              "index.js": 724,
+              "createPrefixer.js": 2564,
+              "plugins": {
+                "cursor.js": 592,
+                "crossFade.js": 498,
+                "filter.js": 443,
+                "flex.js": 483,
+                "flexboxOld.js": 1267,
+                "gradient.js": 605,
+                "imageSet.js": 482,
+                "position.js": 371,
+                "sizing.js": 523,
+                "transition.js": 725
+              },
+              "dynamicData.js": 9617
+            },
+            "utils": {
+              "getBrowserInformation.js": 1497,
+              "getPrefixedKeyframes.js": 289,
+              "capitalizeString.js": 168,
+              "addNewValuesOnly.js": 244,
+              "isObject.js": 170,
+              "prefixValue.js": 199,
+              "getPrefixedValue.js": 145,
+              "prefixProperty.js": 305
+            },
+            "static": {
+              "index.js": 687,
+              "createPrefixer.js": 648,
+              "staticData.js": 2199,
+              "plugins": {
+                "cursor.js": 282,
+                "crossFade.js": 398,
+                "filter.js": 386,
+                "flex.js": 364,
+                "flexboxOld.js": 606,
+                "gradient.js": 437,
+                "imageSet.js": 395,
+                "position.js": 192,
+                "sizing.js": 421,
+                "transition.js": 1214
+              }
+            }
+          },
+          "bowser": {
+            "package.json": 73,
+            "src": {
+              "bowser.js": 7752
+            }
+          },
+          "css-in-js-utils": {
+            "lib": {
+              "hyphenateProperty.js": 235,
+              "isPrefixedValue.js": 188
+            }
+          },
+          "hyphenate-style-name": {
+            "package.json": 80,
+            "index.js": 159
+          },
+          "exenv": {
+            "package.json": 65,
+            "index.js": 454
+          },
           "moment": {
             "package.json": 70,
-            "moment.js": 53008
+            "moment.js": 53049
           },
           "react-minimal-pie-chart": {
             "package.json": 87,
             "lib": {
-              "index.js": 4410
+              "index.js": 4721
             }
           },
           "@babel": {
@@ -209,7 +295,8 @@
               "_to-length.js": 113,
               "_to-integer.js": 102,
               "_wks.js": 190,
-              "_shared.js": 124,
+              "_shared.js": 284,
+              "_library.js": 29,
               "_to-object.js": 81,
               "_defined.js": 105,
               "_array-species-create.js": 101,
@@ -813,7 +900,7 @@
     ],
     "app/global-imports.js": 1705,
     "app/app.js": [
-      373771,
+      513448,
       {
         "client": {
           "templates": {
@@ -836,13 +923,11 @@
               "template.generic.js": 164,
               "template.importAccount.js": 2939,
               "template.loadingWindow.js": 287,
-              "template.sendTransactionConfirmation.js": 17839,
               "template.updateAvailable.js": 3310,
               "clientUpdateAvailable.js": 222,
               "connectAccount.js": 2216,
               "generic.js": 70,
               "importAccount.js": 2246,
-              "sendTransactionConfirmation.js": 8959,
               "updateAvailable.js": 577
             },
             "views": {
@@ -850,29 +935,42 @@
               "webview.js": 2492
             },
             "template.index.js": 644,
-            "index.js": 961,
+            "index.js": 1122,
             "webviewEvents.js": 1598
           },
           "lib": {
             "ethereum": {
+              "helpers": {
+                "helperFunctions.js": 2881,
+                "templateHelpers.js": 1335
+              },
               "1_web3js_init.js": 109
-            },
-            "helpers": {
-              "helperFunctions.js": 2881,
-              "templateHelpers.js": 1335
             },
             "signatures.js": 262801,
             "thirdParty.js": 207
           },
           "actions.js": 321,
-          "appStart.js": 1972,
+          "appStart.js": 2145,
           "collections.js": 385,
           "mistAPIBackend.js": 1819,
           "windowEvents.js": 980
         },
         "components": {
+          "SendTx": {
+            "ContextDescription.js": 3450,
+            "ExecutionContext.js": 4247,
+            "FeeSelector.js": 2337,
+            "Footer.js": 1102,
+            "TxParties.js": 2113,
+            "index.js": 3453
+          },
+          "TxHistory": {
+            "TxRow.js": 5281,
+            "index.js": 1777
+          },
           "About.js": 928,
-          "NodeInfo.js": 6488,
+          "DappIdenticon.js": 862,
+          "NodeInfo.js": 6534,
           "RequestAccount.js": 2850
         },
         "i18n": {
@@ -894,7 +992,7 @@
           "app.zh.i18n.json": 110,
           "mist.ca.i18n.json": 111,
           "mist.de.i18n.json": 110,
-          "mist.en.i18n.json": 9709,
+          "mist.en.i18n.json": 9961,
           "mist.es.i18n.json": 120,
           "mist.fa.i18n.json": 114,
           "mist.fr.i18n.json": 121,
@@ -910,6 +1008,10 @@
           "mist.zh-TW.i18n.json": 143,
           "mist.zh.i18n.json": 110
         },
+        "utils": {
+          "hqx.js": 134258
+        },
+        "actions.js": 6525,
         "project-i18n.js": 1150
       }
     ]

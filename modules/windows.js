@@ -655,9 +655,6 @@ class Windows {
       const tab = db
         .getCollection('UI_tabs')
         .findOne({ webviewId: wnd.ownerId });
-      console.log(tab);
-      console.log(tab.permissions);
-      console.log(tab.permissions.accounts);
       if (
         !tab ||
         !tab.permissions ||

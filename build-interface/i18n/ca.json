@@ -148,6 +148,27 @@
         "openDevTools": "Obre les eines de desenvolupador",
         "inspectElements": "Inspecciona element"
       },
+      "sendTx": {
+        "enterPassword":
+          "Introdueix la contrasenya per confirmar la transacció",
+        "unlocking": "Confirmant...",
+        "estimatedGasError":
+          "Sembla que la transacció fallarà. Si l'envieu, pot consumir tot el gas proporcionat.",
+        "overBlockGasLimit":
+          "El gas necesàri per aquesta execució pot sobrepassar el limit de gas pel bloc.",
+        "notEnoughGas":
+          "El gas pot no ser suficient per acabar aquesta execució amb èxit.<br>Fés clic aquí per augmentar la quantitat de gas.",
+        "errors": {
+          "connectionTimeout":
+            "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
+          "wrongPassword": "Contrasenya errònia",
+          "multipleKeysMatchAddress":
+            "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fixter -> Copia de seguretat -> Comptes)",
+          "insufficientFundsForGas":
+            "Saldo insuficient al compte principal (etherbase) per pagar el gas",
+          "sameAccount": "No es pot enviar a un mateix"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "El teu últim número de bloc",
@@ -235,51 +256,6 @@
             "passwordMismatch": "Les teves contrasenyes no coincideixen.",
             "passwordTooShort": "Utilitza una contrasenya més llarga"
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Enviar transacció",
-            "contractExecution": "Executar contracte",
-            "createContract": "Crear contracte"
-          },
-          "contractExecutionInfo":
-            "Estàs a punt d'executar una funció d'un contracte. Això podria implicar una transferència de valor.",
-          "contractCreationInfo":
-            "Estàs a punt de crear un contracte de les dades proporcionades.",
-          "enterPassword":
-            "Introdueix la contrasenya per confirmar la transacció",
-          "unlocking": "Confirmant...",
-          "createContract": "Crear contracte",
-          "estimatedFee": "Comissió estimada",
-          "estimatedGasError":
-            "Sembla que la transacció fallarà. Si l'envieu, pot consumir tot el gas proporcionat.",
-          "transactionThrow":
-            "El contracte no et permetrà executar aquesta transacció",
-          "overBlockGasLimit":
-            "El gas necesàri per aquesta execució pot sobrepassar el limit de gas pel bloc.",
-          "notEnoughGas":
-            "El gas pot no ser suficient per acabar aquesta execució amb èxit.<br>Fés clic aquí per augmentar la quantitat de gas.",
-          "noEstimate": "No s'ha pogut calcular el gas necessari.",
-          "gasPrice": "Preu del Gas",
-          "perMillionGas": "ether per un milió de gas",
-          "gasLimit": "Proporciona la comissió màxima",
-          "data": "Dades en brut",
-          "parameters": "Paràmetres",
-          "buttons": { "sendTransaction": "Enviar transacció" },
-          "errors": {
-            "connectionTimeout":
-              "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
-            "wrongPassword": "Contrasenya errònia",
-            "multipleKeysMatchAddress":
-              "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fixter -> Copia de seguretat -> Comptes)",
-            "insufficientFundsForGas":
-              "Saldo insuficient al compte principal (etherbase) per pagar el gas",
-            "sameAccount": "No es pot enviar a un mateix"
-          },
-          "showRawBytecode": "mostrar dades en brut",
-          "showDecodedParameters": "mostra els paràmetres descodificats",
-          "lookupData": "Intentar descodificar les dades",
-          "lookupDataExplainer": "Mira això a internet"
         },
         "importAccount": {
           "doYouHaveAWalletFile": "Tens un fitxer de wallet?",

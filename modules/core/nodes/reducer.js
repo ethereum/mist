@@ -11,6 +11,7 @@ export const initialState = {
     client: 'geth',
     blockNumber: 0,
     timestamp: 0,
+    peerCount: 0,
     syncMode: 'fast',
     sync: {
       currentBlock: 0,
@@ -48,6 +49,7 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
+          peerCount: 0,
           sync: {
             currentBlock: 0,
             highestBlock: 0,
@@ -90,6 +92,7 @@ const nodes = (state = initialState, action) => {
         local: Object.assign({}, state.local, {
           blockNumber: 0,
           timestamp: 0,
+          peerCount: 0,
           sync: {
             currentBlock: 0,
             highestBlock: 0,
@@ -103,6 +106,12 @@ const nodes = (state = initialState, action) => {
       return Object.assign({}, state, {
         local: Object.assign({}, state.local, {
           syncMode: action.payload.syncMode
+        })
+      });
+    case '[CLIENT]:NODES:UPDATE_LOCAL_PEER_COUNT':
+      return Object.assign({}, state, {
+        local: Object.assign({}, state.local, {
+          peerCount: action.payload.peerCount
         })
       });
     default:

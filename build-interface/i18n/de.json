@@ -127,6 +127,23 @@
         "openDevTools": "Entwicklerwerkzeuge öffnen",
         "inspectElements": "Element prüfen"
       },
+      "sendTx": {
+        "enterPassword":
+          "Bitte gib das Passwort ein, um die Transaktion durchzuführen.",
+        "unlocking": "Warten auf Bestätigung...",
+        "estimatedGasError":
+          "Der Auftrag kann nicht ausgeführt werden, da er das gesamte vorgegebene Gas verbrauchen würde.",
+        "errors": {
+          "connectionTimeout":
+            "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
+          "wrongPassword": "Falsches Passwort",
+          "multipleKeysMatchAddress":
+            "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Datei -> Sicherung -> Konten)",
+          "insufficientFundsForGas":
+            "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
+          "sameAccount": "Kann nicht zum gleichen Konto schicken."
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "Ihre letzte Blocknummer",
@@ -196,47 +213,6 @@
             "passwordMismatch": "Die Passwörter stimmen nicht überein.",
             "passwordTooShort": "Wähle ein längeres Passwort..."
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Transaktion senden",
-            "contractExecution": "Vertrag ausführen",
-            "createContract": "Vertrag anlegen"
-          },
-          "contractExecutionInfo":
-            "Du bist dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
-          "contractCreationInfo":
-            "Du bist dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
-          "enterPassword":
-            "Bitte gib das Passwort ein, um die Transaktion durchzuführen.",
-          "unlocking": "Warten auf Bestätigung...",
-          "createContract": "Vertrag anlegen",
-          "estimatedFee": "Geschätzter Gebührenbetrag",
-          "estimatedGasError":
-            "Der Auftrag kann nicht ausgeführt werden, da er das gesamte vorgegebene Gas verbrauchen würde.",
-          "gasPrice": "Gaspreis",
-          "perMillionGas": "Ether pro Millionen Gas",
-          "data": "Daten",
-          "buttons": { "sendTransaction": "Transaktion absenden" },
-          "errors": {
-            "connectionTimeout":
-              "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
-            "wrongPassword": "Falsches Passwort",
-            "multipleKeysMatchAddress":
-              "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Datei -> Sicherung -> Konten)",
-            "insufficientFundsForGas":
-              "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
-            "sameAccount": "Kann nicht zum gleichen Konto schicken."
-          },
-          "transactionThrow":
-            "Der Vertrag wird diese Transaktion nicht ausführen können",
-          "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
-          "gasLimit": "Maximal bereitgestellte Gebühr",
-          "parameters": "Parameter",
-          "showRawBytecode": "Zeige Rohdaten",
-          "showDecodedParameters": "Zeige dekodierte Parameter",
-          "lookupData": "Versuche die Daten zu dekodieren",
-          "lookupDataExplainer": "Schaue dies im Internet nach"
         },
         "importAccount": {
           "doYouHaveAWalletFile": "Hast du eine Wallet-Datei?",

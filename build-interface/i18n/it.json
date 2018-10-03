@@ -155,6 +155,26 @@
         "openDevTools": "Apri strumenti di sviluppo",
         "inspectElements": "Ispeziona elemento"
       },
+      "sendTx": {
+        "enterPassword": "Inserisci la password per confermare la transazione",
+        "unlocking": "Conferma in corso...",
+        "estimatedGasError":
+          "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
+        "overBlockGasLimit":
+          "Il gas richiesto per questa esecuzione potrebbe eccedere il gas limit del blocco.",
+        "notEnoughGas":
+          "Il Gas potrebbe non essere sufficiente per completare con successo questa transazione.<br>Clicca qui per aumentare la quantità di gas.",
+        "errors": {
+          "connectionTimeout":
+            "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
+          "wrongPassword": "Password errata",
+          "multipleKeysMatchAddress":
+            "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> File -> Backup -> Accounts)",
+          "insufficientFundsForGas":
+            "Credito insufficiente nel account principale (etherbase) per pagare il gas",
+          "sameAccount": "Non si può inviare a se stesso"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "Il tuo ultimo numero di blocco",
@@ -241,51 +261,6 @@
             "passwordMismatch": "Le due password non sono uguali.",
             "passwordTooShort": "Usa una password più lunga"
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Invia transazione",
-            "contractExecution": "Esegui contratto",
-            "createContract": "Crea contratto"
-          },
-          "contractExecutionInfo":
-            "Stai per eseguire una funzione su di un contratto. Questo potrebbe comportare trasferimento di valuta.",
-          "contractCreationInfo":
-            "Stai per creare un contratto con i dati forniti.",
-          "enterPassword":
-            "Inserisci la password per confermare la transazione",
-          "unlocking": "Conferma in corso...",
-          "createContract": "Creazione contratto",
-          "estimatedFee": "Stima consumo (commissione)",
-          "estimatedGasError":
-            "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
-          "gasPrice": "Prezzo carburante (Gas)",
-          "perMillionGas": "ether per milioni di gas",
-          "gasLimit": "Imposta limite di gas",
-          "data": "Dati",
-          "buttons": { "sendTransaction": "Invia transazione" },
-          "errors": {
-            "connectionTimeout":
-              "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
-            "wrongPassword": "Password errata",
-            "multipleKeysMatchAddress":
-              "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> File -> Backup -> Accounts)",
-            "insufficientFundsForGas":
-              "Credito insufficiente nel account principale (etherbase) per pagare il gas",
-            "sameAccount": "Non si può inviare a se stesso"
-          },
-          "transactionThrow":
-            "Il contratto non consente l'esecuzione di questa transazione",
-          "noEstimate": "Impossibile stimare il gas necessario.",
-          "parameters": "Parametri",
-          "showRawBytecode": "mostra dati grezzi",
-          "showDecodedParameters": "mostra parametri decodificati",
-          "lookupData": "Provo a decodificare i dati",
-          "lookupDataExplainer": "Cerca questo su internet",
-          "overBlockGasLimit":
-            "Il gas richiesto per questa esecuzione potrebbe eccedere il gas limit del blocco.",
-          "notEnoughGas":
-            "Il Gas potrebbe non essere sufficiente per completare con successo questa transazione.<br>Clicca qui per aumentare la quantità di gas."
         },
         "importAccount": {
           "doYouHaveAWalletFile": "Hai un file per il wallet ?",

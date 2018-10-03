@@ -125,6 +125,26 @@
         "openDevTools": "개발도구 열기",
         "inspectElements": "요소 검사"
       },
+      "sendTx": {
+        "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
+        "unlocking": "확인 중...",
+        "estimatedGasError":
+          "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
+        "overBlockGasLimit":
+          "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
+        "notEnoughGas":
+          "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요",
+        "errors": {
+          "connectionTimeout":
+            "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
+          "wrongPassword": "암호가 일치하지 않습니다",
+          "multipleKeysMatchAddress":
+            "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
+          "insufficientFundsForGas":
+            "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
+          "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "마지막 블록 번호",
@@ -155,7 +175,7 @@
           "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
         "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
         "nodeSyncInfo":
-          "현재 __highestBlock__ 중 __currentBlcok__ 을 다운로드중",
+          "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
         "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
         "nodeStarting": "이더리움 노드를 시작중...",
         "nodeStarted": "이더리움 노드가 시작됨",
@@ -188,49 +208,6 @@
             "passwordMismatch": "암호가 일치하지 않습니다.",
             "passwordTooShort": "암호가 너무 짧습니다."
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "트랜잭션 보내기",
-            "contractExecution": "계약 실행",
-            "createContract": "계약 만들기"
-          },
-          "contractExecutionInfo":
-            "계약 상의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
-          "contractCreationInfo":
-            "주어진 데이터를 가지고 계약을 만들려고 합니다.",
-          "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
-          "unlocking": "확인 중...",
-          "createContract": "계약 만들기",
-          "estimatedFee": "예상 수수료 사용량",
-          "estimatedGasError":
-            "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
-          "gasPrice": "개스 가격",
-          "perMillionGas": "백만 개스당 이더수",
-          "gasLimit": "최고 수수료 제공",
-          "data": "데이터",
-          "buttons": { "sendTransaction": "트랜잭션 보내기" },
-          "errors": {
-            "connectionTimeout":
-              "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
-            "wrongPassword": "암호가 일치하지 않습니다",
-            "multipleKeysMatchAddress":
-              "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
-            "insufficientFundsForGas":
-              "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
-            "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
-          },
-          "transactionThrow": "이 계약은 트랜젝션을 승인하지 않을 것 입니다.",
-          "noEstimate": "가스 소모량을 추정 할 수 없습니다.",
-          "parameters": "파라미터",
-          "showRawBytecode": "원 데이터 보기",
-          "showDecodedParameters": "디코딩된 파라미터 보기",
-          "lookupData": "데이터 디코딩하기",
-          "lookupDataExplainer": "해당 내용을 인터넷에서 확인하세요",
-          "overBlockGasLimit":
-            "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
-          "notEnoughGas":
-            "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요"
         },
         "importAccount": {
           "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",

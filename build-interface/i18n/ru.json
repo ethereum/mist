@@ -125,6 +125,26 @@
         "openDevTools": "Открыть инструменты разработчика",
         "inspectElements": "Исследовать элемент"
       },
+      "sendTx": {
+        "enterPassword": "Введите пароль для подтверждения транзакции",
+        "unlocking": "Подтвержение...",
+        "estimatedGasError":
+          "Задание не может быть выполнено, так как будет израсходован весь выделенный газ",
+        "overBlockGasLimit":
+          "The gas required for this execution could exceed the block gas limit.",
+        "notEnoughGas":
+          "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+        "errors": {
+          "connectionTimeout":
+            "Не удается подключиться к ноде, возможно завершилось фоновое приложение?",
+          "wrongPassword": "Неверный пароль",
+          "multipleKeysMatchAddress":
+            "У нескольких ключей совпадает адрес, удалите дубликаты из хранилища ключей (Меню -> Аккаунты -> Резервное копирование -> Аккаунтов)",
+          "insufficientFundsForGas":
+            "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ",
+          "sameAccount": "Can't send to itself"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "Номер вашего последнего блока",
@@ -194,50 +214,6 @@
           "checking": "Checking for updates to __name__...",
           "noUpdateFound":
             "No update found. You are running the latest version of __name__."
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Отправить транзакцию",
-            "contractExecution": "Выполнить контракт",
-            "createContract": "Создать контракт"
-          },
-          "contractExecutionInfo":
-            "Вы собираетесь выполнить часть контракта. Этот процесс может включать передачу значений (транзакцию).",
-          "contractCreationInfo":
-            "Вы собираетесь создать контракт на основе предоставленных данных.",
-          "enterPassword": "Введите пароль для подтверждения транзакции",
-          "unlocking": "Подтвержение...",
-          "createContract": "Создание контракта",
-          "estimatedFee": "Расчетная сумма вознаграждения",
-          "estimatedGasError":
-            "Задание не может быть выполнено, так как будет израсходован весь выделенный газ",
-          "gasPrice": "Цена газа",
-          "perMillionGas": "эфир за миллион газа",
-          "gasLimit": "Установить максимальную сумму вознаграждения",
-          "data": "Данные",
-          "buttons": { "sendTransaction": "Отправить транзакцию" },
-          "errors": {
-            "connectionTimeout":
-              "Не удается подключиться к ноде, возможно завершилось фоновое приложение?",
-            "wrongPassword": "Неверный пароль",
-            "multipleKeysMatchAddress":
-              "У нескольких ключей совпадает адрес, удалите дубликаты из хранилища ключей (Меню -> Аккаунты -> Резервное копирование -> Аккаунтов)",
-            "insufficientFundsForGas":
-              "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ",
-            "sameAccount": "Can't send to itself"
-          },
-          "transactionThrow":
-            "The contract won't allow this transaction to be executed",
-          "noEstimate": "We couldn't estimate the gas.",
-          "parameters": "Parameters",
-          "showRawBytecode": "show raw data",
-          "showDecodedParameters": "show decoded parameters",
-          "lookupData": "Try to decode data",
-          "lookupDataExplainer": "Look this up on the internet",
-          "overBlockGasLimit":
-            "The gas required for this execution could exceed the block gas limit.",
-          "notEnoughGas":
-            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
         },
         "importAccount": {
           "doYouHaveAWalletFile": "У вас есть файл кошелька?",

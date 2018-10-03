@@ -1,7 +1,6 @@
 global._ = require('./modules/utils/underscore');
 
 const { app, dialog, ipcMain, shell, protocol } = require('electron');
-const Q = require('bluebird');
 const windowStateKeeper = require('electron-window-state');
 const timesync = require('os-timesync');
 
@@ -26,10 +25,6 @@ import { SwarmState } from './modules/core/settings/reducer';
 
 import swarmNode from './modules/swarmNode.js';
 import ethereumNodeRemote from './modules/ethereumNodeRemote';
-
-Q.config({
-  cancellation: true
-});
 
 global.store = configureReduxStore();
 

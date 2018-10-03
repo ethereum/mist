@@ -152,6 +152,27 @@
           "openDevTools": "Obre les eines de desenvolupador",
           "inspectElements": "Inspecciona element"
         },
+        "sendTx": {
+          "enterPassword":
+            "Introdueix la contrasenya per confirmar la transacció",
+          "unlocking": "Confirmant...",
+          "estimatedGasError":
+            "Sembla que la transacció fallarà. Si l'envieu, pot consumir tot el gas proporcionat.",
+          "overBlockGasLimit":
+            "El gas necesàri per aquesta execució pot sobrepassar el limit de gas pel bloc.",
+          "notEnoughGas":
+            "El gas pot no ser suficient per acabar aquesta execució amb èxit.<br>Fés clic aquí per augmentar la quantitat de gas.",
+          "errors": {
+            "connectionTimeout":
+              "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
+            "wrongPassword": "Contrasenya errònia",
+            "multipleKeysMatchAddress":
+              "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fixter -> Copia de seguretat -> Comptes)",
+            "insufficientFundsForGas":
+              "Saldo insuficient al compte principal (etherbase) per pagar el gas",
+            "sameAccount": "No es pot enviar a un mateix"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "El teu últim número de bloc",
@@ -239,51 +260,6 @@
               "passwordMismatch": "Les teves contrasenyes no coincideixen.",
               "passwordTooShort": "Utilitza una contrasenya més llarga"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Enviar transacció",
-              "contractExecution": "Executar contracte",
-              "createContract": "Crear contracte"
-            },
-            "contractExecutionInfo":
-              "Estàs a punt d'executar una funció d'un contracte. Això podria implicar una transferència de valor.",
-            "contractCreationInfo":
-              "Estàs a punt de crear un contracte de les dades proporcionades.",
-            "enterPassword":
-              "Introdueix la contrasenya per confirmar la transacció",
-            "unlocking": "Confirmant...",
-            "createContract": "Crear contracte",
-            "estimatedFee": "Comissió estimada",
-            "estimatedGasError":
-              "Sembla que la transacció fallarà. Si l'envieu, pot consumir tot el gas proporcionat.",
-            "transactionThrow":
-              "El contracte no et permetrà executar aquesta transacció",
-            "overBlockGasLimit":
-              "El gas necesàri per aquesta execució pot sobrepassar el limit de gas pel bloc.",
-            "notEnoughGas":
-              "El gas pot no ser suficient per acabar aquesta execució amb èxit.<br>Fés clic aquí per augmentar la quantitat de gas.",
-            "noEstimate": "No s'ha pogut calcular el gas necessari.",
-            "gasPrice": "Preu del Gas",
-            "perMillionGas": "ether per un milió de gas",
-            "gasLimit": "Proporciona la comissió màxima",
-            "data": "Dades en brut",
-            "parameters": "Paràmetres",
-            "buttons": { "sendTransaction": "Enviar transacció" },
-            "errors": {
-              "connectionTimeout":
-                "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
-              "wrongPassword": "Contrasenya errònia",
-              "multipleKeysMatchAddress":
-                "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fixter -> Copia de seguretat -> Comptes)",
-              "insufficientFundsForGas":
-                "Saldo insuficient al compte principal (etherbase) per pagar el gas",
-              "sameAccount": "No es pot enviar a un mateix"
-            },
-            "showRawBytecode": "mostrar dades en brut",
-            "showDecodedParameters": "mostra els paràmetres descodificats",
-            "lookupData": "Intentar descodificar les dades",
-            "lookupDataExplainer": "Mira això a internet"
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Tens un fitxer de wallet?",
@@ -453,6 +429,23 @@
           "openDevTools": "Entwicklerwerkzeuge öffnen",
           "inspectElements": "Element prüfen"
         },
+        "sendTx": {
+          "enterPassword":
+            "Bitte gib das Passwort ein, um die Transaktion durchzuführen.",
+          "unlocking": "Warten auf Bestätigung...",
+          "estimatedGasError":
+            "Der Auftrag kann nicht ausgeführt werden, da er das gesamte vorgegebene Gas verbrauchen würde.",
+          "errors": {
+            "connectionTimeout":
+              "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
+            "wrongPassword": "Falsches Passwort",
+            "multipleKeysMatchAddress":
+              "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Datei -> Sicherung -> Konten)",
+            "insufficientFundsForGas":
+              "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
+            "sameAccount": "Kann nicht zum gleichen Konto schicken."
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Ihre letzte Blocknummer",
@@ -522,47 +515,6 @@
               "passwordMismatch": "Die Passwörter stimmen nicht überein.",
               "passwordTooShort": "Wähle ein längeres Passwort..."
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Transaktion senden",
-              "contractExecution": "Vertrag ausführen",
-              "createContract": "Vertrag anlegen"
-            },
-            "contractExecutionInfo":
-              "Du bist dabei, eine Vertragsfunktion auszuführen. Das kann zur Übertragung eines Geldwertes führen.",
-            "contractCreationInfo":
-              "Du bist dabei, auf Basis der eingegebenen Daten einen Vertrag anzulegen.",
-            "enterPassword":
-              "Bitte gib das Passwort ein, um die Transaktion durchzuführen.",
-            "unlocking": "Warten auf Bestätigung...",
-            "createContract": "Vertrag anlegen",
-            "estimatedFee": "Geschätzter Gebührenbetrag",
-            "estimatedGasError":
-              "Der Auftrag kann nicht ausgeführt werden, da er das gesamte vorgegebene Gas verbrauchen würde.",
-            "gasPrice": "Gaspreis",
-            "perMillionGas": "Ether pro Millionen Gas",
-            "data": "Daten",
-            "buttons": { "sendTransaction": "Transaktion absenden" },
-            "errors": {
-              "connectionTimeout":
-                "Eine Verbindung mit dem Softwareknoten war nicht möglich, eventuell ist der Softwareknoten im Hintergrund abgestürzt?",
-              "wrongPassword": "Falsches Passwort",
-              "multipleKeysMatchAddress":
-                "Mehrere Konten stimmen mit der Adresse überein, bitte entferne Duplikate aus dem keystore Verzeichnis (Menü -> Datei -> Sicherung -> Konten)",
-              "insufficientFundsForGas":
-                "Zu wenig Mittel im Hauptkonto (etherbase) um für Gas zu bezahlen",
-              "sameAccount": "Kann nicht zum gleichen Konto schicken."
-            },
-            "transactionThrow":
-              "Der Vertrag wird diese Transaktion nicht ausführen können",
-            "noEstimate": "Transaktionsgebühr konnte nicht geschätzt werden.",
-            "gasLimit": "Maximal bereitgestellte Gebühr",
-            "parameters": "Parameter",
-            "showRawBytecode": "Zeige Rohdaten",
-            "showDecodedParameters": "Zeige dekodierte Parameter",
-            "lookupData": "Versuche die Daten zu dekodieren",
-            "lookupDataExplainer": "Schaue dies im Internet nach"
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Hast du eine Wallet-Datei?",
@@ -743,6 +695,27 @@
           "openDevTools": "Abrir las Herramientas de Desarrollador",
           "inspectElements": "Inspeccionar Elemento"
         },
+        "sendTx": {
+          "enterPassword":
+            "Introduzca la contraseña para confirmar la transacción",
+          "unlocking": "Confirmando...",
+          "estimatedGasError":
+            "Los datos no pueden ser ejecutados por lo que se utilizá todo el gas proporcionado.",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "No se pudo conectar al nodo, ha dejado de funcionar en segundo plano?",
+            "wrongPassword": "Contraseña incorrecta",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Su último número de bloque",
@@ -811,51 +784,6 @@
               "passwordMismatch": "Tus contraseñas no coinciden.",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Enviar transacción",
-              "contractExecution": "Ejecutar contrato",
-              "createContract": "Crear contrato"
-            },
-            "contractExecutionInfo":
-              "Estás a punto de ejecutar una función en un contrato. Esto puede implicar la transferencia de valor.",
-            "contractCreationInfo":
-              "Vas a crear un contrato a partir de los datos proporcionados.",
-            "enterPassword":
-              "Introduzca la contraseña para confirmar la transacción",
-            "unlocking": "Confirmando...",
-            "createContract": "Crear contrato",
-            "estimatedFee": "Tasa de comisión estimada",
-            "estimatedGasError":
-              "Los datos no pueden ser ejecutados por lo que se utilizá todo el gas proporcionado.",
-            "gasPrice": "Precio del Gas",
-            "perMillionGas": "ether por millón de gas",
-            "gasLimit": "Proporcionar la tasa máxima",
-            "data": "Datos",
-            "buttons": { "sendTransaction": "Enviar transacción" },
-            "errors": {
-              "connectionTimeout":
-                "No se pudo conectar al nodo, ha dejado de funcionar en segundo plano?",
-              "wrongPassword": "Contraseña incorrecta",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "¿Tiene un archivo de monedero?",
@@ -1034,6 +962,26 @@
           "openDevTools": "Open Developer Tools",
           "inspectElements": "Inspect Element"
         },
+        "sendTx": {
+          "enterPassword": "Enter password to confirm the transaction",
+          "unlocking": "Confirming...",
+          "estimatedGasError":
+            "It seems this transaction will fail. If you submit it, it may consume all the gas you send.",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "Couldn't connect to the node, did it crash in the background?",
+            "wrongPassword": "Wrong password",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Your latest block number",
@@ -1110,50 +1058,6 @@
               "passwordMismatch": "Your passwords don't match.",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Send transaction",
-              "contractExecution": "Execute contract",
-              "createContract": "Create contract"
-            },
-            "contractExecutionInfo":
-              "You are about to execute a function on a contract. This might involve transfer of value.",
-            "contractCreationInfo":
-              "You are about to create a contract from the provided data.",
-            "enterPassword": "Enter password to confirm the transaction",
-            "unlocking": "Confirming...",
-            "createContract": "Create contract",
-            "estimatedFee": "Estimated fee consumption",
-            "estimatedGasError":
-              "It seems this transaction will fail. If you submit it, it may consume all the gas you send.",
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "gasPrice": "Gas price",
-            "perMillionGas": "ether per million gas",
-            "gasLimit": "Provide maximum fee",
-            "data": "Raw Data",
-            "parameters": "Parameters",
-            "buttons": { "sendTransaction": "Send transaction" },
-            "errors": {
-              "connectionTimeout":
-                "Couldn't connect to the node, did it crash in the background?",
-              "wrongPassword": "Wrong password",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Do you have a wallet file?",
@@ -1321,6 +1225,27 @@
           "openDevTools": "Ouvrir les outils de développement",
           "inspectElements": "Inspecter l'élément"
         },
+        "sendTx": {
+          "enterPassword":
+            "Entrez votre mot de passe pour confirmer la transaction",
+          "unlocking": "Confirmation...",
+          "estimatedGasError":
+            "Les données n'ont pas pu être executées et vont donc utiliser tout le gaz fourni.",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "La connexion au nœud n'a pas pu s'établir, est-ce un plantage dans l'arrière-plan ?",
+            "wrongPassword": "Mauvais mot de passe",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Your latest block number",
@@ -1388,51 +1313,6 @@
               "passwordMismatch": "Vos mots de passe ne correspondent pas.",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Envoyer la transaction",
-              "contractExecution": "Executer le contrat",
-              "createContract": "Créer un contrat"
-            },
-            "contractExecutionInfo":
-              "Vous êtes sur le point d'exécuter une fonction sur un contrat. Cela peut impliquer un transfert de valeur.",
-            "contractCreationInfo":
-              "Vous êtes sur le point de créer un contrat à partir des données fournies.",
-            "enterPassword":
-              "Entrez votre mot de passe pour confirmer la transaction",
-            "unlocking": "Confirmation...",
-            "createContract": "Créer contrat",
-            "estimatedFee": "Taxe de consommation estimée",
-            "estimatedGasError":
-              "Les données n'ont pas pu être executées et vont donc utiliser tout le gaz fourni.",
-            "gasPrice": "Prix du gaz",
-            "perMillionGas": "ether par million de gaz",
-            "gasLimit": "Fournir la taxe maximum",
-            "data": "Données",
-            "buttons": { "sendTransaction": "Envoyer la transaction" },
-            "errors": {
-              "connectionTimeout":
-                "La connexion au nœud n'a pas pu s'établir, est-ce un plantage dans l'arrière-plan ?",
-              "wrongPassword": "Mauvais mot de passe",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Avez-vous un fichier wallet ?",
@@ -1643,6 +1523,27 @@
           "openDevTools": "Apri strumenti di sviluppo",
           "inspectElements": "Ispeziona elemento"
         },
+        "sendTx": {
+          "enterPassword":
+            "Inserisci la password per confermare la transazione",
+          "unlocking": "Conferma in corso...",
+          "estimatedGasError":
+            "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
+          "overBlockGasLimit":
+            "Il gas richiesto per questa esecuzione potrebbe eccedere il gas limit del blocco.",
+          "notEnoughGas":
+            "Il Gas potrebbe non essere sufficiente per completare con successo questa transazione.<br>Clicca qui per aumentare la quantità di gas.",
+          "errors": {
+            "connectionTimeout":
+              "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
+            "wrongPassword": "Password errata",
+            "multipleKeysMatchAddress":
+              "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Credito insufficiente nel account principale (etherbase) per pagare il gas",
+            "sameAccount": "Non si può inviare a se stesso"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Il tuo ultimo numero di blocco",
@@ -1729,51 +1630,6 @@
               "passwordMismatch": "Le due password non sono uguali.",
               "passwordTooShort": "Usa una password più lunga"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Invia transazione",
-              "contractExecution": "Esegui contratto",
-              "createContract": "Crea contratto"
-            },
-            "contractExecutionInfo":
-              "Stai per eseguire una funzione su di un contratto. Questo potrebbe comportare trasferimento di valuta.",
-            "contractCreationInfo":
-              "Stai per creare un contratto con i dati forniti.",
-            "enterPassword":
-              "Inserisci la password per confermare la transazione",
-            "unlocking": "Conferma in corso...",
-            "createContract": "Creazione contratto",
-            "estimatedFee": "Stima consumo (commissione)",
-            "estimatedGasError":
-              "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
-            "gasPrice": "Prezzo carburante (Gas)",
-            "perMillionGas": "ether per milioni di gas",
-            "gasLimit": "Imposta limite di gas",
-            "data": "Dati",
-            "buttons": { "sendTransaction": "Invia transazione" },
-            "errors": {
-              "connectionTimeout":
-                "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
-              "wrongPassword": "Password errata",
-              "multipleKeysMatchAddress":
-                "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Credito insufficiente nel account principale (etherbase) per pagare il gas",
-              "sameAccount": "Non si può inviare a se stesso"
-            },
-            "transactionThrow":
-              "Il contratto non consente l'esecuzione di questa transazione",
-            "noEstimate": "Impossibile stimare il gas necessario.",
-            "parameters": "Parametri",
-            "showRawBytecode": "mostra dati grezzi",
-            "showDecodedParameters": "mostra parametri decodificati",
-            "lookupData": "Provo a decodificare i dati",
-            "lookupDataExplainer": "Cerca questo su internet",
-            "overBlockGasLimit":
-              "Il gas richiesto per questa esecuzione potrebbe eccedere il gas limit del blocco.",
-            "notEnoughGas":
-              "Il Gas potrebbe non essere sufficiente per completare con successo questa transazione.<br>Clicca qui per aumentare la quantità di gas."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Hai un file per il wallet ?",
@@ -1940,6 +1796,27 @@
           "openDevTools": "開発者用ツールを開く",
           "inspectElements": "要素を検証する"
         },
+        "sendTx": {
+          "enterPassword":
+            "トランザクションを実行するためにパスワードを入力して下さい。",
+          "unlocking": "承認しています...",
+          "estimatedGasError":
+            "データが実行できませんでした、そのため全ての GAS が消費されます。",
+          "overBlockGasLimit":
+            "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
+          "notEnoughGas":
+            "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください.",
+          "errors": {
+            "connectionTimeout":
+              "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
+            "wrongPassword": "パスワードが間違っています",
+            "multipleKeysMatchAddress":
+              "複数のキーが一致する場合は、キーストアから重複を削除してください (ファイル -> バックアップを取る -> アカウント)",
+            "insufficientFundsForGas":
+              "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
+            "sameAccount": "同一アカウントには送信できません"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "ブロック番号",
@@ -2007,50 +1884,6 @@
               "passwordMismatch": "パスワードが正しくありません",
               "passwordTooShort": "もっと長いパスワードにしてください"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "トランザクションを送信する",
-              "contractExecution": "コントラクトを実行する",
-              "createContract": "コントラクトを作成する"
-            },
-            "contractExecutionInfo":
-              "コントラクトの関数を実行しようとしています。これはバリューの移転を含むことがあります。",
-            "contractCreationInfo":
-              "与えられたデータからコントラクトを作成しようとしています。",
-            "enterPassword":
-              "トランザクションを実行するためにパスワードを入力して下さい。",
-            "unlocking": "承認しています...",
-            "createContract": "コントラクトを作成する",
-            "estimatedFee": "推定されるトランザクションフィーの消費",
-            "estimatedGasError":
-              "データが実行できませんでした、そのため全ての GAS が消費されます。",
-            "gasPrice": "GAS 価格",
-            "perMillionGas": "100 万 GAS ごとの Ether",
-            "gasLimit": "GAS リミット",
-            "data": "データ",
-            "buttons": { "sendTransaction": "トランザクションを送信" },
-            "errors": {
-              "connectionTimeout":
-                "ノードにつなげませんでした、バックグラウンドで落ちていますか?",
-              "wrongPassword": "パスワードが間違っています",
-              "multipleKeysMatchAddress":
-                "複数のキーが一致する場合は、キーストアから重複を削除してください (ファイル -> バックアップを取る -> アカウント)",
-              "insufficientFundsForGas":
-                "GAS を支払うためにメインアカウント(etherbase)に不十分な資金",
-              "sameAccount": "同一アカウントには送信できません"
-            },
-            "transactionThrow": "契約により、この取引は実行されません",
-            "noEstimate": "GAS を見積もることができませんでした",
-            "parameters": "パラメータ",
-            "showRawBytecode": "生データを見る",
-            "showDecodedParameters": "デコードされたパラメータを見る",
-            "lookupData": "データをデコードする",
-            "lookupDataExplainer": "インターネットでこれを確認してください",
-            "overBlockGasLimit":
-              "この実行に必要な GAS は、ブロック GAS の限界を超える可能性があります",
-            "notEnoughGas":
-              "GAS が不足してトランザクションが正常に終了できませんでした.<br>ここをクリックして GAS を増やしてください."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "ウォレットファイルを持っていますか?",
@@ -2231,6 +2064,26 @@
           "openDevTools": "개발도구 열기",
           "inspectElements": "요소 검사"
         },
+        "sendTx": {
+          "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
+          "unlocking": "확인 중...",
+          "estimatedGasError":
+            "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
+          "overBlockGasLimit":
+            "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
+          "notEnoughGas":
+            "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요",
+          "errors": {
+            "connectionTimeout":
+              "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
+            "wrongPassword": "암호가 일치하지 않습니다",
+            "multipleKeysMatchAddress":
+              "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
+            "insufficientFundsForGas":
+              "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
+            "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "마지막 블록 번호",
@@ -2262,7 +2115,7 @@
           "nodeSyncing":
             "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
           "nodeSyncInfo":
-            "현재 __highestBlock__ 중 __currentBlcok__ 을 다운로드중",
+            "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
           "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
           "nodeStarting": "이더리움 노드를 시작중...",
           "nodeStarted": "이더리움 노드가 시작됨",
@@ -2295,49 +2148,6 @@
               "passwordMismatch": "암호가 일치하지 않습니다.",
               "passwordTooShort": "암호가 너무 짧습니다."
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "트랜잭션 보내기",
-              "contractExecution": "계약 실행",
-              "createContract": "계약 만들기"
-            },
-            "contractExecutionInfo":
-              "계약 상의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
-            "contractCreationInfo":
-              "주어진 데이터를 가지고 계약을 만들려고 합니다.",
-            "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
-            "unlocking": "확인 중...",
-            "createContract": "계약 만들기",
-            "estimatedFee": "예상 수수료 사용량",
-            "estimatedGasError":
-              "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
-            "gasPrice": "개스 가격",
-            "perMillionGas": "백만 개스당 이더수",
-            "gasLimit": "최고 수수료 제공",
-            "data": "데이터",
-            "buttons": { "sendTransaction": "트랜잭션 보내기" },
-            "errors": {
-              "connectionTimeout":
-                "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
-              "wrongPassword": "암호가 일치하지 않습니다",
-              "multipleKeysMatchAddress":
-                "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
-              "insufficientFundsForGas":
-                "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
-              "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
-            },
-            "transactionThrow": "이 계약은 트랜젝션을 승인하지 않을 것 입니다.",
-            "noEstimate": "가스 소모량을 추정 할 수 없습니다.",
-            "parameters": "파라미터",
-            "showRawBytecode": "원 데이터 보기",
-            "showDecodedParameters": "디코딩된 파라미터 보기",
-            "lookupData": "데이터 디코딩하기",
-            "lookupDataExplainer": "해당 내용을 인터넷에서 확인하세요",
-            "overBlockGasLimit":
-              "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
-            "notEnoughGas":
-              "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요"
           },
           "importAccount": {
             "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",
@@ -2516,6 +2326,26 @@
           "openDevTools": "Åpne Utviklerverktøy",
           "inspectElements": "Inspiser Element"
         },
+        "sendTx": {
+          "enterPassword": "Skriv inn passord for å bekrefte transaksjonen",
+          "unlocking": "Bekrefter...",
+          "estimatedGasError":
+            "Data kan ikke utføres, så den kommer til å bruke all gass.",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "Kunne ikke koble til noden, krasjet den i bakgrunnen?",
+            "wrongPassword": "Feil passord",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Det siste blokknummeret",
@@ -2558,7 +2388,7 @@
           "nodeSyncing":
             "Ethereum-node trenger å synkroniseres, vennligst vent...",
           "nodeSyncInfo":
-            "Laster ned blokk __currentBlock__ av __highestBlock__.",
+            "Laster ned blokk __displayBlock__ av __highestBlock__.",
           "nodeSyncConnecting": "Leter etter peers...",
           "launchApp": "Start Applikasjonen",
           "nodeSyncInfoStates":
@@ -2583,50 +2413,6 @@
               "passwordMismatch": "Passordene stemmer ikke overens.",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Send transaksjon",
-              "contractExecution": "Utfør kontrakt",
-              "createContract": "Lag kontrakt"
-            },
-            "contractExecutionInfo":
-              "Du er i ferd med å utføre en funksjon på en kontrakt. Dette kan innebære overføring av verdier.",
-            "contractCreationInfo":
-              "Du er i ferd med å lage en kontrakt fra de oppgitte data.",
-            "enterPassword": "Skriv inn passord for å bekrefte transaksjonen",
-            "unlocking": "Bekrefter...",
-            "createContract": "Lag kontrakt",
-            "estimatedFee": "Beregnet avgiftsforbruk",
-            "estimatedGasError":
-              "Data kan ikke utføres, så den kommer til å bruke all gass.",
-            "gasPrice": "Gass pris",
-            "perMillionGas": "ether per million gass",
-            "gasLimit": "Gi maksimal avgift",
-            "data": "Data",
-            "buttons": { "sendTransaction": "Send transaksjon" },
-            "errors": {
-              "connectionTimeout":
-                "Kunne ikke koble til noden, krasjet den i bakgrunnen?",
-              "wrongPassword": "Feil passord",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Har du en lommebok-fil?",
@@ -2826,6 +2612,28 @@
           "openDevTools": "Open Ontwikkelaarstools",
           "inspectElements": "Element Inspecteren"
         },
+        "sendTx": {
+          "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
+          "unlocking": "Bevestigen...",
+          "estimatedGasError":
+            "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
+          "transactionThrow":
+            "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
+            "wrongPassword": "Onjuist wachtwoord",
+            "multipleKeysMatchAddress":
+              "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
+            "sameAccount": "Kan niet naar zichzelf versturen"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Jouw laatste bloknummer",
@@ -2868,7 +2676,7 @@
           "nodeSyncing":
             "Ethereum node moet synchroniseren, even geduld alstublieft...",
           "nodeSyncInfo":
-            "Blok __currentBlock__ van __highestBlock__ aan het downloaden.",
+            "Blok __displayBlock__ van __highestBlock__ aan het downloaden.",
           "nodeSyncInfoStates":
             "Blok __displayBlock__ van __highestBlock__ aan het downloaden, <br> Chain structuur __displayState__ van __displayKnownStates__ aan het downloaden",
           "nodeSyncConnecting": "Zoeken naar peers...",
@@ -2905,51 +2713,6 @@
               "passwordMismatch": "Je wachtwoorden komen niet overeen.",
               "passwordTooShort": "Kies een langer wachtwoord"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Verzend transactie",
-              "contractExecution": "Voer contract uit",
-              "createContract": "Contract aanmaken"
-            },
-            "contractExecutionInfo":
-              "Je staat op het punt een functie uit te voeren op een contract. Dit kan overdrachten van waarde tot gevolg hebben.",
-            "contractCreationInfo":
-              "Je staat op het punt een contract aan te maken met de gegeven gevevens.",
-            "enterPassword":
-              "Voer wachtwoord in om de transactie te bevestigen",
-            "unlocking": "Bevestigen...",
-            "createContract": "Contract aanmaken",
-            "estimatedFee": "Ingeschatte transactie kosten",
-            "estimatedGasError":
-              "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
-            "transactionThrow":
-              "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
-            "noEstimate": "We konden de hoeveelheid gas niet inschatten.",
-            "gasPrice": "Gas prijs",
-            "perMillionGas": "Ether per millioen gas",
-            "gasLimit": "Geef maximum transactie kosten aan",
-            "data": "Ruwe Data",
-            "parameters": "Parameters",
-            "buttons": { "sendTransaction": "Verstuur transactie" },
-            "errors": {
-              "connectionTimeout":
-                "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
-              "wrongPassword": "Onjuist wachtwoord",
-              "multipleKeysMatchAddress":
-                "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
-              "sameAccount": "Kan niet naar zichzelf versturen"
-            },
-            "showRawBytecode": "Toon ruwe data",
-            "showDecodedParameters": "Toon gedecodeerde parameters",
-            "lookupData": "Probeer de data te decoderen",
-            "lookupDataExplainer": "Zoek hiernaar op het internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Heb je een wallet bestand?",
@@ -3117,6 +2880,26 @@
           "openDevTools": "Abrir ferramentas de desenvolvimento",
           "inspectElements": "Inspecionar elemento"
         },
+        "sendTx": {
+          "enterPassword": "Digite a senha para confirmar",
+          "unlocking": "Confirmando...",
+          "estimatedGasError":
+            "Transação inválida, se executada irá gastar todo o combustível dado.",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "Não pode se conectar com Node, é possível que tenha sido interrompido pelo sistema",
+            "wrongPassword": "Senha errada",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (Arquivos -> Cópia de segurança -> Contas)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Número de seu bloco atual",
@@ -3180,49 +2963,6 @@
               "passwordMismatch": "Senhas não batem.",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Enviar transação",
-              "contractExecution": "Executar ordem",
-              "createContract": "Criar contrato"
-            },
-            "contractExecutionInfo":
-              "Você irá executar uma ordem em um contrato. Isso pode envolver transferência de valores.",
-            "contractCreationInfo": "Você irá criar um contrato",
-            "enterPassword": "Digite a senha para confirmar",
-            "unlocking": "Confirmando...",
-            "createContract": "Criar contrato",
-            "estimatedFee": "Taxa estimada",
-            "estimatedGasError":
-              "Transação inválida, se executada irá gastar todo o combustível dado.",
-            "gasPrice": "Preço do combustível",
-            "perMillionGas": "ether por milhão de combustível",
-            "gasLimit": "Providenciar taxa máxima",
-            "data": "Dados",
-            "buttons": { "sendTransaction": "Enviar transação" },
-            "errors": {
-              "connectionTimeout":
-                "Não pode se conectar com Node, é possível que tenha sido interrompido pelo sistema",
-              "wrongPassword": "Senha errada",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (Arquivos -> Cópia de segurança -> Contas)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "Você tem um arquivo de conta?",
@@ -3404,6 +3144,26 @@
           "openDevTools": "Открыть инструменты разработчика",
           "inspectElements": "Исследовать элемент"
         },
+        "sendTx": {
+          "enterPassword": "Введите пароль для подтверждения транзакции",
+          "unlocking": "Подтвержение...",
+          "estimatedGasError":
+            "Задание не может быть выполнено, так как будет израсходован весь выделенный газ",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout":
+              "Не удается подключиться к ноде, возможно завершилось фоновое приложение?",
+            "wrongPassword": "Неверный пароль",
+            "multipleKeysMatchAddress":
+              "У нескольких ключей совпадает адрес, удалите дубликаты из хранилища ключей (Меню -> Аккаунты -> Резервное копирование -> Аккаунтов)",
+            "insufficientFundsForGas":
+              "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Номер вашего последнего блока",
@@ -3474,50 +3234,6 @@
             "checking": "Checking for updates to __name__...",
             "noUpdateFound":
               "No update found. You are running the latest version of __name__."
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Отправить транзакцию",
-              "contractExecution": "Выполнить контракт",
-              "createContract": "Создать контракт"
-            },
-            "contractExecutionInfo":
-              "Вы собираетесь выполнить часть контракта. Этот процесс может включать передачу значений (транзакцию).",
-            "contractCreationInfo":
-              "Вы собираетесь создать контракт на основе предоставленных данных.",
-            "enterPassword": "Введите пароль для подтверждения транзакции",
-            "unlocking": "Подтвержение...",
-            "createContract": "Создание контракта",
-            "estimatedFee": "Расчетная сумма вознаграждения",
-            "estimatedGasError":
-              "Задание не может быть выполнено, так как будет израсходован весь выделенный газ",
-            "gasPrice": "Цена газа",
-            "perMillionGas": "эфир за миллион газа",
-            "gasLimit": "Установить максимальную сумму вознаграждения",
-            "data": "Данные",
-            "buttons": { "sendTransaction": "Отправить транзакцию" },
-            "errors": {
-              "connectionTimeout":
-                "Не удается подключиться к ноде, возможно завершилось фоновое приложение?",
-              "wrongPassword": "Неверный пароль",
-              "multipleKeysMatchAddress":
-                "У нескольких ключей совпадает адрес, удалите дубликаты из хранилища ключей (Меню -> Аккаунты -> Резервное копирование -> Аккаунтов)",
-              "insufficientFundsForGas":
-                "Недостаточно средств на основном счете (ETHERBASE) чтобы заплатить за газ",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "У вас есть файл кошелька?",
@@ -3702,6 +3418,26 @@
           "openDevTools": "Hap Mjetet e Zhvilluesit",
           "inspectElements": "Inspekto Elemente"
         },
+        "sendTx": {
+          "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
+          "unlocking": "Duke konfirmuar...",
+          "estimatedGasError":
+            "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
+          "overBlockGasLimit":
+            "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
+          "notEnoughGas":
+            "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
+          "errors": {
+            "connectionTimeout":
+              "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
+            "wrongPassword": "Fjalëkalim i gabuar",
+            "multipleKeysMatchAddress":
+              "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
+            "insufficientFundsForGas":
+              "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
+            "sameAccount": "Nuk mund t'i dërgohet vetes"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "Numri i bllokut tuaj të fundit",
@@ -3751,7 +3487,7 @@
           "nodeSyncing":
             "Nyja Ethereum ka nevojë të sinkronizohet, ju lutemi prisni...",
           "nodeSyncInfo":
-            "Duke marrë bllokun __currentBlock__ nga __highestBlock__.",
+            "Duke marrë bllokun __displayBlock__ nga __highestBlock__.",
           "nodeSyncInfoStates":
             "Duke shkarkuar bllokun __displayBlock__ nga __highestBlock__, <br> Duke shkarkuar strukturën e zinxhirit __displayState__ nga __displayKnownStates__",
           "nodeSyncConnecting": "Duke kërkuar miq...",
@@ -3790,52 +3526,6 @@
               "passwordMismatch": "Fjalëkalimet nuk përputhen.",
               "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "Dërgoni transaksionin",
-              "contractExecution": "Kryeni kontratën.",
-              "createContract": "Krijoni kontratë"
-            },
-            "contractExecutionInfo":
-              "Ju jeni pranë ekzekutimit të një funksioni në një kontratë. Kjo mund të përfshijë transferim valutash.",
-            "contractCreationInfo":
-              "Ju jeni pranë krijimit të një kontrate nga të dhënat e marra.",
-            "enterPassword":
-              "Fusni fjalëkalimin që të konfirmoni transaksionin",
-            "unlocking": "Duke konfirmuar...",
-            "createContract": "Krijoni kontratë",
-            "estimatedFee": "Tarifa e hamendësuar për t'u konsumuar",
-            "estimatedGasError":
-              "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
-            "transactionThrow":
-              "Kontrata nuk lejon kryerjen e këtij transaksioni",
-            "overBlockGasLimit":
-              "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
-            "notEnoughGas":
-              "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
-            "noEstimate":
-              "Nuk mund të hamendësonim sasinë e nevojshme të karburantit.",
-            "gasPrice": "Çmimi i karburantit",
-            "perMillionGas": "ether për milion karburant",
-            "gasLimit": "Vendos tarifë maksimale",
-            "data": "Të dhëna të paformatuara",
-            "parameters": "Parametra",
-            "buttons": { "sendTransaction": "Kryej transaksionin" },
-            "errors": {
-              "connectionTimeout":
-                "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
-              "wrongPassword": "Fjalëkalim i gabuar",
-              "multipleKeysMatchAddress":
-                "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
-              "insufficientFundsForGas":
-                "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
-              "sameAccount": "Nuk mund t'i dërgohet vetes"
-            },
-            "showRawBytecode": "shfaq të dhënat e paformatuara",
-            "showDecodedParameters": "shfaq parametrat e dekoduar",
-            "lookupData": "Përpiqu të dekodosh të dhëna",
-            "lookupDataExplainer": "Kërkojeni në internet"
           },
           "importAccount": {
             "doYouHaveAWalletFile": "A keni një skedë kulete?",
@@ -3999,6 +3689,24 @@
           "openDevTools": "打開開發者工具",
           "inspectElements": "檢查元素"
         },
+        "sendTx": {
+          "enterPassword": "輸入密碼以確認該交易",
+          "unlocking": "正在確認……",
+          "estimatedGasError": "資料無法被執行，因此這將消耗所有提供的Gas。",
+          "overBlockGasLimit":
+            "The gas required for this execution could exceed the block gas limit.",
+          "notEnoughGas":
+            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+          "errors": {
+            "connectionTimeout": "無法連接該節點，後台節點是否崩潰了？",
+            "wrongPassword": "密碼錯誤",
+            "multipleKeysMatchAddress":
+              "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+            "insufficientFundsForGas":
+              "Insufficient funds in main account (etherbase) to pay for gas",
+            "sameAccount": "Can't send to itself"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "最新區塊數量",
@@ -4061,47 +3769,6 @@
               "passwordMismatch": "您輸入的密碼不符合。",
               "passwordTooShort": "Make a longer password"
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "發送交易",
-              "contractExecution": "執行合約",
-              "createContract": "創建合約"
-            },
-            "contractExecutionInfo":
-              "您即將執行該合約上的一個函數，這可能需要會轉走您輸入的數量。",
-            "contractCreationInfo": "您即將用提供的資料創建一個合約。",
-            "enterPassword": "輸入密碼以確認該交易",
-            "unlocking": "正在確認……",
-            "createContract": "創建合約",
-            "estimatedFee": "預計消耗費用",
-            "estimatedGasError": "資料無法被執行，因此這將消耗所有提供的Gas。",
-            "gasPrice": "Gas價格",
-            "perMillionGas": "以太幣/每百萬gas",
-            "gasLimit": "提供最大費用",
-            "data": "數據",
-            "buttons": { "sendTransaction": "發送交易" },
-            "errors": {
-              "connectionTimeout": "無法連接該節點，後台節點是否崩潰了？",
-              "wrongPassword": "密碼錯誤",
-              "multipleKeysMatchAddress":
-                "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-              "insufficientFundsForGas":
-                "Insufficient funds in main account (etherbase) to pay for gas",
-              "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
           },
           "importAccount": {
             "doYouHaveAWalletFile": "您擁有一個錢包文件嗎？",
@@ -4341,25 +4008,14 @@
               "passwordTooShort": "Make a longer password"
             }
           },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "发送交易",
-              "contractExecution": "执行合约",
-              "createContract": "创建合约"
-            },
-            "contractExecutionInfo":
-              "你即将执行该合约上的一个函数，这可能需要会转走你输入的数量。",
-            "contractCreationInfo": "你即将用提供的数据创建一个合约。",
+          "sendTx": {
             "enterPassword": "输入密码以确认该交易",
             "unlocking": "正在确认……",
-            "createContract": "创建合约",
-            "estimatedFee": "预计消耗费用",
             "estimatedGasError": "数据无法被执行，因此这将消耗所有提供的Gas。",
-            "gasPrice": "Gas价格",
-            "perMillionGas": "以太币/每百万gas",
-            "gasLimit": "提供最大费用",
-            "data": "数据",
-            "buttons": { "sendTransaction": "发送交易" },
+            "overBlockGasLimit":
+              "The gas required for this execution could exceed the block gas limit.",
+            "notEnoughGas":
+              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
             "errors": {
               "connectionTimeout": "无法连接该节点，后台节点是否可能崩溃了？",
               "wrongPassword": "密码错误",
@@ -4368,19 +4024,7 @@
               "insufficientFundsForGas":
                 "Insufficient funds in main account (etherbase) to pay for gas",
               "sameAccount": "Can't send to itself"
-            },
-            "transactionThrow":
-              "The contract won't allow this transaction to be executed",
-            "noEstimate": "We couldn't estimate the gas.",
-            "parameters": "Parameters",
-            "showRawBytecode": "show raw data",
-            "showDecodedParameters": "show decoded parameters",
-            "lookupData": "Try to decode data",
-            "lookupDataExplainer": "Look this up on the internet",
-            "overBlockGasLimit":
-              "The gas required for this execution could exceed the block gas limit.",
-            "notEnoughGas":
-              "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
+            }
           },
           "importAccount": {
             "doYouHaveAWalletFile": "你拥有一个钱包文件吗？",
@@ -4525,6 +4169,26 @@
           "openDevTools": "개발도구 열기",
           "inspectElements": "엘리먼트 검사"
         },
+        "sendTx": {
+          "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
+          "unlocking": "확인 중...",
+          "estimatedGasError":
+            "데이더를 실행할 수 없었습니다. 따라서 제공했던 개스를 모두 소모할 것입니다.",
+          "overBlockGasLimit":
+            "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
+          "notEnoughGas":
+            "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요",
+          "errors": {
+            "connectionTimeout":
+              "노드에 연결할 수 없었습니다. 백그라운드에서 작동 중지되었습니까?",
+            "wrongPassword": "암호가 일치하지 않습니다",
+            "multipleKeysMatchAddress":
+              "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
+            "insufficientFundsForGas":
+              "주 계좌(이더리움)에 가스를 지불할 금액이 충분하지 않습니다.",
+            "sameAccount": "현재 사용하고 있는 계좌로 전송할 수 없습니다"
+          }
+        },
         "nodeInfo": {
           "active": "active",
           "blockNumber": "마지막 블록 번호",
@@ -4556,7 +4220,7 @@
           "nodeSyncing":
             "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
           "nodeSyncInfo":
-            "현재 __highestBlock__ 중 __currentBlcok__ 을 다운로드중",
+            "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
           "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
           "nodeStarting": "이더리움 노드를 시작중...",
           "nodeStarted": "이더리움 노드가 시작됨",
@@ -4589,49 +4253,6 @@
               "passwordMismatch": "암호가 일치하지 않습니다.",
               "passwordTooShort": "암호가 너무 짧습니다."
             }
-          },
-          "sendTransactionConfirmation": {
-            "title": {
-              "sendTransaction": "트랜잭션 보내기",
-              "contractExecution": "계약 실행",
-              "createContract": "계약 만들기"
-            },
-            "contractExecutionInfo":
-              "계약 상의 함수를 실행시키려고 합니다. 가치 전송이 일어날 수도 있습니다.",
-            "contractCreationInfo":
-              "주어진 데이터를 가지고 계약을 만들려고 합니다.",
-            "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
-            "unlocking": "확인 중...",
-            "createContract": "계약 만들기",
-            "estimatedFee": "예상 수수료 사용량",
-            "estimatedGasError":
-              "데이더를 실행할 수 없었습니다. 따라서 제공했던 개스를 모두 소모할 것입니다.",
-            "gasPrice": "개스 가격",
-            "perMillionGas": "백만 개스당 이더수",
-            "gasLimit": "최고 수수료 제공",
-            "data": "데이터",
-            "buttons": { "sendTransaction": "트랜잭션 보내기" },
-            "errors": {
-              "connectionTimeout":
-                "노드에 연결할 수 없었습니다. 백그라운드에서 작동 중지되었습니까?",
-              "wrongPassword": "암호가 일치하지 않습니다",
-              "multipleKeysMatchAddress":
-                "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
-              "insufficientFundsForGas":
-                "주 계좌(이더리움)에 가스를 지불할 금액이 충분하지 않습니다.",
-              "sameAccount": "현재 사용하고 있는 계좌로 전송할 수 없습니다"
-            },
-            "transactionThrow": "이 계약은 트랜젝션을 승인하지 않을 것 입니다.",
-            "noEstimate": "가스를 측정 할 수 없습니다.",
-            "parameters": "파라미터",
-            "showRawBytecode": "원래 데이터 보기",
-            "showDecodedParameters": "디코딩된 파라미터 보기",
-            "lookupData": "데이터 디코딩하기",
-            "lookupDataExplainer": "해다 내용을 인터넷에서 확인하세요",
-            "overBlockGasLimit":
-              "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
-            "notEnoughGas":
-              "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요"
           },
           "importAccount": {
             "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",

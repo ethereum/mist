@@ -13,18 +13,26 @@ The body template
 
 import React from 'react';
 import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import About from '../../components/About';
 import CreateAccount from '../../components/CreateAccount';
+import SendTx from '../../components/SendTx/';
 
 const COMPONENTS = {
   About,
-  CreateAccount
+  CreateAccount,
+  SendTx
 };
 
 function renderReactComponentPopup(component) {
   const Component = COMPONENTS[component];
   if (!!Component) {
-    render(<Component />, document.getElementById('react-entry'));
+    render(
+      <Provider store={store}>
+        <Component />
+      </Provider>,
+      document.getElementById('react-entry')
+    );
   }
 }
 
@@ -74,7 +82,7 @@ Template.body.helpers({
       const renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
 
       // TODO: handle React components
-      const REACT_COMPONENTS = ['about', 'createAccount'];
+      const REACT_COMPONENTS = ['about', 'createAccount', 'sendTx'];
       if (REACT_COMPONENTS.includes(renderWindow[1])) {
         return false;
       }

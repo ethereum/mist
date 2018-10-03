@@ -92,6 +92,24 @@
       "openDevTools": "打開開發者工具",
       "inspectElements": "檢查元素"
     },
+    "sendTx": {
+      "enterPassword": "輸入密碼以確認該交易",
+      "unlocking": "正在確認……",
+      "estimatedGasError": "資料無法被執行，因此這將消耗所有提供的Gas。",
+      "overBlockGasLimit":
+        "The gas required for this execution could exceed the block gas limit.",
+      "notEnoughGas":
+        "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+      "errors": {
+        "connectionTimeout": "無法連接該節點，後台節點是否崩潰了？",
+        "wrongPassword": "密碼錯誤",
+        "multipleKeysMatchAddress":
+          "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
+        "insufficientFundsForGas":
+          "Insufficient funds in main account (etherbase) to pay for gas",
+        "sameAccount": "Can't send to itself"
+      }
+    },
     "nodeInfo": {
       "active": "active",
       "blockNumber": "最新區塊數量",
@@ -161,49 +179,6 @@
           "passwordMismatch": "您輸入的密碼不符合。",
           "passwordTooShort": "Make a longer password"
         }
-      },
-      "sendTransactionConfirmation": {
-        "title": {
-          "sendTransaction": "發送交易",
-          "contractExecution": "執行合約",
-          "createContract": "創建合約"
-        },
-        "contractExecutionInfo":
-          "您即將執行該合約上的一個函數，這可能需要會轉走您輸入的數量。",
-        "contractCreationInfo": "您即將用提供的資料創建一個合約。",
-        "enterPassword": "輸入密碼以確認該交易",
-        "unlocking": "正在確認……",
-        "createContract": "創建合約",
-        "estimatedFee": "預計消耗費用",
-        "estimatedGasError": "資料無法被執行，因此這將消耗所有提供的Gas。",
-        "gasPrice": "Gas價格",
-        "perMillionGas": "以太幣/每百萬gas",
-        "gasLimit": "提供最大費用",
-        "data": "數據",
-        "buttons": {
-          "sendTransaction": "發送交易"
-        },
-        "errors": {
-          "connectionTimeout": "無法連接該節點，後台節點是否崩潰了？",
-          "wrongPassword": "密碼錯誤",
-          "multipleKeysMatchAddress":
-            "Multiple keys match address. Please remove duplicates from keystore (menu -> File -> Backup -> Accounts)",
-          "insufficientFundsForGas":
-            "Insufficient funds in main account (etherbase) to pay for gas",
-          "sameAccount": "Can't send to itself"
-        },
-        "transactionThrow":
-          "The contract won't allow this transaction to be executed",
-        "noEstimate": "We couldn't estimate the gas.",
-        "parameters": "Parameters",
-        "showRawBytecode": "show raw data",
-        "showDecodedParameters": "show decoded parameters",
-        "lookupData": "Try to decode data",
-        "lookupDataExplainer": "Look this up on the internet",
-        "overBlockGasLimit":
-          "The gas required for this execution could exceed the block gas limit.",
-        "notEnoughGas":
-          "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
       },
       "importAccount": {
         "doYouHaveAWalletFile": "您擁有一個錢包文件嗎？",

@@ -132,6 +132,26 @@
         "openDevTools": "Hap Mjetet e Zhvilluesit",
         "inspectElements": "Inspekto Elemente"
       },
+      "sendTx": {
+        "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
+        "unlocking": "Duke konfirmuar...",
+        "estimatedGasError":
+          "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
+        "overBlockGasLimit":
+          "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
+        "notEnoughGas":
+          "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
+        "errors": {
+          "connectionTimeout":
+            "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
+          "wrongPassword": "Fjalëkalim i gabuar",
+          "multipleKeysMatchAddress":
+            "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
+          "insufficientFundsForGas":
+            "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
+          "sameAccount": "Nuk mund t'i dërgohet vetes"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "Numri i bllokut tuaj të fundit",
@@ -178,7 +198,7 @@
         "nodeSyncing":
           "Nyja Ethereum ka nevojë të sinkronizohet, ju lutemi prisni...",
         "nodeSyncInfo":
-          "Duke marrë bllokun __currentBlock__ nga __highestBlock__.",
+          "Duke marrë bllokun __displayBlock__ nga __highestBlock__.",
         "nodeSyncInfoStates":
           "Duke shkarkuar bllokun __displayBlock__ nga __highestBlock__, <br> Duke shkarkuar strukturën e zinxhirit __displayState__ nga __displayKnownStates__",
         "nodeSyncConnecting": "Duke kërkuar miq...",
@@ -217,51 +237,6 @@
             "passwordMismatch": "Fjalëkalimet nuk përputhen.",
             "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Dërgoni transaksionin",
-            "contractExecution": "Kryeni kontratën.",
-            "createContract": "Krijoni kontratë"
-          },
-          "contractExecutionInfo":
-            "Ju jeni pranë ekzekutimit të një funksioni në një kontratë. Kjo mund të përfshijë transferim valutash.",
-          "contractCreationInfo":
-            "Ju jeni pranë krijimit të një kontrate nga të dhënat e marra.",
-          "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
-          "unlocking": "Duke konfirmuar...",
-          "createContract": "Krijoni kontratë",
-          "estimatedFee": "Tarifa e hamendësuar për t'u konsumuar",
-          "estimatedGasError":
-            "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
-          "transactionThrow":
-            "Kontrata nuk lejon kryerjen e këtij transaksioni",
-          "overBlockGasLimit":
-            "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
-          "notEnoughGas":
-            "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
-          "noEstimate":
-            "Nuk mund të hamendësonim sasinë e nevojshme të karburantit.",
-          "gasPrice": "Çmimi i karburantit",
-          "perMillionGas": "ether për milion karburant",
-          "gasLimit": "Vendos tarifë maksimale",
-          "data": "Të dhëna të paformatuara",
-          "parameters": "Parametra",
-          "buttons": { "sendTransaction": "Kryej transaksionin" },
-          "errors": {
-            "connectionTimeout":
-              "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
-            "wrongPassword": "Fjalëkalim i gabuar",
-            "multipleKeysMatchAddress":
-              "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
-            "insufficientFundsForGas":
-              "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
-            "sameAccount": "Nuk mund t'i dërgohet vetes"
-          },
-          "showRawBytecode": "shfaq të dhënat e paformatuara",
-          "showDecodedParameters": "shfaq parametrat e dekoduar",
-          "lookupData": "Përpiqu të dekodosh të dhëna",
-          "lookupDataExplainer": "Kërkojeni në internet"
         },
         "importAccount": {
           "doYouHaveAWalletFile": "A keni një skedë kulete?",

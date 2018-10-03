@@ -376,8 +376,7 @@ class Windows {
                     require will be removed through preloader */,
         preload: `${__dirname}/preloader/mistUI.js`,
         'overlay-fullscreen-video': true,
-        'overlay-scrollbars': true,
-        experimentalFeatures: true
+        'overlay-scrollbars': true
       },
       wallet: {
         preload: `${__dirname}/preloader/walletMain.js`,
@@ -465,11 +464,21 @@ class Windows {
             alwaysOnTop: true
           }
         };
-      case 'sendTransactionConfirmation':
+      case 'sendTx':
         return {
           electronOptions: {
             width: 580,
             height: 550,
+            alwaysOnTop: true,
+            enableLargerThanScreen: false,
+            resizable: true
+          }
+        };
+      case 'txHistory':
+        return {
+          electronOptions: {
+            width: 580,
+            height: 465,
             alwaysOnTop: true,
             enableLargerThanScreen: false,
             resizable: true
@@ -570,7 +579,9 @@ class Windows {
       'updateAvailable',
       'clientUpdateAvailable',
       'connectAccounts',
-      'createAccount'
+      'createAccount',
+      'sendTx',
+      'txHistory'
     ];
     if (
       !genericWindowBlacklist.includes(type) &&

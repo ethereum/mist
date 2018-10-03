@@ -146,6 +146,28 @@
         "openDevTools": "Open Ontwikkelaarstools",
         "inspectElements": "Element Inspecteren"
       },
+      "sendTx": {
+        "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
+        "unlocking": "Bevestigen...",
+        "estimatedGasError":
+          "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
+        "transactionThrow":
+          "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
+        "overBlockGasLimit":
+          "The gas required for this execution could exceed the block gas limit.",
+        "notEnoughGas":
+          "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+        "errors": {
+          "connectionTimeout":
+            "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
+          "wrongPassword": "Onjuist wachtwoord",
+          "multipleKeysMatchAddress":
+            "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
+          "insufficientFundsForGas":
+            "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
+          "sameAccount": "Kan niet naar zichzelf versturen"
+        }
+      },
       "nodeInfo": {
         "active": "active",
         "blockNumber": "Jouw laatste bloknummer",
@@ -188,7 +210,7 @@
         "nodeSyncing":
           "Ethereum node moet synchroniseren, even geduld alstublieft...",
         "nodeSyncInfo":
-          "Blok __currentBlock__ van __highestBlock__ aan het downloaden.",
+          "Blok __displayBlock__ van __highestBlock__ aan het downloaden.",
         "nodeSyncInfoStates":
           "Blok __displayBlock__ van __highestBlock__ aan het downloaden, <br> Chain structuur __displayState__ van __displayKnownStates__ aan het downloaden",
         "nodeSyncConnecting": "Zoeken naar peers...",
@@ -225,50 +247,6 @@
             "passwordMismatch": "Je wachtwoorden komen niet overeen.",
             "passwordTooShort": "Kies een langer wachtwoord"
           }
-        },
-        "sendTransactionConfirmation": {
-          "title": {
-            "sendTransaction": "Verzend transactie",
-            "contractExecution": "Voer contract uit",
-            "createContract": "Contract aanmaken"
-          },
-          "contractExecutionInfo":
-            "Je staat op het punt een functie uit te voeren op een contract. Dit kan overdrachten van waarde tot gevolg hebben.",
-          "contractCreationInfo":
-            "Je staat op het punt een contract aan te maken met de gegeven gevevens.",
-          "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
-          "unlocking": "Bevestigen...",
-          "createContract": "Contract aanmaken",
-          "estimatedFee": "Ingeschatte transactie kosten",
-          "estimatedGasError":
-            "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
-          "transactionThrow":
-            "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
-          "noEstimate": "We konden de hoeveelheid gas niet inschatten.",
-          "gasPrice": "Gas prijs",
-          "perMillionGas": "Ether per millioen gas",
-          "gasLimit": "Geef maximum transactie kosten aan",
-          "data": "Ruwe Data",
-          "parameters": "Parameters",
-          "buttons": { "sendTransaction": "Verstuur transactie" },
-          "errors": {
-            "connectionTimeout":
-              "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
-            "wrongPassword": "Onjuist wachtwoord",
-            "multipleKeysMatchAddress":
-              "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
-            "insufficientFundsForGas":
-              "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
-            "sameAccount": "Kan niet naar zichzelf versturen"
-          },
-          "showRawBytecode": "Toon ruwe data",
-          "showDecodedParameters": "Toon gedecodeerde parameters",
-          "lookupData": "Probeer de data te decoderen",
-          "lookupDataExplainer": "Zoek hiernaar op het internet",
-          "overBlockGasLimit":
-            "The gas required for this execution could exceed the block gas limit.",
-          "notEnoughGas":
-            "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount."
         },
         "importAccount": {
           "doYouHaveAWalletFile": "Heb je een wallet bestand?",

@@ -37,7 +37,7 @@ class ContextDescription extends Component {
   }
 
   alertIfSendingEther() {
-    if (!this.props.value) return null;
+    if (!this.props.value || parseInt(this.props.value, 16) === 0) return null;
 
     return (
       <div className="context-description__send-eth-alert">

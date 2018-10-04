@@ -127,7 +127,7 @@ class TxRow extends Component {
         {tx.data && (
           <div>
             {i18n.t('mist.txHistory.data')}:{' '}
-            <span className="bold">{tx.data}</span>
+            <span className="bold tx-data">{tx.data}</span>
           </div>
         )}
         <div className="tx-moreDetails" onClick={() => this.toggleDetails()}>

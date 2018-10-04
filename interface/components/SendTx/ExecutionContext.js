@@ -123,14 +123,14 @@ class ExecutionContext extends Component {
           <span className="execution-context__details-title">
             {i18n.t('mist.sendTx.gasPriceStandard')}
           </span>
-          <span className="execution-context__details-value">{`${gasPriceGweiStandard} GWEI`}</span>
+          <span className="execution-context__details-value">{`${gasPriceGweiStandard} Gwei`}</span>
         </div>
 
         <div className="execution-context__details-row">
           <span className="execution-context__details-title">
             {i18n.t('mist.sendTx.gasPricePriority')}
           </span>
-          <span className="execution-context__details-value">{`${gasPriceGweiPriority} GWEI`}</span>
+          <span className="execution-context__details-value">{`${gasPriceGweiPriority} Gwei`}</span>
         </div>
 
         <div className="execution-context__details-row">

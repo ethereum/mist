@@ -70,7 +70,9 @@ class TxParties extends Component {
         return (
           <div className="tx-parties__party">
             <DappIdenticon identity={address.toLowerCase()} size="small" />
-            <div className="tx-parties__direction-name">TO</div>
+            <div className="tx-parties__direction-name">
+              {i18n.t('mist.sendTx.to')}
+            </div>
             <span className="tx-parties__address bold">{address}</span>
           </div>
         );

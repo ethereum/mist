@@ -85,42 +85,8 @@ class TxRow extends Component {
       }
     }
 
-    let status = (
-      <span className="bold" style={{ color: 'grey' }}>
-        {i18n.t('mist.txHistory.statusPending')}
-      </span>
-    );
-    if (tx.status === 0) {
-      status = (
-        <span className="bold" style={{ color: 'red' }}>
-          {i18n.t('mist.txHistory.statusFailed')}
-        </span>
-      );
-    } else if (tx.status === 1 && tx.blockNumber) {
-      const blockNumber = _.max([
-        this.props.nodes.local.blockNumber,
-        this.props.nodes.remote.blockNumber
-      ]);
-      const numberConfirmations = blockNumber - tx.blockNumber;
-      status = (
-        <span>
-          <span className="bold" style={{ color: 'green' }}>
-            {i18n.t('mist.txHistory.statusConfirmed')}
-          </span>{' '}
-          <span>
-            ({i18n.t('mist.txHistory.confirmations', {
-              count: numberConfirmations
-            })})
-          </span>
-        </span>
-      );
-    }
-
     return (
       <div>
-        <div>
-          {i18n.t('mist.txHistory.status')}: {status}
-        </div>
         <div>
           {i18n.t('mist.txHistory.txHash')}:{' '}
           <span className="bold">{txHashLink}</span>
@@ -203,6 +169,37 @@ class TxRow extends Component {
       description = `Sent ${etherAmount} Ether`;
     }
 
+    let status = (
+      <span className="bold" style={{ color: 'grey' }}>
+        {i18n.t('mist.txHistory.statusPending')}
+      </span>
+    );
+    if (tx.status === 0) {
+      status = (
+        <span className="bold" style={{ color: 'red' }}>
+          {i18n.t('mist.txHistory.statusFailed')}
+        </span>
+      );
+    } else if (tx.status === 1 && tx.blockNumber) {
+      const blockNumber = _.max([
+        this.props.nodes.local.blockNumber,
+        this.props.nodes.remote.blockNumber
+      ]);
+      const numberConfirmations = blockNumber - tx.blockNumber;
+      status = (
+        <span>
+          <span className="bold" style={{ color: 'green' }}>
+            {i18n.t('mist.txHistory.statusConfirmed')}
+          </span>{' '}
+          <span>
+            ({i18n.t('mist.txHistory.confirmations', {
+              count: numberConfirmations
+            })})
+          </span>
+        </span>
+      );
+    }
+
     return (
       <div key={tx.hash || tx.nonce} className="tx">
         <div className="right">
@@ -241,6 +238,9 @@ class TxRow extends Component {
             )}
           </div>
         )}
+        <div>
+          {i18n.t('mist.txHistory.status')}: {status}
+        </div>
         {this.renderDetails()}
       </div>
     );

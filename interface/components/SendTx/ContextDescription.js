@@ -65,7 +65,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          <span className="bold">Upload</span> New Contract
+          <span className="bold">Upload</span> new contract
         </div>
         <div className="context-description__subtext">
           About {bytesCount} bytes

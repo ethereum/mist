@@ -44,7 +44,7 @@ class TxParties extends Component {
           {i18n.t('mist.sendTx.from')}
         </div>
         <div>
-          <span className="bold">{from}</span>
+          <span className="tx-parties__address bold">{from}</span>
         </div>
       </div>
     );
@@ -70,8 +70,10 @@ class TxParties extends Component {
         return (
           <div className="tx-parties__party">
             <DappIdenticon identity={address.toLowerCase()} size="small" />
-            <div className="tx-parties__direction-name">TO</div>
-            <span className="bold">{address}</span>
+            <div className="tx-parties__direction-name">
+              {i18n.t('mist.sendTx.to')}
+            </div>
+            <span className="tx-parties__address bold">{address}</span>
           </div>
         );
       }
@@ -91,7 +93,7 @@ class TxParties extends Component {
               ? i18n.t('mist.sendTx.contract')
               : i18n.t('mist.sendTx.to')}
           </div>
-          <span className="bold">{to}</span>
+          <span className="tx-parties__address bold">{to}</span>
         </div>
       );
     }

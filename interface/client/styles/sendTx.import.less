@@ -1,7 +1,7 @@
 // Shared
 
 .bold {
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .capitalize {
@@ -20,12 +20,12 @@
 // ExecutionContext.js
 
 .execution-context {
-  padding: 50px 34px 12px;
+  padding: 50px 34px 8px;
 }
 
 .execution-context__details {
-  margin: 18px 0 12px;
-  font-size: 16px;
+  margin: 18px 0 0;
+  font-size: 14px;
   text-align: left;
   -webkit-app-region: drag;
 }
@@ -41,16 +41,22 @@
   padding-right: 16px;
 }
 
-.execution-context__details-value {
-  font-weight: bold;
+.execution-context__details-value,
+.execution-context__execution-function {
+  font-weight: 500;
 }
 
-.execution-context__execution-function {
-  font-weight: bold;
+.execution-context__address,
+.execution-context__param-address {
+  user-select: all;
+}
+.execution-context__param-address {
+  margin-left: 6px;
 }
 
 .execution-context__details-link {
-  font-size: 16px;
+  padding: 4px 0;
+  font-size: 14px;
   color: #00aafa;
   cursor: pointer;
   text-align: left;
@@ -84,7 +90,7 @@
 .execution-context__param-value {
   display: flex;
   align-items: center;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .execution-context__param-type {
@@ -101,7 +107,7 @@
 
 .context-description__sentence {
   margin: 18px 0 24px;
-  font-size: 24px;
+  font-size: 36px;
   text-align: left;
 
   .dapp-identicon {
@@ -159,6 +165,9 @@
   width: 75px;
 }
 
+.tx-parties__address {
+  user-select: all;
+}
 // FeeSelector.js
 
 .fee-selector {

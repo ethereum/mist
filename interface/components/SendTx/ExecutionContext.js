@@ -75,9 +75,13 @@ class ExecutionContext extends Component {
             {param.type === 'address' ? (
               <div className="execution-context__param-identicon">
                 <DappIdenticon identity={param.value} size="small" />
+                <span className="execution-context__param-address">
+                  {param.value}
+                </span>
               </div>
-            ) : null}
-            {param.value}
+            ) : (
+              param.value
+            )}
           </div>
           <div className="execution-context__param-type">{param.type}</div>
         </div>
@@ -119,14 +123,14 @@ class ExecutionContext extends Component {
           <span className="execution-context__details-title">
             {i18n.t('mist.sendTx.gasPriceStandard')}
           </span>
-          <span className="execution-context__details-value">{`${gasPriceGweiStandard} GWEI`}</span>
+          <span className="execution-context__details-value">{`${gasPriceGweiStandard} Gwei`}</span>
         </div>
 
         <div className="execution-context__details-row">
           <span className="execution-context__details-title">
             {i18n.t('mist.sendTx.gasPricePriority')}
           </span>
-          <span className="execution-context__details-value">{`${gasPriceGweiPriority} GWEI`}</span>
+          <span className="execution-context__details-value">{`${gasPriceGweiPriority} Gwei`}</span>
         </div>
 
         <div className="execution-context__details-row">
@@ -154,7 +158,9 @@ class ExecutionContext extends Component {
                   {i18n.t('mist.sendTx.tokenContractName')}
                 </span>
                 <DappIdenticon identity={token.address} size="small" />
-                <span className="bold">{token.address}</span>
+                <span className="bold execution-context__address">
+                  {token.address}
+                </span>
               </div>
             )}
           </div>

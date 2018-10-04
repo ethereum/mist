@@ -175,7 +175,7 @@
       "statusPending": "Pending",
       "statusFailed": "Failed",
       "statusConfirmed": "Confirmed",
-      "confirmations": "__count__ confirmations",
+      "confirmations": "__count__ block confirmations",
       "txHash": "Transaction Hash",
       "etherAmount": "Ether Amount",
       "nonce": "Nonce",

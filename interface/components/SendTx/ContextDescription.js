@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { formatTokenCount } from '../../utils/formatters';
+import { formatTokenCount, formatFunctionName } from '../../utils/formatters';
 
 class ContextDescription extends Component {
   constructor(props) {
@@ -95,12 +95,7 @@ class ContextDescription extends Component {
 
   renderGenericFunctionDescription() {
     const { executionFunction } = this.props;
-
-    let executionFunctionClean =
-      executionFunction.charAt(0).toUpperCase() +
-      executionFunction
-        .slice(1, executionFunction.indexOf('('))
-        .replace(/([A-Z]+|[0-9]+)/g, ' $1');
+    let executionFunctionClean = formatFunctionName(executionFunction);
 
     return (
       <div className="context-description__sentence">

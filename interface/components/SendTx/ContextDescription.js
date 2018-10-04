@@ -65,7 +65,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          Upload <span className="bold">New Contract</span>
+          <span className="bold">Upload</span> New Contract
         </div>
         <div className="context-description__subtext">
           About {bytesCount} bytes
@@ -104,14 +104,13 @@ class ContextDescription extends Component {
 
     return (
       <div className="context-description__sentence">
-        Execute{' '}
+        <span className="bold">Execute </span>
         {executionFunctionClean ? (
           <React.Fragment>
-            <span className="bold">&#8220;{executionFunctionClean}&#8221;</span>{' '}
-            function
+            &#8220;{executionFunctionClean}&#8221; function
           </React.Fragment>
         ) : (
-          <span className="bold">contract function</span>
+          <React.Fragment>contract function</React.Fragment>
         )}
         {this.alertIfSendingEther()}
       </div>
@@ -136,7 +135,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
+          <span className="bold">Transfer</span> {this.formattedBalance()} Ether
         </div>
         <div className="context-description__subtext">{conversion}</div>
       </div>

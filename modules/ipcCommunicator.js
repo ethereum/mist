@@ -60,12 +60,15 @@ ipc.on('backendAction_setWindowSize', (e, width, height) => {
 
   if (senderWindow) {
     const { x, y } = senderWindow.window.getBounds();
-    senderWindow.window.setBounds({
-      width,
-      height: height | 0,
-      x,
-      y
-    });
+    senderWindow.window.setBounds(
+      {
+        width,
+        height: height | 0,
+        x,
+        y
+      },
+      true
+    );
   }
 });
 

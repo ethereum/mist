@@ -3,7 +3,8 @@
   "extends": [
     "plugin:prettier/recommended",
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "prettier"
   ],
   "globals": {
     "i18n": true,

@@ -218,23 +218,6 @@ test['Pin tab test'] = function*() {
   sidebarItemsAfterAdd.length.should.eql(3);
 };
 
-test[
-  'Browse tab should be changed to pinned tab if URLs are the same'
-] = function*() {
-  // ETH-01-007
-  const client = this.client;
-  yield this.selectTab('browser');
-
-  yield this.navigateTo('https://wallet.ethereum.org');
-  yield Q.delay(1000);
-  const selectedTab = (yield client.execute(() => {
-    // code executed in browser context
-    return LocalStore.get('selectedTab');
-  })).value;
-
-  selectedTab.should.eql('wallet');
-};
-
 test["Wallet tab shouldn't contain browser bar with input"] = function*() {
   const client = this.client;
   yield this.selectTab('wallet');

@@ -1,5 +1,3 @@
-const origin = this.origin;
-
 (function() {
   class EthereumProvider extends window.EventEmitter {
     constructor() {
@@ -58,7 +56,7 @@ const origin = this.origin;
       // Send jsonrpc request to node
       window.postMessage(
         { type: 'mistAPI_ethereum_provider_write', message: payload },
-        origin
+        '*'
       );
 
       return promise;
@@ -135,7 +133,7 @@ const origin = this.origin;
 
     _connect() {
       // Send to node
-      window.postMessage({ type: 'mistAPI_ethereum_provider_connect' }, origin);
+      window.postMessage({ type: 'mistAPI_ethereum_provider_connect' }, '*');
 
       // Reconnect on close
       this.once('close', this._connect.bind(this));

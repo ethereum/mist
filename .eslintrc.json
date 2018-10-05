@@ -10,6 +10,7 @@
     "Tabs": true,
     "Tracker": true,
     "_": true,
+    "__dirname": true,
     "window": true,
     "location": true,
     "document": true,

@@ -62,10 +62,11 @@
       return promise;
     }
 
-    subscribe(subscriptionType, subscriptionMethod, params) {
+    subscribe(subscriptionType, subscriptionMethod, params = []) {
       return this.send(subscriptionType, [subscriptionMethod, ...params]).then(
         subscriptionId => {
           this._activeSubscriptions.push(subscriptionId);
+          return subscriptionId;
         }
       );
     }
@@ -79,6 +80,7 @@
           );
           // Remove listeners on subscriptionId
           this.removeAllListeners(subscriptionId);
+          return success;
         }
       });
     }

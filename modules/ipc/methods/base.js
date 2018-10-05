@@ -260,7 +260,11 @@ module.exports = class BaseProcessor {
           !tab.permissions ||
           !tab.permissions.accounts ||
           tab.permissions.accounts.length === 0 ||
-          !tab.permissions.accounts.includes(fromAddress)
+          !tab.permissions.accounts
+            .map(a => {
+              return a.toLowerCase();
+            })
+            .includes(fromAddress)
         ) {
           const error = new Error('Unauthorized');
           error.code = 4100;

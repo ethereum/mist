@@ -17,3 +17,6 @@ plugins:
 exclude_patterns:
 - "tests/"
 - "interface/client/lib/signatures.js"
+- "interface/utils/hqx.js"
+- "build-interface/"
+- "modules/preloader/injected/BigNumber.js"

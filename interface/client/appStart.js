@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { getLanguage } from './actions.js';
 import About from '../components/About';
 import RequestAccount from '../components/RequestAccount';
-import NodeInfo from '../components/NodeInfo';
+import NodeInfo from '../components/NodeInfo/';
 import SendTx from '../components/SendTx/';
 import TxHistory from '../components/TxHistory/';
 

@@ -212,3 +212,23 @@ progress[value]::-webkit-progress-bar {
     box-shadow: 0 0 0 0 rgba(36, 195, 58, 0);
   }
 }
+
+.pulse-light__blue {
+  animation: beaconBlue ease-in-out;
+  animation-duration: 2s;
+}
+
+@keyframes beaconBlue {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(0, 170, 250, 0.4);
+    box-shadow: 0 0 0 0 rgba(0, 170, 250, 0.4);
+  }
+  70% {
+    -moz-box-shadow: 0 0 0 10px rgba(0, 170, 250, 0);
+    box-shadow: 0 0 0 10px rgba(0, 170, 250, 0);
+  }
+  100% {
+    -moz-box-shadow: 0 0 0 0 rgba(0, 170, 250, 0);
+    box-shadow: 0 0 0 0 rgba(0, 170, 250, 0);
+  }
+}

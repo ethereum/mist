@@ -72,19 +72,7 @@ class NodeInfo extends Component {
           <div className="block-number row-icon">
             <i className="icon icon-layers" /> {formattedBlockNumber}
           </div>
-          <div
-            className={
-              diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
-            }
-          >
-            {
-              // TODO: make this i8n compatible
-            }
-            <i className="icon icon-clock" />
-            {diff < 120
-              ? diff + ' seconds'
-              : Math.floor(diff / 60) + ' minutes'}
-          </div>
+          {this.renderTimeSince(diff)}
         </div>
       );
     }
@@ -147,6 +135,23 @@ class NodeInfo extends Component {
     );
   }
 
+  renderTimeSince(diff) {
+    return (
+      <div
+        title={i18n.t('mist.nodeInfo.timeSinceBlock')}
+        className={
+          diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
+        }
+      >
+        {
+          // TODO: make this i8n compatible
+        }
+        <i className="icon icon-clock" />
+        {diff < 120 ? diff + ' seconds' : Math.floor(diff / 60) + ' minutes'}
+      </div>
+    );
+  }
+
   localStatsSynced() {
     const { blockNumber, timestamp, syncMode } = this.props.local;
     const formattedBlockNumber = numeral(blockNumber).format('0,0');
@@ -168,12 +173,7 @@ class NodeInfo extends Component {
             {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
           </div>
         )}
-        <div
-          className="block-diff row-icon"
-          title={i18n.t('mist.nodeInfo.timeSinceBlock')}
-        >
-          <i className="icon icon-clock" /> {diff} seconds
-        </div>
+        {this.renderTimeSince(diff)}
       </div>
     );
   }

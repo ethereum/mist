@@ -41,23 +41,11 @@ export default class DappIdenticon extends Component {
       .toDataURL();
   }
 
-  renderLink() {
-    /*
-    return (
-    <a href="{{link}}" class="dapp-identicon {{class}}" style="background-image: url('{{identiconData identity}}')" title={{i18nTextIcon}}>
-      <img src="{{identiconDataPixel identity}}" class='identicon-pixel'>
-    </a>
-    )
-    */
-  }
-
   render() {
-    if (!this.props.identity) {
-      return null;
-    }
+    const { identity } = this.props;
 
-    if (this.props.link) {
-      return this.renderLink();
+    if (!identity) {
+      return null;
     }
 
     // dapp class sizes: large, medium, small, tiny
@@ -66,11 +54,13 @@ export default class DappIdenticon extends Component {
         className={`dapp-identicon dapp-${this.props.size}`}
         title={i18n.t('elements.identiconHelper')}
         style={{
-          backgroundImage: `url('${this.identiconData(this.props.identity)}')`
+          backgroundImage: `url('${this.identiconData(
+            identity.toLowerCase()
+          )}')`
         }}
       >
         <img
-          src={this.identiconDataPixel(this.props.identity.toLowerCase())}
+          src={this.identiconDataPixel(identity.toLowerCase())}
           className="identicon-pixel"
         />
       </span>

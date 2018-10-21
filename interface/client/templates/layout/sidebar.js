@@ -57,11 +57,7 @@ Template['layout_sidebar'].helpers({
     return Tabs.find({}, { sort: { position: 1 } }).fetch();
   },
   isUrlAboutBlank: function() {
-    if (this.url == 'about:blank') {
-      return true;
-    } else {
-      return false;
-    }
+    return this.url === 'about:blank';
   },
   /**
     Return the correct name

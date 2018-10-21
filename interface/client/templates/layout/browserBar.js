@@ -46,11 +46,7 @@ Template['layout_browserBar'].helpers({
     return Tabs.findOne(LocalStore.get('selectedTab'));
   },
   isUrlAboutBlank: function() {
-    if (this.url == 'about:blank') {
-      return true;
-    } else {
-      return false;
-    }
+    return this.url === 'about:blank';
   },
   /**
     Returns dapps current accounts

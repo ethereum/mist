@@ -48,11 +48,17 @@ Template['popupWindows_connectAccounts'].onCreated(function() {
   this.autorun(function() {
     TemplateVar.set('tab', Tabs.findOne(LocalStore.get('selectedTab')));
 
-    var tab = TemplateVar.get('tab');
+    const tab = TemplateVar.get('tab');
+
     var accounts =
       tab && tab.permissions && tab.permissions.accounts
         ? tab.permissions.accounts
         : [];
+
+    // Only use available accounts (in case of network switch or account removal)
+    const availableAccounts = _.pluck(EthAccounts.find().fetch(), 'address');
+    accounts = _.intersection(accounts, availableAccounts);
+
     TemplateVar.set('accounts', accounts);
   });
 });
@@ -68,11 +74,7 @@ Template['popupWindows_connectAccounts'].helpers({
   },
   isBrowserTab: function() {
     const selectedTab = TemplateVar.get('tab');
-    if (selectedTab && selectedTab._id == 'browser') {
-      return true;
-    } else {
-      return false;
-    }
+    return selectedTab && selectedTab._id == 'browser';
   },
   /**
     Returns a cleaner version of URL

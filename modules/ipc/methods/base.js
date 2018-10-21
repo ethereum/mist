@@ -253,24 +253,36 @@ module.exports = class BaseProcessor {
     ];
     if (methods.includes(payload.method)) {
       const fromAddress = payload.params[0].from;
-      if (!this._isAdminConnection(conn)) {
-        const tab = db.getCollection('UI_tabs').findOne({ webviewId: conn.id });
-        if (
-          !tab ||
-          !tab.permissions ||
-          !tab.permissions.accounts ||
-          tab.permissions.accounts.length === 0 ||
-          !tab.permissions.accounts
-            .map(a => {
-              return a.toLowerCase();
-            })
-            .includes(fromAddress)
-        ) {
-          const error = new Error('Unauthorized');
-          error.code = 4100;
-          payload.error = error;
-        }
+      if (!this._accountHasPermission(fromAddress, conn)) {
+        const error = new Error('Unauthorized');
+        error.code = 4100;
+        payload.error = error;
       }
     }
+  }
+  _accountHasPermission(address, conn) {
+    if (this._isAdminConnection(conn)) {
+      return true;
+    }
+
+    const tab = db.getCollection('UI_tabs').findOne({ webviewId: conn.id });
+
+    if (
+      !tab ||
+      !tab.permissions ||
+      !tab.permissions.accounts ||
+      tab.permissions.accounts.length === 0
+    ) {
+      return false;
+    }
+
+    const lowercaseAccounts = tab.permissions.accounts.map(a => {
+      return a.toLowerCase();
+    });
+    if (!lowercaseAccounts.includes(address.toLowerCase())) {
+      return false;
+    }
+
+    return true;
   }
 };

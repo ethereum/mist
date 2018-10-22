@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { formatTokenCount } from '../../utils/formatters';
+import { formatTokenCount, formatFunctionName } from '../../utils/formatters';
 
 class ContextDescription extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class ContextDescription extends Component {
   }
 
   alertIfSendingEther() {
-    if (!this.props.value) return null;
+    if (!this.props.value || parseInt(this.props.value, 16) === 0) return null;
 
     return (
       <div className="context-description__send-eth-alert">
@@ -65,7 +65,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          Upload <span className="bold">New Contract</span>
+          <span className="bold">Upload</span> new contract
         </div>
         <div className="context-description__subtext">
           About {bytesCount} bytes
@@ -86,10 +86,8 @@ class ContextDescription extends Component {
 
     return (
       <div className="context-description__sentence">
-        {i18n.t('mist.sendTx.transfer')}{' '}
-        <span className="bold">
-          {tokenCount} {tokenSymbol}
-        </span>
+        <span className="bold">{i18n.t('mist.sendTx.transfer')}</span>{' '}
+        {tokenCount} {tokenSymbol}
         {this.alertIfSendingEther()}
       </div>
     );
@@ -97,23 +95,17 @@ class ContextDescription extends Component {
 
   renderGenericFunctionDescription() {
     const { executionFunction } = this.props;
-
-    let executionFunctionClean =
-      executionFunction.charAt(0).toUpperCase() +
-      executionFunction
-        .slice(1, executionFunction.indexOf('('))
-        .replace(/([A-Z]+|[0-9]+)/g, ' $1');
+    let executionFunctionClean = formatFunctionName(executionFunction);
 
     return (
       <div className="context-description__sentence">
-        Execute{' '}
+        <span className="bold">Execute </span>
         {executionFunctionClean ? (
           <React.Fragment>
-            <span className="bold">&#8220;{executionFunctionClean}&#8221;</span>{' '}
-            function
+            &#8220;{executionFunctionClean}&#8221; function
           </React.Fragment>
         ) : (
-          <span className="bold">contract function</span>
+          <React.Fragment>contract function</React.Fragment>
         )}
         {this.alertIfSendingEther()}
       </div>
@@ -138,7 +130,7 @@ class ContextDescription extends Component {
     return (
       <div className="context-description__sentence">
         <div>
-          Transfer <span className="bold">{this.formattedBalance()} ETHER</span>
+          <span className="bold">Transfer</span> {this.formattedBalance()} Ether
         </div>
         <div className="context-description__subtext">{conversion}</div>
       </div>

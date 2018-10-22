@@ -85,49 +85,15 @@ class TxRow extends Component {
       }
     }
 
-    let status = (
-      <span className="bold" style={{ color: 'grey' }}>
-        {i18n.t('mist.txHistory.statusPending')}
-      </span>
-    );
-    if (tx.status === 0) {
-      status = (
-        <span className="bold" style={{ color: 'red' }}>
-          {i18n.t('mist.txHistory.statusFailed')}
-        </span>
-      );
-    } else if (tx.status === 1 && tx.blockNumber) {
-      const blockNumber = _.max([
-        this.props.nodes.local.blockNumber,
-        this.props.nodes.remote.blockNumber
-      ]);
-      const numberConfirmations = blockNumber - tx.blockNumber;
-      status = (
-        <span>
-          <span className="bold" style={{ color: 'green' }}>
-            {i18n.t('mist.txHistory.statusConfirmed')}
-          </span>{' '}
-          <span>
-            ({i18n.t('mist.txHistory.confirmations', {
-              count: numberConfirmations
-            })})
-          </span>
-        </span>
-      );
-    }
-
     return (
       <div>
-        <div>
-          {i18n.t('mist.txHistory.status')}: {status}
-        </div>
         <div>
           {i18n.t('mist.txHistory.txHash')}:{' '}
           <span className="bold">{txHashLink}</span>
         </div>
         <div>
           {i18n.t('mist.txHistory.etherAmount')}:{' '}
-          <span className="bold">{etherAmount} ether</span>{' '}
+          <span className="bold">{etherAmount} Ether</span>{' '}
           {etherAmountUSD && <span> (${etherAmountUSD} USD)</span>}
         </div>
         <div>
@@ -148,20 +114,20 @@ class TxRow extends Component {
         )}
         <div>
           {i18n.t('mist.txHistory.gasPrice')}:{' '}
-          <span className="bold">{gasPriceEther} ether</span> ({gasPriceGwei}{' '}
+          <span className="bold">{gasPriceEther} Ether</span> ({gasPriceGwei}{' '}
           Gwei)
         </div>
         {txCostEther && (
           <div>
             {i18n.t('mist.txHistory.txCost')}:{' '}
-            <span className="bold">{txCostEther} ether</span>
+            <span className="bold">{txCostEther} Ether</span>
             {txCostUSD && <span> (${txCostUSD} USD)</span>}
           </div>
         )}
         {tx.data && (
           <div>
             {i18n.t('mist.txHistory.data')}:{' '}
-            <span className="bold">{tx.data}</span>
+            <span className="bold tx-data">{tx.data}</span>
           </div>
         )}
         <div className="tx-moreDetails" onClick={() => this.toggleDetails()}>
@@ -200,7 +166,38 @@ class TxRow extends Component {
       description = 'Executed  “' + executionFunctionSentence + '” function';
     } else {
       const etherAmount = this.valueToEtherAmount(tx.value);
-      description = `Sent ${etherAmount} ether`;
+      description = `Sent ${etherAmount} Ether`;
+    }
+
+    let status = (
+      <span className="bold" style={{ color: 'grey' }}>
+        {i18n.t('mist.txHistory.statusPending')}
+      </span>
+    );
+    if (tx.status === 0) {
+      status = (
+        <span className="bold" style={{ color: 'red' }}>
+          {i18n.t('mist.txHistory.statusFailed')}
+        </span>
+      );
+    } else if (tx.status === 1 && tx.blockNumber) {
+      const blockNumber = _.max([
+        this.props.nodes.local.blockNumber,
+        this.props.nodes.remote.blockNumber
+      ]);
+      const numberConfirmations = blockNumber - tx.blockNumber;
+      status = (
+        <span>
+          <span className="bold" style={{ color: 'green' }}>
+            {i18n.t('mist.txHistory.statusConfirmed')}
+          </span>{' '}
+          <span>
+            ({i18n.t('mist.txHistory.confirmations', {
+              count: numberConfirmations
+            })})
+          </span>
+        </span>
+      );
     }
 
     return (
@@ -241,6 +238,9 @@ class TxRow extends Component {
             )}
           </div>
         )}
+        <div>
+          {i18n.t('mist.txHistory.status')}: {status}
+        </div>
         {this.renderDetails()}
       </div>
     );

@@ -1,6 +1,6 @@
 {
   "name": "Mist",
-  "version": "0.11.2",
+  "version": "0.12.0",
   "license": "GPL-3.0",
   "author": "Ethereum Mist Team <mist@ethereum.org>",
   "description": "Ethereum Mist",
@@ -82,7 +82,7 @@
     "electron-builder": "^20.17.2",
     "electron-rebuild": "^1.8.2",
     "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.8.2",

@@ -1,4 +1,4 @@
-engines:
+plugins:
   duplication:
     enabled: true
     config:
@@ -14,10 +14,9 @@ engines:
   csslint:
     enabled: true
 
-ratings:  # enables GPA rating
-   paths:
-   - "**.css"
-   - "**.js"
-
-exclude_paths:
+exclude_patterns:
 - "tests/"
+- "interface/client/lib/signatures.js"
+- "interface/utils/hqx.js"
+- "build-interface/"
+- "modules/preloader/injected/BigNumber.js"

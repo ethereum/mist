@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import PieChart from 'react-minimal-pie-chart';
-import { setLocalPeerCount } from '../actions.js';
+import StatusLight from './StatusLight';
+import { setLocalPeerCount } from '../../actions.js';
 
 class NodeInfo extends Component {
   constructor(props) {
@@ -10,8 +10,7 @@ class NodeInfo extends Component {
 
     this.state = {
       showSubmenu: false,
-      ticks: 0,
-      lightClasses: ''
+      ticks: 0
     };
   }
 
@@ -20,29 +19,6 @@ class NodeInfo extends Component {
     this.interval = setInterval(() => {
       this.tick();
     }, 1000);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // if new block arrived, add animation to light
-    if (this.isNewBlock(prevProps, this.props)) {
-      const lightClasses =
-        prevProps.active === 'remote'
-          ? 'pulse-light__orange'
-          : 'pulse-light__green';
-      this.setState({ lightClasses }, () => {
-        setTimeout(() => {
-          this.setState({ lightClasses: '' });
-        }, 2000);
-      });
-    }
-  }
-
-  isNewBlock(prevProps, newProps) {
-    if (prevProps.active === 'remote') {
-      return prevProps.remote.blockNumber !== newProps.remote.blockNumber;
-    } else {
-      return prevProps.local.blockNumber !== newProps.local.blockNumber;
-    }
   }
 
   componentWillUnmount() {
@@ -96,19 +72,7 @@ class NodeInfo extends Component {
           <div className="block-number row-icon">
             <i className="icon icon-layers" /> {formattedBlockNumber}
           </div>
-          <div
-            className={
-              diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
-            }
-          >
-            {
-              // TODO: make this i8n compatible
-            }
-            <i className="icon icon-clock" />
-            {diff < 120
-              ? diff + ' seconds'
-              : Math.floor(diff / 60) + ' minutes'}
-          </div>
+          {this.renderTimeSince(diff)}
         </div>
       );
     }
@@ -171,6 +135,23 @@ class NodeInfo extends Component {
     );
   }
 
+  renderTimeSince(diff) {
+    return (
+      <div
+        title={i18n.t('mist.nodeInfo.timeSinceBlock')}
+        className={
+          diff > 60 ? 'block-diff row-icon red' : 'block-diff row-icon'
+        }
+      >
+        {
+          // TODO: make this i8n compatible
+        }
+        <i className="icon icon-clock" />
+        {diff < 120 ? diff + ' seconds' : Math.floor(diff / 60) + ' minutes'}
+      </div>
+    );
+  }
+
   localStatsSynced() {
     const { blockNumber, timestamp, syncMode } = this.props.local;
     const formattedBlockNumber = numeral(blockNumber).format('0,0');
@@ -192,12 +173,7 @@ class NodeInfo extends Component {
             {` ${this.props.local.peerCount} ${i18n.t('mist.nodeInfo.peers')}`}
           </div>
         )}
-        <div
-          className="block-diff row-icon"
-          title={i18n.t('mist.nodeInfo.timeSinceBlock')}
-        >
-          <i className="icon icon-clock" /> {diff} seconds
-        </div>
+        {this.renderTimeSince(diff)}
       </div>
     );
   }
@@ -253,51 +229,8 @@ class NodeInfo extends Component {
     );
   }
 
-  renderStatusLight() {
-    const { active, network, remote } = this.props;
-
-    const timeSince = moment(remote.timestamp, 'X');
-    const diff = moment().diff(timeSince, 'seconds');
-
-    let dotColor = network == 'main' ? '#7ed321' : '#00aafa';
-
-    const { highestBlock, currentBlock, startingBlock } = this.props.local.sync;
-    const progress =
-      ((currentBlock - startingBlock) / (highestBlock - startingBlock)) * 100;
-
-    return (
-      <div className="pie-container">
-        <div
-          id="node-info__light"
-          className={this.state.lightClasses}
-          style={{
-            backgroundColor:
-              diff > 60 ? 'red' : active === 'remote' ? 'orange' : dotColor
-          }}
-        />
-        {active === 'remote' &&
-          currentBlock !== 0 && (
-            <PieChart
-              startAngle={-90}
-              style={{
-                position: 'absolute',
-                top: 22,
-                left: 0,
-                zIndex: 2,
-                height: 16
-              }}
-              data={[
-                { value: progress || 0, key: 1, color: dotColor },
-                { value: 100 - (progress || 1), key: 2, color: 'orange' }
-              ]}
-            />
-          )}
-      </div>
-    );
-  }
-
   render() {
-    const { network } = this.props;
+    const { active, network, remote, local } = this.props;
 
     let mainClass = network == 'main' ? 'node-mainnet' : 'node-testnet';
     if (this.state.sticky) mainClass += ' sticky';
@@ -310,7 +243,12 @@ class NodeInfo extends Component {
         onMouseEnter={() => this.setState({ showSubmenu: true })}
         onMouseLeave={() => this.setState({ showSubmenu: this.state.sticky })}
       >
-        {this.renderStatusLight()}
+        <StatusLight
+          active={active}
+          network={network}
+          remote={remote}
+          local={local}
+        />
 
         {this.state.showSubmenu && (
           <section className="node-info__submenu-container">

@@ -704,7 +704,7 @@ class Windows {
     const mainWindow = this.getByType('main');
     if (mainWindow) {
       var error = new Error('User Denied Create Account');
-      error.code = 4011;
+      error.code = 4010;
       mainWindow.send(
         'uiAction_windowMessage',
         'createAccount',

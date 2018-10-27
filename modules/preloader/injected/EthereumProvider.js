@@ -8,7 +8,6 @@
       this._isConnected = false;
       this._nextJsonrpcId = 0;
       this._promises = {};
-      this._activeSubscriptions = [];
 
       // Fire the connect
       this._connect();
@@ -19,23 +18,6 @@
 
     /* Methods */
 
-    enable() {
-      return new Promise((resolve, reject) => {
-        window.mist
-          .requestAccounts()
-          .then(accounts => {
-            if (accounts.length > 0) {
-              resolve(true);
-            } else {
-              const error = new Error('User Denied Full Provider');
-              error.code = 4001;
-              reject(error);
-            }
-          })
-          .catch(reject);
-      });
-    }
-
     send(method, params = []) {
       if (!method || typeof method !== 'string') {
         return new Error('Method is not a valid string.');
@@ -43,6 +25,23 @@
 
       if (!(params instanceof Array)) {
         return new Error('Params is not a valid array.');
+      }
+
+      if (method === 'eth_requestAccounts') {
+        return new Promise((resolve, reject) => {
+          window.mist
+            .requestAccounts()
+            .then(accounts => {
+              if (accounts.length > 0) {
+                resolve(accounts);
+              } else {
+                const error = new Error('User Denied Request Accounts');
+                error.code = 4001;
+                reject(error);
+              }
+            })
+            .catch(reject);
+        });
       }
 
       const id = this._nextJsonrpcId++;
@@ -53,36 +52,13 @@
         this._promises[payload.id] = { resolve, reject };
       });
 
-      // Send jsonrpc request to node
+      // Send jsonrpc request to Mist
       window.postMessage(
         { type: 'mistAPI_ethereum_provider_write', message: payload },
         '*'
       );
 
       return promise;
-    }
-
-    subscribe(subscriptionType, subscriptionMethod, params = []) {
-      return this.send(subscriptionType, [subscriptionMethod, ...params]).then(
-        subscriptionId => {
-          this._activeSubscriptions.push(subscriptionId);
-          return subscriptionId;
-        }
-      );
-    }
-
-    unsubscribe(subscriptionType, subscriptionId) {
-      return this.send(subscriptionType, [subscriptionId]).then(success => {
-        if (success) {
-          // Remove subscription
-          this._activeSubscription = this._activeSubscription.filter(
-            id => id !== subscriptionId
-          );
-          // Remove listeners on subscriptionId
-          this.removeAllListeners(subscriptionId);
-          return success;
-        }
-      });
     }
 
     /* Internal methods */
@@ -124,9 +100,8 @@
         }
       } else {
         if (method && method.indexOf('_subscription') > -1) {
-          // Emit subscription result
-          const { subscription, result } = message.params;
-          this.emit(subscription, result);
+          // Emit subscription notification
+          this._emitNotification(message.params);
         }
       }
     }
@@ -134,7 +109,7 @@
     /* Connection handling */
 
     _connect() {
-      // Send to node
+      // Send to Mist
       window.postMessage({ type: 'mistAPI_ethereum_provider_connect' }, '*');
 
       // Reconnect on close
@@ -142,6 +117,10 @@
     }
 
     /* Events */
+
+    _emitNotification(result) {
+      this.emit('notification', result);
+    }
 
     _emitConnect() {
       this._isConnected = true;
@@ -151,17 +130,6 @@
     _emitClose(code, reason) {
       this._isConnected = false;
       this.emit('close', code, reason);
-
-      // Send Error objects to any open subscriptions
-      this._activeSubscriptions.forEach(id => {
-        const error = new Error(
-          `Provider connection to network closed.
-           Subscription lost, please subscribe again.`
-        );
-        this.emit(id, error);
-      });
-      // Clear subscriptions
-      this._activeSubscriptions = [];
     }
 
     _emitNetworkChanged(networkId) {
@@ -192,16 +160,6 @@
 
     isConnected() {
       return this._isConnected;
-    }
-
-    /* Deprecated methods */
-
-    sendSync() {
-      return new Error('Sync calls are not supported.');
-    }
-
-    sendBatch() {
-      return new Error('Batch calls are not supported.');
     }
   }
 

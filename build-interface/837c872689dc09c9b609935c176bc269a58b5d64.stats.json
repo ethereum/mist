@@ -3,8 +3,8 @@
     "name": "standard-minifier-js",
     "version": "2.3.4"
   },
-  "totalMinifiedBytes": 2779016,
-  "totalMinifiedGzipBytes": 739549,
+  "totalMinifiedBytes": 3382518,
+  "totalMinifiedGzipBytes": 930235,
   "minifiedBytesByPackage": {
     "packages/meteor.js": 9433,
     "packages/less.js": 24,
@@ -900,7 +900,7 @@
     ],
     "app/global-imports.js": 1705,
     "app/app.js": [
-      513448,
+      1116950,
       {
         "client": {
           "templates": {
@@ -946,31 +946,34 @@
               },
               "1_web3js_init.js": 109
             },
-            "signatures.js": 262801,
+            "signatures.js": 865121,
             "thirdParty.js": 207
           },
           "actions.js": 321,
-          "appStart.js": 2145,
+          "appStart.js": 2146,
           "collections.js": 385,
           "mistAPIBackend.js": 1819,
           "windowEvents.js": 980
         },
         "components": {
+          "NodeInfo": {
+            "StatusLight.js": 1392,
+            "index.js": 5537
+          },
           "SendTx": {
-            "ContextDescription.js": 3450,
-            "ExecutionContext.js": 4247,
+            "ContextDescription.js": 3740,
+            "ExecutionContext.js": 4356,
             "FeeSelector.js": 2337,
             "Footer.js": 1102,
-            "TxParties.js": 2113,
+            "TxParties.js": 2193,
             "index.js": 3453
           },
           "TxHistory": {
-            "TxRow.js": 5281,
+            "TxRow.js": 5289,
             "index.js": 1777
           },
           "About.js": 928,
-          "DappIdenticon.js": 862,
-          "NodeInfo.js": 6534,
+          "DappIdenticon.js": 803,
           "RequestAccount.js": 2850
         },
         "i18n": {
@@ -992,7 +995,7 @@
           "app.zh.i18n.json": 110,
           "mist.ca.i18n.json": 111,
           "mist.de.i18n.json": 110,
-          "mist.en.i18n.json": 9961,
+          "mist.en.i18n.json": 9959,
           "mist.es.i18n.json": 120,
           "mist.fa.i18n.json": 114,
           "mist.fr.i18n.json": 121,
@@ -1009,9 +1012,10 @@
           "mist.zh.i18n.json": 110
         },
         "utils": {
+          "formatters.js": 338,
           "hqx.js": 134258
         },
-        "actions.js": 6525,
+        "actions.js": 6419,
         "project-i18n.js": 1150
       }
     ]

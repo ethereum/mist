@@ -4,3 +4,6 @@
 [submodule "meteor-dapp-wallet"]
 	path = meteor-dapp-wallet
 	url = https://github.com/ethereum/meteor-dapp-wallet.git
+[submodule "wallet"]
+	path = wallet
+	url = git@github.com:ethereum/meteor-dapp-wallet.git

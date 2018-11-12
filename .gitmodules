@@ -1,6 +1,6 @@
 [submodule "dapp-styles"]
-    path = interface/public/dapp-styles
-    url = git://github.com/ethereum/dapp-styles.git
+  path = interface/public/dapp-styles
+  url = git://github.com/ethereum/dapp-styles.git
 [submodule "meteor-dapp-wallet"]
 	path = meteor-dapp-wallet
-	url = https://github.com/ethereum/meteor-dapp-wallet.git
+  url = https://github.com/ethereum/meteor-dapp-wallet.git

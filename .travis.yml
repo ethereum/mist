@@ -90,9 +90,6 @@ install:
 
   - yarn
 
-  # only code signs when on master
-  - if [[ $TRAVIS_BRANCH != "master" ]]; then unset CSC_LINK CSC_KEY_PASSWORD; fi
-
 script:
   - yarn test:unit:once
     

@@ -1,23 +1,23 @@
 #
-# TODO: compilation
-# TODO: store_artifacts
-# TODO: name commands properly
 # TODO: mac job
 # TODO: improve caching
 # TODO: fix `xvfb gulp test` command
-# TODO: windows job
 # TODO: store_test_results
 # TODO: docker images
 #
 
-defaults: &defaults
-    working_directory: /home/circleci/mist
-    docker:
-      - image: circleci/node:8.9.4-browsers
-    environment:
-        # Setting variable to fix node-gyp build error:
-        # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
-      - CXX_host: 'g++ -m32'
+defaults_linux: &defaults_linux
+  working_directory: /home/circleci/mist
+  docker:
+    - image: circleci/node:8.9.4-browsers
+  environment:
+    # Setting variable to fix node-gyp build error:
+    # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
+    - CXX_host: 'g++ -m32'
+
+defaults_mac: &defaults_mac
+  macos:
+    xcode: '9.0'
 
 linux_dependencies: &linux_dependencies
   name: Linux package dependencies
@@ -45,7 +45,7 @@ install_node_modules: &install_node_modules
 version: 2
 jobs:
   build:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - checkout
 
@@ -76,7 +76,7 @@ jobs:
             - mist
 
   mist-linux:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -94,7 +94,7 @@ jobs:
           path: dist_mist/release
 
   wallet-linux:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -110,6 +110,38 @@ jobs:
 
       - store_artifacts:
           path: dist_wallet/release
+
+  mist-mac:
+    <<: *defaults_mac
+    steps:
+      - checkout
+
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:mist --mac
+
+      - store_artifacts:
+          path: dist_mist/release
+
+  wallet-mac:
+    <<: *defaults_mac
+    steps:
+      - checkout
+
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:wallet --mac
+
+      - store_artifacts:
+          path: dist_mist/release
 
   spectron-test: 
     docker:
@@ -141,3 +173,6 @@ workflows:
       - unit-test:
           requires:
             - build
+      - mac-wallet
+      - mac-mist
+              

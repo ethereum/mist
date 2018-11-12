@@ -141,7 +141,7 @@ jobs:
       - run: yarn build:wallet --mac
 
       - store_artifacts:
-          path: dist_mist/release
+          path: dist_wallet/release
 
   spectron-test: 
     docker:
@@ -173,6 +173,6 @@ workflows:
       - unit-test:
           requires:
             - build
-      - mac-wallet
-      - mac-mist
+      - wallet-mac
+      - mist-mac
               

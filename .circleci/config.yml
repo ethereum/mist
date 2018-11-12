@@ -152,7 +152,7 @@ jobs:
       - run: xvfb-run yarn test:e2e
 
   unit-test:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/

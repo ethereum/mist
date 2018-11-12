@@ -117,8 +117,6 @@ jobs:
       - checkout
 
       - run:
-          <<: *linux_dependencies
-      - run:
           <<: *install_meteor 
       - run:
           <<: *install_node_modules
@@ -132,8 +130,6 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          <<: *linux_dependencies
       - run:
           <<: *install_meteor 
       - run:

@@ -95,8 +95,8 @@ script:
     
   - yarn build:${PRODUCT} --$GULP_PLATFORM
 
-  - if [[ $PRODUCT == "mist" ]]; then
-      yarn test:e2e
+  - if [ $PRODUCT == "mist" ]; then
+      yarn test:e2e;
     fi
 
 after_success:

@@ -89,13 +89,13 @@ jobs:
 
       - run: yarn build:mist --linux
 
-      - run: 
-          name: Run integration tests
-          command: xvfb-run yarn test:e2e
+        # - run: 
+        #  name: Run integration tests
+        #  command: xvfb-run yarn test:e2e
 
-      - run:
-          name: Deploy to GitHub releases
-          command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --linux; fi
+          #- run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --linux; fi
 
       - store_artifacts:
           path: dist_mist/release
@@ -115,9 +115,9 @@ jobs:
 
       - run: yarn build:wallet --linux
 
-      - run:
-          name: Deploy to GitHub releases
-          command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --linux; fi
+        #- run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --linux; fi
 
       - store_artifacts:
           path: dist_wallet/release
@@ -134,13 +134,13 @@ jobs:
           <<: *install_node_modules
       - run: yarn build:mist --mac
 
-      - run: 
-          name: Run integration tests
-          command: yarn test:e2e
+        #- run: 
+        #  name: Run integration tests
+        #  command: yarn test:e2e
 
-      - run:
-          name: Deploy to GitHub releases
-          command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --mac; fi
+#      - run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --mac; fi
 
       - store_artifacts:
           path: dist_mist/release
@@ -157,9 +157,9 @@ jobs:
           <<: *install_node_modules
       - run: yarn build:wallet --mac
 
-      - run:
-          name: Deploy to GitHub releases
-          command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --mac; fi
+        #      - run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --mac; fi
 
       - store_artifacts:
           path: dist_wallet/release

@@ -115,6 +115,7 @@ jobs:
     <<: *defaults_mac
     steps:
       - checkout
+      - run: yarn global add node-gyp
 
       - run:
           <<: *install_meteor 
@@ -129,6 +130,7 @@ jobs:
     <<: *defaults_mac
     steps:
       - checkout
+      - run: yarn global add node-gyp
 
       - run:
           <<: *install_meteor 

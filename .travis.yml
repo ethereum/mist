@@ -95,7 +95,7 @@ script:
     
   - yarn build:${PRODUCT} --$GULP_PLATFORM
 
-  - if [ $PRODUCT == "mist" ]; then
+  - if [ $PRODUCT == "mist" && $GULP_PLATFORM="linux" ]; then
       yarn test:e2e;
     fi
 

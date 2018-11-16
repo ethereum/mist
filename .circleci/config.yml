@@ -1,23 +1,22 @@
 #
-# TODO: compilation
-# TODO: store_artifacts
-# TODO: name commands properly
-# TODO: mac job
 # TODO: improve caching
 # TODO: fix `xvfb gulp test` command
-# TODO: windows job
 # TODO: store_test_results
 # TODO: docker images
 #
 
-defaults: &defaults
-    working_directory: /home/circleci/mist
-    docker:
-      - image: circleci/node:8.9.4-browsers
-    environment:
-        # Setting variable to fix node-gyp build error:
-        # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
-      - CXX_host: 'g++ -m32'
+defaults_linux: &defaults_linux
+  working_directory: /home/circleci/mist
+  docker:
+    - image: circleci/node:8.9.4-browsers
+  environment:
+    # Setting variable to fix node-gyp build error:
+    # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
+    - CXX_host: 'g++ -m32'
+
+defaults_mac: &defaults_mac
+  macos:
+    xcode: '9.0'
 
 linux_dependencies: &linux_dependencies
   name: Linux package dependencies
@@ -45,7 +44,7 @@ install_node_modules: &install_node_modules
 version: 2
 jobs:
   build:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - checkout
 
@@ -76,7 +75,7 @@ jobs:
             - mist
 
   mist-linux:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -90,11 +89,19 @@ jobs:
 
       - run: yarn build:mist --linux
 
+        # - run: 
+        #  name: Run integration tests
+        #  command: xvfb-run yarn test:e2e
+
+          #- run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --linux; fi
+
       - store_artifacts:
           path: dist_mist/release
 
   wallet-linux:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -108,19 +115,57 @@ jobs:
 
       - run: yarn build:wallet --linux
 
+        #- run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --linux; fi
+
       - store_artifacts:
           path: dist_wallet/release
 
-  spectron-test: 
-    docker:
-      - image: circleci/node:8.9.4
+  mist-mac:
+    <<: *defaults_mac
     steps:
-      - attach_workspace:
-          at: /home/circleci/
-      - run: xvfb-run yarn test:e2e
+      - checkout
+      - run: yarn global add node-gyp
+
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:mist --mac
+
+        #- run: 
+        #  name: Run integration tests
+        #  command: yarn test:e2e
+
+#      - run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --mac; fi
+
+      - store_artifacts:
+          path: dist_mist/release
+
+  wallet-mac:
+    <<: *defaults_mac
+    steps:
+      - checkout
+      - run: yarn global add node-gyp
+
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:wallet --mac
+
+        #      - run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --mac; fi
+
+      - store_artifacts:
+          path: dist_wallet/release
 
   unit-test:
-    <<: *defaults
+    <<: *defaults_linux
     steps:
       - attach_workspace:
           at: /home/circleci/
@@ -141,3 +186,6 @@ workflows:
       - unit-test:
           requires:
             - build
+      - wallet-mac
+      - mist-mac
+              

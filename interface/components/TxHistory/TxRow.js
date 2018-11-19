@@ -19,7 +19,8 @@ class TxRow extends Component {
     return etherAmount;
   };
 
-  toBigNumber = value => {
+  toBigNumber = v => {
+    const value = v || 0;
     return web3.utils.isHex(value)
       ? new BigNumber(web3.utils.hexToNumberString(value))
       : new BigNumber(value);

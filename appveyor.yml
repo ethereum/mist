@@ -51,7 +51,7 @@ install:
   - cd interface && yarn install
 
 build_script:
-  - ps: cd interface && METEOR_PROFILE=200 meteor build ../build-interface-2 --directory --debug
+  - cd interface && meteor build ../build-interface-2 --directory --debug
   - ps: yarn build:$env:product --win #--skipTasks=build-interface
   - ps: yarn dist:$env:product
 

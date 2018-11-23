@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:interface": "meteor-build-client ../.build-interface -p ''"
+    "build:interface": "meteor-build-client ../build-interface -p ''"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ethereum/mist#readme",
   "dependencies": {
-    "@babel/runtime": "^7.0.0-beta.42",
+    "@babel/runtime": "^7.1.5",
     "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
     "moment": "^2.22.2",
     "react": "^16.4.1",

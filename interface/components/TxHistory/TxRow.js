@@ -12,14 +12,15 @@ class TxRow extends Component {
   valueToEtherAmount = value => {
     const theValue = web3.utils.isHex(value)
       ? new BigNumber(web3.utils.hexToNumberString(value))
-      : new BigNumber(tx.value);
+      : new BigNumber(value || 0);
     const etherAmount = theValue
       .dividedBy(new BigNumber('1000000000000000000'))
       .toFixed();
     return etherAmount;
   };
 
-  toBigNumber = value => {
+  toBigNumber = v => {
+    const value = v || 0;
     return web3.utils.isHex(value)
       ? new BigNumber(web3.utils.hexToNumberString(value))
       : new BigNumber(value);

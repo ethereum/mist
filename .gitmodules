@@ -2,5 +2,6 @@
     path = interface/public/dapp-styles
     url = git://github.com/ethereum/dapp-styles.git
 [submodule "meteor-dapp-wallet"]
-	path = meteor-dapp-wallet
-	url = https://github.com/ethereum/meteor-dapp-wallet.git
+    path = meteor-dapp-wallet
+    branch = ethereum-provider
+    url = https://github.com/ethereum/meteor-dapp-wallet.git

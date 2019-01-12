@@ -49,11 +49,7 @@
         var result = data.message;
 
         // get the id which matches the returned id
-        if (
-          typeof result === 'object' &&
-          result.forEach &&
-          isFinite(result.length)
-        ) {
+        if (Array.isArray(result)) {
           result.forEach(function(load) {
             if (_this.responseCallbacks[load.id]) id = load.id;
           });

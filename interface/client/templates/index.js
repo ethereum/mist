@@ -11,45 +11,89 @@ The body template
 @constructor
 */
 
+import React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import About from '../../components/About';
+import RequestAccount from '../../components/RequestAccount';
+import SendTx from '../../components/SendTx/';
+
+const COMPONENTS = {
+  About,
+  RequestAccount,
+  SendTx
+};
+
+function renderReactComponentPopup(component) {
+  const Component = COMPONENTS[component];
+  if (!!Component) {
+    render(
+      <Provider store={store}>
+        <Component />
+      </Provider>,
+      document.getElementById('react-entry')
+    );
+  }
+}
+
+// NOTE: While in the process of converting the Meteor codebase to React,
+// generic windows reuse electron windows by replacing either the
+// component or the template
+ipc.on('uiAction_switchTemplate', (e, templateName) => {
+  const componentName =
+    templateName.charAt(0).toUpperCase() + templateName.slice(1);
+
+  // If a React component exists, render it
+  if (!!COMPONENTS[componentName]) {
+    TemplateVar.setTo(
+      '#generic-body',
+      'MainRenderTemplate',
+      `popupWindows_generic`
+    );
+    renderReactComponentPopup(componentName);
+  } else {
+    // Otherwise, use the meteor template
+    renderReactComponentPopup('');
+    TemplateVar.setTo(
+      '#generic-body',
+      'MainRenderTemplate',
+      `popupWindows_${templateName}`
+    );
+  }
+});
+
 Template.body.helpers({
-    /**
+  /**
     Chooses the view to render at start
 
     @method renderApp
     */
-    'renderApp': function(){
-        if(_.isEmpty(location.hash)) {
-            $('title').text('Mist');
-            return 'layout_main';
-        }
-        if(~location.hash.indexOf('#loadingWindow')) {
-            return 'popupWindows_loadingWindow';
-        }
-        if(~location.hash.indexOf('#splashScreen')) {
-            return 'popupWindows_splashScreen';
-        }
-        if(~location.hash.indexOf('#onboardingScreen')) {
-            return 'popupWindows_onboardingScreen';
-        }
-        if(~location.hash.indexOf('#importAccount')) {
-            return 'popupWindows_importAccount';
-        }
-        if(~location.hash.indexOf('#about')) {
-            return 'popupWindows_about';
-        }
-        if(location.hash === '#requestAccount') {
-            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-            return 'popupWindows_requestAccount';
-        }
-        if(location.hash === '#unlockMasterPassword') {
-            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-            return 'popupWindows_unlockMasterPassword';
-        }
-        if(location.hash === '#sendTransactionConfirmation') {
-            // $('title').text(TAPi18n.__('mist.popupWindows.requestAccount.title')
-            return 'popupWindows_sendTransactionConfirmation';
-        }
+  renderApp: function() {
+    // Generic windows return the TemplateVar if set in the ipc call above
+    const template = TemplateVar.get('MainRenderTemplate');
+    if (template) {
+      return template;
     }
+
+    if (_.isEmpty(location.hash)) {
+      $('title').text('Mist');
+      return 'layout_main';
+    } else {
+      const renderWindow = location.hash.match(/#([a-zA-Z]*)_?/);
+
+      // TODO: handle React components
+      const REACT_COMPONENTS = ['about', 'requestAccount', 'sendTx'];
+      if (REACT_COMPONENTS.includes(renderWindow[1])) {
+        return false;
+      }
+
+      if (renderWindow.length > 0) {
+        return 'popupWindows_' + renderWindow[1];
+      } else {
+        return false;
+      }
+    }
+  }
 });
 
 /*

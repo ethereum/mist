@@ -1,0 +1,3 @@
+{
+  "presets": ["react", "es2016-node5"]
+}

@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "Carregant...",
+        "offline": "No s'ha pogut connectar, estàs desconectat?",
+        "logginIn": "iniciant sessió..."
+    },
+    "error": {
+        "insufficientRights": "No tens prous drets per aquesta acció."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Cancel·lar",
+        "save": "Desa",
+        "edit": "Edita",
+        "send": "Envia",
+        "next": "Següent",
+        "previous": "Anterior",
+        "back": "Enrere",
+        "skip": "Omet",
+        "sending": "Enviant...",
+        "create": "Crea",
+        "tryToReconnect": "Intenta reconnectar",
+        "stayAnonymous": "Mantenir l'anonimat",
+        "authorize": "Authoritza"
+    },
+    "commonWords": {
+        "you": "Tu",
+        "send": "Envia",
+        "or": "o",
+        "of": "de",
+        "with": "amb",
+        "and": "i",
+        "on": "a",
+        "per": "per"
+    }
+}

@@ -2,21 +2,26 @@
 @module preloader PopupWindows
 */
 
-const ipc = require('electron').ipcRenderer;
-const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const basePath = require('../setBasePath.js');
+require('babel-register');
+require('./include/common')('popupWindow');
+const { ipcRenderer, remote, webFrame } = require('electron');
+const mist = require('./include/mistAPI.js');
+const dbSync = require('../dbSync.js');
+require('./include/setBasePath')('interface');
+require('./include/openExternal.js');
 
-basePath('interface');
+// receive data in from SendData
+ipcRenderer.on('uiAction_sendData', (e, data) => {
+  Session.set('data', data);
+});
 
-// disable pinch zoom
-require('web-frame').setZoomLevelLimits(1, 1);
+window.mist = mist();
+window.mistMode = remote.getGlobal('mode');
+window.dirname = remote.getGlobal('dirname');
+window.dbSync = dbSync;
+window.ipc = ipcRenderer;
 
-// receive data in the popupWindow
-ipc.on('data', function(e, data) {
-    Session.set('data', data);
-})
+window.i18n = require('../i18n.js');
 
-window.dirname = __dirname;
-window.ipc = ipc;
-window.platform = process.platform;
-
+// Initialise the Redux store
+window.store = require('./rendererStore');

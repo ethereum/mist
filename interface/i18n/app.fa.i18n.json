@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "بارگذاری...",
+        "offline": "نمی توانم وصل شوم، آیا شما قطع هستید؟",
+        "logginIn": "بارگذاری در..."
+    },
+    "error": {
+        "insufficientRights": "شما برای این عملیات دسترسی کافی ندارید."
+    },
+    "buttons": {
+        "ok": "تایید",
+        "cancel": "لغو",
+        "save": "ذخیره",
+        "edit": "ویرایش",
+        "send": "ارسال",
+        "next": "بعدی",
+        "previous": "قبلی",
+        "back": "عقب",
+        "skip": "جستن",
+        "sending": "ارسال...",
+        "create": "ساختن",
+        "tryToReconnect": "تلاش برای وصل مجدد",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
+    },
+    "commonWords": {
+        "you": "شما",
+        "send": "ارسال",
+        "or": "یا",
+        "of": "از",
+        "with": "با",
+        "and": "و",
+        "on": "بر",
+        "per": "در هر"
+    }
+}

@@ -2,7 +2,7 @@
     "app": {
         "loading": "Chargement en cours...",
         "offline": "Impossible de se connecter, êtes-vous déconnecté ?",
-        "logginIn": "Connection en cours..."
+        "logginIn": "Connexion en cours..."
     },
     "error": {
         "insufficientRights": "Vous n'avez pas les droits pour effectuer cette action."
@@ -19,7 +19,9 @@
         "skip": "Ignorer",
         "sending": "Envoi en cours...",
         "create": "Créer",
-        "tryToReconnect": "Tentative de reconnection"
+        "tryToReconnect": "Tentative de reconnexion",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Vous",

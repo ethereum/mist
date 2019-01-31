@@ -19,7 +19,9 @@
         "skip": "跳過",
         "sending": "發送中……",
         "create": "創建",
-        "tryToReconnect": "嘗試連線"
+        "tryToReconnect": "嘗試連線",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "您",

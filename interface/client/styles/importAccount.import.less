@@ -1,0 +1,303 @@
+.import-account {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  // background: lighten(@colorOSBackgroundFocus, 10%);
+
+  .main-content {
+    z-index: 1;
+    flex: 1 100%;
+
+    h1 {
+      margin: @gridHeight*2 0 @gridHeight / 2;
+    }
+
+    .description {
+      font-weight: 500;
+      padding-bottom: @gridHeight;
+    }
+
+    .col {
+      padding: 0;
+    }
+
+    button,
+    a.button {
+      display: block;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: @colorLinkActive;
+    }
+
+    p {
+      margin: 0;
+      padding: @gridHeight 0;
+      font-size: 90%;
+    }
+
+    .importAccount-start {
+      padding: @gridHeight @gridWidth @gridHeight @gridWidth * 10;
+      background-image: url('/images/importaccount-logo-metal.png');
+      background-repeat: no-repeat;
+      background-position-y: @gridHeight*4;
+      background-size: 255px 257px;
+
+      button,
+      a.button {
+        font-size: 110%;
+        text-align: left;
+      }
+    }
+
+    .dropable {
+      display: block;
+      padding: @gridHeight*4 @gridWidth;
+      margin: @gridHeight 0;
+      background: lighten(@colorLinkActive, 30%);
+      border: dashed 3px @colorLinkActive;
+      border-radius: 3px;
+      text-align: center;
+      font-size: 150%;
+      color: @colorLinkActive;
+
+      &.active {
+        transform: scale(1.05) !important;
+      }
+    }
+
+    .dapp-block-button {
+      margin: 0 auto;
+      background-color: transparent;
+      border: solid 1px @colorLinkActive;
+      font-size: 80%;
+    }
+
+    input {
+      background-color: transparent;
+      border-bottom: dashed 1px;
+    }
+
+    input.name {
+      text-align: center;
+      margin: @gridHeight / 2 0 @gridHeight;
+    }
+
+    input[type='checkbox'] {
+      margin-left: 14px;
+    }
+
+    input[type='checkbox'] + label {
+      position: relative;
+      top: -7px;
+      left: 9px;
+      opacity: 0.9;
+    }
+
+    h6 {
+      opacity: 0.2;
+      margin: 0 0 @gridHeight / 2;
+    }
+
+    .footer-buttons {
+      position: absolute;
+      bottom: @gridHeight*5;
+
+      button {
+        position: absolute;
+      }
+    }
+    .right-align {
+      right: @gridWidth * 2;
+    }
+
+    .col-left {
+      padding-right: @gridWidth;
+      p {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  footer {
+    z-index: 2;
+    flex: 0 @gridHeight * 4;
+    height: @gridHeight * 4;
+    padding: @gridHeight / 2 @gridWidth / 4;
+    display: flex;
+    flex-flow: row wrap;
+
+    progress {
+      width: 100%;
+      height: 2px;
+      background: transparent;
+
+      &.stateBar {
+        position: absolute;
+        left: 8px;
+        right: 8px;
+        bottom: 45px;
+        width: auto;
+        opacity: 0.15;
+
+        &::-webkit-progress-value {
+          background: #000;
+        }
+      }
+    }
+
+    button {
+      position: relative;
+      top: -3px;
+      margin: 0 auto;
+      text-transform: uppercase;
+      font-weight: 500;
+      text-align: center;
+      display: block;
+      // width: 100%;
+      color: @colorLinkActive;
+    }
+
+    .status {
+      flex: 1;
+    }
+
+    div {
+      font-size: 80%;
+      font-weight: 500;
+      opacity: 0.5;
+      padding: 0 @gridWidth / 2;
+    }
+  }
+
+  /* Screen transitions */
+
+  .importAccount-section {
+    padding: @gridHeight @gridWidth;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.2s ease-in-out;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    perspective: 500px;
+
+    h4 {
+      margin-bottom: 0;
+    }
+  }
+
+  .importAccount-start {
+    transition: opacity 0.8s, background-position-x 1.2s ease-in-out;
+    background-position-x: -200px;
+    p {
+      transform: translateX(300px);
+      transition: transform 0.6s ease-in-out;
+    }
+  }
+
+  &.active-start .importAccount-start {
+    display: block;
+    opacity: 1;
+    background-position-x: @gridWidth;
+    z-index: 100;
+    transition-delay: 0.3s;
+    p {
+      transform: translateX(0);
+      transition-delay: 0.9s;
+    }
+  }
+
+  .importAccount-import-account {
+    opacity: 0;
+    z-index: 0;
+    transition-duration: 0s;
+    .col-6.col-left {
+      transform: scale(0.9) translateZ(-10px);
+      transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    }
+  }
+
+  .dapp-identicon.dapp-icon-loading {
+    position: relative;
+    margin-left: -32px;
+    left: 50%;
+  }
+
+  .importAccount-account .col-deposit {
+    text-align: center;
+  }
+
+  .importAccount-password {
+    transition: none;
+    .col-6 {
+      transition: none;
+      transform: translateX(0);
+    }
+    .col-6.col-left {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+  }
+
+  .importAccount-testnet,
+  .importAccount-account {
+    transition: opacity 0.4s ease-in-out;
+
+    .col-6 {
+      transition: transform 0.2s ease-in-out, opacity 0.2s;
+      transform: translateX(0);
+    }
+    .col-6.col-left {
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+
+    .dapp-identicon.dapp-icon-loading {
+      margin-left: 0 auto;
+    }
+
+    .you {
+      position: absolute;
+      font-weight: 600;
+      color: @colorLinkActive;
+      border: dashed @colorLinkActive 2px;
+      width: @gridWidth*2;
+      height: @gridWidth*2;
+      border-radius: 50%;
+      line-height: 60px;
+      top: 0;
+      left: @gridWidth*3;
+      z-index: -1;
+    }
+
+    h6.address {
+      .allowSelection;
+    }
+  }
+
+  &.active-import-account .importAccount-import-account,
+  &.active-password .importAccount-password,
+  &.active-testnet .importAccount-testnet,
+  &.active-account .importAccount-account {
+    display: block;
+    opacity: 1;
+    z-index: 100;
+    transition-delay: 0.1s;
+    .col-6 {
+      opacity: 1;
+      transform: translateX(0);
+      transition-delay: 0.2s;
+    }
+    .dapp-identicon {
+      transform: translateX(0);
+    }
+  }
+
+  .importAccount-testnet,
+  &.active-account .importAccount-account {
+    transition-delay: 0;
+    transition-duration: 0;
+    transition: none;
+  }
+}

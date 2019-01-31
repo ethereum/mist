@@ -19,7 +19,9 @@
         "skip": "Omitir",
         "sending": "Enviando...",
         "create": "Crear",
-        "tryToReconnect": "Intente volver a conectar"
+        "tryToReconnect": "Intente volver a conectar",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "Tú",

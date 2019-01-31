@@ -1,0 +1,236 @@
+{
+  "mist": {
+    "applicationMenu": {
+      "app": {
+        "label": "__app__",
+        "about": "__app__에 대하여",
+        "checkForUpdates": "업데이트 확인...",
+        "checkForNodeUpdates": "이더리움 노드 업데이트 확인...",
+        "services": "서비스",
+        "hide": "__app__ 숨기기",
+        "hideOthers": "다른 창 숨기기",
+        "showAll": "모두 보기",
+        "quit": "__app__ 종료"
+      },
+      "edit": {
+        "label": "수정",
+        "undo": "되돌리기",
+        "redo": "재적용",
+        "cut": "오려두기",
+        "copy": "복사하기",
+        "paste": "붙이기",
+        "selectAll": "모두 선택"
+      },
+      "view": {
+        "label": "보기",
+        "fullscreen": "전체화면으로",
+        "default": "기본"
+      },
+      "file": {
+        "label": "계정",
+        "importPresale": "계정 추가하기",
+        "newAccount": "새 계정",
+        "backup": "백업",
+        "backupKeyStore": "계정키 백업",
+        "backupMist": "어플리케이션 데이터",
+        "swarmUpload": "Swarm에 업로드"
+      },
+      "develop": {
+        "label": "개발",
+        "devTools": "개발도구 전환",
+        "devToolsMistUI": "미스트 UI",
+        "devToolsWalletUI": "지갑 UI",
+        "devToolsWebview": "__webview__",
+        "runTests": "테스트 실행",
+        "logFiles": "로그파일 보기",
+        "ethereumNode": "이더리움 노드",
+        "network": "네트워크",
+        "mainNetwork": "메인 네트워크",
+        "startMining": "⛏ 채굴 시작(테스트넷만 해당)",
+        "stopMining": "⛏ 채굴 중단",
+        "openRemix": "Remix IDE 열기"
+      },
+      "window": {
+        "label": "창",
+        "minimize": "최소화",
+        "close": "닫기",
+        "toFront": "전면으로 보내기"
+      },
+      "help": {
+        "label": "도움말",
+        "reportBug": "깃허브에 이슈 보고"
+      }
+    },
+    "errors": {
+      "nodeConnect":
+        "노드에 연결할 수 없습니다? 자세한 것은 로그를 확인하세요:",
+      "nodeStartup":
+        "노드가 시작하지 못하고 있습니다. 이미 다른 노드를 실행하고 있거나 현재 데이터베이스를 업그레이드 하고 있나요?",
+      "timeSync": {
+        "title": "당신의 컴퓨터 시간이 동기화되어 있지 않습니다.",
+        "description":
+          "이더리움 네트워크와 성공적으로 동기화하기 위해서는 사용하시는 컴퓨터의 시간을 시간서버와 동기화해야 합니다.",
+        "win32":
+          "시스템 설정에 있는 인터넷 시간 설정에서 박스를 체크하세요. 자세한 것은 다음의 가이드를 참조하세요: http://www.guidingtech.com/3119/windows-clock-sync/",
+        "linux":
+          "시간 동기화 서버를 가동시키기 위해서는 \"ntp\" 를 \"apt-get install ntp\" 명령으로 설치하세요.",
+        "darwin":
+          "시간 동기화를 위해서, 시간 옵션을 열고 \"시간과 날짜 자동설정(Set the time and date automatically)\" 옵션을 선택하세요."
+      },
+      "nodeChecksumMismatch": {
+        "title": "다운로드 한 노드에서 체크섬 불일치!",
+        "description":
+          "__algorithm__: __hash__\n\nPlease install the __type__ node version __version__ manually."
+      },
+      "legacyChain": {
+        "title": "레거시 체인 감지",
+        "description":
+          "노드가 현재 지원되지 않는 이더리움 클래식 체인에 있습니다. 이 체인을 사용하려면 이더리움 클래식 프로젝트에서 제공하는 도구를 사용하십시오.\nhttps://ethereumclassic.github.io.\n\n이더리움 체인으로 되돌리려면 튜토리얼을 살펴보세요.:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+      }
+    },
+    "rightClick": {
+      "reload": "재로딩",
+      "openDevTools": "개발도구 열기",
+      "inspectElements": "요소 검사"
+    },
+    "sendTx": {
+      "enterPassword": "트랜잭션을 확인하기 위해 암호를 입력하세요",
+      "unlocking": "확인 중...",
+      "estimatedGasError":
+        "트랜젝션을 실패할 수 있습니다. 그래도 전송하면 제공된 개스는 모두 소진될 수 있습니다.",
+      "overBlockGasLimit":
+        "이 실행에 필요한 가스는 블록 가스 제한을 초과 할 수 있습니다.",
+      "notEnoughGas":
+        "가스가 이 거래를 성공적으로 끝내기에 충분하지 않을 수 있습니다.<br>여기를 클릭해서 가스를 늘리세요",
+      "errors": {
+        "connectionTimeout":
+          "노드에 연결할 수 없었습니다. 백그라운드에서 작동중지되었습니까?",
+        "wrongPassword": "암호가 일치하지 않습니다",
+        "multipleKeysMatchAddress":
+          "여러 개의 키가 주소와 일치합니다. 키 스토어에서 중복 된 것을 제거하십시오. (메뉴 -> 계정 -> 백업 -> 계정)",
+        "insufficientFundsForGas":
+          "주 계정(etherbase)에 가스를 지불할 금액이 충분하지 않습니다.",
+        "sameAccount": "현재 사용하고 있는 계정으로 전송할 수 없습니다"
+      }
+    },
+    "nodeInfo": {
+      "active": "active",
+      "blockNumber": "마지막 블록 번호",
+      "blocksBehind": "blocks behind",
+      "checkingWhichNetwork": "네트워크 확인중...",
+      "connecting": "Connecting...",
+      "local": "Local",
+      "lookingForPeers": "Looking for peers...",
+      "network": "Network",
+      "node": "Node",
+      "nodeSyncing": "__blockDiff__ 블록 남음",
+      "peers": "피어들(peers)",
+      "privateNetwork": "프라이빗 네트워크",
+      "test": "test",
+      "testnetExplain":
+        "현재 테스트넷 상에 있습니다. 진짜 이더를 이 주소로 절대 보내지 마세요.",
+      "timeSinceBlock": "마지막 블록 이후 경과시간"
+    },
+    "sidebar": {
+      "buttons": {
+        "browser": "열람"
+      }
+    },
+    "browserBar": {
+      "buttons": {
+        "noAccounts": "계정을 선택하지 않음",
+        "connect": "연결"
+      }
+    },
+    "startScreen": {
+      "runningNodeFound": "작동 중인 이더리움 노드를 발견!",
+      "nodeConnectionTimeout":
+        "이더리움 노드를 시작할 수 없습니다! <br><small>만일<a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth</a> 를 인스톨 했다면, 다음의 명령어를 사용해 실행하세요: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> 또는 이슈를 리포트하세요 </a></small>",
+      "nodeBinaryNotFound":
+        "이더리움 노드 실행파일이 없습니다!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> 수동으로 이를 먼저 실행하세요.</a> </small>",
+      "nodeSyncing": "이더리움 노드에 동기화가 필요합니다, 기다려 주세요...",
+      "nodeSyncInfo": "현재 __highestBlock__ 중 __displayBlock__ 을 다운로드중",
+      "nodeSyncConnecting": "피어(peer)를 탐색하고 있는 중...",
+      "nodeStarting": "이더리움 노드를 시작중...",
+      "nodeStarted": "이더리움 노드가 시작됨",
+      "nodeConnected": "이더리움 노드가 연결됨",
+      "nodeStopping": "이더리움 노드가 정지중...",
+      "nodeStopped": "이더리움 노드가 정지됨",
+      "nodeError": "이더리움 노드 연결 에러 :'(",
+      "unableToBindPort":
+        "이더리움 노드를 실행 할 수 없습니다. 다른 인스턴스가 실행중인가요?",
+      "nodeSyncInfoStates":
+        "블록 다운로드 중 __highestBlock__ 중 __displayBlock__, <br> 체인구조 다운로드 __displayKnownStates__ 중 __displayState__",
+      "nodeSyncFoundPeers": "__peers__ 피어에 연결중...",
+      "launchApp": "어플리케이션 실행",
+      "clientBinaries": {
+        "scanning": "노드 업데이트 확인중...",
+        "downloading": "새로운 노드 다운로드중...",
+        "loadConfig": "클라이언트 설정 로딩중...",
+        "filtering": "클라이언트 바이너리 필터링중...",
+        "done": "이더리움 노드 최신버전...",
+        "error": "다운로드 된 바이너리 실행 중 오류."
+      }
+    },
+    "popupWindows": {
+      "requestAccount": {
+        "title": "계정 만들기",
+        "enterPassword": "암호를 입력하세요",
+        "repeatPassword": "암호를 다시 입력하세요",
+        "creating": "계정 만드는 중...",
+        "errors": {
+          "passwordMismatch": "암호가 일치하지 않습니다.",
+          "passwordTooShort": "암호가 너무 짧습니다."
+        }
+      },
+      "importAccount": {
+        "doYouHaveAWalletFile": "지갑 파일을 가지고 있나요?",
+        "walletFileDescription":
+          "<p>만일 2014년 이더리움 프리세일에 참여했다면, <code>ethereum_wallet_backup.json</code> 이란 파일을 가지고 있을 겁니다. 세일이 끝나고 다운로드를 받았거나 이메일로 받았을 겁니다.</p>",
+        "dropFilesHere": "프리세일 파일을 가져다 놓기",
+        "importing": "불러오는 중...",
+        "buttons": {
+          "showPassword": "암호보기"
+        },
+        "errors": {
+          "unknownFile": "파일을 인식할 수 없습니다.",
+          "wrongPassword": "암호가 틀렸습니다.",
+          "importFailed": "파일을 가져올 수 없습니다: __error__"
+        }
+      },
+      "updateAvailable": {
+        "newVersionAvailable": "새 버전 __name__ 사용가능",
+        "version": "버전",
+        "downloadURL": "다운로드 URL",
+        "checksum": "체크섬",
+        "downloadAndRestart": "업데이트 후 재시동",
+        "download": "새 버전 다운로드",
+        "skipUpdate": "업데이트 건너뛰기",
+        "checking": "__name__ 업데이트 확인중 ...",
+        "noUpdateFound":
+          "업데이트가 없습니다. 최신 버전의 __name__ 를 사용하고 있습니다."
+      },
+      "connectAccount": {
+        "chooseAccountTitle": "계정 선택",
+        "createAccount": "새 계정 생성",
+        "pinToSidebar": "사이드바에 앱 고정",
+        "connectAccountDescription":
+          "당신의 프로필은 __dappName__에 공유됩니다. 이를 통해 다른 사람들이 연결된 잔액을 포함하여 계정의 모든 공개 정보를 앱에서 볼 수 있습니다."
+      }
+    }
+  },
+  "elements": {
+    "checksumAlert":
+      "이 주소는 유효해보이지만, 오타 등의 실수로부터 당신을 보호할 수 있는 보안기능이 없습니다. 다시 한 번 맞는지 확인해 보시기 바랍니다. 보안 아이콘이 있는 경우 이것이 일치하는지 확인하시기 바랍니다.",
+    "identiconHelper":
+      "이것은 보안 아이콘입니다. 주소에 어떤 변화라도 생기면, 이 아이콘은 완전히 다른 모양으로 변합니다.",
+    "type": {
+      "address": "Address",
+      "bool": "Boolean",
+      "int": "Integer",
+      "uint": "Natural Number",
+      "string": "String",
+      "bytes": "Bytes"
+    }
+  }
+}

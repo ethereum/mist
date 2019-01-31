@@ -1,0 +1,266 @@
+// Shared
+
+.bold {
+  font-weight: 500;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.popup-windows a {
+  color: #00aafa;
+}
+
+.popup-windows {
+  font-size: 90%;
+  color: #4a4a4a;
+}
+
+// ExecutionContext.js
+
+.execution-context {
+  padding: 50px 34px 8px;
+}
+
+.execution-context__details {
+  margin: 18px 0 0;
+  font-size: 14px;
+  text-align: left;
+  -webkit-app-region: drag;
+}
+
+.execution-context__details-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.execution-context__details-title {
+  width: 160px;
+  padding-right: 16px;
+}
+
+.execution-context__details-value,
+.execution-context__execution-function {
+  font-weight: 500;
+}
+
+.execution-context__address,
+.execution-context__param-address {
+  user-select: all;
+}
+.execution-context__param-address {
+  margin-left: 6px;
+}
+
+.execution-context__details-link {
+  padding: 4px 0;
+  font-size: 14px;
+  color: #00aafa;
+  cursor: pointer;
+  text-align: left;
+}
+
+.execution-context__params-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.execution-context__param {
+  display: flex;
+  justify-content: space-between;
+  height: 36px;
+}
+
+.execution-context__param-unicode {
+  font-size: 24px;
+  margin-right: 12px;
+  position: relative;
+  bottom: 2px;
+}
+
+.execution-context__param-identicon {
+  display: flex;
+  align-items: center;
+  margin-right: 6px;
+}
+
+.execution-context__param-value {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.execution-context__param-type {
+  display: flex;
+  align-items: center;
+}
+
+.execution-context__details-row .dapp-identicon {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+// ContextDescription.js
+
+.context-description__sentence {
+  margin: 18px 0 24px;
+  font-size: 36px;
+  text-align: left;
+
+  .dapp-identicon {
+    top: 8px;
+  }
+}
+
+.context-description__subtext {
+  font-size: 16px;
+  margin: 12px 0;
+}
+
+.context-description__send-eth-alert {
+  font-size: 15px;
+}
+
+.context-description__error {
+  color: #f66d6f;
+  margin: -12px 0 12px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+// TxParties.js
+
+.tx-parties {
+  text-align: left;
+  margin: 18px 34px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tx-parties__party {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+
+  .overlap-icon {
+    font-size: 14px !important;
+    width: 32px !important;
+    top: 17px !important;
+    z-index: 9 !important;
+  }
+}
+
+.tx-parties__direction-name {
+  display: inline-block;
+  margin: 0 5px 0 15px;
+  width: 50px;
+}
+
+.tx-parties__direction-name.is-contract {
+  width: 75px;
+}
+
+.tx-parties__address {
+  user-select: all;
+}
+// FeeSelector.js
+
+.fee-selector {
+  text-align: left;
+  margin: 12px 34px;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.fee-selector__btn {
+  color: #00aafa;
+  cursor: pointer;
+}
+
+.fee-amount {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.fee-selector [data-tooltip]:hover:before,
+.fee-selector [data-tooltip]:hover:after,
+.fee-selector [data-tooltip]:focus:before,
+.fee-selector [data-tooltip]:focus:after {
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  color: #eee;
+  top: 22px;
+  text-transform: capitalize;
+}
+
+.fee-selector__error {
+  position: absolute;
+  margin-top: 6px;
+  text-transform: none;
+  color: red;
+  font-size: 12px;
+}
+
+.react-spinner {
+  top: -2px;
+}
+
+// Footer.js
+
+.footer {
+  margin: 32px 18px 24px;
+}
+
+.footer--unlocking h2 {
+  margin: 32px;
+}
+
+.footer__form {
+  display: flex;
+  font-weight: bold;
+  border: 1px solid #00aafa;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.footer__input {
+  border: none;
+  background-color: transparent;
+  height: 54px;
+  width: 100% !important;
+  padding: 12px !important;
+  margin: 0;
+}
+
+.footer__btn {
+  border: 1px solid #00aafa;
+  background-color: #00aafa;
+  color: white !important;
+  padding: 12px 24px;
+  margin: 4px;
+  border-radius: 4px;
+  text-transform: uppercase;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+form.footer__form.error {
+  border: 1px solid #f66d6f !important;
+
+  input.footer__input {
+    color: #f66d6f !important;
+  }
+
+  button.footer__btn {
+    border: 1px solid #f66d6f;
+    background-color: #f66d6f;
+  }
+}

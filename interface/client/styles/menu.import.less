@@ -1,297 +1,346 @@
+.gradient-tip {
+  content: '';
+  display: block;
+  width: 100%;
+  height: @gridHeight * 0.75;
+  left: 0px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.sidePadding {
+  padding-left: 11px;
+  padding-right: 11px;
+}
+
+// OS-specific styles
+html.darwin aside.sidebar {
+  top: @gridHeight;
+
+  &::after {
+    top: @gridHeight;
+  }
+  nav {
+    margin-top: @gridHeight;
+  }
+}
 
 aside.sidebar {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  -webkit-app-region: drag;
+
+  z-index: 4;
+  position: absolute;
+  top: @gridHeight / 2;
+  left: 0;
+  bottom: 0;
+  width: @widthSideBar;
+
+  &::after {
+    .gradient-tip();
+    top: @gridHeight / 2;
+    height: 8px;
+    background-image: linear-gradient(
+      to top,
+      rgba(241, 241, 241, 0) 0%,
+      rgba(241, 241, 241, 1) 100%
+    );
+  }
+
+  nav {
+    position: relative;
+    margin-top: @gridHeight / 2;
+    padding: 0 12px 0;
     overflow: hidden;
+    min-height: 0;
+    &:hover {
+      overflow-y: auto;
+    }
 
-    ul {
-        z-index: 10;
-        position: relative;
-        .dapp-vertical-menu;
-        top: 0;
-        padding-left: @gridWidth/4;
+    > ul {
+      margin: 6px 0;
+      padding: 0;
+      width: 54px;
 
-        li {
-            position: relative;
+      > li {
+        overflow: hidden;
+        margin-bottom: 14px;
+        transition-delay: 200ms;
+        -webkit-app-region: no-drag;
+
+        // draggable LI
+        &.ui-sortable-helper {
+          transform: scale(1.1);
+          .submenu-container {
+            display: none;
+          }
+        }
+
+        &:hover {
+          .submenu-container {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        &.selected,
+        &:active,
+        &:hover,
+        &:focus {
+          button.main {
+            opacity: 1;
+          }
+        }
+        button.main {
+          height: 55px;
+          width: 54px;
+          display: block;
+          opacity: 0.6;
+          transition: 100ms opacity linear;
+
+          &:focus {
+            outline: 0;
+            border: none;
+          }
+
+          .icon-globe {
+            font-size: 32px;
+            text-align: center;
             display: block;
-            padding-left: @gridWidth/4;
-            margin-top: 0;
+            background-color: #fff;
+            padding-top: 10px;
+          }
+
+          img,
+          .icon-globe {
+            width: 54px;
+            height: 54px;
+            -webkit-mask-image: url('icons/mask-icon.svg');
+            -webkit-mask-size: cover;
+          }
+        }
+      }
+    }
+
+    .submenu-container {
+      width: 185px;
+      position: fixed;
+      left: 90px;
+      top: 120px;
+      border-radius: 5px;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      cursor: default;
+
+      transition: 150ms linear all, 1ms linear top;
+      transition-delay: 200ms;
+      transform: translateY(-11px);
+      // backdrop-filter: blur(0);
+
+      &::before {
+        @tipSize: 8px;
+        content: '';
+        margin-left: -@tipSize;
+        margin-top: 19px + 11px;
+        display: block;
+        position: absolute;
+        width: 0px;
+        height: @tipSize * 2.25;
+        border: 0px solid transparent;
+        border-width: @tipSize;
+        border-left: 0;
+        border-right-color: rgba(0, 0, 0, 0.78);
+      }
+
+      button {
+        &:active,
+        &:focus {
+          transform: none;
+          border: none;
+        }
+      }
+
+      section {
+        padding: 8px 0 0;
+        background-color: rgba(0, 0, 0, 0.78);
+        // backdrop-filter: blur(5px);
+        width: 100%;
+        border-radius: 5px;
+        color: #fff;
+        position: relative;
+
+        header {
+          .sidePadding();
+          padding-bottom: 11px;
+        }
+        span {
+          font-weight: 400;
+        }
+        a,
+        button {
+          color: #fff;
+        }
+        .badge {
+          font-size: 11px;
+        }
+        .remove-tab {
+          color: #a6a6a6;
+          position: absolute;
+          right: 5px;
+          top: 4px;
+          width: 14px;
+          &:hover {
+            color: #fff;
+          }
+        }
+
+        .accounts {
+          margin-top: 11px;
+          button {
+            font-size: 12px;
+            font-weight: 300;
+            text-transform: uppercase;
+            width: 100%;
+          }
+          .connect {
+            background-color: #4c92e6;
+            border-radius: 4px;
+            padding: 3px 0;
+          }
+          .display {
+            @identiconHeight: 17px;
+            text-align: left;
+            line-height: @identiconHeight;
+
+            .dapp-identicon-container {
+              float: right;
+              height: @identiconHeight;
+            }
+
+            .dapp-identicon {
+              margin-right: 0px;
+              width: @identiconHeight;
+              height: @identiconHeight;
+              &:not(:last-child) {
+                margin-right: 4px;
+              }
+            }
+          }
+        }
+      }
+
+      .sub-menu {
+        margin: 6px 0;
+        padding: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: 0.1em;
+        margin-top: 2px;
+        margin-bottom: 0;
+        li {
+          opacity: 1;
+          font-weight: normal;
+          font-size: 14px;
+          margin-bottom: 0;
+          button {
+            padding: 8px 0 6px;
+            .sidePadding();
+            box-sizing: border-box;
+            width: 100%;
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0);
+            transition: 150ms linear background-color;
+
+            margin: 5px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; // 2 lines max
+            -webkit-box-orient: vertical;
             overflow: hidden;
-            height: @gridHeight * 2;
-
-            &.ui-sortable-helper {
-                height: @gridHeight*2 !important;
-                opacity: 0.5;
+            text-overflow: ellipsis;
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.2);
             }
-            &.ui-sortable-placeholder {
-                visibility: visible !important;
-                height: 0 !important; //@gridHeight*3
-                border-bottom: 2px solid @colorLinkActive;
-                margin: 5px 0;
+            .badge {
+              display: block;
+              opacity: 0.8;
             }
-
-            &.selected,
-            &.slided-out {
-                height: 100%;
-
-
-                ul.sub-menu li {
-                    height: floor(@gridHeight * 2);
-                    opacity: 1;
-                }
-            }
-
-            &.selected {
-                color: @colorLinkActive;
-                background: #FFF;
-                border-radius: 3px 0 0 3px;
-                box-shadow: @shadowStandard;
-                border-top: 0;
-
-                .slide-out, .slide-out.arrow-down {
-                    transform: rotate(90deg) translate3d(-1px, -10px, 0);
-                }
-
-                ul.sub-menu .see-all {
-                    display: block;
-                }
-
-                button.selected {
-                    font-weight: 600;                    
-                }
-            }
-
-
-            &.selected + li,
-            &:first-child {
-                border-top: 0;
-                margin-top: 1px;
-            }
-
-
-            &.browser {
-                .sub-menu {
-                    li:first-child button {
-                        color: @colorLinkFocus;
-                    }
-                }
-            }
-
-            button.main {
-                position: relative;
-                padding: 0;
-                width: 85%;
-                height: @gridHeight*2;
-                color: @colorLinkBlur;
-                text-align: left;
-                text-transform: uppercase;
-                font-family: @sourceSansPro;
-                font-size: @fontSizeNormal;
-                font-weight: 500;
-
-
-                &:focus {
-                    border: 0;
-                    color: @colorLinkFocus;
-                }
-
-                img {
-                    position: absolute;
-                    top: 10px;
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 10px;
-                }
-
-                span, .badge {
-                    .dapp-shorten-text;
-                    display: block;
-                    position: absolute;
-                    width: 86%;
-                    top: @gridHeight/2 + 2px;
-                    left: 15px + @defaultPaddingVertical;
-                    display: inline-block;
-                }
-
-                &.has-badge span {
-                    position: relative;
-                    top: -4px;
-                }
-
-                > .badge {
-                    top: @gridHeight;
-                    font-size: @fontSizeSmall;
-                    font-weight: 200;
-                    text-transform: none;
-                }
-
-                // &.history {
-                //     padding: @defaultPaddingVertical/2 @defaultPaddingHorizontal/2;
-                //     font-size: 0.7em;
-                //     text-align: left;
-                // }
-            }
-            button.slide-out {
-                position: absolute;
-                right: @gridHeight/2;
-                top: @gridHeight/1.5;
-                width: 30px;
-                height: 20px;
-                background: url('icons/expand-icon.png') no-repeat center;
-                background-size: 15px 10px;
-                border: none;
-                transform: translate3d(10px, -1px, 0);
-
-                &.arrow-down {
-                    transform: rotate(180deg) translate3d(-10px, 1px, 0);
-                }
-            }
-    
-            // SUB MENU
-            ul.sub-menu {
-                padding-left: @gridWidth/2; 
-                border-top: 0;
-                max-height: @gridHeight*12;
-
-                li {
-                    height: 0;
-                    opacity: 0;
-                    line-height: floor(@gridHeight * 2) - 1px; // -1px fixes an issue, where fonts shift up by 1px
-
-                    border-top: 1px solid rgba(0, 0, 0, 0.04);
-
-
-                    button:not(.slide-out) {
-                        font-size: @fontSizeSmall;
-                        font-weight: 400;
-                        text-transform: none;
-                    }
-                }
-
-                li:nth-child(6), li:nth-child(7) { 
-                    visibility: hidden;
-                }
-
-                button {
-                    .dapp-shorten-text;
-                    padding: floor(@gridHeight / 2) 0;
-                    width: @gridWidth*3.6;
-                    color: @colorLinkActive;
-                    text-align: left;
-                    border: 0;
-
-                    &:focus {
-                        border: 0;
-                        color: @colorLinkFocus;
-                    }
-                    
-
-                    &.selected {
-                        color: @colorLinkBlur;
-                    }
-
-                    
-                }
-
-                .badge {
-                    .dapp-shorten-text;
-                    position: absolute;
-                    max-width: @gridWidth*1.5;
-                    right: 0;
-                    top: 0;
-                    bottom: 0;
-                    padding: 0 @gridWidth/6;
-                    background-color: rgba(0, 0, 0, 0.05);
-                    text-align: center;
-                    line-height: floor(@gridHeight * 2);
-                    font-size: @fontSizeSmall;
-
-                    &:hover {
-                        max-width: @gridWidth*4;
-                    }
-                }
-
-                .see-all {
-                    // display: none;
-                    position: absolute;
-                    top: @gridHeight * 10;
-                    width: 100%;
-                    // background-color: #FFF;
-                    
-                    button {
-                        font-style: italic;
-                    }
-                }
-            } 
+          }
         }
+      }
+    }
+  }
 
+  .node-info {
+    position: relative;
+    cursor: default;
+
+    &::after {
+      .gradient-tip();
+      height: 20px;
+      top: -(20px - 1);
+      background-image: linear-gradient(
+        to bottom,
+        rgba(241, 241, 241, 0) 0%,
+        rgba(241, 241, 241, 1) 100%
+      );
     }
 
-    &.full-tabs {
-        nav > ul > li:not(.selected) {
-            visibility: hidden;
-            height: 0;
-            transform: translate3d(-100%,0,0);
-        }
-        nav > ul > li.selected {
-            img {
-                opacity: 0;
-            }
-            button.slide-out {
-                transform: rotate(-90deg);
-                left: 1px;
-                right: auto;
-            }
-            
-            ul {
-                max-height: none;
-            }
+    display: flex;
+    flex-flow: row wrap;
+    flex-shrink: 0;
+    padding: 8px;
+    font-size: 0.9em;
+    color: @colorTextSecondary;
 
-            li:nth-child(6), li:nth-child(7) { 
-                visibility: visible;
-            }
-
-            .see-all {
-                display: none;
-            }
-        }
-
-        & + .browser-bar + main .tab-view{
-            border-top-left-radius: 0;
-        }
+    div,
+    span {
+      padding: @gridHeight / 2 1px;
+      flex: 1;
+      text-align: center;
     }
 
-    .node-info {
-        display: flex;
-        top: initial;
-        bottom: @gridHeight;
-        left: @gridWidth/2;
-        flex-flow: row wrap;
-        
-        div, span {
-            padding: @gridHeight/2 1px;
-            flex: 1;
-            text-align: center;
-        }
-
-        progress {
-            flex: 1 100%;
-        }
-
-        .mining-indicator  {
-            flex: 3;
-        }
-
-        .block-number {
-            flex: 2;
-        }
-
-        .private-chain {
-            flex: 1 100%;
-            padding: 1px 5px 2px;
-            margin: @gridHeight/2 @gridWidth/4;
-            border-radius: 2px;
-            color: @colorWhite;
-            background-color: @colorError;
-            text-align: center;
-        }
+    i {
+      display: block;
+      margin-bottom: 2px;
     }
+
+    progress {
+      flex: 1 100%;
+    }
+
+    .mining-indicator {
+      flex: 3;
+    }
+
+    .block-number {
+      flex: 2;
+      white-space: nowrap;
+    }
+
+    .test-chain {
+      flex: 1 100%;
+      padding: 1px 5px 2px;
+      font-size: 90%;
+    }
+
+    .remote-indicator {
+      flex: 3;
+      font-size: 90%;
+      background: #e2e2e2;
+      border-radius: 3px;
+      padding: 5px;
+    }
+  }
+}
+
+.app-blur aside.newsidebar nav::after {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(246, 246, 246, 0) 0%,
+    rgba(246, 246, 246, 1) 100%
+  );
 }

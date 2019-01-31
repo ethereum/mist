@@ -1,16 +1,37 @@
-Node type: geth/eth
-OS: linux/windows/osx
-Network type: main/test
-Mist version: 0.0.0
+- [ ] I've asked for help in the [Mist Gitter](http://gitter.im/ethereum/mist) before filing this issue.
 
-Please check the already existing issues, before creating an issue. We would like to keep duplicates at a minumim.
-Read the https://github.com/ethereum/wiki/wiki/Mist-Troubleshooting-Guide first, where we summarized a few of the known issues.
+<!-- Please fill in these information below: -->
 
-Add the following to issue, when possible:
+```
+Version: `0.0.0`
+OS & Version: windows/linux/osx
+Node version: `geth 0.0.0`
+Number of blocks synchronized: 0
+```
 
+<!--
+
+Check the already existing issues to keep duplicates to a minimum.
+
+
+You'll find possible solutions for these common issues below on Mist Wiki: https://github.com/ethereum/mist/wiki.
+
+- Ether is not shown in the wallet
+- I send ether to the wallet contract but it doesn't show up
+- Mist is synchronized but is stuck during the last part
+- "Your computers time is out of sync!" error
+- Unable to find peers
+- My transaction is not confirmed
+- Account can't be unlocked
+- Unable to import pre-sale wallet
+- Bind address already in use
+
+
+When creating this issue, if possible add the following to your report:
 - Screenshots
-- Check the console, of Mist (CTRL/CMD + ALT + i) and take a screenshot.
-- Log files (as ZIP archive)
--   osx: ~/Library/Application Support/Mist/node.log (Open Home folder > Show View Options > Show Library Folder)
--   windows: %APPDATA%/Roaming/Mist/node.log
--   linux: ~/.config/Mist/node.log
+- Check the console, of Mist (`CTRL/CMD + ALT + i`) and take a screenshot
+- Log files
+  - Go to the menu `Develop -> Show log files`
+  - Zip and upload `all.log` and any other appropriate `category/*.log` files
+
+ -->

@@ -1,8 +1,30 @@
 <template name="popupWindows_importAccount">
-    <div class="onboarding-screen active-import-account">
+    <div class="import-account active-import-account">
         <div class="main-content"> 
-            <div class="onboarding-section onboarding-import-account row">
-                {{> popupWindows_onboardingScreen_importAccount}}
+            <div class="importAccount-section importAccount-import-account row">
+                <h1>{{i18n "mist.popupWindows.importAccount.doYouHaveAWalletFile"}}</h1>
+                <div class="col col-6 col-left">
+                    {{{i18n "mist.popupWindows.importAccount.walletFileDescription"}}}
+                </div>
+                {{#if TemplateVar.get "filePath"}}
+                    <div class="col col-6">
+                        {{#if TemplateVar.get "importing"}}
+                            <span class="dapp-identicon dapp-icon-loading"></span>
+                            <h2 style="display: block; text-align: center;">{{i18n "mist.popupWindows.importAccount.importing"}}</h2>
+                        {{else}}
+                            <form action="about:blank" target="dapp-form-helper-iframe">
+                                <input type="{{showPassword}}" placeholder="{{i18n 'mist.popupWindows.requestAccount.enterPassword'}}" class="password">
+                                <br><br>
+                                <input type="checkbox" name="elements_input_bool" class="show-password abi-input">
+                                <label for="show-password">{{i18n "mist.popupWindows.importAccount.buttons.showPassword"}}</label>
+                                <br><br>
+                                <button type="submit" style="margin-left: 15px;">{{i18n "mist.popupWindows.importAccount.buttons.importAccount"}}</button>
+                            </form>
+                        {{/if}}
+                    </div>
+                {{else}}
+                    <div class="col col-6 dropable"> {{i18n "mist.popupWindows.importAccount.dropFilesHere"}}</div>
+                {{/if}}
             </div>
         </div>
     </div>

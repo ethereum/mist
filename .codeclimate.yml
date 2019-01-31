@@ -1,0 +1,22 @@
+plugins:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 40  # default threshold
+  eslint:
+    enabled: true
+    channel: "eslint-4"
+    checks:
+      complexity:
+        enabled: true
+  csslint:
+    enabled: true
+
+exclude_patterns:
+- "tests/"
+- "interface/client/lib/signatures.js"
+- "interface/utils/hqx.js"
+- "build-interface/"
+- "modules/preloader/injected/BigNumber.js"

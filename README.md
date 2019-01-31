@@ -1,182 +1,249 @@
-# Mist Browser
+# Mist Browser<sup>beta</sup>
 
-**NOTE** Mist is under heavy development and not intended to be tested by the community yet,
-therefore it might not run out of the box as described in the README below.
-To save us time getting you all up and running, better wait for now. Thanks :)
-
-[![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build status master branch ](https://build.ethdev.com/buildstatusimage?builder=Mist%20master%20branch)](https://build.ethdev.com/builders/Mist%20master%20branch/builds/-1)
-[![Build status develop branch ](https://build.ethdev.com/buildstatusimage?builder=Mist%20develop%20branch)](https://build.ethdev.com/builders/Mist%20develop%20branch/builds/-1)
+[![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)](http://www.somsubhra.com/github-release-stats/?username=ethereum&repository=mist)
+[![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
+[![Build status](https://ci.appveyor.com/api/projects/status/bcfm3v0y2ovq9xob?svg=true)](https://ci.appveyor.com/project/ethereum/mist)
+[![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist)
+[![Code Triagers Badge](https://www.codetriage.com/ethereum/mist/badges/users.svg)](https://www.codetriage.com/ethereum/mist)
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 
-For the Mist API see the [MISTAPI.md](MISTAPI.md).
+For the Mist API see [MISTAPI.md](MISTAPI.md).
+
+This repository is also the Electron host for the [Meteor-based wallet dapp](https://github.com/ethereum/meteor-dapp-wallet).
+
+## Help and troubleshooting
+
+In order to get help regarding Mist or Ethereum Wallet:
+
+1.  Please check the [Mist troubleshooting guide](https://github.com/ethereum/mist/wiki).
+1.  Go to our [Gitter channel](https://gitter.im/ethereum/mist) to connect with the community for instant help.
+1.  Search for [similar issues](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Canonical%22) and potential help.
+1.  Or create a [new issue](https://github.com/ethereum/mist/issues) and provide as much information as you can to recreate your problem.
+
+## How to contribute
+
+Contributions via Pull Requests are welcome. You can see where to help looking for issues with the [Enhancement](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Enhancement%22) or [Bug](https://github.com/ethereum/mist/issues?q=is%3Aopen+is%3Aissue+label%3A%22Type%3A+Bug%22) labels. We can help guide you towards the solution.
+
+You can also help by [responding to issues](https://github.com/ethereum/mist/issues?q=is%3Aissue+is%3Aopen+label%3A%22Status%3A+Triage%22). Sign up on [CodeTriage](https://www.codetriage.com/ethereum/mist) and it'll send you gentle notifications with a configurable frequency. It is a nice way to help while learning.
 
 ## Installation
 
-If you want install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases),
-you can simply run the executeable after download.
+If you want to install the app from a pre-built version on the [release page](https://github.com/ethereum/mist/releases), you can simply run the executable after download.
 
-For updating simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
-The data folder for Mist is stored in other places:
+For updating, simply download the new version and copy it over the old one (keep a backup of the old one if you want to be sure).
 
-- Windows `%APPDATA%\Roaming\Mist`
-- MacOSX `~/Library/Application Support/Mist`
+#### Linux .zip installs
+
+In order to install from .zip files, please install `libgconf2-4` first:
+
+```bash
+apt-get install libgconf2-4
+```
+
+### Config folder
+
+The data folder for Mist depends on your operating system:
+
+- Windows `%APPDATA%\Mist`
+- macOS `~/Library/Application\ Support/Mist`
 - Linux `~/.config/Mist`
-
 
 ## Development
 
-For development, a Meteor server will to be started to assist with live reload and CSS injection.
-Once a Mist version is released the Meteor frontend part is bundled using `meteor-build-client` npm package to create pure static files.
+For development, a Meteor server assists with live reload and CSS injection.
+
+Once a Mist version is released the Meteor frontend part is bundled using the `meteor-build-client` npm package to create pure static files.
 
 ### Dependencies
 
-Requires electron version 0.37.2
+To run mist in development you need:
 
-To run mist in development you need [Node.js NPM](https://nodejs.org) and [Meteor](https://www.meteor.com/install) and electron installed:
+- [Node.js](https://nodejs.org) `v7.x` (use the preferred installation method for your OS)
+- [Meteor](https://www.meteor.com/install) javascript app framework
+- [Yarn](https://yarnpkg.com/) package manager
 
-    $ curl https://install.meteor.com/ | sh
-    $ npm install -g electron-prebuilt@0.37.2
+Install the latter ones via:
 
-### Installation
+```bash
+$ curl https://install.meteor.com/ | sh
+$ curl -o- -L https://yarnpkg.com/install.sh | bash
+```
 
-Now you're ready to install Mist:
+### Initialization
 
-    $ git clone https://github.com/ethereum/mist.git
-    $ cd mist
-    $ git submodule update --init
-    $ npm install
+Now you're ready to initialize Mist for development:
 
-To update Mist in the future, run:
-
-    $ cd mist
-    $ git pull && git submodule update
-
+```bash
+$ git clone https://github.com/ethereum/mist.git
+$ cd mist
+$ git submodule update --init --recursive
+$ yarn
+```
 
 ### Run Mist
 
-Switch the `global.mode` to `"mist"` in the `main.js`.
+For development we start the interface with a Meteor server for auto-reload etc.
 
-For development we start the interface with a Meteor server for autoreload etc.
-*Start the interface in a separate terminal window:*
+_Start the interface in a separate terminal window:_
 
-    $ cd mist/interface && meteor
+```bash
+$ yarn dev:meteor
+```
 
 In the original window you can then start Mist with:
 
-    $ cd mist
-    $ electron .
+```bash
+$ cd mist
+$ yarn dev:electron
+```
 
+_NOTE: Client binaries (e.g. [geth](https://github.com/ethereum/go-ethereum)) specified in [clientBinaries.json](https://github.com/ethereum/mist/blob/master/clientBinaries.json) will be checked during every startup and downloaded if out-of-date, binaries are stored in the [config folder](#config-folder)._
+
+_NOTE: use `--help` to display available options, e.g. `--loglevel debug` (or `trace`) for verbose output_
 
 ### Run the Wallet
 
-Add `--mode wallet` to the Mist command-line.
+Start the wallet app for development, _in a separate terminal window:_
 
-Start the wallet app for development, *in a separate terminal window:*
+```bash
+$ yarn dev:meteor
+```
 
-    $ cd mist/interface && meteor
+In another terminal:
 
-    // and in another terminal
+```bash
+$ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
+```
 
-    $ cd my/path/meteor-dapp-wallet/app && meteor --port 3050
+In the original window you can then start Mist using wallet mode:
 
-In the original window you can then start Mist with:
+```bash
+$ cd mist
+$ yarn dev:electron --mode wallet
+```
 
-    $ cd mist
-    $ electron . --mode wallet
+### Connect your own node
 
+This is useful if you are already running your own node or would like to connect with a private or development network.
 
-### Using Mist with a privatenet
+```bash
+$ yarn dev:electron --rpc path/to/geth.ipc
+```
 
-To run a privatenet you need to have `geth` installed separately and run it with the `ipcpath` flag:
+### Passing options to Geth
 
-    $ geth --networkid 1234 --ipcpath /Users/you/Library/Ethereum/geth.ipc --datadir ...
+You can pass command-line options directly to Geth by prefixing them with `--node-` in
+the command-line invocation:
 
+```bash
+$ yarn dev:electron --mode mist --node-rpcport 19343 --node-networkid 2
+```
+
+The `--rpc` Mist option is a special case. If you set this to an IPC socket file
+path then the `--ipcpath` option automatically gets set, i.e.:
+
+```bash
+$ yarn dev:electron --rpc path/to/geth.ipc
+```
+
+...is the same as doing...
+
+```bash
+$ yarn dev:electron --rpc /my/geth.ipc --node-ipcpath /path/to/geth.ipc
+```
+
+### Creating a local private net
+
+If you would like to quickly set up a local private network on your computer, run:
+
+```bash
+geth --dev
+```
+
+Look for the IPC path in the resulting geth output, then start Mist with:
+
+```bash
+$ yarn dev:electron --rpc path/to/geth.ipc
+```
 
 ### Deployment
 
+Our build system relies on [gulp](http://gulpjs.com/) and [electron-builder](https://github.com/electron-userland/electron-builder/).
 
-To create a binaries you need to install the following tools:
+#### Dependencies
 
-    // tools for the windows binaries
-    $ brew install Caskroom/cask/xquartz
-    $ brew install wine
+Cross-platform builds require [additional dependencies](https://www.electron.build/multi-platform-build) needed by Electron Builder. Please follow their instructions for up to date dependency information.
 
-    // install meteor-build-client
-    $ npm install -g meteor-build-client
+#### Generate packages
 
-    // install gulp
-    $ npm install -g gulp
+To generate the binaries for Mist run:
 
-To generate the binaries simply run:
+```bash
+$ yarn build:mist
+```
 
-    $ cd mist
-    $ gulp mist
+To generate the Ethereum Wallet:
 
-    // Or to generate the wallet (using the https://github.com/ethereum/meteor-dapp-wallet -> master)
-    $ gulp wallet
+```bash
+$ yarn build:wallet
+```
 
-This will generate the binaries inside the `dist_mist` or `dist_wallet` folder.
+The generated binaries will be under `dist_mist/release` or `dist_wallet/release`. Starting from 0.11.0, both Ethereum Wallet and Mist ships with a meteor-dapp-wallet instance (https://github.com/ethereum/meteor-dapp-wallet).
 
 #### Options
 
 ##### platform
 
-Additional you can only build the windows, linux or mac binary by using the `platform` option:
+To build binaries for specific platforms (default: all available) use the following flags:
 
-    $ gulp mist --platform darwin
+```bash
+$ yarn build:mist --mac      # mac
+$ yarn build:mist --linux    # linux
+$ yarn build:mist --win      # windows
+```
 
-    // Or
-    $ gulp mist --platform "darwin win32"
+##### skipTasks
 
+When building a binary, you can optionally skip some tasks — generally for testing purposes.
 
-Options are:
+```bash
+$ yarn build:mist --mac --skipTasks=build-interface,release-dist
+```
 
-- `darwin` (Mac OSX)
-- `win32` (Windows)
-- `linux` (Linux)
+##### Checksums
 
+Prints the SHA-256 checksums of the distributables.
 
-##### walletSource
+It expects installer/zip files to be in the generated folders e.g. `dist_mist/release`
 
-With the `walletSource` you can specify the branch to use, default ist `master`:
+```bash
+$ yarn task checksums [--wallet]
+```
 
-    $ gulp mist --walletSource develop
+#### Tasks found in gulpfile.js and gulpTasks/
 
+Any other gulp task can be run using `yarn task`.
 
-Options are:
+```bash
+$ yarn task clean-dist
+```
 
-- `master`
-- `develop`
-- `local` Will try to build the wallet from [mist/]../meteor-dapp-wallet/app
+## Testing
 
-##### mist-checksums | wallet-checksums
+Tests run using [Spectron](https://github.com/electron/spectron/), a webdriver.io runner built for Electron.
 
-Spits out the SHASUM and MD5 checksums of zip files. The zip files need to be generated manually for now!
-It expects zip files to be named as the generated folders e.g. `dist_wallet/Ethereum-Wallet-macosx-0-5-0.zip`
+First make sure to build Mist with:
 
-    $ gulp mist-checksums
+```bash
+$ yarn build:mist
+```
 
-    > MD5 Ethereum-Wallet-win32-0-5-0.zip: 8ce2a562e8cfa77f2283d8b689732d59
-    > MD5 Ethereum-Wallet-linux32-0-5-0.zip: 6bbd5876d59f23eec018a204d3a08dc8
-    > MD5 Ethereum-Wallet-linux64-0-5-0.zip: 551cc4cf95c81b0faebf8460d155e041
-    > MD5 Ethereum-Wallet-macosx-0-5-0.zip: 5e781413a9880e78acd3ff396b4ce39a
-    > MD5 Ethereum-Wallet-win64-0-5-0.zip: 332e71f57aa2dac2fb8db8f6f87cda21
+Then run the tests:
 
-    > SHASUM Ethereum-Wallet-linux32-0-5-0.zip: 983dc9f1bc14a17a46f1e34d46f1bfdc01dc0868
-    > SHASUM Ethereum-Wallet-win32-0-5-0.zip: 1f8e56c198545c235d47921888e5ede76ce42dcf
-    > SHASUM Ethereum-Wallet-macosx-0-5-0.zip: dba5a13d6114b2abf1d4beca8bde25f1869feb45
-    > SHASUM Ethereum-Wallet-linux64-0-5-0.zip: 2104b0fe75109681a70f9bf4e844d83a38796311
-    > SHASUM Ethereum-Wallet-win64-0-5-0.zip: fc20b746eb37686edb04aee3e442492956adb546
+```bash
+$ yarn test:unit:once
+$ yarn test:e2e
+```
 
-### Code signing for production
-
-After the bundle run:
-
-    $ codesign --deep --force --verbose --sign "5F515C07CEB5A1EC3EEB39C100C06A8C5ACAE5F4" Ethereum-Wallet.app
-
-Verify
-
-    $ codesign --verify -vvvv Ethereum-Wallet.app
-    $ spctl -a -vvvv Ethereum-Wallet.app
+_Note: Integration tests are not yet supported on Windows._

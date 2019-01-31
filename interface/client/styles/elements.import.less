@@ -1,26 +1,41 @@
 .red {
-    color: @colorError;
+  color: @colorError;
 }
 .gree {
-    color: @colorGreen;
+  color: @colorGreen;
 }
 .blue {
-    color: @colorBlue;
+  color: @colorBlue;
 }
-
 
 img {
-    transition: opacity @animationSpeed/2;
+  transition: opacity @animationSpeed / 2;
 
-    &.loading {
-        opacity: 0;
-    }
+  &.loading {
+    opacity: 0;
+  }
 }
 
+ul.no-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  word-wrap: break-word;
 
-.node-info { 
-    position: absolute;
-    right: @defaultMargin;
-    font-size: 0.9em;
-    color: @colorTextSecondary;
+  li {
+    margin: 0;
+    margin-bottom: @defaultMargin / 2;
+
+    strong {
+      font-weight: 400;
+    }
+  }
+}
+
+.danger {
+  display: inline-block;
+  padding: 1px 2px;
+  border-radius: 3px;
+  color: @colorWhite;
+  background-color: @colorError;
 }

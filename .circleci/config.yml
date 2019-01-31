@@ -1,0 +1,191 @@
+#
+# TODO: improve caching
+# TODO: fix `xvfb gulp test` command
+# TODO: store_test_results
+# TODO: docker images
+#
+
+defaults_linux: &defaults_linux
+  working_directory: /home/circleci/mist
+  docker:
+    - image: circleci/node:8.9.4-browsers
+  environment:
+    # Setting variable to fix node-gyp build error:
+    # https://github.com/nodejs/node/issues/7173#issuecomment-224772258
+    - CXX_host: 'g++ -m32'
+
+defaults_mac: &defaults_mac
+  macos:
+    xcode: '9.0'
+
+linux_dependencies: &linux_dependencies
+  name: Linux package dependencies
+  # Installing multilib (build for 32 and 64 architectures):
+  # https://www.quora.com/How-do-I-fix-fatal-error-sys-cdefs-h-file-not-found-include-sys-cdefs-h
+  command: |
+    sudo apt-get update &&
+    sudo apt-get install --no-install-recommends -y gcc-multilib g++-multilib icnsutils xz-utils &&
+    sudo apt-get install graphicsmagick
+
+install_meteor: &install_meteor
+  name: Installing Meteor
+  # PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+  command: which meteor || curl https://install.meteor.com | /bin/sh
+
+install_node_modules: &install_node_modules
+  name: Installing node dependencies using yarn
+  command: yarn 
+
+
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  build:
+    <<: *defaults_linux
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Setting PATH: https://circleci.com/docs/2.0/env-vars/#setting-path
+      - run: echo 'export PATH=`yarn global bin`:$PATH' >> $BASH_ENV
+
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: /home/circleci/
+          paths:
+            - mist
+
+  mist-linux:
+    <<: *defaults_linux
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+
+      - run: yarn build:mist --linux
+
+        # - run: 
+        #  name: Run integration tests
+        #  command: xvfb-run yarn test:e2e
+
+          #- run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --linux; fi
+
+      - store_artifacts:
+          path: dist_mist/release
+
+  wallet-linux:
+    <<: *defaults_linux
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+          
+      - run:
+          <<: *linux_dependencies
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+
+      - run: yarn build:wallet --linux
+
+        #- run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --linux; fi
+
+      - store_artifacts:
+          path: dist_wallet/release
+
+  mist-mac:
+    <<: *defaults_mac
+    steps:
+      - checkout
+      - run: yarn global add node-gyp
+
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:mist --mac
+
+        #- run: 
+        #  name: Run integration tests
+        #  command: yarn test:e2e
+
+#      - run:
+          #name: Deploy to GitHub releases
+          #command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:mist --mac; fi
+
+      - store_artifacts:
+          path: dist_mist/release
+
+  wallet-mac:
+    <<: *defaults_mac
+    steps:
+      - checkout
+      - run: yarn global add node-gyp
+
+      - run:
+          <<: *install_meteor 
+      - run:
+          <<: *install_node_modules
+      - run: yarn build:wallet --mac
+
+        #      - run:
+        #  name: Deploy to GitHub releases
+        #  command: if [ $CIRCLE_BRANCH == 'master' ]; then yarn dist:wallet --mac; fi
+
+      - store_artifacts:
+          path: dist_wallet/release
+
+  unit-test:
+    <<: *defaults_linux
+    steps:
+      - attach_workspace:
+          at: /home/circleci/
+      - run: << *install_node_modules
+      - run: yarn test:unit:once
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - mist-linux:
+          requires:
+            - build
+      - wallet-linux:
+          requires:
+            - build
+      - unit-test:
+          requires:
+            - build
+      - wallet-mac
+      - mist-mac
+              

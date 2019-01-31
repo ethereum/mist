@@ -1,0 +1,72 @@
+<template name="popupWindows_connectAccount">
+	<div class="popup-windows connect-account">
+		<form action="#">
+			<div class="account-dapp-user-container">
+				<span class="account-address">
+					{{#if selectedAccounts}}
+						{{selectedAccounts.[0]}}
+					{{else}}
+						{{i18n "mist.popupWindows.connectAccount.chooseAccountTitle"}}
+					{{/if}}
+				</span>
+
+				<div class="account-dapp-user">
+					{{#each selectedAccounts}}
+						<span class="simptip-position-left simptip-movable" data-tooltip="{{name}}">
+							{{> dapp_identicon identity=this class="dapp-large"}}
+						</span>
+					{{else}}
+						<span class="user-icon no-account"></span>
+					{{/each}}
+
+					{{#if dapp.icon}}
+						{{> elements_img src=dapp.icon class="app-icon" }}
+					{{else}}
+						<span class="app-icon is-empty">
+							<i class="icon-globe"></i>
+						</span>
+					{{/if}}
+				</div>
+
+				<span class="dapp-url" title="{{dappFriendlyURL}}">{{dappFriendlyURL}}</span>
+			</div>
+
+			<p class="connect-account-warn-text">
+				{{i18n "mist.popupWindows.connectAccount.connectAccountDescription" dappName=dapp.name}}
+			</p>
+
+			<ul class="dapp-account-list">
+				<li>
+					<button class="create-account">
+						<span class="dapp-identicon dapp-small create-account-icon"></span>
+						<h3>{{i18n "mist.popupWindows.connectAccount.createAccount"}}</h3>
+					</button>
+				</li>
+				{{#each accounts}}
+					<li>
+						<button class="{{selected}}">
+							{{> dapp_identicon identity=address class="dapp-small"}}
+							<h3>{{name}}</h3>
+							<span>{{address}}</span>
+						</button>
+					</li>
+				{{/each}}
+			</ul>
+
+			<div class="checkbox-container">
+				<input type="checkbox" id="pin-to-sidebar" checked>
+				<label for="pin-to-sidebar">{{i18n "mist.popupWindows.connectAccount.pinToSidebar"}}</label>
+			</div>
+
+			<div class="dapp-modal-buttons">
+				<button class="cancel" type="button">{{i18n "buttons.cancel"}}</button>
+				{{# if accountNumber }}
+					<button class="ok dapp-primary-button" type="submit">{{i18n "buttons.authorize"}}</button>
+				{{else}}
+					<button class="stay-anonymous dapp-primary-button" type="button">{{i18n "buttons.stayAnonymous"}}</button>
+				{{/if}}
+			</div>
+		</form>
+	</div>
+
+</template>

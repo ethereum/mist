@@ -1,596 +1,680 @@
 /**
-The IPC provider backend filter and tunnel all incoming request to the IPC geth bridge.
+The IPC provider backend filter and tunnel all incoming request to the ethereum node.
 
 @module ipcProviderBackend
 */
 
-var dechunker = require('./dechunker.js');
+const _ = require('../utils/underscore.js');
+const Q = require('bluebird');
+const { ipcMain: ipc } = require('electron');
+const fs = require('fs');
+const path = require('path');
+
 const log = require('../utils/logger').create('ipcProviderBackend');
+const Sockets = require('../socketManager');
+const Settings = require('../settings');
+const ethereumNode = require('../ethereumNode');
+const ethereumNodeRemote = require('../ethereumNodeRemote');
+
+const ERRORS = {
+  INVALID_PAYLOAD: {
+    code: -32600,
+    message:
+      "Payload, or some of its content properties are invalid. Please check if they are valid HEX with '0x' prefix."
+  },
+  METHOD_DENIED: { code: -32601, message: 'Method __method__ not allowed.' },
+  METHOD_TIMEOUT: {
+    code: -32603,
+    message: 'Request timed out for method __method__.'
+  },
+  TX_DENIED: { code: -32603, message: 'Transaction denied' },
+  BATCH_TX_DENIED: {
+    code: -32603,
+    message:
+      'Transactions denied, sendTransaction is not allowed in batch requests.'
+  },
+  BATCH_COMPILE_DENIED: {
+    code: -32603,
+    message:
+      'Compilation denied, compileSolidity is not allowed in batch requests.'
+  },
+  SOCKET_NOT_CONNECTED: {
+    code: -32604,
+    message: 'Socket not connected when trying to send method __method__.'
+  }
+};
 
 /**
-make sockets globally available
+ * IPC provider backend.
+ */
+class IpcProviderBackend {
+  constructor() {
+    this._connections = {};
 
-@property global.sockets
-*/
-global.sockets = {};
+    this.ERRORS = ERRORS;
 
+    ethereumNode.on('state', _.bind(this._onNodeStateChanged, this));
 
-module.exports = function(){
-    const _ = require('underscore');
-    const ipc = require('electron').ipcMain;
-    const net = require('net');
-    const Socket = net.Socket;
-    const getIpcPath = require('./getIpcPath.js');
-    const popupWindow = require('../popupWindow.js');
+    ipc.on('ipcProvider-create', _.bind(this._getOrCreateConnection, this));
+    ipc.on('ipcProvider-destroy', _.bind(this._destroyConnection, this));
+    ipc.on('ipcProvider-write', _.bind(this._sendRequest, this, false));
+    ipc.on('ipcProvider-writeSync', _.bind(this._sendRequest, this, true));
 
+    this._connectionPromise = {};
 
-    var errorMethod = {"jsonrpc": "2.0", "error": {"code": -32601, "message": "Method \'__method__\' not allowed."}, "id": "__id__"},
-        errorTimeout = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Request timed out for method  \'__method__\'."}, "id": "__id__"},
-        errorUnlock = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transaction denied"}, "id": "__id__"},
-        errorSendTxBatch = {"jsonrpc": "2.0", "error": {"code": -32603, "message": "Transactions denied, sendTransaction is not allowed in batch requests."}, "id": "__id__"},
-        nonExistingRequest = {"jsonrpc": "2.0", "method": "eth_nonExistingMethod", "params": [],"id": "__id__"},
-        ipcPath = getIpcPath();
+    // dynamically load in method processors
+    const processors = fs.readdirSync(path.join(__dirname, 'methods'));
 
+    // get response processors
+    this._processors = {};
+    processors.forEach(p => {
+      const name = path.basename(p, '.js');
 
-    /**
-    Make the error response object.
+      const PClass = require(path.join(__dirname, 'methods', p));
 
-    @method makeError
-    */
-    var makeError = function(payload, error) {
-        if(error.error)
-            error.error.message = error.error.message.replace(/'[a-z_]*'/i, "'"+ payload.method +"'");
-        error.id = payload.id;
+      this._processors[name] = new PClass(name, this);
+    });
 
-        return error;
-    };
+    log.trace('Loaded processors', _.keys(this._processors));
 
-    /**
-    Make the error response object for either an error or an batch array of errors
+    store.dispatch({ type: '[MAIN]:IPC_PROVIDER_BACKEND:INIT' });
 
-    @method returnError
-    */
-    var returnError = function(payload, error) {
-        if(_.isArray(payload)) {
-            return _.map(payload, function(load){
-                return makeError(load, error);
+    // Store remote subscriptions.
+    // > key: local subscription id
+    // > value: remote subscription id
+    this._remoteSubscriptions = {};
+    // Store subscription owners for sending remote results
+    // > key: local subscription id
+    // > value: connection ownerId
+    this._subscriptionOwners = {};
+  }
+
+  /**
+   * Get/create new connection to node.
+   * @return {Promise}
+   */
+  _getOrCreateConnection(event) {
+    const owner = event.sender;
+    const ownerId = owner.id;
+
+    let socket;
+
+    return Q.try(() => {
+      // already got?
+      if (this._connections[ownerId]) {
+        socket = this._connections[ownerId].socket;
+      } else {
+        log.debug(`Create new socket connection, id=${ownerId}`);
+
+        socket = Sockets.get(ownerId, Settings.rpcMode);
+      }
+    })
+      .then(() => {
+        if (!this._connections[ownerId]) {
+          // save to collection
+          this._connections[ownerId] = {
+            id: ownerId,
+            owner,
+            socket
+          };
+
+          // if something goes wrong destroy the socket
+          ['error', 'timeout', 'end'].forEach(ev => {
+            socket.on(ev, data => {
+              log.debug(
+                `Destroy socket connection due to event: ${ev}, id=${ownerId}`
+              );
+
+              socket.destroy().finally(() => {
+                if (!owner.isDestroyed()) {
+                  owner.send(`ipcProvider-${ev}`, JSON.stringify(data));
+                }
+              });
+
+              delete this._connections[ownerId];
+              Sockets.remove(ownerId);
             });
-        } else {
-            return makeError(payload, error);
-        }
-    };
+          });
 
-
-    /**
-    The IPC wrapper backend, handling one socket connection per view
-
-    @class GethConnection
-    @constructor
-    */
-    var GethConnection = function(event) {
-        this.ipcSocket = new Socket();
-        this.path = ipcPath;
-        this.syncEvents = {};
-        this.asyncEvents = {};
-
-
-        this.sender = event.sender;
-        this.id = event.sender.getId();
-
-        this.ipcSocket.setEncoding('utf8');
-        this.ipcSocket.setTimeout(0); // disable
-        // this.ipcSocket.setKeepAlive(true, 1000 * 10);
-        // this.ipcSocket.setNoDelay(false);
-
-        // setup socket
-        this.connect(event);
-        this.setupSocket();
-
-        return this;
-    };
-
-
-    /**
-    Connects to a socket
-
-
-    @param {Object} event     If the event param is present it assumes its a sync request and will return the writable property, using "event.returnValue"
-    @method connect
-    */
-    GethConnection.prototype.connect = function(event){
-        var _this = this,
-            timeoutId,
-            successEventFunc,
-            errorEventFunc;
-
-        if(!this.ipcSocket.writable) {
-
-            // log.info('IPCSOCKET '+ this.id +' CONNECTING..');
-
-            this.ipcSocket = this.ipcSocket.connect({path: this.path});
-
-            // make sure to set the right writeable
-            successEventFunc = function(){
-                if(event && timeoutId) {
-                    clearTimeout(timeoutId);
-                    event.returnValue = true;
-                }
-                
-                _this.ipcSocket.removeListener('error', errorEventFunc);
-            };
-            this.ipcSocket.once('connect', successEventFunc);
-
-            errorEventFunc = function(){
-                if(event && timeoutId) {
-                    clearTimeout(timeoutId);
-                    event.returnValue = false;
-                }
-             
-                _this.ipcSocket.removeListener('connect', successEventFunc);
-            };
-            this.ipcSocket.once('error', errorEventFunc);
-
-
-            // return if it takes to long
-            if(event) {
-                timeoutId = setTimeout(function(){
-                    event.returnValue = _this.ipcSocket.writable;
-                    timeoutId = null;
-                }, 500);
+          socket.on('connect', data => {
+            if (!owner.isDestroyed()) {
+              owner.send('ipcProvider-connect', JSON.stringify(data));
             }
-        
-        } else if(event) {
-            event.returnValue = true;
+          });
 
-        } else {
-            this.sender.send('ipcProvider-setWritable', true);
-        }
+          // pass notifications back up the chain
+          socket.on('data-notification', data => {
+            log.trace('Notification received', ownerId, data);
 
-    };
-
-    /**
-    Creates the socket and sets up the listeners.
-
-    @method setupSocket
-    */
-    GethConnection.prototype.setupSocket = function() {
-        var _this = this;
-        
-
-        this.ipcSocket.on('connect', function(data){
-            _this.sender.send('ipcProvider-setWritable', true);
-            _this.sender.send('ipcProvider-connect', data);
-        });
-
-        // wait for data on the socket
-        this.ipcSocket.on('data', function(data){
-            dechunker(data, function(error, result){
-
-                if(error) {
-                    log.info('IPCSOCKET '+ _this.id +' TIMEOUT ERROR', error);
-                    _this.timeout();
-                    return;
-                }
-
-                // FILTER RESPONSES
-                var event = _this.getResponseEvent(result);
-
-                // if notification, then send it back to the creator of this socket
-                if(!event)
-                    return _this.sender.send('ipcProvider-data', JSON.stringify(result));
-
-                result = _this.filterRequestResponse(result, event);
-
-                // if(result && !_.isArray(result))
-                if(!result.id && !_.isArray(result))
-                    log.info('IPCSOCKET '+ _this.sender.getId()  +' NOTIFICATION', event.payload, result, "\n\n");
-
-                // SEND SYNC back
-                if(event.sync) {
-                    if(!event.sender.isDestroyed())
-                        event.returnValue = JSON.stringify(result);
-                    delete _this.syncEvents[event.eventId];
-
-                // SEND async back
-                } else {
-                    if(!event.sender.isDestroyed())
-                        event.sender.send('ipcProvider-data', JSON.stringify(result));
-                    delete _this.asyncEvents[event.eventId];
-                }
-            });
-        });
-
-
-        this.ipcSocket.on('error', function(data){
-            try {
-                log.info('IPCSOCKET '+ _this.id +' ERROR', data);
-
-                var id = _this.sender.getId(); // will throw an error, if webview is already closed
-
-                _this.sender.send('ipcProvider-error', data);
-
-            } catch(e) {
-                _this.destroy();
-            }
-        });
-
-        // this.ipcSocket.on('drain', function(data){
-        //     log.info('IPCSOCKET '+ _this.sender.getId() +' DRAINED');
-        // });
-
-        this.ipcSocket.on('timeout', function(data){
-            try {
-                log.info('IPCSOCKET '+ _this.id +' TIMEDOUT', data);
-
-                var id = _this.sender.getId(); // will throw an error, if webview is already closed
-
-                _this.sender.send('ipcProvider-timeout', data);
-                _this.destroy();
-
-            } catch(e) {
-            }
-        });
-
-        this.ipcSocket.on('end', function(data){
-            try {
-                log.debug('IPCSOCKET '+ _this.id +' CONNECTION ENDED', data, _this.ipcSocket.writable);
-
-                var id = _this.sender.getId(); // will throw an error, if webview is already closed
-
-                _this.sender.send('ipcProvider-end', data);
-                _this.destroy();
-
-            } catch(e) {
-            }
-        });
-
-    };
-
-    /**
-    Filter requests and responses.
-
-    @method getResponseEvent
-    @param {Object} response
-    @return {Boolean} TRUE when its a valid allowed request, otherWise FALSE
-    */
-    GethConnection.prototype.getResponseEvent = function(response) {
-        var _this = this;
-
-        if(_.isArray(response)) {
-            response = _.find(response, function(load){
-                return _this.syncEvents[load.id] || _this.asyncEvents[load.id];
-            });
-        }
-
-
-        return (response) ? this.syncEvents[response.id] || this.asyncEvents[response.id] : false;
-    };
-
-
-    /**
-    Filter Request and responses filter
-
-    @method testPayload
-    @param {Object} payload
-    @param {Object} error
-    @param {Object} method
-    @return {Mixed} The filtered object, an error or false, if forbidden and no error was given.
-    */
-    GethConnection.prototype.testPayload = function(payload, error, method){
-
-        // Is already ERROR
-        if(payload.error) {
-            return payload;
-
-        // FILTER REQUESTS
-        } else if(payload.method) {
-
-            // prevent dapps from acccesing admin endpoints
-            if(!/^eth_|^shh_|^net_|^web3_|^db_/.test(payload.method)){
-                payload = error ? returnError(payload, error) : false;
+            if (data.error) {
+              data = this._makeErrorResponsePayload(data, data);
+            } else {
+              data = this._makeResponsePayload(data, data);
             }
 
-        // FILTER RESULTS
-        } else if(payload.result) {
-
-            // stop if no method was given
-            if(!method)
-                return error ? returnError(payload, error) : false;
-
-
-            var tab = Tabs.findOne({webviewId: this.id});
-
-            // filter accounts, to allow only allowed accounts
-            if(method === 'eth_accounts') {
-                if(tab && tab.permissions && tab.permissions.accounts) {
-                    payload.result = _.intersection(payload.result, tab.permissions.accounts);
-                } else {
-                    payload.result = [];
-                }
+            if (!owner.isDestroyed()) {
+              owner.send('ipcProvider-data', JSON.stringify(data));
             }
+          });
         }
+      })
+      .then(() => {
+        if (!socket.isConnected) {
+          // since we may enter this function multiple times for the same
+          // event source's IPC we don't want to repeat the connection
+          // process each time - so let's track things in a promise
+          if (!this._connectionPromise[ownerId]) {
+            this._connectionPromise[ownerId] = Q.try(() => {
+              log.debug(`Connecting socket ${ownerId}`);
 
-        return payload;
-    };
+              // wait for node to connect first.
+              if (ethereumNode.state !== ethereumNode.STATES.CONNECTED) {
+                return new Q((resolve, reject) => {
+                  const onStateChange = newState => {
+                    if (ethereumNode.STATES.CONNECTED === newState) {
+                      ethereumNode.removeListener('state', onStateChange);
 
-    /**
-    Filter requests and responses.
+                      log.debug(
+                        `Ethereum node connected, resume connecting socket ${ownerId}`
+                      );
 
-    @method filterRequestResponse
-    @param {Object} payload
-    @param {Object} event
-    @return {Boolean} TRUE when its a valid allowed request, otherWise FALSE
-    */
-    GethConnection.prototype.filterRequestResponse = function(payload, event) {
-        var _this = this;
-
-        if(!_.isObject(payload))
-            return false;
-
-
-        // main window or popupwindows are admin
-        if(global.mainWindow && this.id === global.mainWindow.webContents.getId() ||
-           (global.windows[this.id] && global.windows[this.id].type && global.windows[this.id].type !== 'webview')) {
-            return payload;
-        }
-
-        if(_.isArray(payload)) {
-            return _.map(payload, function(load){
-                var req = event ? _.find(event.payload, function(re){
-                    return (re.id === load.id);
-                }) : false;
-                return _this.testPayload(load, (load.result ? errorMethod : nonExistingRequest), (req ? req.method : false));
-            });
-        } else {
-            return this.testPayload(payload, (payload.result ? errorMethod : false), (event ? event.payload.method : false));
-        }
-
-    };
-
-
-    /**
-    Checks whether the payload is a send transaction and if asks for password or confirmation
-
-    @method checkRequests
-    @param {Object} filteredPayload
-    @param {Object} event   the ipc sender event
-    @param {Function} callback returns {Object|Boolean} the filteres payload or FALSE
-    */
-    GethConnection.prototype.checkRequests = function(filteredPayload, event, callback){
-        var _this = this;
-        var called = false;
-
-        // batch request can't unlock for now (they might be deprecated soon) 
-        if(_.isArray(filteredPayload)) {
-            if(_.find(filteredPayload, function(payload){ return (payload.method === 'eth_sendTransaction'); }))
-                return callback(errorSendTxBatch);
-            else
-                return callback(null, filteredPayload);
-        }
-
-
-        // confirm SEND TRANSACTION
-        if(filteredPayload.method === 'eth_sendTransaction') {
-
-            var modalWindow = popupWindow.show('sendTransactionConfirmation', {width: 580, height: 550, alwaysOnTop: true}, filteredPayload.params[0]);
-            modalWindow.on('closed', function() {
-                if(!called) {
-                    callback(errorUnlock);
-                    called = true;
-                }
-            });
-
-            ipc.once('backendAction_unlockedAccount', function(ev, err, result){
-                if(modalWindow.webContents && ev.sender.getId() === modalWindow.webContents.getId()) {
-                    if(err || !result) {
-                        log.info('Confirmation error:', err);
-
-                        // return error, to stop sending the request
-                        if(!called) {
-                            callback(errorUnlock);
-                        }
-
-                    } else {
-                        // set the changed provided gas
-                        filteredPayload.params[0].gas = result;
-
-                        log.info('Confirmed transaction on socket '+ _this.id +':', filteredPayload.params[0]);
-                        if(!called) {
-                            callback(null, filteredPayload);
-                        }
+                      resolve();
                     }
+                  };
 
-                    called = true;
-                    modalWindow.close();
-                    modalWindow = null;
-                }
-            });
+                  ethereumNode.on('state', onStateChange);
+                });
+              }
+            })
+              .then(() => {
+                return socket.connect(
+                  Settings.rpcConnectConfig,
+                  {
+                    timeout: 5000
+                  }
+                );
+              })
+              .then(() => {
+                log.debug(`Socket connected, id=${ownerId}`);
+              })
+              .finally(() => {
+                delete this._connectionPromise[ownerId];
+              });
+          }
 
-        // COMPILE SOLIDITY
-        } else if(filteredPayload.method === 'eth_compileSolidity') {
-            var solc = require('solc');
-
-            var output = solc.compile(filteredPayload.params[0], 1); // 1 activates the optimiser
-
-            var response = (!output || output.errors)
-                ? {"jsonrpc": "2.0", "error": {code: -32700, message: (output ? output.errors : 'Compile error')}, "id": filteredPayload.id}
-                : {"jsonrpc": "2.0", "result": output.contracts, "id": filteredPayload.id};
-
-            if(event.sync)
-                event.returnValue = JSON.stringify(response);
-            else
-                event.sender.send('ipcProvider-data', JSON.stringify(response));
-
-            // return error, to stop sending the request
-            callback(true);
-            solc = null;
-
-        } else {
-            return callback(null, filteredPayload);
+          return this._connectionPromise[ownerId];
+        }
+      })
+      .then(() => {
+        if (!owner.isDestroyed()) {
+          owner.send('ipcProvider-setWritable', true);
         }
 
-    };
+        return this._connections[ownerId];
+      });
+  }
 
-    /**
-    Sends a timeout error for all still waiting responses
+  /**
+   * Handle IPC call to destroy a connection.
+   */
+  _destroyConnection(event) {
+    const ownerId = event.sender.id;
 
-    @method timeout
-    */
-    GethConnection.prototype.timeout = function() {
-        var _this = this;
-        
-        if(!this.sender.isDestroyed())
-            this.sender.send('ipcProvider-setWritable', _this.ipcSocket.writable);
+    if (this._connections[ownerId]) {
+      log.debug('Destroy socket connection', ownerId);
 
-        // cancel all requests
-        _.each(this.asyncEvents, function(event, key){
-            if(!event.sender.isDestroyed())
-                event.sender.send('ipcProvider-data', JSON.stringify(returnError(event.payload, errorTimeout)));
-            delete _this.asyncEvents[key];
+      this._connections[ownerId].owner.send('ipcProvider-setWritable', false);
+
+      this._connections[ownerId].socket.destroy();
+      delete this._connections[ownerId];
+      Sockets.remove(ownerId);
+    }
+  }
+
+  /**
+   * Handler for when Ethereum node state changes.
+   *
+   * Auto-reconnect sockets when ethereum node state changes
+   *
+   * @param {String} state The new state.
+   */
+  _onNodeStateChanged(state) {
+    switch (
+      state // eslint-disable-line default-case
+    ) {
+      // stop syncing when node about to be stopped
+      case ethereumNode.STATES.STOPPING:
+        log.info('Ethereum node stopping, disconnecting sockets');
+
+        // Unsubscribe remote subscriptions
+        _.each(this._remoteSubscriptions, remoteSubscriptionId => {
+          ethereumNodeRemote.send('eth_unsubscribe', [remoteSubscriptionId]);
         });
-        _.each(this.syncEvents, function(event, key){
-            if(!event.sender.isDestroyed())
-                event.returnValue = JSON.stringify(returnError(event.payload, errorTimeout));
-            delete _this.syncEvents[key];
-        });
-    };
+        this._remoteSubscriptions = {};
+        this._subscriptionOwners = {};
 
-    /**
-    This will close the socket connection and prevent any further activity with it.
+        Q.all(
+          _.map(this._connections, item => {
+            if (item.socket.isConnected) {
+              return item.socket.disconnect().then(() => {
+                log.debug(
+                  `Tell owner ${item.id} that socket is not currently writeable`
+                );
 
-    @method destroy
-    */
-    GethConnection.prototype.destroy = function() {
-        if(!this || !this.ipcSocket)
-            return;
-
-        this.timeout();
-        
-        this.ipcSocket.removeAllListeners();
-        this.ipcSocket.destroy();
-
-        log.debug('SOCKET '+ this.id + ' DESTROYED!');
-
-        if(global.sockets['id_'+ this.id])
-            delete global.sockets['id_'+ this.id];
-    };
-
-
-
-    /**
-    The IPC listeners
-
-    @class ipcProvider Backend
-    @constructor
-    */
-
-    // wait for incoming requests from dapps/ui
-    ipc.on('ipcProvider-create', function(event){
-        var socket = global.sockets['id_'+ event.sender.getId()];
-
-        // log.info('Called ipcProvider-create');
-
-        if(socket) {
-            socket.connect(event);
-        } else {
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
-        }
-
-      
-        if(event.sender.returnValue)
-            event.sender.returnValue = socket.ipcSocket.writable;      
-        // else       
-        //     event.sender.send('ipcProvider-setWritable', socket.ipcSocket.writable);
-    });
-
-    ipc.on('ipcProvider-destroy', function(event){
-        var socket = global.sockets['id_'+ event.sender.getId()];
-        if(!socket) return;
-
-        // log.info('Called ipcProvider-destroy');
-
-        if(socket) {
-            socket.destroy();
-        }
-    });
-
-
-    var sendRequest = function(event, payload, sync) {
-        var socket = global.sockets['id_'+ event.sender.getId()];
-
-        if(!socket) {
-            // TODO: should we really try to reconnect, after the connection was destroyed?
-            socket = global.sockets['id_'+ event.sender.getId()] = new GethConnection(event);
-        // make sure we are connected
-        } else if(!socket.ipcSocket.writable) {
-            socket.connect(event);
-        }
-
-        // if not writeable send error back
-        if(!socket.ipcSocket.writable) {
-            if(event.sync)
-                event.returnValue = JSON.stringify(returnError(jsonPayload, errorTimeout));
-            else
-                event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorTimeout)));
-            return;
-        }
-
-        // log.info('SEND REQ', event.sender.getId());
-
-        var jsonPayload = JSON.parse(payload),
-            filteredPayload = socket.filterRequestResponse(jsonPayload);
-
-
-        if(sync === true)
-            event.sync = sync;
-
-
-        // return error, if permission not passed
-        if(_.isEmpty(filteredPayload)) {
-
-            if(event.sync)
-                event.returnValue = JSON.stringify(returnError(jsonPayload, errorMethod));
-            else
-                event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, errorMethod)));
-
-            return;
-        }
-
-
-
-        socket.checkRequests(filteredPayload, event, function(e, result){
-            if(!e && !_.isEmpty(result)) {
-
-                // SEND REQUEST
-                var id = result.id || result[0].id;
-                
-                // log.info('IPCSOCKET '+ socket.sender.getId() +' ('+ socket.id +') WRITE'+ (sync ? ' SYNC' : '') + ' ID:' + id + ' Method: '+ (result.method || result[0].method) + ' Params: '+ (result.params || result[0].params));
-
-                // add the payload to the event, so we can time it out if necessary
-                event.payload = result;
-                event.eventId = id;
-
-                if(event.sync)
-                    socket.syncEvents[id] = event;
-                else
-                    socket.asyncEvents[id] = event;
-
-                socket.ipcSocket.write(JSON.stringify(result));
-         
-            // SEND error
-            } else if(e && e !== true){
-
-                if(event.sync)
-                    event.returnValue = JSON.stringify(returnError(jsonPayload, e));
-                else
-                    event.sender.send('ipcProvider-data', JSON.stringify(returnError(jsonPayload, e)));
+                item.owner.send('ipcProvider-setWritable', false);
+              });
             }
+            return Q.resolve();
+          })
+        ).catch(err => {
+          log.error('Error disconnecting sockets', err);
         });
+
+        break;
+    }
+  }
+
+  /**
+   * Handle IPC call to send a request.
+   * @param  {Boolean} isSync  whether request is sync.
+   * @param  {Object}  event   IPC event.
+   * @param  {String}  payload request payload.
+   * @param  {Boolean} retry   whether trying request again due to error
+   */
+  _sendRequest(isSync, event, payload, retry = false) {
+    const ownerId = event.sender.id;
+
+    log.trace('sendRequest', isSync ? 'sync' : 'async', ownerId, payload);
+
+    const originalPayloadStr = payload;
+
+    return Q.try(() => {
+      // overwrite playload var with parsed version
+      payload = JSON.parse(originalPayloadStr);
+
+      return this._getOrCreateConnection(event);
+    })
+      .then(conn => {
+        // reparse original string (so that we don't modify input payload)
+        const finalPayload = JSON.parse(originalPayloadStr);
+
+        // is batch?
+        const isBatch = _.isArray(finalPayload);
+        const finalPayloadList = isBatch ? finalPayload : [finalPayload];
+
+        if (!conn.socket.isConnected) {
+          const error = Object.assign({}, this.ERRORS.SOCKET_NOT_CONNECTED, {
+            message: this.ERRORS.SOCKET_NOT_CONNECTED.message.replace(
+              '__method__',
+              finalPayloadList.map(p => p.method).join(', ')
+            )
+          });
+          // Try again if not already a retry
+          if (!retry) {
+            error.message += ' Will retry...';
+            setTimeout(() => {
+              this._sendRequest(isSync, event, originalPayloadStr, true);
+            }, 2000);
+          }
+          log.debug(error);
+          throw error;
+        }
+
+        // sanitize each and every request payload
+        _.each(finalPayloadList, p => {
+          const processor = this._processors[p.method]
+            ? this._processors[p.method]
+            : this._processors.base;
+
+          processor.sanitizeRequestPayload(conn, p, isBatch);
+        });
+
+        // if a single payload and has an error then throw it
+        if (!isBatch && finalPayload.error) {
+          throw finalPayload.error;
+        }
+
+        // get non-error payloads
+        const nonErrorPayloads = _.filter(finalPayloadList, p => !p.error);
+
+        // execute non-error payloads
+        return Q.try(() => {
+          if (nonErrorPayloads.length) {
+            // if single payload check if we have special processor for it
+            // if not then use base generic processor
+            const processor = this._processors[finalPayload.method]
+              ? this._processors[finalPayload.method]
+              : this._processors.base;
+
+            return processor.exec(
+              conn,
+              isBatch ? nonErrorPayloads : nonErrorPayloads[0]
+            );
+          } else {
+            return [];
+          }
+        }).then(ret => {
+          log.trace('Got result', ret);
+
+          let finalResult = [];
+
+          // collate results
+          _.each(finalPayloadList, p => {
+            if (p.error) {
+              finalResult.push(p);
+            } else {
+              p = _.extend({}, p, isBatch ? ret.shift() : ret);
+
+              const processor = this._processors[p.method]
+                ? this._processors[p.method]
+                : this._processors.base;
+
+              // sanitize response payload
+              processor.sanitizeResponsePayload(conn, p, isBatch);
+
+              // if subscription, save connection ownerId for sending responses later
+              if (p.method === 'eth_subscribe') {
+                const subscriptionId = p.result;
+                if (subscriptionId) {
+                  this._subscriptionOwners[subscriptionId] = ownerId;
+                }
+              }
+
+              finalResult.push(p);
+            }
+          });
+
+          // extract single payload result
+          if (!isBatch) {
+            finalResult = finalResult.pop();
+
+            // check if it's an error
+            if (finalResult.error) {
+              throw finalResult.error;
+            }
+          }
+
+          return finalResult;
+        });
+      })
+      .then(result => {
+        log.trace('Got result', result);
+        return this._makeResponsePayload(payload, result);
+      })
+      .catch(err => {
+        log.error('Send request failed', err);
+
+        err = this._makeErrorResponsePayload(payload || {}, {
+          message: typeof err === 'string' ? err : err.message,
+          code: err.code
+        });
+
+        return err;
+      })
+      .then(returnValue => {
+        returnValue = JSON.stringify(returnValue);
+
+        log.trace('Return', ownerId, returnValue);
+
+        if (isSync) {
+          event.returnValue = returnValue;
+        } else if (!event.sender.isDestroyed()) {
+          event.sender.send('ipcProvider-data', returnValue);
+        }
+      });
+  }
+
+  /**
+    Sanitize a single or batch request payload.
+
+    This will modify the passed-in payload.
+
+    @param {Object} conn The connection.
+    @param {Object|Array} payload The request payload.
+    */
+  _sanitizeRequestPayload(conn, payload) {
+    if (_.isArray(payload)) {
+      _.each(payload, p => {
+        if (p.method === 'eth_sendTransaction') {
+          p.error = ERRORS.BATCH_TX_DENIED;
+        } else {
+          this._processors.base.sanitizePayload(conn, p);
+        }
+      });
+    } else {
+      this._processors.base.sanitizePayload(conn, payload);
+    }
+  }
+
+  /**
+    Make an error response payload
+
+    @param {Object|Array} originalPayload Original payload
+    @param {Object} error Error result
+    */
+  _makeErrorResponsePayload(originalPayload, error) {
+    const e = [].concat(originalPayload).map(item => {
+      const e = _.extend(
+        {
+          jsonrpc: '2.0'
+        },
+        error
+      );
+
+      if (e.message) {
+        if (_.isArray(e.message)) {
+          e.message = e.message.pop();
+        }
+
+        e.error = {
+          code: e.code,
+          message: e.message.replace(/'[a-z_]*'/i, `'${item.method}'`)
+        };
+
+        delete e.code;
+        delete e.message;
+      }
+
+      // delete stuff leftover from request
+      delete e.params;
+      delete e.method;
+
+      e.id = item.id;
+
+      return e;
+    });
+
+    return _.isArray(originalPayload) ? e : e[0];
+  }
+
+  /**
+    Make a response payload.
+
+    @param {Object|Array} originalPayload Original payload
+    @param {Object|Array} value Response results.
+
+    @method makeReturnValue
+    */
+  _makeResponsePayload(originalPayload, value) {
+    const finalValue = _.isArray(originalPayload) ? value : [value];
+
+    const allResults = [].concat(originalPayload).map((item, idx) => {
+      const finalResult = finalValue[idx];
+
+      let ret;
+
+      // handle error result
+      if (finalResult.error) {
+        ret = this._makeErrorResponsePayload(item, finalResult.error);
+      } else {
+        ret = _.extend({}, item, {
+          result: finalResult.result
+        });
+      }
+
+      ret = this._handleSubscriptions(ret);
+
+      if (ret) {
+        if (item.id) {
+          delete ret.params;
+          delete ret.method;
+        }
+        ret.jsonrpc = '2.0';
+      }
+
+      return ret;
+    });
+
+    return _.isArray(originalPayload) ? allResults : allResults[0];
+  }
+
+  /**
+    Handles eth_subscribe|eth_subscription|eth_unsubscribe to:
+    1. Create a remote subscription when created on local (except syncing subscriptions)
+    2. Send remote subscription result if on remote (with remote subscription id swapped for local id)
+    3. Ignore local subscription result if on remote
+    4. Unsubscribe remote subscription when unsubscribing local subscription
+
+    @param {Object} result
+    @return {Object} result
+    */
+  _handleSubscriptions(result) {
+    if (result.method === 'eth_subscribe') {
+      // If subscription is created in local, also create the subscription in remote
+      const subscriptionType = result.params[0];
+      const subscriptionId = result.result;
+
+      // Create subscription in remote node
+      this._remoteSubscriptions[subscriptionId] = this._subscribeRemote(
+        subscriptionId,
+        result.params
+      );
     }
 
-    ipc.on('ipcProvider-write', sendRequest);
+    if (result.method === 'eth_subscription') {
+      // Skip if syncing result
+      if (result.params.result.syncing) {
+        return result;
+      }
 
-    ipc.on('ipcProvider-writeSync', function(event, payload){
-        sendRequest(event, payload, true);
+      // If remote node is active, cancel propogating response
+      // since we'll return the remote response instead
+      if (store.getState().nodes.active === 'remote') {
+        log.trace(
+          `Ignoring local subscription result (remote node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
+        return null;
+      } else {
+        log.trace(
+          `Sending local subscription result (local node is active). subscription id: ${
+            result.params.subscription
+          }`
+        );
+        return result;
+      }
+    }
+
+    if (result.method === 'eth_unsubscribe') {
+      const subscriptionId = result.params[0];
+      const localSubscriptionId = this._remoteSubscriptions[subscriptionId];
+      if (localSubscriptionId) {
+        ethereumNodeRemote.send('eth_unsubscribe', [localSubscriptionId]);
+        delete this._remoteSubscriptions[subscriptionId];
+        delete this._subscriptionOwners[subscriptionId];
+      }
+    }
+
+    return result;
+  }
+
+  /**
+    Creates a subscription in remote node and
+    sends results down the pipe if remote node is active
+
+    @param {Object}  params - Subscription params
+    @param {Boolean} retry  - Is this request a retry
+    */
+  _subscribeRemote(localSubscriptionId, params, retry = false) {
+    return new Promise(async (resolve, reject) => {
+      log.trace(
+        `Creating remote subscription: ${params} (local subscription id: ${localSubscriptionId})`
+      );
+
+      var remoteSubscriptionId;
+      const requestId = await ethereumNodeRemote.send('eth_subscribe', params);
+
+      if (!requestId) {
+        log.error('No return id for request');
+        return;
+      }
+
+      const callback = data => {
+        if (!data) {
+          return;
+        }
+
+        try {
+          data = JSON.parse(data);
+        } catch (error) {
+          log.trace('Error parsing data: ', data);
+        }
+
+        if (data.id === requestId && data.result) {
+          if (data.result) {
+            remoteSubscriptionId = data.result;
+            resolve(remoteSubscriptionId);
+          }
+        }
+
+        if (
+          data.params &&
+          data.params.subscription &&
+          data.params.subscription === remoteSubscriptionId
+        ) {
+          this._sendRemoteResult(localSubscriptionId, data.params.result);
+        }
+      };
+
+      ethereumNodeRemote.ws.on('message', callback);
     });
+  }
+
+  _sendRemoteResult(localSubscriptionId, remoteResult) {
+    if (store.getState().nodes.active === 'remote') {
+      // Set up object to send
+      const res = {
+        jsonrpc: '2.0',
+        method: 'eth_subscription',
+        params: {
+          result: remoteResult,
+          subscription: localSubscriptionId
+        }
+      };
+
+      const owner =
+        this._subscriptionOwners[localSubscriptionId] &&
+        this._connections[this._subscriptionOwners[localSubscriptionId]]
+          ? this._connections[this._subscriptionOwners[localSubscriptionId]]
+              .owner
+          : null;
+
+      if (!owner) {
+        log.trace('No owner to send result', res);
+      } else if (owner.isDestroyed()) {
+        log.trace('Owner to send result already destroyed', res);
+      } else {
+        log.trace(
+          `Sending remote subscription result (remote node is active)`,
+          res
+        );
+        owner.send('ipcProvider-data', JSON.stringify(res));
+      }
+    }
+  }
+}
+
+exports.init = () => {
+  return new IpcProviderBackend();
 };

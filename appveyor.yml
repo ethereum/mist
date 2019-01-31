@@ -1,0 +1,60 @@
+image: Visual Studio 2017
+platform: x64
+
+environment:
+  nodejs_version: "8"
+
+  # increasing `meteor build` memory allocation
+  # https://github.com/meteor/meteor/issues/9568
+  TOOL_NODE_FLAGS: "--max-old-space-size=4096"
+
+  APPVEYOR_RDP_PASSWORD:
+    secure: ErXQkfrN/bX6LtqcjtnLGw==
+  
+  matrix:
+    - product: mist
+    - product: wallet
+
+artifacts:
+  - path: dist_mist\release\*
+    name: Mist
+  - path: dist_wallet\release\*
+    name: Wallet
+
+cache:
+  - node_modules
+  - '%LOCALAPPDATA%\electron\Cache'
+  - '%LOCALAPPDATA%\electron-builder\cache'
+
+init:
+  # enabling RDP for debugging purposes
+  - ps: $blockRdp = true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+
+  # needed for meteor-dapp-wallet
+  - git submodule update --init --recursive 
+
+  # installs global dependencies
+  - choco install meteor 
+  - choco install nsis
+
+  - refreshenv
+  - ps: refreshenv
+ 
+  - node --version
+
+  # installs JS dependencies
+  - yarn install
+  - cd interface && yarn install
+
+build_script:
+  - ps: yarn build:$env:product --win --skipTasks=build-interface
+  - ps: yarn dist:$env:product
+
+test_script:
+- cmd: yarn test:unit:once
+
+

@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "Caricamento...",
+        "offline": "Impossibile connettersi, sicuro di essere online?",
+        "logginIn": "Autenticazione..."
+    },
+    "error": {
+        "insufficientRights": "Non hai sufficienti diritti per compiere quasta azione."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Annulla",
+        "save": "Salva",
+        "edit": "Modifica",
+        "send": "Invia",
+        "next": "Prossimo",
+        "previous": "Precedente",
+        "back": "Indietro",
+        "skip": "Salta",
+        "sending": "Inviando...",
+        "create": "Crea",
+        "tryToReconnect": "Prova a riconnetterti",
+        "stayAnonymous": "Rimani anonimo",
+        "authorize": "Autorizza"
+    },
+    "commonWords": {
+        "you": "Tu",
+        "send": "Invia",
+        "or": "oppure",
+        "of": "di",
+        "with": "con",
+        "and": "e",
+        "on": "su",
+        "per": "per"
+    }
+}

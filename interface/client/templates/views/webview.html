@@ -1,0 +1,16 @@
+<template name="views_webview">
+    <div class="webview {{isVisible}} {{#if appBar}}app-bar-{{appBar}}{{/if}}">
+        {{#if $eq _id "tests"}}
+            <webview src="file://{{dirname}}/tests/mocha-in-browser/runner.html" data-id="{{_id}}" preload="{{preloaderFile}}" autosize></webview>
+        {{else}}
+          <webview
+            src="{{checkedUrl}}"
+            data-id="{{_id}}"
+            preload="{{preloaderFile}}"
+            webpreferences="contextIsolation=yes"
+            partition="{{#if $eq _id "wallet"}}persist:wallet{{/if}}"
+            autosize
+           ></webview>
+        {{/if}}
+    </div>
+</template>

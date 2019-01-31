@@ -1,95 +1,61 @@
-// Layout
-
-// .tab-view {
-//     transition:transform 0.4s cubic-bezier(0.12, 1.1, 0.59, 1.005);
-
-//     &.hidden {
-//         transform: translate3d(0, 100%,  0);
-//         transition: transform 0.8s cubic-bezier(1,.01,1,.2), visibility 4.4s;
-//     }
-// }
-
-
-// .browser-bar .spinner {
-//     .transition(opacity @animationSpeed/2);
-//     .transform-origin(0% 0%);
-
-//     &.animate {
-//         .opacity(0);
-//     }  
-// }
-
 // Menu
 
 aside.sidebar {
-    ul li {
-        transition: transform 0.25s, height 0.25s, visibility 0.5s;
+  ul li {
+    transition: transform 0.25s, height 0.25s, visibility 0.5s;
 
-        &.ui-sortable-helper {
-            transition: none;
-        }
-
-        button.main img {
-            transition: opacity 0.5s;
-        }
-        button.slide-out {
-            transition: transform 0.2s ease-in-out;
-        }
-
-        ul.sub-menu {
-            li {
-                transition: background 0.05s ease-in-out, height 0.25s ease-out, opacity 0.25s ease-out;
-            }
-            .badge {
-                // ANIMATION
-                transition: max-width @animationSpeed;
-            }
-
-        } 
+    &.ui-sortable-helper {
+      transition: none;
     }
 
-    &.full-tabs {
-        nav > ul > li:not(.selected) {
-            transform: translate3d(-100%,0,0);
-        }
-        nav > ul > li.selected button.slide-out {
-            transition: none;
-        }
+    button.slide-out {
+      transition: transform 0.2s ease-in-out;
     }
+
+    ul.sub-menu {
+      li {
+        transition: background 0.05s ease-in-out, height 0.25s ease-out,
+          opacity 0.25s ease-out;
+      }
+      .badge {
+        // ANIMATION
+        transition: max-width @animationSpeed;
+      }
+    }
+  }
 }
 
-
-// Browser bar 
+// Browser bar
 .browser-bar {
-    .url-input {
-        transition: opacity 0.1s;
-    }
+  .url-input {
+    transition: opacity 0.1s;
+  }
 }
 
 .popup-windows {
-    position: relative;
-    perspective: 800px;
+  position: relative;
+  perspective: 800px;
 
-    .field-container{
-        transform-style: preserve-3d;
-        transition: transform 0.5s;
-        transition-timing-function:  ease-out;
-        transition-timing-function:  cubic-bezier(0.000, 1.125, 0.335, 1.650);
-        height: @gridHeight*1.5;
-        
-        &>* {
-            position: absolute;
-            left: @gridWidth*2;
-            top: -1*@gridHeight;
-            backface-visibility: hidden;
-        }
+  .field-container {
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    transition-timing-function: ease-out;
+    transition-timing-function: cubic-bezier(0, 1.125, 0.335, 1.65);
+    height: @gridHeight*1.5;
 
-        .password-repeat {
-            transform: rotateX( 180deg );  
-        }
-    
-        &.repeat-field {
-            transform: rotateX( 180deg );            
-        }
+    & > * {
+      position: absolute;
+      left: @gridWidth*2;
+      top: -1 * @gridHeight;
+      backface-visibility: hidden;
     }
+
+    .password-repeat {
+      transform: rotateX(180deg);
+    }
+
+    &.repeat-field {
+      transform: rotateX(180deg);
+    }
+  }
 }

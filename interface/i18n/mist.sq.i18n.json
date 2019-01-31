@@ -1,0 +1,247 @@
+{
+  "mist": {
+    "applicationMenu": {
+      "app": {
+        "label": "__app__",
+        "about": "Rreth __app__",
+        "checkForUpdates": "Kërko për përditësime...",
+        "checkForNodeUpdates": "Kërko për përditësime të nyjes Ethereum...",
+        "services": "Shërbime",
+        "hide": "Fshih __app__",
+        "hideOthers": "Fshih të tjerat",
+        "showAll": "Shfaq të gjitha",
+        "quit": "Dil nga __app__"
+      },
+      "file": {
+        "label": "Skedari",
+        "importPresale": "Merr llogari",
+        "newAccount": "Llogari e re",
+        "backup": "Ruaj kopje rezervë",
+        "backupKeyStore": "Llogari",
+        "backupMist": "Të Dhënat e Aplikimit",
+        "swarmUpload": "Ngarko në Swarm..."
+      },
+      "edit": {
+        "label": "Redakto",
+        "undo": "Zhbëj",
+        "redo": "Ribëj",
+        "cut": "Pri",
+        "copy": "Kopjo",
+        "paste": "Ngjit",
+        "selectAll": "Përzgjidh të gjitha"
+      },
+      "view": {
+        "label": "Shiko",
+        "fullscreen": "Kalo me ekran të plotë",
+        "default": "Vlera e parazgjedhur"
+      },
+      "develop": {
+        "label": "Zhvillo",
+        "devTools": "Shfaq mjetet e zhvillimit",
+        "devToolsMistUI": "Mist UI",
+        "devToolsWalletUI": "Kuletë UI",
+        "devToolsWebview": "__webview__",
+        "runTests": "Fillo testimet",
+        "logFiles": "Trego skedarin me të dhënat e regjistruara",
+        "openRemix": "Hap IDE-në Remix",
+        "ethereumNode": "Nyje Ethereum",
+        "network": "Rrjet",
+        "mainNetwork": "Rrjeti kryesor",
+        "startMining": "⛏  Fillo të Prodhosh",
+        "stopMining": "⛏ Ndalo së Prodhuari"
+      },
+      "window": {
+        "label": "Dritare",
+        "minimize": "Minimizo",
+        "close": "Mbyll",
+        "toFront": "Sill Gjithçka në Pamje të Parë"
+      },
+      "help": {
+        "label": "Ndihmë",
+        "mistWiki": "Zgjidhje problemesh dhe ndihmë",
+        "gitter": "Kanali Mist në Gitter",
+        "reportBug": "Raportoni një problem në Github"
+      }
+    },
+    "errors": {
+      "nodeConnect":
+        "Nuk mund të lidhesh me nyje? Shiko të dhënat e regjistruara për më shumë:",
+      "nodeStartup":
+        "Duket se nyja nuk mund të niset. Mos keni ndonjë nyje tjetër është aktive? Mos është duke pasuruar bazën e të dhënave në këto momente?",
+      "timeSync": {
+        "title": "Ora e kompjuterit tuaj nuk është e sinkronizuar.",
+        "description":
+          "Në mënyrë që të sinkronizoheni me sukses me rrjetin Ethereum ju duhet të sinkronizoni orën tuaj të kompjuterit me një server sinkronizues kohe.",
+        "win32":
+          "Shkoni në \"Internet Time Settings\" te preferencat tuaja të sistemit dhe përzgjidhni opsionin përkatës. Për detaje shikoni këtë udhëzues: http://www.guidingtech.com/3119/windows-clock-sync/",
+        "linux":
+          "Që të fusni në punë një server kohe të sinkronizuar instaloni \"ntp\" nëpërmjet \"apt-get install ntp\".",
+        "darwin":
+          "Që të mundësoni një sinkronizim kohe,  hapni preferencat e kohës dhe përzgjidhni \"Set the time and date automatically\"."
+      },
+      "nodeChecksumMismatch": {
+        "title": "Konflikt skedarësh në nyjen e shkarkuar!",
+        "description":
+          "__algorithm__: __hash__\n\nJu lutemi të instaloni versionin node __type__ __version__ manualisht."
+      },
+      "legacyChain": {
+        "title": "U zbulua zinxhir i vjetër",
+        "description":
+          "Nyja juaj ndodhet në zinxhirin e pasuportuar Ethereum Classic. Për të përdorur këtë zinxhir, përdorni mjetet e mundësuara nga projekti Ethereum Classic në\nhttps://ethereumclassic.github.io.\n\nPër të kaluar në zinxhirin kryesor Ethereum ndiqni udhëzuesin këtu:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+      }
+    },
+    "rightClick": {
+      "reload": "Ringarko",
+      "openDevTools": "Hap Mjetet e Zhvilluesit",
+      "inspectElements": "Inspekto Elemente"
+    },
+    "sendTx": {
+      "enterPassword": "Fusni fjalëkalimin që të konfirmoni transaksionin",
+      "unlocking": "Duke konfirmuar...",
+      "estimatedGasError":
+        "Të dhënat nuk mund të ekzekutohen kështu që do të përdoret i gjithë karburanti.",
+      "overBlockGasLimit":
+        "Karburanti i kërkuar për kryerjen e këtij veprimi mund ta kalojë limitin e karburantit të bllokut.",
+      "notEnoughGas":
+        "Mund të mos ketë mjaftueshëm karburant për të përfunduar këtë transaksion me sukses.<br>Klikoni këtu për të rritur sasinë e karburantit.",
+      "errors": {
+        "connectionTimeout":
+          "Nuk mund të lidhet me nyjen. Mos ka probleme diku?",
+        "wrongPassword": "Fjalëkalim i gabuar",
+        "multipleKeysMatchAddress":
+          "Disa  çelësa i përshtaten kësaj adrese; ju lutemi hiqni kopjet e dyfishta nga mbajtësja e çelësave (menunë -> Skedari -> Ruaj kopje rezervë -> Llogari)",
+        "insufficientFundsForGas":
+          "Fonde të pamjaftueshme në adresën kryesore (etherbase) për të paguar për karburant",
+        "sameAccount": "Nuk mund t'i dërgohet vetes"
+      }
+    },
+    "nodeInfo": {
+      "active": "active",
+      "blockNumber": "Numri i bllokut tuaj të fundit",
+      "blockReceivedShort": "U mor një bllok i ri",
+      "blocksBehind": "blocks behind",
+      "checkingWhichNetwork": "Duke kontrolluar rrjetin...",
+      "connecting": "Connecting...",
+      "local": "Local",
+      "lookingForPeers": "Looking for peers...",
+      "network": "Network",
+      "node": "Node",
+      "nodeSyncing": "__blockDiff__ blloqe të mbetura",
+      "peers": "miq",
+      "privateNetwork": "Private-net",
+      "test": "test",
+      "testnetExplain":
+        "Jeni në një rrjet testimi, MOS DËRGONI asnjë ether të vërtetë në këto adresa",
+      "timeSinceBlock": "Koha e kaluar që nga blloku i fundit"
+    },
+    "sidebar": {
+      "buttons": {
+        "browser": "Shfleto"
+      },
+      "submenu": {
+        "account": "Llogaria",
+        "connectAccounts": "Lidh Llogari"
+      }
+    },
+    "browserBar": {
+      "buttons": {
+        "noAccounts": "Nuk ka llogari të krijuar",
+        "connect": "Lidhu"
+      }
+    },
+    "startScreen": {
+      "runningNodeFound": "U gjet nyje Ethereum në punë!",
+      "nodeConnectionTimeout":
+        "Nuk mund të niset nyje Ethereum!<br><small>Nëse ju <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>instaluat Geth</a>, përdorni këtë komandë ta krijoni: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Ose raportoni një problem </a></small>",
+      "nodeBinaryNotFound":
+        "Nuk u gjet nyje binare Ethereum!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Ju lutemi krijoni një manualisht më parë. </a> </small>",
+      "nodeStarting": "Nyja Ethereum po niset...",
+      "nodeStarted": "Nyja Ethereum u nis",
+      "nodeConnected": "Nyja Ethereum u lidh",
+      "nodeStopping": "Nyja Ethereum po ndalon...",
+      "nodeStopped": "Nyja Ethereum ndaloi",
+      "nodeError": "Problem lidhjeje i nyjes Ethereum:'(",
+      "unableToBindPort":
+        "Nyja Ethereum nuk munt të fillojë. Mos ka ndonjë instancë tjetër të nisur?",
+      "nodeSyncing":
+        "Nyja Ethereum ka nevojë të sinkronizohet, ju lutemi prisni...",
+      "nodeSyncInfo":
+        "Duke marrë bllokun __displayBlock__ nga __highestBlock__.",
+      "nodeSyncInfoStates":
+        "Duke shkarkuar bllokun __displayBlock__ nga __highestBlock__, <br> Duke shkarkuar strukturën e zinxhirit __displayState__ nga __displayKnownStates__",
+      "nodeSyncConnecting": "Duke kërkuar miq...",
+      "nodeSyncFoundPeers": "Duke u lidhur me __peers__ miq...",
+      "launchApp": "Hap Aplikacionin",
+      "clientBinaries": {
+        "scanning": "Duke kërkuar për përditësime të nyjes...",
+        "downloading": "Duke shkarkuar nyje të re...",
+        "loadConfig": "Duke ngarkuar konfigurimin e klientit...",
+        "filtering": "Duke filtruar skedarët binarë të klientit...",
+        "done": "Nyja Ethereum e përditësuar...",
+        "error": "Problem me ekzekutimin e programit të shkarkuar."
+      }
+    },
+    "popupWindows": {
+      "updateAvailable": {
+        "newVersionAvailable": "Version i ri i  __name__ i përdorshëm",
+        "version": "Versioni",
+        "downloadURL": "URL e shkarkimit",
+        "checksum": "Checksum",
+        "downloadAndRestart": "Përditëso dhe Rindiz",
+        "download": "Shkarko version të ri",
+        "skipUpdate": "Kapërce përditësim",
+        "checking": "Duke kontrolluar për përditësime të __name__...",
+        "noUpdateFound":
+          "Nuk u gjetën përditësime. Po përdorni versionin më të fundit të __name__."
+      },
+      "requestAccount": {
+        "title": "Krijoni llogari",
+        "enterPassword": "Fusni fjalëkalimin",
+        "repeatPassword": "Përsërisni fjalëkalimin",
+        "creating": "Duke krijuar llogari...",
+        "backupHint":
+          "Sigurohuni të ruani edhe fjalëkalimin, edhe skedarët çelës!\n\nMund t'i gjeni këta skedarë duke përdorur menunë kryesore -> Skedari -> Ruaj kopje rezervë -> Llogaritë. Ruani një kopje të dosjes \"keystore\" në një vend të sigurt!",
+        "errors": {
+          "passwordMismatch": "Fjalëkalimet nuk përputhen.",
+          "passwordTooShort": "Krijoni një fjalëkalim më të gjatë"
+        }
+      },
+      "importAccount": {
+        "doYouHaveAWalletFile": "A keni një skedë kulete?",
+        "walletFileDescription":
+          "<p>Nëse ju keni marrë pjesë në Parashitjen e Ethereumit 2014, ju duhet të keni një skedë të emëruar <code>ethereum_wallet_backup.json</code>. Eshtë shkarkuar pas shitjes dhe dërguar në emailin tuaj</p>",
+        "dropFilesHere": "Vendos skedën e parashitjes",
+        "importing": "Duke marrë...",
+        "buttons": {
+          "showPassword": "Shfaq fjalëkalimin"
+        },
+        "errors": {
+          "unknownFile": "Skedari nuk njihet.",
+          "wrongPassword": "Fjalëkalim i gabuar.",
+          "importFailed": "Skedari nuk mund të merret: __error__"
+        }
+      },
+      "connectAccount": {
+        "chooseAccountTitle": "Zgjidhni llogarinë",
+        "createAccount": "Krijoni llogari të re",
+        "pinToSidebar": "Vendosni aplikacionin në shiritin anësor",
+        "connectAccountDescription":
+          "Po shpërndani identitetin tuaj me __dappName__. Kjo i lejon aplikacionit të shohë çdo informacion publik të llogarive tuaja, duke përfshirë vlerat e lidhura me të."
+      }
+    }
+  },
+  "elements": {
+    "checksumAlert":
+      "Kjo adresë duket e vlefshme, por nuk ka disa masa sigurie që ju mbrojnë nga gabimet e shtypjes, kështu që duhet të siguroheni që kjo është adresa e duhur. Nëse e keni, kontrolloni nëse ikona e sigurisë përputhet.",
+    "identiconHelper":
+      "Kjo është një ikonë sigurie; nëse ka ndonjë ndryshim në adresë ikona e përftuar do të ishte krejt tjetër",
+    "type": {
+      "address": "Adresa",
+      "bool": "Buleane",
+      "int": "Numër i plotë",
+      "uint": "Numër Natyror",
+      "string": "String",
+      "bytes": "Bajt"
+    }
+  }
+}

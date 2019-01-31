@@ -19,7 +19,9 @@
         "skip": "Overslaan",
         "sending": "Verzenden...",
         "create": "Aanmaken",
-        "tryToReconnect": "Probeer te verbinden"
+        "tryToReconnect": "Probeer te verbinden",
+        "stayAnonymous": "Blijf anoniem",
+        "authorize": "Autoriseren"
     },
     "commonWords": {
         "you": "u",

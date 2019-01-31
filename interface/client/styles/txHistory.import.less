@@ -1,0 +1,95 @@
+a {
+  color: #02a8f3;
+}
+
+div#react-entry {
+  height: 100%;
+}
+
+.list-txs {
+  text-align: left;
+  height: 100%;
+}
+
+.list-txs .header {
+  width: 100%;
+  text-align: center;
+}
+
+.list-txs h1 {
+  font-size: 13px;
+  color: #333;
+  font-weight: normal;
+  margin: 3px 0 1px 0;
+  display: inline-block;
+  .txs-total {
+    font-weight: 500;
+  }
+}
+
+.tx-data {
+  word-wrap: break-word;
+}
+
+.tx-list {
+  padding: 10px;
+  height: ~'calc(100% - 22px)';
+  overflow-y: scroll;
+  border-top: 1px solid #aaa;
+  user-select: text;
+}
+
+.tx-list .tx {
+  background: #f9f9f9;
+  margin-bottom: 10px;
+  border-bottom: solid 2px #dcdada;
+  padding: 10px;
+  color: #111;
+  font-size: 13px;
+  .bold {
+    font-weight: normal;
+  }
+  .tx-description {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .right {
+    float: right;
+    text-align: right;
+  }
+  .tx-date {
+    font-size: 80%;
+    margin-bottom: 0;
+  }
+  .network {
+    color: red;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .dapp-identicon {
+    vertical-align: middle;
+    margin: 0 5px;
+    width: 20px;
+    height: 20px;
+  }
+  div {
+    margin-bottom: 10px;
+  }
+  .tx-moreDetails {
+    color: #02a8f3;
+    font-weight: 400;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 3px;
+    margin-bottom: 0;
+  }
+}
+
+.no-txs {
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 5px;
+  color: #333;
+}

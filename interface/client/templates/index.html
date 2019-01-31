@@ -6,11 +6,14 @@
 </head>
 
 <body>
+    <div class="drag-bar"></div>
 
     {{> Template.dynamic template=renderApp}}
 
     {{> GlobalNotifications}}
 
+    <div id="react-entry"></div>
+    <div id="generic-body"></div>
     <!-- Form Helper iFrame -->
     <iframe id="dapp-form-helper-iframe" name="dapp-form-helper-iframe" src="javascript:false;"></iframe>
 </body>

@@ -1,0 +1,106 @@
+language: node_js
+node_js: '8'
+#cache:
+#  yarn: true
+#  directories:
+#    - node_modules
+#      - 'interface/.meteor'
+
+sudo: required
+
+matrix:
+  include:
+    # LINUX, MIST
+    - os: linux
+      dist: trusty
+      env:
+          - PRODUCT=mist
+          - GULP_PLATFORM=linux
+      addons:
+        artifacts:
+          paths:
+            - $( ls dist_mist/release/* | tr "\n" ":" )
+        apt:
+          packages:
+            - icnsutils
+            - graphicsmagick
+            - xz-utils
+            - gcc-multilib
+            - g++-multilib
+      before_install:
+        # prepare integration tests
+        - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+      after_failure:
+        - cat ~/.config/Mist/logs/all.*
+
+    
+    # LINUX, WALLET
+    - os: linux
+      dist: trusty
+      env:
+          - PRODUCT=wallet
+          - GULP_PLATFORM=linux
+      addons:
+        artifacts:
+          paths:
+            - $( ls dist_wallet/release/* | tr "\n" ":" )
+        apt:
+          packages:
+            - icnsutils
+            - graphicsmagick
+            - xz-utils
+            - gcc-multilib
+            - g++-multilib
+      after_failure:
+        - cat ~/.config/Ethereum\ Wallet/logs/all.*
+        
+    # MAC, MIST
+    - os: osx
+      osx_image: xcode8.3  
+      env:
+          - PRODUCT=mist
+          - GULP_PLATFORM=mac
+      addons:
+        artifacts:
+          paths:
+            - $( ls dist_mist/release/* | tr "\n" ":" )
+      before_install:
+        - npm install -g yarn
+      after_failure:
+        - cat ~/Library/Application\ Support/Mist/logs/all.*
+
+    # MAC, WALLET
+    - os: osx
+      osx_image: xcode8.3  
+      env:
+          - PRODUCT=wallet
+          - GULP_PLATFORM=mac
+      addons:
+        artifacts:
+          paths:
+            - $( ls dist_wallet/release/* | tr "\n" ":" )
+      before_install:
+        - npm install -g yarn
+      after_failure:
+        - cat ~/Library/Application\ Support/Ethereum\ Wallet/logs/all.*
+
+install:
+  - PATH=$PATH:$HOME/.meteor && curl -L https://raw.githubusercontent.com/arunoda/travis-ci-meteor-packages/1390e0f96162d0d70fc1e60a6b0f4f891a0e8f42/configure.sh | /bin/sh
+  - meteor --version
+
+  - yarn
+
+script:
+  - yarn test:unit:once
+    
+  - yarn build:${PRODUCT} --$GULP_PLATFORM
+
+  - if [ $PRODUCT == "mist" && $GULP_PLATFORM="linux" ]; then
+      yarn test:e2e;
+    fi
+
+after_success:
+  - if [ $TRAVIS_BRANCH == "master" ]; then
+      yarn dist:${PRODUCT} --$GULP_PLATFORM;
+    fi
+

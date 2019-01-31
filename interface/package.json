@@ -1,0 +1,40 @@
+{
+  "name": "Mist-Interface",
+  "version": "0.1.0",
+  "description": "Mist interface application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:interface": "meteor-build-client ../.build-interface -p ''"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ethereum/mist.git"
+  },
+  "keywords": [
+    "ethereum",
+    "mist",
+    "web3"
+  ],
+  "author": "Fabian Vogelsteller <fabian@ethereum.org>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ethereum/mist/issues"
+  },
+  "homepage": "https://github.com/ethereum/mist#readme",
+  "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.42",
+    "ethereum-blockies": "git+https://github.com/ethereum/blockies.git",
+    "moment": "^2.22.2",
+    "react": "^16.4.1",
+    "react-blockies": "^1.3.0",
+    "react-dom": "^16.2.0",
+    "react-md-spinner": "^0.3.0",
+    "react-minimal-pie-chart": "^3.0.2",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2"
+  },
+  "devDependencies": {
+    "meteor-build-client": "^0.4.1"
+  }
+}

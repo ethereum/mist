@@ -1,5 +1,16 @@
+.DS_Store
 node_modules/
 packages/
 interface_build/
+interface/public/i18n/
+interface/.meteor/dev_bundle
+interface/.meteor/public/
 dist_wallet/
 dist_mist/
+nodes/geth/
+config.json
+mist.log
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+wallet/

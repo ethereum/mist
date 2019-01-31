@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "Laster...",
+        "offline": "Kan ikke koble til. Har du ikke nett?",
+        "logginIn": "Logger inn..."
+    },
+    "error": {
+        "insufficientRights": "Du har ikke nok rettigheter for denne handlingen."
+    },
+    "buttons": {
+        "ok": "OK",
+        "cancel": "Avbryt",
+        "save": "Lagre",
+        "edit": "endre",
+        "send": "Send",
+        "next": "Neste",
+        "previous": "Forrige",
+        "back": "Tilbake",
+        "skip": "Hopp over",
+        "sending": "Sender...",
+        "create": "Lag",
+        "tryToReconnect": "Prøv å koble",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
+    },
+    "commonWords": {
+        "you": "Du",
+        "send": "Send",
+        "or": "eller",
+        "of": "av",
+        "with": "med",
+        "and": "og",
+        "on": "på",
+        "per": "per"
+    }
+}

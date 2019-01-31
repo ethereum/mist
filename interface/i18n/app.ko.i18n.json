@@ -1,0 +1,36 @@
+{
+    "app": {
+        "loading": "불러오는 중...",
+        "offline": "연결실패, 인터넷 연결을 확인하세요.",
+        "logginIn": "로그인 중..."
+    },
+    "error": {
+        "insufficientRights": "요청하신 명령을 실행할 권한이 없습니다."
+    },
+    "buttons": {
+        "ok": "확인",
+        "cancel": "취소",
+        "save": "저장",
+        "edit": "수정",
+        "send": "보내기",
+        "next": "다음",
+        "previous": "이전",
+        "back": "뒤로",
+        "skip": "건너뛰기",
+        "sending": "보내는 중...",
+        "create": "생성",
+        "tryToReconnect": "재연결 시도",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "권한 인증"
+    },
+    "commonWords": {
+        "you": "당신",
+        "send": "보내기",
+        "or": "또는",
+        "of": "의",
+        "with": "와",
+        "and": "그리고",
+        "on": "위에",
+        "per": "당"
+    }
+}

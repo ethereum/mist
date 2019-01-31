@@ -19,7 +19,9 @@
         "skip": "跳过",
         "sending": "发送中……",
         "create": "创建",
-        "tryToReconnect": "尝试连接"
+        "tryToReconnect": "尝试连接",
+        "stayAnonymous": "Stay anonymous",
+        "authorize": "Authorize"
     },
     "commonWords": {
         "you": "你",

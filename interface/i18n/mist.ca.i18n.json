@@ -1,0 +1,265 @@
+{
+  "mist": {
+    "applicationMenu": {
+      "app": {
+        "label": "__app__",
+        "about": "Sobre __app__",
+        "checkForUpdates": "Buscar actualitzacions...",
+        "checkForNodeUpdates": "Busca actualitzacions dels nodes d'Ethereum...",
+        "services": "Serveis",
+        "hide": "Hide __app__",
+        "hideOthers": "Ocultar els altres",
+        "showAll": "Mostrar tot",
+        "quit": "Sortir __app__"
+      },
+      "file": {
+        "label": "Fitxer",
+        "importPresale": "Importa compte",
+        "newAccount": "Nou compte",
+        "backup": "Copia de seguretat",
+        "backupKeyStore": "Comptes",
+        "backupMist": "Dades de l'aplicació",
+        "swarmUpload": "Pujar a Swarm..."
+      },
+      "edit": {
+        "label": "Editar",
+        "undo": "Desfer",
+        "redo": "Refer",
+        "cut": "Tallar",
+        "copy": "Copiar",
+        "paste": "Enganxar",
+        "selectAll": "Seleccionar tot"
+      },
+      "view": {
+        "label": "Veure",
+        "fullscreen": "Commutar pantalla completa",
+        "languages": "Idioma",
+        "default": "Defecte",
+        "langCodes": {
+          "ca": "Català",
+          "de": "Deutsch",
+          "en": "English",
+          "es": "Español",
+          "fa": "فارسى",
+          "fr": "Français",
+          "it": "Italiano",
+          "ja": "日本語",
+          "ko": "한국어 ",
+          "nl": "Nederlands",
+          "nb": "Norsk",
+          "pt": "Português",
+          "sq": "Shqip",
+          "ru": "Pусский",
+          "zh": "普通話",
+          "zh-TW": "國語"
+        }
+      },
+      "develop": {
+        "label": "Desenvolupar",
+        "devTools": "Commutar eines de desenvolupador",
+        "devToolsMistUI": "Mist UI",
+        "devToolsWalletUI": "Wallet UI",
+        "devToolsWebview": "__webview__",
+        "runTests": "Executar tests",
+        "logFiles": "Mostrar fitxer de log",
+        "openRemix": "Obrir Remix IDE",
+        "ethereumNode": "Node d'Ethereum",
+        "network": "Xarxa",
+        "mainNetwork": "Xarxa Principal",
+        "startMining": "⛏ Començar a minar (només Testnet)",
+        "stopMining": "⛏ Parar de minar"
+      },
+      "window": {
+        "label": "Finestra",
+        "minimize": "Minimitza",
+        "close": "Tancar",
+        "toFront": "Portar tot al front"
+      },
+      "help": {
+        "label": "Ajuda",
+        "mistWiki": "Solució de problemes i Ajuda",
+        "gitter": "Canal de Mist a Gitter",
+        "reportBug": "Reportar un problema a Github"
+      }
+    },
+    "errors": {
+      "nodeConnect": "No has pogut connectar al node? Mira els logs per més:",
+      "nodeStartup":
+        "Sembla que el node no s'ha pogut iniciar. Ja en tens un executant-se? Està actualitzant la base de dades just ara?",
+      "timeSync": {
+        "title": "El rellotge de l'ordinador no està sincronitzat.",
+        "description":
+          "Per estar del tot sincronitzat amb la xarxa Ethereum, necessites sincronitzar el rellotge del teu ordinador amb un servidor de sincronització.",
+        "win32":
+          "Vés a les teves preferències del rellotge d'internet i marca la casella. Mira aquesta guia per tenir-ne més detalls: http://www.guidingtech.com/3119/windows-clock-sync/",
+        "linux":
+          "Per habilitar la sincronització del rellotge, instal·la \"ntp\" mitjançant \"apt-get install ntp\".",
+        "darwin":
+          "Per habilitar la sincronització del rellotge, obre les preferències de Data i hora i activa \"Ajustar la data i l'hora automàticament\"."
+      },
+      "nodeChecksumMismatch": {
+        "title":
+          "La suma de verificació no coincideix amb el node descarregat!",
+        "description":
+          "__algorithm__: __hash__\n\nSi us plau instal·la el __type__ node versió __version__ manualment."
+      },
+      "legacyChain": {
+        "title": "Cadena 'legacy' detectada",
+        "description":
+          "El teu node està actualment a la cadena d'Ethereum Classic. Per utilitzar aquesta cadena, utilitza les eines proporcionades pel projecte ethereum classic a\nhttps://ethereumclassic.github.io.\n\nPer canviar a la cadena principal d'ethereum segueix el aquest tutorial:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+      }
+    },
+    "rightClick": {
+      "reload": "Recarregar",
+      "openDevTools": "Obre les eines de desenvolupador",
+      "inspectElements": "Inspecciona element"
+    },
+    "sendTx": {
+      "enterPassword": "Introdueix la contrasenya per confirmar la transacció",
+      "unlocking": "Confirmant...",
+      "estimatedGasError":
+        "Sembla que la transacció fallarà. Si l'envieu, pot consumir tot el gas proporcionat.",
+      "overBlockGasLimit":
+        "El gas necesàri per aquesta execució pot sobrepassar el limit de gas pel bloc.",
+      "notEnoughGas":
+        "El gas pot no ser suficient per acabar aquesta execució amb èxit.<br>Fés clic aquí per augmentar la quantitat de gas.",
+      "errors": {
+        "connectionTimeout":
+          "No s'ha pogut connectar al node, ha fallat la tasca al fons?",
+        "wrongPassword": "Contrasenya errònia",
+        "multipleKeysMatchAddress":
+          "Multiples claus coincideixen amb l'adreça. Si us plau eliminar els duplicats del fitxer de claus (menú -> Fixter -> Copia de seguretat -> Comptes)",
+        "insufficientFundsForGas":
+          "Saldo insuficient al compte principal (etherbase) per pagar el gas",
+        "sameAccount": "No es pot enviar a un mateix"
+      }
+    },
+    "nodeInfo": {
+      "active": "active",
+      "blockNumber": "El teu últim número de bloc",
+      "blocksBehind": "blocks behind",
+      "checkingWhichNetwork": "Comprovant la xarxa...",
+      "connecting": "Connecting...",
+      "local": "Local",
+      "lookingForPeers": "Looking for peers...",
+      "network": "Network",
+      "node": "Node",
+      "nodeSyncing": "Resten __blockDiff__ blocs",
+      "peers": "peers",
+      "privateNetwork": "Private-net",
+      "test": "test",
+      "testnetExplain":
+        "Ets a la __name__. NO ENVIÏS cap Ether real a aquestes adreces",
+      "timeSinceBlock": "Temps transcorregut des de l'últim bloc"
+    },
+    "sidebar": {
+      "buttons": {
+        "browser": "Navega"
+      },
+      "submenu": {
+        "account": "Compte",
+        "connectAccounts": "Connectar Comptes"
+      }
+    },
+    "browserBar": {
+      "buttons": {
+        "noAccounts": "Comptes no establerts",
+        "connect": "Connectar"
+      }
+    },
+    "startScreen": {
+      "runningNodeFound": "Trobat node d'Ethereum executant-se!",
+      "nodeConnectionTimeout":
+        "No s'ha pogut iniciar el node d'Ethereum!<br><small>Si has <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>instal·lat Geth</a>, utilitza aquesta comanda per executar-lo: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> O notifica l'error </a></small>",
+      "nodeBinaryNotFound":
+        "No s'ha torbat el binari del node d'Ethereum!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Si us plau inicia'n un manualment primer. </a> </small>",
+      "nodeStarting": "Node d'Ethereum iniciant-se...",
+      "nodeStarted": "Node d'Ethereum iniciat",
+      "nodeConnected": "Node d'Ethereum connectat",
+      "nodeStopping": "Ethereum node aturant-se...",
+      "nodeStopped": "Node d'Ethereum aturat",
+      "nodeError": "Error de connectivitat del node d'Ethereum:'(",
+      "unableToBindPort":
+        "El node d'Ethereum no pot executar-se. N'hi ha alguna altra instància excutant-se?",
+      "nodeSyncing":
+        "El node d'Ethereum necessita sincronitzar-se, si us plau espera...",
+      "nodeSyncInfo": "Descarregant bloc __displayBlock__ de __highestBlock__",
+      "nodeSyncInfoStates":
+        "Descarregant bloc __displayBlock__ de __highestBlock__, <br> Descarregant l'estructura de la cadena __displayState__ de __displayKnownStates__",
+      "nodeSyncConnecting": "Cercant peers...",
+      "nodeSyncFoundPeers": "Connectant amb __peers__ peers...",
+      "launchApp": "Iniciar Aplicació",
+      "clientBinaries": {
+        "scanning": "Comprovant actualitzacions del node...",
+        "downloading": "Descarregant un nou node...",
+        "loadConfig": "Carregant configuració del client...",
+        "filtering": "Filtrant binaris del client...",
+        "done": "Node d'Ethereum actualitzat...",
+        "error": "Error executant el binari descarregat."
+      }
+    },
+    "popupWindows": {
+      "updateAvailable": {
+        "newVersionAvailable": "Nova __name__ versió disponible",
+        "version": "Versió",
+        "downloadURL": "URL de descàrrega",
+        "checksum": "Checksum",
+        "downloadAndRestart": "Actualitza i Reinicia",
+        "download": "Descarrega la nova versió",
+        "skipUpdate": "Omet l'actualització",
+        "checking": "Comprovant actualitzacions a __name__...",
+        "noUpdateFound":
+          "No s'ha trobat cap actualització. Estàs executant l'última versió de __name__."
+      },
+      "requestAccount": {
+        "title": "Crear un compte",
+        "enterPassword": "Introdueix una contrasenya",
+        "repeatPassword": "Repeteix la contrasenya",
+        "creating": "Generant el compte...",
+        "backupHint":
+          "Assegura't que fas una còpia de seguretat dels teus fitxer de claus I contrasenya!\n\nPots trobar el teu fitxer de claus mitjançant el menú principal -> Fitxer -> Copia de seguretat -> Comptes. Desa una copia de la carpeta del \"fitxer de claus\" on no puguis perdre-la!",
+        "errors": {
+          "passwordMismatch": "Les teves contrasenyes no coincideixen.",
+          "passwordTooShort": "Utilitza una contrasenya més llarga"
+        }
+      },
+      "importAccount": {
+        "doYouHaveAWalletFile": "Tens un fitxer de wallet?",
+        "walletFileDescription":
+          "<p>Mou qualsevol wallet aquí per a importar-lo.<br>Si va participar a la Pre-venda d'Ethereum el 2014, hauries de tenir un fitxer anomenat <code>ethereum_wallet_backup.json</code>. El vas poder descarregar després de la venda i també se't va enviar al teu email</p>",
+        "dropFilesHere": "Deixa anar el fitxer de wallet",
+        "importing": "Important...",
+        "buttons": {
+          "showPassword": "Mostra la contrasenya"
+        },
+        "errors": {
+          "unknownFile": "Fitxer no reconegut.",
+          "wrongPassword": "Contrasenya incorrecta.",
+          "importFailed":
+            "No s'ha pogut importar el fitxer, s'ha obtingut l'error: __error__"
+        }
+      },
+      "connectAccount": {
+        "chooseAccountTitle": "Escull compte",
+        "createAccount": "Crea un nou compte",
+        "pinToSidebar": "Fixa app a la barra lateral",
+        "connectAccountDescription":
+          "Estàs compartint la teva identitat amb __dappName__. Això permet a la app veure qualsevol informació pública rellevant relacionada amb els teus comptes, incloent els saldos."
+      }
+    }
+  },
+  "elements": {
+    "checksumAlert":
+      "Aquesta adreça sembla vàlida, però no té mesures de seguretat que ajuden a no equivocar-te errors tipogràfics, re-comprova que és la correcta. Si pots, comprova que la icona de seguretat coincideix.",
+    "identiconHelper":
+      "Aquesta és la icona de seguretat. Si hi hagués cap canvi a l'adreça, la icona seria una completament diferent",
+    "type": {
+      "address": "Adreça",
+      "bool": "Booleà",
+      "int": "Enter",
+      "uint": "Nombre Natural",
+      "string": "Cadena",
+      "bytes": "Octets"
+    }
+  }
+}

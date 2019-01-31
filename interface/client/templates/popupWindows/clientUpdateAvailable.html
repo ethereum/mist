@@ -1,0 +1,36 @@
+<template name="popupWindows_clientUpdateAvailable">
+    <div class="popup-windows update-available row">
+        <div class="col col-3">
+            <img class="left-overlay {{mode}}" src="{{appIconPath}}" />
+        </div>
+        {{#with Session "data"}}
+        <div class="col col-8 text">
+                <h1>
+                    {{i18n "mist.popupWindows.updateAvailable.newVersionAvailable" name=name version=version }}
+                </h1>
+                <p>
+                <br>
+                    <ul class="no-bullets">
+                        <li>{{i18n "mist.popupWindows.updateAvailable.version"}}: <strong> {{version}} </strong></li>
+                        <li>{{i18n "mist.popupWindows.updateAvailable.downloadURL"}}: <strong> {{downloadUrl}}</strong></li>
+                        <li>{{i18n "mist.popupWindows.updateAvailable.checksum"}}: <strong> {{checksum}} </strong></li>
+                    </ul>
+                </p>
+        </div>
+        <footer class="dapp-small">
+            <div class="dapp-modal-buttons">
+                <button class="cancel" type="button">
+                    {{i18n "mist.popupWindows.updateAvailable.skipUpdate"}}
+                </button>
+                <button class="ok dapp-primary-button">
+                    {{#if restart}}
+                        {{i18n "mist.popupWindows.updateAvailable.downloadAndRestart"}}
+                    {{else}}
+                        {{i18n "mist.popupWindows.updateAvailable.download"}}
+                    {{/if}}
+                </button>
+            </div>
+        </footer>
+        {{/with}}
+    </div>
+</template>

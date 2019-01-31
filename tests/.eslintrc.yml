@@ -1,0 +1,9 @@
+globals:  # don't warn about missing declarations
+  describe: true
+  it: true
+  expect: true
+  chai: true
+  $: true
+  LastVisitedPages: true
+  History: true
+  localStorage: true

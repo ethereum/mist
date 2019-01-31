@@ -2,154 +2,200 @@
 @module preloader MistUI
 */
 
+require('babel-register');
 
-const ipc = require('electron').ipcRenderer;
-const syncMinimongo = require('../syncMinimongo.js');
-const remote = require('remote');
-const Menu = remote.require('menu');
-const MenuItem = remote.require('menu-item');
+// Initialise the Redux store
+window.store = require('./rendererStore');
+
+require('./include/common')('mist');
+require('./include/web3CurrentProvider.js');
+const { ipcRenderer, remote, webFrame } = require('electron'); // eslint-disable-line import/newline-after-import
+const { Menu, MenuItem } = remote;
+const dbSync = require('../dbSync.js');
 const i18n = require('../i18n.js');
-const mist = require('../mistAPI.js');
-const BigNumber = require('bignumber.js');
-const Web3 = require('web3');
-const ipcProviderWrapper = require('../ipc/ipcProviderWrapper.js');
-const web3Admin = require('../web3Admin.js');
-const basePath = require('../setBasePath.js');
+const mist = require('./include/mistAPI.js');
 
-basePath('interface');
+require('./include/setBasePath')('interface');
 
-
-// disable pinch zoom
-require('web-frame').setZoomLevelLimits(1, 1);
-
-// make variables globally accessable
-window.BigNumber = BigNumber;
-window.web3 = new Web3(new Web3.providers.IpcProvider('', ipcProviderWrapper));
-// add admin later
-setTimeout(function(){
-    web3Admin.extend(window.web3);
-}, 1000);
-
-window.dirname = __dirname;
 window.mist = mist();
-window.syncMinimongo = syncMinimongo;
-window.ipc = ipc;
-window.platform = process.platform;
+window.mistMode = remote.getGlobal('mode');
+window.dbSync = dbSync;
+window.dirname = remote.getGlobal('dirname');
+window.ipc = ipcRenderer;
 
+window.i18n = require('../i18n.js');
+
+// remove require and module, because node-integration is on
+delete window.module;
+delete window.require;
 
 // prevent overwriting the Dapps Web3
-delete global.Web3;
-delete window.Web3;
-
+// delete global.Web3;
+// delete window.Web3;
 
 // set the langauge for the electron interface
-// ipc.send('setLanguage', navigator.language.substr(0,2));
+// ipcRenderer.send('setLanguage', navigator.language.substr(0,2));
 
+// A message coming from other window, to be passed to a webview
+ipcRenderer.on('uiAction_windowMessage', (e, type, id, error, value) => {
+  if (type === 'requestAccount' || (type === 'connectAccount' && !error)) {
+    Tabs.update(
+      { webviewId: id },
+      { $addToSet: { 'permissions.accounts': value } }
+    );
+  }
 
-// A message will be send to a webview/window
-ipc.on('mistUI_windowMessage', function(e, type, id, error, value) {
-
-    if(type === 'requestAccount' && !error) {
-        Tabs.update({webviewId: id}, {$addToSet: {
-            'permissions.accounts': value
-        }})
+  // forward to the webview (TODO: remove and manage in the ipcCommunicator?)
+  const tab = Tabs.findOne({ webviewId: id });
+  if (tab) {
+    webview = $(`webview[data-id=${tab._id}]`)[0];
+    if (webview) {
+      webview.send('uiAction_windowMessage', type, error, value);
     }
+  }
 });
 
+ipcRenderer.on('uiAction_enableBlurOverlay', (e, value) => {
+  $('html').toggleClass('has-blur-overlay', !!value);
+});
 
 // Wait for webview toggle
-ipc.on('toggleWebviewDevTool', function(e, id){
-    var webview = Helpers.getWebview(id);
+ipcRenderer.on('uiAction_toggleWebviewDevTool', (e, id) => {
+  const webview = Helpers.getWebview(id);
 
-    if(!webview)
-        return;
+  if (!webview) {
+    return;
+  }
 
-    if(webview.isDevToolsOpened())
-        webview.closeDevTools();
-    else
-        webview.openDevTools();
+  if (webview.isDevToolsOpened()) {
+    webview.closeDevTools();
+  } else {
+    webview.openDevTools();
+  }
 });
+
+// randomize accounts and drop half
+// also certainly remove the web3.ethbase one
+const randomizeAccounts = (acc, coinbase) => {
+  let accounts = _.shuffle(acc);
+  accounts = _.rest(accounts, (accounts.length / 2).toFixed(0));
+  accounts = _.without(accounts, coinbase);
+  return accounts;
+};
 
 // Run tests
-ipc.on('runTests', function(e, type){
-    if(type === 'webview') {
-        web3.eth.getAccounts(function(error, accounts){
-            if(error)
-                return;
+ipcRenderer.on('uiAction_runTests', (e, type) => {
+  if (type === 'webview') {
+    web3.eth.getAccounts((error, accounts) => {
+      if (error) return;
 
-            // remove one account
-            accounts.pop();
+      web3.eth.getCoinbase((coinbaseError, coinbase) => {
+        if (coinbaseError) return;
 
-            Tabs.upsert('tests', {
-                position: -1,
-                name: 'Test',
-                url: 'file://'+ __dirname + '/../../tests/mocha-in-browser/runner.html',
-                permissions: {
-                    accounts: accounts
-                }
-            });
-
-            Tracker.afterFlush(function(){
-                LocalStore.set('selectedTab', 'tests');
-            });
-
-            // update the permissions, when accounts change
-            // Tracker.autorun(function(){
-            //     var accounts = _.pluck(EthAccounts.find({}, {fields:{address: 1}}).fetch(), 'address');
-
-            //     // remove one account
-            //     accounts.pop();
-
-            //     Tabs.update('tests', {$set: {
-            //         'permissions.accounts': accounts
-            //     }});
-            // });
+        Tabs.upsert('tests', {
+          position: -1,
+          name: 'Tests',
+          url: '', // is hardcoded in webview.html to prevent hijacking
+          permissions: {
+            accounts: randomizeAccounts(accounts, coinbase)
+          }
         });
-    }
+
+        Tracker.afterFlush(() => {
+          LocalStore.set('selectedTab', 'tests');
+        });
+
+        // update the permissions, when accounts change
+        Tracker.autorun(() => {
+          const accountList = _.pluck(
+            EthAccounts.find({}, { fields: { address: 1 } }).fetch(),
+            'address'
+          );
+
+          Tabs.update('tests', {
+            $set: {
+              'permissions.accounts': randomizeAccounts(accountList, coinbase)
+            }
+          });
+        });
+      });
+    });
+  }
 });
-
-
 
 // CONTEXT MENU
 
-var currentMousePosition = {x: 0, y: 0};
-var menu = new Menu();
+const currentMousePosition = { x: 0, y: 0 };
+const menu = new Menu();
 // menu.append(new MenuItem({ type: 'separator' }));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.reload'), accelerator: 'Command+R', click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
+menu.append(
+  new MenuItem({
+    label: i18n.t('mist.rightClick.reload'),
+    accelerator: 'Command+R',
+    click() {
+      const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (LocalStore.get('selectedTab') === 'wallet') {
+        return console.log('Cannot refresh the wallet');
+      }
+
+      if (webview) {
         webview.reloadIgnoringCache();
-}}));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.openDevTools'), click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
+      }
+    }
+  })
+);
+menu.append(
+  new MenuItem({
+    label: i18n.t('mist.rightClick.openDevTools'),
+    click() {
+      const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (webview) {
         webview.openDevTools();
-}}));
-menu.append(new MenuItem({ label: i18n.t('mist.rightClick.inspectElements'), click: function() {
-    var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-    if(webview)
+      }
+    }
+  })
+);
+menu.append(
+  new MenuItem({
+    label: i18n.t('mist.rightClick.inspectElements'),
+    click() {
+      const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (webview) {
         webview.inspectElement(currentMousePosition.x, currentMousePosition.y);
-}}));
+      }
+    }
+  })
+);
 
-
-window.addEventListener('contextmenu', function (e) {
+window.addEventListener(
+  'contextmenu',
+  e => {
     e.preventDefault();
 
     // OPEN CONTEXT MENU over webviews
-    if($('webview:hover')[0]) {
-        currentMousePosition.x = e.layerX;
-        currentMousePosition.y = e.layerY;
-        menu.popup(remote.getCurrentWindow());
+    if ($('webview:hover')[0]) {
+      currentMousePosition.x = e.layerX;
+      currentMousePosition.y = e.layerY;
+      menu.popup(remote.getCurrentWindow());
     }
-}, false);
+  },
+  false
+);
 
-
-document.addEventListener('keydown', function (e) {
-    // RELOAD current webview
-    if(e.metaKey && e.keyCode === 82) {
-        var webview = Helpers.getWebview(LocalStore.get('selectedTab'));
-        if(webview)
-            webview.reloadIgnoringCache();
+document.addEventListener(
+  'keydown',
+  e => {
+    // RELOAD current webview, unless on wallet tab
+    if (
+      LocalStore.get('selectedTab') !== 'wallet' &&
+      e.metaKey &&
+      e.keyCode === 82
+    ) {
+      const webview = Helpers.getWebview(LocalStore.get('selectedTab'));
+      if (webview) {
+        webview.reloadIgnoringCache();
+      }
     }
-}, false);
-
+  },
+  false
+);

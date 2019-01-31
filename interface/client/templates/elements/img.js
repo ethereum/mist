@@ -11,28 +11,23 @@ The img template
 @constructor
 */
 
-Template['elements_img'].onRendered(function(){
-
-});
-
-
 Template['elements_img'].helpers({
-    /**
-    This helper will preload the image, and then incject it later after its loaded
+  /**
+    This helper will preload the image, and then inject it later after its loaded
 
     @method (preload)
     */
-    'preload': function(){
-        var template = Template.instance(),
-            data = this,
-            img = new Image();
+  preload: function() {
+    var template = Template.instance(),
+      data = this,
+      img = new Image();
 
-        TemplateVar.set('loading', true);
+    TemplateVar.set('loading', true);
 
-        img.onload = function () {
-            TemplateVar.set(template, 'loading', false);
-            TemplateVar.set(template, 'src', data.src);
-        };
-        img.src = data.src;
-    }
+    img.onload = function() {
+      TemplateVar.set(template, 'loading', false);
+      TemplateVar.set(template, 'src', data.src);
+    };
+    img.src = data.src;
+  }
 });

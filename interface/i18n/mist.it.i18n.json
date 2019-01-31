@@ -1,0 +1,268 @@
+{
+  "mist": {
+    "applicationMenu": {
+      "app": {
+        "label": "__app__",
+        "about": "Info su __app__",
+        "checkForUpdates": "Controlla aggiornamenti...",
+        "checkForNodeUpdates": "Controlla aggiornamento dei nodi Ethereum...",
+        "services": "Servizi",
+        "hide": "Nascondi __app__",
+        "hideOthers": "Nascondi il resto",
+        "showAll": "Mostra tutto",
+        "quit": "Esci da __app__"
+      },
+      "file": {
+        "label": "File",
+        "importPresale": "Importa Accounts",
+        "newAccount": "Nuovo account",
+        "backup": "Backup",
+        "backupKeyStore": "Accounts",
+        "backupMist": "Dati applicativi",
+        "swarmUpload": "Carica su Swarm"
+      },
+      "edit": {
+        "label": "Modifica",
+        "undo": "Annulla",
+        "redo": "Ripristina",
+        "cut": "Taglia",
+        "copy": "Copia",
+        "paste": "Incolla",
+        "selectAll": "Seleziona tutto"
+      },
+      "view": {
+        "label": "Visualizza",
+        "fullscreen": "Schermo intero",
+        "languages": "Lingue",
+        "default": "Default",
+        "langCodes": {
+          "ca": "Català",
+          "de": "Deutsch",
+          "en": "English",
+          "es": "Español",
+          "fa": "فارسى",
+          "fr": "Français",
+          "it": "Italiano",
+          "ja": "日本語",
+          "ko": "한국어 ",
+          "nl": "Nederlands",
+          "nb": "Norsk",
+          "pt": "Português",
+          "sq": "Shqip",
+          "ru": "Pусский",
+          "zh": "普通話",
+          "zh-TW": "國語"
+        }
+      },
+      "develop": {
+        "label": "Sviluppo",
+        "devTools": "Strumenti di sviluppo",
+        "devToolsMistUI": "Mist UI",
+        "devToolsWalletUI": "Portafoglio UI",
+        "devToolsWebview": "__webview__",
+        "runTests": "Esegui Test",
+        "logFiles": "Mostra file di log",
+        "ethereumNode": "Nodo Ethereum",
+        "network": "Rete",
+        "mainNetwork": "Rete principale",
+        "startMining": "⛏ Inizia mining",
+        "stopMining": "⛏ Ferma mining",
+        "openRemix": "Apri IDE Remix",
+        "enableSwarm": "Abilita Swarm"
+      },
+      "window": {
+        "label": "Finestra",
+        "minimize": "Minimizza",
+        "close": "Chiudi",
+        "toFront": "Tutte in primo piano"
+      },
+      "help": {
+        "label": "Aiuto",
+        "mistWiki": "Risoluzione dei problemi ed aiuto",
+        "gitter": "Canale Mist su Gitter",
+        "reportBug": "Riporta un problema su Github"
+      }
+    },
+    "errors": {
+      "nodeConnect":
+        "Impossibile connettersi al nodo. Controlla i log per dettagli:",
+      "nodeStartup":
+        "Il nodo non può essere avviato, ne hai già uno in esecuzione? Il database è in fase di aggiornamento in questo momento?",
+      "timeSync": {
+        "title": "Il tuo orologio di sistema non è sincronizzato.",
+        "description":
+          "È necessario sincronizzare l'orologio di sistema con un time server per connettere correttamente il tuo nodo alla rete Ethereum.",
+        "win32":
+          "Apri le impostazioni dell'orologio di sistema, seleziona Orario internet e metti un tick sul box. Segui questa guida (in inglese) per i dettagli: http://www.guidingtech.com/3119/windows-clock-sync/",
+        "linux":
+          "Per abilitare la sincronia con un time server installa \"ntp\" via \"apt-get install ntp\".",
+        "darwin":
+          "Per abilitare la sincronia dell'ora, apri le preferenze di orario e spunta \"Setta ora e data automaticamente\"."
+      },
+      "nodeChecksumMismatch": {
+        "title": "Checksum non corrispondente nel nodo scaricato!",
+        "description":
+          "__algorithm__: __hash__\n\nPer favore installa la __type__ versione nodo __version__ manualmente."
+      },
+      "legacyChain": {
+        "title": "Rilevata chain obsoleta",
+        "description":
+          "Il tuo nodo si trova su una chain Ethereum Classic non supportata. Per usare questa chain usa strumenti forniti dal progetto ethereum classic da \nhttps://ethereumclassic.github.io.\n\nPer ritornare sulla chain principale di ethereum segui il tutorial seguente:\nhttps://github.com/ethereum/mist/releases/0.8.2",
+        "swarm": {
+          "notEnabled":
+            "Swarm non è abilitato. Per abilitare Swarm devi cliccare su Abilita Swarm (menu -> Sviluppo -> Abilita Swarm)."
+        }
+      }
+    },
+    "rightClick": {
+      "reload": "Ricarica",
+      "openDevTools": "Apri strumenti di sviluppo",
+      "inspectElements": "Ispeziona elemento"
+    },
+    "sendTx": {
+      "enterPassword": "Inserisci la password per confermare la transazione",
+      "unlocking": "Conferma in corso...",
+      "estimatedGasError":
+        "Dati non eseguibili, quindi verrà utilizzato tutto il gas fornito.",
+      "overBlockGasLimit":
+        "Il gas richiesto per questa esecuzione potrebbe eccedere il gas limit del blocco.",
+      "notEnoughGas":
+        "Il Gas potrebbe non essere sufficiente per completare con successo questa transazione.<br>Clicca qui per aumentare la quantità di gas.",
+      "errors": {
+        "connectionTimeout":
+          "Impossibile connettersi al nodo, è forse terminato in modo inaspettato ?",
+        "wrongPassword": "Password errata",
+        "multipleKeysMatchAddress":
+          "Chiavi multiple per lo stesso indirizzo, per favore eliminare i duplicati dal keystore (menu -> File -> Backup -> Accounts)",
+        "insufficientFundsForGas":
+          "Credito insufficiente nel account principale (etherbase) per pagare il gas",
+        "sameAccount": "Non si può inviare a se stesso"
+      }
+    },
+    "nodeInfo": {
+      "active": "active",
+      "blockNumber": "Il tuo ultimo numero di blocco",
+      "blocksBehind": "blocks behind",
+      "checkingWhichNetwork": "Controllo rete...",
+      "connecting": "Connecting...",
+      "local": "Local",
+      "lookingForPeers": "Looking for peers...",
+      "network": "Network",
+      "node": "Node",
+      "nodeSyncing": "__blockDiff__ blocchi mancanti",
+      "peers": "nodi",
+      "privateNetwork": "Private-net",
+      "test": "test",
+      "testnetExplain":
+        "Sei connesso alla testnet, NON INVIARE alcun ether reale a questi indirizzi",
+      "timeSinceBlock": "Tempo trascorso dall'ultimo blocco"
+    },
+    "sidebar": {
+      "buttons": {
+        "browser": "Sfoglia"
+      },
+      "submenu": {
+        "account": "Account",
+        "connectAccounts": "Connetti account"
+      }
+    },
+    "browserBar": {
+      "buttons": {
+        "noAccounts": "Nessun account impostato",
+        "connect": "Connetti"
+      }
+    },
+    "startScreen": {
+      "runningNodeFound": "Trovato nodo Ethereum in esecuzione!",
+      "nodeConnectionTimeout":
+        "Impossibile avviare un nodo Ethereum!<br><small>Se <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>hai installato Geth</a>, usa questo comando per eseguirlo:<br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> o riporta il problema </a></small>",
+      "nodeBinaryNotFound":
+        "Impossibile trovare l'eseguibile del nodo Ethereum !<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Per favore avvialo manualmente prima. </a> </small>",
+      "nodeSyncing": "Il nodo Ethereum deve sincronizzarsi, attendere prego...",
+      "nodeSyncInfo":
+        "Scaricamento blocco __displayBlock__ di __highestBlock__.",
+      "nodeSyncConnecting": "Alla ricerca di nodi...",
+      "nodeStarting": "Nodo Ethereum in avvio...",
+      "nodeStarted": "Nodo Ethereum avviato",
+      "nodeConnected": "Nodo Ethereum connesso",
+      "nodeStopping": "Nodo Ethereum in arresto...",
+      "nodeStopped": "Nodo Ethereum arrestato",
+      "nodeError": "Nodo Ethereum errore di connessione :'(",
+      "unableToBindPort":
+        "Nodo Ethereum non in esecuzione. Esiste altra istanza in esecuzione?",
+      "nodeSyncInfoStates":
+        "Scaricamento blocco __displayBlock__ of __highestBlock__, <br> Scaricamento struttura chain __displayState__ of __displayKnownStates__",
+      "nodeSyncFoundPeers": "Connessione a __peers__ peers...",
+      "launchApp": "Avvia Applicazione",
+      "retryConnection": "Riprova la connessione",
+      "clientBinaries": {
+        "scanning": "Controlla aggiornamento nodo...",
+        "downloading": "Scaricamento nuovo nodo...",
+        "loadConfig": "Caricamento configurazione client...",
+        "filtering": "Filtro codice binario del client...",
+        "done": "Nodo Ethereum aggiornato...",
+        "error": "Errore durante lo scaricamento del codice binario."
+      }
+    },
+    "popupWindows": {
+      "updateAvailable": {
+        "newVersionAvailable": "Nuova __name__ versione disponibile",
+        "version": "Versione",
+        "downloadURL": "Download URL",
+        "checksum": "Checksum",
+        "downloadAndRestart": "Aggiorna e Riavvia",
+        "download": "Scarica nuova versione",
+        "skipUpdate": "Salta Aggiornamento",
+        "checking": "Controlla aggiornamenti a __name__...",
+        "noUpdateFound":
+          "Nessuna aggiornamento trovato. Stai eseguendo l'ultima versione di __name__."
+      },
+      "requestAccount": {
+        "title": "Crea account",
+        "enterPassword": "Inserisci password",
+        "repeatPassword": "Ripeti password",
+        "creating": "Generazione account...",
+        "errors": {
+          "passwordMismatch": "Le due password non sono uguali.",
+          "passwordTooShort": "Usa una password più lunga"
+        }
+      },
+      "importAccount": {
+        "doYouHaveAWalletFile": "Hai un file per il wallet ?",
+        "walletFileDescription":
+          "<p>Se hai partecipato alla pre-vendita Ethereum nel 2014, dovresti avere un file nominato<code>ethereum_wallet_backup.json</code>. È stato scaricato dopo la vendita e inoltre inviato al tuo indirizzo e-mail</p>",
+        "dropFilesHere": "Trascina file pre-vendita",
+        "importing": "Importazione...",
+        "buttons": {
+          "showPassword": "Mostra password"
+        },
+        "errors": {
+          "unknownFile": "File non riconosciuto.",
+          "wrongPassword": "Password errata.",
+          "importFailed": "Impossibile importare il file: __error__"
+        }
+      },
+      "connectAccount": {
+        "chooseAccountTitle": "Scegli account",
+        "createAccount": "Crea nuovo account",
+        "pinToSidebar": "Aggancia applicazione alla barra laterale",
+        "connectAccountDescription":
+          "Stai per condividere la tua identità con __dappName__. Questo consente all'applicazione di vedere ogni informazione pubblica del tuo account, compreso il relativo saldo associato."
+      }
+    }
+  },
+  "elements": {
+    "checksumAlert":
+      "Questo indirizzo sembra valido ma non ha alcuna sicurezza aggiuntiva che ti possa proteggere da errori di battitura, ricontrolla quindi che sia quello corretto. Se disponibile, verifica che le icone di sicurezza siano uguali.",
+    "identiconHelper":
+      "Questa è un icona di sicurezza, se c'è qualsiasi cambiamento nell'indirizzo l'icona risultante sarà completamente differente",
+    "type": {
+      "address": "Address",
+      "bool": "Boolean",
+      "int": "Integer",
+      "uint": "Natural Number",
+      "string": "String",
+      "bytes": "Bytes"
+    }
+  }
+}

@@ -10,7 +10,7 @@
                 "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.22-7fa3509e.tar.gz",
               "type": "tar",
               "md5": "a02321a1ee89c330eb8e87b694254dbb",
-              "bin": "geth-linux-amd64-1.8.20-7fa3509e/geth"
+              "bin": "geth-linux-amd64-1.8.22-7fa3509e/geth"
             },
             "bin": "geth",
             "commands": {

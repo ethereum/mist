@@ -1,38 +1,38 @@
 {
   "clients": {
     "Geth": {
-      "version": "1.8.21",
+      "version": "1.8.23",
       "platforms": {
         "linux": {
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.21-9dc5d1a9.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "516fc2665d18e7b117333d2ea4959f9c",
-              "bin": "geth-linux-amd64-1.8.21-9dc5d1a9/geth"
+              "md5": "a3b2dd950bc986036be4ff66efec36f9",
+              "bin": "geth-linux-amd64-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.21"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           },
           "ia32": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.21-9dc5d1a9.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "68c6005f0d034dcb13f4b44e45e3502b",
-              "bin": "geth-linux-386-1.8.21-9dc5d1a9/geth"
+              "md5": "c588872c3d2fd1101b56e61807fb132c",
+              "bin": "geth-linux-386-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.21"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }
@@ -41,16 +41,16 @@
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.21-9dc5d1a9.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "81544a325e179459454fb58aa73df54b",
-              "bin": "geth-darwin-amd64-1.8.21-9dc5d1a9/geth"
+              "md5": "4f0e09fa708f629228cb6c10a315ab5f",
+              "bin": "geth-darwin-amd64-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.21"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }
@@ -59,32 +59,32 @@
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.21-9dc5d1a9.zip",
+                "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.23-c9427004.zip",
               "type": "zip",
               "md5": "e05524cc4f6e8711645f40ef5921918a",
-              "bin": "geth-windows-amd64-1.8.21-9dc5d1a9\\geth.exe"
+              "bin": "geth-windows-amd64-1.8.23-c9427004\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.21"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           },
           "ia32": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.21-9dc5d1a9.zip",
+                "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.23-c9427004.zip",
               "type": "zip",
               "md5": "0c834c4b874854425ddc7dd157f327ce",
-              "bin": "geth-windows-386-1.8.21-9dc5d1a9\\geth.exe"
+              "bin": "geth-windows-386-1.8.23-c9427004\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.21"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }

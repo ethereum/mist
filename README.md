@@ -1,10 +1,12 @@
-# Mist Browser<sup>beta</sup>
+# Mist Browser [Deprecated]
 
 [![Github All Releases](https://img.shields.io/github/downloads/ethereum/mist/total.svg)](http://www.somsubhra.com/github-release-stats/?username=ethereum&repository=mist)
 [![Build Status develop branch](https://travis-ci.org/ethereum/mist.svg?branch=develop)](https://travis-ci.org/ethereum/mist)
 [![Build status](https://ci.appveyor.com/api/projects/status/bcfm3v0y2ovq9xob?svg=true)](https://ci.appveyor.com/project/ethereum/mist)
 [![Join the chat at https://gitter.im/ethereum/mist](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/mist)
 [![Code Triagers Badge](https://www.codetriage.com/ethereum/mist/badges/users.svg)](https://www.codetriage.com/ethereum/mist)
+
+>__Mist and Ethereum Wallet have been deprecated.__ See the [announcement](https://medium.com/@avsa/sunsetting-mist-da21c8e943d2) and view the [migration guide](https://medium.com/@omgwtfmarc/mist-migration-patterns-6bcf066ac383).
 
 The Mist browser is the tool of choice to browse and use Ðapps.
 

@@ -80,30 +80,22 @@
       }
     },
     "errors": {
-      "nodeConnect":
-        "Verbinden met node niet mogelijk? Zie de logboek bestanden voor meer informatie:",
-      "nodeStartup":
-        "Het lijkt erop dat de node niet kan worden opgestart, draait er al een? Is deze de database aan het upgraden?",
+      "nodeConnect": "Verbinden met node niet mogelijk? Zie de logboek bestanden voor meer informatie:",
+      "nodeStartup": "Het lijkt erop dat de node niet kan worden opgestart, draait er al een? Is deze de database aan het upgraden?",
       "timeSync": {
         "title": "Je computer's klok is niet gesynchroniseerd.",
-        "description":
-          "Om succesvol met het Ethereum netwerk te verbinden moet je computer's klok gesynchroniseerd zijn met een tijdssynchronisatie server.",
-        "win32":
-          "Ga naar je Internet Tijd Instellingen in je configuratiescherm en selecteer de optie. Zie deze uitleg voor details: http://www.guidingtech.com/3119/windows-clock-sync/",
-        "linux":
-          "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
-        "darwin":
-          "Zet tijdssynchronisatie aan door in je instellingen de optie \"Tijd en datum automatisch instellen\" te activeren."
+        "description": "Om succesvol met het Ethereum netwerk te verbinden moet je computer's klok gesynchroniseerd zijn met een tijdssynchronisatie server.",
+        "win32": "Ga naar je Internet Tijd Instellingen in je configuratiescherm en selecteer de optie. Zie deze uitleg voor details: http://www.guidingtech.com/3119/windows-clock-sync/",
+        "linux": "Installeer voor een tijdssynchronisatieserver \"ntp\" via \"apt-get install ntp\".",
+        "darwin": "Zet tijdssynchronisatie aan door in je instellingen de optie \"Tijd en datum automatisch instellen\" te activeren."
       },
       "nodeChecksumMismatch": {
         "title": "Checksum mismatch in gedownloade node!",
-        "description":
-          "__algorithm__: __hash__\n\nInstalleer de __type__ node versie __version__ handmatig."
+        "description": "__algorithm__: __hash__\n\nInstalleer de __type__ node versie __version__ handmatig."
       },
       "legacyChain": {
         "title": "Legacy chain gedetecteerd",
-        "description":
-          "Je node draait momenteel op de niet ondersteunde Ethereum Classic chain. Om deze chain te gebruiken dien je de tools te gebruiken van het Ethereum Classic project op\nhttps://ethereumclassic.github.io.\n\nOm terug te gaan naar de standaard Ethereum chain kun je deze tutorial volgen:\nhttps://github.com/ethereum/mist/releases/0.8.2"
+        "description": "Je node draait momenteel op de niet ondersteunde Ethereum Classic chain. Om deze chain te gebruiken dien je de tools te gebruiken van het Ethereum Classic project op\nhttps://ethereumclassic.github.io.\n\nOm terug te gaan naar de standaard Ethereum chain kun je deze tutorial volgen:\nhttps://github.com/ethereum/mist/releases/0.8.2"
       }
     },
     "rightClick": {
@@ -114,41 +106,33 @@
     "sendTx": {
       "enterPassword": "Voer wachtwoord in om de transactie te bevestigen",
       "unlocking": "Bevestigen...",
-      "estimatedGasError":
-        "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
-      "transactionThrow":
-        "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
-      "overBlockGasLimit":
-        "The gas required for this execution could exceed the block gas limit.",
-      "notEnoughGas":
-        "Gas might not be enough to successfully finish this transaction.<br>Click here to increase the gas amount.",
+      "estimatedGasError": "De kans is groot dat de transactie zal mislukken. Als je de transactie toch wilt uitvoeren zal misschien alle gas worden verbruikt.",
+      "transactionThrow": "Het contract staat niet toe dat deze transactie wordt uitgevoerd",
+      "overBlockGasLimit": "De gas hoeveelheid voor deze executie is wellicht groter dan het blok gas limiet. ",
+      "notEnoughGas": "Gas hoeveelheid is mogelijk onvoldoende om deze transactie te voltooien.<br>Klik hier om de gas hoeveelheid te vergroten. ",
       "errors": {
-        "connectionTimeout":
-          "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
+        "connectionTimeout": "Kon niet verbinden met de node, is het in de achtergrond uitgevallen?",
         "wrongPassword": "Onjuist wachtwoord",
-        "multipleKeysMatchAddress":
-          "Meerdere keys matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
-        "insufficientFundsForGas":
-          "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
+        "multipleKeysMatchAddress": "Meerdere sleutels (keys) matchen hebben hetzelfde adres, verwijder duplicaten uit de keystore (menu -> Bestand -> Backup -> Accounts)",
+        "insufficientFundsForGas": "Onvoldoende saldo in hoofd account (Etherbase) om gas te betalen",
         "sameAccount": "Kan niet naar zichzelf versturen"
       }
     },
     "nodeInfo": {
-      "active": "active",
+      "active": "actief",
       "blockNumber": "Jouw laatste bloknummer",
-      "blocksBehind": "blocks behind",
+      "blocksBehind": "blokken achterstand",
       "checkingWhichNetwork": "Netwerk aan het controleren...",
       "connecting": "Connecting...",
-      "local": "Local",
-      "lookingForPeers": "Looking for peers...",
+      "local": "Lokaal",
+      "lookingForPeers": "Zoeken naar...",
       "network": "Network",
       "node": "Node",
       "nodeSyncing": "__blockDiff__ blokken te gaan",
       "peers": "peers",
-      "privateNetwork": "Private-net",
+      "privateNetwork": "Prive-net",
       "test": "test",
-      "testnetExplain":
-        "Je bent actief op het __name__, VERSTUUR GEEN echte Ether naar deze adressen",
+      "testnetExplain": "Je bent actief op het __name__, VERSTUUR GEEN echte Ether naar deze adressen",
       "timeSinceBlock": "Verstreken tijd sinds laatste blok"
     },
     "sidebar": {
@@ -164,10 +148,8 @@
     },
     "startScreen": {
       "runningNodeFound": "Lopende Ethereum node gevonden!",
-      "nodeConnectionTimeout":
-        "Ethereum node opstarten niet mogelijk!<br><small>Als je <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth geinstalleerd hebt</a>, gebruik dan dit commando om het op te starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Of meld een fout </a></small>",
-      "nodeBinaryNotFound":
-        "Geen Ethereum node gevonden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Start er a.u.b. handmatig een. </a> </small>",
+      "nodeConnectionTimeout": "Ethereum node opstarten niet mogelijk!<br><small>Als je <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'>Geth geinstalleerd hebt</a>, gebruik dan dit commando om het op te starten: <br> <code>geth --ipcpath __path__</code></small><br> <small><a href='https://github.com/ethereum/mist/issues' class='button' target='_blank'> Of meld een fout </a></small>",
+      "nodeBinaryNotFound": "Geen Ethereum node gevonden!<br><small> <a href='https://www.ethereum.org/cli#geth' class='button' target='_blank'> Start er a.u.b. handmatig een. </a> </small>",
       "nodeStarting": "Ethereum node opstarten...",
       "nodeStarted": "Ethereum node gestart",
       "nodeConnected": "Ethereum node verbonden",
@@ -175,12 +157,9 @@
       "nodeStopped": "Ethereum node gestopt",
       "nodeError": "Ethereum node verbindingsfout :'(",
       "unableToBindPort": "Ethereum node kan niet opstarten. Draait er al een?",
-      "nodeSyncing":
-        "Ethereum node moet synchroniseren, even geduld alstublieft...",
-      "nodeSyncInfo":
-        "Blok __displayBlock__ van __highestBlock__ aan het downloaden.",
-      "nodeSyncInfoStates":
-        "Blok __displayBlock__ van __highestBlock__ aan het downloaden, <br> Chain structuur __displayState__ van __displayKnownStates__ aan het downloaden",
+      "nodeSyncing": "Ethereum node moet synchroniseren, even geduld alstublieft...",
+      "nodeSyncInfo": "Blok __displayBlock__ van __highestBlock__ aan het downloaden.",
+      "nodeSyncInfoStates": "Blok __displayBlock__ van __highestBlock__ aan het downloaden, <br> Chain structuur __displayState__ van __displayKnownStates__ aan het downloaden",
       "nodeSyncConnecting": "Zoeken naar peers...",
       "nodeSyncFoundPeers": "Verbinden met __peers__ peers...",
       "launchApp": "Applicatie Opstarten",
@@ -203,8 +182,7 @@
         "download": "Download nieuwe versie",
         "skipUpdate": "Sla update over",
         "checking": "Controleren op updates voor __name__...",
-        "noUpdateFound":
-          "Geen updates gevonden. Je hebt de laatste versie __name__."
+        "noUpdateFound": "Geen updates gevonden. Je hebt de laatste versie __name__."
       },
       "requestAccount": {
         "title": "Account aanmaken",
@@ -218,33 +196,29 @@
       },
       "importAccount": {
         "doYouHaveAWalletFile": "Heb je een wallet bestand?",
-        "walletFileDescription":
-          "<p>Als je mee hebt gedaan met de Ethereum voorverkoop van 2014 zou je een bestand met de naam <code>ethereum_wallet_backup.json</code> ontvangen moeten hebben. Je kon dit bestand downloaden na je contributie en is ook per email verstuurd</p>",
+        "walletFileDescription": "<p>Als je mee hebt gedaan met de Ethereum voorverkoop van 2014 zou je een bestand met de naam <code>ethereum_wallet_backup.json</code> ontvangen moeten hebben. Je kon dit bestand downloaden na je contributie en is ook per email verstuurd</p>",
         "dropFilesHere": "Sleep voorverkoop bestand hier",
         "importing": "Importeren...",
         "buttons": {
           "showPassword": "Toon wachtwoord"
         },
         "errors": {
-          "unknownFile": "Bestand niet herkent.",
+          "unknownFile": "Bestand niet herkend.",
           "wrongPassword": "Incorrect wachtwoord.",
           "importFailed": "Bestand importeren mislukt: __error__"
         }
       },
       "connectAccount": {
         "chooseAccountTitle": "Kies account",
-        "createAccount": "Creëer nieuw account",
+        "createAccount": "Nieuwe account aanmaken",
         "pinToSidebar": "Pin app aan de sidebar",
-        "connectAccountDescription":
-          "Je deelt je indentiteit met __dappName__. Hierdoor heeft de app toegen tot alle openbare informatie van uw accounts inclusief de saldi."
+        "connectAccountDescription": "Je deelt je identiteit met __dappName__. Hierdoor heeft de app toegang tot alle openbare informatie van uw accounts inclusief de saldi."
       }
     }
   },
   "elements": {
-    "checksumAlert":
-      "Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die je zullen beschermen teken typfouten, dus ga graag even na of dit de goede is. Als aangeveven, ga na of het beveiligingsicoon klopt.",
-    "identiconHelper":
-      "Dit is een beveilliginsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan",
+    "checksumAlert": "Dit adres ziet er valide uit, maar het mist een aantal beveiligingsfuncties die je zullen beschermen tegen typfouten, ga dus even na of dit adres de goede is. Verifieer ook dat het beveiligingsicoon klopt.",
+    "identiconHelper": "Dit is een beveiligingsicoon, als er enige veranderingen op dit adres plaats vinden dan zou er een volledig ander icoon moeten staan",
     "type": {
       "address": "Adres",
       "bool": "Boolean",

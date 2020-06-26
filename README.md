@@ -245,7 +245,7 @@ Then run the tests:
 
 ```bash
 $ yarn test:unit:once
-$ yarn test:e2e
+$ yarn test:e2e.
 ```
 
 _Note: Integration tests are not yet supported on Windows._

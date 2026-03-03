@@ -1,38 +1,38 @@
 {
   "clients": {
     "Geth": {
-      "version": "1.8.16",
+      "version": "1.8.23",
       "platforms": {
         "linux": {
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.16-477eb093.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-linux-amd64-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "97000597053012ad3a5f6f5af832fdb8",
-              "bin": "geth-linux-amd64-1.8.16-477eb093/geth"
+              "md5": "a3b2dd950bc986036be4ff66efec36f9",
+              "bin": "geth-linux-amd64-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.16"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           },
           "ia32": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.16-477eb093.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-linux-386-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "68f366aac8214b18cf76395c84b8c787",
-              "bin": "geth-linux-386-1.8.16-477eb093/geth"
+              "md5": "c588872c3d2fd1101b56e61807fb132c",
+              "bin": "geth-linux-386-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.16"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }
@@ -41,16 +41,16 @@
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.16-477eb093.tar.gz",
+                "https://gethstore.blob.core.windows.net/builds/geth-darwin-amd64-1.8.23-c9427004.tar.gz",
               "type": "tar",
-              "md5": "245a70f17737c1d3bb9e12e67f06803c",
-              "bin": "geth-darwin-amd64-1.8.16-477eb093/geth"
+              "md5": "4f0e09fa708f629228cb6c10a315ab5f",
+              "bin": "geth-darwin-amd64-1.8.23-c9427004/geth"
             },
             "bin": "geth",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.16"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }
@@ -59,32 +59,32 @@
           "x64": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.16-477eb093.zip",
+                "https://gethstore.blob.core.windows.net/builds/geth-windows-amd64-1.8.23-c9427004.zip",
               "type": "zip",
-              "md5": "2d825be4605740fee35cb83dd33b7aa6",
-              "bin": "geth-windows-amd64-1.8.16-477eb093\\geth.exe"
+              "md5": "e05524cc4f6e8711645f40ef5921918a",
+              "bin": "geth-windows-amd64-1.8.23-c9427004\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.16"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           },
           "ia32": {
             "download": {
               "url":
-                "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.16-477eb093.zip",
+                "https://gethstore.blob.core.windows.net/builds/geth-windows-386-1.8.23-c9427004.zip",
               "type": "zip",
-              "md5": "ff51dcd3e37367fa1d53f6687f51f1c6",
-              "bin": "geth-windows-386-1.8.16-477eb093\\geth.exe"
+              "md5": "0c834c4b874854425ddc7dd157f327ce",
+              "bin": "geth-windows-386-1.8.23-c9427004\\geth.exe"
             },
             "bin": "geth.exe",
             "commands": {
               "sanity": {
                 "args": ["version"],
-                "output": ["Geth", "1.8.16"]
+                "output": ["Geth", "1.8.23"]
               }
             }
           }
